@@ -40,7 +40,7 @@ func (blcd *BuildLogChunkDelete) ExecX(ctx context.Context) int {
 }
 
 func (blcd *BuildLogChunkDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(buildlogchunk.Table, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(buildlogchunk.Table, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
 	if ps := blcd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

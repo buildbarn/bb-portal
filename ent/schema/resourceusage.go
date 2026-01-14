@@ -40,3 +40,10 @@ func (ResourceUsage) Indexes() []ent.Index {
 		index.Edges("execution_info"),
 	}
 }
+
+// Mixin of the ResourceUsage.
+func (ResourceUsage) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

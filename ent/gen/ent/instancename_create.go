@@ -31,15 +31,21 @@ func (inc *InstanceNameCreate) SetName(s string) *InstanceNameCreate {
 	return inc
 }
 
+// SetID sets the "id" field.
+func (inc *InstanceNameCreate) SetID(i int64) *InstanceNameCreate {
+	inc.mutation.SetID(i)
+	return inc
+}
+
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (inc *InstanceNameCreate) AddBazelInvocationIDs(ids ...int) *InstanceNameCreate {
+func (inc *InstanceNameCreate) AddBazelInvocationIDs(ids ...int64) *InstanceNameCreate {
 	inc.mutation.AddBazelInvocationIDs(ids...)
 	return inc
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
 func (inc *InstanceNameCreate) AddBazelInvocations(b ...*BazelInvocation) *InstanceNameCreate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -47,14 +53,14 @@ func (inc *InstanceNameCreate) AddBazelInvocations(b ...*BazelInvocation) *Insta
 }
 
 // AddBuildIDs adds the "builds" edge to the Build entity by IDs.
-func (inc *InstanceNameCreate) AddBuildIDs(ids ...int) *InstanceNameCreate {
+func (inc *InstanceNameCreate) AddBuildIDs(ids ...int64) *InstanceNameCreate {
 	inc.mutation.AddBuildIDs(ids...)
 	return inc
 }
 
 // AddBuilds adds the "builds" edges to the Build entity.
 func (inc *InstanceNameCreate) AddBuilds(b ...*Build) *InstanceNameCreate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -62,14 +68,14 @@ func (inc *InstanceNameCreate) AddBuilds(b ...*Build) *InstanceNameCreate {
 }
 
 // AddBlobIDs adds the "blobs" edge to the Blob entity by IDs.
-func (inc *InstanceNameCreate) AddBlobIDs(ids ...int) *InstanceNameCreate {
+func (inc *InstanceNameCreate) AddBlobIDs(ids ...int64) *InstanceNameCreate {
 	inc.mutation.AddBlobIDs(ids...)
 	return inc
 }
 
 // AddBlobs adds the "blobs" edges to the Blob entity.
 func (inc *InstanceNameCreate) AddBlobs(b ...*Blob) *InstanceNameCreate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -77,14 +83,14 @@ func (inc *InstanceNameCreate) AddBlobs(b ...*Blob) *InstanceNameCreate {
 }
 
 // AddTargetIDs adds the "targets" edge to the Target entity by IDs.
-func (inc *InstanceNameCreate) AddTargetIDs(ids ...int) *InstanceNameCreate {
+func (inc *InstanceNameCreate) AddTargetIDs(ids ...int64) *InstanceNameCreate {
 	inc.mutation.AddTargetIDs(ids...)
 	return inc
 }
 
 // AddTargets adds the "targets" edges to the Target entity.
 func (inc *InstanceNameCreate) AddTargets(t ...*Target) *InstanceNameCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -142,8 +148,10 @@ func (inc *InstanceNameCreate) sqlSave(ctx context.Context) (*InstanceName, erro
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	inc.mutation.id = &_node.ID
 	inc.mutation.done = true
 	return _node, nil
@@ -152,9 +160,13 @@ func (inc *InstanceNameCreate) sqlSave(ctx context.Context) (*InstanceName, erro
 func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec) {
 	var (
 		_node = &InstanceName{config: inc.config}
-		_spec = sqlgraph.NewCreateSpec(instancename.Table, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(instancename.Table, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = inc.conflict
+	if id, ok := inc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := inc.mutation.Name(); ok {
 		_spec.SetField(instancename.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -167,7 +179,7 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 			Columns: []string{instancename.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -183,7 +195,7 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 			Columns: []string{instancename.BuildsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -199,7 +211,7 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 			Columns: []string{instancename.BlobsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -215,7 +227,7 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 			Columns: []string{instancename.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -275,17 +287,23 @@ type (
 	}
 )
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.InstanceName.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(instancename.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *InstanceNameUpsertOne) UpdateNewValues() *InstanceNameUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(instancename.FieldID)
+		}
 		if _, exists := u.create.mutation.Name(); exists {
 			s.SetIgnore(instancename.FieldName)
 		}
@@ -336,7 +354,7 @@ func (u *InstanceNameUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *InstanceNameUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *InstanceNameUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -345,7 +363,7 @@ func (u *InstanceNameUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *InstanceNameUpsertOne) IDX(ctx context.Context) int {
+func (u *InstanceNameUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -399,9 +417,9 @@ func (incb *InstanceNameCreateBulk) Save(ctx context.Context) ([]*InstanceName, 
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -489,12 +507,18 @@ type InstanceNameUpsertBulk struct {
 //	client.InstanceName.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(instancename.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *InstanceNameUpsertBulk) UpdateNewValues() *InstanceNameUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(instancename.FieldID)
+			}
 			if _, exists := b.mutation.Name(); exists {
 				s.SetIgnore(instancename.FieldName)
 			}

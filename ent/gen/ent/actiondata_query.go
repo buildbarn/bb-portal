@@ -109,8 +109,8 @@ func (adq *ActionDataQuery) FirstX(ctx context.Context) *ActionData {
 
 // FirstID returns the first ActionData ID from the query.
 // Returns a *NotFoundError when no ActionData ID was found.
-func (adq *ActionDataQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (adq *ActionDataQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = adq.Limit(1).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (adq *ActionDataQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (adq *ActionDataQuery) FirstIDX(ctx context.Context) int {
+func (adq *ActionDataQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := adq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (adq *ActionDataQuery) OnlyX(ctx context.Context) *ActionData {
 // OnlyID is like Only, but returns the only ActionData ID in the query.
 // Returns a *NotSingularError when more than one ActionData ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (adq *ActionDataQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (adq *ActionDataQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = adq.Limit(2).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (adq *ActionDataQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (adq *ActionDataQuery) OnlyIDX(ctx context.Context) int {
+func (adq *ActionDataQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := adq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (adq *ActionDataQuery) AllX(ctx context.Context) []*ActionData {
 }
 
 // IDs executes the query and returns a list of ActionData IDs.
-func (adq *ActionDataQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (adq *ActionDataQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if adq.ctx.Unique == nil && adq.path != nil {
 		adq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (adq *ActionDataQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (adq *ActionDataQuery) IDsX(ctx context.Context) []int {
+func (adq *ActionDataQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := adq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (adq *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (adq *ActionDataQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*ActionData, init func(*ActionData), assign func(*ActionData, *ActionSummary)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*ActionData)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ActionData)
 	for i := range nodes {
 		if nodes[i].action_summary_action_data == nil {
 			continue
@@ -466,7 +466,7 @@ func (adq *ActionDataQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (adq *ActionDataQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
 	_spec.From = adq.sql
 	if unique := adq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

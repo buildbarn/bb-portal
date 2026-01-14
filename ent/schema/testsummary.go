@@ -92,3 +92,10 @@ func (TestSummary) Indexes() []ent.Index {
 		index.Edges("test_collection"),
 	}
 }
+
+// Mixin of the TestSummary.
+func (TestSummary) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

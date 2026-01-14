@@ -136,8 +136,8 @@ func (bq *BuildQuery) FirstX(ctx context.Context) *Build {
 
 // FirstID returns the first Build ID from the query.
 // Returns a *NotFoundError when no Build ID was found.
-func (bq *BuildQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bq *BuildQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bq.Limit(1).IDs(setContextOp(ctx, bq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -149,7 +149,7 @@ func (bq *BuildQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (bq *BuildQuery) FirstIDX(ctx context.Context) int {
+func (bq *BuildQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := bq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -187,8 +187,8 @@ func (bq *BuildQuery) OnlyX(ctx context.Context) *Build {
 // OnlyID is like Only, but returns the only Build ID in the query.
 // Returns a *NotSingularError when more than one Build ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (bq *BuildQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bq *BuildQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bq.Limit(2).IDs(setContextOp(ctx, bq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -204,7 +204,7 @@ func (bq *BuildQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (bq *BuildQuery) OnlyIDX(ctx context.Context) int {
+func (bq *BuildQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := bq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -232,7 +232,7 @@ func (bq *BuildQuery) AllX(ctx context.Context) []*Build {
 }
 
 // IDs executes the query and returns a list of Build IDs.
-func (bq *BuildQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (bq *BuildQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if bq.ctx.Unique == nil && bq.path != nil {
 		bq.Unique(true)
 	}
@@ -244,7 +244,7 @@ func (bq *BuildQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (bq *BuildQuery) IDsX(ctx context.Context) []int {
+func (bq *BuildQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := bq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -481,8 +481,8 @@ func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build,
 }
 
 func (bq *BuildQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Build, init func(*Build), assign func(*Build, *InstanceName)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Build)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Build)
 	for i := range nodes {
 		if nodes[i].instance_name_builds == nil {
 			continue
@@ -514,7 +514,7 @@ func (bq *BuildQuery) loadInstanceName(ctx context.Context, query *InstanceNameQ
 }
 func (bq *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*Build, init func(*Build), assign func(*Build, *BazelInvocation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Build)
+	nodeids := make(map[int64]*Build)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -557,7 +557,7 @@ func (bq *BuildQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (bq *BuildQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64))
 	_spec.From = bq.sql
 	if unique := bq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

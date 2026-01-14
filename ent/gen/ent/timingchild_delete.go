@@ -40,7 +40,7 @@ func (tcd *TimingChildDelete) ExecX(ctx context.Context) int {
 }
 
 func (tcd *TimingChildDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(timingchild.Table, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(timingchild.Table, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt64))
 	if ps := tcd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

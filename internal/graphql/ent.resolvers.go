@@ -155,25 +155,25 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 }
 
 // FindBazelInvocations is the resolver for the findBazelInvocations field.
-func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error) {
+func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
 	return r.client.BazelInvocation.Query().Paginate(ctx, after, first, before, last, ent.WithBazelInvocationFilter(where.Filter), ent.WithBazelInvocationOrder(orderBy))
 }
 
 // FindBuilds is the resolver for the findBuilds field.
-func (r *queryResolver) FindBuilds(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error) {
+func (r *queryResolver) FindBuilds(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
 	return r.client.Build.Query().Paginate(ctx, after, first, before, last, ent.WithBuildFilter(where.Filter), ent.WithBuildOrder(orderBy))
 }
 
 // FindTargets is the resolver for the findTargets field.
-func (r *queryResolver) FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error) {
+func (r *queryResolver) FindTargets(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
 	return r.client.Target.Query().Paginate(ctx, after, first, before, last, ent.WithTargetFilter(where.Filter))
 }
 
 // FindTests is the resolver for the findTests field.
-func (r *queryResolver) FindTests(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error) {
+func (r *queryResolver) FindTests(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
 	return r.client.TestCollection.Query().Paginate(ctx, after, first, before, last, ent.WithTestCollectionFilter(where.Filter), ent.WithTestCollectionOrder(orderBy))
 }

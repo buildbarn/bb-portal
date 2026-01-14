@@ -40,7 +40,7 @@ func (ibld *IncompleteBuildLogDelete) ExecX(ctx context.Context) int {
 }
 
 func (ibld *IncompleteBuildLogDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(incompletebuildlog.Table, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(incompletebuildlog.Table, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
 	if ps := ibld.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

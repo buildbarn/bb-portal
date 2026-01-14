@@ -16,7 +16,7 @@ import (
 type ActionData struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Mnemonic holds the value of the "mnemonic" field.
 	Mnemonic string `json:"mnemonic,omitempty"`
 	// ActionsExecuted holds the value of the "actions_executed" field.
@@ -34,7 +34,7 @@ type ActionData struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionDataQuery when eager-loading is set.
 	Edges                      ActionDataEdges `json:"edges"`
-	action_summary_action_data *int
+	action_summary_action_data *int64
 	selectValues               sql.SelectValues
 }
 
@@ -91,7 +91,7 @@ func (ad *ActionData) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ad.ID = int(value.Int64)
+			ad.ID = int64(value.Int64)
 		case actiondata.FieldMnemonic:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mnemonic", values[i])
@@ -138,8 +138,8 @@ func (ad *ActionData) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_data", value)
 			} else if value.Valid {
-				ad.action_summary_action_data = new(int)
-				*ad.action_summary_action_data = int(value.Int64)
+				ad.action_summary_action_data = new(int64)
+				*ad.action_summary_action_data = int64(value.Int64)
 			}
 		default:
 			ad.selectValues.Set(columns[i], values[i])

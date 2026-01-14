@@ -78,7 +78,7 @@ func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err e
 	if err := iblu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
 	if ps := iblu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -171,7 +171,7 @@ func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *I
 	if err := ibluo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
 	id, ok := ibluo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "IncompleteBuildLog.id" for update`)}

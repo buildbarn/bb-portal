@@ -109,8 +109,8 @@ func (snsq *SystemNetworkStatsQuery) FirstX(ctx context.Context) *SystemNetworkS
 
 // FirstID returns the first SystemNetworkStats ID from the query.
 // Returns a *NotFoundError when no SystemNetworkStats ID was found.
-func (snsq *SystemNetworkStatsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (snsq *SystemNetworkStatsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = snsq.Limit(1).IDs(setContextOp(ctx, snsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (snsq *SystemNetworkStatsQuery) FirstID(ctx context.Context) (id int, err e
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) FirstIDX(ctx context.Context) int {
+func (snsq *SystemNetworkStatsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := snsq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (snsq *SystemNetworkStatsQuery) OnlyX(ctx context.Context) *SystemNetworkSt
 // OnlyID is like Only, but returns the only SystemNetworkStats ID in the query.
 // Returns a *NotSingularError when more than one SystemNetworkStats ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (snsq *SystemNetworkStatsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (snsq *SystemNetworkStatsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = snsq.Limit(2).IDs(setContextOp(ctx, snsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (snsq *SystemNetworkStatsQuery) OnlyID(ctx context.Context) (id int, err er
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) OnlyIDX(ctx context.Context) int {
+func (snsq *SystemNetworkStatsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := snsq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (snsq *SystemNetworkStatsQuery) AllX(ctx context.Context) []*SystemNetworkS
 }
 
 // IDs executes the query and returns a list of SystemNetworkStats IDs.
-func (snsq *SystemNetworkStatsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (snsq *SystemNetworkStatsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if snsq.ctx.Unique == nil && snsq.path != nil {
 		snsq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (snsq *SystemNetworkStatsQuery) IDs(ctx context.Context) (ids []int, err er
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) IDsX(ctx context.Context) []int {
+func (snsq *SystemNetworkStatsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := snsq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (snsq *SystemNetworkStatsQuery) sqlAll(ctx context.Context, hooks ...queryH
 }
 
 func (snsq *SystemNetworkStatsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMetricsQuery, nodes []*SystemNetworkStats, init func(*SystemNetworkStats), assign func(*SystemNetworkStats, *NetworkMetrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*SystemNetworkStats)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*SystemNetworkStats)
 	for i := range nodes {
 		if nodes[i].network_metrics_system_network_stats == nil {
 			continue
@@ -466,7 +466,7 @@ func (snsq *SystemNetworkStatsQuery) sqlCount(ctx context.Context) (int, error) 
 }
 
 func (snsq *SystemNetworkStatsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
 	_spec.From = snsq.sql
 	if unique := snsq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

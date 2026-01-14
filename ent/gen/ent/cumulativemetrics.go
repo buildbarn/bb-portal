@@ -16,7 +16,7 @@ import (
 type CumulativeMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// NumAnalyses holds the value of the "num_analyses" field.
 	NumAnalyses int32 `json:"num_analyses,omitempty"`
 	// NumBuilds holds the value of the "num_builds" field.
@@ -24,7 +24,7 @@ type CumulativeMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CumulativeMetricsQuery when eager-loading is set.
 	Edges                      CumulativeMetricsEdges `json:"edges"`
-	metrics_cumulative_metrics *int
+	metrics_cumulative_metrics *int64
 	selectValues               sql.SelectValues
 }
 
@@ -79,7 +79,7 @@ func (cm *CumulativeMetrics) assignValues(columns []string, values []any) error 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			cm.ID = int(value.Int64)
+			cm.ID = int64(value.Int64)
 		case cumulativemetrics.FieldNumAnalyses:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field num_analyses", values[i])
@@ -96,8 +96,8 @@ func (cm *CumulativeMetrics) assignValues(columns []string, values []any) error 
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_cumulative_metrics", value)
 			} else if value.Valid {
-				cm.metrics_cumulative_metrics = new(int)
-				*cm.metrics_cumulative_metrics = int(value.Int64)
+				cm.metrics_cumulative_metrics = new(int64)
+				*cm.metrics_cumulative_metrics = int64(value.Int64)
 			}
 		default:
 			cm.selectValues.Set(columns[i], values[i])

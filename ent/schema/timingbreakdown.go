@@ -49,3 +49,10 @@ func (TimingBreakdown) Indexes() []ent.Index {
 		index.Edges("execution_info"),
 	}
 }
+
+// Mixin of the TimingBreakdown.
+func (TimingBreakdown) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

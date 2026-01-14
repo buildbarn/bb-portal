@@ -109,8 +109,8 @@ func (tcq *TimingChildQuery) FirstX(ctx context.Context) *TimingChild {
 
 // FirstID returns the first TimingChild ID from the query.
 // Returns a *NotFoundError when no TimingChild ID was found.
-func (tcq *TimingChildQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tcq *TimingChildQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tcq.Limit(1).IDs(setContextOp(ctx, tcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (tcq *TimingChildQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tcq *TimingChildQuery) FirstIDX(ctx context.Context) int {
+func (tcq *TimingChildQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tcq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (tcq *TimingChildQuery) OnlyX(ctx context.Context) *TimingChild {
 // OnlyID is like Only, but returns the only TimingChild ID in the query.
 // Returns a *NotSingularError when more than one TimingChild ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tcq *TimingChildQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tcq *TimingChildQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tcq.Limit(2).IDs(setContextOp(ctx, tcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (tcq *TimingChildQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tcq *TimingChildQuery) OnlyIDX(ctx context.Context) int {
+func (tcq *TimingChildQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tcq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (tcq *TimingChildQuery) AllX(ctx context.Context) []*TimingChild {
 }
 
 // IDs executes the query and returns a list of TimingChild IDs.
-func (tcq *TimingChildQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tcq *TimingChildQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tcq.ctx.Unique == nil && tcq.path != nil {
 		tcq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (tcq *TimingChildQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tcq *TimingChildQuery) IDsX(ctx context.Context) []int {
+func (tcq *TimingChildQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tcq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (tcq *TimingChildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (tcq *TimingChildQuery) loadTimingBreakdown(ctx context.Context, query *TimingBreakdownQuery, nodes []*TimingChild, init func(*TimingChild), assign func(*TimingChild, *TimingBreakdown)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TimingChild)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TimingChild)
 	for i := range nodes {
 		if nodes[i].timing_breakdown_child == nil {
 			continue
@@ -466,7 +466,7 @@ func (tcq *TimingChildQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tcq *TimingChildQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt64))
 	_spec.From = tcq.sql
 	if unique := tcq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

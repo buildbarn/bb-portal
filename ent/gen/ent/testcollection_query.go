@@ -159,8 +159,8 @@ func (tcq *TestCollectionQuery) FirstX(ctx context.Context) *TestCollection {
 
 // FirstID returns the first TestCollection ID from the query.
 // Returns a *NotFoundError when no TestCollection ID was found.
-func (tcq *TestCollectionQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tcq *TestCollectionQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tcq.Limit(1).IDs(setContextOp(ctx, tcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -172,7 +172,7 @@ func (tcq *TestCollectionQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tcq *TestCollectionQuery) FirstIDX(ctx context.Context) int {
+func (tcq *TestCollectionQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tcq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -210,8 +210,8 @@ func (tcq *TestCollectionQuery) OnlyX(ctx context.Context) *TestCollection {
 // OnlyID is like Only, but returns the only TestCollection ID in the query.
 // Returns a *NotSingularError when more than one TestCollection ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tcq *TestCollectionQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tcq *TestCollectionQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tcq.Limit(2).IDs(setContextOp(ctx, tcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -227,7 +227,7 @@ func (tcq *TestCollectionQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tcq *TestCollectionQuery) OnlyIDX(ctx context.Context) int {
+func (tcq *TestCollectionQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tcq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -255,7 +255,7 @@ func (tcq *TestCollectionQuery) AllX(ctx context.Context) []*TestCollection {
 }
 
 // IDs executes the query and returns a list of TestCollection IDs.
-func (tcq *TestCollectionQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tcq *TestCollectionQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tcq.ctx.Unique == nil && tcq.path != nil {
 		tcq.Unique(true)
 	}
@@ -267,7 +267,7 @@ func (tcq *TestCollectionQuery) IDs(ctx context.Context) (ids []int, err error) 
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tcq *TestCollectionQuery) IDsX(ctx context.Context) []int {
+func (tcq *TestCollectionQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tcq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -517,8 +517,8 @@ func (tcq *TestCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (tcq *TestCollectionQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*TestCollection, init func(*TestCollection), assign func(*TestCollection, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TestCollection)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TestCollection)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_test_collection == nil {
 			continue
@@ -550,7 +550,7 @@ func (tcq *TestCollectionQuery) loadBazelInvocation(ctx context.Context, query *
 }
 func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *TestSummaryQuery, nodes []*TestCollection, init func(*TestCollection), assign func(*TestCollection, *TestSummary)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TestCollection)
+	nodeids := make(map[int64]*TestCollection)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -578,7 +578,7 @@ func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *Test
 }
 func (tcq *TestCollectionQuery) loadTestResults(ctx context.Context, query *TestResultBESQuery, nodes []*TestCollection, init func(*TestCollection), assign func(*TestCollection, *TestResultBES)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TestCollection)
+	nodeids := make(map[int64]*TestCollection)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -621,7 +621,7 @@ func (tcq *TestCollectionQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tcq *TestCollectionQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(testcollection.Table, testcollection.Columns, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(testcollection.Table, testcollection.Columns, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64))
 	_spec.From = tcq.sql
 	if unique := tcq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

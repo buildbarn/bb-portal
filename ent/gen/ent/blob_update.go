@@ -111,7 +111,7 @@ func (bu *BlobUpdate) ClearArchiveURL() *BlobUpdate {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (bu *BlobUpdate) SetInstanceNameID(id int) *BlobUpdate {
+func (bu *BlobUpdate) SetInstanceNameID(id int64) *BlobUpdate {
 	bu.mutation.SetInstanceNameID(id)
 	return bu
 }
@@ -182,7 +182,7 @@ func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := bu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(blob.Table, blob.Columns, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(blob.Table, blob.Columns, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64))
 	if ps := bu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -222,7 +222,7 @@ func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{blob.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -235,7 +235,7 @@ func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{blob.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -347,7 +347,7 @@ func (buo *BlobUpdateOne) ClearArchiveURL() *BlobUpdateOne {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (buo *BlobUpdateOne) SetInstanceNameID(id int) *BlobUpdateOne {
+func (buo *BlobUpdateOne) SetInstanceNameID(id int64) *BlobUpdateOne {
 	buo.mutation.SetInstanceNameID(id)
 	return buo
 }
@@ -431,7 +431,7 @@ func (buo *BlobUpdateOne) sqlSave(ctx context.Context) (_node *Blob, err error) 
 	if err := buo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(blob.Table, blob.Columns, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(blob.Table, blob.Columns, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64))
 	id, ok := buo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Blob.id" for update`)}
@@ -488,7 +488,7 @@ func (buo *BlobUpdateOne) sqlSave(ctx context.Context) (_node *Blob, err error) 
 			Columns: []string{blob.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -501,7 +501,7 @@ func (buo *BlobUpdateOne) sqlSave(ctx context.Context) (_node *Blob, err error) 
 			Columns: []string{blob.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

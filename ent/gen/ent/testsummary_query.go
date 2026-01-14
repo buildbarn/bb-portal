@@ -159,8 +159,8 @@ func (tsq *TestSummaryQuery) FirstX(ctx context.Context) *TestSummary {
 
 // FirstID returns the first TestSummary ID from the query.
 // Returns a *NotFoundError when no TestSummary ID was found.
-func (tsq *TestSummaryQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tsq *TestSummaryQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tsq.Limit(1).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -172,7 +172,7 @@ func (tsq *TestSummaryQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tsq *TestSummaryQuery) FirstIDX(ctx context.Context) int {
+func (tsq *TestSummaryQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tsq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -210,8 +210,8 @@ func (tsq *TestSummaryQuery) OnlyX(ctx context.Context) *TestSummary {
 // OnlyID is like Only, but returns the only TestSummary ID in the query.
 // Returns a *NotSingularError when more than one TestSummary ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tsq *TestSummaryQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tsq *TestSummaryQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tsq.Limit(2).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -227,7 +227,7 @@ func (tsq *TestSummaryQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tsq *TestSummaryQuery) OnlyIDX(ctx context.Context) int {
+func (tsq *TestSummaryQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tsq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -255,7 +255,7 @@ func (tsq *TestSummaryQuery) AllX(ctx context.Context) []*TestSummary {
 }
 
 // IDs executes the query and returns a list of TestSummary IDs.
-func (tsq *TestSummaryQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tsq *TestSummaryQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tsq.ctx.Unique == nil && tsq.path != nil {
 		tsq.Unique(true)
 	}
@@ -267,7 +267,7 @@ func (tsq *TestSummaryQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tsq *TestSummaryQuery) IDsX(ctx context.Context) []int {
+func (tsq *TestSummaryQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tsq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -525,8 +525,8 @@ func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (tsq *TestSummaryQuery) loadTestCollection(ctx context.Context, query *TestCollectionQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *TestCollection)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TestSummary)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TestSummary)
 	for i := range nodes {
 		if nodes[i].test_collection_test_summary == nil {
 			continue
@@ -558,7 +558,7 @@ func (tsq *TestSummaryQuery) loadTestCollection(ctx context.Context, query *Test
 }
 func (tsq *TestSummaryQuery) loadPassed(ctx context.Context, query *TestFileQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *TestFile)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TestSummary)
+	nodeids := make(map[int64]*TestSummary)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -589,7 +589,7 @@ func (tsq *TestSummaryQuery) loadPassed(ctx context.Context, query *TestFileQuer
 }
 func (tsq *TestSummaryQuery) loadFailed(ctx context.Context, query *TestFileQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *TestFile)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TestSummary)
+	nodeids := make(map[int64]*TestSummary)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -632,7 +632,7 @@ func (tsq *TestSummaryQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tsq *TestSummaryQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
 	_spec.From = tsq.sql
 	if unique := tsq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

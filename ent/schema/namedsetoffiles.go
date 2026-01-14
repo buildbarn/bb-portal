@@ -43,3 +43,10 @@ func (NamedSetOfFiles) Edges() []ent.Edge {
 // Payload of a message to describe a set of files, usually build artifacts, to
 // be referred to later by their name. In this way, files that occur identically
 // as outputs of several targets have to be named only once.
+
+// Mixin of the NamedSetOfFiles.
+func (NamedSetOfFiles) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

@@ -166,13 +166,13 @@ func (acsu *ActionCacheStatisticsUpdate) ClearMisses() *ActionCacheStatisticsUpd
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (acsu *ActionCacheStatisticsUpdate) SetActionSummaryID(id int) *ActionCacheStatisticsUpdate {
+func (acsu *ActionCacheStatisticsUpdate) SetActionSummaryID(id int64) *ActionCacheStatisticsUpdate {
 	acsu.mutation.SetActionSummaryID(id)
 	return acsu
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableActionSummaryID(id *int) *ActionCacheStatisticsUpdate {
+func (acsu *ActionCacheStatisticsUpdate) SetNillableActionSummaryID(id *int64) *ActionCacheStatisticsUpdate {
 	if id != nil {
 		acsu = acsu.SetActionSummaryID(*id)
 	}
@@ -185,14 +185,14 @@ func (acsu *ActionCacheStatisticsUpdate) SetActionSummary(a *ActionSummary) *Act
 }
 
 // AddMissDetailIDs adds the "miss_details" edge to the MissDetail entity by IDs.
-func (acsu *ActionCacheStatisticsUpdate) AddMissDetailIDs(ids ...int) *ActionCacheStatisticsUpdate {
+func (acsu *ActionCacheStatisticsUpdate) AddMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdate {
 	acsu.mutation.AddMissDetailIDs(ids...)
 	return acsu
 }
 
 // AddMissDetails adds the "miss_details" edges to the MissDetail entity.
 func (acsu *ActionCacheStatisticsUpdate) AddMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdate {
-	ids := make([]int, len(m))
+	ids := make([]int64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -217,14 +217,14 @@ func (acsu *ActionCacheStatisticsUpdate) ClearMissDetails() *ActionCacheStatisti
 }
 
 // RemoveMissDetailIDs removes the "miss_details" edge to MissDetail entities by IDs.
-func (acsu *ActionCacheStatisticsUpdate) RemoveMissDetailIDs(ids ...int) *ActionCacheStatisticsUpdate {
+func (acsu *ActionCacheStatisticsUpdate) RemoveMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdate {
 	acsu.mutation.RemoveMissDetailIDs(ids...)
 	return acsu
 }
 
 // RemoveMissDetails removes "miss_details" edges to MissDetail entities.
 func (acsu *ActionCacheStatisticsUpdate) RemoveMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdate {
-	ids := make([]int, len(m))
+	ids := make([]int64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -265,7 +265,7 @@ func (acsu *ActionCacheStatisticsUpdate) Modify(modifiers ...func(u *sql.UpdateB
 }
 
 func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
 	if ps := acsu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -326,7 +326,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 			Columns: []string{actioncachestatistics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -339,7 +339,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 			Columns: []string{actioncachestatistics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -355,7 +355,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 			Columns: []string{actioncachestatistics.MissDetailsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -368,7 +368,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 			Columns: []string{actioncachestatistics.MissDetailsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -384,7 +384,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 			Columns: []string{actioncachestatistics.MissDetailsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -550,13 +550,13 @@ func (acsuo *ActionCacheStatisticsUpdateOne) ClearMisses() *ActionCacheStatistic
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetActionSummaryID(id int) *ActionCacheStatisticsUpdateOne {
+func (acsuo *ActionCacheStatisticsUpdateOne) SetActionSummaryID(id int64) *ActionCacheStatisticsUpdateOne {
 	acsuo.mutation.SetActionSummaryID(id)
 	return acsuo
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableActionSummaryID(id *int) *ActionCacheStatisticsUpdateOne {
+func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableActionSummaryID(id *int64) *ActionCacheStatisticsUpdateOne {
 	if id != nil {
 		acsuo = acsuo.SetActionSummaryID(*id)
 	}
@@ -569,14 +569,14 @@ func (acsuo *ActionCacheStatisticsUpdateOne) SetActionSummary(a *ActionSummary) 
 }
 
 // AddMissDetailIDs adds the "miss_details" edge to the MissDetail entity by IDs.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddMissDetailIDs(ids ...int) *ActionCacheStatisticsUpdateOne {
+func (acsuo *ActionCacheStatisticsUpdateOne) AddMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdateOne {
 	acsuo.mutation.AddMissDetailIDs(ids...)
 	return acsuo
 }
 
 // AddMissDetails adds the "miss_details" edges to the MissDetail entity.
 func (acsuo *ActionCacheStatisticsUpdateOne) AddMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdateOne {
-	ids := make([]int, len(m))
+	ids := make([]int64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -601,14 +601,14 @@ func (acsuo *ActionCacheStatisticsUpdateOne) ClearMissDetails() *ActionCacheStat
 }
 
 // RemoveMissDetailIDs removes the "miss_details" edge to MissDetail entities by IDs.
-func (acsuo *ActionCacheStatisticsUpdateOne) RemoveMissDetailIDs(ids ...int) *ActionCacheStatisticsUpdateOne {
+func (acsuo *ActionCacheStatisticsUpdateOne) RemoveMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdateOne {
 	acsuo.mutation.RemoveMissDetailIDs(ids...)
 	return acsuo
 }
 
 // RemoveMissDetails removes "miss_details" edges to MissDetail entities.
 func (acsuo *ActionCacheStatisticsUpdateOne) RemoveMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdateOne {
-	ids := make([]int, len(m))
+	ids := make([]int64, len(m))
 	for i := range m {
 		ids[i] = m[i].ID
 	}
@@ -662,7 +662,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) Modify(modifiers ...func(u *sql.Upd
 }
 
 func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node *ActionCacheStatistics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
 	id, ok := acsuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ActionCacheStatistics.id" for update`)}
@@ -740,7 +740,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 			Columns: []string{actioncachestatistics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -753,7 +753,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 			Columns: []string{actioncachestatistics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -769,7 +769,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 			Columns: []string{actioncachestatistics.MissDetailsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -782,7 +782,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 			Columns: []string{actioncachestatistics.MissDetailsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -798,7 +798,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 			Columns: []string{actioncachestatistics.MissDetailsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

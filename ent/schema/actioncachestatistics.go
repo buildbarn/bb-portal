@@ -57,3 +57,10 @@ func (ActionCacheStatistics) Indexes() []ent.Index {
 		index.Edges("action_summary"),
 	}
 }
+
+// Mixin of the ActionCacheStatistics.
+func (ActionCacheStatistics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

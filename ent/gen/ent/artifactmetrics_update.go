@@ -246,13 +246,13 @@ func (amu *ArtifactMetricsUpdate) ClearTopLevelArtifactsCount() *ArtifactMetrics
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amu *ArtifactMetricsUpdate) SetMetricsID(id int) *ArtifactMetricsUpdate {
+func (amu *ArtifactMetricsUpdate) SetMetricsID(id int64) *ArtifactMetricsUpdate {
 	amu.mutation.SetMetricsID(id)
 	return amu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableMetricsID(id *int) *ArtifactMetricsUpdate {
+func (amu *ArtifactMetricsUpdate) SetNillableMetricsID(id *int64) *ArtifactMetricsUpdate {
 	if id != nil {
 		amu = amu.SetMetricsID(*id)
 	}
@@ -309,7 +309,7 @@ func (amu *ArtifactMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)
 }
 
 func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	if ps := amu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -397,7 +397,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -410,7 +410,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -657,13 +657,13 @@ func (amuo *ArtifactMetricsUpdateOne) ClearTopLevelArtifactsCount() *ArtifactMet
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amuo *ArtifactMetricsUpdateOne) SetMetricsID(id int) *ArtifactMetricsUpdateOne {
+func (amuo *ArtifactMetricsUpdateOne) SetMetricsID(id int64) *ArtifactMetricsUpdateOne {
 	amuo.mutation.SetMetricsID(id)
 	return amuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableMetricsID(id *int) *ArtifactMetricsUpdateOne {
+func (amuo *ArtifactMetricsUpdateOne) SetNillableMetricsID(id *int64) *ArtifactMetricsUpdateOne {
 	if id != nil {
 		amuo = amuo.SetMetricsID(*id)
 	}
@@ -733,7 +733,7 @@ func (amuo *ArtifactMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuil
 }
 
 func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *ArtifactMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	id, ok := amuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ArtifactMetrics.id" for update`)}
@@ -838,7 +838,7 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -851,7 +851,7 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

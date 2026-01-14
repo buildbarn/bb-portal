@@ -40,7 +40,7 @@ func (amd *ArtifactMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (amd *ArtifactMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(artifactmetrics.Table, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(artifactmetrics.Table, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	if ps := amd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

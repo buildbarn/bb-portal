@@ -40,7 +40,7 @@ func (mdd *MissDetailDelete) ExecX(ctx context.Context) int {
 }
 
 func (mdd *MissDetailDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(missdetail.Table, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(missdetail.Table, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	if ps := mdd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

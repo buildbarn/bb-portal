@@ -232,13 +232,13 @@ func (trbu *TestResultBESUpdate) ClearTestAttemptDuration() *TestResultBESUpdate
 }
 
 // SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (trbu *TestResultBESUpdate) SetTestCollectionID(id int) *TestResultBESUpdate {
+func (trbu *TestResultBESUpdate) SetTestCollectionID(id int64) *TestResultBESUpdate {
 	trbu.mutation.SetTestCollectionID(id)
 	return trbu
 }
 
 // SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (trbu *TestResultBESUpdate) SetNillableTestCollectionID(id *int) *TestResultBESUpdate {
+func (trbu *TestResultBESUpdate) SetNillableTestCollectionID(id *int64) *TestResultBESUpdate {
 	if id != nil {
 		trbu = trbu.SetTestCollectionID(*id)
 	}
@@ -251,14 +251,14 @@ func (trbu *TestResultBESUpdate) SetTestCollection(t *TestCollection) *TestResul
 }
 
 // AddTestActionOutputIDs adds the "test_action_output" edge to the TestFile entity by IDs.
-func (trbu *TestResultBESUpdate) AddTestActionOutputIDs(ids ...int) *TestResultBESUpdate {
+func (trbu *TestResultBESUpdate) AddTestActionOutputIDs(ids ...int64) *TestResultBESUpdate {
 	trbu.mutation.AddTestActionOutputIDs(ids...)
 	return trbu
 }
 
 // AddTestActionOutput adds the "test_action_output" edges to the TestFile entity.
 func (trbu *TestResultBESUpdate) AddTestActionOutput(t ...*TestFile) *TestResultBESUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -266,13 +266,13 @@ func (trbu *TestResultBESUpdate) AddTestActionOutput(t ...*TestFile) *TestResult
 }
 
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (trbu *TestResultBESUpdate) SetExecutionInfoID(id int) *TestResultBESUpdate {
+func (trbu *TestResultBESUpdate) SetExecutionInfoID(id int64) *TestResultBESUpdate {
 	trbu.mutation.SetExecutionInfoID(id)
 	return trbu
 }
 
 // SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (trbu *TestResultBESUpdate) SetNillableExecutionInfoID(id *int) *TestResultBESUpdate {
+func (trbu *TestResultBESUpdate) SetNillableExecutionInfoID(id *int64) *TestResultBESUpdate {
 	if id != nil {
 		trbu = trbu.SetExecutionInfoID(*id)
 	}
@@ -302,14 +302,14 @@ func (trbu *TestResultBESUpdate) ClearTestActionOutput() *TestResultBESUpdate {
 }
 
 // RemoveTestActionOutputIDs removes the "test_action_output" edge to TestFile entities by IDs.
-func (trbu *TestResultBESUpdate) RemoveTestActionOutputIDs(ids ...int) *TestResultBESUpdate {
+func (trbu *TestResultBESUpdate) RemoveTestActionOutputIDs(ids ...int64) *TestResultBESUpdate {
 	trbu.mutation.RemoveTestActionOutputIDs(ids...)
 	return trbu
 }
 
 // RemoveTestActionOutput removes "test_action_output" edges to TestFile entities.
 func (trbu *TestResultBESUpdate) RemoveTestActionOutput(t ...*TestFile) *TestResultBESUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -369,7 +369,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if err := trbu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(testresultbes.Table, testresultbes.Columns, sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testresultbes.Table, testresultbes.Columns, sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64))
 	if ps := trbu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -453,7 +453,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testresultbes.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -466,7 +466,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testresultbes.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -482,7 +482,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -495,7 +495,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -511,7 +511,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -527,7 +527,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testresultbes.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -540,7 +540,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testresultbes.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -770,13 +770,13 @@ func (trbuo *TestResultBESUpdateOne) ClearTestAttemptDuration() *TestResultBESUp
 }
 
 // SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (trbuo *TestResultBESUpdateOne) SetTestCollectionID(id int) *TestResultBESUpdateOne {
+func (trbuo *TestResultBESUpdateOne) SetTestCollectionID(id int64) *TestResultBESUpdateOne {
 	trbuo.mutation.SetTestCollectionID(id)
 	return trbuo
 }
 
 // SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (trbuo *TestResultBESUpdateOne) SetNillableTestCollectionID(id *int) *TestResultBESUpdateOne {
+func (trbuo *TestResultBESUpdateOne) SetNillableTestCollectionID(id *int64) *TestResultBESUpdateOne {
 	if id != nil {
 		trbuo = trbuo.SetTestCollectionID(*id)
 	}
@@ -789,14 +789,14 @@ func (trbuo *TestResultBESUpdateOne) SetTestCollection(t *TestCollection) *TestR
 }
 
 // AddTestActionOutputIDs adds the "test_action_output" edge to the TestFile entity by IDs.
-func (trbuo *TestResultBESUpdateOne) AddTestActionOutputIDs(ids ...int) *TestResultBESUpdateOne {
+func (trbuo *TestResultBESUpdateOne) AddTestActionOutputIDs(ids ...int64) *TestResultBESUpdateOne {
 	trbuo.mutation.AddTestActionOutputIDs(ids...)
 	return trbuo
 }
 
 // AddTestActionOutput adds the "test_action_output" edges to the TestFile entity.
 func (trbuo *TestResultBESUpdateOne) AddTestActionOutput(t ...*TestFile) *TestResultBESUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -804,13 +804,13 @@ func (trbuo *TestResultBESUpdateOne) AddTestActionOutput(t ...*TestFile) *TestRe
 }
 
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (trbuo *TestResultBESUpdateOne) SetExecutionInfoID(id int) *TestResultBESUpdateOne {
+func (trbuo *TestResultBESUpdateOne) SetExecutionInfoID(id int64) *TestResultBESUpdateOne {
 	trbuo.mutation.SetExecutionInfoID(id)
 	return trbuo
 }
 
 // SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (trbuo *TestResultBESUpdateOne) SetNillableExecutionInfoID(id *int) *TestResultBESUpdateOne {
+func (trbuo *TestResultBESUpdateOne) SetNillableExecutionInfoID(id *int64) *TestResultBESUpdateOne {
 	if id != nil {
 		trbuo = trbuo.SetExecutionInfoID(*id)
 	}
@@ -840,14 +840,14 @@ func (trbuo *TestResultBESUpdateOne) ClearTestActionOutput() *TestResultBESUpdat
 }
 
 // RemoveTestActionOutputIDs removes the "test_action_output" edge to TestFile entities by IDs.
-func (trbuo *TestResultBESUpdateOne) RemoveTestActionOutputIDs(ids ...int) *TestResultBESUpdateOne {
+func (trbuo *TestResultBESUpdateOne) RemoveTestActionOutputIDs(ids ...int64) *TestResultBESUpdateOne {
 	trbuo.mutation.RemoveTestActionOutputIDs(ids...)
 	return trbuo
 }
 
 // RemoveTestActionOutput removes "test_action_output" edges to TestFile entities.
 func (trbuo *TestResultBESUpdateOne) RemoveTestActionOutput(t ...*TestFile) *TestResultBESUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -920,7 +920,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 	if err := trbuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(testresultbes.Table, testresultbes.Columns, sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testresultbes.Table, testresultbes.Columns, sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64))
 	id, ok := trbuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TestResultBES.id" for update`)}
@@ -1021,7 +1021,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 			Columns: []string{testresultbes.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1034,7 +1034,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 			Columns: []string{testresultbes.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1050,7 +1050,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1063,7 +1063,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1079,7 +1079,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1095,7 +1095,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 			Columns: []string{testresultbes.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1108,7 +1108,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 			Columns: []string{testresultbes.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

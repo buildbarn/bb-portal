@@ -43,8 +43,14 @@ func (bc *BuildCreate) SetTimestamp(t time.Time) *BuildCreate {
 	return bc
 }
 
+// SetID sets the "id" field.
+func (bc *BuildCreate) SetID(i int64) *BuildCreate {
+	bc.mutation.SetID(i)
+	return bc
+}
+
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (bc *BuildCreate) SetInstanceNameID(id int) *BuildCreate {
+func (bc *BuildCreate) SetInstanceNameID(id int64) *BuildCreate {
 	bc.mutation.SetInstanceNameID(id)
 	return bc
 }
@@ -55,14 +61,14 @@ func (bc *BuildCreate) SetInstanceName(i *InstanceName) *BuildCreate {
 }
 
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by IDs.
-func (bc *BuildCreate) AddInvocationIDs(ids ...int) *BuildCreate {
+func (bc *BuildCreate) AddInvocationIDs(ids ...int64) *BuildCreate {
 	bc.mutation.AddInvocationIDs(ids...)
 	return bc
 }
 
 // AddInvocations adds the "invocations" edges to the BazelInvocation entity.
 func (bc *BuildCreate) AddInvocations(b ...*BazelInvocation) *BuildCreate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -129,8 +135,10 @@ func (bc *BuildCreate) sqlSave(ctx context.Context) (*Build, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	bc.mutation.id = &_node.ID
 	bc.mutation.done = true
 	return _node, nil
@@ -139,9 +147,13 @@ func (bc *BuildCreate) sqlSave(ctx context.Context) (*Build, error) {
 func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Build{config: bc.config}
-		_spec = sqlgraph.NewCreateSpec(build.Table, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(build.Table, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = bc.conflict
+	if id, ok := bc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := bc.mutation.BuildURL(); ok {
 		_spec.SetField(build.FieldBuildURL, field.TypeString, value)
 		_node.BuildURL = value
@@ -162,7 +174,7 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 			Columns: []string{build.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -179,7 +191,7 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 			Columns: []string{build.InvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -251,17 +263,23 @@ func (u *BuildUpsert) UpdateTimestamp() *BuildUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Build.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(build.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BuildUpsertOne) UpdateNewValues() *BuildUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(build.FieldID)
+		}
 		if _, exists := u.create.mutation.BuildURL(); exists {
 			s.SetIgnore(build.FieldBuildURL)
 		}
@@ -329,7 +347,7 @@ func (u *BuildUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *BuildUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *BuildUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -338,7 +356,7 @@ func (u *BuildUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *BuildUpsertOne) IDX(ctx context.Context) int {
+func (u *BuildUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -392,9 +410,9 @@ func (bcb *BuildCreateBulk) Save(ctx context.Context) ([]*Build, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -482,12 +500,18 @@ type BuildUpsertBulk struct {
 //	client.Build.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(build.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BuildUpsertBulk) UpdateNewValues() *BuildUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(build.FieldID)
+			}
 			if _, exists := b.mutation.BuildURL(); exists {
 				s.SetIgnore(build.FieldBuildURL)
 			}

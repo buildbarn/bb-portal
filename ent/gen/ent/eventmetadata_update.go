@@ -120,7 +120,7 @@ func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	if err := emu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
 	if ps := emu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -266,7 +266,7 @@ func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMe
 	if err := emuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
 	id, ok := emuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "EventMetadata.id" for update`)}

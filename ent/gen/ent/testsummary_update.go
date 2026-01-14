@@ -287,13 +287,13 @@ func (tsu *TestSummaryUpdate) ClearLabel() *TestSummaryUpdate {
 }
 
 // SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsu *TestSummaryUpdate) SetTestCollectionID(id int) *TestSummaryUpdate {
+func (tsu *TestSummaryUpdate) SetTestCollectionID(id int64) *TestSummaryUpdate {
 	tsu.mutation.SetTestCollectionID(id)
 	return tsu
 }
 
 // SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableTestCollectionID(id *int) *TestSummaryUpdate {
+func (tsu *TestSummaryUpdate) SetNillableTestCollectionID(id *int64) *TestSummaryUpdate {
 	if id != nil {
 		tsu = tsu.SetTestCollectionID(*id)
 	}
@@ -306,14 +306,14 @@ func (tsu *TestSummaryUpdate) SetTestCollection(t *TestCollection) *TestSummaryU
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
-func (tsu *TestSummaryUpdate) AddPassedIDs(ids ...int) *TestSummaryUpdate {
+func (tsu *TestSummaryUpdate) AddPassedIDs(ids ...int64) *TestSummaryUpdate {
 	tsu.mutation.AddPassedIDs(ids...)
 	return tsu
 }
 
 // AddPassed adds the "passed" edges to the TestFile entity.
 func (tsu *TestSummaryUpdate) AddPassed(t ...*TestFile) *TestSummaryUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -321,14 +321,14 @@ func (tsu *TestSummaryUpdate) AddPassed(t ...*TestFile) *TestSummaryUpdate {
 }
 
 // AddFailedIDs adds the "failed" edge to the TestFile entity by IDs.
-func (tsu *TestSummaryUpdate) AddFailedIDs(ids ...int) *TestSummaryUpdate {
+func (tsu *TestSummaryUpdate) AddFailedIDs(ids ...int64) *TestSummaryUpdate {
 	tsu.mutation.AddFailedIDs(ids...)
 	return tsu
 }
 
 // AddFailed adds the "failed" edges to the TestFile entity.
 func (tsu *TestSummaryUpdate) AddFailed(t ...*TestFile) *TestSummaryUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -353,14 +353,14 @@ func (tsu *TestSummaryUpdate) ClearPassed() *TestSummaryUpdate {
 }
 
 // RemovePassedIDs removes the "passed" edge to TestFile entities by IDs.
-func (tsu *TestSummaryUpdate) RemovePassedIDs(ids ...int) *TestSummaryUpdate {
+func (tsu *TestSummaryUpdate) RemovePassedIDs(ids ...int64) *TestSummaryUpdate {
 	tsu.mutation.RemovePassedIDs(ids...)
 	return tsu
 }
 
 // RemovePassed removes "passed" edges to TestFile entities.
 func (tsu *TestSummaryUpdate) RemovePassed(t ...*TestFile) *TestSummaryUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -374,14 +374,14 @@ func (tsu *TestSummaryUpdate) ClearFailed() *TestSummaryUpdate {
 }
 
 // RemoveFailedIDs removes the "failed" edge to TestFile entities by IDs.
-func (tsu *TestSummaryUpdate) RemoveFailedIDs(ids ...int) *TestSummaryUpdate {
+func (tsu *TestSummaryUpdate) RemoveFailedIDs(ids ...int64) *TestSummaryUpdate {
 	tsu.mutation.RemoveFailedIDs(ids...)
 	return tsu
 }
 
 // RemoveFailed removes "failed" edges to TestFile entities.
 func (tsu *TestSummaryUpdate) RemoveFailed(t ...*TestFile) *TestSummaryUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -435,7 +435,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := tsu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
 	if ps := tsu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -535,7 +535,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -548,7 +548,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -564,7 +564,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.PassedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -577,7 +577,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.PassedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -593,7 +593,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.PassedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -609,7 +609,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.FailedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -622,7 +622,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.FailedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -638,7 +638,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testsummary.FailedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -925,13 +925,13 @@ func (tsuo *TestSummaryUpdateOne) ClearLabel() *TestSummaryUpdateOne {
 }
 
 // SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsuo *TestSummaryUpdateOne) SetTestCollectionID(id int) *TestSummaryUpdateOne {
+func (tsuo *TestSummaryUpdateOne) SetTestCollectionID(id int64) *TestSummaryUpdateOne {
 	tsuo.mutation.SetTestCollectionID(id)
 	return tsuo
 }
 
 // SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableTestCollectionID(id *int) *TestSummaryUpdateOne {
+func (tsuo *TestSummaryUpdateOne) SetNillableTestCollectionID(id *int64) *TestSummaryUpdateOne {
 	if id != nil {
 		tsuo = tsuo.SetTestCollectionID(*id)
 	}
@@ -944,14 +944,14 @@ func (tsuo *TestSummaryUpdateOne) SetTestCollection(t *TestCollection) *TestSumm
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
-func (tsuo *TestSummaryUpdateOne) AddPassedIDs(ids ...int) *TestSummaryUpdateOne {
+func (tsuo *TestSummaryUpdateOne) AddPassedIDs(ids ...int64) *TestSummaryUpdateOne {
 	tsuo.mutation.AddPassedIDs(ids...)
 	return tsuo
 }
 
 // AddPassed adds the "passed" edges to the TestFile entity.
 func (tsuo *TestSummaryUpdateOne) AddPassed(t ...*TestFile) *TestSummaryUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -959,14 +959,14 @@ func (tsuo *TestSummaryUpdateOne) AddPassed(t ...*TestFile) *TestSummaryUpdateOn
 }
 
 // AddFailedIDs adds the "failed" edge to the TestFile entity by IDs.
-func (tsuo *TestSummaryUpdateOne) AddFailedIDs(ids ...int) *TestSummaryUpdateOne {
+func (tsuo *TestSummaryUpdateOne) AddFailedIDs(ids ...int64) *TestSummaryUpdateOne {
 	tsuo.mutation.AddFailedIDs(ids...)
 	return tsuo
 }
 
 // AddFailed adds the "failed" edges to the TestFile entity.
 func (tsuo *TestSummaryUpdateOne) AddFailed(t ...*TestFile) *TestSummaryUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -991,14 +991,14 @@ func (tsuo *TestSummaryUpdateOne) ClearPassed() *TestSummaryUpdateOne {
 }
 
 // RemovePassedIDs removes the "passed" edge to TestFile entities by IDs.
-func (tsuo *TestSummaryUpdateOne) RemovePassedIDs(ids ...int) *TestSummaryUpdateOne {
+func (tsuo *TestSummaryUpdateOne) RemovePassedIDs(ids ...int64) *TestSummaryUpdateOne {
 	tsuo.mutation.RemovePassedIDs(ids...)
 	return tsuo
 }
 
 // RemovePassed removes "passed" edges to TestFile entities.
 func (tsuo *TestSummaryUpdateOne) RemovePassed(t ...*TestFile) *TestSummaryUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -1012,14 +1012,14 @@ func (tsuo *TestSummaryUpdateOne) ClearFailed() *TestSummaryUpdateOne {
 }
 
 // RemoveFailedIDs removes the "failed" edge to TestFile entities by IDs.
-func (tsuo *TestSummaryUpdateOne) RemoveFailedIDs(ids ...int) *TestSummaryUpdateOne {
+func (tsuo *TestSummaryUpdateOne) RemoveFailedIDs(ids ...int64) *TestSummaryUpdateOne {
 	tsuo.mutation.RemoveFailedIDs(ids...)
 	return tsuo
 }
 
 // RemoveFailed removes "failed" edges to TestFile entities.
 func (tsuo *TestSummaryUpdateOne) RemoveFailed(t ...*TestFile) *TestSummaryUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -1086,7 +1086,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 	if err := tsuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
 	id, ok := tsuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TestSummary.id" for update`)}
@@ -1203,7 +1203,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1216,7 +1216,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1232,7 +1232,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.PassedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1245,7 +1245,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.PassedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1261,7 +1261,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.PassedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1277,7 +1277,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.FailedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1290,7 +1290,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.FailedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1306,7 +1306,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Columns: []string{testsummary.FailedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

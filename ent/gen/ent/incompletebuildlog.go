@@ -16,13 +16,13 @@ import (
 type IncompleteBuildLog struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// SnippetID holds the value of the "snippet_id" field.
 	SnippetID int32 `json:"snippet_id,omitempty"`
 	// LogSnippet holds the value of the "log_snippet" field.
 	LogSnippet []byte `json:"log_snippet,omitempty"`
 	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
-	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
+	BazelInvocationID int64 `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the IncompleteBuildLogQuery when eager-loading is set.
 	Edges        IncompleteBuildLogEdges `json:"edges"`
@@ -80,7 +80,7 @@ func (ibl *IncompleteBuildLog) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ibl.ID = int(value.Int64)
+			ibl.ID = int64(value.Int64)
 		case incompletebuildlog.FieldSnippetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field snippet_id", values[i])
@@ -97,7 +97,7 @@ func (ibl *IncompleteBuildLog) assignValues(columns []string, values []any) erro
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				ibl.BazelInvocationID = int(value.Int64)
+				ibl.BazelInvocationID = value.Int64
 			}
 		default:
 			ibl.selectValues.Set(columns[i], values[i])

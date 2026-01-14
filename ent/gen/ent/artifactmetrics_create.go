@@ -134,14 +134,20 @@ func (amc *ArtifactMetricsCreate) SetNillableTopLevelArtifactsCount(i *int32) *A
 	return amc
 }
 
+// SetID sets the "id" field.
+func (amc *ArtifactMetricsCreate) SetID(i int64) *ArtifactMetricsCreate {
+	amc.mutation.SetID(i)
+	return amc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amc *ArtifactMetricsCreate) SetMetricsID(id int) *ArtifactMetricsCreate {
+func (amc *ArtifactMetricsCreate) SetMetricsID(id int64) *ArtifactMetricsCreate {
 	amc.mutation.SetMetricsID(id)
 	return amc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableMetricsID(id *int) *ArtifactMetricsCreate {
+func (amc *ArtifactMetricsCreate) SetNillableMetricsID(id *int64) *ArtifactMetricsCreate {
 	if id != nil {
 		amc = amc.SetMetricsID(*id)
 	}
@@ -201,8 +207,10 @@ func (amc *ArtifactMetricsCreate) sqlSave(ctx context.Context) (*ArtifactMetrics
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	amc.mutation.id = &_node.ID
 	amc.mutation.done = true
 	return _node, nil
@@ -211,9 +219,13 @@ func (amc *ArtifactMetricsCreate) sqlSave(ctx context.Context) (*ArtifactMetrics
 func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ArtifactMetrics{config: amc.config}
-		_spec = sqlgraph.NewCreateSpec(artifactmetrics.Table, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(artifactmetrics.Table, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = amc.conflict
+	if id, ok := amc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := amc.mutation.SourceArtifactsReadSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64, value)
 		_node.SourceArtifactsReadSizeInBytes = value
@@ -254,7 +266,7 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -507,16 +519,24 @@ func (u *ArtifactMetricsUpsert) ClearTopLevelArtifactsCount() *ArtifactMetricsUp
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.ArtifactMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(artifactmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ArtifactMetricsUpsertOne) UpdateNewValues() *ArtifactMetricsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(artifactmetrics.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -787,7 +807,7 @@ func (u *ArtifactMetricsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ArtifactMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *ArtifactMetricsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -796,7 +816,7 @@ func (u *ArtifactMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ArtifactMetricsUpsertOne) IDX(ctx context.Context) int {
+func (u *ArtifactMetricsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -850,9 +870,9 @@ func (amcb *ArtifactMetricsCreateBulk) Save(ctx context.Context) ([]*ArtifactMet
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -940,10 +960,20 @@ type ArtifactMetricsUpsertBulk struct {
 //	client.ArtifactMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(artifactmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ArtifactMetricsUpsertBulk) UpdateNewValues() *ArtifactMetricsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(artifactmetrics.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

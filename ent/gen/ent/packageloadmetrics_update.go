@@ -185,13 +185,13 @@ func (plmu *PackageLoadMetricsUpdate) ClearPackageOverhead() *PackageLoadMetrics
 }
 
 // SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (plmu *PackageLoadMetricsUpdate) SetPackageMetricsID(id int) *PackageLoadMetricsUpdate {
+func (plmu *PackageLoadMetricsUpdate) SetPackageMetricsID(id int64) *PackageLoadMetricsUpdate {
 	plmu.mutation.SetPackageMetricsID(id)
 	return plmu
 }
 
 // SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (plmu *PackageLoadMetricsUpdate) SetNillablePackageMetricsID(id *int) *PackageLoadMetricsUpdate {
+func (plmu *PackageLoadMetricsUpdate) SetNillablePackageMetricsID(id *int64) *PackageLoadMetricsUpdate {
 	if id != nil {
 		plmu = plmu.SetPackageMetricsID(*id)
 	}
@@ -248,7 +248,7 @@ func (plmu *PackageLoadMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuil
 }
 
 func (plmu *PackageLoadMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64))
 	if ps := plmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -315,7 +315,7 @@ func (plmu *PackageLoadMetricsUpdate) sqlSave(ctx context.Context) (n int, err e
 			Columns: []string{packageloadmetrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -328,7 +328,7 @@ func (plmu *PackageLoadMetricsUpdate) sqlSave(ctx context.Context) (n int, err e
 			Columns: []string{packageloadmetrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -514,13 +514,13 @@ func (plmuo *PackageLoadMetricsUpdateOne) ClearPackageOverhead() *PackageLoadMet
 }
 
 // SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (plmuo *PackageLoadMetricsUpdateOne) SetPackageMetricsID(id int) *PackageLoadMetricsUpdateOne {
+func (plmuo *PackageLoadMetricsUpdateOne) SetPackageMetricsID(id int64) *PackageLoadMetricsUpdateOne {
 	plmuo.mutation.SetPackageMetricsID(id)
 	return plmuo
 }
 
 // SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (plmuo *PackageLoadMetricsUpdateOne) SetNillablePackageMetricsID(id *int) *PackageLoadMetricsUpdateOne {
+func (plmuo *PackageLoadMetricsUpdateOne) SetNillablePackageMetricsID(id *int64) *PackageLoadMetricsUpdateOne {
 	if id != nil {
 		plmuo = plmuo.SetPackageMetricsID(*id)
 	}
@@ -590,7 +590,7 @@ func (plmuo *PackageLoadMetricsUpdateOne) Modify(modifiers ...func(u *sql.Update
 }
 
 func (plmuo *PackageLoadMetricsUpdateOne) sqlSave(ctx context.Context) (_node *PackageLoadMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64))
 	id, ok := plmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "PackageLoadMetrics.id" for update`)}
@@ -674,7 +674,7 @@ func (plmuo *PackageLoadMetricsUpdateOne) sqlSave(ctx context.Context) (_node *P
 			Columns: []string{packageloadmetrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -687,7 +687,7 @@ func (plmuo *PackageLoadMetricsUpdateOne) sqlSave(ctx context.Context) (_node *P
 			Columns: []string{packageloadmetrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

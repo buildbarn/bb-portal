@@ -16,7 +16,7 @@ import (
 type SystemNetworkStats struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// BytesSent holds the value of the "bytes_sent" field.
 	BytesSent uint64 `json:"bytes_sent,omitempty"`
 	// BytesRecv holds the value of the "bytes_recv" field.
@@ -36,7 +36,7 @@ type SystemNetworkStats struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SystemNetworkStatsQuery when eager-loading is set.
 	Edges                                SystemNetworkStatsEdges `json:"edges"`
-	network_metrics_system_network_stats *int
+	network_metrics_system_network_stats *int64
 	selectValues                         sql.SelectValues
 }
 
@@ -91,7 +91,7 @@ func (sns *SystemNetworkStats) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			sns.ID = int(value.Int64)
+			sns.ID = int64(value.Int64)
 		case systemnetworkstats.FieldBytesSent:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bytes_sent", values[i])
@@ -144,8 +144,8 @@ func (sns *SystemNetworkStats) assignValues(columns []string, values []any) erro
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field network_metrics_system_network_stats", value)
 			} else if value.Valid {
-				sns.network_metrics_system_network_stats = new(int)
-				*sns.network_metrics_system_network_stats = int(value.Int64)
+				sns.network_metrics_system_network_stats = new(int64)
+				*sns.network_metrics_system_network_stats = int64(value.Int64)
 			}
 		default:
 			sns.selectValues.Set(columns[i], values[i])

@@ -40,7 +40,7 @@ func (cmd *ConnectionMetadataDelete) ExecX(ctx context.Context) int {
 }
 
 func (cmd *ConnectionMetadataDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(connectionmetadata.Table, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(connectionmetadata.Table, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
 	if ps := cmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

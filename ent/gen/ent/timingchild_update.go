@@ -70,13 +70,13 @@ func (tcu *TimingChildUpdate) ClearTime() *TimingChildUpdate {
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
-func (tcu *TimingChildUpdate) SetTimingBreakdownID(id int) *TimingChildUpdate {
+func (tcu *TimingChildUpdate) SetTimingBreakdownID(id int64) *TimingChildUpdate {
 	tcu.mutation.SetTimingBreakdownID(id)
 	return tcu
 }
 
 // SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
-func (tcu *TimingChildUpdate) SetNillableTimingBreakdownID(id *int) *TimingChildUpdate {
+func (tcu *TimingChildUpdate) SetNillableTimingBreakdownID(id *int64) *TimingChildUpdate {
 	if id != nil {
 		tcu = tcu.SetTimingBreakdownID(*id)
 	}
@@ -133,7 +133,7 @@ func (tcu *TimingChildUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *T
 }
 
 func (tcu *TimingChildUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt64))
 	if ps := tcu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -161,7 +161,7 @@ func (tcu *TimingChildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -174,7 +174,7 @@ func (tcu *TimingChildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -245,13 +245,13 @@ func (tcuo *TimingChildUpdateOne) ClearTime() *TimingChildUpdateOne {
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
-func (tcuo *TimingChildUpdateOne) SetTimingBreakdownID(id int) *TimingChildUpdateOne {
+func (tcuo *TimingChildUpdateOne) SetTimingBreakdownID(id int64) *TimingChildUpdateOne {
 	tcuo.mutation.SetTimingBreakdownID(id)
 	return tcuo
 }
 
 // SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
-func (tcuo *TimingChildUpdateOne) SetNillableTimingBreakdownID(id *int) *TimingChildUpdateOne {
+func (tcuo *TimingChildUpdateOne) SetNillableTimingBreakdownID(id *int64) *TimingChildUpdateOne {
 	if id != nil {
 		tcuo = tcuo.SetTimingBreakdownID(*id)
 	}
@@ -321,7 +321,7 @@ func (tcuo *TimingChildUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)
 }
 
 func (tcuo *TimingChildUpdateOne) sqlSave(ctx context.Context) (_node *TimingChild, err error) {
-	_spec := sqlgraph.NewUpdateSpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt64))
 	id, ok := tcuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TimingChild.id" for update`)}
@@ -366,7 +366,7 @@ func (tcuo *TimingChildUpdateOne) sqlSave(ctx context.Context) (_node *TimingChi
 			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -379,7 +379,7 @@ func (tcuo *TimingChildUpdateOne) sqlSave(ctx context.Context) (_node *TimingChi
 			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

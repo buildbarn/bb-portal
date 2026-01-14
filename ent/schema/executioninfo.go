@@ -65,3 +65,10 @@ func (ExectionInfo) Indexes() []ent.Index {
 		index.Edges("test_result"),
 	}
 }
+
+// Mixin of the ExectionInfo.
+func (ExectionInfo) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

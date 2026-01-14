@@ -40,7 +40,7 @@ func (bipd *BazelInvocationProblemDelete) ExecX(ctx context.Context) int {
 }
 
 func (bipd *BazelInvocationProblemDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(bazelinvocationproblem.Table, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(bazelinvocationproblem.Table, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64))
 	if ps := bipd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

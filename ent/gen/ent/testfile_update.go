@@ -136,13 +136,13 @@ func (tfu *TestFileUpdate) ClearPrefix() *TestFileUpdate {
 }
 
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (tfu *TestFileUpdate) SetTestResultID(id int) *TestFileUpdate {
+func (tfu *TestFileUpdate) SetTestResultID(id int64) *TestFileUpdate {
 	tfu.mutation.SetTestResultID(id)
 	return tfu
 }
 
 // SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (tfu *TestFileUpdate) SetNillableTestResultID(id *int) *TestFileUpdate {
+func (tfu *TestFileUpdate) SetNillableTestResultID(id *int64) *TestFileUpdate {
 	if id != nil {
 		tfu = tfu.SetTestResultID(*id)
 	}
@@ -199,7 +199,7 @@ func (tfu *TestFileUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Test
 }
 
 func (tfu *TestFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64))
 	if ps := tfu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -253,7 +253,7 @@ func (tfu *TestFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -266,7 +266,7 @@ func (tfu *TestFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -402,13 +402,13 @@ func (tfuo *TestFileUpdateOne) ClearPrefix() *TestFileUpdateOne {
 }
 
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (tfuo *TestFileUpdateOne) SetTestResultID(id int) *TestFileUpdateOne {
+func (tfuo *TestFileUpdateOne) SetTestResultID(id int64) *TestFileUpdateOne {
 	tfuo.mutation.SetTestResultID(id)
 	return tfuo
 }
 
 // SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (tfuo *TestFileUpdateOne) SetNillableTestResultID(id *int) *TestFileUpdateOne {
+func (tfuo *TestFileUpdateOne) SetNillableTestResultID(id *int64) *TestFileUpdateOne {
 	if id != nil {
 		tfuo = tfuo.SetTestResultID(*id)
 	}
@@ -478,7 +478,7 @@ func (tfuo *TestFileUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *
 }
 
 func (tfuo *TestFileUpdateOne) sqlSave(ctx context.Context) (_node *TestFile, err error) {
-	_spec := sqlgraph.NewUpdateSpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64))
 	id, ok := tfuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TestFile.id" for update`)}
@@ -549,7 +549,7 @@ func (tfuo *TestFileUpdateOne) sqlSave(ctx context.Context) (_node *TestFile, er
 			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -562,7 +562,7 @@ func (tfuo *TestFileUpdateOne) sqlSave(ctx context.Context) (_node *TestFile, er
 			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -185,8 +185,8 @@ func (inq *InstanceNameQuery) FirstX(ctx context.Context) *InstanceName {
 
 // FirstID returns the first InstanceName ID from the query.
 // Returns a *NotFoundError when no InstanceName ID was found.
-func (inq *InstanceNameQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (inq *InstanceNameQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = inq.Limit(1).IDs(setContextOp(ctx, inq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -198,7 +198,7 @@ func (inq *InstanceNameQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (inq *InstanceNameQuery) FirstIDX(ctx context.Context) int {
+func (inq *InstanceNameQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := inq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -236,8 +236,8 @@ func (inq *InstanceNameQuery) OnlyX(ctx context.Context) *InstanceName {
 // OnlyID is like Only, but returns the only InstanceName ID in the query.
 // Returns a *NotSingularError when more than one InstanceName ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (inq *InstanceNameQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (inq *InstanceNameQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = inq.Limit(2).IDs(setContextOp(ctx, inq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -253,7 +253,7 @@ func (inq *InstanceNameQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (inq *InstanceNameQuery) OnlyIDX(ctx context.Context) int {
+func (inq *InstanceNameQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := inq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -281,7 +281,7 @@ func (inq *InstanceNameQuery) AllX(ctx context.Context) []*InstanceName {
 }
 
 // IDs executes the query and returns a list of InstanceName IDs.
-func (inq *InstanceNameQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (inq *InstanceNameQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if inq.ctx.Unique == nil && inq.path != nil {
 		inq.Unique(true)
 	}
@@ -293,7 +293,7 @@ func (inq *InstanceNameQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (inq *InstanceNameQuery) IDsX(ctx context.Context) []int {
+func (inq *InstanceNameQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := inq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -582,7 +582,7 @@ func (inq *InstanceNameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 
 func (inq *InstanceNameQuery) loadBazelInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *BazelInvocation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*InstanceName)
+	nodeids := make(map[int64]*InstanceName)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -613,7 +613,7 @@ func (inq *InstanceNameQuery) loadBazelInvocations(ctx context.Context, query *B
 }
 func (inq *InstanceNameQuery) loadBuilds(ctx context.Context, query *BuildQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Build)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*InstanceName)
+	nodeids := make(map[int64]*InstanceName)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -644,7 +644,7 @@ func (inq *InstanceNameQuery) loadBuilds(ctx context.Context, query *BuildQuery,
 }
 func (inq *InstanceNameQuery) loadBlobs(ctx context.Context, query *BlobQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Blob)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*InstanceName)
+	nodeids := make(map[int64]*InstanceName)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -675,7 +675,7 @@ func (inq *InstanceNameQuery) loadBlobs(ctx context.Context, query *BlobQuery, n
 }
 func (inq *InstanceNameQuery) loadTargets(ctx context.Context, query *TargetQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Target)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*InstanceName)
+	nodeids := make(map[int64]*InstanceName)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -718,7 +718,7 @@ func (inq *InstanceNameQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (inq *InstanceNameQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(instancename.Table, instancename.Columns, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(instancename.Table, instancename.Columns, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
 	_spec.From = inq.sql
 	if unique := inq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

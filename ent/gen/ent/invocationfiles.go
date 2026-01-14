@@ -16,7 +16,7 @@ import (
 type InvocationFiles struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Content holds the value of the "content" field.
@@ -30,7 +30,7 @@ type InvocationFiles struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the InvocationFilesQuery when eager-loading is set.
 	Edges                             InvocationFilesEdges `json:"edges"`
-	bazel_invocation_invocation_files *int
+	bazel_invocation_invocation_files *int64
 	selectValues                      sql.SelectValues
 }
 
@@ -87,7 +87,7 @@ func (_if *InvocationFiles) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			_if.ID = int(value.Int64)
+			_if.ID = int64(value.Int64)
 		case invocationfiles.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -122,8 +122,8 @@ func (_if *InvocationFiles) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_invocation_files", value)
 			} else if value.Valid {
-				_if.bazel_invocation_invocation_files = new(int)
-				*_if.bazel_invocation_invocation_files = int(value.Int64)
+				_if.bazel_invocation_invocation_files = new(int64)
+				*_if.bazel_invocation_invocation_files = int64(value.Int64)
 			}
 		default:
 			_if.selectValues.Set(columns[i], values[i])

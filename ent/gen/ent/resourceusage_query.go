@@ -109,8 +109,8 @@ func (ruq *ResourceUsageQuery) FirstX(ctx context.Context) *ResourceUsage {
 
 // FirstID returns the first ResourceUsage ID from the query.
 // Returns a *NotFoundError when no ResourceUsage ID was found.
-func (ruq *ResourceUsageQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ruq *ResourceUsageQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = ruq.Limit(1).IDs(setContextOp(ctx, ruq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (ruq *ResourceUsageQuery) FirstID(ctx context.Context) (id int, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ruq *ResourceUsageQuery) FirstIDX(ctx context.Context) int {
+func (ruq *ResourceUsageQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := ruq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (ruq *ResourceUsageQuery) OnlyX(ctx context.Context) *ResourceUsage {
 // OnlyID is like Only, but returns the only ResourceUsage ID in the query.
 // Returns a *NotSingularError when more than one ResourceUsage ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ruq *ResourceUsageQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ruq *ResourceUsageQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = ruq.Limit(2).IDs(setContextOp(ctx, ruq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (ruq *ResourceUsageQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ruq *ResourceUsageQuery) OnlyIDX(ctx context.Context) int {
+func (ruq *ResourceUsageQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := ruq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (ruq *ResourceUsageQuery) AllX(ctx context.Context) []*ResourceUsage {
 }
 
 // IDs executes the query and returns a list of ResourceUsage IDs.
-func (ruq *ResourceUsageQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (ruq *ResourceUsageQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if ruq.ctx.Unique == nil && ruq.path != nil {
 		ruq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (ruq *ResourceUsageQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ruq *ResourceUsageQuery) IDsX(ctx context.Context) []int {
+func (ruq *ResourceUsageQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := ruq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (ruq *ResourceUsageQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (ruq *ResourceUsageQuery) loadExecutionInfo(ctx context.Context, query *ExectionInfoQuery, nodes []*ResourceUsage, init func(*ResourceUsage), assign func(*ResourceUsage, *ExectionInfo)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*ResourceUsage)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ResourceUsage)
 	for i := range nodes {
 		if nodes[i].exection_info_resource_usage == nil {
 			continue
@@ -466,7 +466,7 @@ func (ruq *ResourceUsageQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (ruq *ResourceUsageQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64))
 	_spec.From = ruq.sql
 	if unique := ruq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

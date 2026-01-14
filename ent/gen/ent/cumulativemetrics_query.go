@@ -109,8 +109,8 @@ func (cmq *CumulativeMetricsQuery) FirstX(ctx context.Context) *CumulativeMetric
 
 // FirstID returns the first CumulativeMetrics ID from the query.
 // Returns a *NotFoundError when no CumulativeMetrics ID was found.
-func (cmq *CumulativeMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cmq *CumulativeMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = cmq.Limit(1).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (cmq *CumulativeMetricsQuery) FirstID(ctx context.Context) (id int, err err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (cmq *CumulativeMetricsQuery) FirstIDX(ctx context.Context) int {
+func (cmq *CumulativeMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := cmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (cmq *CumulativeMetricsQuery) OnlyX(ctx context.Context) *CumulativeMetrics
 // OnlyID is like Only, but returns the only CumulativeMetrics ID in the query.
 // Returns a *NotSingularError when more than one CumulativeMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (cmq *CumulativeMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cmq *CumulativeMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = cmq.Limit(2).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (cmq *CumulativeMetricsQuery) OnlyID(ctx context.Context) (id int, err erro
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (cmq *CumulativeMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (cmq *CumulativeMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := cmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (cmq *CumulativeMetricsQuery) AllX(ctx context.Context) []*CumulativeMetric
 }
 
 // IDs executes the query and returns a list of CumulativeMetrics IDs.
-func (cmq *CumulativeMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (cmq *CumulativeMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if cmq.ctx.Unique == nil && cmq.path != nil {
 		cmq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (cmq *CumulativeMetricsQuery) IDs(ctx context.Context) (ids []int, err erro
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (cmq *CumulativeMetricsQuery) IDsX(ctx context.Context) []int {
+func (cmq *CumulativeMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := cmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (cmq *CumulativeMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 }
 
 func (cmq *CumulativeMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*CumulativeMetrics, init func(*CumulativeMetrics), assign func(*CumulativeMetrics, *Metrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*CumulativeMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*CumulativeMetrics)
 	for i := range nodes {
 		if nodes[i].metrics_cumulative_metrics == nil {
 			continue
@@ -466,7 +466,7 @@ func (cmq *CumulativeMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (cmq *CumulativeMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64))
 	_spec.From = cmq.sql
 	if unique := cmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -39,13 +39,13 @@ func (mu *MetricsUpdate) Where(ps ...predicate.Metrics) *MetricsUpdate {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (mu *MetricsUpdate) SetBazelInvocationID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetBazelInvocationID(id int64) *MetricsUpdate {
 	mu.mutation.SetBazelInvocationID(id)
 	return mu
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableBazelInvocationID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableBazelInvocationID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetBazelInvocationID(*id)
 	}
@@ -58,13 +58,13 @@ func (mu *MetricsUpdate) SetBazelInvocation(b *BazelInvocation) *MetricsUpdate {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (mu *MetricsUpdate) SetActionSummaryID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetActionSummaryID(id int64) *MetricsUpdate {
 	mu.mutation.SetActionSummaryID(id)
 	return mu
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableActionSummaryID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableActionSummaryID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetActionSummaryID(*id)
 	}
@@ -77,13 +77,13 @@ func (mu *MetricsUpdate) SetActionSummary(a *ActionSummary) *MetricsUpdate {
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (mu *MetricsUpdate) SetMemoryMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetMemoryMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetMemoryMetricsID(id)
 	return mu
 }
 
 // SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableMemoryMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableMemoryMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetMemoryMetricsID(*id)
 	}
@@ -96,13 +96,13 @@ func (mu *MetricsUpdate) SetMemoryMetrics(m *MemoryMetrics) *MetricsUpdate {
 }
 
 // SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID.
-func (mu *MetricsUpdate) SetTargetMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetTargetMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetTargetMetricsID(id)
 	return mu
 }
 
 // SetNillableTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableTargetMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableTargetMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetTargetMetricsID(*id)
 	}
@@ -115,13 +115,13 @@ func (mu *MetricsUpdate) SetTargetMetrics(t *TargetMetrics) *MetricsUpdate {
 }
 
 // SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (mu *MetricsUpdate) SetPackageMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetPackageMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetPackageMetricsID(id)
 	return mu
 }
 
 // SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillablePackageMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillablePackageMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetPackageMetricsID(*id)
 	}
@@ -134,13 +134,13 @@ func (mu *MetricsUpdate) SetPackageMetrics(p *PackageMetrics) *MetricsUpdate {
 }
 
 // SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID.
-func (mu *MetricsUpdate) SetTimingMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetTimingMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetTimingMetricsID(id)
 	return mu
 }
 
 // SetNillableTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableTimingMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableTimingMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetTimingMetricsID(*id)
 	}
@@ -153,13 +153,13 @@ func (mu *MetricsUpdate) SetTimingMetrics(t *TimingMetrics) *MetricsUpdate {
 }
 
 // SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
-func (mu *MetricsUpdate) SetCumulativeMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetCumulativeMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetCumulativeMetricsID(id)
 	return mu
 }
 
 // SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableCumulativeMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableCumulativeMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetCumulativeMetricsID(*id)
 	}
@@ -172,13 +172,13 @@ func (mu *MetricsUpdate) SetCumulativeMetrics(c *CumulativeMetrics) *MetricsUpda
 }
 
 // SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
-func (mu *MetricsUpdate) SetArtifactMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetArtifactMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetArtifactMetricsID(id)
 	return mu
 }
 
 // SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableArtifactMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableArtifactMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetArtifactMetricsID(*id)
 	}
@@ -191,13 +191,13 @@ func (mu *MetricsUpdate) SetArtifactMetrics(a *ArtifactMetrics) *MetricsUpdate {
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (mu *MetricsUpdate) SetNetworkMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNetworkMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetNetworkMetricsID(id)
 	return mu
 }
 
 // SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableNetworkMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableNetworkMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetNetworkMetricsID(*id)
 	}
@@ -210,13 +210,13 @@ func (mu *MetricsUpdate) SetNetworkMetrics(n *NetworkMetrics) *MetricsUpdate {
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (mu *MetricsUpdate) SetBuildGraphMetricsID(id int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetBuildGraphMetricsID(id int64) *MetricsUpdate {
 	mu.mutation.SetBuildGraphMetricsID(id)
 	return mu
 }
 
 // SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableBuildGraphMetricsID(id *int) *MetricsUpdate {
+func (mu *MetricsUpdate) SetNillableBuildGraphMetricsID(id *int64) *MetricsUpdate {
 	if id != nil {
 		mu = mu.SetBuildGraphMetricsID(*id)
 	}
@@ -327,7 +327,7 @@ func (mu *MetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Metric
 }
 
 func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(metrics.Table, metrics.Columns, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(metrics.Table, metrics.Columns, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64))
 	if ps := mu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -343,7 +343,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -356,7 +356,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -372,7 +372,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -385,7 +385,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -401,7 +401,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -414,7 +414,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -430,7 +430,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -443,7 +443,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -459,7 +459,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -472,7 +472,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -488,7 +488,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -501,7 +501,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -517,7 +517,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -530,7 +530,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -546,7 +546,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -559,7 +559,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -575,7 +575,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -588,7 +588,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -604,7 +604,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -617,7 +617,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -648,13 +648,13 @@ type MetricsUpdateOne struct {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (muo *MetricsUpdateOne) SetBazelInvocationID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetBazelInvocationID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetBazelInvocationID(id)
 	return muo
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableBazelInvocationID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableBazelInvocationID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetBazelInvocationID(*id)
 	}
@@ -667,13 +667,13 @@ func (muo *MetricsUpdateOne) SetBazelInvocation(b *BazelInvocation) *MetricsUpda
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (muo *MetricsUpdateOne) SetActionSummaryID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetActionSummaryID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetActionSummaryID(id)
 	return muo
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableActionSummaryID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableActionSummaryID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetActionSummaryID(*id)
 	}
@@ -686,13 +686,13 @@ func (muo *MetricsUpdateOne) SetActionSummary(a *ActionSummary) *MetricsUpdateOn
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetMemoryMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetMemoryMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetMemoryMetricsID(id)
 	return muo
 }
 
 // SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableMemoryMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableMemoryMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetMemoryMetricsID(*id)
 	}
@@ -705,13 +705,13 @@ func (muo *MetricsUpdateOne) SetMemoryMetrics(m *MemoryMetrics) *MetricsUpdateOn
 }
 
 // SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetTargetMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetTargetMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetTargetMetricsID(id)
 	return muo
 }
 
 // SetNillableTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableTargetMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableTargetMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetTargetMetricsID(*id)
 	}
@@ -724,13 +724,13 @@ func (muo *MetricsUpdateOne) SetTargetMetrics(t *TargetMetrics) *MetricsUpdateOn
 }
 
 // SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetPackageMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetPackageMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetPackageMetricsID(id)
 	return muo
 }
 
 // SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillablePackageMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillablePackageMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetPackageMetricsID(*id)
 	}
@@ -743,13 +743,13 @@ func (muo *MetricsUpdateOne) SetPackageMetrics(p *PackageMetrics) *MetricsUpdate
 }
 
 // SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetTimingMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetTimingMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetTimingMetricsID(id)
 	return muo
 }
 
 // SetNillableTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableTimingMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableTimingMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetTimingMetricsID(*id)
 	}
@@ -762,13 +762,13 @@ func (muo *MetricsUpdateOne) SetTimingMetrics(t *TimingMetrics) *MetricsUpdateOn
 }
 
 // SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetCumulativeMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetCumulativeMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetCumulativeMetricsID(id)
 	return muo
 }
 
 // SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableCumulativeMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableCumulativeMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetCumulativeMetricsID(*id)
 	}
@@ -781,13 +781,13 @@ func (muo *MetricsUpdateOne) SetCumulativeMetrics(c *CumulativeMetrics) *Metrics
 }
 
 // SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetArtifactMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetArtifactMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetArtifactMetricsID(id)
 	return muo
 }
 
 // SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableArtifactMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableArtifactMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetArtifactMetricsID(*id)
 	}
@@ -800,13 +800,13 @@ func (muo *MetricsUpdateOne) SetArtifactMetrics(a *ArtifactMetrics) *MetricsUpda
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetNetworkMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNetworkMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetNetworkMetricsID(id)
 	return muo
 }
 
 // SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableNetworkMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableNetworkMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetNetworkMetricsID(*id)
 	}
@@ -819,13 +819,13 @@ func (muo *MetricsUpdateOne) SetNetworkMetrics(n *NetworkMetrics) *MetricsUpdate
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (muo *MetricsUpdateOne) SetBuildGraphMetricsID(id int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetBuildGraphMetricsID(id int64) *MetricsUpdateOne {
 	muo.mutation.SetBuildGraphMetricsID(id)
 	return muo
 }
 
 // SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableBuildGraphMetricsID(id *int) *MetricsUpdateOne {
+func (muo *MetricsUpdateOne) SetNillableBuildGraphMetricsID(id *int64) *MetricsUpdateOne {
 	if id != nil {
 		muo = muo.SetBuildGraphMetricsID(*id)
 	}
@@ -949,7 +949,7 @@ func (muo *MetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Me
 }
 
 func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(metrics.Table, metrics.Columns, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(metrics.Table, metrics.Columns, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64))
 	id, ok := muo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Metrics.id" for update`)}
@@ -982,7 +982,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -995,7 +995,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1011,7 +1011,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1024,7 +1024,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1040,7 +1040,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1053,7 +1053,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1069,7 +1069,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1082,7 +1082,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1098,7 +1098,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1111,7 +1111,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1127,7 +1127,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1140,7 +1140,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1156,7 +1156,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1169,7 +1169,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1185,7 +1185,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1198,7 +1198,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1214,7 +1214,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1227,7 +1227,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1243,7 +1243,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1256,7 +1256,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

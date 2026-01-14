@@ -33,3 +33,10 @@ func (Blob) Edges() []ent.Edge {
 			Required(),
 	}
 }
+
+// Mixin of the Blob.
+func (Blob) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

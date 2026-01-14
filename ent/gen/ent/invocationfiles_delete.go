@@ -40,7 +40,7 @@ func (ifd *InvocationFilesDelete) ExecX(ctx context.Context) int {
 }
 
 func (ifd *InvocationFilesDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(invocationfiles.Table, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(invocationfiles.Table, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	if ps := ifd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

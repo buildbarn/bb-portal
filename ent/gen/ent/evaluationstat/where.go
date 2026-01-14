@@ -9,47 +9,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.EvaluationStat {
+func ID(id int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.EvaluationStat {
+func IDEQ(id int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.EvaluationStat {
+func IDNEQ(id int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.EvaluationStat {
+func IDIn(ids ...int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.EvaluationStat {
+func IDNotIn(ids ...int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.EvaluationStat {
+func IDGT(id int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.EvaluationStat {
+func IDGTE(id int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.EvaluationStat {
+func IDLT(id int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.EvaluationStat {
+func IDLTE(id int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldLTE(FieldID, id))
 }
 

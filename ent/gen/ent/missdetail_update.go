@@ -71,13 +71,13 @@ func (mdu *MissDetailUpdate) ClearCount() *MissDetailUpdate {
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mdu *MissDetailUpdate) SetActionCacheStatisticsID(id int) *MissDetailUpdate {
+func (mdu *MissDetailUpdate) SetActionCacheStatisticsID(id int64) *MissDetailUpdate {
 	mdu.mutation.SetActionCacheStatisticsID(id)
 	return mdu
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mdu *MissDetailUpdate) SetNillableActionCacheStatisticsID(id *int) *MissDetailUpdate {
+func (mdu *MissDetailUpdate) SetNillableActionCacheStatisticsID(id *int64) *MissDetailUpdate {
 	if id != nil {
 		mdu = mdu.SetActionCacheStatisticsID(*id)
 	}
@@ -134,7 +134,7 @@ func (mdu *MissDetailUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Mi
 }
 
 func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	if ps := mdu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -162,7 +162,7 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -175,7 +175,7 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -247,13 +247,13 @@ func (mduo *MissDetailUpdateOne) ClearCount() *MissDetailUpdateOne {
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mduo *MissDetailUpdateOne) SetActionCacheStatisticsID(id int) *MissDetailUpdateOne {
+func (mduo *MissDetailUpdateOne) SetActionCacheStatisticsID(id int64) *MissDetailUpdateOne {
 	mduo.mutation.SetActionCacheStatisticsID(id)
 	return mduo
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mduo *MissDetailUpdateOne) SetNillableActionCacheStatisticsID(id *int) *MissDetailUpdateOne {
+func (mduo *MissDetailUpdateOne) SetNillableActionCacheStatisticsID(id *int64) *MissDetailUpdateOne {
 	if id != nil {
 		mduo = mduo.SetActionCacheStatisticsID(*id)
 	}
@@ -323,7 +323,7 @@ func (mduo *MissDetailUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder))
 }
 
 func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, err error) {
-	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	id, ok := mduo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "MissDetail.id" for update`)}
@@ -368,7 +368,7 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -381,7 +381,7 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

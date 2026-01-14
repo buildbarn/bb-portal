@@ -16,7 +16,7 @@ import (
 type Target struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Label holds the value of the "label" field.
 	Label string `json:"label,omitempty"`
 	// Aspect holds the value of the "aspect" field.
@@ -26,7 +26,7 @@ type Target struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetQuery when eager-loading is set.
 	Edges                 TargetEdges `json:"edges"`
-	instance_name_targets *int
+	instance_name_targets *int64
 	selectValues          sql.SelectValues
 }
 
@@ -108,7 +108,7 @@ func (t *Target) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			t.ID = int(value.Int64)
+			t.ID = int64(value.Int64)
 		case target.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
@@ -131,8 +131,8 @@ func (t *Target) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_targets", value)
 			} else if value.Valid {
-				t.instance_name_targets = new(int)
-				*t.instance_name_targets = int(value.Int64)
+				t.instance_name_targets = new(int64)
+				*t.instance_name_targets = int64(value.Int64)
 			}
 		default:
 			t.selectValues.Set(columns[i], values[i])

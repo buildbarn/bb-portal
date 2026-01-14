@@ -51,14 +51,20 @@ func (tbc *TimingBreakdownCreate) SetNillableTime(s *string) *TimingBreakdownCre
 	return tbc
 }
 
+// SetID sets the "id" field.
+func (tbc *TimingBreakdownCreate) SetID(i int64) *TimingBreakdownCreate {
+	tbc.mutation.SetID(i)
+	return tbc
+}
+
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (tbc *TimingBreakdownCreate) SetExecutionInfoID(id int) *TimingBreakdownCreate {
+func (tbc *TimingBreakdownCreate) SetExecutionInfoID(id int64) *TimingBreakdownCreate {
 	tbc.mutation.SetExecutionInfoID(id)
 	return tbc
 }
 
 // SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (tbc *TimingBreakdownCreate) SetNillableExecutionInfoID(id *int) *TimingBreakdownCreate {
+func (tbc *TimingBreakdownCreate) SetNillableExecutionInfoID(id *int64) *TimingBreakdownCreate {
 	if id != nil {
 		tbc = tbc.SetExecutionInfoID(*id)
 	}
@@ -71,14 +77,14 @@ func (tbc *TimingBreakdownCreate) SetExecutionInfo(e *ExectionInfo) *TimingBreak
 }
 
 // AddChildIDs adds the "child" edge to the TimingChild entity by IDs.
-func (tbc *TimingBreakdownCreate) AddChildIDs(ids ...int) *TimingBreakdownCreate {
+func (tbc *TimingBreakdownCreate) AddChildIDs(ids ...int64) *TimingBreakdownCreate {
 	tbc.mutation.AddChildIDs(ids...)
 	return tbc
 }
 
 // AddChild adds the "child" edges to the TimingChild entity.
 func (tbc *TimingBreakdownCreate) AddChild(t ...*TimingChild) *TimingBreakdownCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -133,8 +139,10 @@ func (tbc *TimingBreakdownCreate) sqlSave(ctx context.Context) (*TimingBreakdown
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tbc.mutation.id = &_node.ID
 	tbc.mutation.done = true
 	return _node, nil
@@ -143,9 +151,13 @@ func (tbc *TimingBreakdownCreate) sqlSave(ctx context.Context) (*TimingBreakdown
 func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TimingBreakdown{config: tbc.config}
-		_spec = sqlgraph.NewCreateSpec(timingbreakdown.Table, sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(timingbreakdown.Table, sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tbc.conflict
+	if id, ok := tbc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tbc.mutation.Name(); ok {
 		_spec.SetField(timingbreakdown.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -162,7 +174,7 @@ func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.Crea
 			Columns: []string{timingbreakdown.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -179,7 +191,7 @@ func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.Crea
 			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -275,16 +287,24 @@ func (u *TimingBreakdownUpsert) ClearTime() *TimingBreakdownUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.TimingBreakdown.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(timingbreakdown.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TimingBreakdownUpsertOne) UpdateNewValues() *TimingBreakdownUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(timingbreakdown.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -373,7 +393,7 @@ func (u *TimingBreakdownUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TimingBreakdownUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TimingBreakdownUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -382,7 +402,7 @@ func (u *TimingBreakdownUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TimingBreakdownUpsertOne) IDX(ctx context.Context) int {
+func (u *TimingBreakdownUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -436,9 +456,9 @@ func (tbcb *TimingBreakdownCreateBulk) Save(ctx context.Context) ([]*TimingBreak
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -526,10 +546,20 @@ type TimingBreakdownUpsertBulk struct {
 //	client.TimingBreakdown.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(timingbreakdown.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TimingBreakdownUpsertBulk) UpdateNewValues() *TimingBreakdownUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(timingbreakdown.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

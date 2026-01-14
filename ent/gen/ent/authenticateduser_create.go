@@ -55,15 +55,21 @@ func (auc *AuthenticatedUserCreate) SetUserInfo(m map[string]interface{}) *Authe
 	return auc
 }
 
+// SetID sets the "id" field.
+func (auc *AuthenticatedUserCreate) SetID(i int64) *AuthenticatedUserCreate {
+	auc.mutation.SetID(i)
+	return auc
+}
+
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (auc *AuthenticatedUserCreate) AddBazelInvocationIDs(ids ...int) *AuthenticatedUserCreate {
+func (auc *AuthenticatedUserCreate) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserCreate {
 	auc.mutation.AddBazelInvocationIDs(ids...)
 	return auc
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
 func (auc *AuthenticatedUserCreate) AddBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserCreate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -124,8 +130,10 @@ func (auc *AuthenticatedUserCreate) sqlSave(ctx context.Context) (*Authenticated
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	auc.mutation.id = &_node.ID
 	auc.mutation.done = true
 	return _node, nil
@@ -134,9 +142,13 @@ func (auc *AuthenticatedUserCreate) sqlSave(ctx context.Context) (*Authenticated
 func (auc *AuthenticatedUserCreate) createSpec() (*AuthenticatedUser, *sqlgraph.CreateSpec) {
 	var (
 		_node = &AuthenticatedUser{config: auc.config}
-		_spec = sqlgraph.NewCreateSpec(authenticateduser.Table, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(authenticateduser.Table, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = auc.conflict
+	if id, ok := auc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := auc.mutation.UserUUID(); ok {
 		_spec.SetField(authenticateduser.FieldUserUUID, field.TypeUUID, value)
 		_node.UserUUID = value
@@ -161,7 +173,7 @@ func (auc *AuthenticatedUserCreate) createSpec() (*AuthenticatedUser, *sqlgraph.
 			Columns: []string{authenticateduser.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -257,17 +269,23 @@ func (u *AuthenticatedUserUpsert) ClearUserInfo() *AuthenticatedUserUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.AuthenticatedUser.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(authenticateduser.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AuthenticatedUserUpsertOne) UpdateNewValues() *AuthenticatedUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(authenticateduser.FieldID)
+		}
 		if _, exists := u.create.mutation.UserUUID(); exists {
 			s.SetIgnore(authenticateduser.FieldUserUUID)
 		}
@@ -363,7 +381,7 @@ func (u *AuthenticatedUserUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AuthenticatedUserUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *AuthenticatedUserUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -372,7 +390,7 @@ func (u *AuthenticatedUserUpsertOne) ID(ctx context.Context) (id int, err error)
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AuthenticatedUserUpsertOne) IDX(ctx context.Context) int {
+func (u *AuthenticatedUserUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -426,9 +444,9 @@ func (aucb *AuthenticatedUserCreateBulk) Save(ctx context.Context) ([]*Authentic
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -516,12 +534,18 @@ type AuthenticatedUserUpsertBulk struct {
 //	client.AuthenticatedUser.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(authenticateduser.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AuthenticatedUserUpsertBulk) UpdateNewValues() *AuthenticatedUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(authenticateduser.FieldID)
+			}
 			if _, exists := b.mutation.UserUUID(); exists {
 				s.SetIgnore(authenticateduser.FieldUserUUID)
 			}

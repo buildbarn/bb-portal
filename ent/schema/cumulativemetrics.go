@@ -45,3 +45,10 @@ func (CumulativeMetrics) Indexes() []ent.Index {
 		index.Edges("metrics"),
 	}
 }
+
+// Mixin of the CumulativeMetrics.
+func (CumulativeMetrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

@@ -40,7 +40,7 @@ func (rud *ResourceUsageDelete) ExecX(ctx context.Context) int {
 }
 
 func (rud *ResourceUsageDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(resourceusage.Table, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(resourceusage.Table, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64))
 	if ps := rud.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

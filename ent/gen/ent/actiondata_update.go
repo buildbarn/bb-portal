@@ -212,13 +212,13 @@ func (adu *ActionDataUpdate) ClearUserTime() *ActionDataUpdate {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (adu *ActionDataUpdate) SetActionSummaryID(id int) *ActionDataUpdate {
+func (adu *ActionDataUpdate) SetActionSummaryID(id int64) *ActionDataUpdate {
 	adu.mutation.SetActionSummaryID(id)
 	return adu
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableActionSummaryID(id *int) *ActionDataUpdate {
+func (adu *ActionDataUpdate) SetNillableActionSummaryID(id *int64) *ActionDataUpdate {
 	if id != nil {
 		adu = adu.SetActionSummaryID(*id)
 	}
@@ -275,7 +275,7 @@ func (adu *ActionDataUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Ac
 }
 
 func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
 	if ps := adu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -351,7 +351,7 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -364,7 +364,7 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -577,13 +577,13 @@ func (aduo *ActionDataUpdateOne) ClearUserTime() *ActionDataUpdateOne {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (aduo *ActionDataUpdateOne) SetActionSummaryID(id int) *ActionDataUpdateOne {
+func (aduo *ActionDataUpdateOne) SetActionSummaryID(id int64) *ActionDataUpdateOne {
 	aduo.mutation.SetActionSummaryID(id)
 	return aduo
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableActionSummaryID(id *int) *ActionDataUpdateOne {
+func (aduo *ActionDataUpdateOne) SetNillableActionSummaryID(id *int64) *ActionDataUpdateOne {
 	if id != nil {
 		aduo = aduo.SetActionSummaryID(*id)
 	}
@@ -653,7 +653,7 @@ func (aduo *ActionDataUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder))
 }
 
 func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData, err error) {
-	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
 	id, ok := aduo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ActionData.id" for update`)}
@@ -746,7 +746,7 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -759,7 +759,7 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

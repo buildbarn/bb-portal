@@ -109,8 +109,8 @@ func (mdq *MissDetailQuery) FirstX(ctx context.Context) *MissDetail {
 
 // FirstID returns the first MissDetail ID from the query.
 // Returns a *NotFoundError when no MissDetail ID was found.
-func (mdq *MissDetailQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mdq *MissDetailQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = mdq.Limit(1).IDs(setContextOp(ctx, mdq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (mdq *MissDetailQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mdq *MissDetailQuery) FirstIDX(ctx context.Context) int {
+func (mdq *MissDetailQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := mdq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (mdq *MissDetailQuery) OnlyX(ctx context.Context) *MissDetail {
 // OnlyID is like Only, but returns the only MissDetail ID in the query.
 // Returns a *NotSingularError when more than one MissDetail ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (mdq *MissDetailQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mdq *MissDetailQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = mdq.Limit(2).IDs(setContextOp(ctx, mdq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (mdq *MissDetailQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mdq *MissDetailQuery) OnlyIDX(ctx context.Context) int {
+func (mdq *MissDetailQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := mdq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (mdq *MissDetailQuery) AllX(ctx context.Context) []*MissDetail {
 }
 
 // IDs executes the query and returns a list of MissDetail IDs.
-func (mdq *MissDetailQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (mdq *MissDetailQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if mdq.ctx.Unique == nil && mdq.path != nil {
 		mdq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (mdq *MissDetailQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mdq *MissDetailQuery) IDsX(ctx context.Context) []int {
+func (mdq *MissDetailQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := mdq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (mdq *MissDetailQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (mdq *MissDetailQuery) loadActionCacheStatistics(ctx context.Context, query *ActionCacheStatisticsQuery, nodes []*MissDetail, init func(*MissDetail), assign func(*MissDetail, *ActionCacheStatistics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*MissDetail)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*MissDetail)
 	for i := range nodes {
 		if nodes[i].action_cache_statistics_miss_details == nil {
 			continue
@@ -466,7 +466,7 @@ func (mdq *MissDetailQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (mdq *MissDetailQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	_spec.From = mdq.sql
 	if unique := mdq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

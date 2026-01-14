@@ -16,7 +16,7 @@ import (
 type ResourceUsage struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Value holds the value of the "value" field.
@@ -24,7 +24,7 @@ type ResourceUsage struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ResourceUsageQuery when eager-loading is set.
 	Edges                        ResourceUsageEdges `json:"edges"`
-	exection_info_resource_usage *int
+	exection_info_resource_usage *int64
 	selectValues                 sql.SelectValues
 }
 
@@ -81,7 +81,7 @@ func (ru *ResourceUsage) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ru.ID = int(value.Int64)
+			ru.ID = int64(value.Int64)
 		case resourceusage.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -98,8 +98,8 @@ func (ru *ResourceUsage) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field exection_info_resource_usage", value)
 			} else if value.Valid {
-				ru.exection_info_resource_usage = new(int)
-				*ru.exection_info_resource_usage = int(value.Int64)
+				ru.exection_info_resource_usage = new(int64)
+				*ru.exection_info_resource_usage = int64(value.Int64)
 			}
 		default:
 			ru.selectValues.Set(columns[i], values[i])

@@ -109,8 +109,8 @@ func (blcq *BuildLogChunkQuery) FirstX(ctx context.Context) *BuildLogChunk {
 
 // FirstID returns the first BuildLogChunk ID from the query.
 // Returns a *NotFoundError when no BuildLogChunk ID was found.
-func (blcq *BuildLogChunkQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (blcq *BuildLogChunkQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = blcq.Limit(1).IDs(setContextOp(ctx, blcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (blcq *BuildLogChunkQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) FirstIDX(ctx context.Context) int {
+func (blcq *BuildLogChunkQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := blcq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (blcq *BuildLogChunkQuery) OnlyX(ctx context.Context) *BuildLogChunk {
 // OnlyID is like Only, but returns the only BuildLogChunk ID in the query.
 // Returns a *NotSingularError when more than one BuildLogChunk ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (blcq *BuildLogChunkQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (blcq *BuildLogChunkQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = blcq.Limit(2).IDs(setContextOp(ctx, blcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (blcq *BuildLogChunkQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) OnlyIDX(ctx context.Context) int {
+func (blcq *BuildLogChunkQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := blcq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (blcq *BuildLogChunkQuery) AllX(ctx context.Context) []*BuildLogChunk {
 }
 
 // IDs executes the query and returns a list of BuildLogChunk IDs.
-func (blcq *BuildLogChunkQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (blcq *BuildLogChunkQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if blcq.ctx.Unique == nil && blcq.path != nil {
 		blcq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (blcq *BuildLogChunkQuery) IDs(ctx context.Context) (ids []int, err error) 
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) IDsX(ctx context.Context) []int {
+func (blcq *BuildLogChunkQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := blcq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (blcq *BuildLogChunkQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (blcq *BuildLogChunkQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*BuildLogChunk, init func(*BuildLogChunk), assign func(*BuildLogChunk, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BuildLogChunk)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BuildLogChunk)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_build_log_chunks == nil {
 			continue
@@ -466,7 +466,7 @@ func (blcq *BuildLogChunkQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (blcq *BuildLogChunkQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
 	_spec.From = blcq.sql
 	if unique := blcq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

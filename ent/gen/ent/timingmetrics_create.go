@@ -92,14 +92,20 @@ func (tmc *TimingMetricsCreate) SetNillableActionsExecutionStartInMs(i *int64) *
 	return tmc
 }
 
+// SetID sets the "id" field.
+func (tmc *TimingMetricsCreate) SetID(i int64) *TimingMetricsCreate {
+	tmc.mutation.SetID(i)
+	return tmc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmc *TimingMetricsCreate) SetMetricsID(id int) *TimingMetricsCreate {
+func (tmc *TimingMetricsCreate) SetMetricsID(id int64) *TimingMetricsCreate {
 	tmc.mutation.SetMetricsID(id)
 	return tmc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmc *TimingMetricsCreate) SetNillableMetricsID(id *int) *TimingMetricsCreate {
+func (tmc *TimingMetricsCreate) SetNillableMetricsID(id *int64) *TimingMetricsCreate {
 	if id != nil {
 		tmc = tmc.SetMetricsID(*id)
 	}
@@ -159,8 +165,10 @@ func (tmc *TimingMetricsCreate) sqlSave(ctx context.Context) (*TimingMetrics, er
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tmc.mutation.id = &_node.ID
 	tmc.mutation.done = true
 	return _node, nil
@@ -169,9 +177,13 @@ func (tmc *TimingMetricsCreate) sqlSave(ctx context.Context) (*TimingMetrics, er
 func (tmc *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TimingMetrics{config: tmc.config}
-		_spec = sqlgraph.NewCreateSpec(timingmetrics.Table, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(timingmetrics.Table, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tmc.conflict
+	if id, ok := tmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tmc.mutation.CPUTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64, value)
 		_node.CPUTimeInMs = value
@@ -200,7 +212,7 @@ func (tmc *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSp
 			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -381,16 +393,24 @@ func (u *TimingMetricsUpsert) ClearActionsExecutionStartInMs() *TimingMetricsUps
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.TimingMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(timingmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TimingMetricsUpsertOne) UpdateNewValues() *TimingMetricsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(timingmetrics.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -577,7 +597,7 @@ func (u *TimingMetricsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TimingMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TimingMetricsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -586,7 +606,7 @@ func (u *TimingMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TimingMetricsUpsertOne) IDX(ctx context.Context) int {
+func (u *TimingMetricsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -640,9 +660,9 @@ func (tmcb *TimingMetricsCreateBulk) Save(ctx context.Context) ([]*TimingMetrics
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -730,10 +750,20 @@ type TimingMetricsUpsertBulk struct {
 //	client.TimingMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(timingmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TimingMetricsUpsertBulk) UpdateNewValues() *TimingMetricsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(timingmetrics.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

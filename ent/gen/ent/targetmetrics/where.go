@@ -9,47 +9,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.TargetMetrics {
+func ID(id int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.TargetMetrics {
+func IDEQ(id int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.TargetMetrics {
+func IDNEQ(id int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.TargetMetrics {
+func IDIn(ids ...int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.TargetMetrics {
+func IDNotIn(ids ...int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.TargetMetrics {
+func IDGT(id int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.TargetMetrics {
+func IDGTE(id int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.TargetMetrics {
+func IDLT(id int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.TargetMetrics {
+func IDLTE(id int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldLTE(FieldID, id))
 }
 

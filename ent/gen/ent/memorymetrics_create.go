@@ -65,14 +65,20 @@ func (mmc *MemoryMetricsCreate) SetNillablePeakPostGcTenuredSpaceHeapSize(i *int
 	return mmc
 }
 
+// SetID sets the "id" field.
+func (mmc *MemoryMetricsCreate) SetID(i int64) *MemoryMetricsCreate {
+	mmc.mutation.SetID(i)
+	return mmc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmc *MemoryMetricsCreate) SetMetricsID(id int) *MemoryMetricsCreate {
+func (mmc *MemoryMetricsCreate) SetMetricsID(id int64) *MemoryMetricsCreate {
 	mmc.mutation.SetMetricsID(id)
 	return mmc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmc *MemoryMetricsCreate) SetNillableMetricsID(id *int) *MemoryMetricsCreate {
+func (mmc *MemoryMetricsCreate) SetNillableMetricsID(id *int64) *MemoryMetricsCreate {
 	if id != nil {
 		mmc = mmc.SetMetricsID(*id)
 	}
@@ -85,14 +91,14 @@ func (mmc *MemoryMetricsCreate) SetMetrics(m *Metrics) *MemoryMetricsCreate {
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
-func (mmc *MemoryMetricsCreate) AddGarbageMetricIDs(ids ...int) *MemoryMetricsCreate {
+func (mmc *MemoryMetricsCreate) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsCreate {
 	mmc.mutation.AddGarbageMetricIDs(ids...)
 	return mmc
 }
 
 // AddGarbageMetrics adds the "garbage_metrics" edges to the GarbageMetrics entity.
 func (mmc *MemoryMetricsCreate) AddGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsCreate {
-	ids := make([]int, len(g))
+	ids := make([]int64, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -147,8 +153,10 @@ func (mmc *MemoryMetricsCreate) sqlSave(ctx context.Context) (*MemoryMetrics, er
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	mmc.mutation.id = &_node.ID
 	mmc.mutation.done = true
 	return _node, nil
@@ -157,9 +165,13 @@ func (mmc *MemoryMetricsCreate) sqlSave(ctx context.Context) (*MemoryMetrics, er
 func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSpec) {
 	var (
 		_node = &MemoryMetrics{config: mmc.config}
-		_spec = sqlgraph.NewCreateSpec(memorymetrics.Table, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(memorymetrics.Table, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = mmc.conflict
+	if id, ok := mmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := mmc.mutation.PeakPostGcHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64, value)
 		_node.PeakPostGcHeapSize = value
@@ -180,7 +192,7 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 			Columns: []string{memorymetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -197,7 +209,7 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -329,16 +341,24 @@ func (u *MemoryMetricsUpsert) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetri
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.MemoryMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(memorymetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *MemoryMetricsUpsertOne) UpdateNewValues() *MemoryMetricsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(memorymetrics.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -469,7 +489,7 @@ func (u *MemoryMetricsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *MemoryMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *MemoryMetricsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -478,7 +498,7 @@ func (u *MemoryMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *MemoryMetricsUpsertOne) IDX(ctx context.Context) int {
+func (u *MemoryMetricsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -532,9 +552,9 @@ func (mmcb *MemoryMetricsCreateBulk) Save(ctx context.Context) ([]*MemoryMetrics
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -622,10 +642,20 @@ type MemoryMetricsUpsertBulk struct {
 //	client.MemoryMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(memorymetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *MemoryMetricsUpsertBulk) UpdateNewValues() *MemoryMetricsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(memorymetrics.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

@@ -18,7 +18,7 @@ import (
 type TestResultBES struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// TestStatus holds the value of the "test_status" field.
 	TestStatus testresultbes.TestStatus `json:"test_status,omitempty"`
 	// StatusDetails holds the value of the "status_details" field.
@@ -40,7 +40,7 @@ type TestResultBES struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestResultBESQuery when eager-loading is set.
 	Edges                        TestResultBESEdges `json:"edges"`
-	test_collection_test_results *int
+	test_collection_test_results *int64
 	selectValues                 sql.SelectValues
 }
 
@@ -127,7 +127,7 @@ func (trb *TestResultBES) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			trb.ID = int(value.Int64)
+			trb.ID = int64(value.Int64)
 		case testresultbes.FieldTestStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field test_status", values[i])
@@ -188,8 +188,8 @@ func (trb *TestResultBES) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_collection_test_results", value)
 			} else if value.Valid {
-				trb.test_collection_test_results = new(int)
-				*trb.test_collection_test_results = int(value.Int64)
+				trb.test_collection_test_results = new(int64)
+				*trb.test_collection_test_results = int64(value.Int64)
 			}
 		default:
 			trb.selectValues.Set(columns[i], values[i])

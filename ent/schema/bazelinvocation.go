@@ -203,3 +203,10 @@ func (BazelInvocation) Annotations() []schema.Annotation {
 		entgql.QueryField("findBazelInvocations"),
 	}
 }
+
+// Mixin of the BazelInvocation.
+func (BazelInvocation) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

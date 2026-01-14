@@ -76,7 +76,7 @@ func getNewDbCleanupService(db database.Client, clock clock.Clock, traceProvider
 	return dbcleanupservice.NewDbCleanupService(db, clock, cleanupConfiguration, traceProvider)
 }
 
-func createInstanceName(t *testing.T, ctx context.Context, client *ent.Client, name string) int {
+func createInstanceName(t *testing.T, ctx context.Context, client *ent.Client, name string) int64 {
 	in, err := client.InstanceName.Create().
 		SetName(name).
 		Save(ctx)
@@ -84,7 +84,7 @@ func createInstanceName(t *testing.T, ctx context.Context, client *ent.Client, n
 	return in.ID
 }
 
-func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.Client, invocationDbID int) {
+func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.Client, invocationDbID int64) {
 	logSnippets := []string{
 		"\u001b[32mComputing main repo mapping:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m 0 packages loaded\n",
 		"\r\u001b[1A\u001b[K\u001b[35mWARNING: \u001b[0mBuild options --dynamic_mode, --extra_execution_platforms, and --extra_toolchains have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).\n\u001b[32mAnalyzing:\u001b[0m target //:hello (0 packages loaded)\n",
@@ -713,7 +713,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 		require.Equal(t, 1, len(conns))
 		invDbId, err := conns[0].QueryBazelInvocation().OnlyID(ctx)
 		require.NoError(t, err)
-		require.Equal(t, int(invNotDone.ID), invDbId)
+		require.Equal(t, int64(invNotDone.ID), invDbId)
 	})
 }
 

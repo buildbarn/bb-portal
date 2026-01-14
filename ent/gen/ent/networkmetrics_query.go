@@ -134,8 +134,8 @@ func (nmq *NetworkMetricsQuery) FirstX(ctx context.Context) *NetworkMetrics {
 
 // FirstID returns the first NetworkMetrics ID from the query.
 // Returns a *NotFoundError when no NetworkMetrics ID was found.
-func (nmq *NetworkMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (nmq *NetworkMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = nmq.Limit(1).IDs(setContextOp(ctx, nmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -147,7 +147,7 @@ func (nmq *NetworkMetricsQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) FirstIDX(ctx context.Context) int {
+func (nmq *NetworkMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := nmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -185,8 +185,8 @@ func (nmq *NetworkMetricsQuery) OnlyX(ctx context.Context) *NetworkMetrics {
 // OnlyID is like Only, but returns the only NetworkMetrics ID in the query.
 // Returns a *NotSingularError when more than one NetworkMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (nmq *NetworkMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (nmq *NetworkMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = nmq.Limit(2).IDs(setContextOp(ctx, nmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -202,7 +202,7 @@ func (nmq *NetworkMetricsQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (nmq *NetworkMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := nmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -230,7 +230,7 @@ func (nmq *NetworkMetricsQuery) AllX(ctx context.Context) []*NetworkMetrics {
 }
 
 // IDs executes the query and returns a list of NetworkMetrics IDs.
-func (nmq *NetworkMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (nmq *NetworkMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if nmq.ctx.Unique == nil && nmq.path != nil {
 		nmq.Unique(true)
 	}
@@ -242,7 +242,7 @@ func (nmq *NetworkMetricsQuery) IDs(ctx context.Context) (ids []int, err error) 
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) IDsX(ctx context.Context) []int {
+func (nmq *NetworkMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := nmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -443,8 +443,8 @@ func (nmq *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (nmq *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*NetworkMetrics, init func(*NetworkMetrics), assign func(*NetworkMetrics, *Metrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*NetworkMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*NetworkMetrics)
 	for i := range nodes {
 		if nodes[i].metrics_network_metrics == nil {
 			continue
@@ -476,7 +476,7 @@ func (nmq *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQ
 }
 func (nmq *NetworkMetricsQuery) loadSystemNetworkStats(ctx context.Context, query *SystemNetworkStatsQuery, nodes []*NetworkMetrics, init func(*NetworkMetrics), assign func(*NetworkMetrics, *SystemNetworkStats)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*NetworkMetrics)
+	nodeids := make(map[int64]*NetworkMetrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -516,7 +516,7 @@ func (nmq *NetworkMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (nmq *NetworkMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	_spec.From = nmq.sql
 	if unique := nmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

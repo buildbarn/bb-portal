@@ -57,3 +57,10 @@ func (SystemNetworkStats) Indexes() []ent.Index {
 		index.Edges("network_metrics"),
 	}
 }
+
+// Mixin of the SystemNetworkStats.
+func (SystemNetworkStats) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

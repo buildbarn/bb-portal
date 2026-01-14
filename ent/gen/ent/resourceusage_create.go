@@ -50,14 +50,20 @@ func (ruc *ResourceUsageCreate) SetNillableValue(s *string) *ResourceUsageCreate
 	return ruc
 }
 
+// SetID sets the "id" field.
+func (ruc *ResourceUsageCreate) SetID(i int64) *ResourceUsageCreate {
+	ruc.mutation.SetID(i)
+	return ruc
+}
+
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (ruc *ResourceUsageCreate) SetExecutionInfoID(id int) *ResourceUsageCreate {
+func (ruc *ResourceUsageCreate) SetExecutionInfoID(id int64) *ResourceUsageCreate {
 	ruc.mutation.SetExecutionInfoID(id)
 	return ruc
 }
 
 // SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (ruc *ResourceUsageCreate) SetNillableExecutionInfoID(id *int) *ResourceUsageCreate {
+func (ruc *ResourceUsageCreate) SetNillableExecutionInfoID(id *int64) *ResourceUsageCreate {
 	if id != nil {
 		ruc = ruc.SetExecutionInfoID(*id)
 	}
@@ -117,8 +123,10 @@ func (ruc *ResourceUsageCreate) sqlSave(ctx context.Context) (*ResourceUsage, er
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	ruc.mutation.id = &_node.ID
 	ruc.mutation.done = true
 	return _node, nil
@@ -127,9 +135,13 @@ func (ruc *ResourceUsageCreate) sqlSave(ctx context.Context) (*ResourceUsage, er
 func (ruc *ResourceUsageCreate) createSpec() (*ResourceUsage, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ResourceUsage{config: ruc.config}
-		_spec = sqlgraph.NewCreateSpec(resourceusage.Table, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(resourceusage.Table, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = ruc.conflict
+	if id, ok := ruc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := ruc.mutation.Name(); ok {
 		_spec.SetField(resourceusage.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -146,7 +158,7 @@ func (ruc *ResourceUsageCreate) createSpec() (*ResourceUsage, *sqlgraph.CreateSp
 			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -243,16 +255,24 @@ func (u *ResourceUsageUpsert) ClearValue() *ResourceUsageUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.ResourceUsage.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(resourceusage.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ResourceUsageUpsertOne) UpdateNewValues() *ResourceUsageUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(resourceusage.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -341,7 +361,7 @@ func (u *ResourceUsageUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ResourceUsageUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *ResourceUsageUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -350,7 +370,7 @@ func (u *ResourceUsageUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ResourceUsageUpsertOne) IDX(ctx context.Context) int {
+func (u *ResourceUsageUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -404,9 +424,9 @@ func (rucb *ResourceUsageCreateBulk) Save(ctx context.Context) ([]*ResourceUsage
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -494,10 +514,20 @@ type ResourceUsageUpsertBulk struct {
 //	client.ResourceUsage.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(resourceusage.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ResourceUsageUpsertBulk) UpdateNewValues() *ResourceUsageUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(resourceusage.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

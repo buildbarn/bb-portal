@@ -109,8 +109,8 @@ func (cmq *ConnectionMetadataQuery) FirstX(ctx context.Context) *ConnectionMetad
 
 // FirstID returns the first ConnectionMetadata ID from the query.
 // Returns a *NotFoundError when no ConnectionMetadata ID was found.
-func (cmq *ConnectionMetadataQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cmq *ConnectionMetadataQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = cmq.Limit(1).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (cmq *ConnectionMetadataQuery) FirstID(ctx context.Context) (id int, err er
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) FirstIDX(ctx context.Context) int {
+func (cmq *ConnectionMetadataQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := cmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (cmq *ConnectionMetadataQuery) OnlyX(ctx context.Context) *ConnectionMetada
 // OnlyID is like Only, but returns the only ConnectionMetadata ID in the query.
 // Returns a *NotSingularError when more than one ConnectionMetadata ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (cmq *ConnectionMetadataQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cmq *ConnectionMetadataQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = cmq.Limit(2).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (cmq *ConnectionMetadataQuery) OnlyID(ctx context.Context) (id int, err err
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) OnlyIDX(ctx context.Context) int {
+func (cmq *ConnectionMetadataQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := cmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (cmq *ConnectionMetadataQuery) AllX(ctx context.Context) []*ConnectionMetad
 }
 
 // IDs executes the query and returns a list of ConnectionMetadata IDs.
-func (cmq *ConnectionMetadataQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (cmq *ConnectionMetadataQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if cmq.ctx.Unique == nil && cmq.path != nil {
 		cmq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (cmq *ConnectionMetadataQuery) IDs(ctx context.Context) (ids []int, err err
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) IDsX(ctx context.Context) []int {
+func (cmq *ConnectionMetadataQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := cmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (cmq *ConnectionMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHo
 }
 
 func (cmq *ConnectionMetadataQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*ConnectionMetadata, init func(*ConnectionMetadata), assign func(*ConnectionMetadata, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*ConnectionMetadata)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ConnectionMetadata)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_connection_metadata == nil {
 			continue
@@ -466,7 +466,7 @@ func (cmq *ConnectionMetadataQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (cmq *ConnectionMetadataQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
 	_spec.From = cmq.sql
 	if unique := cmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

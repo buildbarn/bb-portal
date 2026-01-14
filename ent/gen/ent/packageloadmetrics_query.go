@@ -109,8 +109,8 @@ func (plmq *PackageLoadMetricsQuery) FirstX(ctx context.Context) *PackageLoadMet
 
 // FirstID returns the first PackageLoadMetrics ID from the query.
 // Returns a *NotFoundError when no PackageLoadMetrics ID was found.
-func (plmq *PackageLoadMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (plmq *PackageLoadMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = plmq.Limit(1).IDs(setContextOp(ctx, plmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (plmq *PackageLoadMetricsQuery) FirstID(ctx context.Context) (id int, err e
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (plmq *PackageLoadMetricsQuery) FirstIDX(ctx context.Context) int {
+func (plmq *PackageLoadMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := plmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (plmq *PackageLoadMetricsQuery) OnlyX(ctx context.Context) *PackageLoadMetr
 // OnlyID is like Only, but returns the only PackageLoadMetrics ID in the query.
 // Returns a *NotSingularError when more than one PackageLoadMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (plmq *PackageLoadMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (plmq *PackageLoadMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = plmq.Limit(2).IDs(setContextOp(ctx, plmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (plmq *PackageLoadMetricsQuery) OnlyID(ctx context.Context) (id int, err er
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (plmq *PackageLoadMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (plmq *PackageLoadMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := plmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (plmq *PackageLoadMetricsQuery) AllX(ctx context.Context) []*PackageLoadMet
 }
 
 // IDs executes the query and returns a list of PackageLoadMetrics IDs.
-func (plmq *PackageLoadMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (plmq *PackageLoadMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if plmq.ctx.Unique == nil && plmq.path != nil {
 		plmq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (plmq *PackageLoadMetricsQuery) IDs(ctx context.Context) (ids []int, err er
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (plmq *PackageLoadMetricsQuery) IDsX(ctx context.Context) []int {
+func (plmq *PackageLoadMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := plmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (plmq *PackageLoadMetricsQuery) sqlAll(ctx context.Context, hooks ...queryH
 }
 
 func (plmq *PackageLoadMetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMetricsQuery, nodes []*PackageLoadMetrics, init func(*PackageLoadMetrics), assign func(*PackageLoadMetrics, *PackageMetrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*PackageLoadMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*PackageLoadMetrics)
 	for i := range nodes {
 		if nodes[i].package_metrics_package_load_metrics == nil {
 			continue
@@ -466,7 +466,7 @@ func (plmq *PackageLoadMetricsQuery) sqlCount(ctx context.Context) (int, error) 
 }
 
 func (plmq *PackageLoadMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64))
 	_spec.From = plmq.sql
 	if unique := plmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

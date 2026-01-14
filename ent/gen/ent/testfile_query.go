@@ -109,8 +109,8 @@ func (tfq *TestFileQuery) FirstX(ctx context.Context) *TestFile {
 
 // FirstID returns the first TestFile ID from the query.
 // Returns a *NotFoundError when no TestFile ID was found.
-func (tfq *TestFileQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tfq *TestFileQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tfq.Limit(1).IDs(setContextOp(ctx, tfq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (tfq *TestFileQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tfq *TestFileQuery) FirstIDX(ctx context.Context) int {
+func (tfq *TestFileQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tfq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (tfq *TestFileQuery) OnlyX(ctx context.Context) *TestFile {
 // OnlyID is like Only, but returns the only TestFile ID in the query.
 // Returns a *NotSingularError when more than one TestFile ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tfq *TestFileQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tfq *TestFileQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tfq.Limit(2).IDs(setContextOp(ctx, tfq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (tfq *TestFileQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tfq *TestFileQuery) OnlyIDX(ctx context.Context) int {
+func (tfq *TestFileQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tfq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (tfq *TestFileQuery) AllX(ctx context.Context) []*TestFile {
 }
 
 // IDs executes the query and returns a list of TestFile IDs.
-func (tfq *TestFileQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tfq *TestFileQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tfq.ctx.Unique == nil && tfq.path != nil {
 		tfq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (tfq *TestFileQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tfq *TestFileQuery) IDsX(ctx context.Context) []int {
+func (tfq *TestFileQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tfq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (tfq *TestFileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Te
 }
 
 func (tfq *TestFileQuery) loadTestResult(ctx context.Context, query *TestResultBESQuery, nodes []*TestFile, init func(*TestFile), assign func(*TestFile, *TestResultBES)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TestFile)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TestFile)
 	for i := range nodes {
 		if nodes[i].test_result_bes_test_action_output == nil {
 			continue
@@ -466,7 +466,7 @@ func (tfq *TestFileQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tfq *TestFileQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64))
 	_spec.From = tfq.sql
 	if unique := tfq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

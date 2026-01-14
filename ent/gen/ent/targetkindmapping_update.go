@@ -108,7 +108,7 @@ func (tkmu *TargetKindMappingUpdate) sqlSave(ctx context.Context) (n int, err er
 	if err := tkmu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
 	if ps := tkmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -240,7 +240,7 @@ func (tkmuo *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *Ta
 	if err := tkmuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
 	id, ok := tkmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TargetKindMapping.id" for update`)}

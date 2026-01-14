@@ -27,3 +27,10 @@ func (InstanceName) Edges() []ent.Edge {
 		edge.To("targets", Target.Type),
 	}
 }
+
+// Mixin of the InstanceName.
+func (InstanceName) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

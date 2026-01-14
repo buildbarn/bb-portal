@@ -16,7 +16,7 @@ import (
 type TestSummary struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// OverallStatus holds the value of the "overall_status" field.
 	OverallStatus testsummary.OverallStatus `json:"overall_status,omitempty"`
 	// TotalRunCount holds the value of the "total_run_count" field.
@@ -40,7 +40,7 @@ type TestSummary struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestSummaryQuery when eager-loading is set.
 	Edges                        TestSummaryEdges `json:"edges"`
-	test_collection_test_summary *int
+	test_collection_test_summary *int64
 	selectValues                 sql.SelectValues
 }
 
@@ -122,7 +122,7 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ts.ID = int(value.Int64)
+			ts.ID = int64(value.Int64)
 		case testsummary.FieldOverallStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field overall_status", values[i])
@@ -187,8 +187,8 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_collection_test_summary", value)
 			} else if value.Valid {
-				ts.test_collection_test_summary = new(int)
-				*ts.test_collection_test_summary = int(value.Int64)
+				ts.test_collection_test_summary = new(int64)
+				*ts.test_collection_test_summary = int64(value.Int64)
 			}
 		default:
 			ts.selectValues.Set(columns[i], values[i])

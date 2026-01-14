@@ -35,8 +35,14 @@ func (iblc *IncompleteBuildLogCreate) SetLogSnippet(b []byte) *IncompleteBuildLo
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (iblc *IncompleteBuildLogCreate) SetBazelInvocationID(i int) *IncompleteBuildLogCreate {
+func (iblc *IncompleteBuildLogCreate) SetBazelInvocationID(i int64) *IncompleteBuildLogCreate {
 	iblc.mutation.SetBazelInvocationID(i)
+	return iblc
+}
+
+// SetID sets the "id" field.
+func (iblc *IncompleteBuildLogCreate) SetID(i int64) *IncompleteBuildLogCreate {
+	iblc.mutation.SetID(i)
 	return iblc
 }
 
@@ -105,8 +111,10 @@ func (iblc *IncompleteBuildLogCreate) sqlSave(ctx context.Context) (*IncompleteB
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	iblc.mutation.id = &_node.ID
 	iblc.mutation.done = true
 	return _node, nil
@@ -115,9 +123,13 @@ func (iblc *IncompleteBuildLogCreate) sqlSave(ctx context.Context) (*IncompleteB
 func (iblc *IncompleteBuildLogCreate) createSpec() (*IncompleteBuildLog, *sqlgraph.CreateSpec) {
 	var (
 		_node = &IncompleteBuildLog{config: iblc.config}
-		_spec = sqlgraph.NewCreateSpec(incompletebuildlog.Table, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(incompletebuildlog.Table, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = iblc.conflict
+	if id, ok := iblc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := iblc.mutation.SnippetID(); ok {
 		_spec.SetField(incompletebuildlog.FieldSnippetID, field.TypeInt32, value)
 		_node.SnippetID = value
@@ -134,7 +146,7 @@ func (iblc *IncompleteBuildLogCreate) createSpec() (*IncompleteBuildLog, *sqlgra
 			Columns: []string{incompletebuildlog.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -195,17 +207,23 @@ type (
 	}
 )
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.IncompleteBuildLog.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(incompletebuildlog.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *IncompleteBuildLogUpsertOne) UpdateNewValues() *IncompleteBuildLogUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(incompletebuildlog.FieldID)
+		}
 		if _, exists := u.create.mutation.SnippetID(); exists {
 			s.SetIgnore(incompletebuildlog.FieldSnippetID)
 		}
@@ -262,7 +280,7 @@ func (u *IncompleteBuildLogUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *IncompleteBuildLogUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *IncompleteBuildLogUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -271,7 +289,7 @@ func (u *IncompleteBuildLogUpsertOne) ID(ctx context.Context) (id int, err error
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *IncompleteBuildLogUpsertOne) IDX(ctx context.Context) int {
+func (u *IncompleteBuildLogUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -325,9 +343,9 @@ func (iblcb *IncompleteBuildLogCreateBulk) Save(ctx context.Context) ([]*Incompl
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -415,12 +433,18 @@ type IncompleteBuildLogUpsertBulk struct {
 //	client.IncompleteBuildLog.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(incompletebuildlog.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *IncompleteBuildLogUpsertBulk) UpdateNewValues() *IncompleteBuildLogUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(incompletebuildlog.FieldID)
+			}
 			if _, exists := b.mutation.SnippetID(); exists {
 				s.SetIgnore(incompletebuildlog.FieldSnippetID)
 			}

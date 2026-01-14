@@ -18,7 +18,7 @@ import (
 type TestCollection struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Label holds the value of the "label" field.
 	Label string `json:"label,omitempty"`
 	// OverallStatus holds the value of the "overall_status" field.
@@ -36,7 +36,7 @@ type TestCollection struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestCollectionQuery when eager-loading is set.
 	Edges                            TestCollectionEdges `json:"edges"`
-	bazel_invocation_test_collection *int
+	bazel_invocation_test_collection *int64
 	selectValues                     sql.SelectValues
 }
 
@@ -123,7 +123,7 @@ func (tc *TestCollection) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tc.ID = int(value.Int64)
+			tc.ID = int64(value.Int64)
 		case testcollection.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
@@ -171,8 +171,8 @@ func (tc *TestCollection) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_test_collection", value)
 			} else if value.Valid {
-				tc.bazel_invocation_test_collection = new(int)
-				*tc.bazel_invocation_test_collection = int(value.Int64)
+				tc.bazel_invocation_test_collection = new(int64)
+				*tc.bazel_invocation_test_collection = int64(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])

@@ -16,7 +16,7 @@ import (
 type MemoryMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// PeakPostGcHeapSize holds the value of the "peak_post_gc_heap_size" field.
 	PeakPostGcHeapSize int64 `json:"peak_post_gc_heap_size,omitempty"`
 	// UsedHeapSizePostBuild holds the value of the "used_heap_size_post_build" field.
@@ -26,7 +26,7 @@ type MemoryMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MemoryMetricsQuery when eager-loading is set.
 	Edges                  MemoryMetricsEdges `json:"edges"`
-	metrics_memory_metrics *int
+	metrics_memory_metrics *int64
 	selectValues           sql.SelectValues
 }
 
@@ -94,7 +94,7 @@ func (mm *MemoryMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			mm.ID = int(value.Int64)
+			mm.ID = int64(value.Int64)
 		case memorymetrics.FieldPeakPostGcHeapSize:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_post_gc_heap_size", values[i])
@@ -117,8 +117,8 @@ func (mm *MemoryMetrics) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_memory_metrics", value)
 			} else if value.Valid {
-				mm.metrics_memory_metrics = new(int)
-				*mm.metrics_memory_metrics = int(value.Int64)
+				mm.metrics_memory_metrics = new(int64)
+				*mm.metrics_memory_metrics = int64(value.Int64)
 			}
 		default:
 			mm.selectValues.Set(columns[i], values[i])

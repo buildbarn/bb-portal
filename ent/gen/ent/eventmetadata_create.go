@@ -42,8 +42,14 @@ func (emc *EventMetadataCreate) SetVersion(i int64) *EventMetadataCreate {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (emc *EventMetadataCreate) SetBazelInvocationID(i int) *EventMetadataCreate {
+func (emc *EventMetadataCreate) SetBazelInvocationID(i int64) *EventMetadataCreate {
 	emc.mutation.SetBazelInvocationID(i)
+	return emc
+}
+
+// SetID sets the "id" field.
+func (emc *EventMetadataCreate) SetID(i int64) *EventMetadataCreate {
+	emc.mutation.SetID(i)
 	return emc
 }
 
@@ -115,8 +121,10 @@ func (emc *EventMetadataCreate) sqlSave(ctx context.Context) (*EventMetadata, er
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	emc.mutation.id = &_node.ID
 	emc.mutation.done = true
 	return _node, nil
@@ -125,9 +133,13 @@ func (emc *EventMetadataCreate) sqlSave(ctx context.Context) (*EventMetadata, er
 func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSpec) {
 	var (
 		_node = &EventMetadata{config: emc.config}
-		_spec = sqlgraph.NewCreateSpec(eventmetadata.Table, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(eventmetadata.Table, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = emc.conflict
+	if id, ok := emc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := emc.mutation.Handled(); ok {
 		_spec.SetField(eventmetadata.FieldHandled, field.TypeBytes, value)
 		_node.Handled = value
@@ -148,7 +160,7 @@ func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSp
 			Columns: []string{eventmetadata.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -251,17 +263,23 @@ func (u *EventMetadataUpsert) AddVersion(v int64) *EventMetadataUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.EventMetadata.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(eventmetadata.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *EventMetadataUpsertOne) UpdateNewValues() *EventMetadataUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(eventmetadata.FieldID)
+		}
 		if _, exists := u.create.mutation.BazelInvocationID(); exists {
 			s.SetIgnore(eventmetadata.FieldBazelInvocationID)
 		}
@@ -361,7 +379,7 @@ func (u *EventMetadataUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *EventMetadataUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *EventMetadataUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -370,7 +388,7 @@ func (u *EventMetadataUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *EventMetadataUpsertOne) IDX(ctx context.Context) int {
+func (u *EventMetadataUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -424,9 +442,9 @@ func (emcb *EventMetadataCreateBulk) Save(ctx context.Context) ([]*EventMetadata
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -514,12 +532,18 @@ type EventMetadataUpsertBulk struct {
 //	client.EventMetadata.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(eventmetadata.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *EventMetadataUpsertBulk) UpdateNewValues() *EventMetadataUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(eventmetadata.FieldID)
+			}
 			if _, exists := b.mutation.BazelInvocationID(); exists {
 				s.SetIgnore(eventmetadata.FieldBazelInvocationID)
 			}

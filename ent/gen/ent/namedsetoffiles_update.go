@@ -31,13 +31,13 @@ func (nsofu *NamedSetOfFilesUpdate) Where(ps ...predicate.NamedSetOfFiles) *Name
 }
 
 // SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
-func (nsofu *NamedSetOfFilesUpdate) SetOutputGroupID(id int) *NamedSetOfFilesUpdate {
+func (nsofu *NamedSetOfFilesUpdate) SetOutputGroupID(id int64) *NamedSetOfFilesUpdate {
 	nsofu.mutation.SetOutputGroupID(id)
 	return nsofu
 }
 
 // SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
-func (nsofu *NamedSetOfFilesUpdate) SetNillableOutputGroupID(id *int) *NamedSetOfFilesUpdate {
+func (nsofu *NamedSetOfFilesUpdate) SetNillableOutputGroupID(id *int64) *NamedSetOfFilesUpdate {
 	if id != nil {
 		nsofu = nsofu.SetOutputGroupID(*id)
 	}
@@ -50,14 +50,14 @@ func (nsofu *NamedSetOfFilesUpdate) SetOutputGroup(o *OutputGroup) *NamedSetOfFi
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by IDs.
-func (nsofu *NamedSetOfFilesUpdate) AddFileIDs(ids ...int) *NamedSetOfFilesUpdate {
+func (nsofu *NamedSetOfFilesUpdate) AddFileIDs(ids ...int64) *NamedSetOfFilesUpdate {
 	nsofu.mutation.AddFileIDs(ids...)
 	return nsofu
 }
 
 // AddFiles adds the "files" edges to the TestFile entity.
 func (nsofu *NamedSetOfFilesUpdate) AddFiles(t ...*TestFile) *NamedSetOfFilesUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -65,13 +65,13 @@ func (nsofu *NamedSetOfFilesUpdate) AddFiles(t ...*TestFile) *NamedSetOfFilesUpd
 }
 
 // SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID.
-func (nsofu *NamedSetOfFilesUpdate) SetFileSetsID(id int) *NamedSetOfFilesUpdate {
+func (nsofu *NamedSetOfFilesUpdate) SetFileSetsID(id int64) *NamedSetOfFilesUpdate {
 	nsofu.mutation.SetFileSetsID(id)
 	return nsofu
 }
 
 // SetNillableFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID if the given value is not nil.
-func (nsofu *NamedSetOfFilesUpdate) SetNillableFileSetsID(id *int) *NamedSetOfFilesUpdate {
+func (nsofu *NamedSetOfFilesUpdate) SetNillableFileSetsID(id *int64) *NamedSetOfFilesUpdate {
 	if id != nil {
 		nsofu = nsofu.SetFileSetsID(*id)
 	}
@@ -101,14 +101,14 @@ func (nsofu *NamedSetOfFilesUpdate) ClearFiles() *NamedSetOfFilesUpdate {
 }
 
 // RemoveFileIDs removes the "files" edge to TestFile entities by IDs.
-func (nsofu *NamedSetOfFilesUpdate) RemoveFileIDs(ids ...int) *NamedSetOfFilesUpdate {
+func (nsofu *NamedSetOfFilesUpdate) RemoveFileIDs(ids ...int64) *NamedSetOfFilesUpdate {
 	nsofu.mutation.RemoveFileIDs(ids...)
 	return nsofu
 }
 
 // RemoveFiles removes "files" edges to TestFile entities.
 func (nsofu *NamedSetOfFilesUpdate) RemoveFiles(t ...*TestFile) *NamedSetOfFilesUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -155,7 +155,7 @@ func (nsofu *NamedSetOfFilesUpdate) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64))
 	if ps := nsofu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -171,7 +171,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -184,7 +184,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -200,7 +200,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{namedsetoffiles.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -213,7 +213,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{namedsetoffiles.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -229,7 +229,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{namedsetoffiles.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -245,7 +245,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{namedsetoffiles.FileSetsColumn},
 			Bidi:    true,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -258,7 +258,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{namedsetoffiles.FileSetsColumn},
 			Bidi:    true,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -289,13 +289,13 @@ type NamedSetOfFilesUpdateOne struct {
 }
 
 // SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
-func (nsofuo *NamedSetOfFilesUpdateOne) SetOutputGroupID(id int) *NamedSetOfFilesUpdateOne {
+func (nsofuo *NamedSetOfFilesUpdateOne) SetOutputGroupID(id int64) *NamedSetOfFilesUpdateOne {
 	nsofuo.mutation.SetOutputGroupID(id)
 	return nsofuo
 }
 
 // SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
-func (nsofuo *NamedSetOfFilesUpdateOne) SetNillableOutputGroupID(id *int) *NamedSetOfFilesUpdateOne {
+func (nsofuo *NamedSetOfFilesUpdateOne) SetNillableOutputGroupID(id *int64) *NamedSetOfFilesUpdateOne {
 	if id != nil {
 		nsofuo = nsofuo.SetOutputGroupID(*id)
 	}
@@ -308,14 +308,14 @@ func (nsofuo *NamedSetOfFilesUpdateOne) SetOutputGroup(o *OutputGroup) *NamedSet
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by IDs.
-func (nsofuo *NamedSetOfFilesUpdateOne) AddFileIDs(ids ...int) *NamedSetOfFilesUpdateOne {
+func (nsofuo *NamedSetOfFilesUpdateOne) AddFileIDs(ids ...int64) *NamedSetOfFilesUpdateOne {
 	nsofuo.mutation.AddFileIDs(ids...)
 	return nsofuo
 }
 
 // AddFiles adds the "files" edges to the TestFile entity.
 func (nsofuo *NamedSetOfFilesUpdateOne) AddFiles(t ...*TestFile) *NamedSetOfFilesUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -323,13 +323,13 @@ func (nsofuo *NamedSetOfFilesUpdateOne) AddFiles(t ...*TestFile) *NamedSetOfFile
 }
 
 // SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID.
-func (nsofuo *NamedSetOfFilesUpdateOne) SetFileSetsID(id int) *NamedSetOfFilesUpdateOne {
+func (nsofuo *NamedSetOfFilesUpdateOne) SetFileSetsID(id int64) *NamedSetOfFilesUpdateOne {
 	nsofuo.mutation.SetFileSetsID(id)
 	return nsofuo
 }
 
 // SetNillableFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID if the given value is not nil.
-func (nsofuo *NamedSetOfFilesUpdateOne) SetNillableFileSetsID(id *int) *NamedSetOfFilesUpdateOne {
+func (nsofuo *NamedSetOfFilesUpdateOne) SetNillableFileSetsID(id *int64) *NamedSetOfFilesUpdateOne {
 	if id != nil {
 		nsofuo = nsofuo.SetFileSetsID(*id)
 	}
@@ -359,14 +359,14 @@ func (nsofuo *NamedSetOfFilesUpdateOne) ClearFiles() *NamedSetOfFilesUpdateOne {
 }
 
 // RemoveFileIDs removes the "files" edge to TestFile entities by IDs.
-func (nsofuo *NamedSetOfFilesUpdateOne) RemoveFileIDs(ids ...int) *NamedSetOfFilesUpdateOne {
+func (nsofuo *NamedSetOfFilesUpdateOne) RemoveFileIDs(ids ...int64) *NamedSetOfFilesUpdateOne {
 	nsofuo.mutation.RemoveFileIDs(ids...)
 	return nsofuo
 }
 
 // RemoveFiles removes "files" edges to TestFile entities.
 func (nsofuo *NamedSetOfFilesUpdateOne) RemoveFiles(t ...*TestFile) *NamedSetOfFilesUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -426,7 +426,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) Modify(modifiers ...func(u *sql.UpdateBu
 }
 
 func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *NamedSetOfFiles, err error) {
-	_spec := sqlgraph.NewUpdateSpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64))
 	id, ok := nsofuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NamedSetOfFiles.id" for update`)}
@@ -459,7 +459,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -472,7 +472,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -488,7 +488,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Columns: []string{namedsetoffiles.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -501,7 +501,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Columns: []string{namedsetoffiles.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -517,7 +517,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Columns: []string{namedsetoffiles.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -533,7 +533,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Columns: []string{namedsetoffiles.FileSetsColumn},
 			Bidi:    true,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -546,7 +546,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Columns: []string{namedsetoffiles.FileSetsColumn},
 			Bidi:    true,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

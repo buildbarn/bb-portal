@@ -350,13 +350,13 @@ func (scu *SourceControlUpdate) ClearWorkspace() *SourceControlUpdate {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scu *SourceControlUpdate) SetBazelInvocationID(id int) *SourceControlUpdate {
+func (scu *SourceControlUpdate) SetBazelInvocationID(id int64) *SourceControlUpdate {
 	scu.mutation.SetBazelInvocationID(id)
 	return scu
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableBazelInvocationID(id *int) *SourceControlUpdate {
+func (scu *SourceControlUpdate) SetNillableBazelInvocationID(id *int64) *SourceControlUpdate {
 	if id != nil {
 		scu = scu.SetBazelInvocationID(*id)
 	}
@@ -426,7 +426,7 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	if err := scu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	if ps := scu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -538,7 +538,7 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -551,7 +551,7 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -902,13 +902,13 @@ func (scuo *SourceControlUpdateOne) ClearWorkspace() *SourceControlUpdateOne {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scuo *SourceControlUpdateOne) SetBazelInvocationID(id int) *SourceControlUpdateOne {
+func (scuo *SourceControlUpdateOne) SetBazelInvocationID(id int64) *SourceControlUpdateOne {
 	scuo.mutation.SetBazelInvocationID(id)
 	return scuo
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableBazelInvocationID(id *int) *SourceControlUpdateOne {
+func (scuo *SourceControlUpdateOne) SetNillableBazelInvocationID(id *int64) *SourceControlUpdateOne {
 	if id != nil {
 		scuo = scuo.SetBazelInvocationID(*id)
 	}
@@ -991,7 +991,7 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 	if err := scuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	id, ok := scuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SourceControl.id" for update`)}
@@ -1120,7 +1120,7 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1133,7 +1133,7 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

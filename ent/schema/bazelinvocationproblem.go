@@ -45,3 +45,10 @@ func (BazelInvocationProblem) Indexes() []ent.Index {
 		index.Edges("bazel_invocation"),
 	}
 }
+
+// Mixin of the BazelInvocationProblem.
+func (BazelInvocationProblem) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

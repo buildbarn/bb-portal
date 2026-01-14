@@ -23,7 +23,7 @@ func (EventMetadata) Fields() []ent.Field {
 			Comment("Last time an event was received"),
 		field.Int64("version").
 			Comment("Optimistic lock version number"),
-		field.Int("bazel_invocation_id").
+		field.Int64("bazel_invocation_id").
 			Comment("The id of the bazel invocation").
 			Immutable().
 			Unique(),
@@ -54,5 +54,12 @@ func (EventMetadata) Indexes() []ent.Index {
 func (EventMetadata) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.Skip(),
+	}
+}
+
+// Mixin of the EventMetadata.
+func (EventMetadata) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
 	}
 }

@@ -131,13 +131,13 @@ func (ifu *InvocationFilesUpdate) ClearDigestFunction() *InvocationFilesUpdate {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ifu *InvocationFilesUpdate) SetBazelInvocationID(id int) *InvocationFilesUpdate {
+func (ifu *InvocationFilesUpdate) SetBazelInvocationID(id int64) *InvocationFilesUpdate {
 	ifu.mutation.SetBazelInvocationID(id)
 	return ifu
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (ifu *InvocationFilesUpdate) SetNillableBazelInvocationID(id *int) *InvocationFilesUpdate {
+func (ifu *InvocationFilesUpdate) SetNillableBazelInvocationID(id *int64) *InvocationFilesUpdate {
 	if id != nil {
 		ifu = ifu.SetBazelInvocationID(*id)
 	}
@@ -194,7 +194,7 @@ func (ifu *InvocationFilesUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)
 }
 
 func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	if ps := ifu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -240,7 +240,7 @@ func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{invocationfiles.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -253,7 +253,7 @@ func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{invocationfiles.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -385,13 +385,13 @@ func (ifuo *InvocationFilesUpdateOne) ClearDigestFunction() *InvocationFilesUpda
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ifuo *InvocationFilesUpdateOne) SetBazelInvocationID(id int) *InvocationFilesUpdateOne {
+func (ifuo *InvocationFilesUpdateOne) SetBazelInvocationID(id int64) *InvocationFilesUpdateOne {
 	ifuo.mutation.SetBazelInvocationID(id)
 	return ifuo
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (ifuo *InvocationFilesUpdateOne) SetNillableBazelInvocationID(id *int) *InvocationFilesUpdateOne {
+func (ifuo *InvocationFilesUpdateOne) SetNillableBazelInvocationID(id *int64) *InvocationFilesUpdateOne {
 	if id != nil {
 		ifuo = ifuo.SetBazelInvocationID(*id)
 	}
@@ -461,7 +461,7 @@ func (ifuo *InvocationFilesUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuil
 }
 
 func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *InvocationFiles, err error) {
-	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	id, ok := ifuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "InvocationFiles.id" for update`)}
@@ -524,7 +524,7 @@ func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *Invoc
 			Columns: []string{invocationfiles.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -537,7 +537,7 @@ func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *Invoc
 			Columns: []string{invocationfiles.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

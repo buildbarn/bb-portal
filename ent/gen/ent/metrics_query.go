@@ -326,8 +326,8 @@ func (mq *MetricsQuery) FirstX(ctx context.Context) *Metrics {
 
 // FirstID returns the first Metrics ID from the query.
 // Returns a *NotFoundError when no Metrics ID was found.
-func (mq *MetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mq *MetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = mq.Limit(1).IDs(setContextOp(ctx, mq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -339,7 +339,7 @@ func (mq *MetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mq *MetricsQuery) FirstIDX(ctx context.Context) int {
+func (mq *MetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := mq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -377,8 +377,8 @@ func (mq *MetricsQuery) OnlyX(ctx context.Context) *Metrics {
 // OnlyID is like Only, but returns the only Metrics ID in the query.
 // Returns a *NotSingularError when more than one Metrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (mq *MetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mq *MetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = mq.Limit(2).IDs(setContextOp(ctx, mq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -394,7 +394,7 @@ func (mq *MetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mq *MetricsQuery) OnlyIDX(ctx context.Context) int {
+func (mq *MetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := mq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -422,7 +422,7 @@ func (mq *MetricsQuery) AllX(ctx context.Context) []*Metrics {
 }
 
 // IDs executes the query and returns a list of Metrics IDs.
-func (mq *MetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (mq *MetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if mq.ctx.Unique == nil && mq.path != nil {
 		mq.Unique(true)
 	}
@@ -434,7 +434,7 @@ func (mq *MetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mq *MetricsQuery) IDsX(ctx context.Context) []int {
+func (mq *MetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := mq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -787,8 +787,8 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 }
 
 func (mq *MetricsQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Metrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Metrics)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_metrics == nil {
 			continue
@@ -820,7 +820,7 @@ func (mq *MetricsQuery) loadBazelInvocation(ctx context.Context, query *BazelInv
 }
 func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *ActionSummary)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -848,7 +848,7 @@ func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSumm
 }
 func (mq *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *MemoryMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -876,7 +876,7 @@ func (mq *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetr
 }
 func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TargetMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -904,7 +904,7 @@ func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetr
 }
 func (mq *MetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *PackageMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -932,7 +932,7 @@ func (mq *MetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMe
 }
 func (mq *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TimingMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -960,7 +960,7 @@ func (mq *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetr
 }
 func (mq *MetricsQuery) loadCumulativeMetrics(ctx context.Context, query *CumulativeMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *CumulativeMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -988,7 +988,7 @@ func (mq *MetricsQuery) loadCumulativeMetrics(ctx context.Context, query *Cumula
 }
 func (mq *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *ArtifactMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *ArtifactMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1016,7 +1016,7 @@ func (mq *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *Artifact
 }
 func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *NetworkMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1044,7 +1044,7 @@ func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMe
 }
 func (mq *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildGraphMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BuildGraphMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
+	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1084,7 +1084,7 @@ func (mq *MetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (mq *MetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(metrics.Table, metrics.Columns, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(metrics.Table, metrics.Columns, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64))
 	_spec.From = mq.sql
 	if unique := mq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

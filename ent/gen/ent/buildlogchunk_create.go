@@ -46,8 +46,14 @@ func (blcc *BuildLogChunkCreate) SetLastLineIndex(i int64) *BuildLogChunkCreate 
 	return blcc
 }
 
+// SetID sets the "id" field.
+func (blcc *BuildLogChunkCreate) SetID(i int64) *BuildLogChunkCreate {
+	blcc.mutation.SetID(i)
+	return blcc
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (blcc *BuildLogChunkCreate) SetBazelInvocationID(id int) *BuildLogChunkCreate {
+func (blcc *BuildLogChunkCreate) SetBazelInvocationID(id int64) *BuildLogChunkCreate {
 	blcc.mutation.SetBazelInvocationID(id)
 	return blcc
 }
@@ -120,8 +126,10 @@ func (blcc *BuildLogChunkCreate) sqlSave(ctx context.Context) (*BuildLogChunk, e
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	blcc.mutation.id = &_node.ID
 	blcc.mutation.done = true
 	return _node, nil
@@ -130,9 +138,13 @@ func (blcc *BuildLogChunkCreate) sqlSave(ctx context.Context) (*BuildLogChunk, e
 func (blcc *BuildLogChunkCreate) createSpec() (*BuildLogChunk, *sqlgraph.CreateSpec) {
 	var (
 		_node = &BuildLogChunk{config: blcc.config}
-		_spec = sqlgraph.NewCreateSpec(buildlogchunk.Table, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(buildlogchunk.Table, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = blcc.conflict
+	if id, ok := blcc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := blcc.mutation.Data(); ok {
 		_spec.SetField(buildlogchunk.FieldData, field.TypeBytes, value)
 		_node.Data = value
@@ -157,7 +169,7 @@ func (blcc *BuildLogChunkCreate) createSpec() (*BuildLogChunk, *sqlgraph.CreateS
 			Columns: []string{buildlogchunk.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -284,16 +296,24 @@ func (u *BuildLogChunkUpsert) AddLastLineIndex(v int64) *BuildLogChunkUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.BuildLogChunk.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(buildlogchunk.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BuildLogChunkUpsertOne) UpdateNewValues() *BuildLogChunkUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(buildlogchunk.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -417,7 +437,7 @@ func (u *BuildLogChunkUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *BuildLogChunkUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *BuildLogChunkUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -426,7 +446,7 @@ func (u *BuildLogChunkUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *BuildLogChunkUpsertOne) IDX(ctx context.Context) int {
+func (u *BuildLogChunkUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -480,9 +500,9 @@ func (blccb *BuildLogChunkCreateBulk) Save(ctx context.Context) ([]*BuildLogChun
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -570,10 +590,20 @@ type BuildLogChunkUpsertBulk struct {
 //	client.BuildLogChunk.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(buildlogchunk.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BuildLogChunkUpsertBulk) UpdateNewValues() *BuildLogChunkUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(buildlogchunk.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

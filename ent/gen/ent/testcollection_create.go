@@ -123,14 +123,20 @@ func (tcc *TestCollectionCreate) SetNillableDurationMs(i *int64) *TestCollection
 	return tcc
 }
 
+// SetID sets the "id" field.
+func (tcc *TestCollectionCreate) SetID(i int64) *TestCollectionCreate {
+	tcc.mutation.SetID(i)
+	return tcc
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tcc *TestCollectionCreate) SetBazelInvocationID(id int) *TestCollectionCreate {
+func (tcc *TestCollectionCreate) SetBazelInvocationID(id int64) *TestCollectionCreate {
 	tcc.mutation.SetBazelInvocationID(id)
 	return tcc
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tcc *TestCollectionCreate) SetNillableBazelInvocationID(id *int) *TestCollectionCreate {
+func (tcc *TestCollectionCreate) SetNillableBazelInvocationID(id *int64) *TestCollectionCreate {
 	if id != nil {
 		tcc = tcc.SetBazelInvocationID(*id)
 	}
@@ -143,13 +149,13 @@ func (tcc *TestCollectionCreate) SetBazelInvocation(b *BazelInvocation) *TestCol
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
-func (tcc *TestCollectionCreate) SetTestSummaryID(id int) *TestCollectionCreate {
+func (tcc *TestCollectionCreate) SetTestSummaryID(id int64) *TestCollectionCreate {
 	tcc.mutation.SetTestSummaryID(id)
 	return tcc
 }
 
 // SetNillableTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID if the given value is not nil.
-func (tcc *TestCollectionCreate) SetNillableTestSummaryID(id *int) *TestCollectionCreate {
+func (tcc *TestCollectionCreate) SetNillableTestSummaryID(id *int64) *TestCollectionCreate {
 	if id != nil {
 		tcc = tcc.SetTestSummaryID(*id)
 	}
@@ -162,14 +168,14 @@ func (tcc *TestCollectionCreate) SetTestSummary(t *TestSummary) *TestCollectionC
 }
 
 // AddTestResultIDs adds the "test_results" edge to the TestResultBES entity by IDs.
-func (tcc *TestCollectionCreate) AddTestResultIDs(ids ...int) *TestCollectionCreate {
+func (tcc *TestCollectionCreate) AddTestResultIDs(ids ...int64) *TestCollectionCreate {
 	tcc.mutation.AddTestResultIDs(ids...)
 	return tcc
 }
 
 // AddTestResults adds the "test_results" edges to the TestResultBES entity.
 func (tcc *TestCollectionCreate) AddTestResults(t ...*TestResultBES) *TestCollectionCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -238,8 +244,10 @@ func (tcc *TestCollectionCreate) sqlSave(ctx context.Context) (*TestCollection, 
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tcc.mutation.id = &_node.ID
 	tcc.mutation.done = true
 	return _node, nil
@@ -248,9 +256,13 @@ func (tcc *TestCollectionCreate) sqlSave(ctx context.Context) (*TestCollection, 
 func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TestCollection{config: tcc.config}
-		_spec = sqlgraph.NewCreateSpec(testcollection.Table, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(testcollection.Table, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tcc.conflict
+	if id, ok := tcc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tcc.mutation.Label(); ok {
 		_spec.SetField(testcollection.FieldLabel, field.TypeString, value)
 		_node.Label = value
@@ -287,7 +299,7 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -304,7 +316,7 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 			Columns: []string{testcollection.TestSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -320,7 +332,7 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 			Columns: []string{testcollection.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -512,16 +524,24 @@ func (u *TestCollectionUpsert) ClearDurationMs() *TestCollectionUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.TestCollection.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(testcollection.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TestCollectionUpsertOne) UpdateNewValues() *TestCollectionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(testcollection.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -722,7 +742,7 @@ func (u *TestCollectionUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TestCollectionUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TestCollectionUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -731,7 +751,7 @@ func (u *TestCollectionUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TestCollectionUpsertOne) IDX(ctx context.Context) int {
+func (u *TestCollectionUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -786,9 +806,9 @@ func (tccb *TestCollectionCreateBulk) Save(ctx context.Context) ([]*TestCollecti
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -876,10 +896,20 @@ type TestCollectionUpsertBulk struct {
 //	client.TestCollection.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(testcollection.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TestCollectionUpsertBulk) UpdateNewValues() *TestCollectionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(testcollection.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

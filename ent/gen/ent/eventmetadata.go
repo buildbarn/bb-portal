@@ -17,7 +17,7 @@ import (
 type EventMetadata struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Binary representation of the events that have been handled
 	Handled []byte `json:"handled,omitempty"`
 	// Last time an event was received
@@ -25,7 +25,7 @@ type EventMetadata struct {
 	// Optimistic lock version number
 	Version int64 `json:"version,omitempty"`
 	// The id of the bazel invocation
-	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
+	BazelInvocationID int64 `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EventMetadataQuery when eager-loading is set.
 	Edges        EventMetadataEdges `json:"edges"`
@@ -85,7 +85,7 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			em.ID = int(value.Int64)
+			em.ID = int64(value.Int64)
 		case eventmetadata.FieldHandled:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field handled", values[i])
@@ -108,7 +108,7 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				em.BazelInvocationID = int(value.Int64)
+				em.BazelInvocationID = value.Int64
 			}
 		default:
 			em.selectValues.Set(columns[i], values[i])

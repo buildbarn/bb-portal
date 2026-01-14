@@ -27,6 +27,7 @@ go_library(
         "memorymetrics.go",
         "metrics.go",
         "missdetail.go",
+        "mixin.go",
         "namedsetoffiles.go",
         "networkmetrics.go",
         "outputgroup.go",
@@ -58,5 +59,6 @@ go_library(
         "@io_entgo_ent//schema/edge",
         "@io_entgo_ent//schema/field",
         "@io_entgo_ent//schema/index",
+        "@io_entgo_ent//schema/mixin",
     ],
 )

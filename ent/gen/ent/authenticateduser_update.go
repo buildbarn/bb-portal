@@ -62,14 +62,14 @@ func (auu *AuthenticatedUserUpdate) ClearUserInfo() *AuthenticatedUserUpdate {
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (auu *AuthenticatedUserUpdate) AddBazelInvocationIDs(ids ...int) *AuthenticatedUserUpdate {
+func (auu *AuthenticatedUserUpdate) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdate {
 	auu.mutation.AddBazelInvocationIDs(ids...)
 	return auu
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
 func (auu *AuthenticatedUserUpdate) AddBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -88,14 +88,14 @@ func (auu *AuthenticatedUserUpdate) ClearBazelInvocations() *AuthenticatedUserUp
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to BazelInvocation entities by IDs.
-func (auu *AuthenticatedUserUpdate) RemoveBazelInvocationIDs(ids ...int) *AuthenticatedUserUpdate {
+func (auu *AuthenticatedUserUpdate) RemoveBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdate {
 	auu.mutation.RemoveBazelInvocationIDs(ids...)
 	return auu
 }
 
 // RemoveBazelInvocations removes "bazel_invocations" edges to BazelInvocation entities.
 func (auu *AuthenticatedUserUpdate) RemoveBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -136,7 +136,7 @@ func (auu *AuthenticatedUserUpdate) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
 	if ps := auu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -164,7 +164,7 @@ func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{authenticateduser.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -177,7 +177,7 @@ func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{authenticateduser.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -193,7 +193,7 @@ func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{authenticateduser.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -256,14 +256,14 @@ func (auuo *AuthenticatedUserUpdateOne) ClearUserInfo() *AuthenticatedUserUpdate
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (auuo *AuthenticatedUserUpdateOne) AddBazelInvocationIDs(ids ...int) *AuthenticatedUserUpdateOne {
+func (auuo *AuthenticatedUserUpdateOne) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdateOne {
 	auuo.mutation.AddBazelInvocationIDs(ids...)
 	return auuo
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
 func (auuo *AuthenticatedUserUpdateOne) AddBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdateOne {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -282,14 +282,14 @@ func (auuo *AuthenticatedUserUpdateOne) ClearBazelInvocations() *AuthenticatedUs
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to BazelInvocation entities by IDs.
-func (auuo *AuthenticatedUserUpdateOne) RemoveBazelInvocationIDs(ids ...int) *AuthenticatedUserUpdateOne {
+func (auuo *AuthenticatedUserUpdateOne) RemoveBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdateOne {
 	auuo.mutation.RemoveBazelInvocationIDs(ids...)
 	return auuo
 }
 
 // RemoveBazelInvocations removes "bazel_invocations" edges to BazelInvocation entities.
 func (auuo *AuthenticatedUserUpdateOne) RemoveBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdateOne {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -343,7 +343,7 @@ func (auuo *AuthenticatedUserUpdateOne) Modify(modifiers ...func(u *sql.UpdateBu
 }
 
 func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *AuthenticatedUser, err error) {
-	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
 	id, ok := auuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AuthenticatedUser.id" for update`)}
@@ -388,7 +388,7 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 			Columns: []string{authenticateduser.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -401,7 +401,7 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 			Columns: []string{authenticateduser.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -417,7 +417,7 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 			Columns: []string{authenticateduser.BazelInvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

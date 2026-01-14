@@ -16,7 +16,7 @@ import (
 type TimingBreakdown struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Time holds the value of the "time" field.
@@ -24,7 +24,7 @@ type TimingBreakdown struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingBreakdownQuery when eager-loading is set.
 	Edges                          TimingBreakdownEdges `json:"edges"`
-	exection_info_timing_breakdown *int
+	exection_info_timing_breakdown *int64
 	selectValues                   sql.SelectValues
 }
 
@@ -94,7 +94,7 @@ func (tb *TimingBreakdown) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tb.ID = int(value.Int64)
+			tb.ID = int64(value.Int64)
 		case timingbreakdown.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -111,8 +111,8 @@ func (tb *TimingBreakdown) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field exection_info_timing_breakdown", value)
 			} else if value.Valid {
-				tb.exection_info_timing_breakdown = new(int)
-				*tb.exection_info_timing_breakdown = int(value.Int64)
+				tb.exection_info_timing_breakdown = new(int64)
+				*tb.exection_info_timing_breakdown = int64(value.Int64)
 			}
 		default:
 			tb.selectValues.Set(columns[i], values[i])

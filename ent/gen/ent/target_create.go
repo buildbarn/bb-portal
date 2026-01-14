@@ -42,8 +42,14 @@ func (tc *TargetCreate) SetTargetKind(s string) *TargetCreate {
 	return tc
 }
 
+// SetID sets the "id" field.
+func (tc *TargetCreate) SetID(i int64) *TargetCreate {
+	tc.mutation.SetID(i)
+	return tc
+}
+
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (tc *TargetCreate) SetInstanceNameID(id int) *TargetCreate {
+func (tc *TargetCreate) SetInstanceNameID(id int64) *TargetCreate {
 	tc.mutation.SetInstanceNameID(id)
 	return tc
 }
@@ -54,14 +60,14 @@ func (tc *TargetCreate) SetInstanceName(i *InstanceName) *TargetCreate {
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (tc *TargetCreate) AddInvocationTargetIDs(ids ...int) *TargetCreate {
+func (tc *TargetCreate) AddInvocationTargetIDs(ids ...int64) *TargetCreate {
 	tc.mutation.AddInvocationTargetIDs(ids...)
 	return tc
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
 func (tc *TargetCreate) AddInvocationTargets(i ...*InvocationTarget) *TargetCreate {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -69,14 +75,14 @@ func (tc *TargetCreate) AddInvocationTargets(i ...*InvocationTarget) *TargetCrea
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (tc *TargetCreate) AddTargetKindMappingIDs(ids ...int) *TargetCreate {
+func (tc *TargetCreate) AddTargetKindMappingIDs(ids ...int64) *TargetCreate {
 	tc.mutation.AddTargetKindMappingIDs(ids...)
 	return tc
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
 func (tc *TargetCreate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -143,8 +149,10 @@ func (tc *TargetCreate) sqlSave(ctx context.Context) (*Target, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tc.mutation.id = &_node.ID
 	tc.mutation.done = true
 	return _node, nil
@@ -153,9 +161,13 @@ func (tc *TargetCreate) sqlSave(ctx context.Context) (*Target, error) {
 func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Target{config: tc.config}
-		_spec = sqlgraph.NewCreateSpec(target.Table, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(target.Table, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tc.conflict
+	if id, ok := tc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tc.mutation.Label(); ok {
 		_spec.SetField(target.FieldLabel, field.TypeString, value)
 		_node.Label = value
@@ -176,7 +188,7 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -193,7 +205,7 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 			Columns: []string{target.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -209,7 +221,7 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 			Columns: []string{target.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -305,16 +317,24 @@ func (u *TargetUpsert) UpdateTargetKind() *TargetUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Target.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(target.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TargetUpsertOne) UpdateNewValues() *TargetUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(target.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -403,7 +423,7 @@ func (u *TargetUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TargetUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TargetUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -412,7 +432,7 @@ func (u *TargetUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TargetUpsertOne) IDX(ctx context.Context) int {
+func (u *TargetUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -466,9 +486,9 @@ func (tcb *TargetCreateBulk) Save(ctx context.Context) ([]*Target, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -556,10 +576,20 @@ type TargetUpsertBulk struct {
 //	client.Target.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(target.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TargetUpsertBulk) UpdateNewValues() *TargetUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(target.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

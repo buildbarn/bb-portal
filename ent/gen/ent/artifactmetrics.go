@@ -16,7 +16,7 @@ import (
 type ArtifactMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// SourceArtifactsReadSizeInBytes holds the value of the "source_artifacts_read_size_in_bytes" field.
 	SourceArtifactsReadSizeInBytes int64 `json:"source_artifacts_read_size_in_bytes,omitempty"`
 	// SourceArtifactsReadCount holds the value of the "source_artifacts_read_count" field.
@@ -36,7 +36,7 @@ type ArtifactMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArtifactMetricsQuery when eager-loading is set.
 	Edges                    ArtifactMetricsEdges `json:"edges"`
-	metrics_artifact_metrics *int
+	metrics_artifact_metrics *int64
 	selectValues             sql.SelectValues
 }
 
@@ -91,7 +91,7 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			am.ID = int(value.Int64)
+			am.ID = int64(value.Int64)
 		case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field source_artifacts_read_size_in_bytes", values[i])
@@ -144,8 +144,8 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_artifact_metrics", value)
 			} else if value.Valid {
-				am.metrics_artifact_metrics = new(int)
-				*am.metrics_artifact_metrics = int(value.Int64)
+				am.metrics_artifact_metrics = new(int64)
+				*am.metrics_artifact_metrics = int64(value.Int64)
 			}
 		default:
 			am.selectValues.Set(columns[i], values[i])

@@ -13,7 +13,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func createTestTarget(t *testing.T, ctx context.Context, client *ent.Client, targetLabel string, instanceNameDbID int) *ent.Target {
+func createTestTarget(t *testing.T, ctx context.Context, client *ent.Client, targetLabel string, instanceNameDbID int64) *ent.Target {
 	target, err := client.Target.Create().
 		SetInstanceNameID(instanceNameDbID).
 		SetLabel(targetLabel).

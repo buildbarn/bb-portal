@@ -40,7 +40,7 @@ func (snsd *SystemNetworkStatsDelete) ExecX(ctx context.Context) int {
 }
 
 func (snsd *SystemNetworkStatsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(systemnetworkstats.Table, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(systemnetworkstats.Table, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
 	if ps := snsd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

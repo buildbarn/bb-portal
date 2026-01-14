@@ -77,13 +77,13 @@ func (esu *EvaluationStatUpdate) ClearCount() *EvaluationStatUpdate {
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (esu *EvaluationStatUpdate) SetBuildGraphMetricsID(id int) *EvaluationStatUpdate {
+func (esu *EvaluationStatUpdate) SetBuildGraphMetricsID(id int64) *EvaluationStatUpdate {
 	esu.mutation.SetBuildGraphMetricsID(id)
 	return esu
 }
 
 // SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (esu *EvaluationStatUpdate) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatUpdate {
+func (esu *EvaluationStatUpdate) SetNillableBuildGraphMetricsID(id *int64) *EvaluationStatUpdate {
 	if id != nil {
 		esu = esu.SetBuildGraphMetricsID(*id)
 	}
@@ -140,7 +140,7 @@ func (esu *EvaluationStatUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder))
 }
 
 func (esu *EvaluationStatUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64))
 	if ps := esu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -171,7 +171,7 @@ func (esu *EvaluationStatUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -184,7 +184,7 @@ func (esu *EvaluationStatUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -262,13 +262,13 @@ func (esuo *EvaluationStatUpdateOne) ClearCount() *EvaluationStatUpdateOne {
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (esuo *EvaluationStatUpdateOne) SetBuildGraphMetricsID(id int) *EvaluationStatUpdateOne {
+func (esuo *EvaluationStatUpdateOne) SetBuildGraphMetricsID(id int64) *EvaluationStatUpdateOne {
 	esuo.mutation.SetBuildGraphMetricsID(id)
 	return esuo
 }
 
 // SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (esuo *EvaluationStatUpdateOne) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatUpdateOne {
+func (esuo *EvaluationStatUpdateOne) SetNillableBuildGraphMetricsID(id *int64) *EvaluationStatUpdateOne {
 	if id != nil {
 		esuo = esuo.SetBuildGraphMetricsID(*id)
 	}
@@ -338,7 +338,7 @@ func (esuo *EvaluationStatUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuild
 }
 
 func (esuo *EvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node *EvaluationStat, err error) {
-	_spec := sqlgraph.NewUpdateSpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64))
 	id, ok := esuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "EvaluationStat.id" for update`)}
@@ -386,7 +386,7 @@ func (esuo *EvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node *Evalua
 			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -399,7 +399,7 @@ func (esuo *EvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node *Evalua
 			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

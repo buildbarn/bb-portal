@@ -56,3 +56,10 @@ func (TimingMetrics) Indexes() []ent.Index {
 		index.Edges("metrics"),
 	}
 }
+
+// Mixin of the TimingMetrics.
+func (TimingMetrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

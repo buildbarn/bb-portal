@@ -96,7 +96,7 @@ func (r *BuildEventRecorder) saveExecutionInfo(ctx context.Context, tx *ent.Clie
 	return ei, nil
 }
 
-func (r *BuildEventRecorder) saveTestResultBES(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string, testCollectionDbID int) error {
+func (r *BuildEventRecorder) saveTestResultBES(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string, testCollectionDbID int64) error {
 	if label == "" {
 		return fmt.Errorf("missing label for Test Result BES message")
 	}
@@ -127,7 +127,7 @@ func (r *BuildEventRecorder) saveTestResultBES(ctx context.Context, tx *ent.Clie
 	return nil
 }
 
-func (r *BuildEventRecorder) createTestCollection(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string) (int, error) {
+func (r *BuildEventRecorder) createTestCollection(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string) (int64, error) {
 	cachedLocally := testResult.GetCachedLocally()
 	cachedRemotely := testResult.GetExecutionInfo().GetCachedRemotely()
 	strategy := testResult.GetExecutionInfo().GetStrategy()
@@ -147,7 +147,7 @@ func (r *BuildEventRecorder) createTestCollection(ctx context.Context, tx *ent.C
 	return testCollectionDb.ID, nil
 }
 
-func (r *BuildEventRecorder) updateTestCollection(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string, testCollectionDb *ent.TestCollection) (int, error) {
+func (r *BuildEventRecorder) updateTestCollection(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string, testCollectionDb *ent.TestCollection) (int64, error) {
 	cachedLocally := testResult.GetCachedLocally()
 	cachedRemotely := testResult.GetExecutionInfo().GetCachedRemotely()
 	strategy := testResult.GetExecutionInfo().GetStrategy()
@@ -184,7 +184,7 @@ func (r *BuildEventRecorder) saveTestResult(ctx context.Context, tx *ent.Client,
 		return fmt.Errorf("missing test result for label %q", label)
 	}
 
-	var testCollectionDbID int
+	var testCollectionDbID int64
 
 	testCollectionDb, err := tx.TestCollection.Query().Where(
 		testcollection.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),

@@ -69,7 +69,7 @@ func (r *BuildEventRecorder) saveTargetConfiguredBatch(ctx context.Context, batc
 	return nil
 }
 
-func createTargetKindMappingsBulk(ctx context.Context, isRealTime bool, invocationDbID int, tx database.Handle, batch []BuildEventWithInfo, targetIds map[targetKey]int) error {
+func createTargetKindMappingsBulk(ctx context.Context, isRealTime bool, invocationDbID int64, tx database.Handle, batch []BuildEventWithInfo, targetIds map[targetKey]int) error {
 	params := sqlc.CreateTargetKindMappingsBulkParams{
 		BazelInvocationID: int64(invocationDbID),
 		TargetIds:         make([]int64, len(batch)),
@@ -91,7 +91,7 @@ func createTargetKindMappingsBulk(ctx context.Context, isRealTime bool, invocati
 // manner. Most of the time the targets will already exist in which case
 // this will only be a single select. Otherwise it inserts the missing
 // targets.
-func getOrCreateTargets(ctx context.Context, instanceNameID int, tx database.Handle, batch []BuildEventWithInfo) (map[targetKey]int, error) {
+func getOrCreateTargets(ctx context.Context, instanceNameID int64, tx database.Handle, batch []BuildEventWithInfo) (map[targetKey]int, error) {
 	var labels, aspects, kinds []string
 	uniqueKeys := make(map[targetKey]struct{}, len(batch))
 

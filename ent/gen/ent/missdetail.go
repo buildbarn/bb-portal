@@ -16,7 +16,7 @@ import (
 type MissDetail struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Reason holds the value of the "reason" field.
 	Reason string `json:"reason,omitempty"`
 	// Count holds the value of the "count" field.
@@ -24,7 +24,7 @@ type MissDetail struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MissDetailQuery when eager-loading is set.
 	Edges                                MissDetailEdges `json:"edges"`
-	action_cache_statistics_miss_details *int
+	action_cache_statistics_miss_details *int64
 	selectValues                         sql.SelectValues
 }
 
@@ -81,7 +81,7 @@ func (md *MissDetail) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			md.ID = int(value.Int64)
+			md.ID = int64(value.Int64)
 		case missdetail.FieldReason:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field reason", values[i])
@@ -98,8 +98,8 @@ func (md *MissDetail) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_cache_statistics_miss_details", value)
 			} else if value.Valid {
-				md.action_cache_statistics_miss_details = new(int)
-				*md.action_cache_statistics_miss_details = int(value.Int64)
+				md.action_cache_statistics_miss_details = new(int64)
+				*md.action_cache_statistics_miss_details = int64(value.Int64)
 			}
 		default:
 			md.selectValues.Set(columns[i], values[i])

@@ -57,3 +57,10 @@ func (ArtifactMetrics) Indexes() []ent.Index {
 		index.Edges("metrics"),
 	}
 }
+
+// Mixin of the ArtifactMetrics.
+func (ArtifactMetrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

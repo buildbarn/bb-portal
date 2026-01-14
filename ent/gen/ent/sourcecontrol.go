@@ -16,7 +16,7 @@ import (
 type SourceControl struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Provider holds the value of the "provider" field.
 	Provider sourcecontrol.Provider `json:"provider,omitempty"`
 	// InstanceURL holds the value of the "instance_url" field.
@@ -52,7 +52,7 @@ type SourceControl struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SourceControlQuery when eager-loading is set.
 	Edges                           SourceControlEdges `json:"edges"`
-	bazel_invocation_source_control *int
+	bazel_invocation_source_control *int64
 	selectValues                    sql.SelectValues
 }
 
@@ -109,7 +109,7 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			sc.ID = int(value.Int64)
+			sc.ID = int64(value.Int64)
 		case sourcecontrol.FieldProvider:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field provider", values[i])
@@ -210,8 +210,8 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_source_control", value)
 			} else if value.Valid {
-				sc.bazel_invocation_source_control = new(int)
-				*sc.bazel_invocation_source_control = int(value.Int64)
+				sc.bazel_invocation_source_control = new(int64)
+				*sc.bazel_invocation_source_control = int64(value.Int64)
 			}
 		default:
 			sc.selectValues.Set(columns[i], values[i])

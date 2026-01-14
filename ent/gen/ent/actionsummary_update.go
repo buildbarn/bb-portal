@@ -141,13 +141,13 @@ func (asu *ActionSummaryUpdate) ClearRemoteCacheHits() *ActionSummaryUpdate {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asu *ActionSummaryUpdate) SetMetricsID(id int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) SetMetricsID(id int64) *ActionSummaryUpdate {
 	asu.mutation.SetMetricsID(id)
 	return asu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableMetricsID(id *int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) SetNillableMetricsID(id *int64) *ActionSummaryUpdate {
 	if id != nil {
 		asu = asu.SetMetricsID(*id)
 	}
@@ -160,14 +160,14 @@ func (asu *ActionSummaryUpdate) SetMetrics(m *Metrics) *ActionSummaryUpdate {
 }
 
 // AddActionDatumIDs adds the "action_data" edge to the ActionData entity by IDs.
-func (asu *ActionSummaryUpdate) AddActionDatumIDs(ids ...int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) AddActionDatumIDs(ids ...int64) *ActionSummaryUpdate {
 	asu.mutation.AddActionDatumIDs(ids...)
 	return asu
 }
 
 // AddActionData adds the "action_data" edges to the ActionData entity.
 func (asu *ActionSummaryUpdate) AddActionData(a ...*ActionData) *ActionSummaryUpdate {
-	ids := make([]int, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -175,14 +175,14 @@ func (asu *ActionSummaryUpdate) AddActionData(a ...*ActionData) *ActionSummaryUp
 }
 
 // AddRunnerCountIDs adds the "runner_count" edge to the RunnerCount entity by IDs.
-func (asu *ActionSummaryUpdate) AddRunnerCountIDs(ids ...int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) AddRunnerCountIDs(ids ...int64) *ActionSummaryUpdate {
 	asu.mutation.AddRunnerCountIDs(ids...)
 	return asu
 }
 
 // AddRunnerCount adds the "runner_count" edges to the RunnerCount entity.
 func (asu *ActionSummaryUpdate) AddRunnerCount(r ...*RunnerCount) *ActionSummaryUpdate {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -190,13 +190,13 @@ func (asu *ActionSummaryUpdate) AddRunnerCount(r ...*RunnerCount) *ActionSummary
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (asu *ActionSummaryUpdate) SetActionCacheStatisticsID(id int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) SetActionCacheStatisticsID(id int64) *ActionSummaryUpdate {
 	asu.mutation.SetActionCacheStatisticsID(id)
 	return asu
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableActionCacheStatisticsID(id *int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryUpdate {
 	if id != nil {
 		asu = asu.SetActionCacheStatisticsID(*id)
 	}
@@ -226,14 +226,14 @@ func (asu *ActionSummaryUpdate) ClearActionData() *ActionSummaryUpdate {
 }
 
 // RemoveActionDatumIDs removes the "action_data" edge to ActionData entities by IDs.
-func (asu *ActionSummaryUpdate) RemoveActionDatumIDs(ids ...int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) RemoveActionDatumIDs(ids ...int64) *ActionSummaryUpdate {
 	asu.mutation.RemoveActionDatumIDs(ids...)
 	return asu
 }
 
 // RemoveActionData removes "action_data" edges to ActionData entities.
 func (asu *ActionSummaryUpdate) RemoveActionData(a ...*ActionData) *ActionSummaryUpdate {
-	ids := make([]int, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -247,14 +247,14 @@ func (asu *ActionSummaryUpdate) ClearRunnerCount() *ActionSummaryUpdate {
 }
 
 // RemoveRunnerCountIDs removes the "runner_count" edge to RunnerCount entities by IDs.
-func (asu *ActionSummaryUpdate) RemoveRunnerCountIDs(ids ...int) *ActionSummaryUpdate {
+func (asu *ActionSummaryUpdate) RemoveRunnerCountIDs(ids ...int64) *ActionSummaryUpdate {
 	asu.mutation.RemoveRunnerCountIDs(ids...)
 	return asu
 }
 
 // RemoveRunnerCount removes "runner_count" edges to RunnerCount entities.
 func (asu *ActionSummaryUpdate) RemoveRunnerCount(r ...*RunnerCount) *ActionSummaryUpdate {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -301,7 +301,7 @@ func (asu *ActionSummaryUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
 	if ps := asu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -353,7 +353,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -366,7 +366,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -382,7 +382,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -395,7 +395,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -411,7 +411,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -427,7 +427,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -440,7 +440,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -456,7 +456,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -472,7 +472,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -485,7 +485,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -624,13 +624,13 @@ func (asuo *ActionSummaryUpdateOne) ClearRemoteCacheHits() *ActionSummaryUpdateO
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asuo *ActionSummaryUpdateOne) SetMetricsID(id int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) SetMetricsID(id int64) *ActionSummaryUpdateOne {
 	asuo.mutation.SetMetricsID(id)
 	return asuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableMetricsID(id *int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) SetNillableMetricsID(id *int64) *ActionSummaryUpdateOne {
 	if id != nil {
 		asuo = asuo.SetMetricsID(*id)
 	}
@@ -643,14 +643,14 @@ func (asuo *ActionSummaryUpdateOne) SetMetrics(m *Metrics) *ActionSummaryUpdateO
 }
 
 // AddActionDatumIDs adds the "action_data" edge to the ActionData entity by IDs.
-func (asuo *ActionSummaryUpdateOne) AddActionDatumIDs(ids ...int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) AddActionDatumIDs(ids ...int64) *ActionSummaryUpdateOne {
 	asuo.mutation.AddActionDatumIDs(ids...)
 	return asuo
 }
 
 // AddActionData adds the "action_data" edges to the ActionData entity.
 func (asuo *ActionSummaryUpdateOne) AddActionData(a ...*ActionData) *ActionSummaryUpdateOne {
-	ids := make([]int, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -658,14 +658,14 @@ func (asuo *ActionSummaryUpdateOne) AddActionData(a ...*ActionData) *ActionSumma
 }
 
 // AddRunnerCountIDs adds the "runner_count" edge to the RunnerCount entity by IDs.
-func (asuo *ActionSummaryUpdateOne) AddRunnerCountIDs(ids ...int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) AddRunnerCountIDs(ids ...int64) *ActionSummaryUpdateOne {
 	asuo.mutation.AddRunnerCountIDs(ids...)
 	return asuo
 }
 
 // AddRunnerCount adds the "runner_count" edges to the RunnerCount entity.
 func (asuo *ActionSummaryUpdateOne) AddRunnerCount(r ...*RunnerCount) *ActionSummaryUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -673,13 +673,13 @@ func (asuo *ActionSummaryUpdateOne) AddRunnerCount(r ...*RunnerCount) *ActionSum
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (asuo *ActionSummaryUpdateOne) SetActionCacheStatisticsID(id int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) SetActionCacheStatisticsID(id int64) *ActionSummaryUpdateOne {
 	asuo.mutation.SetActionCacheStatisticsID(id)
 	return asuo
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableActionCacheStatisticsID(id *int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryUpdateOne {
 	if id != nil {
 		asuo = asuo.SetActionCacheStatisticsID(*id)
 	}
@@ -709,14 +709,14 @@ func (asuo *ActionSummaryUpdateOne) ClearActionData() *ActionSummaryUpdateOne {
 }
 
 // RemoveActionDatumIDs removes the "action_data" edge to ActionData entities by IDs.
-func (asuo *ActionSummaryUpdateOne) RemoveActionDatumIDs(ids ...int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) RemoveActionDatumIDs(ids ...int64) *ActionSummaryUpdateOne {
 	asuo.mutation.RemoveActionDatumIDs(ids...)
 	return asuo
 }
 
 // RemoveActionData removes "action_data" edges to ActionData entities.
 func (asuo *ActionSummaryUpdateOne) RemoveActionData(a ...*ActionData) *ActionSummaryUpdateOne {
-	ids := make([]int, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -730,14 +730,14 @@ func (asuo *ActionSummaryUpdateOne) ClearRunnerCount() *ActionSummaryUpdateOne {
 }
 
 // RemoveRunnerCountIDs removes the "runner_count" edge to RunnerCount entities by IDs.
-func (asuo *ActionSummaryUpdateOne) RemoveRunnerCountIDs(ids ...int) *ActionSummaryUpdateOne {
+func (asuo *ActionSummaryUpdateOne) RemoveRunnerCountIDs(ids ...int64) *ActionSummaryUpdateOne {
 	asuo.mutation.RemoveRunnerCountIDs(ids...)
 	return asuo
 }
 
 // RemoveRunnerCount removes "runner_count" edges to RunnerCount entities.
 func (asuo *ActionSummaryUpdateOne) RemoveRunnerCount(r ...*RunnerCount) *ActionSummaryUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -797,7 +797,7 @@ func (asuo *ActionSummaryUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionSummary, err error) {
-	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
 	id, ok := asuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ActionSummary.id" for update`)}
@@ -866,7 +866,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -879,7 +879,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -895,7 +895,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -908,7 +908,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -924,7 +924,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -940,7 +940,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -953,7 +953,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -969,7 +969,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -985,7 +985,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -998,7 +998,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

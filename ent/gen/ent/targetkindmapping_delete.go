@@ -40,7 +40,7 @@ func (tkmd *TargetKindMappingDelete) ExecX(ctx context.Context) int {
 }
 
 func (tkmd *TargetKindMappingDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(targetkindmapping.Table, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(targetkindmapping.Table, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
 	if ps := tkmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

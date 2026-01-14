@@ -74,3 +74,10 @@ func (ActionSummary) Indexes() []ent.Index {
 		index.Edges("metrics"),
 	}
 }
+
+// Mixin of the ActionSummary.
+func (ActionSummary) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

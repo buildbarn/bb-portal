@@ -24,7 +24,7 @@ func (IncompleteBuildLog) Fields() []ent.Field {
 		field.Bytes("log_snippet").Immutable(),
 
 		// Foreign key to bazel invocation
-		field.Int("bazel_invocation_id").Immutable(),
+		field.Int64("bazel_invocation_id").Immutable(),
 	}
 }
 
@@ -55,5 +55,12 @@ func (IncompleteBuildLog) Indexes() []ent.Index {
 func (IncompleteBuildLog) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.Skip(),
+	}
+}
+
+// Mixin of the IncompleteBuildLog.
+func (IncompleteBuildLog) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
 	}
 }

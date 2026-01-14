@@ -16,7 +16,7 @@ import (
 type TimingChild struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Time holds the value of the "time" field.
@@ -24,7 +24,7 @@ type TimingChild struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingChildQuery when eager-loading is set.
 	Edges                  TimingChildEdges `json:"edges"`
-	timing_breakdown_child *int
+	timing_breakdown_child *int64
 	selectValues           sql.SelectValues
 }
 
@@ -81,7 +81,7 @@ func (tc *TimingChild) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tc.ID = int(value.Int64)
+			tc.ID = int64(value.Int64)
 		case timingchild.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -98,8 +98,8 @@ func (tc *TimingChild) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field timing_breakdown_child", value)
 			} else if value.Valid {
-				tc.timing_breakdown_child = new(int)
-				*tc.timing_breakdown_child = int(value.Int64)
+				tc.timing_breakdown_child = new(int64)
+				*tc.timing_breakdown_child = int64(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])

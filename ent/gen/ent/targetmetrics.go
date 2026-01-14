@@ -16,7 +16,7 @@ import (
 type TargetMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// TargetsLoaded holds the value of the "targets_loaded" field.
 	TargetsLoaded int64 `json:"targets_loaded,omitempty"`
 	// TargetsConfigured holds the value of the "targets_configured" field.
@@ -26,7 +26,7 @@ type TargetMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetMetricsQuery when eager-loading is set.
 	Edges                  TargetMetricsEdges `json:"edges"`
-	metrics_target_metrics *int
+	metrics_target_metrics *int64
 	selectValues           sql.SelectValues
 }
 
@@ -81,7 +81,7 @@ func (tm *TargetMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tm.ID = int(value.Int64)
+			tm.ID = int64(value.Int64)
 		case targetmetrics.FieldTargetsLoaded:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field targets_loaded", values[i])
@@ -104,8 +104,8 @@ func (tm *TargetMetrics) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_target_metrics", value)
 			} else if value.Valid {
-				tm.metrics_target_metrics = new(int)
-				*tm.metrics_target_metrics = int(value.Int64)
+				tm.metrics_target_metrics = new(int64)
+				*tm.metrics_target_metrics = int64(value.Int64)
 			}
 		default:
 			tm.selectValues.Set(columns[i], values[i])

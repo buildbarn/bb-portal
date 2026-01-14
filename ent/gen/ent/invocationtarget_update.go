@@ -179,7 +179,7 @@ func (itu *InvocationTargetUpdate) SetNillableAbortReason(ir *invocationtarget.A
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (itu *InvocationTargetUpdate) SetBazelInvocationID(id int) *InvocationTargetUpdate {
+func (itu *InvocationTargetUpdate) SetBazelInvocationID(id int64) *InvocationTargetUpdate {
 	itu.mutation.SetBazelInvocationID(id)
 	return itu
 }
@@ -190,7 +190,7 @@ func (itu *InvocationTargetUpdate) SetBazelInvocation(b *BazelInvocation) *Invoc
 }
 
 // SetTargetID sets the "target" edge to the Target entity by ID.
-func (itu *InvocationTargetUpdate) SetTargetID(id int) *InvocationTargetUpdate {
+func (itu *InvocationTargetUpdate) SetTargetID(id int64) *InvocationTargetUpdate {
 	itu.mutation.SetTargetID(id)
 	return itu
 }
@@ -270,7 +270,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 	if err := itu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
 	if ps := itu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -336,7 +336,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Columns: []string{invocationtarget.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -349,7 +349,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Columns: []string{invocationtarget.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -365,7 +365,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Columns: []string{invocationtarget.TargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -378,7 +378,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Columns: []string{invocationtarget.TargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -556,7 +556,7 @@ func (ituo *InvocationTargetUpdateOne) SetNillableAbortReason(ir *invocationtarg
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ituo *InvocationTargetUpdateOne) SetBazelInvocationID(id int) *InvocationTargetUpdateOne {
+func (ituo *InvocationTargetUpdateOne) SetBazelInvocationID(id int64) *InvocationTargetUpdateOne {
 	ituo.mutation.SetBazelInvocationID(id)
 	return ituo
 }
@@ -567,7 +567,7 @@ func (ituo *InvocationTargetUpdateOne) SetBazelInvocation(b *BazelInvocation) *I
 }
 
 // SetTargetID sets the "target" edge to the Target entity by ID.
-func (ituo *InvocationTargetUpdateOne) SetTargetID(id int) *InvocationTargetUpdateOne {
+func (ituo *InvocationTargetUpdateOne) SetTargetID(id int64) *InvocationTargetUpdateOne {
 	ituo.mutation.SetTargetID(id)
 	return ituo
 }
@@ -660,7 +660,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 	if err := ituo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
 	id, ok := ituo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "InvocationTarget.id" for update`)}
@@ -743,7 +743,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 			Columns: []string{invocationtarget.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -756,7 +756,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 			Columns: []string{invocationtarget.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -772,7 +772,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 			Columns: []string{invocationtarget.TargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -785,7 +785,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 			Columns: []string{invocationtarget.TargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

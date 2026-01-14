@@ -18,7 +18,7 @@ import (
 type InvocationTarget struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Success holds the value of the "success" field.
 	Success bool `json:"success,omitempty"`
 	// Tags holds the value of the "tags" field.
@@ -36,8 +36,8 @@ type InvocationTarget struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the InvocationTargetQuery when eager-loading is set.
 	Edges                               InvocationTargetEdges `json:"edges"`
-	bazel_invocation_invocation_targets *int
-	target_invocation_targets           *int
+	bazel_invocation_invocation_targets *int64
+	target_invocation_targets           *int64
 	selectValues                        sql.SelectValues
 }
 
@@ -113,7 +113,7 @@ func (it *InvocationTarget) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			it.ID = int(value.Int64)
+			it.ID = int64(value.Int64)
 		case invocationtarget.FieldSuccess:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field success", values[i])
@@ -162,15 +162,15 @@ func (it *InvocationTarget) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_invocation_targets", value)
 			} else if value.Valid {
-				it.bazel_invocation_invocation_targets = new(int)
-				*it.bazel_invocation_invocation_targets = int(value.Int64)
+				it.bazel_invocation_invocation_targets = new(int64)
+				*it.bazel_invocation_invocation_targets = int64(value.Int64)
 			}
 		case invocationtarget.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field target_invocation_targets", value)
 			} else if value.Valid {
-				it.target_invocation_targets = new(int)
-				*it.target_invocation_targets = int(value.Int64)
+				it.target_invocation_targets = new(int64)
+				*it.target_invocation_targets = int64(value.Int64)
 			}
 		default:
 			it.selectValues.Set(columns[i], values[i])

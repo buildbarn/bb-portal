@@ -81,14 +81,20 @@ func (asc *ActionSummaryCreate) SetNillableRemoteCacheHits(i *int64) *ActionSumm
 	return asc
 }
 
+// SetID sets the "id" field.
+func (asc *ActionSummaryCreate) SetID(i int64) *ActionSummaryCreate {
+	asc.mutation.SetID(i)
+	return asc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asc *ActionSummaryCreate) SetMetricsID(id int) *ActionSummaryCreate {
+func (asc *ActionSummaryCreate) SetMetricsID(id int64) *ActionSummaryCreate {
 	asc.mutation.SetMetricsID(id)
 	return asc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableMetricsID(id *int) *ActionSummaryCreate {
+func (asc *ActionSummaryCreate) SetNillableMetricsID(id *int64) *ActionSummaryCreate {
 	if id != nil {
 		asc = asc.SetMetricsID(*id)
 	}
@@ -101,14 +107,14 @@ func (asc *ActionSummaryCreate) SetMetrics(m *Metrics) *ActionSummaryCreate {
 }
 
 // AddActionDatumIDs adds the "action_data" edge to the ActionData entity by IDs.
-func (asc *ActionSummaryCreate) AddActionDatumIDs(ids ...int) *ActionSummaryCreate {
+func (asc *ActionSummaryCreate) AddActionDatumIDs(ids ...int64) *ActionSummaryCreate {
 	asc.mutation.AddActionDatumIDs(ids...)
 	return asc
 }
 
 // AddActionData adds the "action_data" edges to the ActionData entity.
 func (asc *ActionSummaryCreate) AddActionData(a ...*ActionData) *ActionSummaryCreate {
-	ids := make([]int, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -116,14 +122,14 @@ func (asc *ActionSummaryCreate) AddActionData(a ...*ActionData) *ActionSummaryCr
 }
 
 // AddRunnerCountIDs adds the "runner_count" edge to the RunnerCount entity by IDs.
-func (asc *ActionSummaryCreate) AddRunnerCountIDs(ids ...int) *ActionSummaryCreate {
+func (asc *ActionSummaryCreate) AddRunnerCountIDs(ids ...int64) *ActionSummaryCreate {
 	asc.mutation.AddRunnerCountIDs(ids...)
 	return asc
 }
 
 // AddRunnerCount adds the "runner_count" edges to the RunnerCount entity.
 func (asc *ActionSummaryCreate) AddRunnerCount(r ...*RunnerCount) *ActionSummaryCreate {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -131,13 +137,13 @@ func (asc *ActionSummaryCreate) AddRunnerCount(r ...*RunnerCount) *ActionSummary
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (asc *ActionSummaryCreate) SetActionCacheStatisticsID(id int) *ActionSummaryCreate {
+func (asc *ActionSummaryCreate) SetActionCacheStatisticsID(id int64) *ActionSummaryCreate {
 	asc.mutation.SetActionCacheStatisticsID(id)
 	return asc
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableActionCacheStatisticsID(id *int) *ActionSummaryCreate {
+func (asc *ActionSummaryCreate) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryCreate {
 	if id != nil {
 		asc = asc.SetActionCacheStatisticsID(*id)
 	}
@@ -197,8 +203,10 @@ func (asc *ActionSummaryCreate) sqlSave(ctx context.Context) (*ActionSummary, er
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	asc.mutation.id = &_node.ID
 	asc.mutation.done = true
 	return _node, nil
@@ -207,9 +215,13 @@ func (asc *ActionSummaryCreate) sqlSave(ctx context.Context) (*ActionSummary, er
 func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ActionSummary{config: asc.config}
-		_spec = sqlgraph.NewCreateSpec(actionsummary.Table, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(actionsummary.Table, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = asc.conflict
+	if id, ok := asc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := asc.mutation.ActionsCreated(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreated, field.TypeInt64, value)
 		_node.ActionsCreated = value
@@ -234,7 +246,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 			Columns: []string{actionsummary.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -251,7 +263,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -267,7 +279,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -283,7 +295,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -439,16 +451,24 @@ func (u *ActionSummaryUpsert) ClearRemoteCacheHits() *ActionSummaryUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.ActionSummary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(actionsummary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ActionSummaryUpsertOne) UpdateNewValues() *ActionSummaryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(actionsummary.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -607,7 +627,7 @@ func (u *ActionSummaryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ActionSummaryUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *ActionSummaryUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -616,7 +636,7 @@ func (u *ActionSummaryUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ActionSummaryUpsertOne) IDX(ctx context.Context) int {
+func (u *ActionSummaryUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -670,9 +690,9 @@ func (ascb *ActionSummaryCreateBulk) Save(ctx context.Context) ([]*ActionSummary
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -760,10 +780,20 @@ type ActionSummaryUpsertBulk struct {
 //	client.ActionSummary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(actionsummary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ActionSummaryUpsertBulk) UpdateNewValues() *ActionSummaryUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(actionsummary.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

@@ -180,13 +180,13 @@ func (tcu *TestCollectionUpdate) ClearDurationMs() *TestCollectionUpdate {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tcu *TestCollectionUpdate) SetBazelInvocationID(id int) *TestCollectionUpdate {
+func (tcu *TestCollectionUpdate) SetBazelInvocationID(id int64) *TestCollectionUpdate {
 	tcu.mutation.SetBazelInvocationID(id)
 	return tcu
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tcu *TestCollectionUpdate) SetNillableBazelInvocationID(id *int) *TestCollectionUpdate {
+func (tcu *TestCollectionUpdate) SetNillableBazelInvocationID(id *int64) *TestCollectionUpdate {
 	if id != nil {
 		tcu = tcu.SetBazelInvocationID(*id)
 	}
@@ -199,13 +199,13 @@ func (tcu *TestCollectionUpdate) SetBazelInvocation(b *BazelInvocation) *TestCol
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
-func (tcu *TestCollectionUpdate) SetTestSummaryID(id int) *TestCollectionUpdate {
+func (tcu *TestCollectionUpdate) SetTestSummaryID(id int64) *TestCollectionUpdate {
 	tcu.mutation.SetTestSummaryID(id)
 	return tcu
 }
 
 // SetNillableTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID if the given value is not nil.
-func (tcu *TestCollectionUpdate) SetNillableTestSummaryID(id *int) *TestCollectionUpdate {
+func (tcu *TestCollectionUpdate) SetNillableTestSummaryID(id *int64) *TestCollectionUpdate {
 	if id != nil {
 		tcu = tcu.SetTestSummaryID(*id)
 	}
@@ -218,14 +218,14 @@ func (tcu *TestCollectionUpdate) SetTestSummary(t *TestSummary) *TestCollectionU
 }
 
 // AddTestResultIDs adds the "test_results" edge to the TestResultBES entity by IDs.
-func (tcu *TestCollectionUpdate) AddTestResultIDs(ids ...int) *TestCollectionUpdate {
+func (tcu *TestCollectionUpdate) AddTestResultIDs(ids ...int64) *TestCollectionUpdate {
 	tcu.mutation.AddTestResultIDs(ids...)
 	return tcu
 }
 
 // AddTestResults adds the "test_results" edges to the TestResultBES entity.
 func (tcu *TestCollectionUpdate) AddTestResults(t ...*TestResultBES) *TestCollectionUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -256,14 +256,14 @@ func (tcu *TestCollectionUpdate) ClearTestResults() *TestCollectionUpdate {
 }
 
 // RemoveTestResultIDs removes the "test_results" edge to TestResultBES entities by IDs.
-func (tcu *TestCollectionUpdate) RemoveTestResultIDs(ids ...int) *TestCollectionUpdate {
+func (tcu *TestCollectionUpdate) RemoveTestResultIDs(ids ...int64) *TestCollectionUpdate {
 	tcu.mutation.RemoveTestResultIDs(ids...)
 	return tcu
 }
 
 // RemoveTestResults removes "test_results" edges to TestResultBES entities.
 func (tcu *TestCollectionUpdate) RemoveTestResults(t ...*TestResultBES) *TestCollectionUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -317,7 +317,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if err := tcu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(testcollection.Table, testcollection.Columns, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testcollection.Table, testcollection.Columns, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64))
 	if ps := tcu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -378,7 +378,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -391,7 +391,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -407,7 +407,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testcollection.TestSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -420,7 +420,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testcollection.TestSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -436,7 +436,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testcollection.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -449,7 +449,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testcollection.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -465,7 +465,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{testcollection.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -643,13 +643,13 @@ func (tcuo *TestCollectionUpdateOne) ClearDurationMs() *TestCollectionUpdateOne 
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tcuo *TestCollectionUpdateOne) SetBazelInvocationID(id int) *TestCollectionUpdateOne {
+func (tcuo *TestCollectionUpdateOne) SetBazelInvocationID(id int64) *TestCollectionUpdateOne {
 	tcuo.mutation.SetBazelInvocationID(id)
 	return tcuo
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tcuo *TestCollectionUpdateOne) SetNillableBazelInvocationID(id *int) *TestCollectionUpdateOne {
+func (tcuo *TestCollectionUpdateOne) SetNillableBazelInvocationID(id *int64) *TestCollectionUpdateOne {
 	if id != nil {
 		tcuo = tcuo.SetBazelInvocationID(*id)
 	}
@@ -662,13 +662,13 @@ func (tcuo *TestCollectionUpdateOne) SetBazelInvocation(b *BazelInvocation) *Tes
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
-func (tcuo *TestCollectionUpdateOne) SetTestSummaryID(id int) *TestCollectionUpdateOne {
+func (tcuo *TestCollectionUpdateOne) SetTestSummaryID(id int64) *TestCollectionUpdateOne {
 	tcuo.mutation.SetTestSummaryID(id)
 	return tcuo
 }
 
 // SetNillableTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID if the given value is not nil.
-func (tcuo *TestCollectionUpdateOne) SetNillableTestSummaryID(id *int) *TestCollectionUpdateOne {
+func (tcuo *TestCollectionUpdateOne) SetNillableTestSummaryID(id *int64) *TestCollectionUpdateOne {
 	if id != nil {
 		tcuo = tcuo.SetTestSummaryID(*id)
 	}
@@ -681,14 +681,14 @@ func (tcuo *TestCollectionUpdateOne) SetTestSummary(t *TestSummary) *TestCollect
 }
 
 // AddTestResultIDs adds the "test_results" edge to the TestResultBES entity by IDs.
-func (tcuo *TestCollectionUpdateOne) AddTestResultIDs(ids ...int) *TestCollectionUpdateOne {
+func (tcuo *TestCollectionUpdateOne) AddTestResultIDs(ids ...int64) *TestCollectionUpdateOne {
 	tcuo.mutation.AddTestResultIDs(ids...)
 	return tcuo
 }
 
 // AddTestResults adds the "test_results" edges to the TestResultBES entity.
 func (tcuo *TestCollectionUpdateOne) AddTestResults(t ...*TestResultBES) *TestCollectionUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -719,14 +719,14 @@ func (tcuo *TestCollectionUpdateOne) ClearTestResults() *TestCollectionUpdateOne
 }
 
 // RemoveTestResultIDs removes the "test_results" edge to TestResultBES entities by IDs.
-func (tcuo *TestCollectionUpdateOne) RemoveTestResultIDs(ids ...int) *TestCollectionUpdateOne {
+func (tcuo *TestCollectionUpdateOne) RemoveTestResultIDs(ids ...int64) *TestCollectionUpdateOne {
 	tcuo.mutation.RemoveTestResultIDs(ids...)
 	return tcuo
 }
 
 // RemoveTestResults removes "test_results" edges to TestResultBES entities.
 func (tcuo *TestCollectionUpdateOne) RemoveTestResults(t ...*TestResultBES) *TestCollectionUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -793,7 +793,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 	if err := tcuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(testcollection.Table, testcollection.Columns, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(testcollection.Table, testcollection.Columns, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64))
 	id, ok := tcuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TestCollection.id" for update`)}
@@ -871,7 +871,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -884,7 +884,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -900,7 +900,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 			Columns: []string{testcollection.TestSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -913,7 +913,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 			Columns: []string{testcollection.TestSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -929,7 +929,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 			Columns: []string{testcollection.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -942,7 +942,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 			Columns: []string{testcollection.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -958,7 +958,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 			Columns: []string{testcollection.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

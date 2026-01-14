@@ -59,3 +59,10 @@ func (EvaluationStat) Edges() []ent.Edge {
 			Unique(),
 	}
 }
+
+// Mixin of the EvaluationStat.
+func (EvaluationStat) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

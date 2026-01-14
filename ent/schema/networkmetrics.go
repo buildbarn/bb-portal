@@ -40,3 +40,10 @@ func (NetworkMetrics) Indexes() []ent.Index {
 		index.Edges("metrics"),
 	}
 }
+
+// Mixin of the NetworkMetrics.
+func (NetworkMetrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

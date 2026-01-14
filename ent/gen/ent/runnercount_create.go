@@ -64,14 +64,20 @@ func (rcc *RunnerCountCreate) SetNillableActionsExecuted(i *int64) *RunnerCountC
 	return rcc
 }
 
+// SetID sets the "id" field.
+func (rcc *RunnerCountCreate) SetID(i int64) *RunnerCountCreate {
+	rcc.mutation.SetID(i)
+	return rcc
+}
+
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcc *RunnerCountCreate) SetActionSummaryID(id int) *RunnerCountCreate {
+func (rcc *RunnerCountCreate) SetActionSummaryID(id int64) *RunnerCountCreate {
 	rcc.mutation.SetActionSummaryID(id)
 	return rcc
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcc *RunnerCountCreate) SetNillableActionSummaryID(id *int) *RunnerCountCreate {
+func (rcc *RunnerCountCreate) SetNillableActionSummaryID(id *int64) *RunnerCountCreate {
 	if id != nil {
 		rcc = rcc.SetActionSummaryID(*id)
 	}
@@ -131,8 +137,10 @@ func (rcc *RunnerCountCreate) sqlSave(ctx context.Context) (*RunnerCount, error)
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	rcc.mutation.id = &_node.ID
 	rcc.mutation.done = true
 	return _node, nil
@@ -141,9 +149,13 @@ func (rcc *RunnerCountCreate) sqlSave(ctx context.Context) (*RunnerCount, error)
 func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) {
 	var (
 		_node = &RunnerCount{config: rcc.config}
-		_spec = sqlgraph.NewCreateSpec(runnercount.Table, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(runnercount.Table, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = rcc.conflict
+	if id, ok := rcc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := rcc.mutation.Name(); ok {
 		_spec.SetField(runnercount.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -164,7 +176,7 @@ func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) 
 			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -285,16 +297,24 @@ func (u *RunnerCountUpsert) ClearActionsExecuted() *RunnerCountUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.RunnerCount.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(runnercount.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *RunnerCountUpsertOne) UpdateNewValues() *RunnerCountUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(runnercount.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -411,7 +431,7 @@ func (u *RunnerCountUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *RunnerCountUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *RunnerCountUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -420,7 +440,7 @@ func (u *RunnerCountUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *RunnerCountUpsertOne) IDX(ctx context.Context) int {
+func (u *RunnerCountUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -474,9 +494,9 @@ func (rccb *RunnerCountCreateBulk) Save(ctx context.Context) ([]*RunnerCount, er
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -564,10 +584,20 @@ type RunnerCountUpsertBulk struct {
 //	client.RunnerCount.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(runnercount.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *RunnerCountUpsertBulk) UpdateNewValues() *RunnerCountUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(runnercount.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

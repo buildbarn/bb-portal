@@ -109,8 +109,8 @@ func (amq *ArtifactMetricsQuery) FirstX(ctx context.Context) *ArtifactMetrics {
 
 // FirstID returns the first ArtifactMetrics ID from the query.
 // Returns a *NotFoundError when no ArtifactMetrics ID was found.
-func (amq *ArtifactMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (amq *ArtifactMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = amq.Limit(1).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (amq *ArtifactMetricsQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (amq *ArtifactMetricsQuery) FirstIDX(ctx context.Context) int {
+func (amq *ArtifactMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := amq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (amq *ArtifactMetricsQuery) OnlyX(ctx context.Context) *ArtifactMetrics {
 // OnlyID is like Only, but returns the only ArtifactMetrics ID in the query.
 // Returns a *NotSingularError when more than one ArtifactMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (amq *ArtifactMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (amq *ArtifactMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = amq.Limit(2).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (amq *ArtifactMetricsQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (amq *ArtifactMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (amq *ArtifactMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := amq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (amq *ArtifactMetricsQuery) AllX(ctx context.Context) []*ArtifactMetrics {
 }
 
 // IDs executes the query and returns a list of ArtifactMetrics IDs.
-func (amq *ArtifactMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (amq *ArtifactMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if amq.ctx.Unique == nil && amq.path != nil {
 		amq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (amq *ArtifactMetricsQuery) IDs(ctx context.Context) (ids []int, err error)
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (amq *ArtifactMetricsQuery) IDsX(ctx context.Context) []int {
+func (amq *ArtifactMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := amq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (amq *ArtifactMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 }
 
 func (amq *ArtifactMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*ArtifactMetrics, init func(*ArtifactMetrics), assign func(*ArtifactMetrics, *Metrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*ArtifactMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ArtifactMetrics)
 	for i := range nodes {
 		if nodes[i].metrics_artifact_metrics == nil {
 			continue
@@ -466,7 +466,7 @@ func (amq *ArtifactMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (amq *ArtifactMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	_spec.From = amq.sql
 	if unique := amq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -83,3 +83,10 @@ func (SourceControl) Indexes() []ent.Index {
 		index.Edges("bazel_invocation"),
 	}
 }
+
+// Mixin of the SourceControl.
+func (SourceControl) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

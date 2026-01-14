@@ -137,3 +137,10 @@ func (BuildGraphMetrics) Indexes() []ent.Index {
 		index.Edges("metrics"),
 	}
 }
+
+// Mixin of the BuildGraphMetrics.
+func (BuildGraphMetrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

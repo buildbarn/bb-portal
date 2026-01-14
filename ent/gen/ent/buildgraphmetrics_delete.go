@@ -40,7 +40,7 @@ func (bgmd *BuildGraphMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (bgmd *BuildGraphMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(buildgraphmetrics.Table, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(buildgraphmetrics.Table, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	if ps := bgmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

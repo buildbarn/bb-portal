@@ -175,7 +175,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 	}
 
 	var invocationsToLock []struct {
-		InvocationDbID int    `sql:"invocation_db_id"`
+		InvocationDbID int64  `sql:"invocation_db_id"`
 		MaxTime        string `sql:"max_time"`
 	}
 
@@ -219,7 +219,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 		}
 	}
 
-	invocationIDs := make([]int, 0, len(invocationsToLock))
+	invocationIDs := make([]int64, 0, len(invocationsToLock))
 	for _, r := range invocationsToLock {
 		invocationIDs = append(invocationIDs, r.InvocationDbID)
 	}

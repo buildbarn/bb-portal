@@ -59,3 +59,10 @@ func (Build) Annotations() []schema.Annotation {
 		entgql.QueryField("findBuilds"),
 	}
 }
+
+// Mixin of the Build.
+func (Build) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

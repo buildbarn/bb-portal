@@ -47,3 +47,10 @@ func (ConnectionMetadata) Annotations() []schema.Annotation {
 		entgql.Skip(),
 	}
 }
+
+// Mixin of the ConnectionMetadata.
+func (ConnectionMetadata) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}
