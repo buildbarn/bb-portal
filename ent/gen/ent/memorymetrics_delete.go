@@ -40,7 +40,7 @@ func (mmd *MemoryMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (mmd *MemoryMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(memorymetrics.Table, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(memorymetrics.Table, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
 	if ps := mmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

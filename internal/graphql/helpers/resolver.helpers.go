@@ -251,7 +251,7 @@ func (helper testResultOverviewHelper) Status() string {
 	return helper.GetStatus().String()
 }
 
-func paginationCursorToUTC(cursor *entgql.Cursor[int]) {
+func paginationCursorToUTC(cursor *entgql.Cursor[int64]) {
 	if cursor == nil || cursor.Value == nil {
 		return
 	}
@@ -271,8 +271,7 @@ func paginationCursorToUTC(cursor *entgql.Cursor[int]) {
 // to the frontend, they are in UTC. However, when the frontend sends them
 // back, they are interpreted as local time. This causes issues since Sqlite
 // cannot handle comparisons between timestamps in different timezones.
-func PaginationCursorsToUTC(after, before *entgql.Cursor[int]) {
+func PaginationCursorsToUTC(after, before *entgql.Cursor[int64]) {
 	paginationCursorToUTC(after)
 	paginationCursorToUTC(before)
-	return
 }

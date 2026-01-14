@@ -24,13 +24,13 @@ type TargetKindMappingCreate struct {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (tkmc *TargetKindMappingCreate) SetBazelInvocationID(i int) *TargetKindMappingCreate {
+func (tkmc *TargetKindMappingCreate) SetBazelInvocationID(i int64) *TargetKindMappingCreate {
 	tkmc.mutation.SetBazelInvocationID(i)
 	return tkmc
 }
 
 // SetTargetID sets the "target_id" field.
-func (tkmc *TargetKindMappingCreate) SetTargetID(i int) *TargetKindMappingCreate {
+func (tkmc *TargetKindMappingCreate) SetTargetID(i int64) *TargetKindMappingCreate {
 	tkmc.mutation.SetTargetID(i)
 	return tkmc
 }
@@ -46,6 +46,12 @@ func (tkmc *TargetKindMappingCreate) SetNillableStartTimeInMs(i *int64) *TargetK
 	if i != nil {
 		tkmc.SetStartTimeInMs(*i)
 	}
+	return tkmc
+}
+
+// SetID sets the "id" field.
+func (tkmc *TargetKindMappingCreate) SetID(i int64) *TargetKindMappingCreate {
+	tkmc.mutation.SetID(i)
 	return tkmc
 }
 
@@ -119,8 +125,10 @@ func (tkmc *TargetKindMappingCreate) sqlSave(ctx context.Context) (*TargetKindMa
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tkmc.mutation.id = &_node.ID
 	tkmc.mutation.done = true
 	return _node, nil
@@ -129,9 +137,13 @@ func (tkmc *TargetKindMappingCreate) sqlSave(ctx context.Context) (*TargetKindMa
 func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TargetKindMapping{config: tkmc.config}
-		_spec = sqlgraph.NewCreateSpec(targetkindmapping.Table, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(targetkindmapping.Table, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tkmc.conflict
+	if id, ok := tkmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tkmc.mutation.StartTimeInMs(); ok {
 		_spec.SetField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
 		_node.StartTimeInMs = value
@@ -144,7 +156,7 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 			Columns: []string{targetkindmapping.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -161,7 +173,7 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 			Columns: []string{targetkindmapping.TargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -246,17 +258,23 @@ func (u *TargetKindMappingUpsert) ClearStartTimeInMs() *TargetKindMappingUpsert 
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.TargetKindMapping.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(targetkindmapping.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TargetKindMappingUpsertOne) UpdateNewValues() *TargetKindMappingUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(targetkindmapping.FieldID)
+		}
 		if _, exists := u.create.mutation.BazelInvocationID(); exists {
 			s.SetIgnore(targetkindmapping.FieldBazelInvocationID)
 		}
@@ -338,7 +356,7 @@ func (u *TargetKindMappingUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TargetKindMappingUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TargetKindMappingUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -347,7 +365,7 @@ func (u *TargetKindMappingUpsertOne) ID(ctx context.Context) (id int, err error)
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TargetKindMappingUpsertOne) IDX(ctx context.Context) int {
+func (u *TargetKindMappingUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -401,9 +419,9 @@ func (tkmcb *TargetKindMappingCreateBulk) Save(ctx context.Context) ([]*TargetKi
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -491,12 +509,18 @@ type TargetKindMappingUpsertBulk struct {
 //	client.TargetKindMapping.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(targetkindmapping.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TargetKindMappingUpsertBulk) UpdateNewValues() *TargetKindMappingUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(targetkindmapping.FieldID)
+			}
 			if _, exists := b.mutation.BazelInvocationID(); exists {
 				s.SetIgnore(targetkindmapping.FieldBazelInvocationID)
 			}

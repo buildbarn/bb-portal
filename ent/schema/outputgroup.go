@@ -51,3 +51,10 @@ func (OutputGroup) Edges() []ent.Edge {
 			),
 	}
 }
+
+// Mixin of the OutputGroup.
+func (OutputGroup) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

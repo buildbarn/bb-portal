@@ -84,13 +84,13 @@ func (cmu *CumulativeMetricsUpdate) ClearNumBuilds() *CumulativeMetricsUpdate {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (cmu *CumulativeMetricsUpdate) SetMetricsID(id int) *CumulativeMetricsUpdate {
+func (cmu *CumulativeMetricsUpdate) SetMetricsID(id int64) *CumulativeMetricsUpdate {
 	cmu.mutation.SetMetricsID(id)
 	return cmu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (cmu *CumulativeMetricsUpdate) SetNillableMetricsID(id *int) *CumulativeMetricsUpdate {
+func (cmu *CumulativeMetricsUpdate) SetNillableMetricsID(id *int64) *CumulativeMetricsUpdate {
 	if id != nil {
 		cmu = cmu.SetMetricsID(*id)
 	}
@@ -147,7 +147,7 @@ func (cmu *CumulativeMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (cmu *CumulativeMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64))
 	if ps := cmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -181,7 +181,7 @@ func (cmu *CumulativeMetricsUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -194,7 +194,7 @@ func (cmu *CumulativeMetricsUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -279,13 +279,13 @@ func (cmuo *CumulativeMetricsUpdateOne) ClearNumBuilds() *CumulativeMetricsUpdat
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (cmuo *CumulativeMetricsUpdateOne) SetMetricsID(id int) *CumulativeMetricsUpdateOne {
+func (cmuo *CumulativeMetricsUpdateOne) SetMetricsID(id int64) *CumulativeMetricsUpdateOne {
 	cmuo.mutation.SetMetricsID(id)
 	return cmuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (cmuo *CumulativeMetricsUpdateOne) SetNillableMetricsID(id *int) *CumulativeMetricsUpdateOne {
+func (cmuo *CumulativeMetricsUpdateOne) SetNillableMetricsID(id *int64) *CumulativeMetricsUpdateOne {
 	if id != nil {
 		cmuo = cmuo.SetMetricsID(*id)
 	}
@@ -355,7 +355,7 @@ func (cmuo *CumulativeMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBu
 }
 
 func (cmuo *CumulativeMetricsUpdateOne) sqlSave(ctx context.Context) (_node *CumulativeMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64))
 	id, ok := cmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "CumulativeMetrics.id" for update`)}
@@ -406,7 +406,7 @@ func (cmuo *CumulativeMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Cum
 			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -419,7 +419,7 @@ func (cmuo *CumulativeMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Cum
 			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

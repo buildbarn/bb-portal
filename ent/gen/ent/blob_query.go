@@ -109,8 +109,8 @@ func (bq *BlobQuery) FirstX(ctx context.Context) *Blob {
 
 // FirstID returns the first Blob ID from the query.
 // Returns a *NotFoundError when no Blob ID was found.
-func (bq *BlobQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bq *BlobQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bq.Limit(1).IDs(setContextOp(ctx, bq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (bq *BlobQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (bq *BlobQuery) FirstIDX(ctx context.Context) int {
+func (bq *BlobQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := bq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (bq *BlobQuery) OnlyX(ctx context.Context) *Blob {
 // OnlyID is like Only, but returns the only Blob ID in the query.
 // Returns a *NotSingularError when more than one Blob ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (bq *BlobQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bq *BlobQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bq.Limit(2).IDs(setContextOp(ctx, bq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (bq *BlobQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (bq *BlobQuery) OnlyIDX(ctx context.Context) int {
+func (bq *BlobQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := bq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (bq *BlobQuery) AllX(ctx context.Context) []*Blob {
 }
 
 // IDs executes the query and returns a list of Blob IDs.
-func (bq *BlobQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (bq *BlobQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if bq.ctx.Unique == nil && bq.path != nil {
 		bq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (bq *BlobQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (bq *BlobQuery) IDsX(ctx context.Context) []int {
+func (bq *BlobQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := bq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (bq *BlobQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Blob, e
 }
 
 func (bq *BlobQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Blob, init func(*Blob), assign func(*Blob, *InstanceName)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Blob)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Blob)
 	for i := range nodes {
 		if nodes[i].instance_name_blobs == nil {
 			continue
@@ -466,7 +466,7 @@ func (bq *BlobQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (bq *BlobQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(blob.Table, blob.Columns, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(blob.Table, blob.Columns, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64))
 	_spec.From = bq.sql
 	if unique := bq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

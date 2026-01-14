@@ -25,11 +25,11 @@ import (
 type Metrics struct {
 	config
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MetricsQuery when eager-loading is set.
 	Edges                    MetricsEdges `json:"edges"`
-	bazel_invocation_metrics *int
+	bazel_invocation_metrics *int64
 	selectValues             sql.SelectValues
 }
 
@@ -201,13 +201,13 @@ func (m *Metrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			m.ID = int(value.Int64)
+			m.ID = int64(value.Int64)
 		case metrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_metrics", value)
 			} else if value.Valid {
-				m.bazel_invocation_metrics = new(int)
-				*m.bazel_invocation_metrics = int(value.Int64)
+				m.bazel_invocation_metrics = new(int64)
+				*m.bazel_invocation_metrics = int64(value.Int64)
 			}
 		default:
 			m.selectValues.Set(columns[i], values[i])

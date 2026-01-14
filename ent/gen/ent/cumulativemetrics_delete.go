@@ -40,7 +40,7 @@ func (cmd *CumulativeMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (cmd *CumulativeMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(cumulativemetrics.Table, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(cumulativemetrics.Table, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64))
 	if ps := cmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

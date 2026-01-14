@@ -71,14 +71,14 @@ func (ogu *OutputGroupUpdate) ClearIncomplete() *OutputGroupUpdate {
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
-func (ogu *OutputGroupUpdate) AddInlineFileIDs(ids ...int) *OutputGroupUpdate {
+func (ogu *OutputGroupUpdate) AddInlineFileIDs(ids ...int64) *OutputGroupUpdate {
 	ogu.mutation.AddInlineFileIDs(ids...)
 	return ogu
 }
 
 // AddInlineFiles adds the "inline_files" edges to the TestFile entity.
 func (ogu *OutputGroupUpdate) AddInlineFiles(t ...*TestFile) *OutputGroupUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -86,13 +86,13 @@ func (ogu *OutputGroupUpdate) AddInlineFiles(t ...*TestFile) *OutputGroupUpdate 
 }
 
 // SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID.
-func (ogu *OutputGroupUpdate) SetFileSetsID(id int) *OutputGroupUpdate {
+func (ogu *OutputGroupUpdate) SetFileSetsID(id int64) *OutputGroupUpdate {
 	ogu.mutation.SetFileSetsID(id)
 	return ogu
 }
 
 // SetNillableFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID if the given value is not nil.
-func (ogu *OutputGroupUpdate) SetNillableFileSetsID(id *int) *OutputGroupUpdate {
+func (ogu *OutputGroupUpdate) SetNillableFileSetsID(id *int64) *OutputGroupUpdate {
 	if id != nil {
 		ogu = ogu.SetFileSetsID(*id)
 	}
@@ -116,14 +116,14 @@ func (ogu *OutputGroupUpdate) ClearInlineFiles() *OutputGroupUpdate {
 }
 
 // RemoveInlineFileIDs removes the "inline_files" edge to TestFile entities by IDs.
-func (ogu *OutputGroupUpdate) RemoveInlineFileIDs(ids ...int) *OutputGroupUpdate {
+func (ogu *OutputGroupUpdate) RemoveInlineFileIDs(ids ...int64) *OutputGroupUpdate {
 	ogu.mutation.RemoveInlineFileIDs(ids...)
 	return ogu
 }
 
 // RemoveInlineFiles removes "inline_files" edges to TestFile entities.
 func (ogu *OutputGroupUpdate) RemoveInlineFiles(t ...*TestFile) *OutputGroupUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -170,7 +170,7 @@ func (ogu *OutputGroupUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *O
 }
 
 func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64))
 	if ps := ogu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -198,7 +198,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{outputgroup.InlineFilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -211,7 +211,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{outputgroup.InlineFilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -227,7 +227,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{outputgroup.InlineFilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -243,7 +243,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{outputgroup.FileSetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -256,7 +256,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{outputgroup.FileSetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -327,14 +327,14 @@ func (oguo *OutputGroupUpdateOne) ClearIncomplete() *OutputGroupUpdateOne {
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
-func (oguo *OutputGroupUpdateOne) AddInlineFileIDs(ids ...int) *OutputGroupUpdateOne {
+func (oguo *OutputGroupUpdateOne) AddInlineFileIDs(ids ...int64) *OutputGroupUpdateOne {
 	oguo.mutation.AddInlineFileIDs(ids...)
 	return oguo
 }
 
 // AddInlineFiles adds the "inline_files" edges to the TestFile entity.
 func (oguo *OutputGroupUpdateOne) AddInlineFiles(t ...*TestFile) *OutputGroupUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -342,13 +342,13 @@ func (oguo *OutputGroupUpdateOne) AddInlineFiles(t ...*TestFile) *OutputGroupUpd
 }
 
 // SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID.
-func (oguo *OutputGroupUpdateOne) SetFileSetsID(id int) *OutputGroupUpdateOne {
+func (oguo *OutputGroupUpdateOne) SetFileSetsID(id int64) *OutputGroupUpdateOne {
 	oguo.mutation.SetFileSetsID(id)
 	return oguo
 }
 
 // SetNillableFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID if the given value is not nil.
-func (oguo *OutputGroupUpdateOne) SetNillableFileSetsID(id *int) *OutputGroupUpdateOne {
+func (oguo *OutputGroupUpdateOne) SetNillableFileSetsID(id *int64) *OutputGroupUpdateOne {
 	if id != nil {
 		oguo = oguo.SetFileSetsID(*id)
 	}
@@ -372,14 +372,14 @@ func (oguo *OutputGroupUpdateOne) ClearInlineFiles() *OutputGroupUpdateOne {
 }
 
 // RemoveInlineFileIDs removes the "inline_files" edge to TestFile entities by IDs.
-func (oguo *OutputGroupUpdateOne) RemoveInlineFileIDs(ids ...int) *OutputGroupUpdateOne {
+func (oguo *OutputGroupUpdateOne) RemoveInlineFileIDs(ids ...int64) *OutputGroupUpdateOne {
 	oguo.mutation.RemoveInlineFileIDs(ids...)
 	return oguo
 }
 
 // RemoveInlineFiles removes "inline_files" edges to TestFile entities.
 func (oguo *OutputGroupUpdateOne) RemoveInlineFiles(t ...*TestFile) *OutputGroupUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -439,7 +439,7 @@ func (oguo *OutputGroupUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)
 }
 
 func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGroup, err error) {
-	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64))
 	id, ok := oguo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "OutputGroup.id" for update`)}
@@ -484,7 +484,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 			Columns: []string{outputgroup.InlineFilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -497,7 +497,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 			Columns: []string{outputgroup.InlineFilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -513,7 +513,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 			Columns: []string{outputgroup.InlineFilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -529,7 +529,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 			Columns: []string{outputgroup.FileSetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -542,7 +542,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 			Columns: []string{outputgroup.FileSetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

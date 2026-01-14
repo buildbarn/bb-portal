@@ -17,7 +17,7 @@ import (
 type AuthenticatedUser struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// UserUUID holds the value of the "user_uuid" field.
 	UserUUID uuid.UUID `json:"user_uuid,omitempty"`
 	// ExternalID holds the value of the "external_id" field.
@@ -87,7 +87,7 @@ func (au *AuthenticatedUser) assignValues(columns []string, values []any) error 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			au.ID = int(value.Int64)
+			au.ID = int64(value.Int64)
 		case authenticateduser.FieldUserUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_uuid", values[i])

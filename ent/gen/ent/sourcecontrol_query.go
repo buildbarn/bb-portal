@@ -109,8 +109,8 @@ func (scq *SourceControlQuery) FirstX(ctx context.Context) *SourceControl {
 
 // FirstID returns the first SourceControl ID from the query.
 // Returns a *NotFoundError when no SourceControl ID was found.
-func (scq *SourceControlQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (scq *SourceControlQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = scq.Limit(1).IDs(setContextOp(ctx, scq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (scq *SourceControlQuery) FirstID(ctx context.Context) (id int, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (scq *SourceControlQuery) FirstIDX(ctx context.Context) int {
+func (scq *SourceControlQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := scq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (scq *SourceControlQuery) OnlyX(ctx context.Context) *SourceControl {
 // OnlyID is like Only, but returns the only SourceControl ID in the query.
 // Returns a *NotSingularError when more than one SourceControl ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (scq *SourceControlQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (scq *SourceControlQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = scq.Limit(2).IDs(setContextOp(ctx, scq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (scq *SourceControlQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (scq *SourceControlQuery) OnlyIDX(ctx context.Context) int {
+func (scq *SourceControlQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := scq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (scq *SourceControlQuery) AllX(ctx context.Context) []*SourceControl {
 }
 
 // IDs executes the query and returns a list of SourceControl IDs.
-func (scq *SourceControlQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (scq *SourceControlQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if scq.ctx.Unique == nil && scq.path != nil {
 		scq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (scq *SourceControlQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (scq *SourceControlQuery) IDsX(ctx context.Context) []int {
+func (scq *SourceControlQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := scq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (scq *SourceControlQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (scq *SourceControlQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*SourceControl, init func(*SourceControl), assign func(*SourceControl, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*SourceControl)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*SourceControl)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_source_control == nil {
 			continue
@@ -466,7 +466,7 @@ func (scq *SourceControlQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (scq *SourceControlQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	_spec.From = scq.sql
 	if unique := scq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

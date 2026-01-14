@@ -62,7 +62,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   actioncachestatistics.Table,
 			Columns: actioncachestatistics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: actioncachestatistics.FieldID,
 			},
 		},
@@ -80,7 +80,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   actiondata.Table,
 			Columns: actiondata.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: actiondata.FieldID,
 			},
 		},
@@ -100,7 +100,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   actionsummary.Table,
 			Columns: actionsummary.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: actionsummary.FieldID,
 			},
 		},
@@ -117,7 +117,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   artifactmetrics.Table,
 			Columns: artifactmetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: artifactmetrics.FieldID,
 			},
 		},
@@ -138,7 +138,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   authenticateduser.Table,
 			Columns: authenticateduser.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: authenticateduser.FieldID,
 			},
 		},
@@ -155,7 +155,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   bazelinvocation.Table,
 			Columns: bazelinvocation.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: bazelinvocation.FieldID,
 			},
 		},
@@ -200,7 +200,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   bazelinvocationproblem.Table,
 			Columns: bazelinvocationproblem.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: bazelinvocationproblem.FieldID,
 			},
 		},
@@ -216,7 +216,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   blob.Table,
 			Columns: blob.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: blob.FieldID,
 			},
 		},
@@ -234,7 +234,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   build.Table,
 			Columns: build.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: build.FieldID,
 			},
 		},
@@ -250,7 +250,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   buildgraphmetrics.Table,
 			Columns: buildgraphmetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: buildgraphmetrics.FieldID,
 			},
 		},
@@ -272,7 +272,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   buildlogchunk.Table,
 			Columns: buildlogchunk.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: buildlogchunk.FieldID,
 			},
 		},
@@ -289,7 +289,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   connectionmetadata.Table,
 			Columns: connectionmetadata.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: connectionmetadata.FieldID,
 			},
 		},
@@ -303,7 +303,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   cumulativemetrics.Table,
 			Columns: cumulativemetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: cumulativemetrics.FieldID,
 			},
 		},
@@ -318,7 +318,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   evaluationstat.Table,
 			Columns: evaluationstat.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: evaluationstat.FieldID,
 			},
 		},
@@ -333,7 +333,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   eventmetadata.Table,
 			Columns: eventmetadata.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: eventmetadata.FieldID,
 			},
 		},
@@ -342,7 +342,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			eventmetadata.FieldHandled:           {Type: field.TypeBytes, Column: eventmetadata.FieldHandled},
 			eventmetadata.FieldEventReceivedAt:   {Type: field.TypeTime, Column: eventmetadata.FieldEventReceivedAt},
 			eventmetadata.FieldVersion:           {Type: field.TypeInt64, Column: eventmetadata.FieldVersion},
-			eventmetadata.FieldBazelInvocationID: {Type: field.TypeInt, Column: eventmetadata.FieldBazelInvocationID},
+			eventmetadata.FieldBazelInvocationID: {Type: field.TypeInt64, Column: eventmetadata.FieldBazelInvocationID},
 		},
 	}
 	graph.Nodes[15] = &sqlgraph.Node{
@@ -350,7 +350,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   exectioninfo.Table,
 			Columns: exectioninfo.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: exectioninfo.FieldID,
 			},
 		},
@@ -368,7 +368,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   garbagemetrics.Table,
 			Columns: garbagemetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: garbagemetrics.FieldID,
 			},
 		},
@@ -383,7 +383,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   incompletebuildlog.Table,
 			Columns: incompletebuildlog.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: incompletebuildlog.FieldID,
 			},
 		},
@@ -391,7 +391,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			incompletebuildlog.FieldSnippetID:         {Type: field.TypeInt32, Column: incompletebuildlog.FieldSnippetID},
 			incompletebuildlog.FieldLogSnippet:        {Type: field.TypeBytes, Column: incompletebuildlog.FieldLogSnippet},
-			incompletebuildlog.FieldBazelInvocationID: {Type: field.TypeInt, Column: incompletebuildlog.FieldBazelInvocationID},
+			incompletebuildlog.FieldBazelInvocationID: {Type: field.TypeInt64, Column: incompletebuildlog.FieldBazelInvocationID},
 		},
 	}
 	graph.Nodes[18] = &sqlgraph.Node{
@@ -399,7 +399,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   instancename.Table,
 			Columns: instancename.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: instancename.FieldID,
 			},
 		},
@@ -413,7 +413,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   invocationfiles.Table,
 			Columns: invocationfiles.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: invocationfiles.FieldID,
 			},
 		},
@@ -431,7 +431,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   invocationtarget.Table,
 			Columns: invocationtarget.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: invocationtarget.FieldID,
 			},
 		},
@@ -451,7 +451,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   memorymetrics.Table,
 			Columns: memorymetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: memorymetrics.FieldID,
 			},
 		},
@@ -467,7 +467,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   metrics.Table,
 			Columns: metrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: metrics.FieldID,
 			},
 		},
@@ -479,7 +479,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   missdetail.Table,
 			Columns: missdetail.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: missdetail.FieldID,
 			},
 		},
@@ -494,7 +494,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   namedsetoffiles.Table,
 			Columns: namedsetoffiles.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: namedsetoffiles.FieldID,
 			},
 		},
@@ -506,7 +506,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   networkmetrics.Table,
 			Columns: networkmetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: networkmetrics.FieldID,
 			},
 		},
@@ -518,7 +518,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   outputgroup.Table,
 			Columns: outputgroup.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: outputgroup.FieldID,
 			},
 		},
@@ -533,7 +533,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   packageloadmetrics.Table,
 			Columns: packageloadmetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: packageloadmetrics.FieldID,
 			},
 		},
@@ -552,7 +552,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   packagemetrics.Table,
 			Columns: packagemetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: packagemetrics.FieldID,
 			},
 		},
@@ -566,7 +566,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   resourceusage.Table,
 			Columns: resourceusage.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: resourceusage.FieldID,
 			},
 		},
@@ -581,7 +581,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   runnercount.Table,
 			Columns: runnercount.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: runnercount.FieldID,
 			},
 		},
@@ -597,7 +597,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   sourcecontrol.Table,
 			Columns: sourcecontrol.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: sourcecontrol.FieldID,
 			},
 		},
@@ -626,7 +626,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   systemnetworkstats.Table,
 			Columns: systemnetworkstats.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: systemnetworkstats.FieldID,
 			},
 		},
@@ -647,7 +647,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   target.Table,
 			Columns: target.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: target.FieldID,
 			},
 		},
@@ -663,14 +663,14 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   targetkindmapping.Table,
 			Columns: targetkindmapping.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: targetkindmapping.FieldID,
 			},
 		},
 		Type: "TargetKindMapping",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			targetkindmapping.FieldBazelInvocationID: {Type: field.TypeInt, Column: targetkindmapping.FieldBazelInvocationID},
-			targetkindmapping.FieldTargetID:          {Type: field.TypeInt, Column: targetkindmapping.FieldTargetID},
+			targetkindmapping.FieldBazelInvocationID: {Type: field.TypeInt64, Column: targetkindmapping.FieldBazelInvocationID},
+			targetkindmapping.FieldTargetID:          {Type: field.TypeInt64, Column: targetkindmapping.FieldTargetID},
 			targetkindmapping.FieldStartTimeInMs:     {Type: field.TypeInt64, Column: targetkindmapping.FieldStartTimeInMs},
 		},
 	}
@@ -679,7 +679,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   targetmetrics.Table,
 			Columns: targetmetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: targetmetrics.FieldID,
 			},
 		},
@@ -695,7 +695,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   testcollection.Table,
 			Columns: testcollection.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: testcollection.FieldID,
 			},
 		},
@@ -715,7 +715,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   testfile.Table,
 			Columns: testfile.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: testfile.FieldID,
 			},
 		},
@@ -733,7 +733,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   testresultbes.Table,
 			Columns: testresultbes.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: testresultbes.FieldID,
 			},
 		},
@@ -755,7 +755,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   testsummary.Table,
 			Columns: testsummary.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: testsummary.FieldID,
 			},
 		},
@@ -778,7 +778,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   timingbreakdown.Table,
 			Columns: timingbreakdown.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: timingbreakdown.FieldID,
 			},
 		},
@@ -793,7 +793,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   timingchild.Table,
 			Columns: timingchild.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: timingchild.FieldID,
 			},
 		},
@@ -808,7 +808,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   timingmetrics.Table,
 			Columns: timingmetrics.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeInt64,
 				Column: timingmetrics.FieldID,
 			},
 		},
@@ -2029,8 +2029,8 @@ func (f *ActionCacheStatisticsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *ActionCacheStatisticsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ActionCacheStatisticsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(actioncachestatistics.FieldID))
 }
 
@@ -2122,8 +2122,8 @@ func (f *ActionDataFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *ActionDataFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ActionDataFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(actiondata.FieldID))
 }
 
@@ -2211,8 +2211,8 @@ func (f *ActionSummaryFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *ActionSummaryFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ActionSummaryFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(actionsummary.FieldID))
 }
 
@@ -2327,8 +2327,8 @@ func (f *ArtifactMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *ArtifactMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ArtifactMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(artifactmetrics.FieldID))
 }
 
@@ -2421,8 +2421,8 @@ func (f *AuthenticatedUserFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *AuthenticatedUserFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *AuthenticatedUserFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(authenticateduser.FieldID))
 }
 
@@ -2495,8 +2495,8 @@ func (f *BazelInvocationFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *BazelInvocationFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *BazelInvocationFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(bazelinvocation.FieldID))
 }
 
@@ -2891,8 +2891,8 @@ func (f *BazelInvocationProblemFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *BazelInvocationProblemFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *BazelInvocationProblemFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(bazelinvocationproblem.FieldID))
 }
 
@@ -2960,8 +2960,8 @@ func (f *BlobFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *BlobFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *BlobFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(blob.FieldID))
 }
 
@@ -3039,8 +3039,8 @@ func (f *BuildFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *BuildFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *BuildFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(build.FieldID))
 }
 
@@ -3122,8 +3122,8 @@ func (f *BuildGraphMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *BuildGraphMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *BuildGraphMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(buildgraphmetrics.FieldID))
 }
 
@@ -3291,8 +3291,8 @@ func (f *BuildLogChunkFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *BuildLogChunkFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *BuildLogChunkFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(buildlogchunk.FieldID))
 }
 
@@ -3365,8 +3365,8 @@ func (f *ConnectionMetadataFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *ConnectionMetadataFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ConnectionMetadataFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(connectionmetadata.FieldID))
 }
 
@@ -3424,8 +3424,8 @@ func (f *CumulativeMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *CumulativeMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *CumulativeMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(cumulativemetrics.FieldID))
 }
 
@@ -3488,8 +3488,8 @@ func (f *EvaluationStatFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *EvaluationStatFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *EvaluationStatFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(evaluationstat.FieldID))
 }
 
@@ -3552,8 +3552,8 @@ func (f *EventMetadataFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *EventMetadataFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *EventMetadataFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(eventmetadata.FieldID))
 }
 
@@ -3572,8 +3572,8 @@ func (f *EventMetadataFilter) WhereVersion(p entql.Int64P) {
 	f.Where(p.Field(eventmetadata.FieldVersion))
 }
 
-// WhereBazelInvocationID applies the entql int predicate on the bazel_invocation_id field.
-func (f *EventMetadataFilter) WhereBazelInvocationID(p entql.IntP) {
+// WhereBazelInvocationID applies the entql int64 predicate on the bazel_invocation_id field.
+func (f *EventMetadataFilter) WhereBazelInvocationID(p entql.Int64P) {
 	f.Where(p.Field(eventmetadata.FieldBazelInvocationID))
 }
 
@@ -3626,8 +3626,8 @@ func (f *ExectionInfoFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *ExectionInfoFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ExectionInfoFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(exectioninfo.FieldID))
 }
 
@@ -3733,8 +3733,8 @@ func (f *GarbageMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *GarbageMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *GarbageMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(garbagemetrics.FieldID))
 }
 
@@ -3797,8 +3797,8 @@ func (f *IncompleteBuildLogFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *IncompleteBuildLogFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *IncompleteBuildLogFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(incompletebuildlog.FieldID))
 }
 
@@ -3812,8 +3812,8 @@ func (f *IncompleteBuildLogFilter) WhereLogSnippet(p entql.BytesP) {
 	f.Where(p.Field(incompletebuildlog.FieldLogSnippet))
 }
 
-// WhereBazelInvocationID applies the entql int predicate on the bazel_invocation_id field.
-func (f *IncompleteBuildLogFilter) WhereBazelInvocationID(p entql.IntP) {
+// WhereBazelInvocationID applies the entql int64 predicate on the bazel_invocation_id field.
+func (f *IncompleteBuildLogFilter) WhereBazelInvocationID(p entql.Int64P) {
 	f.Where(p.Field(incompletebuildlog.FieldBazelInvocationID))
 }
 
@@ -3866,8 +3866,8 @@ func (f *InstanceNameFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *InstanceNameFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *InstanceNameFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(instancename.FieldID))
 }
 
@@ -3967,8 +3967,8 @@ func (f *InvocationFilesFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *InvocationFilesFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *InvocationFilesFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(invocationfiles.FieldID))
 }
 
@@ -4046,8 +4046,8 @@ func (f *InvocationTargetFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *InvocationTargetFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *InvocationTargetFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(invocationtarget.FieldID))
 }
 
@@ -4149,8 +4149,8 @@ func (f *MemoryMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *MemoryMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *MemoryMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(memorymetrics.FieldID))
 }
 
@@ -4232,8 +4232,8 @@ func (f *MetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *MetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *MetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(metrics.FieldID))
 }
 
@@ -4412,8 +4412,8 @@ func (f *MissDetailFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *MissDetailFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *MissDetailFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(missdetail.FieldID))
 }
 
@@ -4476,8 +4476,8 @@ func (f *NamedSetOfFilesFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *NamedSetOfFilesFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *NamedSetOfFilesFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(namedsetoffiles.FieldID))
 }
 
@@ -4558,8 +4558,8 @@ func (f *NetworkMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *NetworkMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *NetworkMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(networkmetrics.FieldID))
 }
 
@@ -4626,8 +4626,8 @@ func (f *OutputGroupFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *OutputGroupFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *OutputGroupFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(outputgroup.FieldID))
 }
 
@@ -4704,8 +4704,8 @@ func (f *PackageLoadMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *PackageLoadMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *PackageLoadMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(packageloadmetrics.FieldID))
 }
 
@@ -4788,8 +4788,8 @@ func (f *PackageMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *PackageMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *PackageMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(packagemetrics.FieldID))
 }
 
@@ -4861,8 +4861,8 @@ func (f *ResourceUsageFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *ResourceUsageFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ResourceUsageFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(resourceusage.FieldID))
 }
 
@@ -4925,8 +4925,8 @@ func (f *RunnerCountFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *RunnerCountFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *RunnerCountFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(runnercount.FieldID))
 }
 
@@ -4994,8 +4994,8 @@ func (f *SourceControlFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *SourceControlFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *SourceControlFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(sourcecontrol.FieldID))
 }
 
@@ -5128,8 +5128,8 @@ func (f *SystemNetworkStatsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *SystemNetworkStatsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *SystemNetworkStatsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(systemnetworkstats.FieldID))
 }
 
@@ -5222,8 +5222,8 @@ func (f *TargetFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TargetFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TargetFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(target.FieldID))
 }
 
@@ -5319,18 +5319,18 @@ func (f *TargetKindMappingFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TargetKindMappingFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TargetKindMappingFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(targetkindmapping.FieldID))
 }
 
-// WhereBazelInvocationID applies the entql int predicate on the bazel_invocation_id field.
-func (f *TargetKindMappingFilter) WhereBazelInvocationID(p entql.IntP) {
+// WhereBazelInvocationID applies the entql int64 predicate on the bazel_invocation_id field.
+func (f *TargetKindMappingFilter) WhereBazelInvocationID(p entql.Int64P) {
 	f.Where(p.Field(targetkindmapping.FieldBazelInvocationID))
 }
 
-// WhereTargetID applies the entql int predicate on the target_id field.
-func (f *TargetKindMappingFilter) WhereTargetID(p entql.IntP) {
+// WhereTargetID applies the entql int64 predicate on the target_id field.
+func (f *TargetKindMappingFilter) WhereTargetID(p entql.Int64P) {
 	f.Where(p.Field(targetkindmapping.FieldTargetID))
 }
 
@@ -5402,8 +5402,8 @@ func (f *TargetMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TargetMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TargetMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(targetmetrics.FieldID))
 }
 
@@ -5471,8 +5471,8 @@ func (f *TestCollectionFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TestCollectionFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TestCollectionFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(testcollection.FieldID))
 }
 
@@ -5588,8 +5588,8 @@ func (f *TestFileFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TestFileFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TestFileFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(testfile.FieldID))
 }
 
@@ -5667,8 +5667,8 @@ func (f *TestResultBESFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TestResultBESFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TestResultBESFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(testresultbes.FieldID))
 }
 
@@ -5794,8 +5794,8 @@ func (f *TestSummaryFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TestSummaryFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TestSummaryFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(testsummary.FieldID))
 }
 
@@ -5926,8 +5926,8 @@ func (f *TimingBreakdownFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TimingBreakdownFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TimingBreakdownFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(timingbreakdown.FieldID))
 }
 
@@ -6004,8 +6004,8 @@ func (f *TimingChildFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TimingChildFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TimingChildFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(timingchild.FieldID))
 }
 
@@ -6068,8 +6068,8 @@ func (f *TimingMetricsFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql int predicate on the id field.
-func (f *TimingMetricsFilter) WhereID(p entql.IntP) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TimingMetricsFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(timingmetrics.FieldID))
 }
 

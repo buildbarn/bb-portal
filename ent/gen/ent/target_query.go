@@ -161,8 +161,8 @@ func (tq *TargetQuery) FirstX(ctx context.Context) *Target {
 
 // FirstID returns the first Target ID from the query.
 // Returns a *NotFoundError when no Target ID was found.
-func (tq *TargetQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tq *TargetQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tq.Limit(1).IDs(setContextOp(ctx, tq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -174,7 +174,7 @@ func (tq *TargetQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tq *TargetQuery) FirstIDX(ctx context.Context) int {
+func (tq *TargetQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -212,8 +212,8 @@ func (tq *TargetQuery) OnlyX(ctx context.Context) *Target {
 // OnlyID is like Only, but returns the only Target ID in the query.
 // Returns a *NotSingularError when more than one Target ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tq *TargetQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tq *TargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tq.Limit(2).IDs(setContextOp(ctx, tq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -229,7 +229,7 @@ func (tq *TargetQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tq *TargetQuery) OnlyIDX(ctx context.Context) int {
+func (tq *TargetQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -257,7 +257,7 @@ func (tq *TargetQuery) AllX(ctx context.Context) []*Target {
 }
 
 // IDs executes the query and returns a list of Target IDs.
-func (tq *TargetQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tq *TargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tq.ctx.Unique == nil && tq.path != nil {
 		tq.Unique(true)
 	}
@@ -269,7 +269,7 @@ func (tq *TargetQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tq *TargetQuery) IDsX(ctx context.Context) []int {
+func (tq *TargetQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -535,8 +535,8 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 }
 
 func (tq *TargetQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Target, init func(*Target), assign func(*Target, *InstanceName)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Target)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Target)
 	for i := range nodes {
 		if nodes[i].instance_name_targets == nil {
 			continue
@@ -568,7 +568,7 @@ func (tq *TargetQuery) loadInstanceName(ctx context.Context, query *InstanceName
 }
 func (tq *TargetQuery) loadInvocationTargets(ctx context.Context, query *InvocationTargetQuery, nodes []*Target, init func(*Target), assign func(*Target, *InvocationTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Target)
+	nodeids := make(map[int64]*Target)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -599,7 +599,7 @@ func (tq *TargetQuery) loadInvocationTargets(ctx context.Context, query *Invocat
 }
 func (tq *TargetQuery) loadTargetKindMappings(ctx context.Context, query *TargetKindMappingQuery, nodes []*Target, init func(*Target), assign func(*Target, *TargetKindMapping)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Target)
+	nodeids := make(map[int64]*Target)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -641,7 +641,7 @@ func (tq *TargetQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tq *TargetQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
 	_spec.From = tq.sql
 	if unique := tq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

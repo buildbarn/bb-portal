@@ -16,7 +16,7 @@ import (
 type OutputGroup struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Incomplete holds the value of the "incomplete" field.
@@ -93,7 +93,7 @@ func (og *OutputGroup) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			og.ID = int(value.Int64)
+			og.ID = int64(value.Int64)
 		case outputgroup.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])

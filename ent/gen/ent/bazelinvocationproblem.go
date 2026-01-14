@@ -17,7 +17,7 @@ import (
 type BazelInvocationProblem struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// ProblemType holds the value of the "problem_type" field.
 	ProblemType string `json:"problem_type,omitempty"`
 	// Label holds the value of the "label" field.
@@ -27,7 +27,7 @@ type BazelInvocationProblem struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationProblemQuery when eager-loading is set.
 	Edges                     BazelInvocationProblemEdges `json:"edges"`
-	bazel_invocation_problems *int
+	bazel_invocation_problems *int64
 	selectValues              sql.SelectValues
 }
 
@@ -86,7 +86,7 @@ func (bip *BazelInvocationProblem) assignValues(columns []string, values []any) 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			bip.ID = int(value.Int64)
+			bip.ID = int64(value.Int64)
 		case bazelinvocationproblem.FieldProblemType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field problem_type", values[i])
@@ -111,8 +111,8 @@ func (bip *BazelInvocationProblem) assignValues(columns []string, values []any) 
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_problems", value)
 			} else if value.Valid {
-				bip.bazel_invocation_problems = new(int)
-				*bip.bazel_invocation_problems = int(value.Int64)
+				bip.bazel_invocation_problems = new(int64)
+				*bip.bazel_invocation_problems = int64(value.Int64)
 			}
 		default:
 			bip.selectValues.Set(columns[i], values[i])

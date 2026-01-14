@@ -16,13 +16,13 @@ import (
 type PackageMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// PackagesLoaded holds the value of the "packages_loaded" field.
 	PackagesLoaded int64 `json:"packages_loaded,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PackageMetricsQuery when eager-loading is set.
 	Edges                   PackageMetricsEdges `json:"edges"`
-	metrics_package_metrics *int
+	metrics_package_metrics *int64
 	selectValues            sql.SelectValues
 }
 
@@ -90,7 +90,7 @@ func (pm *PackageMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			pm.ID = int(value.Int64)
+			pm.ID = int64(value.Int64)
 		case packagemetrics.FieldPackagesLoaded:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field packages_loaded", values[i])
@@ -101,8 +101,8 @@ func (pm *PackageMetrics) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_package_metrics", value)
 			} else if value.Valid {
-				pm.metrics_package_metrics = new(int)
-				*pm.metrics_package_metrics = int(value.Int64)
+				pm.metrics_package_metrics = new(int64)
+				*pm.metrics_package_metrics = int64(value.Int64)
 			}
 		default:
 			pm.selectValues.Set(columns[i], values[i])

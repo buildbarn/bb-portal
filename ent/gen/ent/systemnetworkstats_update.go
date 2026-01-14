@@ -246,13 +246,13 @@ func (snsu *SystemNetworkStatsUpdate) ClearPeakPacketsRecvPerSec() *SystemNetwor
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (snsu *SystemNetworkStatsUpdate) SetNetworkMetricsID(id int) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetNetworkMetricsID(id int64) *SystemNetworkStatsUpdate {
 	snsu.mutation.SetNetworkMetricsID(id)
 	return snsu
 }
 
 // SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillableNetworkMetricsID(id *int) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetNillableNetworkMetricsID(id *int64) *SystemNetworkStatsUpdate {
 	if id != nil {
 		snsu = snsu.SetNetworkMetricsID(*id)
 	}
@@ -309,7 +309,7 @@ func (snsu *SystemNetworkStatsUpdate) Modify(modifiers ...func(u *sql.UpdateBuil
 }
 
 func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
 	if ps := snsu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -397,7 +397,7 @@ func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err e
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -410,7 +410,7 @@ func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err e
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -657,13 +657,13 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearPeakPacketsRecvPerSec() *SystemNe
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNetworkMetricsID(id int) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetNetworkMetricsID(id int64) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.SetNetworkMetricsID(id)
 	return snsuo
 }
 
 // SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillableNetworkMetricsID(id *int) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillableNetworkMetricsID(id *int64) *SystemNetworkStatsUpdateOne {
 	if id != nil {
 		snsuo = snsuo.SetNetworkMetricsID(*id)
 	}
@@ -733,7 +733,7 @@ func (snsuo *SystemNetworkStatsUpdateOne) Modify(modifiers ...func(u *sql.Update
 }
 
 func (snsuo *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *SystemNetworkStats, err error) {
-	_spec := sqlgraph.NewUpdateSpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
 	id, ok := snsuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SystemNetworkStats.id" for update`)}
@@ -838,7 +838,7 @@ func (snsuo *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *S
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -851,7 +851,7 @@ func (snsuo *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *S
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

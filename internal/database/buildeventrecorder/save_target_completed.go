@@ -44,7 +44,7 @@ func (r *BuildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 	}
 	defer func() { tx.Rollback() }()
 
-	row, err := tx.Sqlc().LockBazelInvocationCompletion(ctx, int64(r.InvocationDbID))
+	row, err := tx.Sqlc().LockBazelInvocationCompletion(ctx, r.InvocationDbID)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to lock bep completed for invocation")
 	}
@@ -73,7 +73,7 @@ func (r *BuildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 	return nil
 }
 
-func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocationDbID int, tx database.Handle, batch []BuildEventWithInfo, targetInfoMap map[invocationTargetKey]completedTargetInfo) error {
+func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocationDbID int64, tx database.Handle, batch []BuildEventWithInfo, targetInfoMap map[invocationTargetKey]completedTargetInfo) error {
 	params := sqlc.CreateInvocationTargetsBulkParams{
 		BazelInvocationID: int64(invocationDbID),
 		TargetIds:         make([]int64, len(batch)),

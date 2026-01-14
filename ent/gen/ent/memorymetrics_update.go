@@ -112,13 +112,13 @@ func (mmu *MemoryMetricsUpdate) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMet
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmu *MemoryMetricsUpdate) SetMetricsID(id int) *MemoryMetricsUpdate {
+func (mmu *MemoryMetricsUpdate) SetMetricsID(id int64) *MemoryMetricsUpdate {
 	mmu.mutation.SetMetricsID(id)
 	return mmu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmu *MemoryMetricsUpdate) SetNillableMetricsID(id *int) *MemoryMetricsUpdate {
+func (mmu *MemoryMetricsUpdate) SetNillableMetricsID(id *int64) *MemoryMetricsUpdate {
 	if id != nil {
 		mmu = mmu.SetMetricsID(*id)
 	}
@@ -131,14 +131,14 @@ func (mmu *MemoryMetricsUpdate) SetMetrics(m *Metrics) *MemoryMetricsUpdate {
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
-func (mmu *MemoryMetricsUpdate) AddGarbageMetricIDs(ids ...int) *MemoryMetricsUpdate {
+func (mmu *MemoryMetricsUpdate) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdate {
 	mmu.mutation.AddGarbageMetricIDs(ids...)
 	return mmu
 }
 
 // AddGarbageMetrics adds the "garbage_metrics" edges to the GarbageMetrics entity.
 func (mmu *MemoryMetricsUpdate) AddGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdate {
-	ids := make([]int, len(g))
+	ids := make([]int64, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -163,14 +163,14 @@ func (mmu *MemoryMetricsUpdate) ClearGarbageMetrics() *MemoryMetricsUpdate {
 }
 
 // RemoveGarbageMetricIDs removes the "garbage_metrics" edge to GarbageMetrics entities by IDs.
-func (mmu *MemoryMetricsUpdate) RemoveGarbageMetricIDs(ids ...int) *MemoryMetricsUpdate {
+func (mmu *MemoryMetricsUpdate) RemoveGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdate {
 	mmu.mutation.RemoveGarbageMetricIDs(ids...)
 	return mmu
 }
 
 // RemoveGarbageMetrics removes "garbage_metrics" edges to GarbageMetrics entities.
 func (mmu *MemoryMetricsUpdate) RemoveGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdate {
-	ids := make([]int, len(g))
+	ids := make([]int64, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -211,7 +211,7 @@ func (mmu *MemoryMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
 	if ps := mmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -254,7 +254,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{memorymetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -267,7 +267,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{memorymetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -283,7 +283,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -296,7 +296,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -312,7 +312,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -424,13 +424,13 @@ func (mmuo *MemoryMetricsUpdateOne) ClearPeakPostGcTenuredSpaceHeapSize() *Memor
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmuo *MemoryMetricsUpdateOne) SetMetricsID(id int) *MemoryMetricsUpdateOne {
+func (mmuo *MemoryMetricsUpdateOne) SetMetricsID(id int64) *MemoryMetricsUpdateOne {
 	mmuo.mutation.SetMetricsID(id)
 	return mmuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmuo *MemoryMetricsUpdateOne) SetNillableMetricsID(id *int) *MemoryMetricsUpdateOne {
+func (mmuo *MemoryMetricsUpdateOne) SetNillableMetricsID(id *int64) *MemoryMetricsUpdateOne {
 	if id != nil {
 		mmuo = mmuo.SetMetricsID(*id)
 	}
@@ -443,14 +443,14 @@ func (mmuo *MemoryMetricsUpdateOne) SetMetrics(m *Metrics) *MemoryMetricsUpdateO
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
-func (mmuo *MemoryMetricsUpdateOne) AddGarbageMetricIDs(ids ...int) *MemoryMetricsUpdateOne {
+func (mmuo *MemoryMetricsUpdateOne) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdateOne {
 	mmuo.mutation.AddGarbageMetricIDs(ids...)
 	return mmuo
 }
 
 // AddGarbageMetrics adds the "garbage_metrics" edges to the GarbageMetrics entity.
 func (mmuo *MemoryMetricsUpdateOne) AddGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdateOne {
-	ids := make([]int, len(g))
+	ids := make([]int64, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -475,14 +475,14 @@ func (mmuo *MemoryMetricsUpdateOne) ClearGarbageMetrics() *MemoryMetricsUpdateOn
 }
 
 // RemoveGarbageMetricIDs removes the "garbage_metrics" edge to GarbageMetrics entities by IDs.
-func (mmuo *MemoryMetricsUpdateOne) RemoveGarbageMetricIDs(ids ...int) *MemoryMetricsUpdateOne {
+func (mmuo *MemoryMetricsUpdateOne) RemoveGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdateOne {
 	mmuo.mutation.RemoveGarbageMetricIDs(ids...)
 	return mmuo
 }
 
 // RemoveGarbageMetrics removes "garbage_metrics" edges to GarbageMetrics entities.
 func (mmuo *MemoryMetricsUpdateOne) RemoveGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdateOne {
-	ids := make([]int, len(g))
+	ids := make([]int64, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -536,7 +536,7 @@ func (mmuo *MemoryMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
 	id, ok := mmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "MemoryMetrics.id" for update`)}
@@ -596,7 +596,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 			Columns: []string{memorymetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -609,7 +609,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 			Columns: []string{memorymetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -625,7 +625,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -638,7 +638,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -654,7 +654,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -24,7 +24,7 @@ import (
 type BazelInvocation struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// InvocationID holds the value of the "invocation_id" field.
 	InvocationID uuid.UUID `json:"invocation_id,omitempty"`
 	// StartedAt holds the value of the "started_at" field.
@@ -92,9 +92,9 @@ type BazelInvocation struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
 	Edges                                BazelInvocationEdges `json:"edges"`
-	authenticated_user_bazel_invocations *int
-	build_invocations                    *int
-	instance_name_bazel_invocations      *int
+	authenticated_user_bazel_invocations *int64
+	build_invocations                    *int64
+	instance_name_bazel_invocations      *int64
 	selectValues                         sql.SelectValues
 }
 
@@ -325,7 +325,7 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			bi.ID = int(value.Int64)
+			bi.ID = int64(value.Int64)
 		case bazelinvocation.FieldInvocationID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field invocation_id", values[i])
@@ -531,22 +531,22 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field authenticated_user_bazel_invocations", value)
 			} else if value.Valid {
-				bi.authenticated_user_bazel_invocations = new(int)
-				*bi.authenticated_user_bazel_invocations = int(value.Int64)
+				bi.authenticated_user_bazel_invocations = new(int64)
+				*bi.authenticated_user_bazel_invocations = int64(value.Int64)
 			}
 		case bazelinvocation.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_invocations", value)
 			} else if value.Valid {
-				bi.build_invocations = new(int)
-				*bi.build_invocations = int(value.Int64)
+				bi.build_invocations = new(int64)
+				*bi.build_invocations = int64(value.Int64)
 			}
 		case bazelinvocation.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_bazel_invocations", value)
 			} else if value.Valid {
-				bi.instance_name_bazel_invocations = new(int)
-				*bi.instance_name_bazel_invocations = int(value.Int64)
+				bi.instance_name_bazel_invocations = new(int64)
+				*bi.instance_name_bazel_invocations = int64(value.Int64)
 			}
 		default:
 			bi.selectValues.Set(columns[i], values[i])

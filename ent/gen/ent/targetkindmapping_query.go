@@ -132,8 +132,8 @@ func (tkmq *TargetKindMappingQuery) FirstX(ctx context.Context) *TargetKindMappi
 
 // FirstID returns the first TargetKindMapping ID from the query.
 // Returns a *NotFoundError when no TargetKindMapping ID was found.
-func (tkmq *TargetKindMappingQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tkmq *TargetKindMappingQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tkmq.Limit(1).IDs(setContextOp(ctx, tkmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -145,7 +145,7 @@ func (tkmq *TargetKindMappingQuery) FirstID(ctx context.Context) (id int, err er
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) FirstIDX(ctx context.Context) int {
+func (tkmq *TargetKindMappingQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tkmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -183,8 +183,8 @@ func (tkmq *TargetKindMappingQuery) OnlyX(ctx context.Context) *TargetKindMappin
 // OnlyID is like Only, but returns the only TargetKindMapping ID in the query.
 // Returns a *NotSingularError when more than one TargetKindMapping ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tkmq *TargetKindMappingQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tkmq *TargetKindMappingQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tkmq.Limit(2).IDs(setContextOp(ctx, tkmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -200,7 +200,7 @@ func (tkmq *TargetKindMappingQuery) OnlyID(ctx context.Context) (id int, err err
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) OnlyIDX(ctx context.Context) int {
+func (tkmq *TargetKindMappingQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tkmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -228,7 +228,7 @@ func (tkmq *TargetKindMappingQuery) AllX(ctx context.Context) []*TargetKindMappi
 }
 
 // IDs executes the query and returns a list of TargetKindMapping IDs.
-func (tkmq *TargetKindMappingQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tkmq *TargetKindMappingQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tkmq.ctx.Unique == nil && tkmq.path != nil {
 		tkmq.Unique(true)
 	}
@@ -240,7 +240,7 @@ func (tkmq *TargetKindMappingQuery) IDs(ctx context.Context) (ids []int, err err
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) IDsX(ctx context.Context) []int {
+func (tkmq *TargetKindMappingQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tkmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -337,7 +337,7 @@ func (tkmq *TargetKindMappingQuery) WithTarget(opts ...func(*TargetQuery)) *Targ
 // Example:
 //
 //	var v []struct {
-//		BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
+//		BazelInvocationID int64 `json:"bazel_invocation_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -360,7 +360,7 @@ func (tkmq *TargetKindMappingQuery) GroupBy(field string, fields ...string) *Tar
 // Example:
 //
 //	var v []struct {
-//		BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
+//		BazelInvocationID int64 `json:"bazel_invocation_id,omitempty"`
 //	}
 //
 //	client.TargetKindMapping.Query().
@@ -456,8 +456,8 @@ func (tkmq *TargetKindMappingQuery) sqlAll(ctx context.Context, hooks ...queryHo
 }
 
 func (tkmq *TargetKindMappingQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*TargetKindMapping, init func(*TargetKindMapping), assign func(*TargetKindMapping, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TargetKindMapping)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TargetKindMapping)
 	for i := range nodes {
 		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
@@ -485,8 +485,8 @@ func (tkmq *TargetKindMappingQuery) loadBazelInvocation(ctx context.Context, que
 	return nil
 }
 func (tkmq *TargetKindMappingQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*TargetKindMapping, init func(*TargetKindMapping), assign func(*TargetKindMapping, *Target)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TargetKindMapping)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TargetKindMapping)
 	for i := range nodes {
 		fk := nodes[i].TargetID
 		if _, ok := nodeids[fk]; !ok {
@@ -527,7 +527,7 @@ func (tkmq *TargetKindMappingQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tkmq *TargetKindMappingQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
 	_spec.From = tkmq.sql
 	if unique := tkmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

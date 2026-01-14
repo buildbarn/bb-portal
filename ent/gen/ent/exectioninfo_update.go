@@ -146,13 +146,13 @@ func (eiu *ExectionInfoUpdate) ClearHostname() *ExectionInfoUpdate {
 }
 
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (eiu *ExectionInfoUpdate) SetTestResultID(id int) *ExectionInfoUpdate {
+func (eiu *ExectionInfoUpdate) SetTestResultID(id int64) *ExectionInfoUpdate {
 	eiu.mutation.SetTestResultID(id)
 	return eiu
 }
 
 // SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (eiu *ExectionInfoUpdate) SetNillableTestResultID(id *int) *ExectionInfoUpdate {
+func (eiu *ExectionInfoUpdate) SetNillableTestResultID(id *int64) *ExectionInfoUpdate {
 	if id != nil {
 		eiu = eiu.SetTestResultID(*id)
 	}
@@ -165,13 +165,13 @@ func (eiu *ExectionInfoUpdate) SetTestResult(t *TestResultBES) *ExectionInfoUpda
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
-func (eiu *ExectionInfoUpdate) SetTimingBreakdownID(id int) *ExectionInfoUpdate {
+func (eiu *ExectionInfoUpdate) SetTimingBreakdownID(id int64) *ExectionInfoUpdate {
 	eiu.mutation.SetTimingBreakdownID(id)
 	return eiu
 }
 
 // SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
-func (eiu *ExectionInfoUpdate) SetNillableTimingBreakdownID(id *int) *ExectionInfoUpdate {
+func (eiu *ExectionInfoUpdate) SetNillableTimingBreakdownID(id *int64) *ExectionInfoUpdate {
 	if id != nil {
 		eiu = eiu.SetTimingBreakdownID(*id)
 	}
@@ -184,14 +184,14 @@ func (eiu *ExectionInfoUpdate) SetTimingBreakdown(t *TimingBreakdown) *ExectionI
 }
 
 // AddResourceUsageIDs adds the "resource_usage" edge to the ResourceUsage entity by IDs.
-func (eiu *ExectionInfoUpdate) AddResourceUsageIDs(ids ...int) *ExectionInfoUpdate {
+func (eiu *ExectionInfoUpdate) AddResourceUsageIDs(ids ...int64) *ExectionInfoUpdate {
 	eiu.mutation.AddResourceUsageIDs(ids...)
 	return eiu
 }
 
 // AddResourceUsage adds the "resource_usage" edges to the ResourceUsage entity.
 func (eiu *ExectionInfoUpdate) AddResourceUsage(r ...*ResourceUsage) *ExectionInfoUpdate {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -222,14 +222,14 @@ func (eiu *ExectionInfoUpdate) ClearResourceUsage() *ExectionInfoUpdate {
 }
 
 // RemoveResourceUsageIDs removes the "resource_usage" edge to ResourceUsage entities by IDs.
-func (eiu *ExectionInfoUpdate) RemoveResourceUsageIDs(ids ...int) *ExectionInfoUpdate {
+func (eiu *ExectionInfoUpdate) RemoveResourceUsageIDs(ids ...int64) *ExectionInfoUpdate {
 	eiu.mutation.RemoveResourceUsageIDs(ids...)
 	return eiu
 }
 
 // RemoveResourceUsage removes "resource_usage" edges to ResourceUsage entities.
 func (eiu *ExectionInfoUpdate) RemoveResourceUsage(r ...*ResourceUsage) *ExectionInfoUpdate {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -270,7 +270,7 @@ func (eiu *ExectionInfoUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *
 }
 
 func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64))
 	if ps := eiu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -322,7 +322,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{exectioninfo.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -335,7 +335,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{exectioninfo.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -351,7 +351,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -364,7 +364,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -380,7 +380,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -393,7 +393,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -409,7 +409,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -554,13 +554,13 @@ func (eiuo *ExectionInfoUpdateOne) ClearHostname() *ExectionInfoUpdateOne {
 }
 
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (eiuo *ExectionInfoUpdateOne) SetTestResultID(id int) *ExectionInfoUpdateOne {
+func (eiuo *ExectionInfoUpdateOne) SetTestResultID(id int64) *ExectionInfoUpdateOne {
 	eiuo.mutation.SetTestResultID(id)
 	return eiuo
 }
 
 // SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (eiuo *ExectionInfoUpdateOne) SetNillableTestResultID(id *int) *ExectionInfoUpdateOne {
+func (eiuo *ExectionInfoUpdateOne) SetNillableTestResultID(id *int64) *ExectionInfoUpdateOne {
 	if id != nil {
 		eiuo = eiuo.SetTestResultID(*id)
 	}
@@ -573,13 +573,13 @@ func (eiuo *ExectionInfoUpdateOne) SetTestResult(t *TestResultBES) *ExectionInfo
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
-func (eiuo *ExectionInfoUpdateOne) SetTimingBreakdownID(id int) *ExectionInfoUpdateOne {
+func (eiuo *ExectionInfoUpdateOne) SetTimingBreakdownID(id int64) *ExectionInfoUpdateOne {
 	eiuo.mutation.SetTimingBreakdownID(id)
 	return eiuo
 }
 
 // SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
-func (eiuo *ExectionInfoUpdateOne) SetNillableTimingBreakdownID(id *int) *ExectionInfoUpdateOne {
+func (eiuo *ExectionInfoUpdateOne) SetNillableTimingBreakdownID(id *int64) *ExectionInfoUpdateOne {
 	if id != nil {
 		eiuo = eiuo.SetTimingBreakdownID(*id)
 	}
@@ -592,14 +592,14 @@ func (eiuo *ExectionInfoUpdateOne) SetTimingBreakdown(t *TimingBreakdown) *Exect
 }
 
 // AddResourceUsageIDs adds the "resource_usage" edge to the ResourceUsage entity by IDs.
-func (eiuo *ExectionInfoUpdateOne) AddResourceUsageIDs(ids ...int) *ExectionInfoUpdateOne {
+func (eiuo *ExectionInfoUpdateOne) AddResourceUsageIDs(ids ...int64) *ExectionInfoUpdateOne {
 	eiuo.mutation.AddResourceUsageIDs(ids...)
 	return eiuo
 }
 
 // AddResourceUsage adds the "resource_usage" edges to the ResourceUsage entity.
 func (eiuo *ExectionInfoUpdateOne) AddResourceUsage(r ...*ResourceUsage) *ExectionInfoUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -630,14 +630,14 @@ func (eiuo *ExectionInfoUpdateOne) ClearResourceUsage() *ExectionInfoUpdateOne {
 }
 
 // RemoveResourceUsageIDs removes the "resource_usage" edge to ResourceUsage entities by IDs.
-func (eiuo *ExectionInfoUpdateOne) RemoveResourceUsageIDs(ids ...int) *ExectionInfoUpdateOne {
+func (eiuo *ExectionInfoUpdateOne) RemoveResourceUsageIDs(ids ...int64) *ExectionInfoUpdateOne {
 	eiuo.mutation.RemoveResourceUsageIDs(ids...)
 	return eiuo
 }
 
 // RemoveResourceUsage removes "resource_usage" edges to ResourceUsage entities.
 func (eiuo *ExectionInfoUpdateOne) RemoveResourceUsage(r ...*ResourceUsage) *ExectionInfoUpdateOne {
-	ids := make([]int, len(r))
+	ids := make([]int64, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -691,7 +691,7 @@ func (eiuo *ExectionInfoUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder
 }
 
 func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *ExectionInfo, err error) {
-	_spec := sqlgraph.NewUpdateSpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64))
 	id, ok := eiuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ExectionInfo.id" for update`)}
@@ -760,7 +760,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Columns: []string{exectioninfo.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -773,7 +773,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Columns: []string{exectioninfo.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -789,7 +789,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -802,7 +802,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -818,7 +818,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -831,7 +831,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -847,7 +847,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

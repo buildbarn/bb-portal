@@ -157,7 +157,7 @@ func newBuildEventStreamService(
 	}
 
 	// Attempt to migrate towards ents model.
-	if err = dbClient.Ent().Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+	if err = dbClient.Ent().Schema.Create(context.Background(), migrate.WithDropIndex(true)); err != nil {
 		return util.StatusWrap(err, "Could not automatically migrate to desired schema")
 	}
 

@@ -18,9 +18,9 @@ type TargetKindMapping struct {
 func (TargetKindMapping) Fields() []ent.Field {
 	return []ent.Field{
 		// Foreign key to bazel_invocation
-		field.Int("bazel_invocation_id").Immutable(),
+		field.Int64("bazel_invocation_id").Immutable(),
 		// Foreign key to target
-		field.Int("target_id").Immutable(),
+		field.Int64("target_id").Immutable(),
 		// First time we saw this InvocationTarget.
 		field.Int64("start_time_in_ms").Optional(),
 	}
@@ -61,5 +61,12 @@ func (TargetKindMapping) Indexes() []ent.Index {
 func (TargetKindMapping) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.Skip(),
+	}
+}
+
+// Mixin of the TargetKindMapping.
+func (TargetKindMapping) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
 	}
 }

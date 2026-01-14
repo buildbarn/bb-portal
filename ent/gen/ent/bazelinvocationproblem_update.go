@@ -72,13 +72,13 @@ func (bipu *BazelInvocationProblemUpdate) AppendBepEvents(jm json.RawMessage) *B
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (bipu *BazelInvocationProblemUpdate) SetBazelInvocationID(id int) *BazelInvocationProblemUpdate {
+func (bipu *BazelInvocationProblemUpdate) SetBazelInvocationID(id int64) *BazelInvocationProblemUpdate {
 	bipu.mutation.SetBazelInvocationID(id)
 	return bipu
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (bipu *BazelInvocationProblemUpdate) SetNillableBazelInvocationID(id *int) *BazelInvocationProblemUpdate {
+func (bipu *BazelInvocationProblemUpdate) SetNillableBazelInvocationID(id *int64) *BazelInvocationProblemUpdate {
 	if id != nil {
 		bipu = bipu.SetBazelInvocationID(*id)
 	}
@@ -135,7 +135,7 @@ func (bipu *BazelInvocationProblemUpdate) Modify(modifiers ...func(u *sql.Update
 }
 
 func (bipu *BazelInvocationProblemUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64))
 	if ps := bipu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -165,7 +165,7 @@ func (bipu *BazelInvocationProblemUpdate) sqlSave(ctx context.Context) (n int, e
 			Columns: []string{bazelinvocationproblem.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -178,7 +178,7 @@ func (bipu *BazelInvocationProblemUpdate) sqlSave(ctx context.Context) (n int, e
 			Columns: []string{bazelinvocationproblem.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -249,13 +249,13 @@ func (bipuo *BazelInvocationProblemUpdateOne) AppendBepEvents(jm json.RawMessage
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (bipuo *BazelInvocationProblemUpdateOne) SetBazelInvocationID(id int) *BazelInvocationProblemUpdateOne {
+func (bipuo *BazelInvocationProblemUpdateOne) SetBazelInvocationID(id int64) *BazelInvocationProblemUpdateOne {
 	bipuo.mutation.SetBazelInvocationID(id)
 	return bipuo
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (bipuo *BazelInvocationProblemUpdateOne) SetNillableBazelInvocationID(id *int) *BazelInvocationProblemUpdateOne {
+func (bipuo *BazelInvocationProblemUpdateOne) SetNillableBazelInvocationID(id *int64) *BazelInvocationProblemUpdateOne {
 	if id != nil {
 		bipuo = bipuo.SetBazelInvocationID(*id)
 	}
@@ -325,7 +325,7 @@ func (bipuo *BazelInvocationProblemUpdateOne) Modify(modifiers ...func(u *sql.Up
 }
 
 func (bipuo *BazelInvocationProblemUpdateOne) sqlSave(ctx context.Context) (_node *BazelInvocationProblem, err error) {
-	_spec := sqlgraph.NewUpdateSpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64))
 	id, ok := bipuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "BazelInvocationProblem.id" for update`)}
@@ -372,7 +372,7 @@ func (bipuo *BazelInvocationProblemUpdateOne) sqlSave(ctx context.Context) (_nod
 			Columns: []string{bazelinvocationproblem.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -385,7 +385,7 @@ func (bipuo *BazelInvocationProblemUpdateOne) sqlSave(ctx context.Context) (_nod
 			Columns: []string{bazelinvocationproblem.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

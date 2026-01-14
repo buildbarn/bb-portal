@@ -71,3 +71,10 @@ func (Target) Annotations() []schema.Annotation {
 		entgql.QueryField("findTargets"),
 	}
 }
+
+// Mixin of the Target.
+func (Target) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

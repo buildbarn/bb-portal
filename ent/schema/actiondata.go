@@ -60,3 +60,10 @@ func (ActionData) Indexes() []ent.Index {
 		index.Edges("action_summary"),
 	}
 }
+
+// Mixin of the ActionData.
+func (ActionData) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

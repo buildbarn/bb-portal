@@ -52,3 +52,10 @@ func (InvocationFiles) Indexes() []ent.Index {
 			Unique(),
 	}
 }
+
+// Mixin of the InvocationFiles.
+func (InvocationFiles) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

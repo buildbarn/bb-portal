@@ -17,11 +17,11 @@ import (
 type NetworkMetrics struct {
 	config
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the NetworkMetricsQuery when eager-loading is set.
 	Edges                   NetworkMetricsEdges `json:"edges"`
-	metrics_network_metrics *int
+	metrics_network_metrics *int64
 	selectValues            sql.SelectValues
 }
 
@@ -89,13 +89,13 @@ func (nm *NetworkMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			nm.ID = int(value.Int64)
+			nm.ID = int64(value.Int64)
 		case networkmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_network_metrics", value)
 			} else if value.Valid {
-				nm.metrics_network_metrics = new(int)
-				*nm.metrics_network_metrics = int(value.Int64)
+				nm.metrics_network_metrics = new(int64)
+				*nm.metrics_network_metrics = int64(value.Int64)
 			}
 		default:
 			nm.selectValues.Set(columns[i], values[i])

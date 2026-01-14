@@ -57,3 +57,10 @@ func (TestFile) Indexes() []ent.Index {
 		index.Edges("test_result"),
 	}
 }
+
+// Mixin of the TestFile.
+func (TestFile) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

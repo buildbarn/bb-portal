@@ -16,7 +16,7 @@ import (
 type TimingMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// CPUTimeInMs holds the value of the "cpu_time_in_ms" field.
 	CPUTimeInMs int64 `json:"cpu_time_in_ms,omitempty"`
 	// WallTimeInMs holds the value of the "wall_time_in_ms" field.
@@ -30,7 +30,7 @@ type TimingMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingMetricsQuery when eager-loading is set.
 	Edges                  TimingMetricsEdges `json:"edges"`
-	metrics_timing_metrics *int
+	metrics_timing_metrics *int64
 	selectValues           sql.SelectValues
 }
 
@@ -85,7 +85,7 @@ func (tm *TimingMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tm.ID = int(value.Int64)
+			tm.ID = int64(value.Int64)
 		case timingmetrics.FieldCPUTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field cpu_time_in_ms", values[i])
@@ -120,8 +120,8 @@ func (tm *TimingMetrics) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_timing_metrics", value)
 			} else if value.Valid {
-				tm.metrics_timing_metrics = new(int)
-				*tm.metrics_timing_metrics = int(value.Int64)
+				tm.metrics_timing_metrics = new(int64)
+				*tm.metrics_timing_metrics = int64(value.Int64)
 			}
 		default:
 			tm.selectValues.Set(columns[i], values[i])

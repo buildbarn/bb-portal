@@ -23,14 +23,20 @@ type NamedSetOfFilesCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetID sets the "id" field.
+func (nsofc *NamedSetOfFilesCreate) SetID(i int64) *NamedSetOfFilesCreate {
+	nsofc.mutation.SetID(i)
+	return nsofc
+}
+
 // SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
-func (nsofc *NamedSetOfFilesCreate) SetOutputGroupID(id int) *NamedSetOfFilesCreate {
+func (nsofc *NamedSetOfFilesCreate) SetOutputGroupID(id int64) *NamedSetOfFilesCreate {
 	nsofc.mutation.SetOutputGroupID(id)
 	return nsofc
 }
 
 // SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
-func (nsofc *NamedSetOfFilesCreate) SetNillableOutputGroupID(id *int) *NamedSetOfFilesCreate {
+func (nsofc *NamedSetOfFilesCreate) SetNillableOutputGroupID(id *int64) *NamedSetOfFilesCreate {
 	if id != nil {
 		nsofc = nsofc.SetOutputGroupID(*id)
 	}
@@ -43,14 +49,14 @@ func (nsofc *NamedSetOfFilesCreate) SetOutputGroup(o *OutputGroup) *NamedSetOfFi
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by IDs.
-func (nsofc *NamedSetOfFilesCreate) AddFileIDs(ids ...int) *NamedSetOfFilesCreate {
+func (nsofc *NamedSetOfFilesCreate) AddFileIDs(ids ...int64) *NamedSetOfFilesCreate {
 	nsofc.mutation.AddFileIDs(ids...)
 	return nsofc
 }
 
 // AddFiles adds the "files" edges to the TestFile entity.
 func (nsofc *NamedSetOfFilesCreate) AddFiles(t ...*TestFile) *NamedSetOfFilesCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -58,13 +64,13 @@ func (nsofc *NamedSetOfFilesCreate) AddFiles(t ...*TestFile) *NamedSetOfFilesCre
 }
 
 // SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID.
-func (nsofc *NamedSetOfFilesCreate) SetFileSetsID(id int) *NamedSetOfFilesCreate {
+func (nsofc *NamedSetOfFilesCreate) SetFileSetsID(id int64) *NamedSetOfFilesCreate {
 	nsofc.mutation.SetFileSetsID(id)
 	return nsofc
 }
 
 // SetNillableFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by ID if the given value is not nil.
-func (nsofc *NamedSetOfFilesCreate) SetNillableFileSetsID(id *int) *NamedSetOfFilesCreate {
+func (nsofc *NamedSetOfFilesCreate) SetNillableFileSetsID(id *int64) *NamedSetOfFilesCreate {
 	if id != nil {
 		nsofc = nsofc.SetFileSetsID(*id)
 	}
@@ -124,8 +130,10 @@ func (nsofc *NamedSetOfFilesCreate) sqlSave(ctx context.Context) (*NamedSetOfFil
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	nsofc.mutation.id = &_node.ID
 	nsofc.mutation.done = true
 	return _node, nil
@@ -134,9 +142,13 @@ func (nsofc *NamedSetOfFilesCreate) sqlSave(ctx context.Context) (*NamedSetOfFil
 func (nsofc *NamedSetOfFilesCreate) createSpec() (*NamedSetOfFiles, *sqlgraph.CreateSpec) {
 	var (
 		_node = &NamedSetOfFiles{config: nsofc.config}
-		_spec = sqlgraph.NewCreateSpec(namedsetoffiles.Table, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(namedsetoffiles.Table, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = nsofc.conflict
+	if id, ok := nsofc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if nodes := nsofc.mutation.OutputGroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -145,7 +157,7 @@ func (nsofc *NamedSetOfFilesCreate) createSpec() (*NamedSetOfFiles, *sqlgraph.Cr
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -162,7 +174,7 @@ func (nsofc *NamedSetOfFilesCreate) createSpec() (*NamedSetOfFiles, *sqlgraph.Cr
 			Columns: []string{namedsetoffiles.FilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -178,7 +190,7 @@ func (nsofc *NamedSetOfFilesCreate) createSpec() (*NamedSetOfFiles, *sqlgraph.Cr
 			Columns: []string{namedsetoffiles.FileSetsColumn},
 			Bidi:    true,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -233,16 +245,24 @@ type (
 	}
 )
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.NamedSetOfFiles.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(namedsetoffiles.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *NamedSetOfFilesUpsertOne) UpdateNewValues() *NamedSetOfFilesUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(namedsetoffiles.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -289,7 +309,7 @@ func (u *NamedSetOfFilesUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *NamedSetOfFilesUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *NamedSetOfFilesUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -298,7 +318,7 @@ func (u *NamedSetOfFilesUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *NamedSetOfFilesUpsertOne) IDX(ctx context.Context) int {
+func (u *NamedSetOfFilesUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -352,9 +372,9 @@ func (nsofcb *NamedSetOfFilesCreateBulk) Save(ctx context.Context) ([]*NamedSetO
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -437,10 +457,20 @@ type NamedSetOfFilesUpsertBulk struct {
 //	client.NamedSetOfFiles.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(namedsetoffiles.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *NamedSetOfFilesUpsertBulk) UpdateNewValues() *NamedSetOfFilesUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(namedsetoffiles.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

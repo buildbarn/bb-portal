@@ -50,14 +50,20 @@ func (cmc *CumulativeMetricsCreate) SetNillableNumBuilds(i *int32) *CumulativeMe
 	return cmc
 }
 
+// SetID sets the "id" field.
+func (cmc *CumulativeMetricsCreate) SetID(i int64) *CumulativeMetricsCreate {
+	cmc.mutation.SetID(i)
+	return cmc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (cmc *CumulativeMetricsCreate) SetMetricsID(id int) *CumulativeMetricsCreate {
+func (cmc *CumulativeMetricsCreate) SetMetricsID(id int64) *CumulativeMetricsCreate {
 	cmc.mutation.SetMetricsID(id)
 	return cmc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (cmc *CumulativeMetricsCreate) SetNillableMetricsID(id *int) *CumulativeMetricsCreate {
+func (cmc *CumulativeMetricsCreate) SetNillableMetricsID(id *int64) *CumulativeMetricsCreate {
 	if id != nil {
 		cmc = cmc.SetMetricsID(*id)
 	}
@@ -117,8 +123,10 @@ func (cmc *CumulativeMetricsCreate) sqlSave(ctx context.Context) (*CumulativeMet
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	cmc.mutation.id = &_node.ID
 	cmc.mutation.done = true
 	return _node, nil
@@ -127,9 +135,13 @@ func (cmc *CumulativeMetricsCreate) sqlSave(ctx context.Context) (*CumulativeMet
 func (cmc *CumulativeMetricsCreate) createSpec() (*CumulativeMetrics, *sqlgraph.CreateSpec) {
 	var (
 		_node = &CumulativeMetrics{config: cmc.config}
-		_spec = sqlgraph.NewCreateSpec(cumulativemetrics.Table, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(cumulativemetrics.Table, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = cmc.conflict
+	if id, ok := cmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := cmc.mutation.NumAnalyses(); ok {
 		_spec.SetField(cumulativemetrics.FieldNumAnalyses, field.TypeInt32, value)
 		_node.NumAnalyses = value
@@ -146,7 +158,7 @@ func (cmc *CumulativeMetricsCreate) createSpec() (*CumulativeMetrics, *sqlgraph.
 			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -255,16 +267,24 @@ func (u *CumulativeMetricsUpsert) ClearNumBuilds() *CumulativeMetricsUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.CumulativeMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(cumulativemetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *CumulativeMetricsUpsertOne) UpdateNewValues() *CumulativeMetricsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(cumulativemetrics.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -367,7 +387,7 @@ func (u *CumulativeMetricsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *CumulativeMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *CumulativeMetricsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -376,7 +396,7 @@ func (u *CumulativeMetricsUpsertOne) ID(ctx context.Context) (id int, err error)
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *CumulativeMetricsUpsertOne) IDX(ctx context.Context) int {
+func (u *CumulativeMetricsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -430,9 +450,9 @@ func (cmcb *CumulativeMetricsCreateBulk) Save(ctx context.Context) ([]*Cumulativ
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -520,10 +540,20 @@ type CumulativeMetricsUpsertBulk struct {
 //	client.CumulativeMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(cumulativemetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *CumulativeMetricsUpsertBulk) UpdateNewValues() *CumulativeMetricsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(cumulativemetrics.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

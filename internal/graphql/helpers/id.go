@@ -13,12 +13,12 @@ func graphQLIDFromString(input string) string {
 }
 
 // GraphQLIDFromTypeAndID Takes an id and returns the b64enc string.
-func GraphQLIDFromTypeAndID(objType string, id int) string {
+func GraphQLIDFromTypeAndID(objType string, id int64) string {
 	return graphQLIDFromString(fmt.Sprintf("%s:%d", objType, id))
 }
 
 // GraphQLTypeAndIntIDFromID ID Decoder helper
-func GraphQLTypeAndIntIDFromID(id string) (string, int, error) {
+func GraphQLTypeAndIntIDFromID(id string) (string, int64, error) {
 	bytes, err := base64.URLEncoding.DecodeString(id)
 	if err != nil {
 		return "", 0, fmt.Errorf("could not decode ID (id: %s): %w", id, err)
@@ -29,5 +29,5 @@ func GraphQLTypeAndIntIDFromID(id string) (string, int, error) {
 	if err != nil {
 		return "", 0, fmt.Errorf("could extract int ID (id: %s): %w", id, err)
 	}
-	return parts[0], intID, nil
+	return parts[0], int64(intID), nil
 }

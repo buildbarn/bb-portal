@@ -58,3 +58,10 @@ func (AuthenticatedUser) Edges() []ent.Edge {
 			Annotations(entgql.RelayConnection()),
 	}
 }
+
+// Mixin of the ArtifactMetrics.
+func (AuthenticatedUser) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

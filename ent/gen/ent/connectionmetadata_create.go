@@ -29,8 +29,14 @@ func (cmc *ConnectionMetadataCreate) SetConnectionLastOpenAt(t time.Time) *Conne
 	return cmc
 }
 
+// SetID sets the "id" field.
+func (cmc *ConnectionMetadataCreate) SetID(i int64) *ConnectionMetadataCreate {
+	cmc.mutation.SetID(i)
+	return cmc
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (cmc *ConnectionMetadataCreate) SetBazelInvocationID(id int) *ConnectionMetadataCreate {
+func (cmc *ConnectionMetadataCreate) SetBazelInvocationID(id int64) *ConnectionMetadataCreate {
 	cmc.mutation.SetBazelInvocationID(id)
 	return cmc
 }
@@ -94,8 +100,10 @@ func (cmc *ConnectionMetadataCreate) sqlSave(ctx context.Context) (*ConnectionMe
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	cmc.mutation.id = &_node.ID
 	cmc.mutation.done = true
 	return _node, nil
@@ -104,9 +112,13 @@ func (cmc *ConnectionMetadataCreate) sqlSave(ctx context.Context) (*ConnectionMe
 func (cmc *ConnectionMetadataCreate) createSpec() (*ConnectionMetadata, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ConnectionMetadata{config: cmc.config}
-		_spec = sqlgraph.NewCreateSpec(connectionmetadata.Table, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(connectionmetadata.Table, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = cmc.conflict
+	if id, ok := cmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := cmc.mutation.ConnectionLastOpenAt(); ok {
 		_spec.SetField(connectionmetadata.FieldConnectionLastOpenAt, field.TypeTime, value)
 		_node.ConnectionLastOpenAt = value
@@ -119,7 +131,7 @@ func (cmc *ConnectionMetadataCreate) createSpec() (*ConnectionMetadata, *sqlgrap
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -192,16 +204,24 @@ func (u *ConnectionMetadataUpsert) UpdateConnectionLastOpenAt() *ConnectionMetad
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.ConnectionMetadata.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(connectionmetadata.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ConnectionMetadataUpsertOne) UpdateNewValues() *ConnectionMetadataUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(connectionmetadata.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -262,7 +282,7 @@ func (u *ConnectionMetadataUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ConnectionMetadataUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *ConnectionMetadataUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -271,7 +291,7 @@ func (u *ConnectionMetadataUpsertOne) ID(ctx context.Context) (id int, err error
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ConnectionMetadataUpsertOne) IDX(ctx context.Context) int {
+func (u *ConnectionMetadataUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -325,9 +345,9 @@ func (cmcb *ConnectionMetadataCreateBulk) Save(ctx context.Context) ([]*Connecti
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -415,10 +435,20 @@ type ConnectionMetadataUpsertBulk struct {
 //	client.ConnectionMetadata.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(connectionmetadata.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ConnectionMetadataUpsertBulk) UpdateNewValues() *ConnectionMetadataUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(connectionmetadata.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

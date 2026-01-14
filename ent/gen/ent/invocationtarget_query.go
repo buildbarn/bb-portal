@@ -133,8 +133,8 @@ func (itq *InvocationTargetQuery) FirstX(ctx context.Context) *InvocationTarget 
 
 // FirstID returns the first InvocationTarget ID from the query.
 // Returns a *NotFoundError when no InvocationTarget ID was found.
-func (itq *InvocationTargetQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (itq *InvocationTargetQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = itq.Limit(1).IDs(setContextOp(ctx, itq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -146,7 +146,7 @@ func (itq *InvocationTargetQuery) FirstID(ctx context.Context) (id int, err erro
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (itq *InvocationTargetQuery) FirstIDX(ctx context.Context) int {
+func (itq *InvocationTargetQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := itq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -184,8 +184,8 @@ func (itq *InvocationTargetQuery) OnlyX(ctx context.Context) *InvocationTarget {
 // OnlyID is like Only, but returns the only InvocationTarget ID in the query.
 // Returns a *NotSingularError when more than one InvocationTarget ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (itq *InvocationTargetQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (itq *InvocationTargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = itq.Limit(2).IDs(setContextOp(ctx, itq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -201,7 +201,7 @@ func (itq *InvocationTargetQuery) OnlyID(ctx context.Context) (id int, err error
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (itq *InvocationTargetQuery) OnlyIDX(ctx context.Context) int {
+func (itq *InvocationTargetQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := itq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -229,7 +229,7 @@ func (itq *InvocationTargetQuery) AllX(ctx context.Context) []*InvocationTarget 
 }
 
 // IDs executes the query and returns a list of InvocationTarget IDs.
-func (itq *InvocationTargetQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (itq *InvocationTargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if itq.ctx.Unique == nil && itq.path != nil {
 		itq.Unique(true)
 	}
@@ -241,7 +241,7 @@ func (itq *InvocationTargetQuery) IDs(ctx context.Context) (ids []int, err error
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (itq *InvocationTargetQuery) IDsX(ctx context.Context) []int {
+func (itq *InvocationTargetQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := itq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -464,8 +464,8 @@ func (itq *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook
 }
 
 func (itq *InvocationTargetQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*InvocationTarget)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*InvocationTarget)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_invocation_targets == nil {
 			continue
@@ -496,8 +496,8 @@ func (itq *InvocationTargetQuery) loadBazelInvocation(ctx context.Context, query
 	return nil
 }
 func (itq *InvocationTargetQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *Target)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*InvocationTarget)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*InvocationTarget)
 	for i := range nodes {
 		if nodes[i].target_invocation_targets == nil {
 			continue
@@ -541,7 +541,7 @@ func (itq *InvocationTargetQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (itq *InvocationTargetQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
 	_spec.From = itq.sql
 	if unique := itq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

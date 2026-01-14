@@ -46,7 +46,7 @@ func (bu *BuildUpdate) SetNillableTimestamp(t *time.Time) *BuildUpdate {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (bu *BuildUpdate) SetInstanceNameID(id int) *BuildUpdate {
+func (bu *BuildUpdate) SetInstanceNameID(id int64) *BuildUpdate {
 	bu.mutation.SetInstanceNameID(id)
 	return bu
 }
@@ -57,14 +57,14 @@ func (bu *BuildUpdate) SetInstanceName(i *InstanceName) *BuildUpdate {
 }
 
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by IDs.
-func (bu *BuildUpdate) AddInvocationIDs(ids ...int) *BuildUpdate {
+func (bu *BuildUpdate) AddInvocationIDs(ids ...int64) *BuildUpdate {
 	bu.mutation.AddInvocationIDs(ids...)
 	return bu
 }
 
 // AddInvocations adds the "invocations" edges to the BazelInvocation entity.
 func (bu *BuildUpdate) AddInvocations(b ...*BazelInvocation) *BuildUpdate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -89,14 +89,14 @@ func (bu *BuildUpdate) ClearInvocations() *BuildUpdate {
 }
 
 // RemoveInvocationIDs removes the "invocations" edge to BazelInvocation entities by IDs.
-func (bu *BuildUpdate) RemoveInvocationIDs(ids ...int) *BuildUpdate {
+func (bu *BuildUpdate) RemoveInvocationIDs(ids ...int64) *BuildUpdate {
 	bu.mutation.RemoveInvocationIDs(ids...)
 	return bu
 }
 
 // RemoveInvocations removes "invocations" edges to BazelInvocation entities.
 func (bu *BuildUpdate) RemoveInvocations(b ...*BazelInvocation) *BuildUpdate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -148,7 +148,7 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := bu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64))
 	if ps := bu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -167,7 +167,7 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{build.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -180,7 +180,7 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{build.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -196,7 +196,7 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{build.InvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -209,7 +209,7 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{build.InvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -225,7 +225,7 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{build.InvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -270,7 +270,7 @@ func (buo *BuildUpdateOne) SetNillableTimestamp(t *time.Time) *BuildUpdateOne {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (buo *BuildUpdateOne) SetInstanceNameID(id int) *BuildUpdateOne {
+func (buo *BuildUpdateOne) SetInstanceNameID(id int64) *BuildUpdateOne {
 	buo.mutation.SetInstanceNameID(id)
 	return buo
 }
@@ -281,14 +281,14 @@ func (buo *BuildUpdateOne) SetInstanceName(i *InstanceName) *BuildUpdateOne {
 }
 
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by IDs.
-func (buo *BuildUpdateOne) AddInvocationIDs(ids ...int) *BuildUpdateOne {
+func (buo *BuildUpdateOne) AddInvocationIDs(ids ...int64) *BuildUpdateOne {
 	buo.mutation.AddInvocationIDs(ids...)
 	return buo
 }
 
 // AddInvocations adds the "invocations" edges to the BazelInvocation entity.
 func (buo *BuildUpdateOne) AddInvocations(b ...*BazelInvocation) *BuildUpdateOne {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -313,14 +313,14 @@ func (buo *BuildUpdateOne) ClearInvocations() *BuildUpdateOne {
 }
 
 // RemoveInvocationIDs removes the "invocations" edge to BazelInvocation entities by IDs.
-func (buo *BuildUpdateOne) RemoveInvocationIDs(ids ...int) *BuildUpdateOne {
+func (buo *BuildUpdateOne) RemoveInvocationIDs(ids ...int64) *BuildUpdateOne {
 	buo.mutation.RemoveInvocationIDs(ids...)
 	return buo
 }
 
 // RemoveInvocations removes "invocations" edges to BazelInvocation entities.
 func (buo *BuildUpdateOne) RemoveInvocations(b ...*BazelInvocation) *BuildUpdateOne {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -385,7 +385,7 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 	if err := buo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64))
 	id, ok := buo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Build.id" for update`)}
@@ -421,7 +421,7 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 			Columns: []string{build.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -434,7 +434,7 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 			Columns: []string{build.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -450,7 +450,7 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 			Columns: []string{build.InvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -463,7 +463,7 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 			Columns: []string{build.InvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -479,7 +479,7 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 			Columns: []string{build.InvocationsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

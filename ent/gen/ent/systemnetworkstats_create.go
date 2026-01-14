@@ -134,14 +134,20 @@ func (snsc *SystemNetworkStatsCreate) SetNillablePeakPacketsRecvPerSec(u *uint64
 	return snsc
 }
 
+// SetID sets the "id" field.
+func (snsc *SystemNetworkStatsCreate) SetID(i int64) *SystemNetworkStatsCreate {
+	snsc.mutation.SetID(i)
+	return snsc
+}
+
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (snsc *SystemNetworkStatsCreate) SetNetworkMetricsID(id int) *SystemNetworkStatsCreate {
+func (snsc *SystemNetworkStatsCreate) SetNetworkMetricsID(id int64) *SystemNetworkStatsCreate {
 	snsc.mutation.SetNetworkMetricsID(id)
 	return snsc
 }
 
 // SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillableNetworkMetricsID(id *int) *SystemNetworkStatsCreate {
+func (snsc *SystemNetworkStatsCreate) SetNillableNetworkMetricsID(id *int64) *SystemNetworkStatsCreate {
 	if id != nil {
 		snsc = snsc.SetNetworkMetricsID(*id)
 	}
@@ -201,8 +207,10 @@ func (snsc *SystemNetworkStatsCreate) sqlSave(ctx context.Context) (*SystemNetwo
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	snsc.mutation.id = &_node.ID
 	snsc.mutation.done = true
 	return _node, nil
@@ -211,9 +219,13 @@ func (snsc *SystemNetworkStatsCreate) sqlSave(ctx context.Context) (*SystemNetwo
 func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgraph.CreateSpec) {
 	var (
 		_node = &SystemNetworkStats{config: snsc.config}
-		_spec = sqlgraph.NewCreateSpec(systemnetworkstats.Table, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(systemnetworkstats.Table, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = snsc.conflict
+	if id, ok := snsc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := snsc.mutation.BytesSent(); ok {
 		_spec.SetField(systemnetworkstats.FieldBytesSent, field.TypeUint64, value)
 		_node.BytesSent = value
@@ -254,7 +266,7 @@ func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgra
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -507,16 +519,24 @@ func (u *SystemNetworkStatsUpsert) ClearPeakPacketsRecvPerSec() *SystemNetworkSt
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.SystemNetworkStats.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(systemnetworkstats.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SystemNetworkStatsUpsertOne) UpdateNewValues() *SystemNetworkStatsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(systemnetworkstats.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -787,7 +807,7 @@ func (u *SystemNetworkStatsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *SystemNetworkStatsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *SystemNetworkStatsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -796,7 +816,7 @@ func (u *SystemNetworkStatsUpsertOne) ID(ctx context.Context) (id int, err error
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *SystemNetworkStatsUpsertOne) IDX(ctx context.Context) int {
+func (u *SystemNetworkStatsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -850,9 +870,9 @@ func (snscb *SystemNetworkStatsCreateBulk) Save(ctx context.Context) ([]*SystemN
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -940,10 +960,20 @@ type SystemNetworkStatsUpsertBulk struct {
 //	client.SystemNetworkStats.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(systemnetworkstats.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SystemNetworkStatsUpsertBulk) UpdateNewValues() *SystemNetworkStatsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(systemnetworkstats.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

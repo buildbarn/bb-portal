@@ -149,14 +149,20 @@ func (bgmc *BuildGraphMetricsCreate) SetNillablePostInvocationSkyframeNodeCount(
 	return bgmc
 }
 
+// SetID sets the "id" field.
+func (bgmc *BuildGraphMetricsCreate) SetID(i int64) *BuildGraphMetricsCreate {
+	bgmc.mutation.SetID(i)
+	return bgmc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetMetricsID(id int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetMetricsID(id int64) *BuildGraphMetricsCreate {
 	bgmc.mutation.SetMetricsID(id)
 	return bgmc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableMetricsID(id *int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetNillableMetricsID(id *int64) *BuildGraphMetricsCreate {
 	if id != nil {
 		bgmc = bgmc.SetMetricsID(*id)
 	}
@@ -169,13 +175,13 @@ func (bgmc *BuildGraphMetricsCreate) SetMetrics(m *Metrics) *BuildGraphMetricsCr
 }
 
 // SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetDirtiedValuesID(id int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetDirtiedValuesID(id int64) *BuildGraphMetricsCreate {
 	bgmc.mutation.SetDirtiedValuesID(id)
 	return bgmc
 }
 
 // SetNillableDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableDirtiedValuesID(id *int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetNillableDirtiedValuesID(id *int64) *BuildGraphMetricsCreate {
 	if id != nil {
 		bgmc = bgmc.SetDirtiedValuesID(*id)
 	}
@@ -188,13 +194,13 @@ func (bgmc *BuildGraphMetricsCreate) SetDirtiedValues(e *EvaluationStat) *BuildG
 }
 
 // SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetChangedValuesID(id int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetChangedValuesID(id int64) *BuildGraphMetricsCreate {
 	bgmc.mutation.SetChangedValuesID(id)
 	return bgmc
 }
 
 // SetNillableChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableChangedValuesID(id *int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetNillableChangedValuesID(id *int64) *BuildGraphMetricsCreate {
 	if id != nil {
 		bgmc = bgmc.SetChangedValuesID(*id)
 	}
@@ -207,13 +213,13 @@ func (bgmc *BuildGraphMetricsCreate) SetChangedValues(e *EvaluationStat) *BuildG
 }
 
 // SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetBuiltValuesID(id int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetBuiltValuesID(id int64) *BuildGraphMetricsCreate {
 	bgmc.mutation.SetBuiltValuesID(id)
 	return bgmc
 }
 
 // SetNillableBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableBuiltValuesID(id *int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetNillableBuiltValuesID(id *int64) *BuildGraphMetricsCreate {
 	if id != nil {
 		bgmc = bgmc.SetBuiltValuesID(*id)
 	}
@@ -226,13 +232,13 @@ func (bgmc *BuildGraphMetricsCreate) SetBuiltValues(e *EvaluationStat) *BuildGra
 }
 
 // SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetCleanedValuesID(id int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetCleanedValuesID(id int64) *BuildGraphMetricsCreate {
 	bgmc.mutation.SetCleanedValuesID(id)
 	return bgmc
 }
 
 // SetNillableCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableCleanedValuesID(id *int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetNillableCleanedValuesID(id *int64) *BuildGraphMetricsCreate {
 	if id != nil {
 		bgmc = bgmc.SetCleanedValuesID(*id)
 	}
@@ -245,13 +251,13 @@ func (bgmc *BuildGraphMetricsCreate) SetCleanedValues(e *EvaluationStat) *BuildG
 }
 
 // SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetEvaluatedValuesID(id int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetEvaluatedValuesID(id int64) *BuildGraphMetricsCreate {
 	bgmc.mutation.SetEvaluatedValuesID(id)
 	return bgmc
 }
 
 // SetNillableEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableEvaluatedValuesID(id *int) *BuildGraphMetricsCreate {
+func (bgmc *BuildGraphMetricsCreate) SetNillableEvaluatedValuesID(id *int64) *BuildGraphMetricsCreate {
 	if id != nil {
 		bgmc = bgmc.SetEvaluatedValuesID(*id)
 	}
@@ -311,8 +317,10 @@ func (bgmc *BuildGraphMetricsCreate) sqlSave(ctx context.Context) (*BuildGraphMe
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	bgmc.mutation.id = &_node.ID
 	bgmc.mutation.done = true
 	return _node, nil
@@ -321,9 +329,13 @@ func (bgmc *BuildGraphMetricsCreate) sqlSave(ctx context.Context) (*BuildGraphMe
 func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph.CreateSpec) {
 	var (
 		_node = &BuildGraphMetrics{config: bgmc.config}
-		_spec = sqlgraph.NewCreateSpec(buildgraphmetrics.Table, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(buildgraphmetrics.Table, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = bgmc.conflict
+	if id, ok := bgmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := bgmc.mutation.ActionLookupValueCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldActionLookupValueCount, field.TypeInt32, value)
 		_node.ActionLookupValueCount = value
@@ -368,7 +380,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -385,7 +397,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -402,7 +414,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -419,7 +431,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -436,7 +448,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -453,7 +465,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -729,16 +741,24 @@ func (u *BuildGraphMetricsUpsert) ClearPostInvocationSkyframeNodeCount() *BuildG
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.BuildGraphMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(buildgraphmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BuildGraphMetricsUpsertOne) UpdateNewValues() *BuildGraphMetricsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(buildgraphmetrics.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -1037,7 +1057,7 @@ func (u *BuildGraphMetricsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *BuildGraphMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *BuildGraphMetricsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -1046,7 +1066,7 @@ func (u *BuildGraphMetricsUpsertOne) ID(ctx context.Context) (id int, err error)
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *BuildGraphMetricsUpsertOne) IDX(ctx context.Context) int {
+func (u *BuildGraphMetricsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1100,9 +1120,9 @@ func (bgmcb *BuildGraphMetricsCreateBulk) Save(ctx context.Context) ([]*BuildGra
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1190,10 +1210,20 @@ type BuildGraphMetricsUpsertBulk struct {
 //	client.BuildGraphMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(buildgraphmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BuildGraphMetricsUpsertBulk) UpdateNewValues() *BuildGraphMetricsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(buildgraphmetrics.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

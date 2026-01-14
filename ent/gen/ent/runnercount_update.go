@@ -97,13 +97,13 @@ func (rcu *RunnerCountUpdate) ClearActionsExecuted() *RunnerCountUpdate {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcu *RunnerCountUpdate) SetActionSummaryID(id int) *RunnerCountUpdate {
+func (rcu *RunnerCountUpdate) SetActionSummaryID(id int64) *RunnerCountUpdate {
 	rcu.mutation.SetActionSummaryID(id)
 	return rcu
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcu *RunnerCountUpdate) SetNillableActionSummaryID(id *int) *RunnerCountUpdate {
+func (rcu *RunnerCountUpdate) SetNillableActionSummaryID(id *int64) *RunnerCountUpdate {
 	if id != nil {
 		rcu = rcu.SetActionSummaryID(*id)
 	}
@@ -160,7 +160,7 @@ func (rcu *RunnerCountUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *R
 }
 
 func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	if ps := rcu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -197,7 +197,7 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -210,7 +210,7 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -308,13 +308,13 @@ func (rcuo *RunnerCountUpdateOne) ClearActionsExecuted() *RunnerCountUpdateOne {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcuo *RunnerCountUpdateOne) SetActionSummaryID(id int) *RunnerCountUpdateOne {
+func (rcuo *RunnerCountUpdateOne) SetActionSummaryID(id int64) *RunnerCountUpdateOne {
 	rcuo.mutation.SetActionSummaryID(id)
 	return rcuo
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcuo *RunnerCountUpdateOne) SetNillableActionSummaryID(id *int) *RunnerCountUpdateOne {
+func (rcuo *RunnerCountUpdateOne) SetNillableActionSummaryID(id *int64) *RunnerCountUpdateOne {
 	if id != nil {
 		rcuo = rcuo.SetActionSummaryID(*id)
 	}
@@ -384,7 +384,7 @@ func (rcuo *RunnerCountUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)
 }
 
 func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCount, err error) {
-	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	id, ok := rcuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "RunnerCount.id" for update`)}
@@ -438,7 +438,7 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -451,7 +451,7 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

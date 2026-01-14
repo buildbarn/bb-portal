@@ -40,7 +40,7 @@ func (tmd *TargetMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (tmd *TargetMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(targetmetrics.Table, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(targetmetrics.Table, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
 	if ps := tmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

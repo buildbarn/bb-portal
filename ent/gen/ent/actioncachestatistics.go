@@ -16,7 +16,7 @@ import (
 type ActionCacheStatistics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// SizeInBytes holds the value of the "size_in_bytes" field.
 	SizeInBytes uint64 `json:"size_in_bytes,omitempty"`
 	// SaveTimeInMs holds the value of the "save_time_in_ms" field.
@@ -30,7 +30,7 @@ type ActionCacheStatistics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionCacheStatisticsQuery when eager-loading is set.
 	Edges                                  ActionCacheStatisticsEdges `json:"edges"`
-	action_summary_action_cache_statistics *int
+	action_summary_action_cache_statistics *int64
 	selectValues                           sql.SelectValues
 }
 
@@ -98,7 +98,7 @@ func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) e
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			acs.ID = int(value.Int64)
+			acs.ID = int64(value.Int64)
 		case actioncachestatistics.FieldSizeInBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field size_in_bytes", values[i])
@@ -133,8 +133,8 @@ func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) e
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_cache_statistics", value)
 			} else if value.Valid {
-				acs.action_summary_action_cache_statistics = new(int)
-				*acs.action_summary_action_cache_statistics = int(value.Int64)
+				acs.action_summary_action_cache_statistics = new(int64)
+				*acs.action_summary_action_cache_statistics = int64(value.Int64)
 			}
 		default:
 			acs.selectValues.Set(columns[i], values[i])

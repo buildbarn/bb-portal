@@ -111,8 +111,8 @@ func (auq *AuthenticatedUserQuery) FirstX(ctx context.Context) *AuthenticatedUse
 
 // FirstID returns the first AuthenticatedUser ID from the query.
 // Returns a *NotFoundError when no AuthenticatedUser ID was found.
-func (auq *AuthenticatedUserQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (auq *AuthenticatedUserQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = auq.Limit(1).IDs(setContextOp(ctx, auq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -124,7 +124,7 @@ func (auq *AuthenticatedUserQuery) FirstID(ctx context.Context) (id int, err err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) FirstIDX(ctx context.Context) int {
+func (auq *AuthenticatedUserQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := auq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -162,8 +162,8 @@ func (auq *AuthenticatedUserQuery) OnlyX(ctx context.Context) *AuthenticatedUser
 // OnlyID is like Only, but returns the only AuthenticatedUser ID in the query.
 // Returns a *NotSingularError when more than one AuthenticatedUser ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (auq *AuthenticatedUserQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (auq *AuthenticatedUserQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = auq.Limit(2).IDs(setContextOp(ctx, auq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -179,7 +179,7 @@ func (auq *AuthenticatedUserQuery) OnlyID(ctx context.Context) (id int, err erro
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) OnlyIDX(ctx context.Context) int {
+func (auq *AuthenticatedUserQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := auq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -207,7 +207,7 @@ func (auq *AuthenticatedUserQuery) AllX(ctx context.Context) []*AuthenticatedUse
 }
 
 // IDs executes the query and returns a list of AuthenticatedUser IDs.
-func (auq *AuthenticatedUserQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (auq *AuthenticatedUserQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if auq.ctx.Unique == nil && auq.path != nil {
 		auq.Unique(true)
 	}
@@ -219,7 +219,7 @@ func (auq *AuthenticatedUserQuery) IDs(ctx context.Context) (ids []int, err erro
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) IDsX(ctx context.Context) []int {
+func (auq *AuthenticatedUserQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := auq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -433,7 +433,7 @@ func (auq *AuthenticatedUserQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 
 func (auq *AuthenticatedUserQuery) loadBazelInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*AuthenticatedUser, init func(*AuthenticatedUser), assign func(*AuthenticatedUser, *BazelInvocation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*AuthenticatedUser)
+	nodeids := make(map[int64]*AuthenticatedUser)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -476,7 +476,7 @@ func (auq *AuthenticatedUserQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (auq *AuthenticatedUserQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
 	_spec.From = auq.sql
 	if unique := auq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

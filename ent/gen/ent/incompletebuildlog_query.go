@@ -108,8 +108,8 @@ func (iblq *IncompleteBuildLogQuery) FirstX(ctx context.Context) *IncompleteBuil
 
 // FirstID returns the first IncompleteBuildLog ID from the query.
 // Returns a *NotFoundError when no IncompleteBuildLog ID was found.
-func (iblq *IncompleteBuildLogQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (iblq *IncompleteBuildLogQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = iblq.Limit(1).IDs(setContextOp(ctx, iblq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -121,7 +121,7 @@ func (iblq *IncompleteBuildLogQuery) FirstID(ctx context.Context) (id int, err e
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) FirstIDX(ctx context.Context) int {
+func (iblq *IncompleteBuildLogQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := iblq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -159,8 +159,8 @@ func (iblq *IncompleteBuildLogQuery) OnlyX(ctx context.Context) *IncompleteBuild
 // OnlyID is like Only, but returns the only IncompleteBuildLog ID in the query.
 // Returns a *NotSingularError when more than one IncompleteBuildLog ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (iblq *IncompleteBuildLogQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (iblq *IncompleteBuildLogQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = iblq.Limit(2).IDs(setContextOp(ctx, iblq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -176,7 +176,7 @@ func (iblq *IncompleteBuildLogQuery) OnlyID(ctx context.Context) (id int, err er
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) OnlyIDX(ctx context.Context) int {
+func (iblq *IncompleteBuildLogQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := iblq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -204,7 +204,7 @@ func (iblq *IncompleteBuildLogQuery) AllX(ctx context.Context) []*IncompleteBuil
 }
 
 // IDs executes the query and returns a list of IncompleteBuildLog IDs.
-func (iblq *IncompleteBuildLogQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (iblq *IncompleteBuildLogQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if iblq.ctx.Unique == nil && iblq.path != nil {
 		iblq.Unique(true)
 	}
@@ -216,7 +216,7 @@ func (iblq *IncompleteBuildLogQuery) IDs(ctx context.Context) (ids []int, err er
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) IDsX(ctx context.Context) []int {
+func (iblq *IncompleteBuildLogQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := iblq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -413,8 +413,8 @@ func (iblq *IncompleteBuildLogQuery) sqlAll(ctx context.Context, hooks ...queryH
 }
 
 func (iblq *IncompleteBuildLogQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*IncompleteBuildLog, init func(*IncompleteBuildLog), assign func(*IncompleteBuildLog, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*IncompleteBuildLog)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*IncompleteBuildLog)
 	for i := range nodes {
 		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
@@ -455,7 +455,7 @@ func (iblq *IncompleteBuildLogQuery) sqlCount(ctx context.Context) (int, error) 
 }
 
 func (iblq *IncompleteBuildLogQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
 	_spec.From = iblq.sql
 	if unique := iblq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

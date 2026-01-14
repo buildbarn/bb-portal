@@ -18,7 +18,7 @@ import (
 type Build struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// BuildURL holds the value of the "build_url" field.
 	BuildURL string `json:"build_url,omitempty"`
 	// BuildUUID holds the value of the "build_uuid" field.
@@ -28,7 +28,7 @@ type Build struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildQuery when eager-loading is set.
 	Edges                BuildEdges `json:"edges"`
-	instance_name_builds *int
+	instance_name_builds *int64
 	selectValues         sql.SelectValues
 }
 
@@ -102,7 +102,7 @@ func (b *Build) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			b.ID = int(value.Int64)
+			b.ID = int64(value.Int64)
 		case build.FieldBuildURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field build_url", values[i])
@@ -125,8 +125,8 @@ func (b *Build) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_builds", value)
 			} else if value.Valid {
-				b.instance_name_builds = new(int)
-				*b.instance_name_builds = int(value.Int64)
+				b.instance_name_builds = new(int64)
+				*b.instance_name_builds = int64(value.Int64)
 			}
 		default:
 			b.selectValues.Set(columns[i], values[i])

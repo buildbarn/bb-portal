@@ -42,3 +42,10 @@ func (RunnerCount) Indexes() []ent.Index {
 		index.Edges("action_summary"),
 	}
 }
+
+// Mixin of the RunnerCount.
+func (RunnerCount) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

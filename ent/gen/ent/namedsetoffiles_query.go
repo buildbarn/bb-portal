@@ -158,8 +158,8 @@ func (nsofq *NamedSetOfFilesQuery) FirstX(ctx context.Context) *NamedSetOfFiles 
 
 // FirstID returns the first NamedSetOfFiles ID from the query.
 // Returns a *NotFoundError when no NamedSetOfFiles ID was found.
-func (nsofq *NamedSetOfFilesQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (nsofq *NamedSetOfFilesQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = nsofq.Limit(1).IDs(setContextOp(ctx, nsofq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -171,7 +171,7 @@ func (nsofq *NamedSetOfFilesQuery) FirstID(ctx context.Context) (id int, err err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (nsofq *NamedSetOfFilesQuery) FirstIDX(ctx context.Context) int {
+func (nsofq *NamedSetOfFilesQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := nsofq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -209,8 +209,8 @@ func (nsofq *NamedSetOfFilesQuery) OnlyX(ctx context.Context) *NamedSetOfFiles {
 // OnlyID is like Only, but returns the only NamedSetOfFiles ID in the query.
 // Returns a *NotSingularError when more than one NamedSetOfFiles ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (nsofq *NamedSetOfFilesQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (nsofq *NamedSetOfFilesQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = nsofq.Limit(2).IDs(setContextOp(ctx, nsofq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -226,7 +226,7 @@ func (nsofq *NamedSetOfFilesQuery) OnlyID(ctx context.Context) (id int, err erro
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (nsofq *NamedSetOfFilesQuery) OnlyIDX(ctx context.Context) int {
+func (nsofq *NamedSetOfFilesQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := nsofq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -254,7 +254,7 @@ func (nsofq *NamedSetOfFilesQuery) AllX(ctx context.Context) []*NamedSetOfFiles 
 }
 
 // IDs executes the query and returns a list of NamedSetOfFiles IDs.
-func (nsofq *NamedSetOfFilesQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (nsofq *NamedSetOfFilesQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if nsofq.ctx.Unique == nil && nsofq.path != nil {
 		nsofq.Unique(true)
 	}
@@ -266,7 +266,7 @@ func (nsofq *NamedSetOfFilesQuery) IDs(ctx context.Context) (ids []int, err erro
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (nsofq *NamedSetOfFilesQuery) IDsX(ctx context.Context) []int {
+func (nsofq *NamedSetOfFilesQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := nsofq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -494,8 +494,8 @@ func (nsofq *NamedSetOfFilesQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 }
 
 func (nsofq *NamedSetOfFilesQuery) loadOutputGroup(ctx context.Context, query *OutputGroupQuery, nodes []*NamedSetOfFiles, init func(*NamedSetOfFiles), assign func(*NamedSetOfFiles, *OutputGroup)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*NamedSetOfFiles)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*NamedSetOfFiles)
 	for i := range nodes {
 		if nodes[i].output_group_file_sets == nil {
 			continue
@@ -527,7 +527,7 @@ func (nsofq *NamedSetOfFilesQuery) loadOutputGroup(ctx context.Context, query *O
 }
 func (nsofq *NamedSetOfFilesQuery) loadFiles(ctx context.Context, query *TestFileQuery, nodes []*NamedSetOfFiles, init func(*NamedSetOfFiles), assign func(*NamedSetOfFiles, *TestFile)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*NamedSetOfFiles)
+	nodeids := make(map[int64]*NamedSetOfFiles)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -557,8 +557,8 @@ func (nsofq *NamedSetOfFilesQuery) loadFiles(ctx context.Context, query *TestFil
 	return nil
 }
 func (nsofq *NamedSetOfFilesQuery) loadFileSets(ctx context.Context, query *NamedSetOfFilesQuery, nodes []*NamedSetOfFiles, init func(*NamedSetOfFiles), assign func(*NamedSetOfFiles, *NamedSetOfFiles)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*NamedSetOfFiles)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*NamedSetOfFiles)
 	for i := range nodes {
 		if nodes[i].named_set_of_files_file_sets == nil {
 			continue
@@ -602,7 +602,7 @@ func (nsofq *NamedSetOfFilesQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (nsofq *NamedSetOfFilesQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt64))
 	_spec.From = nsofq.sql
 	if unique := nsofq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

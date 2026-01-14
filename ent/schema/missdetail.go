@@ -39,3 +39,10 @@ func (MissDetail) Indexes() []ent.Index {
 		index.Edges("action_cache_statistics"),
 	}
 }
+
+// Mixin of the MissDetail.
+func (MissDetail) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

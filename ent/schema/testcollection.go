@@ -100,3 +100,10 @@ func (TestCollection) Annotations() []schema.Annotation {
 		entgql.QueryField("findTests"),
 	}
 }
+
+// Mixin of the TestCollection.
+func (TestCollection) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

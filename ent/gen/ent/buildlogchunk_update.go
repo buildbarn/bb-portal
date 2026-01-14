@@ -99,7 +99,7 @@ func (blcu *BuildLogChunkUpdate) AddLastLineIndex(i int64) *BuildLogChunkUpdate 
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (blcu *BuildLogChunkUpdate) SetBazelInvocationID(id int) *BuildLogChunkUpdate {
+func (blcu *BuildLogChunkUpdate) SetBazelInvocationID(id int64) *BuildLogChunkUpdate {
 	blcu.mutation.SetBazelInvocationID(id)
 	return blcu
 }
@@ -165,7 +165,7 @@ func (blcu *BuildLogChunkUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if err := blcu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
 	if ps := blcu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -202,7 +202,7 @@ func (blcu *BuildLogChunkUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{buildlogchunk.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -215,7 +215,7 @@ func (blcu *BuildLogChunkUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{buildlogchunk.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -315,7 +315,7 @@ func (blcuo *BuildLogChunkUpdateOne) AddLastLineIndex(i int64) *BuildLogChunkUpd
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (blcuo *BuildLogChunkUpdateOne) SetBazelInvocationID(id int) *BuildLogChunkUpdateOne {
+func (blcuo *BuildLogChunkUpdateOne) SetBazelInvocationID(id int64) *BuildLogChunkUpdateOne {
 	blcuo.mutation.SetBazelInvocationID(id)
 	return blcuo
 }
@@ -394,7 +394,7 @@ func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildL
 	if err := blcuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
 	id, ok := blcuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "BuildLogChunk.id" for update`)}
@@ -448,7 +448,7 @@ func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildL
 			Columns: []string{buildlogchunk.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -461,7 +461,7 @@ func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildL
 			Columns: []string{buildlogchunk.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

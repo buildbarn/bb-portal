@@ -50,14 +50,20 @@ func (esc *EvaluationStatCreate) SetNillableCount(i *int64) *EvaluationStatCreat
 	return esc
 }
 
+// SetID sets the "id" field.
+func (esc *EvaluationStatCreate) SetID(i int64) *EvaluationStatCreate {
+	esc.mutation.SetID(i)
+	return esc
+}
+
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (esc *EvaluationStatCreate) SetBuildGraphMetricsID(id int) *EvaluationStatCreate {
+func (esc *EvaluationStatCreate) SetBuildGraphMetricsID(id int64) *EvaluationStatCreate {
 	esc.mutation.SetBuildGraphMetricsID(id)
 	return esc
 }
 
 // SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (esc *EvaluationStatCreate) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatCreate {
+func (esc *EvaluationStatCreate) SetNillableBuildGraphMetricsID(id *int64) *EvaluationStatCreate {
 	if id != nil {
 		esc = esc.SetBuildGraphMetricsID(*id)
 	}
@@ -117,8 +123,10 @@ func (esc *EvaluationStatCreate) sqlSave(ctx context.Context) (*EvaluationStat, 
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	esc.mutation.id = &_node.ID
 	esc.mutation.done = true
 	return _node, nil
@@ -127,9 +135,13 @@ func (esc *EvaluationStatCreate) sqlSave(ctx context.Context) (*EvaluationStat, 
 func (esc *EvaluationStatCreate) createSpec() (*EvaluationStat, *sqlgraph.CreateSpec) {
 	var (
 		_node = &EvaluationStat{config: esc.config}
-		_spec = sqlgraph.NewCreateSpec(evaluationstat.Table, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(evaluationstat.Table, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = esc.conflict
+	if id, ok := esc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := esc.mutation.SkyfunctionName(); ok {
 		_spec.SetField(evaluationstat.FieldSkyfunctionName, field.TypeString, value)
 		_node.SkyfunctionName = value
@@ -146,7 +158,7 @@ func (esc *EvaluationStatCreate) createSpec() (*EvaluationStat, *sqlgraph.Create
 			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -249,16 +261,24 @@ func (u *EvaluationStatUpsert) ClearCount() *EvaluationStatUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.EvaluationStat.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(evaluationstat.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *EvaluationStatUpsertOne) UpdateNewValues() *EvaluationStatUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(evaluationstat.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -354,7 +374,7 @@ func (u *EvaluationStatUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *EvaluationStatUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *EvaluationStatUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -363,7 +383,7 @@ func (u *EvaluationStatUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *EvaluationStatUpsertOne) IDX(ctx context.Context) int {
+func (u *EvaluationStatUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -417,9 +437,9 @@ func (escb *EvaluationStatCreateBulk) Save(ctx context.Context) ([]*EvaluationSt
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -507,10 +527,20 @@ type EvaluationStatUpsertBulk struct {
 //	client.EvaluationStat.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(evaluationstat.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *EvaluationStatUpsertBulk) UpdateNewValues() *EvaluationStatUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(evaluationstat.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

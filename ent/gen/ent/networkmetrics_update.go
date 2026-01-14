@@ -31,13 +31,13 @@ func (nmu *NetworkMetricsUpdate) Where(ps ...predicate.NetworkMetrics) *NetworkM
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (nmu *NetworkMetricsUpdate) SetMetricsID(id int) *NetworkMetricsUpdate {
+func (nmu *NetworkMetricsUpdate) SetMetricsID(id int64) *NetworkMetricsUpdate {
 	nmu.mutation.SetMetricsID(id)
 	return nmu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (nmu *NetworkMetricsUpdate) SetNillableMetricsID(id *int) *NetworkMetricsUpdate {
+func (nmu *NetworkMetricsUpdate) SetNillableMetricsID(id *int64) *NetworkMetricsUpdate {
 	if id != nil {
 		nmu = nmu.SetMetricsID(*id)
 	}
@@ -50,13 +50,13 @@ func (nmu *NetworkMetricsUpdate) SetMetrics(m *Metrics) *NetworkMetricsUpdate {
 }
 
 // SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID.
-func (nmu *NetworkMetricsUpdate) SetSystemNetworkStatsID(id int) *NetworkMetricsUpdate {
+func (nmu *NetworkMetricsUpdate) SetSystemNetworkStatsID(id int64) *NetworkMetricsUpdate {
 	nmu.mutation.SetSystemNetworkStatsID(id)
 	return nmu
 }
 
 // SetNillableSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID if the given value is not nil.
-func (nmu *NetworkMetricsUpdate) SetNillableSystemNetworkStatsID(id *int) *NetworkMetricsUpdate {
+func (nmu *NetworkMetricsUpdate) SetNillableSystemNetworkStatsID(id *int64) *NetworkMetricsUpdate {
 	if id != nil {
 		nmu = nmu.SetSystemNetworkStatsID(*id)
 	}
@@ -119,7 +119,7 @@ func (nmu *NetworkMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder))
 }
 
 func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	if ps := nmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -135,7 +135,7 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -148,7 +148,7 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -164,7 +164,7 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -177,7 +177,7 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -208,13 +208,13 @@ type NetworkMetricsUpdateOne struct {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (nmuo *NetworkMetricsUpdateOne) SetMetricsID(id int) *NetworkMetricsUpdateOne {
+func (nmuo *NetworkMetricsUpdateOne) SetMetricsID(id int64) *NetworkMetricsUpdateOne {
 	nmuo.mutation.SetMetricsID(id)
 	return nmuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (nmuo *NetworkMetricsUpdateOne) SetNillableMetricsID(id *int) *NetworkMetricsUpdateOne {
+func (nmuo *NetworkMetricsUpdateOne) SetNillableMetricsID(id *int64) *NetworkMetricsUpdateOne {
 	if id != nil {
 		nmuo = nmuo.SetMetricsID(*id)
 	}
@@ -227,13 +227,13 @@ func (nmuo *NetworkMetricsUpdateOne) SetMetrics(m *Metrics) *NetworkMetricsUpdat
 }
 
 // SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID.
-func (nmuo *NetworkMetricsUpdateOne) SetSystemNetworkStatsID(id int) *NetworkMetricsUpdateOne {
+func (nmuo *NetworkMetricsUpdateOne) SetSystemNetworkStatsID(id int64) *NetworkMetricsUpdateOne {
 	nmuo.mutation.SetSystemNetworkStatsID(id)
 	return nmuo
 }
 
 // SetNillableSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID if the given value is not nil.
-func (nmuo *NetworkMetricsUpdateOne) SetNillableSystemNetworkStatsID(id *int) *NetworkMetricsUpdateOne {
+func (nmuo *NetworkMetricsUpdateOne) SetNillableSystemNetworkStatsID(id *int64) *NetworkMetricsUpdateOne {
 	if id != nil {
 		nmuo = nmuo.SetSystemNetworkStatsID(*id)
 	}
@@ -309,7 +309,7 @@ func (nmuo *NetworkMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuild
 }
 
 func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *NetworkMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	id, ok := nmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NetworkMetrics.id" for update`)}
@@ -342,7 +342,7 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -355,7 +355,7 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -371,7 +371,7 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -384,7 +384,7 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

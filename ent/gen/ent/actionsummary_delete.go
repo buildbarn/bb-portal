@@ -40,7 +40,7 @@ func (asd *ActionSummaryDelete) ExecX(ctx context.Context) int {
 }
 
 func (asd *ActionSummaryDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(actionsummary.Table, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(actionsummary.Table, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
 	if ps := asd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

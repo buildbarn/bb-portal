@@ -39,3 +39,10 @@ func (TimingChild) Indexes() []ent.Index {
 		index.Edges("timing_breakdown"),
 	}
 }
+
+// Mixin of the TimingChild.
+func (TimingChild) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

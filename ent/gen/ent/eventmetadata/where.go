@@ -11,47 +11,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.EventMetadata {
+func ID(id int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.EventMetadata {
+func IDEQ(id int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.EventMetadata {
+func IDNEQ(id int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.EventMetadata {
+func IDIn(ids ...int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.EventMetadata {
+func IDNotIn(ids ...int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.EventMetadata {
+func IDGT(id int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.EventMetadata {
+func IDGTE(id int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.EventMetadata {
+func IDLT(id int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.EventMetadata {
+func IDLTE(id int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldLTE(FieldID, id))
 }
 
@@ -71,7 +71,7 @@ func Version(v int64) predicate.EventMetadata {
 }
 
 // BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
-func BazelInvocationID(v int) predicate.EventMetadata {
+func BazelInvocationID(v int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldBazelInvocationID, v))
 }
 
@@ -196,22 +196,22 @@ func VersionLTE(v int64) predicate.EventMetadata {
 }
 
 // BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
-func BazelInvocationIDEQ(v int) predicate.EventMetadata {
+func BazelInvocationIDEQ(v int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldBazelInvocationID, v))
 }
 
 // BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
-func BazelInvocationIDNEQ(v int) predicate.EventMetadata {
+func BazelInvocationIDNEQ(v int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldNEQ(FieldBazelInvocationID, v))
 }
 
 // BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
-func BazelInvocationIDIn(vs ...int) predicate.EventMetadata {
+func BazelInvocationIDIn(vs ...int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldIn(FieldBazelInvocationID, vs...))
 }
 
 // BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
-func BazelInvocationIDNotIn(vs ...int) predicate.EventMetadata {
+func BazelInvocationIDNotIn(vs ...int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldNotIn(FieldBazelInvocationID, vs...))
 }
 

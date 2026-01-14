@@ -159,8 +159,8 @@ func (trbq *TestResultBESQuery) FirstX(ctx context.Context) *TestResultBES {
 
 // FirstID returns the first TestResultBES ID from the query.
 // Returns a *NotFoundError when no TestResultBES ID was found.
-func (trbq *TestResultBESQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (trbq *TestResultBESQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = trbq.Limit(1).IDs(setContextOp(ctx, trbq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -172,7 +172,7 @@ func (trbq *TestResultBESQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (trbq *TestResultBESQuery) FirstIDX(ctx context.Context) int {
+func (trbq *TestResultBESQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := trbq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -210,8 +210,8 @@ func (trbq *TestResultBESQuery) OnlyX(ctx context.Context) *TestResultBES {
 // OnlyID is like Only, but returns the only TestResultBES ID in the query.
 // Returns a *NotSingularError when more than one TestResultBES ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (trbq *TestResultBESQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (trbq *TestResultBESQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = trbq.Limit(2).IDs(setContextOp(ctx, trbq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -227,7 +227,7 @@ func (trbq *TestResultBESQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (trbq *TestResultBESQuery) OnlyIDX(ctx context.Context) int {
+func (trbq *TestResultBESQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := trbq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -255,7 +255,7 @@ func (trbq *TestResultBESQuery) AllX(ctx context.Context) []*TestResultBES {
 }
 
 // IDs executes the query and returns a list of TestResultBES IDs.
-func (trbq *TestResultBESQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (trbq *TestResultBESQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if trbq.ctx.Unique == nil && trbq.path != nil {
 		trbq.Unique(true)
 	}
@@ -267,7 +267,7 @@ func (trbq *TestResultBESQuery) IDs(ctx context.Context) (ids []int, err error) 
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (trbq *TestResultBESQuery) IDsX(ctx context.Context) []int {
+func (trbq *TestResultBESQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := trbq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -517,8 +517,8 @@ func (trbq *TestResultBESQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (trbq *TestResultBESQuery) loadTestCollection(ctx context.Context, query *TestCollectionQuery, nodes []*TestResultBES, init func(*TestResultBES), assign func(*TestResultBES, *TestCollection)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TestResultBES)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TestResultBES)
 	for i := range nodes {
 		if nodes[i].test_collection_test_results == nil {
 			continue
@@ -550,7 +550,7 @@ func (trbq *TestResultBESQuery) loadTestCollection(ctx context.Context, query *T
 }
 func (trbq *TestResultBESQuery) loadTestActionOutput(ctx context.Context, query *TestFileQuery, nodes []*TestResultBES, init func(*TestResultBES), assign func(*TestResultBES, *TestFile)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TestResultBES)
+	nodeids := make(map[int64]*TestResultBES)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -581,7 +581,7 @@ func (trbq *TestResultBESQuery) loadTestActionOutput(ctx context.Context, query 
 }
 func (trbq *TestResultBESQuery) loadExecutionInfo(ctx context.Context, query *ExectionInfoQuery, nodes []*TestResultBES, init func(*TestResultBES), assign func(*TestResultBES, *ExectionInfo)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TestResultBES)
+	nodeids := make(map[int64]*TestResultBES)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -621,7 +621,7 @@ func (trbq *TestResultBESQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (trbq *TestResultBESQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(testresultbes.Table, testresultbes.Columns, sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(testresultbes.Table, testresultbes.Columns, sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64))
 	_spec.From = trbq.sql
 	if unique := trbq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

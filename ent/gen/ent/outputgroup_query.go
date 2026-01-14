@@ -134,8 +134,8 @@ func (ogq *OutputGroupQuery) FirstX(ctx context.Context) *OutputGroup {
 
 // FirstID returns the first OutputGroup ID from the query.
 // Returns a *NotFoundError when no OutputGroup ID was found.
-func (ogq *OutputGroupQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ogq *OutputGroupQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = ogq.Limit(1).IDs(setContextOp(ctx, ogq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -147,7 +147,7 @@ func (ogq *OutputGroupQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ogq *OutputGroupQuery) FirstIDX(ctx context.Context) int {
+func (ogq *OutputGroupQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := ogq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -185,8 +185,8 @@ func (ogq *OutputGroupQuery) OnlyX(ctx context.Context) *OutputGroup {
 // OnlyID is like Only, but returns the only OutputGroup ID in the query.
 // Returns a *NotSingularError when more than one OutputGroup ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ogq *OutputGroupQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ogq *OutputGroupQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = ogq.Limit(2).IDs(setContextOp(ctx, ogq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -202,7 +202,7 @@ func (ogq *OutputGroupQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ogq *OutputGroupQuery) OnlyIDX(ctx context.Context) int {
+func (ogq *OutputGroupQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := ogq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -230,7 +230,7 @@ func (ogq *OutputGroupQuery) AllX(ctx context.Context) []*OutputGroup {
 }
 
 // IDs executes the query and returns a list of OutputGroup IDs.
-func (ogq *OutputGroupQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (ogq *OutputGroupQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if ogq.ctx.Unique == nil && ogq.path != nil {
 		ogq.Unique(true)
 	}
@@ -242,7 +242,7 @@ func (ogq *OutputGroupQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ogq *OutputGroupQuery) IDsX(ctx context.Context) []int {
+func (ogq *OutputGroupQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := ogq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -467,7 +467,7 @@ func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 
 func (ogq *OutputGroupQuery) loadInlineFiles(ctx context.Context, query *TestFileQuery, nodes []*OutputGroup, init func(*OutputGroup), assign func(*OutputGroup, *TestFile)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*OutputGroup)
+	nodeids := make(map[int64]*OutputGroup)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -498,7 +498,7 @@ func (ogq *OutputGroupQuery) loadInlineFiles(ctx context.Context, query *TestFil
 }
 func (ogq *OutputGroupQuery) loadFileSets(ctx context.Context, query *NamedSetOfFilesQuery, nodes []*OutputGroup, init func(*OutputGroup), assign func(*OutputGroup, *NamedSetOfFiles)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*OutputGroup)
+	nodeids := make(map[int64]*OutputGroup)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -538,7 +538,7 @@ func (ogq *OutputGroupQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (ogq *OutputGroupQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt64))
 	_spec.From = ogq.sql
 	if unique := ogq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

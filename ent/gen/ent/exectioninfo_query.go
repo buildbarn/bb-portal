@@ -159,8 +159,8 @@ func (eiq *ExectionInfoQuery) FirstX(ctx context.Context) *ExectionInfo {
 
 // FirstID returns the first ExectionInfo ID from the query.
 // Returns a *NotFoundError when no ExectionInfo ID was found.
-func (eiq *ExectionInfoQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eiq *ExectionInfoQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = eiq.Limit(1).IDs(setContextOp(ctx, eiq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -172,7 +172,7 @@ func (eiq *ExectionInfoQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eiq *ExectionInfoQuery) FirstIDX(ctx context.Context) int {
+func (eiq *ExectionInfoQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := eiq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -210,8 +210,8 @@ func (eiq *ExectionInfoQuery) OnlyX(ctx context.Context) *ExectionInfo {
 // OnlyID is like Only, but returns the only ExectionInfo ID in the query.
 // Returns a *NotSingularError when more than one ExectionInfo ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (eiq *ExectionInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (eiq *ExectionInfoQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = eiq.Limit(2).IDs(setContextOp(ctx, eiq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -227,7 +227,7 @@ func (eiq *ExectionInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eiq *ExectionInfoQuery) OnlyIDX(ctx context.Context) int {
+func (eiq *ExectionInfoQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := eiq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -255,7 +255,7 @@ func (eiq *ExectionInfoQuery) AllX(ctx context.Context) []*ExectionInfo {
 }
 
 // IDs executes the query and returns a list of ExectionInfo IDs.
-func (eiq *ExectionInfoQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (eiq *ExectionInfoQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if eiq.ctx.Unique == nil && eiq.path != nil {
 		eiq.Unique(true)
 	}
@@ -267,7 +267,7 @@ func (eiq *ExectionInfoQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eiq *ExectionInfoQuery) IDsX(ctx context.Context) []int {
+func (eiq *ExectionInfoQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := eiq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -517,8 +517,8 @@ func (eiq *ExectionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 }
 
 func (eiq *ExectionInfoQuery) loadTestResult(ctx context.Context, query *TestResultBESQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *TestResultBES)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*ExectionInfo)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ExectionInfo)
 	for i := range nodes {
 		if nodes[i].test_result_bes_execution_info == nil {
 			continue
@@ -550,7 +550,7 @@ func (eiq *ExectionInfoQuery) loadTestResult(ctx context.Context, query *TestRes
 }
 func (eiq *ExectionInfoQuery) loadTimingBreakdown(ctx context.Context, query *TimingBreakdownQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *TimingBreakdown)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*ExectionInfo)
+	nodeids := make(map[int64]*ExectionInfo)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -578,7 +578,7 @@ func (eiq *ExectionInfoQuery) loadTimingBreakdown(ctx context.Context, query *Ti
 }
 func (eiq *ExectionInfoQuery) loadResourceUsage(ctx context.Context, query *ResourceUsageQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *ResourceUsage)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*ExectionInfo)
+	nodeids := make(map[int64]*ExectionInfo)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -621,7 +621,7 @@ func (eiq *ExectionInfoQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (eiq *ExectionInfoQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64))
 	_spec.From = eiq.sql
 	if unique := eiq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -17,7 +17,7 @@ import (
 type BuildGraphMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// ActionLookupValueCount holds the value of the "action_lookup_value_count" field.
 	ActionLookupValueCount int32 `json:"action_lookup_value_count,omitempty"`
 	// ActionLookupValueCountNotIncludingAspects holds the value of the "action_lookup_value_count_not_including_aspects" field.
@@ -39,11 +39,11 @@ type BuildGraphMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildGraphMetricsQuery when eager-loading is set.
 	Edges                              BuildGraphMetricsEdges `json:"edges"`
-	build_graph_metrics_dirtied_values *int
-	build_graph_metrics_changed_values *int
-	build_graph_metrics_built_values   *int
-	build_graph_metrics_cleaned_values *int
-	metrics_build_graph_metrics        *int
+	build_graph_metrics_dirtied_values *int64
+	build_graph_metrics_changed_values *int64
+	build_graph_metrics_built_values   *int64
+	build_graph_metrics_cleaned_values *int64
+	metrics_build_graph_metrics        *int64
 	selectValues                       sql.SelectValues
 }
 
@@ -171,7 +171,7 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			bgm.ID = int(value.Int64)
+			bgm.ID = int64(value.Int64)
 		case buildgraphmetrics.FieldActionLookupValueCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field action_lookup_value_count", values[i])
@@ -230,36 +230,36 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_dirtied_values", value)
 			} else if value.Valid {
-				bgm.build_graph_metrics_dirtied_values = new(int)
-				*bgm.build_graph_metrics_dirtied_values = int(value.Int64)
+				bgm.build_graph_metrics_dirtied_values = new(int64)
+				*bgm.build_graph_metrics_dirtied_values = int64(value.Int64)
 			}
 		case buildgraphmetrics.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_changed_values", value)
 			} else if value.Valid {
-				bgm.build_graph_metrics_changed_values = new(int)
-				*bgm.build_graph_metrics_changed_values = int(value.Int64)
+				bgm.build_graph_metrics_changed_values = new(int64)
+				*bgm.build_graph_metrics_changed_values = int64(value.Int64)
 			}
 		case buildgraphmetrics.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_built_values", value)
 			} else if value.Valid {
-				bgm.build_graph_metrics_built_values = new(int)
-				*bgm.build_graph_metrics_built_values = int(value.Int64)
+				bgm.build_graph_metrics_built_values = new(int64)
+				*bgm.build_graph_metrics_built_values = int64(value.Int64)
 			}
 		case buildgraphmetrics.ForeignKeys[3]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_cleaned_values", value)
 			} else if value.Valid {
-				bgm.build_graph_metrics_cleaned_values = new(int)
-				*bgm.build_graph_metrics_cleaned_values = int(value.Int64)
+				bgm.build_graph_metrics_cleaned_values = new(int64)
+				*bgm.build_graph_metrics_cleaned_values = int64(value.Int64)
 			}
 		case buildgraphmetrics.ForeignKeys[4]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_build_graph_metrics", value)
 			} else if value.Valid {
-				bgm.metrics_build_graph_metrics = new(int)
-				*bgm.metrics_build_graph_metrics = int(value.Int64)
+				bgm.metrics_build_graph_metrics = new(int64)
+				*bgm.metrics_build_graph_metrics = int64(value.Int64)
 			}
 		default:
 			bgm.selectValues.Set(columns[i], values[i])

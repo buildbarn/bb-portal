@@ -165,13 +165,13 @@ func (tmu *TimingMetricsUpdate) ClearActionsExecutionStartInMs() *TimingMetricsU
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmu *TimingMetricsUpdate) SetMetricsID(id int) *TimingMetricsUpdate {
+func (tmu *TimingMetricsUpdate) SetMetricsID(id int64) *TimingMetricsUpdate {
 	tmu.mutation.SetMetricsID(id)
 	return tmu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmu *TimingMetricsUpdate) SetNillableMetricsID(id *int) *TimingMetricsUpdate {
+func (tmu *TimingMetricsUpdate) SetNillableMetricsID(id *int64) *TimingMetricsUpdate {
 	if id != nil {
 		tmu = tmu.SetMetricsID(*id)
 	}
@@ -228,7 +228,7 @@ func (tmu *TimingMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
 	if ps := tmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -289,7 +289,7 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -302,7 +302,7 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -468,13 +468,13 @@ func (tmuo *TimingMetricsUpdateOne) ClearActionsExecutionStartInMs() *TimingMetr
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmuo *TimingMetricsUpdateOne) SetMetricsID(id int) *TimingMetricsUpdateOne {
+func (tmuo *TimingMetricsUpdateOne) SetMetricsID(id int64) *TimingMetricsUpdateOne {
 	tmuo.mutation.SetMetricsID(id)
 	return tmuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmuo *TimingMetricsUpdateOne) SetNillableMetricsID(id *int) *TimingMetricsUpdateOne {
+func (tmuo *TimingMetricsUpdateOne) SetNillableMetricsID(id *int64) *TimingMetricsUpdateOne {
 	if id != nil {
 		tmuo = tmuo.SetMetricsID(*id)
 	}
@@ -544,7 +544,7 @@ func (tmuo *TimingMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
 	id, ok := tmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TimingMetrics.id" for update`)}
@@ -622,7 +622,7 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -635,7 +635,7 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

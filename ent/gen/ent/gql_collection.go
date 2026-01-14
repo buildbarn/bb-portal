@@ -559,8 +559,8 @@ func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool
 							ids[i] = nodes[i].ID
 						}
 						var v []struct {
-							NodeID int `sql:"authenticated_user_bazel_invocations"`
-							Count  int `sql:"count"`
+							NodeID int64 `sql:"authenticated_user_bazel_invocations"`
+							Count  int   `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
 							s.Where(sql.InValues(s.C(authenticateduser.BazelInvocationsColumn), ids...))
@@ -568,7 +568,7 @@ func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool
 						if err := query.GroupBy(authenticateduser.BazelInvocationsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
 						}
-						m := make(map[int]int, len(v))
+						m := make(map[int64]int, len(v))
 						for i := range v {
 							m[v[i].NodeID] = v[i].Count
 						}
@@ -800,8 +800,8 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 							ids[i] = nodes[i].ID
 						}
 						var v []struct {
-							NodeID int `sql:"bazel_invocation_invocation_targets"`
-							Count  int `sql:"count"`
+							NodeID int64 `sql:"bazel_invocation_invocation_targets"`
+							Count  int   `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
 							s.Where(sql.InValues(s.C(bazelinvocation.InvocationTargetsColumn), ids...))
@@ -809,7 +809,7 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 						if err := query.GroupBy(bazelinvocation.InvocationTargetsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
 						}
-						m := make(map[int]int, len(v))
+						m := make(map[int64]int, len(v))
 						for i := range v {
 							m[v[i].NodeID] = v[i].Count
 						}
@@ -3519,8 +3519,8 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 							ids[i] = nodes[i].ID
 						}
 						var v []struct {
-							NodeID int `sql:"target_invocation_targets"`
-							Count  int `sql:"count"`
+							NodeID int64 `sql:"target_invocation_targets"`
+							Count  int   `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
 							s.Where(sql.InValues(s.C(target.InvocationTargetsColumn), ids...))
@@ -3528,7 +3528,7 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 						if err := query.GroupBy(target.InvocationTargetsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
 						}
-						m := make(map[int]int, len(v))
+						m := make(map[int64]int, len(v))
 						for i := range v {
 							m[v[i].NodeID] = v[i].Count
 						}

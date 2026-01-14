@@ -42,14 +42,20 @@ func (mdc *MissDetailCreate) SetNillableCount(i *int32) *MissDetailCreate {
 	return mdc
 }
 
+// SetID sets the "id" field.
+func (mdc *MissDetailCreate) SetID(i int64) *MissDetailCreate {
+	mdc.mutation.SetID(i)
+	return mdc
+}
+
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mdc *MissDetailCreate) SetActionCacheStatisticsID(id int) *MissDetailCreate {
+func (mdc *MissDetailCreate) SetActionCacheStatisticsID(id int64) *MissDetailCreate {
 	mdc.mutation.SetActionCacheStatisticsID(id)
 	return mdc
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mdc *MissDetailCreate) SetNillableActionCacheStatisticsID(id *int) *MissDetailCreate {
+func (mdc *MissDetailCreate) SetNillableActionCacheStatisticsID(id *int64) *MissDetailCreate {
 	if id != nil {
 		mdc = mdc.SetActionCacheStatisticsID(*id)
 	}
@@ -112,8 +118,10 @@ func (mdc *MissDetailCreate) sqlSave(ctx context.Context) (*MissDetail, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	mdc.mutation.id = &_node.ID
 	mdc.mutation.done = true
 	return _node, nil
@@ -122,9 +130,13 @@ func (mdc *MissDetailCreate) sqlSave(ctx context.Context) (*MissDetail, error) {
 func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 	var (
 		_node = &MissDetail{config: mdc.config}
-		_spec = sqlgraph.NewCreateSpec(missdetail.Table, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(missdetail.Table, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = mdc.conflict
+	if id, ok := mdc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := mdc.mutation.Reason(); ok {
 		_spec.SetField(missdetail.FieldReason, field.TypeString, value)
 		_node.Reason = value
@@ -141,7 +153,7 @@ func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -238,16 +250,24 @@ func (u *MissDetailUpsert) ClearCount() *MissDetailUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.MissDetail.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(missdetail.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *MissDetailUpsertOne) UpdateNewValues() *MissDetailUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(missdetail.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -336,7 +356,7 @@ func (u *MissDetailUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *MissDetailUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *MissDetailUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -345,7 +365,7 @@ func (u *MissDetailUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *MissDetailUpsertOne) IDX(ctx context.Context) int {
+func (u *MissDetailUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -399,9 +419,9 @@ func (mdcb *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, erro
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -489,10 +509,20 @@ type MissDetailUpsertBulk struct {
 //	client.MissDetail.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(missdetail.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *MissDetailUpsertBulk) UpdateNewValues() *MissDetailUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(missdetail.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

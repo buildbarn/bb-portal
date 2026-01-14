@@ -120,14 +120,20 @@ func (adc *ActionDataCreate) SetNillableUserTime(i *int64) *ActionDataCreate {
 	return adc
 }
 
+// SetID sets the "id" field.
+func (adc *ActionDataCreate) SetID(i int64) *ActionDataCreate {
+	adc.mutation.SetID(i)
+	return adc
+}
+
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (adc *ActionDataCreate) SetActionSummaryID(id int) *ActionDataCreate {
+func (adc *ActionDataCreate) SetActionSummaryID(id int64) *ActionDataCreate {
 	adc.mutation.SetActionSummaryID(id)
 	return adc
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableActionSummaryID(id *int) *ActionDataCreate {
+func (adc *ActionDataCreate) SetNillableActionSummaryID(id *int64) *ActionDataCreate {
 	if id != nil {
 		adc = adc.SetActionSummaryID(*id)
 	}
@@ -187,8 +193,10 @@ func (adc *ActionDataCreate) sqlSave(ctx context.Context) (*ActionData, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	adc.mutation.id = &_node.ID
 	adc.mutation.done = true
 	return _node, nil
@@ -197,9 +205,13 @@ func (adc *ActionDataCreate) sqlSave(ctx context.Context) (*ActionData, error) {
 func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 	var (
 		_node = &ActionData{config: adc.config}
-		_spec = sqlgraph.NewCreateSpec(actiondata.Table, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(actiondata.Table, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = adc.conflict
+	if id, ok := adc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := adc.mutation.Mnemonic(); ok {
 		_spec.SetField(actiondata.FieldMnemonic, field.TypeString, value)
 		_node.Mnemonic = value
@@ -236,7 +248,7 @@ func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -459,16 +471,24 @@ func (u *ActionDataUpsert) ClearUserTime() *ActionDataUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.ActionData.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(actiondata.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ActionDataUpsertOne) UpdateNewValues() *ActionDataUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(actiondata.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -704,7 +724,7 @@ func (u *ActionDataUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ActionDataUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *ActionDataUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -713,7 +733,7 @@ func (u *ActionDataUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ActionDataUpsertOne) IDX(ctx context.Context) int {
+func (u *ActionDataUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -767,9 +787,9 @@ func (adcb *ActionDataCreateBulk) Save(ctx context.Context) ([]*ActionData, erro
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -857,10 +877,20 @@ type ActionDataUpsertBulk struct {
 //	client.ActionData.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(actiondata.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ActionDataUpsertBulk) UpdateNewValues() *ActionDataUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(actiondata.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

@@ -135,8 +135,8 @@ func (mmq *MemoryMetricsQuery) FirstX(ctx context.Context) *MemoryMetrics {
 
 // FirstID returns the first MemoryMetrics ID from the query.
 // Returns a *NotFoundError when no MemoryMetrics ID was found.
-func (mmq *MemoryMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mmq *MemoryMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = mmq.Limit(1).IDs(setContextOp(ctx, mmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -148,7 +148,7 @@ func (mmq *MemoryMetricsQuery) FirstID(ctx context.Context) (id int, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) FirstIDX(ctx context.Context) int {
+func (mmq *MemoryMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := mmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -186,8 +186,8 @@ func (mmq *MemoryMetricsQuery) OnlyX(ctx context.Context) *MemoryMetrics {
 // OnlyID is like Only, but returns the only MemoryMetrics ID in the query.
 // Returns a *NotSingularError when more than one MemoryMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (mmq *MemoryMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (mmq *MemoryMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = mmq.Limit(2).IDs(setContextOp(ctx, mmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -203,7 +203,7 @@ func (mmq *MemoryMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (mmq *MemoryMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := mmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -231,7 +231,7 @@ func (mmq *MemoryMetricsQuery) AllX(ctx context.Context) []*MemoryMetrics {
 }
 
 // IDs executes the query and returns a list of MemoryMetrics IDs.
-func (mmq *MemoryMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (mmq *MemoryMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if mmq.ctx.Unique == nil && mmq.path != nil {
 		mmq.Unique(true)
 	}
@@ -243,7 +243,7 @@ func (mmq *MemoryMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) IDsX(ctx context.Context) []int {
+func (mmq *MemoryMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := mmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -474,8 +474,8 @@ func (mmq *MemoryMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (mmq *MemoryMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*MemoryMetrics, init func(*MemoryMetrics), assign func(*MemoryMetrics, *Metrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*MemoryMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*MemoryMetrics)
 	for i := range nodes {
 		if nodes[i].metrics_memory_metrics == nil {
 			continue
@@ -507,7 +507,7 @@ func (mmq *MemoryMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 }
 func (mmq *MemoryMetricsQuery) loadGarbageMetrics(ctx context.Context, query *GarbageMetricsQuery, nodes []*MemoryMetrics, init func(*MemoryMetrics), assign func(*MemoryMetrics, *GarbageMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*MemoryMetrics)
+	nodeids := make(map[int64]*MemoryMetrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -550,7 +550,7 @@ func (mmq *MemoryMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (mmq *MemoryMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
 	_spec.From = mmq.sql
 	if unique := mmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

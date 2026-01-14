@@ -445,8 +445,14 @@ func (bic *BazelInvocationCreate) SetNillableProcessedEventWorkspaceStatus(b *bo
 	return bic
 }
 
+// SetID sets the "id" field.
+func (bic *BazelInvocationCreate) SetID(i int64) *BazelInvocationCreate {
+	bic.mutation.SetID(i)
+	return bic
+}
+
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (bic *BazelInvocationCreate) SetInstanceNameID(id int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetInstanceNameID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetInstanceNameID(id)
 	return bic
 }
@@ -457,13 +463,13 @@ func (bic *BazelInvocationCreate) SetInstanceName(i *InstanceName) *BazelInvocat
 }
 
 // SetBuildID sets the "build" edge to the Build entity by ID.
-func (bic *BazelInvocationCreate) SetBuildID(id int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetBuildID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetBuildID(id)
 	return bic
 }
 
 // SetNillableBuildID sets the "build" edge to the Build entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableBuildID(id *int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetNillableBuildID(id *int64) *BazelInvocationCreate {
 	if id != nil {
 		bic = bic.SetBuildID(*id)
 	}
@@ -476,13 +482,13 @@ func (bic *BazelInvocationCreate) SetBuild(b *Build) *BazelInvocationCreate {
 }
 
 // SetAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID.
-func (bic *BazelInvocationCreate) SetAuthenticatedUserID(id int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetAuthenticatedUserID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetAuthenticatedUserID(id)
 	return bic
 }
 
 // SetNillableAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableAuthenticatedUserID(id *int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetNillableAuthenticatedUserID(id *int64) *BazelInvocationCreate {
 	if id != nil {
 		bic = bic.SetAuthenticatedUserID(*id)
 	}
@@ -495,13 +501,13 @@ func (bic *BazelInvocationCreate) SetAuthenticatedUser(a *AuthenticatedUser) *Ba
 }
 
 // SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
-func (bic *BazelInvocationCreate) SetEventMetadataID(id int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetEventMetadataID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetEventMetadataID(id)
 	return bic
 }
 
 // SetNillableEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableEventMetadataID(id *int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetNillableEventMetadataID(id *int64) *BazelInvocationCreate {
 	if id != nil {
 		bic = bic.SetEventMetadataID(*id)
 	}
@@ -514,14 +520,14 @@ func (bic *BazelInvocationCreate) SetEventMetadata(e *EventMetadata) *BazelInvoc
 }
 
 // AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
-func (bic *BazelInvocationCreate) AddConnectionMetadatumIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddConnectionMetadatumIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddConnectionMetadatumIDs(ids...)
 	return bic
 }
 
 // AddConnectionMetadata adds the "connection_metadata" edges to the ConnectionMetadata entity.
 func (bic *BazelInvocationCreate) AddConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationCreate {
-	ids := make([]int, len(c))
+	ids := make([]int64, len(c))
 	for i := range c {
 		ids[i] = c[i].ID
 	}
@@ -529,14 +535,14 @@ func (bic *BazelInvocationCreate) AddConnectionMetadata(c ...*ConnectionMetadata
 }
 
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
-func (bic *BazelInvocationCreate) AddProblemIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddProblemIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddProblemIDs(ids...)
 	return bic
 }
 
 // AddProblems adds the "problems" edges to the BazelInvocationProblem entity.
 func (bic *BazelInvocationCreate) AddProblems(b ...*BazelInvocationProblem) *BazelInvocationCreate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -544,13 +550,13 @@ func (bic *BazelInvocationCreate) AddProblems(b ...*BazelInvocationProblem) *Baz
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bic *BazelInvocationCreate) SetMetricsID(id int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetMetricsID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetMetricsID(id)
 	return bic
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableMetricsID(id *int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetNillableMetricsID(id *int64) *BazelInvocationCreate {
 	if id != nil {
 		bic = bic.SetMetricsID(*id)
 	}
@@ -563,14 +569,14 @@ func (bic *BazelInvocationCreate) SetMetrics(m *Metrics) *BazelInvocationCreate 
 }
 
 // AddIncompleteBuildLogIDs adds the "incomplete_build_logs" edge to the IncompleteBuildLog entity by IDs.
-func (bic *BazelInvocationCreate) AddIncompleteBuildLogIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddIncompleteBuildLogIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddIncompleteBuildLogIDs(ids...)
 	return bic
 }
 
 // AddIncompleteBuildLogs adds the "incomplete_build_logs" edges to the IncompleteBuildLog entity.
 func (bic *BazelInvocationCreate) AddIncompleteBuildLogs(i ...*IncompleteBuildLog) *BazelInvocationCreate {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -578,14 +584,14 @@ func (bic *BazelInvocationCreate) AddIncompleteBuildLogs(i ...*IncompleteBuildLo
 }
 
 // AddBuildLogChunkIDs adds the "build_log_chunks" edge to the BuildLogChunk entity by IDs.
-func (bic *BazelInvocationCreate) AddBuildLogChunkIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddBuildLogChunkIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddBuildLogChunkIDs(ids...)
 	return bic
 }
 
 // AddBuildLogChunks adds the "build_log_chunks" edges to the BuildLogChunk entity.
 func (bic *BazelInvocationCreate) AddBuildLogChunks(b ...*BuildLogChunk) *BazelInvocationCreate {
-	ids := make([]int, len(b))
+	ids := make([]int64, len(b))
 	for i := range b {
 		ids[i] = b[i].ID
 	}
@@ -593,14 +599,14 @@ func (bic *BazelInvocationCreate) AddBuildLogChunks(b ...*BuildLogChunk) *BazelI
 }
 
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
-func (bic *BazelInvocationCreate) AddInvocationFileIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddInvocationFileIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddInvocationFileIDs(ids...)
 	return bic
 }
 
 // AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
 func (bic *BazelInvocationCreate) AddInvocationFiles(i ...*InvocationFiles) *BazelInvocationCreate {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -608,14 +614,14 @@ func (bic *BazelInvocationCreate) AddInvocationFiles(i ...*InvocationFiles) *Baz
 }
 
 // AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
-func (bic *BazelInvocationCreate) AddTestCollectionIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddTestCollectionIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddTestCollectionIDs(ids...)
 	return bic
 }
 
 // AddTestCollection adds the "test_collection" edges to the TestCollection entity.
 func (bic *BazelInvocationCreate) AddTestCollection(t ...*TestCollection) *BazelInvocationCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -623,14 +629,14 @@ func (bic *BazelInvocationCreate) AddTestCollection(t ...*TestCollection) *Bazel
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (bic *BazelInvocationCreate) AddInvocationTargetIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddInvocationTargetIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddInvocationTargetIDs(ids...)
 	return bic
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
 func (bic *BazelInvocationCreate) AddInvocationTargets(i ...*InvocationTarget) *BazelInvocationCreate {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -638,14 +644,14 @@ func (bic *BazelInvocationCreate) AddInvocationTargets(i ...*InvocationTarget) *
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (bic *BazelInvocationCreate) AddTargetKindMappingIDs(ids ...int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) AddTargetKindMappingIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddTargetKindMappingIDs(ids...)
 	return bic
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
 func (bic *BazelInvocationCreate) AddTargetKindMappings(t ...*TargetKindMapping) *BazelInvocationCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -653,13 +659,13 @@ func (bic *BazelInvocationCreate) AddTargetKindMappings(t ...*TargetKindMapping)
 }
 
 // SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
-func (bic *BazelInvocationCreate) SetSourceControlID(id int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetSourceControlID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetSourceControlID(id)
 	return bic
 }
 
 // SetNillableSourceControlID sets the "source_control" edge to the SourceControl entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableSourceControlID(id *int) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetNillableSourceControlID(id *int64) *BazelInvocationCreate {
 	if id != nil {
 		bic = bic.SetSourceControlID(*id)
 	}
@@ -782,8 +788,10 @@ func (bic *BazelInvocationCreate) sqlSave(ctx context.Context) (*BazelInvocation
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	bic.mutation.id = &_node.ID
 	bic.mutation.done = true
 	return _node, nil
@@ -792,9 +800,13 @@ func (bic *BazelInvocationCreate) sqlSave(ctx context.Context) (*BazelInvocation
 func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.CreateSpec) {
 	var (
 		_node = &BazelInvocation{config: bic.config}
-		_spec = sqlgraph.NewCreateSpec(bazelinvocation.Table, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(bazelinvocation.Table, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = bic.conflict
+	if id, ok := bic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := bic.mutation.InvocationID(); ok {
 		_spec.SetField(bazelinvocation.FieldInvocationID, field.TypeUUID, value)
 		_node.InvocationID = value
@@ -931,7 +943,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -948,7 +960,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.BuildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -965,7 +977,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.AuthenticatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -982,7 +994,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.EventMetadataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -998,7 +1010,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1014,7 +1026,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.ProblemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1030,7 +1042,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1046,7 +1058,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1062,7 +1074,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.BuildLogChunksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1078,7 +1090,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.InvocationFilesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1094,7 +1106,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1110,7 +1122,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1126,7 +1138,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1142,7 +1154,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.SourceControlColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1742,17 +1754,23 @@ func (u *BazelInvocationUpsert) UpdateProcessedEventWorkspaceStatus() *BazelInvo
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.BazelInvocation.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(bazelinvocation.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BazelInvocationUpsertOne) UpdateNewValues() *BazelInvocationUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(bazelinvocation.FieldID)
+		}
 		if _, exists := u.create.mutation.InvocationID(); exists {
 			s.SetIgnore(bazelinvocation.FieldInvocationID)
 		}
@@ -2433,7 +2451,7 @@ func (u *BazelInvocationUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *BazelInvocationUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *BazelInvocationUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -2442,7 +2460,7 @@ func (u *BazelInvocationUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *BazelInvocationUpsertOne) IDX(ctx context.Context) int {
+func (u *BazelInvocationUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -2497,9 +2515,9 @@ func (bicb *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvoca
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -2587,12 +2605,18 @@ type BazelInvocationUpsertBulk struct {
 //	client.BazelInvocation.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(bazelinvocation.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BazelInvocationUpsertBulk) UpdateNewValues() *BazelInvocationUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(bazelinvocation.FieldID)
+			}
 			if _, exists := b.mutation.InvocationID(); exists {
 				s.SetIgnore(bazelinvocation.FieldInvocationID)
 			}

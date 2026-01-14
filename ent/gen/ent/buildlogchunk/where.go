@@ -9,47 +9,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.BuildLogChunk {
+func ID(id int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.BuildLogChunk {
+func IDEQ(id int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.BuildLogChunk {
+func IDNEQ(id int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.BuildLogChunk {
+func IDIn(ids ...int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.BuildLogChunk {
+func IDNotIn(ids ...int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.BuildLogChunk {
+func IDGT(id int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.BuildLogChunk {
+func IDGTE(id int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.BuildLogChunk {
+func IDLT(id int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.BuildLogChunk {
+func IDLTE(id int64) predicate.BuildLogChunk {
 	return predicate.BuildLogChunk(sql.FieldLTE(FieldID, id))
 }
 

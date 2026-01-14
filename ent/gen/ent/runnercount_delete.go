@@ -40,7 +40,7 @@ func (rcd *RunnerCountDelete) ExecX(ctx context.Context) int {
 }
 
 func (rcd *RunnerCountDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(runnercount.Table, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(runnercount.Table, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	if ps := rcd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

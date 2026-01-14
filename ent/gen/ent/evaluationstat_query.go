@@ -109,8 +109,8 @@ func (esq *EvaluationStatQuery) FirstX(ctx context.Context) *EvaluationStat {
 
 // FirstID returns the first EvaluationStat ID from the query.
 // Returns a *NotFoundError when no EvaluationStat ID was found.
-func (esq *EvaluationStatQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (esq *EvaluationStatQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = esq.Limit(1).IDs(setContextOp(ctx, esq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (esq *EvaluationStatQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (esq *EvaluationStatQuery) FirstIDX(ctx context.Context) int {
+func (esq *EvaluationStatQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := esq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (esq *EvaluationStatQuery) OnlyX(ctx context.Context) *EvaluationStat {
 // OnlyID is like Only, but returns the only EvaluationStat ID in the query.
 // Returns a *NotSingularError when more than one EvaluationStat ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (esq *EvaluationStatQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (esq *EvaluationStatQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = esq.Limit(2).IDs(setContextOp(ctx, esq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (esq *EvaluationStatQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (esq *EvaluationStatQuery) OnlyIDX(ctx context.Context) int {
+func (esq *EvaluationStatQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := esq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (esq *EvaluationStatQuery) AllX(ctx context.Context) []*EvaluationStat {
 }
 
 // IDs executes the query and returns a list of EvaluationStat IDs.
-func (esq *EvaluationStatQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (esq *EvaluationStatQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if esq.ctx.Unique == nil && esq.path != nil {
 		esq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (esq *EvaluationStatQuery) IDs(ctx context.Context) (ids []int, err error) 
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (esq *EvaluationStatQuery) IDsX(ctx context.Context) []int {
+func (esq *EvaluationStatQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := esq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (esq *EvaluationStatQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (esq *EvaluationStatQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildGraphMetricsQuery, nodes []*EvaluationStat, init func(*EvaluationStat), assign func(*EvaluationStat, *BuildGraphMetrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*EvaluationStat)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*EvaluationStat)
 	for i := range nodes {
 		if nodes[i].build_graph_metrics_evaluated_values == nil {
 			continue
@@ -466,7 +466,7 @@ func (esq *EvaluationStatQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (esq *EvaluationStatQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64))
 	_spec.From = esq.sql
 	if unique := esq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

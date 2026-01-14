@@ -16,7 +16,7 @@ import (
 type EvaluationStat struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// SkyfunctionName holds the value of the "skyfunction_name" field.
 	SkyfunctionName string `json:"skyfunction_name,omitempty"`
 	// Count holds the value of the "count" field.
@@ -24,7 +24,7 @@ type EvaluationStat struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EvaluationStatQuery when eager-loading is set.
 	Edges                                EvaluationStatEdges `json:"edges"`
-	build_graph_metrics_evaluated_values *int
+	build_graph_metrics_evaluated_values *int64
 	selectValues                         sql.SelectValues
 }
 
@@ -81,7 +81,7 @@ func (es *EvaluationStat) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			es.ID = int(value.Int64)
+			es.ID = int64(value.Int64)
 		case evaluationstat.FieldSkyfunctionName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field skyfunction_name", values[i])
@@ -98,8 +98,8 @@ func (es *EvaluationStat) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_evaluated_values", value)
 			} else if value.Valid {
-				es.build_graph_metrics_evaluated_values = new(int)
-				*es.build_graph_metrics_evaluated_values = int(value.Int64)
+				es.build_graph_metrics_evaluated_values = new(int64)
+				*es.build_graph_metrics_evaluated_values = int64(value.Int64)
 			}
 		default:
 			es.selectValues.Set(columns[i], values[i])

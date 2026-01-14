@@ -45,7 +45,7 @@ func (cmu *ConnectionMetadataUpdate) SetNillableConnectionLastOpenAt(t *time.Tim
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (cmu *ConnectionMetadataUpdate) SetBazelInvocationID(id int) *ConnectionMetadataUpdate {
+func (cmu *ConnectionMetadataUpdate) SetBazelInvocationID(id int64) *ConnectionMetadataUpdate {
 	cmu.mutation.SetBazelInvocationID(id)
 	return cmu
 }
@@ -111,7 +111,7 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 	if err := cmu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
 	if ps := cmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -130,7 +130,7 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -143,7 +143,7 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -188,7 +188,7 @@ func (cmuo *ConnectionMetadataUpdateOne) SetNillableConnectionLastOpenAt(t *time
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (cmuo *ConnectionMetadataUpdateOne) SetBazelInvocationID(id int) *ConnectionMetadataUpdateOne {
+func (cmuo *ConnectionMetadataUpdateOne) SetBazelInvocationID(id int64) *ConnectionMetadataUpdateOne {
 	cmuo.mutation.SetBazelInvocationID(id)
 	return cmuo
 }
@@ -267,7 +267,7 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 	if err := cmuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
 	id, ok := cmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ConnectionMetadata.id" for update`)}
@@ -303,7 +303,7 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -316,7 +316,7 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

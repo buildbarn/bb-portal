@@ -163,14 +163,20 @@ func (tsc *TestSummaryCreate) SetNillableLabel(s *string) *TestSummaryCreate {
 	return tsc
 }
 
+// SetID sets the "id" field.
+func (tsc *TestSummaryCreate) SetID(i int64) *TestSummaryCreate {
+	tsc.mutation.SetID(i)
+	return tsc
+}
+
 // SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsc *TestSummaryCreate) SetTestCollectionID(id int) *TestSummaryCreate {
+func (tsc *TestSummaryCreate) SetTestCollectionID(id int64) *TestSummaryCreate {
 	tsc.mutation.SetTestCollectionID(id)
 	return tsc
 }
 
 // SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableTestCollectionID(id *int) *TestSummaryCreate {
+func (tsc *TestSummaryCreate) SetNillableTestCollectionID(id *int64) *TestSummaryCreate {
 	if id != nil {
 		tsc = tsc.SetTestCollectionID(*id)
 	}
@@ -183,14 +189,14 @@ func (tsc *TestSummaryCreate) SetTestCollection(t *TestCollection) *TestSummaryC
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
-func (tsc *TestSummaryCreate) AddPassedIDs(ids ...int) *TestSummaryCreate {
+func (tsc *TestSummaryCreate) AddPassedIDs(ids ...int64) *TestSummaryCreate {
 	tsc.mutation.AddPassedIDs(ids...)
 	return tsc
 }
 
 // AddPassed adds the "passed" edges to the TestFile entity.
 func (tsc *TestSummaryCreate) AddPassed(t ...*TestFile) *TestSummaryCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -198,14 +204,14 @@ func (tsc *TestSummaryCreate) AddPassed(t ...*TestFile) *TestSummaryCreate {
 }
 
 // AddFailedIDs adds the "failed" edge to the TestFile entity by IDs.
-func (tsc *TestSummaryCreate) AddFailedIDs(ids ...int) *TestSummaryCreate {
+func (tsc *TestSummaryCreate) AddFailedIDs(ids ...int64) *TestSummaryCreate {
 	tsc.mutation.AddFailedIDs(ids...)
 	return tsc
 }
 
 // AddFailed adds the "failed" edges to the TestFile entity.
 func (tsc *TestSummaryCreate) AddFailed(t ...*TestFile) *TestSummaryCreate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -274,8 +280,10 @@ func (tsc *TestSummaryCreate) sqlSave(ctx context.Context) (*TestSummary, error)
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tsc.mutation.id = &_node.ID
 	tsc.mutation.done = true
 	return _node, nil
@@ -284,9 +292,13 @@ func (tsc *TestSummaryCreate) sqlSave(ctx context.Context) (*TestSummary, error)
 func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TestSummary{config: tsc.config}
-		_spec = sqlgraph.NewCreateSpec(testsummary.Table, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(testsummary.Table, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tsc.conflict
+	if id, ok := tsc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tsc.mutation.OverallStatus(); ok {
 		_spec.SetField(testsummary.FieldOverallStatus, field.TypeEnum, value)
 		_node.OverallStatus = value
@@ -335,7 +347,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 			Columns: []string{testsummary.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -352,7 +364,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 			Columns: []string{testsummary.PassedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -368,7 +380,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 			Columns: []string{testsummary.FailedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -656,16 +668,24 @@ func (u *TestSummaryUpsert) ClearLabel() *TestSummaryUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.TestSummary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(testsummary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TestSummaryUpsertOne) UpdateNewValues() *TestSummaryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(testsummary.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -978,7 +998,7 @@ func (u *TestSummaryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TestSummaryUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TestSummaryUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -987,7 +1007,7 @@ func (u *TestSummaryUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TestSummaryUpsertOne) IDX(ctx context.Context) int {
+func (u *TestSummaryUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1042,9 +1062,9 @@ func (tscb *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, er
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -1132,10 +1152,20 @@ type TestSummaryUpsertBulk struct {
 //	client.TestSummary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(testsummary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TestSummaryUpsertBulk) UpdateNewValues() *TestSummaryUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(testsummary.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

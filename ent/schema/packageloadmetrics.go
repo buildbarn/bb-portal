@@ -52,3 +52,10 @@ func (PackageLoadMetrics) Indexes() []ent.Index {
 		index.Edges("package_metrics"),
 	}
 }
+
+// Mixin of the PackageLoadMetrics.
+func (PackageLoadMetrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

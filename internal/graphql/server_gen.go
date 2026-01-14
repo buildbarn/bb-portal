@@ -193,7 +193,7 @@ type ComplexityRoot struct {
 	}
 
 	AuthenticatedUser struct {
-		BazelInvocations func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
+		BazelInvocations func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
 		DisplayName      func(childComplexity int) int
 		ExternalID       func(childComplexity int) int
 		ID               func(childComplexity int) int
@@ -229,7 +229,7 @@ type ComplexityRoot struct {
 		InstanceName          func(childComplexity int) int
 		InvocationFiles       func(childComplexity int) int
 		InvocationID          func(childComplexity int) int
-		InvocationTargets     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.InvocationTargetOrder, where *ent.InvocationTargetWhereInput) int
+		InvocationTargets     func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.InvocationTargetOrder, where *ent.InvocationTargetWhereInput) int
 		IsCiWorker            func(childComplexity int) int
 		Metrics               func(childComplexity int) int
 		NumFetches            func(childComplexity int) int
@@ -489,10 +489,10 @@ type ComplexityRoot struct {
 
 	Query struct {
 		BazelInvocation                  func(childComplexity int, invocationID string) int
-		FindBazelInvocations             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
-		FindBuilds                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) int
-		FindTargets                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) int
-		FindTests                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) int
+		FindBazelInvocations             func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
+		FindBuilds                       func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) int
+		FindTargets                      func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.TargetWhereInput) int
+		FindTests                        func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) int
 		GetAuthenticatedUser             func(childComplexity int, userUUID *uuid.UUID) int
 		GetAveragePassPercentageForLabel func(childComplexity int, label string) int
 		GetBuild                         func(childComplexity int, buildURL *string, buildUUID *uuid.UUID) int
@@ -558,7 +558,7 @@ type ComplexityRoot struct {
 		Aspect                               func(childComplexity int) int
 		ID                                   func(childComplexity int) int
 		InstanceName                         func(childComplexity int) int
-		InvocationTargets                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.InvocationTargetOrder, where *ent.InvocationTargetWhereInput) int
+		InvocationTargets                    func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.InvocationTargetOrder, where *ent.InvocationTargetWhereInput) int
 		InvocationTargetsTotalDurationMillis func(childComplexity int) int
 		Label                                func(childComplexity int) int
 		TargetKind                           func(childComplexity int) int
@@ -829,10 +829,10 @@ type PackageMetricsResolver interface {
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
 	Nodes(ctx context.Context, ids []string) ([]ent.Noder, error)
-	FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error)
-	FindBuilds(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error)
-	FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error)
-	FindTests(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error)
+	FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error)
+	FindBuilds(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error)
+	FindTargets(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error)
+	FindTests(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error)
 	BazelInvocation(ctx context.Context, invocationID string) (*ent.BazelInvocation, error)
 	GetAuthenticatedUser(ctx context.Context, userUUID *uuid.UUID) (*ent.AuthenticatedUser, error)
 	GetBuild(ctx context.Context, buildURL *string, buildUUID *uuid.UUID) (*ent.Build, error)
@@ -1586,7 +1586,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.AuthenticatedUser.BazelInvocations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.BazelInvocationOrder), args["where"].(*ent.BazelInvocationWhereInput)), true
+		return e.complexity.AuthenticatedUser.BazelInvocations(childComplexity, args["after"].(*entgql.Cursor[int64]), args["first"].(*int), args["before"].(*entgql.Cursor[int64]), args["last"].(*int), args["orderBy"].(*ent.BazelInvocationOrder), args["where"].(*ent.BazelInvocationWhereInput)), true
 
 	case "AuthenticatedUser.displayName":
 		if e.complexity.AuthenticatedUser.DisplayName == nil {
@@ -1801,7 +1801,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.BazelInvocation.InvocationTargets(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.InvocationTargetOrder), args["where"].(*ent.InvocationTargetWhereInput)), true
+		return e.complexity.BazelInvocation.InvocationTargets(childComplexity, args["after"].(*entgql.Cursor[int64]), args["first"].(*int), args["before"].(*entgql.Cursor[int64]), args["last"].(*int), args["orderBy"].(*ent.InvocationTargetOrder), args["where"].(*ent.InvocationTargetWhereInput)), true
 
 	case "BazelInvocation.isCiWorker":
 		if e.complexity.BazelInvocation.IsCiWorker == nil {
@@ -3001,7 +3001,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.FindBazelInvocations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.BazelInvocationOrder), args["where"].(*ent.BazelInvocationWhereInput)), true
+		return e.complexity.Query.FindBazelInvocations(childComplexity, args["after"].(*entgql.Cursor[int64]), args["first"].(*int), args["before"].(*entgql.Cursor[int64]), args["last"].(*int), args["orderBy"].(*ent.BazelInvocationOrder), args["where"].(*ent.BazelInvocationWhereInput)), true
 
 	case "Query.findBuilds":
 		if e.complexity.Query.FindBuilds == nil {
@@ -3013,7 +3013,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.FindBuilds(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.BuildOrder), args["where"].(*ent.BuildWhereInput)), true
+		return e.complexity.Query.FindBuilds(childComplexity, args["after"].(*entgql.Cursor[int64]), args["first"].(*int), args["before"].(*entgql.Cursor[int64]), args["last"].(*int), args["orderBy"].(*ent.BuildOrder), args["where"].(*ent.BuildWhereInput)), true
 
 	case "Query.findTargets":
 		if e.complexity.Query.FindTargets == nil {
@@ -3025,7 +3025,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.FindTargets(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["where"].(*ent.TargetWhereInput)), true
+		return e.complexity.Query.FindTargets(childComplexity, args["after"].(*entgql.Cursor[int64]), args["first"].(*int), args["before"].(*entgql.Cursor[int64]), args["last"].(*int), args["where"].(*ent.TargetWhereInput)), true
 
 	case "Query.findTests":
 		if e.complexity.Query.FindTests == nil {
@@ -3037,7 +3037,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.FindTests(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.TestCollectionOrder), args["where"].(*ent.TestCollectionWhereInput)), true
+		return e.complexity.Query.FindTests(childComplexity, args["after"].(*entgql.Cursor[int64]), args["first"].(*int), args["before"].(*entgql.Cursor[int64]), args["last"].(*int), args["orderBy"].(*ent.TestCollectionOrder), args["where"].(*ent.TestCollectionWhereInput)), true
 
 	case "Query.getAuthenticatedUser":
 		if e.complexity.Query.GetAuthenticatedUser == nil {
@@ -3449,7 +3449,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Target.InvocationTargets(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.InvocationTargetOrder), args["where"].(*ent.InvocationTargetWhereInput)), true
+		return e.complexity.Target.InvocationTargets(childComplexity, args["after"].(*entgql.Cursor[int64]), args["first"].(*int), args["before"].(*entgql.Cursor[int64]), args["last"].(*int), args["orderBy"].(*ent.InvocationTargetOrder), args["where"].(*ent.InvocationTargetWhereInput)), true
 
 	case "Target.invocationTargetsTotalDurationMillis":
 		if e.complexity.Target.InvocationTargetsTotalDurationMillis == nil {
@@ -4440,9 +4440,9 @@ func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_args(ctx co
 func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsAfter(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4451,7 +4451,7 @@ func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsAfter(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -4476,9 +4476,9 @@ func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsFirst(
 func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsBefore(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4487,7 +4487,7 @@ func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsBefore(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -4583,9 +4583,9 @@ func (ec *executionContext) field_BazelInvocation_invocationTargets_args(ctx con
 func (ec *executionContext) field_BazelInvocation_invocationTargets_argsAfter(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4594,7 +4594,7 @@ func (ec *executionContext) field_BazelInvocation_invocationTargets_argsAfter(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -4619,9 +4619,9 @@ func (ec *executionContext) field_BazelInvocation_invocationTargets_argsFirst(
 func (ec *executionContext) field_BazelInvocation_invocationTargets_argsBefore(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4630,7 +4630,7 @@ func (ec *executionContext) field_BazelInvocation_invocationTargets_argsBefore(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -4782,9 +4782,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_args(ctx context.Co
 func (ec *executionContext) field_Query_findBazelInvocations_argsAfter(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4793,7 +4793,7 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsAfter(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -4818,9 +4818,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsFirst(
 func (ec *executionContext) field_Query_findBazelInvocations_argsBefore(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4829,7 +4829,7 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsBefore(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -4925,9 +4925,9 @@ func (ec *executionContext) field_Query_findBuilds_args(ctx context.Context, raw
 func (ec *executionContext) field_Query_findBuilds_argsAfter(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4936,7 +4936,7 @@ func (ec *executionContext) field_Query_findBuilds_argsAfter(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -4961,9 +4961,9 @@ func (ec *executionContext) field_Query_findBuilds_argsFirst(
 func (ec *executionContext) field_Query_findBuilds_argsBefore(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -4972,7 +4972,7 @@ func (ec *executionContext) field_Query_findBuilds_argsBefore(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -5063,9 +5063,9 @@ func (ec *executionContext) field_Query_findTargets_args(ctx context.Context, ra
 func (ec *executionContext) field_Query_findTargets_argsAfter(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -5074,7 +5074,7 @@ func (ec *executionContext) field_Query_findTargets_argsAfter(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -5099,9 +5099,9 @@ func (ec *executionContext) field_Query_findTargets_argsFirst(
 func (ec *executionContext) field_Query_findTargets_argsBefore(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -5110,7 +5110,7 @@ func (ec *executionContext) field_Query_findTargets_argsBefore(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -5188,9 +5188,9 @@ func (ec *executionContext) field_Query_findTests_args(ctx context.Context, rawA
 func (ec *executionContext) field_Query_findTests_argsAfter(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -5199,7 +5199,7 @@ func (ec *executionContext) field_Query_findTests_argsAfter(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -5224,9 +5224,9 @@ func (ec *executionContext) field_Query_findTests_argsFirst(
 func (ec *executionContext) field_Query_findTests_argsBefore(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -5235,7 +5235,7 @@ func (ec *executionContext) field_Query_findTests_argsBefore(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -5795,9 +5795,9 @@ func (ec *executionContext) field_Target_invocationTargets_args(ctx context.Cont
 func (ec *executionContext) field_Target_invocationTargets_argsAfter(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["after"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -5806,7 +5806,7 @@ func (ec *executionContext) field_Target_invocationTargets_argsAfter(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -5831,9 +5831,9 @@ func (ec *executionContext) field_Target_invocationTargets_argsFirst(
 func (ec *executionContext) field_Target_invocationTargets_argsBefore(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*entgql.Cursor[int], error) {
+) (*entgql.Cursor[int64], error) {
 	if _, ok := rawArgs["before"]; !ok {
-		var zeroVal *entgql.Cursor[int]
+		var zeroVal *entgql.Cursor[int64]
 		return zeroVal, nil
 	}
 
@@ -5842,7 +5842,7 @@ func (ec *executionContext) field_Target_invocationTargets_argsBefore(
 		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
 	}
 
-	var zeroVal *entgql.Cursor[int]
+	var zeroVal *entgql.Cursor[int64]
 	return zeroVal, nil
 }
 
@@ -8122,7 +8122,7 @@ func (ec *executionContext) _AuthenticatedUser_bazelInvocations(ctx context.Cont
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.BazelInvocations(ctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BazelInvocationOrder), fc.Args["where"].(*ent.BazelInvocationWhereInput))
+		return obj.BazelInvocations(ctx, fc.Args["after"].(*entgql.Cursor[int64]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int64]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BazelInvocationOrder), fc.Args["where"].(*ent.BazelInvocationWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9671,7 +9671,7 @@ func (ec *executionContext) _BazelInvocation_invocationTargets(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.InvocationTargets(ctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.InvocationTargetOrder), fc.Args["where"].(*ent.InvocationTargetWhereInput))
+		return obj.InvocationTargets(ctx, fc.Args["after"].(*entgql.Cursor[int64]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int64]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.InvocationTargetOrder), fc.Args["where"].(*ent.InvocationTargetWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10080,7 +10080,7 @@ func (ec *executionContext) _BazelInvocationConnection_pageInfo(ctx context.Cont
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.PageInfo[int])
+	res := resTmp.(entgql.PageInfo[int64])
 	fc.Result = res
 	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
 }
@@ -10283,7 +10283,7 @@ func (ec *executionContext) _BazelInvocationEdge_cursor(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.Cursor[int])
+	res := resTmp.(entgql.Cursor[int64])
 	fc.Result = res
 	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
 }
@@ -11480,7 +11480,7 @@ func (ec *executionContext) _BuildConnection_pageInfo(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.PageInfo[int])
+	res := resTmp.(entgql.PageInfo[int64])
 	fc.Result = res
 	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
 }
@@ -11633,7 +11633,7 @@ func (ec *executionContext) _BuildEdge_cursor(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.Cursor[int])
+	res := resTmp.(entgql.Cursor[int64])
 	fc.Result = res
 	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
 }
@@ -14676,7 +14676,7 @@ func (ec *executionContext) _InvocationTargetConnection_pageInfo(ctx context.Con
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.PageInfo[int])
+	res := resTmp.(entgql.PageInfo[int64])
 	fc.Result = res
 	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
 }
@@ -14837,7 +14837,7 @@ func (ec *executionContext) _InvocationTargetEdge_cursor(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.Cursor[int])
+	res := resTmp.(entgql.Cursor[int64])
 	fc.Result = res
 	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
 }
@@ -17151,7 +17151,7 @@ func (ec *executionContext) fieldContext_PackageMetrics_packageLoadMetrics(_ con
 	return fc, nil
 }
 
-func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int]) (ret graphql.Marshaler) {
+func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int64]) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PageInfo_hasNextPage(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -17195,7 +17195,7 @@ func (ec *executionContext) fieldContext_PageInfo_hasNextPage(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int]) (ret graphql.Marshaler) {
+func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int64]) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -17239,7 +17239,7 @@ func (ec *executionContext) fieldContext_PageInfo_hasPreviousPage(_ context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _PageInfo_startCursor(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int]) (ret graphql.Marshaler) {
+func (ec *executionContext) _PageInfo_startCursor(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int64]) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PageInfo_startCursor(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -17262,7 +17262,7 @@ func (ec *executionContext) _PageInfo_startCursor(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*entgql.Cursor[int])
+	res := resTmp.(*entgql.Cursor[int64])
 	fc.Result = res
 	return ec.marshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
 }
@@ -17280,7 +17280,7 @@ func (ec *executionContext) fieldContext_PageInfo_startCursor(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _PageInfo_endCursor(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int]) (ret graphql.Marshaler) {
+func (ec *executionContext) _PageInfo_endCursor(ctx context.Context, field graphql.CollectedField, obj *entgql.PageInfo[int64]) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PageInfo_endCursor(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -17303,7 +17303,7 @@ func (ec *executionContext) _PageInfo_endCursor(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*entgql.Cursor[int])
+	res := resTmp.(*entgql.Cursor[int64])
 	fc.Result = res
 	return ec.marshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
 }
@@ -17794,7 +17794,7 @@ func (ec *executionContext) _Query_findBazelInvocations(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().FindBazelInvocations(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BazelInvocationOrder), fc.Args["where"].(*ent.BazelInvocationWhereInput))
+		return ec.resolvers.Query().FindBazelInvocations(rctx, fc.Args["after"].(*entgql.Cursor[int64]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int64]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BazelInvocationOrder), fc.Args["where"].(*ent.BazelInvocationWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17857,7 +17857,7 @@ func (ec *executionContext) _Query_findBuilds(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().FindBuilds(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BuildOrder), fc.Args["where"].(*ent.BuildWhereInput))
+		return ec.resolvers.Query().FindBuilds(rctx, fc.Args["after"].(*entgql.Cursor[int64]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int64]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BuildOrder), fc.Args["where"].(*ent.BuildWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17920,7 +17920,7 @@ func (ec *executionContext) _Query_findTargets(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().FindTargets(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["where"].(*ent.TargetWhereInput))
+		return ec.resolvers.Query().FindTargets(rctx, fc.Args["after"].(*entgql.Cursor[int64]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int64]), fc.Args["last"].(*int), fc.Args["where"].(*ent.TargetWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17983,7 +17983,7 @@ func (ec *executionContext) _Query_findTests(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().FindTests(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.TestCollectionOrder), fc.Args["where"].(*ent.TestCollectionWhereInput))
+		return ec.resolvers.Query().FindTests(rctx, fc.Args["after"].(*entgql.Cursor[int64]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int64]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.TestCollectionOrder), fc.Args["where"].(*ent.TestCollectionWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -20669,7 +20669,7 @@ func (ec *executionContext) _Target_invocationTargets(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.InvocationTargets(ctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.InvocationTargetOrder), fc.Args["where"].(*ent.InvocationTargetWhereInput))
+		return obj.InvocationTargets(ctx, fc.Args["after"].(*entgql.Cursor[int64]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int64]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.InvocationTargetOrder), fc.Args["where"].(*ent.InvocationTargetWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -21122,7 +21122,7 @@ func (ec *executionContext) _TargetConnection_pageInfo(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.PageInfo[int])
+	res := resTmp.(entgql.PageInfo[int64])
 	fc.Result = res
 	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
 }
@@ -21277,7 +21277,7 @@ func (ec *executionContext) _TargetEdge_cursor(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.Cursor[int])
+	res := resTmp.(entgql.Cursor[int64])
 	fc.Result = res
 	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
 }
@@ -22264,7 +22264,7 @@ func (ec *executionContext) _TestCollectionConnection_pageInfo(ctx context.Conte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.PageInfo[int])
+	res := resTmp.(entgql.PageInfo[int64])
 	fc.Result = res
 	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
 }
@@ -22427,7 +22427,7 @@ func (ec *executionContext) _TestCollectionEdge_cursor(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(entgql.Cursor[int])
+	res := resTmp.(entgql.Cursor[int64])
 	fc.Result = res
 	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
 }
@@ -52462,7 +52462,7 @@ func (ec *executionContext) _PackageMetrics(ctx context.Context, sel ast.Selecti
 
 var pageInfoImplementors = []string{"PageInfo"}
 
-func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *entgql.PageInfo[int]) graphql.Marshaler {
+func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *entgql.PageInfo[int64]) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, pageInfoImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -55954,13 +55954,13 @@ func (ec *executionContext) unmarshalNCumulativeMetricsWhereInput2ᚖgithubᚗco
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v any) (entgql.Cursor[int], error) {
-	var res entgql.Cursor[int]
+func (ec *executionContext) unmarshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v any) (entgql.Cursor[int64], error) {
+	var res entgql.Cursor[int64]
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, sel ast.SelectionSet, v entgql.Cursor[int]) graphql.Marshaler {
+func (ec *executionContext) marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, sel ast.SelectionSet, v entgql.Cursor[int64]) graphql.Marshaler {
 	return v
 }
 
@@ -56278,7 +56278,7 @@ func (ec *executionContext) unmarshalNPackageMetricsWhereInput2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v entgql.PageInfo[int]) graphql.Marshaler {
+func (ec *executionContext) marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v entgql.PageInfo[int64]) graphql.Marshaler {
 	return ec._PageInfo(ctx, sel, &v)
 }
 
@@ -57670,16 +57670,16 @@ func (ec *executionContext) unmarshalOCumulativeMetricsWhereInput2ᚖgithubᚗco
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v any) (*entgql.Cursor[int], error) {
+func (ec *executionContext) unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v any) (*entgql.Cursor[int64], error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(entgql.Cursor[int])
+	var res = new(entgql.Cursor[int64])
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, sel ast.SelectionSet, v *entgql.Cursor[int]) graphql.Marshaler {
+func (ec *executionContext) marshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, sel ast.SelectionSet, v *entgql.Cursor[int64]) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

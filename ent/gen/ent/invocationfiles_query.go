@@ -109,8 +109,8 @@ func (ifq *InvocationFilesQuery) FirstX(ctx context.Context) *InvocationFiles {
 
 // FirstID returns the first InvocationFiles ID from the query.
 // Returns a *NotFoundError when no InvocationFiles ID was found.
-func (ifq *InvocationFilesQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ifq *InvocationFilesQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = ifq.Limit(1).IDs(setContextOp(ctx, ifq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (ifq *InvocationFilesQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) FirstIDX(ctx context.Context) int {
+func (ifq *InvocationFilesQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := ifq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (ifq *InvocationFilesQuery) OnlyX(ctx context.Context) *InvocationFiles {
 // OnlyID is like Only, but returns the only InvocationFiles ID in the query.
 // Returns a *NotSingularError when more than one InvocationFiles ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ifq *InvocationFilesQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (ifq *InvocationFilesQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = ifq.Limit(2).IDs(setContextOp(ctx, ifq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (ifq *InvocationFilesQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) OnlyIDX(ctx context.Context) int {
+func (ifq *InvocationFilesQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := ifq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (ifq *InvocationFilesQuery) AllX(ctx context.Context) []*InvocationFiles {
 }
 
 // IDs executes the query and returns a list of InvocationFiles IDs.
-func (ifq *InvocationFilesQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (ifq *InvocationFilesQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if ifq.ctx.Unique == nil && ifq.path != nil {
 		ifq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (ifq *InvocationFilesQuery) IDs(ctx context.Context) (ids []int, err error)
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) IDsX(ctx context.Context) []int {
+func (ifq *InvocationFilesQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := ifq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (ifq *InvocationFilesQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 }
 
 func (ifq *InvocationFilesQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*InvocationFiles, init func(*InvocationFiles), assign func(*InvocationFiles, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*InvocationFiles)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*InvocationFiles)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_invocation_files == nil {
 			continue
@@ -466,7 +466,7 @@ func (ifq *InvocationFilesQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (ifq *InvocationFilesQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	_spec.From = ifq.sql
 	if unique := ifq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -16,7 +16,7 @@ import (
 type Blob struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// URI holds the value of the "uri" field.
 	URI string `json:"uri,omitempty"`
 	// SizeBytes holds the value of the "size_bytes" field.
@@ -30,7 +30,7 @@ type Blob struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BlobQuery when eager-loading is set.
 	Edges               BlobEdges `json:"edges"`
-	instance_name_blobs *int
+	instance_name_blobs *int64
 	selectValues        sql.SelectValues
 }
 
@@ -87,7 +87,7 @@ func (b *Blob) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			b.ID = int(value.Int64)
+			b.ID = int64(value.Int64)
 		case blob.FieldURI:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field uri", values[i])
@@ -122,8 +122,8 @@ func (b *Blob) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_blobs", value)
 			} else if value.Valid {
-				b.instance_name_blobs = new(int)
-				*b.instance_name_blobs = int(value.Int64)
+				b.instance_name_blobs = new(int64)
+				*b.instance_name_blobs = int64(value.Int64)
 			}
 		default:
 			b.selectValues.Set(columns[i], values[i])

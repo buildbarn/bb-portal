@@ -40,7 +40,7 @@ func (gmd *GarbageMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (gmd *GarbageMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(garbagemetrics.Table, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(garbagemetrics.Table, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64))
 	if ps := gmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

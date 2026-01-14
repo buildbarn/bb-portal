@@ -9,47 +9,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Blob {
+func ID(id int64) predicate.Blob {
 	return predicate.Blob(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Blob {
+func IDEQ(id int64) predicate.Blob {
 	return predicate.Blob(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Blob {
+func IDNEQ(id int64) predicate.Blob {
 	return predicate.Blob(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Blob {
+func IDIn(ids ...int64) predicate.Blob {
 	return predicate.Blob(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Blob {
+func IDNotIn(ids ...int64) predicate.Blob {
 	return predicate.Blob(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Blob {
+func IDGT(id int64) predicate.Blob {
 	return predicate.Blob(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Blob {
+func IDGTE(id int64) predicate.Blob {
 	return predicate.Blob(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Blob {
+func IDLT(id int64) predicate.Blob {
 	return predicate.Blob(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Blob {
+func IDLTE(id int64) predicate.Blob {
 	return predicate.Blob(sql.FieldLTE(FieldID, id))
 }
 

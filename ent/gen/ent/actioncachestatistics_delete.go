@@ -40,7 +40,7 @@ func (acsd *ActionCacheStatisticsDelete) ExecX(ctx context.Context) int {
 }
 
 func (acsd *ActionCacheStatisticsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(actioncachestatistics.Table, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(actioncachestatistics.Table, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
 	if ps := acsd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

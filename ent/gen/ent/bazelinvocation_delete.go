@@ -40,7 +40,7 @@ func (bid *BazelInvocationDelete) ExecX(ctx context.Context) int {
 }
 
 func (bid *BazelInvocationDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(bazelinvocation.Table, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(bazelinvocation.Table, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64))
 	if ps := bid.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

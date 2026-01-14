@@ -40,7 +40,7 @@ func (emd *EventMetadataDelete) ExecX(ctx context.Context) int {
 }
 
 func (emd *EventMetadataDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(eventmetadata.Table, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(eventmetadata.Table, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
 	if ps := emd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

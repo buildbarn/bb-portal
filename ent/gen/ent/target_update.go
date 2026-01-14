@@ -74,7 +74,7 @@ func (tu *TargetUpdate) SetNillableTargetKind(s *string) *TargetUpdate {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (tu *TargetUpdate) SetInstanceNameID(id int) *TargetUpdate {
+func (tu *TargetUpdate) SetInstanceNameID(id int64) *TargetUpdate {
 	tu.mutation.SetInstanceNameID(id)
 	return tu
 }
@@ -85,14 +85,14 @@ func (tu *TargetUpdate) SetInstanceName(i *InstanceName) *TargetUpdate {
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (tu *TargetUpdate) AddInvocationTargetIDs(ids ...int) *TargetUpdate {
+func (tu *TargetUpdate) AddInvocationTargetIDs(ids ...int64) *TargetUpdate {
 	tu.mutation.AddInvocationTargetIDs(ids...)
 	return tu
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
 func (tu *TargetUpdate) AddInvocationTargets(i ...*InvocationTarget) *TargetUpdate {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -100,14 +100,14 @@ func (tu *TargetUpdate) AddInvocationTargets(i ...*InvocationTarget) *TargetUpda
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (tu *TargetUpdate) AddTargetKindMappingIDs(ids ...int) *TargetUpdate {
+func (tu *TargetUpdate) AddTargetKindMappingIDs(ids ...int64) *TargetUpdate {
 	tu.mutation.AddTargetKindMappingIDs(ids...)
 	return tu
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
 func (tu *TargetUpdate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -132,14 +132,14 @@ func (tu *TargetUpdate) ClearInvocationTargets() *TargetUpdate {
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
-func (tu *TargetUpdate) RemoveInvocationTargetIDs(ids ...int) *TargetUpdate {
+func (tu *TargetUpdate) RemoveInvocationTargetIDs(ids ...int64) *TargetUpdate {
 	tu.mutation.RemoveInvocationTargetIDs(ids...)
 	return tu
 }
 
 // RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
 func (tu *TargetUpdate) RemoveInvocationTargets(i ...*InvocationTarget) *TargetUpdate {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -153,14 +153,14 @@ func (tu *TargetUpdate) ClearTargetKindMappings() *TargetUpdate {
 }
 
 // RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to TargetKindMapping entities by IDs.
-func (tu *TargetUpdate) RemoveTargetKindMappingIDs(ids ...int) *TargetUpdate {
+func (tu *TargetUpdate) RemoveTargetKindMappingIDs(ids ...int64) *TargetUpdate {
 	tu.mutation.RemoveTargetKindMappingIDs(ids...)
 	return tu
 }
 
 // RemoveTargetKindMappings removes "target_kind_mappings" edges to TargetKindMapping entities.
 func (tu *TargetUpdate) RemoveTargetKindMappings(t ...*TargetKindMapping) *TargetUpdate {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -212,7 +212,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := tu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
 	if ps := tu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -237,7 +237,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -250,7 +250,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -266,7 +266,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -279,7 +279,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -295,7 +295,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -311,7 +311,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -324,7 +324,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -340,7 +340,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{target.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -413,7 +413,7 @@ func (tuo *TargetUpdateOne) SetNillableTargetKind(s *string) *TargetUpdateOne {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (tuo *TargetUpdateOne) SetInstanceNameID(id int) *TargetUpdateOne {
+func (tuo *TargetUpdateOne) SetInstanceNameID(id int64) *TargetUpdateOne {
 	tuo.mutation.SetInstanceNameID(id)
 	return tuo
 }
@@ -424,14 +424,14 @@ func (tuo *TargetUpdateOne) SetInstanceName(i *InstanceName) *TargetUpdateOne {
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (tuo *TargetUpdateOne) AddInvocationTargetIDs(ids ...int) *TargetUpdateOne {
+func (tuo *TargetUpdateOne) AddInvocationTargetIDs(ids ...int64) *TargetUpdateOne {
 	tuo.mutation.AddInvocationTargetIDs(ids...)
 	return tuo
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
 func (tuo *TargetUpdateOne) AddInvocationTargets(i ...*InvocationTarget) *TargetUpdateOne {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -439,14 +439,14 @@ func (tuo *TargetUpdateOne) AddInvocationTargets(i ...*InvocationTarget) *Target
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (tuo *TargetUpdateOne) AddTargetKindMappingIDs(ids ...int) *TargetUpdateOne {
+func (tuo *TargetUpdateOne) AddTargetKindMappingIDs(ids ...int64) *TargetUpdateOne {
 	tuo.mutation.AddTargetKindMappingIDs(ids...)
 	return tuo
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
 func (tuo *TargetUpdateOne) AddTargetKindMappings(t ...*TargetKindMapping) *TargetUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -471,14 +471,14 @@ func (tuo *TargetUpdateOne) ClearInvocationTargets() *TargetUpdateOne {
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
-func (tuo *TargetUpdateOne) RemoveInvocationTargetIDs(ids ...int) *TargetUpdateOne {
+func (tuo *TargetUpdateOne) RemoveInvocationTargetIDs(ids ...int64) *TargetUpdateOne {
 	tuo.mutation.RemoveInvocationTargetIDs(ids...)
 	return tuo
 }
 
 // RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
 func (tuo *TargetUpdateOne) RemoveInvocationTargets(i ...*InvocationTarget) *TargetUpdateOne {
-	ids := make([]int, len(i))
+	ids := make([]int64, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
 	}
@@ -492,14 +492,14 @@ func (tuo *TargetUpdateOne) ClearTargetKindMappings() *TargetUpdateOne {
 }
 
 // RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to TargetKindMapping entities by IDs.
-func (tuo *TargetUpdateOne) RemoveTargetKindMappingIDs(ids ...int) *TargetUpdateOne {
+func (tuo *TargetUpdateOne) RemoveTargetKindMappingIDs(ids ...int64) *TargetUpdateOne {
 	tuo.mutation.RemoveTargetKindMappingIDs(ids...)
 	return tuo
 }
 
 // RemoveTargetKindMappings removes "target_kind_mappings" edges to TargetKindMapping entities.
 func (tuo *TargetUpdateOne) RemoveTargetKindMappings(t ...*TargetKindMapping) *TargetUpdateOne {
-	ids := make([]int, len(t))
+	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -564,7 +564,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 	if err := tuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
 	id, ok := tuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Target.id" for update`)}
@@ -606,7 +606,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -619,7 +619,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -635,7 +635,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -648,7 +648,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -664,7 +664,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -680,7 +680,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -693,7 +693,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -709,7 +709,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Columns: []string{target.TargetKindMappingsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

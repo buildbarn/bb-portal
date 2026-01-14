@@ -64,14 +64,20 @@ func (tmc *TargetMetricsCreate) SetNillableTargetsConfiguredNotIncludingAspects(
 	return tmc
 }
 
+// SetID sets the "id" field.
+func (tmc *TargetMetricsCreate) SetID(i int64) *TargetMetricsCreate {
+	tmc.mutation.SetID(i)
+	return tmc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmc *TargetMetricsCreate) SetMetricsID(id int) *TargetMetricsCreate {
+func (tmc *TargetMetricsCreate) SetMetricsID(id int64) *TargetMetricsCreate {
 	tmc.mutation.SetMetricsID(id)
 	return tmc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmc *TargetMetricsCreate) SetNillableMetricsID(id *int) *TargetMetricsCreate {
+func (tmc *TargetMetricsCreate) SetNillableMetricsID(id *int64) *TargetMetricsCreate {
 	if id != nil {
 		tmc = tmc.SetMetricsID(*id)
 	}
@@ -131,8 +137,10 @@ func (tmc *TargetMetricsCreate) sqlSave(ctx context.Context) (*TargetMetrics, er
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tmc.mutation.id = &_node.ID
 	tmc.mutation.done = true
 	return _node, nil
@@ -141,9 +149,13 @@ func (tmc *TargetMetricsCreate) sqlSave(ctx context.Context) (*TargetMetrics, er
 func (tmc *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TargetMetrics{config: tmc.config}
-		_spec = sqlgraph.NewCreateSpec(targetmetrics.Table, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(targetmetrics.Table, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tmc.conflict
+	if id, ok := tmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tmc.mutation.TargetsLoaded(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsLoaded, field.TypeInt64, value)
 		_node.TargetsLoaded = value
@@ -164,7 +176,7 @@ func (tmc *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSp
 			Columns: []string{targetmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -297,16 +309,24 @@ func (u *TargetMetricsUpsert) ClearTargetsConfiguredNotIncludingAspects() *Targe
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.TargetMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(targetmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TargetMetricsUpsertOne) UpdateNewValues() *TargetMetricsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(targetmetrics.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -437,7 +457,7 @@ func (u *TargetMetricsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TargetMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TargetMetricsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -446,7 +466,7 @@ func (u *TargetMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TargetMetricsUpsertOne) IDX(ctx context.Context) int {
+func (u *TargetMetricsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -500,9 +520,9 @@ func (tmcb *TargetMetricsCreateBulk) Save(ctx context.Context) ([]*TargetMetrics
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -590,10 +610,20 @@ type TargetMetricsUpsertBulk struct {
 //	client.TargetMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(targetmetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TargetMetricsUpsertBulk) UpdateNewValues() *TargetMetricsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(targetmetrics.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

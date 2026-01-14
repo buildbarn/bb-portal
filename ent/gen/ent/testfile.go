@@ -17,7 +17,7 @@ import (
 type TestFile struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Digest holds the value of the "digest" field.
 	Digest string `json:"digest,omitempty"`
 	// File holds the value of the "file" field.
@@ -31,11 +31,11 @@ type TestFile struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestFileQuery when eager-loading is set.
 	Edges                              TestFileEdges `json:"edges"`
-	named_set_of_files_files           *int
-	output_group_inline_files          *int
-	test_result_bes_test_action_output *int
-	test_summary_passed                *int
-	test_summary_failed                *int
+	named_set_of_files_files           *int64
+	output_group_inline_files          *int64
+	test_result_bes_test_action_output *int64
+	test_summary_passed                *int64
+	test_summary_failed                *int64
 	selectValues                       sql.SelectValues
 }
 
@@ -102,7 +102,7 @@ func (tf *TestFile) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tf.ID = int(value.Int64)
+			tf.ID = int64(value.Int64)
 		case testfile.FieldDigest:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field digest", values[i])
@@ -139,36 +139,36 @@ func (tf *TestFile) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field named_set_of_files_files", value)
 			} else if value.Valid {
-				tf.named_set_of_files_files = new(int)
-				*tf.named_set_of_files_files = int(value.Int64)
+				tf.named_set_of_files_files = new(int64)
+				*tf.named_set_of_files_files = int64(value.Int64)
 			}
 		case testfile.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field output_group_inline_files", value)
 			} else if value.Valid {
-				tf.output_group_inline_files = new(int)
-				*tf.output_group_inline_files = int(value.Int64)
+				tf.output_group_inline_files = new(int64)
+				*tf.output_group_inline_files = int64(value.Int64)
 			}
 		case testfile.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_test_action_output", value)
 			} else if value.Valid {
-				tf.test_result_bes_test_action_output = new(int)
-				*tf.test_result_bes_test_action_output = int(value.Int64)
+				tf.test_result_bes_test_action_output = new(int64)
+				*tf.test_result_bes_test_action_output = int64(value.Int64)
 			}
 		case testfile.ForeignKeys[3]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_passed", value)
 			} else if value.Valid {
-				tf.test_summary_passed = new(int)
-				*tf.test_summary_passed = int(value.Int64)
+				tf.test_summary_passed = new(int64)
+				*tf.test_summary_passed = int64(value.Int64)
 			}
 		case testfile.ForeignKeys[4]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_failed", value)
 			} else if value.Valid {
-				tf.test_summary_failed = new(int)
-				*tf.test_summary_failed = int(value.Int64)
+				tf.test_summary_failed = new(int64)
+				*tf.test_summary_failed = int64(value.Int64)
 			}
 		default:
 			tf.selectValues.Set(columns[i], values[i])

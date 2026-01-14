@@ -96,3 +96,10 @@ func (Metrics) Indexes() []ent.Index {
 		index.Edges("bazel_invocation"),
 	}
 }
+
+// Mixin of the Metrics.
+func (Metrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

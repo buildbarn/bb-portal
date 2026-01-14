@@ -84,8 +84,14 @@ func (bc *BlobCreate) SetNillableArchiveURL(s *string) *BlobCreate {
 	return bc
 }
 
+// SetID sets the "id" field.
+func (bc *BlobCreate) SetID(i int64) *BlobCreate {
+	bc.mutation.SetID(i)
+	return bc
+}
+
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (bc *BlobCreate) SetInstanceNameID(id int) *BlobCreate {
+func (bc *BlobCreate) SetInstanceNameID(id int64) *BlobCreate {
 	bc.mutation.SetInstanceNameID(id)
 	return bc
 }
@@ -166,8 +172,10 @@ func (bc *BlobCreate) sqlSave(ctx context.Context) (*Blob, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	bc.mutation.id = &_node.ID
 	bc.mutation.done = true
 	return _node, nil
@@ -176,9 +184,13 @@ func (bc *BlobCreate) sqlSave(ctx context.Context) (*Blob, error) {
 func (bc *BlobCreate) createSpec() (*Blob, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Blob{config: bc.config}
-		_spec = sqlgraph.NewCreateSpec(blob.Table, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(blob.Table, sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = bc.conflict
+	if id, ok := bc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := bc.mutation.URI(); ok {
 		_spec.SetField(blob.FieldURI, field.TypeString, value)
 		_node.URI = value
@@ -207,7 +219,7 @@ func (bc *BlobCreate) createSpec() (*Blob, *sqlgraph.CreateSpec) {
 			Columns: []string{blob.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -340,17 +352,23 @@ func (u *BlobUpsert) ClearArchiveURL() *BlobUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Blob.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(blob.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BlobUpsertOne) UpdateNewValues() *BlobUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(blob.FieldID)
+		}
 		if _, exists := u.create.mutation.URI(); exists {
 			s.SetIgnore(blob.FieldURI)
 		}
@@ -485,7 +503,7 @@ func (u *BlobUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *BlobUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *BlobUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -494,7 +512,7 @@ func (u *BlobUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *BlobUpsertOne) IDX(ctx context.Context) int {
+func (u *BlobUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -549,9 +567,9 @@ func (bcb *BlobCreateBulk) Save(ctx context.Context) ([]*Blob, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -639,12 +657,18 @@ type BlobUpsertBulk struct {
 //	client.Blob.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(blob.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *BlobUpsertBulk) UpdateNewValues() *BlobUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(blob.FieldID)
+			}
 			if _, exists := b.mutation.URI(); exists {
 				s.SetIgnore(blob.FieldURI)
 			}

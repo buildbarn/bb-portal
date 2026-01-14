@@ -109,8 +109,8 @@ func (rcq *RunnerCountQuery) FirstX(ctx context.Context) *RunnerCount {
 
 // FirstID returns the first RunnerCount ID from the query.
 // Returns a *NotFoundError when no RunnerCount ID was found.
-func (rcq *RunnerCountQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (rcq *RunnerCountQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = rcq.Limit(1).IDs(setContextOp(ctx, rcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (rcq *RunnerCountQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (rcq *RunnerCountQuery) FirstIDX(ctx context.Context) int {
+func (rcq *RunnerCountQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := rcq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (rcq *RunnerCountQuery) OnlyX(ctx context.Context) *RunnerCount {
 // OnlyID is like Only, but returns the only RunnerCount ID in the query.
 // Returns a *NotSingularError when more than one RunnerCount ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (rcq *RunnerCountQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (rcq *RunnerCountQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = rcq.Limit(2).IDs(setContextOp(ctx, rcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (rcq *RunnerCountQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (rcq *RunnerCountQuery) OnlyIDX(ctx context.Context) int {
+func (rcq *RunnerCountQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := rcq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (rcq *RunnerCountQuery) AllX(ctx context.Context) []*RunnerCount {
 }
 
 // IDs executes the query and returns a list of RunnerCount IDs.
-func (rcq *RunnerCountQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (rcq *RunnerCountQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if rcq.ctx.Unique == nil && rcq.path != nil {
 		rcq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (rcq *RunnerCountQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (rcq *RunnerCountQuery) IDsX(ctx context.Context) []int {
+func (rcq *RunnerCountQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := rcq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (rcq *RunnerCountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (rcq *RunnerCountQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*RunnerCount, init func(*RunnerCount), assign func(*RunnerCount, *ActionSummary)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*RunnerCount)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*RunnerCount)
 	for i := range nodes {
 		if nodes[i].action_summary_runner_count == nil {
 			continue
@@ -466,7 +466,7 @@ func (rcq *RunnerCountQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (rcq *RunnerCountQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	_spec.From = rcq.sql
 	if unique := rcq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -16,7 +16,7 @@ import (
 type BuildLogChunk struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Data holds the value of the "data" field.
 	Data []byte `json:"data,omitempty"`
 	// ChunkIndex holds the value of the "chunk_index" field.
@@ -28,7 +28,7 @@ type BuildLogChunk struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildLogChunkQuery when eager-loading is set.
 	Edges                             BuildLogChunkEdges `json:"edges"`
-	bazel_invocation_build_log_chunks *int
+	bazel_invocation_build_log_chunks *int64
 	selectValues                      sql.SelectValues
 }
 
@@ -85,7 +85,7 @@ func (blc *BuildLogChunk) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			blc.ID = int(value.Int64)
+			blc.ID = int64(value.Int64)
 		case buildlogchunk.FieldData:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field data", values[i])
@@ -114,8 +114,8 @@ func (blc *BuildLogChunk) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_build_log_chunks", value)
 			} else if value.Valid {
-				blc.bazel_invocation_build_log_chunks = new(int)
-				*blc.bazel_invocation_build_log_chunks = int(value.Int64)
+				blc.bazel_invocation_build_log_chunks = new(int64)
+				*blc.bazel_invocation_build_log_chunks = int64(value.Int64)
 			}
 		default:
 			blc.selectValues.Set(columns[i], values[i])

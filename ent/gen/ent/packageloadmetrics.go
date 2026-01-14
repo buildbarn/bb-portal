@@ -16,7 +16,7 @@ import (
 type PackageLoadMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// LoadDuration holds the value of the "load_duration" field.
@@ -32,7 +32,7 @@ type PackageLoadMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PackageLoadMetricsQuery when eager-loading is set.
 	Edges                                PackageLoadMetricsEdges `json:"edges"`
-	package_metrics_package_load_metrics *int
+	package_metrics_package_load_metrics *int64
 	selectValues                         sql.SelectValues
 }
 
@@ -89,7 +89,7 @@ func (plm *PackageLoadMetrics) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			plm.ID = int(value.Int64)
+			plm.ID = int64(value.Int64)
 		case packageloadmetrics.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -130,8 +130,8 @@ func (plm *PackageLoadMetrics) assignValues(columns []string, values []any) erro
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field package_metrics_package_load_metrics", value)
 			} else if value.Valid {
-				plm.package_metrics_package_load_metrics = new(int)
-				*plm.package_metrics_package_load_metrics = int(value.Int64)
+				plm.package_metrics_package_load_metrics = new(int64)
+				*plm.package_metrics_package_load_metrics = int64(value.Int64)
 			}
 		default:
 			plm.selectValues.Set(columns[i], values[i])

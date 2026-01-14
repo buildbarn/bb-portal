@@ -40,7 +40,7 @@ func (nmd *NetworkMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (nmd *NetworkMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(networkmetrics.Table, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(networkmetrics.Table, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	if ps := nmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

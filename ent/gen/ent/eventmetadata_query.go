@@ -108,8 +108,8 @@ func (emq *EventMetadataQuery) FirstX(ctx context.Context) *EventMetadata {
 
 // FirstID returns the first EventMetadata ID from the query.
 // Returns a *NotFoundError when no EventMetadata ID was found.
-func (emq *EventMetadataQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (emq *EventMetadataQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = emq.Limit(1).IDs(setContextOp(ctx, emq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -121,7 +121,7 @@ func (emq *EventMetadataQuery) FirstID(ctx context.Context) (id int, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (emq *EventMetadataQuery) FirstIDX(ctx context.Context) int {
+func (emq *EventMetadataQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := emq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -159,8 +159,8 @@ func (emq *EventMetadataQuery) OnlyX(ctx context.Context) *EventMetadata {
 // OnlyID is like Only, but returns the only EventMetadata ID in the query.
 // Returns a *NotSingularError when more than one EventMetadata ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (emq *EventMetadataQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (emq *EventMetadataQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = emq.Limit(2).IDs(setContextOp(ctx, emq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -176,7 +176,7 @@ func (emq *EventMetadataQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (emq *EventMetadataQuery) OnlyIDX(ctx context.Context) int {
+func (emq *EventMetadataQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := emq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -204,7 +204,7 @@ func (emq *EventMetadataQuery) AllX(ctx context.Context) []*EventMetadata {
 }
 
 // IDs executes the query and returns a list of EventMetadata IDs.
-func (emq *EventMetadataQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (emq *EventMetadataQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if emq.ctx.Unique == nil && emq.path != nil {
 		emq.Unique(true)
 	}
@@ -216,7 +216,7 @@ func (emq *EventMetadataQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (emq *EventMetadataQuery) IDsX(ctx context.Context) []int {
+func (emq *EventMetadataQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := emq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -413,8 +413,8 @@ func (emq *EventMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (emq *EventMetadataQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*EventMetadata, init func(*EventMetadata), assign func(*EventMetadata, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*EventMetadata)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*EventMetadata)
 	for i := range nodes {
 		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
@@ -455,7 +455,7 @@ func (emq *EventMetadataQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (emq *EventMetadataQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
 	_spec.From = emq.sql
 	if unique := emq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

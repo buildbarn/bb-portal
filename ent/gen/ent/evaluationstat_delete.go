@@ -40,7 +40,7 @@ func (esd *EvaluationStatDelete) ExecX(ctx context.Context) int {
 }
 
 func (esd *EvaluationStatDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(evaluationstat.Table, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(evaluationstat.Table, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64))
 	if ps := esd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

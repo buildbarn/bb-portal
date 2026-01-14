@@ -109,8 +109,8 @@ func (tmq *TargetMetricsQuery) FirstX(ctx context.Context) *TargetMetrics {
 
 // FirstID returns the first TargetMetrics ID from the query.
 // Returns a *NotFoundError when no TargetMetrics ID was found.
-func (tmq *TargetMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tmq *TargetMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tmq.Limit(1).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (tmq *TargetMetricsQuery) FirstID(ctx context.Context) (id int, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tmq *TargetMetricsQuery) FirstIDX(ctx context.Context) int {
+func (tmq *TargetMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (tmq *TargetMetricsQuery) OnlyX(ctx context.Context) *TargetMetrics {
 // OnlyID is like Only, but returns the only TargetMetrics ID in the query.
 // Returns a *NotSingularError when more than one TargetMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tmq *TargetMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tmq *TargetMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tmq.Limit(2).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (tmq *TargetMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tmq *TargetMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (tmq *TargetMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (tmq *TargetMetricsQuery) AllX(ctx context.Context) []*TargetMetrics {
 }
 
 // IDs executes the query and returns a list of TargetMetrics IDs.
-func (tmq *TargetMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tmq *TargetMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tmq.ctx.Unique == nil && tmq.path != nil {
 		tmq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (tmq *TargetMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tmq *TargetMetricsQuery) IDsX(ctx context.Context) []int {
+func (tmq *TargetMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (tmq *TargetMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (tmq *TargetMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*TargetMetrics, init func(*TargetMetrics), assign func(*TargetMetrics, *Metrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TargetMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TargetMetrics)
 	for i := range nodes {
 		if nodes[i].metrics_target_metrics == nil {
 			continue
@@ -466,7 +466,7 @@ func (tmq *TargetMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tmq *TargetMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
 	_spec.From = tmq.sql
 	if unique := tmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -92,3 +92,10 @@ func (InvocationTarget) Annotations() []schema.Annotation {
 		entgql.RelayConnection(),
 	}
 }
+
+// Mixin of the InvocationTarget.
+func (InvocationTarget) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

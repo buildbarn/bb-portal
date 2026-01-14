@@ -17,7 +17,7 @@ import (
 type ActionSummary struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// ActionsCreated holds the value of the "actions_created" field.
 	ActionsCreated int64 `json:"actions_created,omitempty"`
 	// ActionsCreatedNotIncludingAspects holds the value of the "actions_created_not_including_aspects" field.
@@ -29,7 +29,7 @@ type ActionSummary struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionSummaryQuery when eager-loading is set.
 	Edges                  ActionSummaryEdges `json:"edges"`
-	metrics_action_summary *int
+	metrics_action_summary *int64
 	selectValues           sql.SelectValues
 }
 
@@ -122,7 +122,7 @@ func (as *ActionSummary) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			as.ID = int(value.Int64)
+			as.ID = int64(value.Int64)
 		case actionsummary.FieldActionsCreated:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_created", values[i])
@@ -151,8 +151,8 @@ func (as *ActionSummary) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_action_summary", value)
 			} else if value.Valid {
-				as.metrics_action_summary = new(int)
-				*as.metrics_action_summary = int(value.Int64)
+				as.metrics_action_summary = new(int64)
+				*as.metrics_action_summary = int64(value.Int64)
 			}
 		default:
 			as.selectValues.Set(columns[i], values[i])

@@ -17,7 +17,7 @@ import (
 type ExectionInfo struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// TimeoutSeconds holds the value of the "timeout_seconds" field.
 	TimeoutSeconds int32 `json:"timeout_seconds,omitempty"`
 	// Strategy holds the value of the "strategy" field.
@@ -31,7 +31,7 @@ type ExectionInfo struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ExectionInfoQuery when eager-loading is set.
 	Edges                          ExectionInfoEdges `json:"edges"`
-	test_result_bes_execution_info *int
+	test_result_bes_execution_info *int64
 	selectValues                   sql.SelectValues
 }
 
@@ -116,7 +116,7 @@ func (ei *ExectionInfo) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ei.ID = int(value.Int64)
+			ei.ID = int64(value.Int64)
 		case exectioninfo.FieldTimeoutSeconds:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field timeout_seconds", values[i])
@@ -151,8 +151,8 @@ func (ei *ExectionInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_execution_info", value)
 			} else if value.Valid {
-				ei.test_result_bes_execution_info = new(int)
-				*ei.test_result_bes_execution_info = int(value.Int64)
+				ei.test_result_bes_execution_info = new(int64)
+				*ei.test_result_bes_execution_info = int64(value.Int64)
 			}
 		default:
 			ei.selectValues.Set(columns[i], values[i])

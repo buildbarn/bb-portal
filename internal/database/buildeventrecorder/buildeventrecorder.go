@@ -53,9 +53,9 @@ type BuildEventRecorder struct {
 	tracer              trace.Tracer
 
 	InstanceName           string
-	InstanceNameDbID       int
+	InstanceNameDbID       int64
 	InvocationID           string
-	InvocationDbID         int
+	InvocationDbID         int64
 	CorrelatedInvocationID string
 	IsRealTime             bool
 }
@@ -110,9 +110,9 @@ func NewBuildEventRecorder(
 		tracer:              tracer,
 
 		InstanceName:           instanceName,
-		InstanceNameDbID:       int(instanceNameDbID),
+		InstanceNameDbID:       instanceNameDbID,
 		InvocationID:           invocationID,
-		InvocationDbID:         int(invocationDbID),
+		InvocationDbID:         invocationDbID,
 		CorrelatedInvocationID: correlatedInvocationID,
 		IsRealTime:             isRealTime,
 	}, nil
@@ -123,7 +123,7 @@ func findOrCreateAuthenticatedUser(
 	db database.Client,
 	extractors *authmetadataextraction.AuthMetadataExtractors,
 	uuidGenerator util.UUIDGenerator,
-) (*int, error) {
+) (*int64, error) {
 	userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, extractors)
 	if userSummary == nil {
 		return nil, nil
@@ -151,7 +151,7 @@ func findOrCreateInvocation(
 	invocationID string,
 	instanceName string,
 	tracer trace.Tracer,
-	authenticatedUserDbID *int,
+	authenticatedUserDbID *int64,
 ) (int64, int64, error) {
 	invocationUUID, err := uuid.Parse(invocationID)
 	if err != nil {

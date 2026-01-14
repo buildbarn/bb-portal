@@ -40,7 +40,7 @@ func (plmd *PackageLoadMetricsDelete) ExecX(ctx context.Context) int {
 }
 
 func (plmd *PackageLoadMetricsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(packageloadmetrics.Table, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(packageloadmetrics.Table, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64))
 	if ps := plmd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

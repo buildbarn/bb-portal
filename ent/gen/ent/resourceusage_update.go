@@ -70,13 +70,13 @@ func (ruu *ResourceUsageUpdate) ClearValue() *ResourceUsageUpdate {
 }
 
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (ruu *ResourceUsageUpdate) SetExecutionInfoID(id int) *ResourceUsageUpdate {
+func (ruu *ResourceUsageUpdate) SetExecutionInfoID(id int64) *ResourceUsageUpdate {
 	ruu.mutation.SetExecutionInfoID(id)
 	return ruu
 }
 
 // SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (ruu *ResourceUsageUpdate) SetNillableExecutionInfoID(id *int) *ResourceUsageUpdate {
+func (ruu *ResourceUsageUpdate) SetNillableExecutionInfoID(id *int64) *ResourceUsageUpdate {
 	if id != nil {
 		ruu = ruu.SetExecutionInfoID(*id)
 	}
@@ -133,7 +133,7 @@ func (ruu *ResourceUsageUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (ruu *ResourceUsageUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64))
 	if ps := ruu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -161,7 +161,7 @@ func (ruu *ResourceUsageUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -174,7 +174,7 @@ func (ruu *ResourceUsageUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -245,13 +245,13 @@ func (ruuo *ResourceUsageUpdateOne) ClearValue() *ResourceUsageUpdateOne {
 }
 
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (ruuo *ResourceUsageUpdateOne) SetExecutionInfoID(id int) *ResourceUsageUpdateOne {
+func (ruuo *ResourceUsageUpdateOne) SetExecutionInfoID(id int64) *ResourceUsageUpdateOne {
 	ruuo.mutation.SetExecutionInfoID(id)
 	return ruuo
 }
 
 // SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (ruuo *ResourceUsageUpdateOne) SetNillableExecutionInfoID(id *int) *ResourceUsageUpdateOne {
+func (ruuo *ResourceUsageUpdateOne) SetNillableExecutionInfoID(id *int64) *ResourceUsageUpdateOne {
 	if id != nil {
 		ruuo = ruuo.SetExecutionInfoID(*id)
 	}
@@ -321,7 +321,7 @@ func (ruuo *ResourceUsageUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (ruuo *ResourceUsageUpdateOne) sqlSave(ctx context.Context) (_node *ResourceUsage, err error) {
-	_spec := sqlgraph.NewUpdateSpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt64))
 	id, ok := ruuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ResourceUsage.id" for update`)}
@@ -366,7 +366,7 @@ func (ruuo *ResourceUsageUpdateOne) sqlSave(ctx context.Context) (_node *Resourc
 			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -379,7 +379,7 @@ func (ruuo *ResourceUsageUpdateOne) sqlSave(ctx context.Context) (_node *Resourc
 			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

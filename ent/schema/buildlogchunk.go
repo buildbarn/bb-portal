@@ -62,3 +62,10 @@ func (BuildLogChunk) Annotations() []schema.Annotation {
 		entgql.Skip(),
 	}
 }
+
+// Mixin of the BuildLogChunk.
+func (BuildLogChunk) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

@@ -17,13 +17,13 @@ import (
 type ConnectionMetadata struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// ConnectionLastOpenAt holds the value of the "connection_last_open_at" field.
 	ConnectionLastOpenAt time.Time `json:"connection_last_open_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ConnectionMetadataQuery when eager-loading is set.
 	Edges                                ConnectionMetadataEdges `json:"edges"`
-	bazel_invocation_connection_metadata *int
+	bazel_invocation_connection_metadata *int64
 	selectValues                         sql.SelectValues
 }
 
@@ -80,7 +80,7 @@ func (cm *ConnectionMetadata) assignValues(columns []string, values []any) error
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			cm.ID = int(value.Int64)
+			cm.ID = int64(value.Int64)
 		case connectionmetadata.FieldConnectionLastOpenAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field connection_last_open_at", values[i])
@@ -91,8 +91,8 @@ func (cm *ConnectionMetadata) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_connection_metadata", value)
 			} else if value.Valid {
-				cm.bazel_invocation_connection_metadata = new(int)
-				*cm.bazel_invocation_connection_metadata = int(value.Int64)
+				cm.bazel_invocation_connection_metadata = new(int64)
+				*cm.bazel_invocation_connection_metadata = int64(value.Int64)
 			}
 		default:
 			cm.selectValues.Set(columns[i], values[i])

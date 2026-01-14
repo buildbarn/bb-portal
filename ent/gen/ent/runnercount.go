@@ -16,7 +16,7 @@ import (
 type RunnerCount struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// ExecKind holds the value of the "exec_kind" field.
@@ -26,7 +26,7 @@ type RunnerCount struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RunnerCountQuery when eager-loading is set.
 	Edges                       RunnerCountEdges `json:"edges"`
-	action_summary_runner_count *int
+	action_summary_runner_count *int64
 	selectValues                sql.SelectValues
 }
 
@@ -83,7 +83,7 @@ func (rc *RunnerCount) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			rc.ID = int(value.Int64)
+			rc.ID = int64(value.Int64)
 		case runnercount.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -106,8 +106,8 @@ func (rc *RunnerCount) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_summary_runner_count", value)
 			} else if value.Valid {
-				rc.action_summary_runner_count = new(int)
-				*rc.action_summary_runner_count = int(value.Int64)
+				rc.action_summary_runner_count = new(int64)
+				*rc.action_summary_runner_count = int64(value.Int64)
 			}
 		default:
 			rc.selectValues.Set(columns[i], values[i])

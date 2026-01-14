@@ -109,8 +109,8 @@ func (tmq *TimingMetricsQuery) FirstX(ctx context.Context) *TimingMetrics {
 
 // FirstID returns the first TimingMetrics ID from the query.
 // Returns a *NotFoundError when no TimingMetrics ID was found.
-func (tmq *TimingMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tmq *TimingMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tmq.Limit(1).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (tmq *TimingMetricsQuery) FirstID(ctx context.Context) (id int, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) FirstIDX(ctx context.Context) int {
+func (tmq *TimingMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (tmq *TimingMetricsQuery) OnlyX(ctx context.Context) *TimingMetrics {
 // OnlyID is like Only, but returns the only TimingMetrics ID in the query.
 // Returns a *NotSingularError when more than one TimingMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tmq *TimingMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tmq *TimingMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tmq.Limit(2).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (tmq *TimingMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (tmq *TimingMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (tmq *TimingMetricsQuery) AllX(ctx context.Context) []*TimingMetrics {
 }
 
 // IDs executes the query and returns a list of TimingMetrics IDs.
-func (tmq *TimingMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tmq *TimingMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tmq.ctx.Unique == nil && tmq.path != nil {
 		tmq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (tmq *TimingMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) IDsX(ctx context.Context) []int {
+func (tmq *TimingMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (tmq *TimingMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (tmq *TimingMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*TimingMetrics, init func(*TimingMetrics), assign func(*TimingMetrics, *Metrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TimingMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TimingMetrics)
 	for i := range nodes {
 		if nodes[i].metrics_timing_metrics == nil {
 			continue
@@ -466,7 +466,7 @@ func (tmq *TimingMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tmq *TimingMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
 	_spec.From = tmq.sql
 	if unique := tmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

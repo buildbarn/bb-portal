@@ -37,14 +37,20 @@ func (pmc *PackageMetricsCreate) SetNillablePackagesLoaded(i *int64) *PackageMet
 	return pmc
 }
 
+// SetID sets the "id" field.
+func (pmc *PackageMetricsCreate) SetID(i int64) *PackageMetricsCreate {
+	pmc.mutation.SetID(i)
+	return pmc
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (pmc *PackageMetricsCreate) SetMetricsID(id int) *PackageMetricsCreate {
+func (pmc *PackageMetricsCreate) SetMetricsID(id int64) *PackageMetricsCreate {
 	pmc.mutation.SetMetricsID(id)
 	return pmc
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (pmc *PackageMetricsCreate) SetNillableMetricsID(id *int) *PackageMetricsCreate {
+func (pmc *PackageMetricsCreate) SetNillableMetricsID(id *int64) *PackageMetricsCreate {
 	if id != nil {
 		pmc = pmc.SetMetricsID(*id)
 	}
@@ -57,14 +63,14 @@ func (pmc *PackageMetricsCreate) SetMetrics(m *Metrics) *PackageMetricsCreate {
 }
 
 // AddPackageLoadMetricIDs adds the "package_load_metrics" edge to the PackageLoadMetrics entity by IDs.
-func (pmc *PackageMetricsCreate) AddPackageLoadMetricIDs(ids ...int) *PackageMetricsCreate {
+func (pmc *PackageMetricsCreate) AddPackageLoadMetricIDs(ids ...int64) *PackageMetricsCreate {
 	pmc.mutation.AddPackageLoadMetricIDs(ids...)
 	return pmc
 }
 
 // AddPackageLoadMetrics adds the "package_load_metrics" edges to the PackageLoadMetrics entity.
 func (pmc *PackageMetricsCreate) AddPackageLoadMetrics(p ...*PackageLoadMetrics) *PackageMetricsCreate {
-	ids := make([]int, len(p))
+	ids := make([]int64, len(p))
 	for i := range p {
 		ids[i] = p[i].ID
 	}
@@ -119,8 +125,10 @@ func (pmc *PackageMetricsCreate) sqlSave(ctx context.Context) (*PackageMetrics, 
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	pmc.mutation.id = &_node.ID
 	pmc.mutation.done = true
 	return _node, nil
@@ -129,9 +137,13 @@ func (pmc *PackageMetricsCreate) sqlSave(ctx context.Context) (*PackageMetrics, 
 func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.CreateSpec) {
 	var (
 		_node = &PackageMetrics{config: pmc.config}
-		_spec = sqlgraph.NewCreateSpec(packagemetrics.Table, sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(packagemetrics.Table, sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = pmc.conflict
+	if id, ok := pmc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := pmc.mutation.PackagesLoaded(); ok {
 		_spec.SetField(packagemetrics.FieldPackagesLoaded, field.TypeInt64, value)
 		_node.PackagesLoaded = value
@@ -144,7 +156,7 @@ func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.Create
 			Columns: []string{packagemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -161,7 +173,7 @@ func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.Create
 			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -245,16 +257,24 @@ func (u *PackageMetricsUpsert) ClearPackagesLoaded() *PackageMetricsUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.PackageMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(packagemetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *PackageMetricsUpsertOne) UpdateNewValues() *PackageMetricsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(packagemetrics.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -329,7 +349,7 @@ func (u *PackageMetricsUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *PackageMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *PackageMetricsUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -338,7 +358,7 @@ func (u *PackageMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *PackageMetricsUpsertOne) IDX(ctx context.Context) int {
+func (u *PackageMetricsUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -392,9 +412,9 @@ func (pmcb *PackageMetricsCreateBulk) Save(ctx context.Context) ([]*PackageMetri
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -482,10 +502,20 @@ type PackageMetricsUpsertBulk struct {
 //	client.PackageMetrics.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(packagemetrics.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *PackageMetricsUpsertBulk) UpdateNewValues() *PackageMetricsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(packagemetrics.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

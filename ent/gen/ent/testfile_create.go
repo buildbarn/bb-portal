@@ -84,14 +84,20 @@ func (tfc *TestFileCreate) SetPrefix(s []string) *TestFileCreate {
 	return tfc
 }
 
+// SetID sets the "id" field.
+func (tfc *TestFileCreate) SetID(i int64) *TestFileCreate {
+	tfc.mutation.SetID(i)
+	return tfc
+}
+
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (tfc *TestFileCreate) SetTestResultID(id int) *TestFileCreate {
+func (tfc *TestFileCreate) SetTestResultID(id int64) *TestFileCreate {
 	tfc.mutation.SetTestResultID(id)
 	return tfc
 }
 
 // SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (tfc *TestFileCreate) SetNillableTestResultID(id *int) *TestFileCreate {
+func (tfc *TestFileCreate) SetNillableTestResultID(id *int64) *TestFileCreate {
 	if id != nil {
 		tfc = tfc.SetTestResultID(*id)
 	}
@@ -151,8 +157,10 @@ func (tfc *TestFileCreate) sqlSave(ctx context.Context) (*TestFile, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	tfc.mutation.id = &_node.ID
 	tfc.mutation.done = true
 	return _node, nil
@@ -161,9 +169,13 @@ func (tfc *TestFileCreate) sqlSave(ctx context.Context) (*TestFile, error) {
 func (tfc *TestFileCreate) createSpec() (*TestFile, *sqlgraph.CreateSpec) {
 	var (
 		_node = &TestFile{config: tfc.config}
-		_spec = sqlgraph.NewCreateSpec(testfile.Table, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(testfile.Table, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = tfc.conflict
+	if id, ok := tfc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := tfc.mutation.Digest(); ok {
 		_spec.SetField(testfile.FieldDigest, field.TypeString, value)
 		_node.Digest = value
@@ -192,7 +204,7 @@ func (tfc *TestFileCreate) createSpec() (*TestFile, *sqlgraph.CreateSpec) {
 			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -349,16 +361,24 @@ func (u *TestFileUpsert) ClearPrefix() *TestFileUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.TestFile.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(testfile.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TestFileUpsertOne) UpdateNewValues() *TestFileUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(testfile.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -517,7 +537,7 @@ func (u *TestFileUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TestFileUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *TestFileUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -526,7 +546,7 @@ func (u *TestFileUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TestFileUpsertOne) IDX(ctx context.Context) int {
+func (u *TestFileUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -580,9 +600,9 @@ func (tfcb *TestFileCreateBulk) Save(ctx context.Context) ([]*TestFile, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -670,10 +690,20 @@ type TestFileUpsertBulk struct {
 //	client.TestFile.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(testfile.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *TestFileUpsertBulk) UpdateNewValues() *TestFileUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(testfile.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

@@ -109,8 +109,8 @@ func (bipq *BazelInvocationProblemQuery) FirstX(ctx context.Context) *BazelInvoc
 
 // FirstID returns the first BazelInvocationProblem ID from the query.
 // Returns a *NotFoundError when no BazelInvocationProblem ID was found.
-func (bipq *BazelInvocationProblemQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bipq *BazelInvocationProblemQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bipq.Limit(1).IDs(setContextOp(ctx, bipq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (bipq *BazelInvocationProblemQuery) FirstID(ctx context.Context) (id int, e
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (bipq *BazelInvocationProblemQuery) FirstIDX(ctx context.Context) int {
+func (bipq *BazelInvocationProblemQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := bipq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (bipq *BazelInvocationProblemQuery) OnlyX(ctx context.Context) *BazelInvoca
 // OnlyID is like Only, but returns the only BazelInvocationProblem ID in the query.
 // Returns a *NotSingularError when more than one BazelInvocationProblem ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (bipq *BazelInvocationProblemQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bipq *BazelInvocationProblemQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bipq.Limit(2).IDs(setContextOp(ctx, bipq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (bipq *BazelInvocationProblemQuery) OnlyID(ctx context.Context) (id int, er
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (bipq *BazelInvocationProblemQuery) OnlyIDX(ctx context.Context) int {
+func (bipq *BazelInvocationProblemQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := bipq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (bipq *BazelInvocationProblemQuery) AllX(ctx context.Context) []*BazelInvoc
 }
 
 // IDs executes the query and returns a list of BazelInvocationProblem IDs.
-func (bipq *BazelInvocationProblemQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (bipq *BazelInvocationProblemQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if bipq.ctx.Unique == nil && bipq.path != nil {
 		bipq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (bipq *BazelInvocationProblemQuery) IDs(ctx context.Context) (ids []int, er
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (bipq *BazelInvocationProblemQuery) IDsX(ctx context.Context) []int {
+func (bipq *BazelInvocationProblemQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := bipq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (bipq *BazelInvocationProblemQuery) sqlAll(ctx context.Context, hooks ...qu
 }
 
 func (bipq *BazelInvocationProblemQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*BazelInvocationProblem, init func(*BazelInvocationProblem), assign func(*BazelInvocationProblem, *BazelInvocation)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BazelInvocationProblem)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BazelInvocationProblem)
 	for i := range nodes {
 		if nodes[i].bazel_invocation_problems == nil {
 			continue
@@ -466,7 +466,7 @@ func (bipq *BazelInvocationProblemQuery) sqlCount(ctx context.Context) (int, err
 }
 
 func (bipq *BazelInvocationProblemQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64))
 	_spec.From = bipq.sql
 	if unique := bipq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

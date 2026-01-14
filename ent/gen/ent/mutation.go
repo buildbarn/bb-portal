@@ -118,7 +118,7 @@ type ActionCacheStatisticsMutation struct {
 	config
 	op                    Op
 	typ                   string
-	id                    *int
+	id                    *int64
 	size_in_bytes         *uint64
 	addsize_in_bytes      *int64
 	save_time_in_ms       *uint64
@@ -130,10 +130,10 @@ type ActionCacheStatisticsMutation struct {
 	misses                *int32
 	addmisses             *int32
 	clearedFields         map[string]struct{}
-	action_summary        *int
+	action_summary        *int64
 	clearedaction_summary bool
-	miss_details          map[int]struct{}
-	removedmiss_details   map[int]struct{}
+	miss_details          map[int64]struct{}
+	removedmiss_details   map[int64]struct{}
 	clearedmiss_details   bool
 	done                  bool
 	oldValue              func(context.Context) (*ActionCacheStatistics, error)
@@ -160,7 +160,7 @@ func newActionCacheStatisticsMutation(c config, op Op, opts ...actioncachestatis
 }
 
 // withActionCacheStatisticsID sets the ID field of the mutation.
-func withActionCacheStatisticsID(id int) actioncachestatisticsOption {
+func withActionCacheStatisticsID(id int64) actioncachestatisticsOption {
 	return func(m *ActionCacheStatisticsMutation) {
 		var (
 			err   error
@@ -210,9 +210,15 @@ func (m ActionCacheStatisticsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ActionCacheStatistics entities.
+func (m *ActionCacheStatisticsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ActionCacheStatisticsMutation) ID() (id int, exists bool) {
+func (m *ActionCacheStatisticsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -223,12 +229,12 @@ func (m *ActionCacheStatisticsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ActionCacheStatisticsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ActionCacheStatisticsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -589,7 +595,7 @@ func (m *ActionCacheStatisticsMutation) ResetMisses() {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
-func (m *ActionCacheStatisticsMutation) SetActionSummaryID(id int) {
+func (m *ActionCacheStatisticsMutation) SetActionSummaryID(id int64) {
 	m.action_summary = &id
 }
 
@@ -604,7 +610,7 @@ func (m *ActionCacheStatisticsMutation) ActionSummaryCleared() bool {
 }
 
 // ActionSummaryID returns the "action_summary" edge ID in the mutation.
-func (m *ActionCacheStatisticsMutation) ActionSummaryID() (id int, exists bool) {
+func (m *ActionCacheStatisticsMutation) ActionSummaryID() (id int64, exists bool) {
 	if m.action_summary != nil {
 		return *m.action_summary, true
 	}
@@ -614,7 +620,7 @@ func (m *ActionCacheStatisticsMutation) ActionSummaryID() (id int, exists bool) 
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ActionSummaryID instead. It exists only for internal usage by the builders.
-func (m *ActionCacheStatisticsMutation) ActionSummaryIDs() (ids []int) {
+func (m *ActionCacheStatisticsMutation) ActionSummaryIDs() (ids []int64) {
 	if id := m.action_summary; id != nil {
 		ids = append(ids, *id)
 	}
@@ -628,9 +634,9 @@ func (m *ActionCacheStatisticsMutation) ResetActionSummary() {
 }
 
 // AddMissDetailIDs adds the "miss_details" edge to the MissDetail entity by ids.
-func (m *ActionCacheStatisticsMutation) AddMissDetailIDs(ids ...int) {
+func (m *ActionCacheStatisticsMutation) AddMissDetailIDs(ids ...int64) {
 	if m.miss_details == nil {
-		m.miss_details = make(map[int]struct{})
+		m.miss_details = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.miss_details[ids[i]] = struct{}{}
@@ -648,9 +654,9 @@ func (m *ActionCacheStatisticsMutation) MissDetailsCleared() bool {
 }
 
 // RemoveMissDetailIDs removes the "miss_details" edge to the MissDetail entity by IDs.
-func (m *ActionCacheStatisticsMutation) RemoveMissDetailIDs(ids ...int) {
+func (m *ActionCacheStatisticsMutation) RemoveMissDetailIDs(ids ...int64) {
 	if m.removedmiss_details == nil {
-		m.removedmiss_details = make(map[int]struct{})
+		m.removedmiss_details = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.miss_details, ids[i])
@@ -659,7 +665,7 @@ func (m *ActionCacheStatisticsMutation) RemoveMissDetailIDs(ids ...int) {
 }
 
 // RemovedMissDetails returns the removed IDs of the "miss_details" edge to the MissDetail entity.
-func (m *ActionCacheStatisticsMutation) RemovedMissDetailsIDs() (ids []int) {
+func (m *ActionCacheStatisticsMutation) RemovedMissDetailsIDs() (ids []int64) {
 	for id := range m.removedmiss_details {
 		ids = append(ids, id)
 	}
@@ -667,7 +673,7 @@ func (m *ActionCacheStatisticsMutation) RemovedMissDetailsIDs() (ids []int) {
 }
 
 // MissDetailsIDs returns the "miss_details" edge IDs in the mutation.
-func (m *ActionCacheStatisticsMutation) MissDetailsIDs() (ids []int) {
+func (m *ActionCacheStatisticsMutation) MissDetailsIDs() (ids []int64) {
 	for id := range m.miss_details {
 		ids = append(ids, id)
 	}
@@ -1083,7 +1089,7 @@ type ActionDataMutation struct {
 	config
 	op                    Op
 	typ                   string
-	id                    *int
+	id                    *int64
 	mnemonic              *string
 	actions_executed      *int64
 	addactions_executed   *int64
@@ -1098,7 +1104,7 @@ type ActionDataMutation struct {
 	user_time             *int64
 	adduser_time          *int64
 	clearedFields         map[string]struct{}
-	action_summary        *int
+	action_summary        *int64
 	clearedaction_summary bool
 	done                  bool
 	oldValue              func(context.Context) (*ActionData, error)
@@ -1125,7 +1131,7 @@ func newActionDataMutation(c config, op Op, opts ...actiondataOption) *ActionDat
 }
 
 // withActionDataID sets the ID field of the mutation.
-func withActionDataID(id int) actiondataOption {
+func withActionDataID(id int64) actiondataOption {
 	return func(m *ActionDataMutation) {
 		var (
 			err   error
@@ -1175,9 +1181,15 @@ func (m ActionDataMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ActionData entities.
+func (m *ActionDataMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ActionDataMutation) ID() (id int, exists bool) {
+func (m *ActionDataMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1188,12 +1200,12 @@ func (m *ActionDataMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ActionDataMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ActionDataMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -1673,7 +1685,7 @@ func (m *ActionDataMutation) ResetUserTime() {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
-func (m *ActionDataMutation) SetActionSummaryID(id int) {
+func (m *ActionDataMutation) SetActionSummaryID(id int64) {
 	m.action_summary = &id
 }
 
@@ -1688,7 +1700,7 @@ func (m *ActionDataMutation) ActionSummaryCleared() bool {
 }
 
 // ActionSummaryID returns the "action_summary" edge ID in the mutation.
-func (m *ActionDataMutation) ActionSummaryID() (id int, exists bool) {
+func (m *ActionDataMutation) ActionSummaryID() (id int64, exists bool) {
 	if m.action_summary != nil {
 		return *m.action_summary, true
 	}
@@ -1698,7 +1710,7 @@ func (m *ActionDataMutation) ActionSummaryID() (id int, exists bool) {
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ActionSummaryID instead. It exists only for internal usage by the builders.
-func (m *ActionDataMutation) ActionSummaryIDs() (ids []int) {
+func (m *ActionDataMutation) ActionSummaryIDs() (ids []int64) {
 	if id := m.action_summary; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2143,7 +2155,7 @@ type ActionSummaryMutation struct {
 	config
 	op                                       Op
 	typ                                      string
-	id                                       *int
+	id                                       *int64
 	actions_created                          *int64
 	addactions_created                       *int64
 	actions_created_not_including_aspects    *int64
@@ -2153,15 +2165,15 @@ type ActionSummaryMutation struct {
 	remote_cache_hits                        *int64
 	addremote_cache_hits                     *int64
 	clearedFields                            map[string]struct{}
-	metrics                                  *int
+	metrics                                  *int64
 	clearedmetrics                           bool
-	action_data                              map[int]struct{}
-	removedaction_data                       map[int]struct{}
+	action_data                              map[int64]struct{}
+	removedaction_data                       map[int64]struct{}
 	clearedaction_data                       bool
-	runner_count                             map[int]struct{}
-	removedrunner_count                      map[int]struct{}
+	runner_count                             map[int64]struct{}
+	removedrunner_count                      map[int64]struct{}
 	clearedrunner_count                      bool
-	action_cache_statistics                  *int
+	action_cache_statistics                  *int64
 	clearedaction_cache_statistics           bool
 	done                                     bool
 	oldValue                                 func(context.Context) (*ActionSummary, error)
@@ -2188,7 +2200,7 @@ func newActionSummaryMutation(c config, op Op, opts ...actionsummaryOption) *Act
 }
 
 // withActionSummaryID sets the ID field of the mutation.
-func withActionSummaryID(id int) actionsummaryOption {
+func withActionSummaryID(id int64) actionsummaryOption {
 	return func(m *ActionSummaryMutation) {
 		var (
 			err   error
@@ -2238,9 +2250,15 @@ func (m ActionSummaryMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ActionSummary entities.
+func (m *ActionSummaryMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ActionSummaryMutation) ID() (id int, exists bool) {
+func (m *ActionSummaryMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2251,12 +2269,12 @@ func (m *ActionSummaryMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ActionSummaryMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ActionSummaryMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2547,7 +2565,7 @@ func (m *ActionSummaryMutation) ResetRemoteCacheHits() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *ActionSummaryMutation) SetMetricsID(id int) {
+func (m *ActionSummaryMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -2562,7 +2580,7 @@ func (m *ActionSummaryMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *ActionSummaryMutation) MetricsID() (id int, exists bool) {
+func (m *ActionSummaryMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -2572,7 +2590,7 @@ func (m *ActionSummaryMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *ActionSummaryMutation) MetricsIDs() (ids []int) {
+func (m *ActionSummaryMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2586,9 +2604,9 @@ func (m *ActionSummaryMutation) ResetMetrics() {
 }
 
 // AddActionDatumIDs adds the "action_data" edge to the ActionData entity by ids.
-func (m *ActionSummaryMutation) AddActionDatumIDs(ids ...int) {
+func (m *ActionSummaryMutation) AddActionDatumIDs(ids ...int64) {
 	if m.action_data == nil {
-		m.action_data = make(map[int]struct{})
+		m.action_data = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.action_data[ids[i]] = struct{}{}
@@ -2606,9 +2624,9 @@ func (m *ActionSummaryMutation) ActionDataCleared() bool {
 }
 
 // RemoveActionDatumIDs removes the "action_data" edge to the ActionData entity by IDs.
-func (m *ActionSummaryMutation) RemoveActionDatumIDs(ids ...int) {
+func (m *ActionSummaryMutation) RemoveActionDatumIDs(ids ...int64) {
 	if m.removedaction_data == nil {
-		m.removedaction_data = make(map[int]struct{})
+		m.removedaction_data = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.action_data, ids[i])
@@ -2617,7 +2635,7 @@ func (m *ActionSummaryMutation) RemoveActionDatumIDs(ids ...int) {
 }
 
 // RemovedActionData returns the removed IDs of the "action_data" edge to the ActionData entity.
-func (m *ActionSummaryMutation) RemovedActionDataIDs() (ids []int) {
+func (m *ActionSummaryMutation) RemovedActionDataIDs() (ids []int64) {
 	for id := range m.removedaction_data {
 		ids = append(ids, id)
 	}
@@ -2625,7 +2643,7 @@ func (m *ActionSummaryMutation) RemovedActionDataIDs() (ids []int) {
 }
 
 // ActionDataIDs returns the "action_data" edge IDs in the mutation.
-func (m *ActionSummaryMutation) ActionDataIDs() (ids []int) {
+func (m *ActionSummaryMutation) ActionDataIDs() (ids []int64) {
 	for id := range m.action_data {
 		ids = append(ids, id)
 	}
@@ -2640,9 +2658,9 @@ func (m *ActionSummaryMutation) ResetActionData() {
 }
 
 // AddRunnerCountIDs adds the "runner_count" edge to the RunnerCount entity by ids.
-func (m *ActionSummaryMutation) AddRunnerCountIDs(ids ...int) {
+func (m *ActionSummaryMutation) AddRunnerCountIDs(ids ...int64) {
 	if m.runner_count == nil {
-		m.runner_count = make(map[int]struct{})
+		m.runner_count = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.runner_count[ids[i]] = struct{}{}
@@ -2660,9 +2678,9 @@ func (m *ActionSummaryMutation) RunnerCountCleared() bool {
 }
 
 // RemoveRunnerCountIDs removes the "runner_count" edge to the RunnerCount entity by IDs.
-func (m *ActionSummaryMutation) RemoveRunnerCountIDs(ids ...int) {
+func (m *ActionSummaryMutation) RemoveRunnerCountIDs(ids ...int64) {
 	if m.removedrunner_count == nil {
-		m.removedrunner_count = make(map[int]struct{})
+		m.removedrunner_count = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.runner_count, ids[i])
@@ -2671,7 +2689,7 @@ func (m *ActionSummaryMutation) RemoveRunnerCountIDs(ids ...int) {
 }
 
 // RemovedRunnerCount returns the removed IDs of the "runner_count" edge to the RunnerCount entity.
-func (m *ActionSummaryMutation) RemovedRunnerCountIDs() (ids []int) {
+func (m *ActionSummaryMutation) RemovedRunnerCountIDs() (ids []int64) {
 	for id := range m.removedrunner_count {
 		ids = append(ids, id)
 	}
@@ -2679,7 +2697,7 @@ func (m *ActionSummaryMutation) RemovedRunnerCountIDs() (ids []int) {
 }
 
 // RunnerCountIDs returns the "runner_count" edge IDs in the mutation.
-func (m *ActionSummaryMutation) RunnerCountIDs() (ids []int) {
+func (m *ActionSummaryMutation) RunnerCountIDs() (ids []int64) {
 	for id := range m.runner_count {
 		ids = append(ids, id)
 	}
@@ -2694,7 +2712,7 @@ func (m *ActionSummaryMutation) ResetRunnerCount() {
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by id.
-func (m *ActionSummaryMutation) SetActionCacheStatisticsID(id int) {
+func (m *ActionSummaryMutation) SetActionCacheStatisticsID(id int64) {
 	m.action_cache_statistics = &id
 }
 
@@ -2709,7 +2727,7 @@ func (m *ActionSummaryMutation) ActionCacheStatisticsCleared() bool {
 }
 
 // ActionCacheStatisticsID returns the "action_cache_statistics" edge ID in the mutation.
-func (m *ActionSummaryMutation) ActionCacheStatisticsID() (id int, exists bool) {
+func (m *ActionSummaryMutation) ActionCacheStatisticsID() (id int64, exists bool) {
 	if m.action_cache_statistics != nil {
 		return *m.action_cache_statistics, true
 	}
@@ -2719,7 +2737,7 @@ func (m *ActionSummaryMutation) ActionCacheStatisticsID() (id int, exists bool) 
 // ActionCacheStatisticsIDs returns the "action_cache_statistics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ActionCacheStatisticsID instead. It exists only for internal usage by the builders.
-func (m *ActionSummaryMutation) ActionCacheStatisticsIDs() (ids []int) {
+func (m *ActionSummaryMutation) ActionCacheStatisticsIDs() (ids []int64) {
 	if id := m.action_cache_statistics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -3143,7 +3161,7 @@ type ArtifactMetricsMutation struct {
 	config
 	op                                                  Op
 	typ                                                 string
-	id                                                  *int
+	id                                                  *int64
 	source_artifacts_read_size_in_bytes                 *int64
 	addsource_artifacts_read_size_in_bytes              *int64
 	source_artifacts_read_count                         *int32
@@ -3161,7 +3179,7 @@ type ArtifactMetricsMutation struct {
 	top_level_artifacts_count                           *int32
 	addtop_level_artifacts_count                        *int32
 	clearedFields                                       map[string]struct{}
-	metrics                                             *int
+	metrics                                             *int64
 	clearedmetrics                                      bool
 	done                                                bool
 	oldValue                                            func(context.Context) (*ArtifactMetrics, error)
@@ -3188,7 +3206,7 @@ func newArtifactMetricsMutation(c config, op Op, opts ...artifactmetricsOption) 
 }
 
 // withArtifactMetricsID sets the ID field of the mutation.
-func withArtifactMetricsID(id int) artifactmetricsOption {
+func withArtifactMetricsID(id int64) artifactmetricsOption {
 	return func(m *ArtifactMetricsMutation) {
 		var (
 			err   error
@@ -3238,9 +3256,15 @@ func (m ArtifactMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ArtifactMetrics entities.
+func (m *ArtifactMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ArtifactMetricsMutation) ID() (id int, exists bool) {
+func (m *ArtifactMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3251,12 +3275,12 @@ func (m *ArtifactMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ArtifactMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ArtifactMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -3827,7 +3851,7 @@ func (m *ArtifactMetricsMutation) ResetTopLevelArtifactsCount() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *ArtifactMetricsMutation) SetMetricsID(id int) {
+func (m *ArtifactMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -3842,7 +3866,7 @@ func (m *ArtifactMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *ArtifactMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *ArtifactMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -3852,7 +3876,7 @@ func (m *ArtifactMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *ArtifactMetricsMutation) MetricsIDs() (ids []int) {
+func (m *ArtifactMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -4344,14 +4368,14 @@ type AuthenticatedUserMutation struct {
 	config
 	op                       Op
 	typ                      string
-	id                       *int
+	id                       *int64
 	user_uuid                *uuid.UUID
 	external_id              *string
 	display_name             *string
 	user_info                *map[string]interface{}
 	clearedFields            map[string]struct{}
-	bazel_invocations        map[int]struct{}
-	removedbazel_invocations map[int]struct{}
+	bazel_invocations        map[int64]struct{}
+	removedbazel_invocations map[int64]struct{}
 	clearedbazel_invocations bool
 	done                     bool
 	oldValue                 func(context.Context) (*AuthenticatedUser, error)
@@ -4378,7 +4402,7 @@ func newAuthenticatedUserMutation(c config, op Op, opts ...authenticateduserOpti
 }
 
 // withAuthenticatedUserID sets the ID field of the mutation.
-func withAuthenticatedUserID(id int) authenticateduserOption {
+func withAuthenticatedUserID(id int64) authenticateduserOption {
 	return func(m *AuthenticatedUserMutation) {
 		var (
 			err   error
@@ -4428,9 +4452,15 @@ func (m AuthenticatedUserMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AuthenticatedUser entities.
+func (m *AuthenticatedUserMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AuthenticatedUserMutation) ID() (id int, exists bool) {
+func (m *AuthenticatedUserMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -4441,12 +4471,12 @@ func (m *AuthenticatedUserMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AuthenticatedUserMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AuthenticatedUserMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -4627,9 +4657,9 @@ func (m *AuthenticatedUserMutation) ResetUserInfo() {
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by ids.
-func (m *AuthenticatedUserMutation) AddBazelInvocationIDs(ids ...int) {
+func (m *AuthenticatedUserMutation) AddBazelInvocationIDs(ids ...int64) {
 	if m.bazel_invocations == nil {
-		m.bazel_invocations = make(map[int]struct{})
+		m.bazel_invocations = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.bazel_invocations[ids[i]] = struct{}{}
@@ -4647,9 +4677,9 @@ func (m *AuthenticatedUserMutation) BazelInvocationsCleared() bool {
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (m *AuthenticatedUserMutation) RemoveBazelInvocationIDs(ids ...int) {
+func (m *AuthenticatedUserMutation) RemoveBazelInvocationIDs(ids ...int64) {
 	if m.removedbazel_invocations == nil {
-		m.removedbazel_invocations = make(map[int]struct{})
+		m.removedbazel_invocations = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.bazel_invocations, ids[i])
@@ -4658,7 +4688,7 @@ func (m *AuthenticatedUserMutation) RemoveBazelInvocationIDs(ids ...int) {
 }
 
 // RemovedBazelInvocations returns the removed IDs of the "bazel_invocations" edge to the BazelInvocation entity.
-func (m *AuthenticatedUserMutation) RemovedBazelInvocationsIDs() (ids []int) {
+func (m *AuthenticatedUserMutation) RemovedBazelInvocationsIDs() (ids []int64) {
 	for id := range m.removedbazel_invocations {
 		ids = append(ids, id)
 	}
@@ -4666,7 +4696,7 @@ func (m *AuthenticatedUserMutation) RemovedBazelInvocationsIDs() (ids []int) {
 }
 
 // BazelInvocationsIDs returns the "bazel_invocations" edge IDs in the mutation.
-func (m *AuthenticatedUserMutation) BazelInvocationsIDs() (ids []int) {
+func (m *AuthenticatedUserMutation) BazelInvocationsIDs() (ids []int64) {
 	for id := range m.bazel_invocations {
 		ids = append(ids, id)
 	}
@@ -4966,7 +4996,7 @@ type BazelInvocationMutation struct {
 	config
 	op                                      Op
 	typ                                     string
-	id                                      *int
+	id                                      *int64
 	invocation_id                           *uuid.UUID
 	started_at                              *time.Time
 	ended_at                                *time.Time
@@ -5008,41 +5038,41 @@ type BazelInvocationMutation struct {
 	processed_event_structured_command_line *bool
 	processed_event_workspace_status        *bool
 	clearedFields                           map[string]struct{}
-	instance_name                           *int
+	instance_name                           *int64
 	clearedinstance_name                    bool
-	build                                   *int
+	build                                   *int64
 	clearedbuild                            bool
-	authenticated_user                      *int
+	authenticated_user                      *int64
 	clearedauthenticated_user               bool
-	event_metadata                          *int
+	event_metadata                          *int64
 	clearedevent_metadata                   bool
-	connection_metadata                     map[int]struct{}
-	removedconnection_metadata              map[int]struct{}
+	connection_metadata                     map[int64]struct{}
+	removedconnection_metadata              map[int64]struct{}
 	clearedconnection_metadata              bool
-	problems                                map[int]struct{}
-	removedproblems                         map[int]struct{}
+	problems                                map[int64]struct{}
+	removedproblems                         map[int64]struct{}
 	clearedproblems                         bool
-	metrics                                 *int
+	metrics                                 *int64
 	clearedmetrics                          bool
-	incomplete_build_logs                   map[int]struct{}
-	removedincomplete_build_logs            map[int]struct{}
+	incomplete_build_logs                   map[int64]struct{}
+	removedincomplete_build_logs            map[int64]struct{}
 	clearedincomplete_build_logs            bool
-	build_log_chunks                        map[int]struct{}
-	removedbuild_log_chunks                 map[int]struct{}
+	build_log_chunks                        map[int64]struct{}
+	removedbuild_log_chunks                 map[int64]struct{}
 	clearedbuild_log_chunks                 bool
-	invocation_files                        map[int]struct{}
-	removedinvocation_files                 map[int]struct{}
+	invocation_files                        map[int64]struct{}
+	removedinvocation_files                 map[int64]struct{}
 	clearedinvocation_files                 bool
-	test_collection                         map[int]struct{}
-	removedtest_collection                  map[int]struct{}
+	test_collection                         map[int64]struct{}
+	removedtest_collection                  map[int64]struct{}
 	clearedtest_collection                  bool
-	invocation_targets                      map[int]struct{}
-	removedinvocation_targets               map[int]struct{}
+	invocation_targets                      map[int64]struct{}
+	removedinvocation_targets               map[int64]struct{}
 	clearedinvocation_targets               bool
-	target_kind_mappings                    map[int]struct{}
-	removedtarget_kind_mappings             map[int]struct{}
+	target_kind_mappings                    map[int64]struct{}
+	removedtarget_kind_mappings             map[int64]struct{}
 	clearedtarget_kind_mappings             bool
-	source_control                          *int
+	source_control                          *int64
 	clearedsource_control                   bool
 	done                                    bool
 	oldValue                                func(context.Context) (*BazelInvocation, error)
@@ -5069,7 +5099,7 @@ func newBazelInvocationMutation(c config, op Op, opts ...bazelinvocationOption) 
 }
 
 // withBazelInvocationID sets the ID field of the mutation.
-func withBazelInvocationID(id int) bazelinvocationOption {
+func withBazelInvocationID(id int64) bazelinvocationOption {
 	return func(m *BazelInvocationMutation) {
 		var (
 			err   error
@@ -5119,9 +5149,15 @@ func (m BazelInvocationMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of BazelInvocation entities.
+func (m *BazelInvocationMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *BazelInvocationMutation) ID() (id int, exists bool) {
+func (m *BazelInvocationMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -5132,12 +5168,12 @@ func (m *BazelInvocationMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *BazelInvocationMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *BazelInvocationMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -6760,7 +6796,7 @@ func (m *BazelInvocationMutation) ResetProcessedEventWorkspaceStatus() {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by id.
-func (m *BazelInvocationMutation) SetInstanceNameID(id int) {
+func (m *BazelInvocationMutation) SetInstanceNameID(id int64) {
 	m.instance_name = &id
 }
 
@@ -6775,7 +6811,7 @@ func (m *BazelInvocationMutation) InstanceNameCleared() bool {
 }
 
 // InstanceNameID returns the "instance_name" edge ID in the mutation.
-func (m *BazelInvocationMutation) InstanceNameID() (id int, exists bool) {
+func (m *BazelInvocationMutation) InstanceNameID() (id int64, exists bool) {
 	if m.instance_name != nil {
 		return *m.instance_name, true
 	}
@@ -6785,7 +6821,7 @@ func (m *BazelInvocationMutation) InstanceNameID() (id int, exists bool) {
 // InstanceNameIDs returns the "instance_name" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // InstanceNameID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationMutation) InstanceNameIDs() (ids []int) {
+func (m *BazelInvocationMutation) InstanceNameIDs() (ids []int64) {
 	if id := m.instance_name; id != nil {
 		ids = append(ids, *id)
 	}
@@ -6799,7 +6835,7 @@ func (m *BazelInvocationMutation) ResetInstanceName() {
 }
 
 // SetBuildID sets the "build" edge to the Build entity by id.
-func (m *BazelInvocationMutation) SetBuildID(id int) {
+func (m *BazelInvocationMutation) SetBuildID(id int64) {
 	m.build = &id
 }
 
@@ -6814,7 +6850,7 @@ func (m *BazelInvocationMutation) BuildCleared() bool {
 }
 
 // BuildID returns the "build" edge ID in the mutation.
-func (m *BazelInvocationMutation) BuildID() (id int, exists bool) {
+func (m *BazelInvocationMutation) BuildID() (id int64, exists bool) {
 	if m.build != nil {
 		return *m.build, true
 	}
@@ -6824,7 +6860,7 @@ func (m *BazelInvocationMutation) BuildID() (id int, exists bool) {
 // BuildIDs returns the "build" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BuildID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationMutation) BuildIDs() (ids []int) {
+func (m *BazelInvocationMutation) BuildIDs() (ids []int64) {
 	if id := m.build; id != nil {
 		ids = append(ids, *id)
 	}
@@ -6838,7 +6874,7 @@ func (m *BazelInvocationMutation) ResetBuild() {
 }
 
 // SetAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by id.
-func (m *BazelInvocationMutation) SetAuthenticatedUserID(id int) {
+func (m *BazelInvocationMutation) SetAuthenticatedUserID(id int64) {
 	m.authenticated_user = &id
 }
 
@@ -6853,7 +6889,7 @@ func (m *BazelInvocationMutation) AuthenticatedUserCleared() bool {
 }
 
 // AuthenticatedUserID returns the "authenticated_user" edge ID in the mutation.
-func (m *BazelInvocationMutation) AuthenticatedUserID() (id int, exists bool) {
+func (m *BazelInvocationMutation) AuthenticatedUserID() (id int64, exists bool) {
 	if m.authenticated_user != nil {
 		return *m.authenticated_user, true
 	}
@@ -6863,7 +6899,7 @@ func (m *BazelInvocationMutation) AuthenticatedUserID() (id int, exists bool) {
 // AuthenticatedUserIDs returns the "authenticated_user" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // AuthenticatedUserID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationMutation) AuthenticatedUserIDs() (ids []int) {
+func (m *BazelInvocationMutation) AuthenticatedUserIDs() (ids []int64) {
 	if id := m.authenticated_user; id != nil {
 		ids = append(ids, *id)
 	}
@@ -6877,7 +6913,7 @@ func (m *BazelInvocationMutation) ResetAuthenticatedUser() {
 }
 
 // SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by id.
-func (m *BazelInvocationMutation) SetEventMetadataID(id int) {
+func (m *BazelInvocationMutation) SetEventMetadataID(id int64) {
 	m.event_metadata = &id
 }
 
@@ -6892,7 +6928,7 @@ func (m *BazelInvocationMutation) EventMetadataCleared() bool {
 }
 
 // EventMetadataID returns the "event_metadata" edge ID in the mutation.
-func (m *BazelInvocationMutation) EventMetadataID() (id int, exists bool) {
+func (m *BazelInvocationMutation) EventMetadataID() (id int64, exists bool) {
 	if m.event_metadata != nil {
 		return *m.event_metadata, true
 	}
@@ -6902,7 +6938,7 @@ func (m *BazelInvocationMutation) EventMetadataID() (id int, exists bool) {
 // EventMetadataIDs returns the "event_metadata" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // EventMetadataID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationMutation) EventMetadataIDs() (ids []int) {
+func (m *BazelInvocationMutation) EventMetadataIDs() (ids []int64) {
 	if id := m.event_metadata; id != nil {
 		ids = append(ids, *id)
 	}
@@ -6916,9 +6952,9 @@ func (m *BazelInvocationMutation) ResetEventMetadata() {
 }
 
 // AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by ids.
-func (m *BazelInvocationMutation) AddConnectionMetadatumIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddConnectionMetadatumIDs(ids ...int64) {
 	if m.connection_metadata == nil {
-		m.connection_metadata = make(map[int]struct{})
+		m.connection_metadata = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.connection_metadata[ids[i]] = struct{}{}
@@ -6936,9 +6972,9 @@ func (m *BazelInvocationMutation) ConnectionMetadataCleared() bool {
 }
 
 // RemoveConnectionMetadatumIDs removes the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
-func (m *BazelInvocationMutation) RemoveConnectionMetadatumIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveConnectionMetadatumIDs(ids ...int64) {
 	if m.removedconnection_metadata == nil {
-		m.removedconnection_metadata = make(map[int]struct{})
+		m.removedconnection_metadata = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.connection_metadata, ids[i])
@@ -6947,7 +6983,7 @@ func (m *BazelInvocationMutation) RemoveConnectionMetadatumIDs(ids ...int) {
 }
 
 // RemovedConnectionMetadata returns the removed IDs of the "connection_metadata" edge to the ConnectionMetadata entity.
-func (m *BazelInvocationMutation) RemovedConnectionMetadataIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedConnectionMetadataIDs() (ids []int64) {
 	for id := range m.removedconnection_metadata {
 		ids = append(ids, id)
 	}
@@ -6955,7 +6991,7 @@ func (m *BazelInvocationMutation) RemovedConnectionMetadataIDs() (ids []int) {
 }
 
 // ConnectionMetadataIDs returns the "connection_metadata" edge IDs in the mutation.
-func (m *BazelInvocationMutation) ConnectionMetadataIDs() (ids []int) {
+func (m *BazelInvocationMutation) ConnectionMetadataIDs() (ids []int64) {
 	for id := range m.connection_metadata {
 		ids = append(ids, id)
 	}
@@ -6970,9 +7006,9 @@ func (m *BazelInvocationMutation) ResetConnectionMetadata() {
 }
 
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by ids.
-func (m *BazelInvocationMutation) AddProblemIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddProblemIDs(ids ...int64) {
 	if m.problems == nil {
-		m.problems = make(map[int]struct{})
+		m.problems = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.problems[ids[i]] = struct{}{}
@@ -6990,9 +7026,9 @@ func (m *BazelInvocationMutation) ProblemsCleared() bool {
 }
 
 // RemoveProblemIDs removes the "problems" edge to the BazelInvocationProblem entity by IDs.
-func (m *BazelInvocationMutation) RemoveProblemIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveProblemIDs(ids ...int64) {
 	if m.removedproblems == nil {
-		m.removedproblems = make(map[int]struct{})
+		m.removedproblems = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.problems, ids[i])
@@ -7001,7 +7037,7 @@ func (m *BazelInvocationMutation) RemoveProblemIDs(ids ...int) {
 }
 
 // RemovedProblems returns the removed IDs of the "problems" edge to the BazelInvocationProblem entity.
-func (m *BazelInvocationMutation) RemovedProblemsIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedProblemsIDs() (ids []int64) {
 	for id := range m.removedproblems {
 		ids = append(ids, id)
 	}
@@ -7009,7 +7045,7 @@ func (m *BazelInvocationMutation) RemovedProblemsIDs() (ids []int) {
 }
 
 // ProblemsIDs returns the "problems" edge IDs in the mutation.
-func (m *BazelInvocationMutation) ProblemsIDs() (ids []int) {
+func (m *BazelInvocationMutation) ProblemsIDs() (ids []int64) {
 	for id := range m.problems {
 		ids = append(ids, id)
 	}
@@ -7024,7 +7060,7 @@ func (m *BazelInvocationMutation) ResetProblems() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *BazelInvocationMutation) SetMetricsID(id int) {
+func (m *BazelInvocationMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -7039,7 +7075,7 @@ func (m *BazelInvocationMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *BazelInvocationMutation) MetricsID() (id int, exists bool) {
+func (m *BazelInvocationMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -7049,7 +7085,7 @@ func (m *BazelInvocationMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationMutation) MetricsIDs() (ids []int) {
+func (m *BazelInvocationMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -7063,9 +7099,9 @@ func (m *BazelInvocationMutation) ResetMetrics() {
 }
 
 // AddIncompleteBuildLogIDs adds the "incomplete_build_logs" edge to the IncompleteBuildLog entity by ids.
-func (m *BazelInvocationMutation) AddIncompleteBuildLogIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddIncompleteBuildLogIDs(ids ...int64) {
 	if m.incomplete_build_logs == nil {
-		m.incomplete_build_logs = make(map[int]struct{})
+		m.incomplete_build_logs = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.incomplete_build_logs[ids[i]] = struct{}{}
@@ -7083,9 +7119,9 @@ func (m *BazelInvocationMutation) IncompleteBuildLogsCleared() bool {
 }
 
 // RemoveIncompleteBuildLogIDs removes the "incomplete_build_logs" edge to the IncompleteBuildLog entity by IDs.
-func (m *BazelInvocationMutation) RemoveIncompleteBuildLogIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveIncompleteBuildLogIDs(ids ...int64) {
 	if m.removedincomplete_build_logs == nil {
-		m.removedincomplete_build_logs = make(map[int]struct{})
+		m.removedincomplete_build_logs = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.incomplete_build_logs, ids[i])
@@ -7094,7 +7130,7 @@ func (m *BazelInvocationMutation) RemoveIncompleteBuildLogIDs(ids ...int) {
 }
 
 // RemovedIncompleteBuildLogs returns the removed IDs of the "incomplete_build_logs" edge to the IncompleteBuildLog entity.
-func (m *BazelInvocationMutation) RemovedIncompleteBuildLogsIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedIncompleteBuildLogsIDs() (ids []int64) {
 	for id := range m.removedincomplete_build_logs {
 		ids = append(ids, id)
 	}
@@ -7102,7 +7138,7 @@ func (m *BazelInvocationMutation) RemovedIncompleteBuildLogsIDs() (ids []int) {
 }
 
 // IncompleteBuildLogsIDs returns the "incomplete_build_logs" edge IDs in the mutation.
-func (m *BazelInvocationMutation) IncompleteBuildLogsIDs() (ids []int) {
+func (m *BazelInvocationMutation) IncompleteBuildLogsIDs() (ids []int64) {
 	for id := range m.incomplete_build_logs {
 		ids = append(ids, id)
 	}
@@ -7117,9 +7153,9 @@ func (m *BazelInvocationMutation) ResetIncompleteBuildLogs() {
 }
 
 // AddBuildLogChunkIDs adds the "build_log_chunks" edge to the BuildLogChunk entity by ids.
-func (m *BazelInvocationMutation) AddBuildLogChunkIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddBuildLogChunkIDs(ids ...int64) {
 	if m.build_log_chunks == nil {
-		m.build_log_chunks = make(map[int]struct{})
+		m.build_log_chunks = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.build_log_chunks[ids[i]] = struct{}{}
@@ -7137,9 +7173,9 @@ func (m *BazelInvocationMutation) BuildLogChunksCleared() bool {
 }
 
 // RemoveBuildLogChunkIDs removes the "build_log_chunks" edge to the BuildLogChunk entity by IDs.
-func (m *BazelInvocationMutation) RemoveBuildLogChunkIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveBuildLogChunkIDs(ids ...int64) {
 	if m.removedbuild_log_chunks == nil {
-		m.removedbuild_log_chunks = make(map[int]struct{})
+		m.removedbuild_log_chunks = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.build_log_chunks, ids[i])
@@ -7148,7 +7184,7 @@ func (m *BazelInvocationMutation) RemoveBuildLogChunkIDs(ids ...int) {
 }
 
 // RemovedBuildLogChunks returns the removed IDs of the "build_log_chunks" edge to the BuildLogChunk entity.
-func (m *BazelInvocationMutation) RemovedBuildLogChunksIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedBuildLogChunksIDs() (ids []int64) {
 	for id := range m.removedbuild_log_chunks {
 		ids = append(ids, id)
 	}
@@ -7156,7 +7192,7 @@ func (m *BazelInvocationMutation) RemovedBuildLogChunksIDs() (ids []int) {
 }
 
 // BuildLogChunksIDs returns the "build_log_chunks" edge IDs in the mutation.
-func (m *BazelInvocationMutation) BuildLogChunksIDs() (ids []int) {
+func (m *BazelInvocationMutation) BuildLogChunksIDs() (ids []int64) {
 	for id := range m.build_log_chunks {
 		ids = append(ids, id)
 	}
@@ -7171,9 +7207,9 @@ func (m *BazelInvocationMutation) ResetBuildLogChunks() {
 }
 
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by ids.
-func (m *BazelInvocationMutation) AddInvocationFileIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddInvocationFileIDs(ids ...int64) {
 	if m.invocation_files == nil {
-		m.invocation_files = make(map[int]struct{})
+		m.invocation_files = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.invocation_files[ids[i]] = struct{}{}
@@ -7191,9 +7227,9 @@ func (m *BazelInvocationMutation) InvocationFilesCleared() bool {
 }
 
 // RemoveInvocationFileIDs removes the "invocation_files" edge to the InvocationFiles entity by IDs.
-func (m *BazelInvocationMutation) RemoveInvocationFileIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveInvocationFileIDs(ids ...int64) {
 	if m.removedinvocation_files == nil {
-		m.removedinvocation_files = make(map[int]struct{})
+		m.removedinvocation_files = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.invocation_files, ids[i])
@@ -7202,7 +7238,7 @@ func (m *BazelInvocationMutation) RemoveInvocationFileIDs(ids ...int) {
 }
 
 // RemovedInvocationFiles returns the removed IDs of the "invocation_files" edge to the InvocationFiles entity.
-func (m *BazelInvocationMutation) RemovedInvocationFilesIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedInvocationFilesIDs() (ids []int64) {
 	for id := range m.removedinvocation_files {
 		ids = append(ids, id)
 	}
@@ -7210,7 +7246,7 @@ func (m *BazelInvocationMutation) RemovedInvocationFilesIDs() (ids []int) {
 }
 
 // InvocationFilesIDs returns the "invocation_files" edge IDs in the mutation.
-func (m *BazelInvocationMutation) InvocationFilesIDs() (ids []int) {
+func (m *BazelInvocationMutation) InvocationFilesIDs() (ids []int64) {
 	for id := range m.invocation_files {
 		ids = append(ids, id)
 	}
@@ -7225,9 +7261,9 @@ func (m *BazelInvocationMutation) ResetInvocationFiles() {
 }
 
 // AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by ids.
-func (m *BazelInvocationMutation) AddTestCollectionIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddTestCollectionIDs(ids ...int64) {
 	if m.test_collection == nil {
-		m.test_collection = make(map[int]struct{})
+		m.test_collection = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.test_collection[ids[i]] = struct{}{}
@@ -7245,9 +7281,9 @@ func (m *BazelInvocationMutation) TestCollectionCleared() bool {
 }
 
 // RemoveTestCollectionIDs removes the "test_collection" edge to the TestCollection entity by IDs.
-func (m *BazelInvocationMutation) RemoveTestCollectionIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveTestCollectionIDs(ids ...int64) {
 	if m.removedtest_collection == nil {
-		m.removedtest_collection = make(map[int]struct{})
+		m.removedtest_collection = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.test_collection, ids[i])
@@ -7256,7 +7292,7 @@ func (m *BazelInvocationMutation) RemoveTestCollectionIDs(ids ...int) {
 }
 
 // RemovedTestCollection returns the removed IDs of the "test_collection" edge to the TestCollection entity.
-func (m *BazelInvocationMutation) RemovedTestCollectionIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedTestCollectionIDs() (ids []int64) {
 	for id := range m.removedtest_collection {
 		ids = append(ids, id)
 	}
@@ -7264,7 +7300,7 @@ func (m *BazelInvocationMutation) RemovedTestCollectionIDs() (ids []int) {
 }
 
 // TestCollectionIDs returns the "test_collection" edge IDs in the mutation.
-func (m *BazelInvocationMutation) TestCollectionIDs() (ids []int) {
+func (m *BazelInvocationMutation) TestCollectionIDs() (ids []int64) {
 	for id := range m.test_collection {
 		ids = append(ids, id)
 	}
@@ -7279,9 +7315,9 @@ func (m *BazelInvocationMutation) ResetTestCollection() {
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
-func (m *BazelInvocationMutation) AddInvocationTargetIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddInvocationTargetIDs(ids ...int64) {
 	if m.invocation_targets == nil {
-		m.invocation_targets = make(map[int]struct{})
+		m.invocation_targets = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.invocation_targets[ids[i]] = struct{}{}
@@ -7299,9 +7335,9 @@ func (m *BazelInvocationMutation) InvocationTargetsCleared() bool {
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (m *BazelInvocationMutation) RemoveInvocationTargetIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveInvocationTargetIDs(ids ...int64) {
 	if m.removedinvocation_targets == nil {
-		m.removedinvocation_targets = make(map[int]struct{})
+		m.removedinvocation_targets = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.invocation_targets, ids[i])
@@ -7310,7 +7346,7 @@ func (m *BazelInvocationMutation) RemoveInvocationTargetIDs(ids ...int) {
 }
 
 // RemovedInvocationTargets returns the removed IDs of the "invocation_targets" edge to the InvocationTarget entity.
-func (m *BazelInvocationMutation) RemovedInvocationTargetsIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedInvocationTargetsIDs() (ids []int64) {
 	for id := range m.removedinvocation_targets {
 		ids = append(ids, id)
 	}
@@ -7318,7 +7354,7 @@ func (m *BazelInvocationMutation) RemovedInvocationTargetsIDs() (ids []int) {
 }
 
 // InvocationTargetsIDs returns the "invocation_targets" edge IDs in the mutation.
-func (m *BazelInvocationMutation) InvocationTargetsIDs() (ids []int) {
+func (m *BazelInvocationMutation) InvocationTargetsIDs() (ids []int64) {
 	for id := range m.invocation_targets {
 		ids = append(ids, id)
 	}
@@ -7333,9 +7369,9 @@ func (m *BazelInvocationMutation) ResetInvocationTargets() {
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by ids.
-func (m *BazelInvocationMutation) AddTargetKindMappingIDs(ids ...int) {
+func (m *BazelInvocationMutation) AddTargetKindMappingIDs(ids ...int64) {
 	if m.target_kind_mappings == nil {
-		m.target_kind_mappings = make(map[int]struct{})
+		m.target_kind_mappings = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.target_kind_mappings[ids[i]] = struct{}{}
@@ -7353,9 +7389,9 @@ func (m *BazelInvocationMutation) TargetKindMappingsCleared() bool {
 }
 
 // RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (m *BazelInvocationMutation) RemoveTargetKindMappingIDs(ids ...int) {
+func (m *BazelInvocationMutation) RemoveTargetKindMappingIDs(ids ...int64) {
 	if m.removedtarget_kind_mappings == nil {
-		m.removedtarget_kind_mappings = make(map[int]struct{})
+		m.removedtarget_kind_mappings = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.target_kind_mappings, ids[i])
@@ -7364,7 +7400,7 @@ func (m *BazelInvocationMutation) RemoveTargetKindMappingIDs(ids ...int) {
 }
 
 // RemovedTargetKindMappings returns the removed IDs of the "target_kind_mappings" edge to the TargetKindMapping entity.
-func (m *BazelInvocationMutation) RemovedTargetKindMappingsIDs() (ids []int) {
+func (m *BazelInvocationMutation) RemovedTargetKindMappingsIDs() (ids []int64) {
 	for id := range m.removedtarget_kind_mappings {
 		ids = append(ids, id)
 	}
@@ -7372,7 +7408,7 @@ func (m *BazelInvocationMutation) RemovedTargetKindMappingsIDs() (ids []int) {
 }
 
 // TargetKindMappingsIDs returns the "target_kind_mappings" edge IDs in the mutation.
-func (m *BazelInvocationMutation) TargetKindMappingsIDs() (ids []int) {
+func (m *BazelInvocationMutation) TargetKindMappingsIDs() (ids []int64) {
 	for id := range m.target_kind_mappings {
 		ids = append(ids, id)
 	}
@@ -7387,7 +7423,7 @@ func (m *BazelInvocationMutation) ResetTargetKindMappings() {
 }
 
 // SetSourceControlID sets the "source_control" edge to the SourceControl entity by id.
-func (m *BazelInvocationMutation) SetSourceControlID(id int) {
+func (m *BazelInvocationMutation) SetSourceControlID(id int64) {
 	m.source_control = &id
 }
 
@@ -7402,7 +7438,7 @@ func (m *BazelInvocationMutation) SourceControlCleared() bool {
 }
 
 // SourceControlID returns the "source_control" edge ID in the mutation.
-func (m *BazelInvocationMutation) SourceControlID() (id int, exists bool) {
+func (m *BazelInvocationMutation) SourceControlID() (id int64, exists bool) {
 	if m.source_control != nil {
 		return *m.source_control, true
 	}
@@ -7412,7 +7448,7 @@ func (m *BazelInvocationMutation) SourceControlID() (id int, exists bool) {
 // SourceControlIDs returns the "source_control" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // SourceControlID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationMutation) SourceControlIDs() (ids []int) {
+func (m *BazelInvocationMutation) SourceControlIDs() (ids []int64) {
 	if id := m.source_control; id != nil {
 		ids = append(ids, *id)
 	}
@@ -8660,13 +8696,13 @@ type BazelInvocationProblemMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	problem_type            *string
 	label                   *string
 	bep_events              *json.RawMessage
 	appendbep_events        json.RawMessage
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	done                    bool
 	oldValue                func(context.Context) (*BazelInvocationProblem, error)
@@ -8693,7 +8729,7 @@ func newBazelInvocationProblemMutation(c config, op Op, opts ...bazelinvocationp
 }
 
 // withBazelInvocationProblemID sets the ID field of the mutation.
-func withBazelInvocationProblemID(id int) bazelinvocationproblemOption {
+func withBazelInvocationProblemID(id int64) bazelinvocationproblemOption {
 	return func(m *BazelInvocationProblemMutation) {
 		var (
 			err   error
@@ -8743,9 +8779,15 @@ func (m BazelInvocationProblemMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of BazelInvocationProblem entities.
+func (m *BazelInvocationProblemMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *BazelInvocationProblemMutation) ID() (id int, exists bool) {
+func (m *BazelInvocationProblemMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -8756,12 +8798,12 @@ func (m *BazelInvocationProblemMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *BazelInvocationProblemMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *BazelInvocationProblemMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -8895,7 +8937,7 @@ func (m *BazelInvocationProblemMutation) ResetBepEvents() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *BazelInvocationProblemMutation) SetBazelInvocationID(id int) {
+func (m *BazelInvocationProblemMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -8910,7 +8952,7 @@ func (m *BazelInvocationProblemMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *BazelInvocationProblemMutation) BazelInvocationID() (id int, exists bool) {
+func (m *BazelInvocationProblemMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -8920,7 +8962,7 @@ func (m *BazelInvocationProblemMutation) BazelInvocationID() (id int, exists boo
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationProblemMutation) BazelInvocationIDs() (ids []int) {
+func (m *BazelInvocationProblemMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -9177,7 +9219,7 @@ type BlobMutation struct {
 	config
 	op                   Op
 	typ                  string
-	id                   *int
+	id                   *int64
 	uri                  *string
 	size_bytes           *int64
 	addsize_bytes        *int64
@@ -9185,7 +9227,7 @@ type BlobMutation struct {
 	reason               *string
 	archive_url          *string
 	clearedFields        map[string]struct{}
-	instance_name        *int
+	instance_name        *int64
 	clearedinstance_name bool
 	done                 bool
 	oldValue             func(context.Context) (*Blob, error)
@@ -9212,7 +9254,7 @@ func newBlobMutation(c config, op Op, opts ...blobOption) *BlobMutation {
 }
 
 // withBlobID sets the ID field of the mutation.
-func withBlobID(id int) blobOption {
+func withBlobID(id int64) blobOption {
 	return func(m *BlobMutation) {
 		var (
 			err   error
@@ -9262,9 +9304,15 @@ func (m BlobMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Blob entities.
+func (m *BlobMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *BlobMutation) ID() (id int, exists bool) {
+func (m *BlobMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -9275,12 +9323,12 @@ func (m *BlobMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *BlobMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *BlobMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -9531,7 +9579,7 @@ func (m *BlobMutation) ResetArchiveURL() {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by id.
-func (m *BlobMutation) SetInstanceNameID(id int) {
+func (m *BlobMutation) SetInstanceNameID(id int64) {
 	m.instance_name = &id
 }
 
@@ -9546,7 +9594,7 @@ func (m *BlobMutation) InstanceNameCleared() bool {
 }
 
 // InstanceNameID returns the "instance_name" edge ID in the mutation.
-func (m *BlobMutation) InstanceNameID() (id int, exists bool) {
+func (m *BlobMutation) InstanceNameID() (id int64, exists bool) {
 	if m.instance_name != nil {
 		return *m.instance_name, true
 	}
@@ -9556,7 +9604,7 @@ func (m *BlobMutation) InstanceNameID() (id int, exists bool) {
 // InstanceNameIDs returns the "instance_name" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // InstanceNameID instead. It exists only for internal usage by the builders.
-func (m *BlobMutation) InstanceNameIDs() (ids []int) {
+func (m *BlobMutation) InstanceNameIDs() (ids []int64) {
 	if id := m.instance_name; id != nil {
 		ids = append(ids, *id)
 	}
@@ -9883,15 +9931,15 @@ type BuildMutation struct {
 	config
 	op                   Op
 	typ                  string
-	id                   *int
+	id                   *int64
 	build_url            *string
 	build_uuid           *uuid.UUID
 	timestamp            *time.Time
 	clearedFields        map[string]struct{}
-	instance_name        *int
+	instance_name        *int64
 	clearedinstance_name bool
-	invocations          map[int]struct{}
-	removedinvocations   map[int]struct{}
+	invocations          map[int64]struct{}
+	removedinvocations   map[int64]struct{}
 	clearedinvocations   bool
 	done                 bool
 	oldValue             func(context.Context) (*Build, error)
@@ -9918,7 +9966,7 @@ func newBuildMutation(c config, op Op, opts ...buildOption) *BuildMutation {
 }
 
 // withBuildID sets the ID field of the mutation.
-func withBuildID(id int) buildOption {
+func withBuildID(id int64) buildOption {
 	return func(m *BuildMutation) {
 		var (
 			err   error
@@ -9968,9 +10016,15 @@ func (m BuildMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Build entities.
+func (m *BuildMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *BuildMutation) ID() (id int, exists bool) {
+func (m *BuildMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -9981,12 +10035,12 @@ func (m *BuildMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *BuildMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *BuildMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -10105,7 +10159,7 @@ func (m *BuildMutation) ResetTimestamp() {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by id.
-func (m *BuildMutation) SetInstanceNameID(id int) {
+func (m *BuildMutation) SetInstanceNameID(id int64) {
 	m.instance_name = &id
 }
 
@@ -10120,7 +10174,7 @@ func (m *BuildMutation) InstanceNameCleared() bool {
 }
 
 // InstanceNameID returns the "instance_name" edge ID in the mutation.
-func (m *BuildMutation) InstanceNameID() (id int, exists bool) {
+func (m *BuildMutation) InstanceNameID() (id int64, exists bool) {
 	if m.instance_name != nil {
 		return *m.instance_name, true
 	}
@@ -10130,7 +10184,7 @@ func (m *BuildMutation) InstanceNameID() (id int, exists bool) {
 // InstanceNameIDs returns the "instance_name" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // InstanceNameID instead. It exists only for internal usage by the builders.
-func (m *BuildMutation) InstanceNameIDs() (ids []int) {
+func (m *BuildMutation) InstanceNameIDs() (ids []int64) {
 	if id := m.instance_name; id != nil {
 		ids = append(ids, *id)
 	}
@@ -10144,9 +10198,9 @@ func (m *BuildMutation) ResetInstanceName() {
 }
 
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by ids.
-func (m *BuildMutation) AddInvocationIDs(ids ...int) {
+func (m *BuildMutation) AddInvocationIDs(ids ...int64) {
 	if m.invocations == nil {
-		m.invocations = make(map[int]struct{})
+		m.invocations = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.invocations[ids[i]] = struct{}{}
@@ -10164,9 +10218,9 @@ func (m *BuildMutation) InvocationsCleared() bool {
 }
 
 // RemoveInvocationIDs removes the "invocations" edge to the BazelInvocation entity by IDs.
-func (m *BuildMutation) RemoveInvocationIDs(ids ...int) {
+func (m *BuildMutation) RemoveInvocationIDs(ids ...int64) {
 	if m.removedinvocations == nil {
-		m.removedinvocations = make(map[int]struct{})
+		m.removedinvocations = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.invocations, ids[i])
@@ -10175,7 +10229,7 @@ func (m *BuildMutation) RemoveInvocationIDs(ids ...int) {
 }
 
 // RemovedInvocations returns the removed IDs of the "invocations" edge to the BazelInvocation entity.
-func (m *BuildMutation) RemovedInvocationsIDs() (ids []int) {
+func (m *BuildMutation) RemovedInvocationsIDs() (ids []int64) {
 	for id := range m.removedinvocations {
 		ids = append(ids, id)
 	}
@@ -10183,7 +10237,7 @@ func (m *BuildMutation) RemovedInvocationsIDs() (ids []int) {
 }
 
 // InvocationsIDs returns the "invocations" edge IDs in the mutation.
-func (m *BuildMutation) InvocationsIDs() (ids []int) {
+func (m *BuildMutation) InvocationsIDs() (ids []int64) {
 	for id := range m.invocations {
 		ids = append(ids, id)
 	}
@@ -10469,7 +10523,7 @@ type BuildGraphMetricsMutation struct {
 	config
 	op                                                 Op
 	typ                                                string
-	id                                                 *int
+	id                                                 *int64
 	action_lookup_value_count                          *int32
 	addaction_lookup_value_count                       *int32
 	action_lookup_value_count_not_including_aspects    *int32
@@ -10489,17 +10543,17 @@ type BuildGraphMetricsMutation struct {
 	post_invocation_skyframe_node_count                *int32
 	addpost_invocation_skyframe_node_count             *int32
 	clearedFields                                      map[string]struct{}
-	metrics                                            *int
+	metrics                                            *int64
 	clearedmetrics                                     bool
-	dirtied_values                                     *int
+	dirtied_values                                     *int64
 	cleareddirtied_values                              bool
-	changed_values                                     *int
+	changed_values                                     *int64
 	clearedchanged_values                              bool
-	built_values                                       *int
+	built_values                                       *int64
 	clearedbuilt_values                                bool
-	cleaned_values                                     *int
+	cleaned_values                                     *int64
 	clearedcleaned_values                              bool
-	evaluated_values                                   *int
+	evaluated_values                                   *int64
 	clearedevaluated_values                            bool
 	done                                               bool
 	oldValue                                           func(context.Context) (*BuildGraphMetrics, error)
@@ -10526,7 +10580,7 @@ func newBuildGraphMetricsMutation(c config, op Op, opts ...buildgraphmetricsOpti
 }
 
 // withBuildGraphMetricsID sets the ID field of the mutation.
-func withBuildGraphMetricsID(id int) buildgraphmetricsOption {
+func withBuildGraphMetricsID(id int64) buildgraphmetricsOption {
 	return func(m *BuildGraphMetricsMutation) {
 		var (
 			err   error
@@ -10576,9 +10630,15 @@ func (m BuildGraphMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of BuildGraphMetrics entities.
+func (m *BuildGraphMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *BuildGraphMetricsMutation) ID() (id int, exists bool) {
+func (m *BuildGraphMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -10589,12 +10649,12 @@ func (m *BuildGraphMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *BuildGraphMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *BuildGraphMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -11235,7 +11295,7 @@ func (m *BuildGraphMetricsMutation) ResetPostInvocationSkyframeNodeCount() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *BuildGraphMetricsMutation) SetMetricsID(id int) {
+func (m *BuildGraphMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -11250,7 +11310,7 @@ func (m *BuildGraphMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *BuildGraphMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *BuildGraphMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -11260,7 +11320,7 @@ func (m *BuildGraphMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *BuildGraphMetricsMutation) MetricsIDs() (ids []int) {
+func (m *BuildGraphMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -11274,7 +11334,7 @@ func (m *BuildGraphMetricsMutation) ResetMetrics() {
 }
 
 // SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by id.
-func (m *BuildGraphMetricsMutation) SetDirtiedValuesID(id int) {
+func (m *BuildGraphMetricsMutation) SetDirtiedValuesID(id int64) {
 	m.dirtied_values = &id
 }
 
@@ -11289,7 +11349,7 @@ func (m *BuildGraphMetricsMutation) DirtiedValuesCleared() bool {
 }
 
 // DirtiedValuesID returns the "dirtied_values" edge ID in the mutation.
-func (m *BuildGraphMetricsMutation) DirtiedValuesID() (id int, exists bool) {
+func (m *BuildGraphMetricsMutation) DirtiedValuesID() (id int64, exists bool) {
 	if m.dirtied_values != nil {
 		return *m.dirtied_values, true
 	}
@@ -11299,7 +11359,7 @@ func (m *BuildGraphMetricsMutation) DirtiedValuesID() (id int, exists bool) {
 // DirtiedValuesIDs returns the "dirtied_values" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // DirtiedValuesID instead. It exists only for internal usage by the builders.
-func (m *BuildGraphMetricsMutation) DirtiedValuesIDs() (ids []int) {
+func (m *BuildGraphMetricsMutation) DirtiedValuesIDs() (ids []int64) {
 	if id := m.dirtied_values; id != nil {
 		ids = append(ids, *id)
 	}
@@ -11313,7 +11373,7 @@ func (m *BuildGraphMetricsMutation) ResetDirtiedValues() {
 }
 
 // SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by id.
-func (m *BuildGraphMetricsMutation) SetChangedValuesID(id int) {
+func (m *BuildGraphMetricsMutation) SetChangedValuesID(id int64) {
 	m.changed_values = &id
 }
 
@@ -11328,7 +11388,7 @@ func (m *BuildGraphMetricsMutation) ChangedValuesCleared() bool {
 }
 
 // ChangedValuesID returns the "changed_values" edge ID in the mutation.
-func (m *BuildGraphMetricsMutation) ChangedValuesID() (id int, exists bool) {
+func (m *BuildGraphMetricsMutation) ChangedValuesID() (id int64, exists bool) {
 	if m.changed_values != nil {
 		return *m.changed_values, true
 	}
@@ -11338,7 +11398,7 @@ func (m *BuildGraphMetricsMutation) ChangedValuesID() (id int, exists bool) {
 // ChangedValuesIDs returns the "changed_values" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ChangedValuesID instead. It exists only for internal usage by the builders.
-func (m *BuildGraphMetricsMutation) ChangedValuesIDs() (ids []int) {
+func (m *BuildGraphMetricsMutation) ChangedValuesIDs() (ids []int64) {
 	if id := m.changed_values; id != nil {
 		ids = append(ids, *id)
 	}
@@ -11352,7 +11412,7 @@ func (m *BuildGraphMetricsMutation) ResetChangedValues() {
 }
 
 // SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by id.
-func (m *BuildGraphMetricsMutation) SetBuiltValuesID(id int) {
+func (m *BuildGraphMetricsMutation) SetBuiltValuesID(id int64) {
 	m.built_values = &id
 }
 
@@ -11367,7 +11427,7 @@ func (m *BuildGraphMetricsMutation) BuiltValuesCleared() bool {
 }
 
 // BuiltValuesID returns the "built_values" edge ID in the mutation.
-func (m *BuildGraphMetricsMutation) BuiltValuesID() (id int, exists bool) {
+func (m *BuildGraphMetricsMutation) BuiltValuesID() (id int64, exists bool) {
 	if m.built_values != nil {
 		return *m.built_values, true
 	}
@@ -11377,7 +11437,7 @@ func (m *BuildGraphMetricsMutation) BuiltValuesID() (id int, exists bool) {
 // BuiltValuesIDs returns the "built_values" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BuiltValuesID instead. It exists only for internal usage by the builders.
-func (m *BuildGraphMetricsMutation) BuiltValuesIDs() (ids []int) {
+func (m *BuildGraphMetricsMutation) BuiltValuesIDs() (ids []int64) {
 	if id := m.built_values; id != nil {
 		ids = append(ids, *id)
 	}
@@ -11391,7 +11451,7 @@ func (m *BuildGraphMetricsMutation) ResetBuiltValues() {
 }
 
 // SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by id.
-func (m *BuildGraphMetricsMutation) SetCleanedValuesID(id int) {
+func (m *BuildGraphMetricsMutation) SetCleanedValuesID(id int64) {
 	m.cleaned_values = &id
 }
 
@@ -11406,7 +11466,7 @@ func (m *BuildGraphMetricsMutation) CleanedValuesCleared() bool {
 }
 
 // CleanedValuesID returns the "cleaned_values" edge ID in the mutation.
-func (m *BuildGraphMetricsMutation) CleanedValuesID() (id int, exists bool) {
+func (m *BuildGraphMetricsMutation) CleanedValuesID() (id int64, exists bool) {
 	if m.cleaned_values != nil {
 		return *m.cleaned_values, true
 	}
@@ -11416,7 +11476,7 @@ func (m *BuildGraphMetricsMutation) CleanedValuesID() (id int, exists bool) {
 // CleanedValuesIDs returns the "cleaned_values" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // CleanedValuesID instead. It exists only for internal usage by the builders.
-func (m *BuildGraphMetricsMutation) CleanedValuesIDs() (ids []int) {
+func (m *BuildGraphMetricsMutation) CleanedValuesIDs() (ids []int64) {
 	if id := m.cleaned_values; id != nil {
 		ids = append(ids, *id)
 	}
@@ -11430,7 +11490,7 @@ func (m *BuildGraphMetricsMutation) ResetCleanedValues() {
 }
 
 // SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by id.
-func (m *BuildGraphMetricsMutation) SetEvaluatedValuesID(id int) {
+func (m *BuildGraphMetricsMutation) SetEvaluatedValuesID(id int64) {
 	m.evaluated_values = &id
 }
 
@@ -11445,7 +11505,7 @@ func (m *BuildGraphMetricsMutation) EvaluatedValuesCleared() bool {
 }
 
 // EvaluatedValuesID returns the "evaluated_values" edge ID in the mutation.
-func (m *BuildGraphMetricsMutation) EvaluatedValuesID() (id int, exists bool) {
+func (m *BuildGraphMetricsMutation) EvaluatedValuesID() (id int64, exists bool) {
 	if m.evaluated_values != nil {
 		return *m.evaluated_values, true
 	}
@@ -11455,7 +11515,7 @@ func (m *BuildGraphMetricsMutation) EvaluatedValuesID() (id int, exists bool) {
 // EvaluatedValuesIDs returns the "evaluated_values" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // EvaluatedValuesID instead. It exists only for internal usage by the builders.
-func (m *BuildGraphMetricsMutation) EvaluatedValuesIDs() (ids []int) {
+func (m *BuildGraphMetricsMutation) EvaluatedValuesIDs() (ids []int64) {
 	if id := m.evaluated_values; id != nil {
 		ids = append(ids, *id)
 	}
@@ -12072,7 +12132,7 @@ type BuildLogChunkMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	data                    *[]byte
 	chunk_index             *int
 	addchunk_index          *int
@@ -12081,7 +12141,7 @@ type BuildLogChunkMutation struct {
 	last_line_index         *int64
 	addlast_line_index      *int64
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	done                    bool
 	oldValue                func(context.Context) (*BuildLogChunk, error)
@@ -12108,7 +12168,7 @@ func newBuildLogChunkMutation(c config, op Op, opts ...buildlogchunkOption) *Bui
 }
 
 // withBuildLogChunkID sets the ID field of the mutation.
-func withBuildLogChunkID(id int) buildlogchunkOption {
+func withBuildLogChunkID(id int64) buildlogchunkOption {
 	return func(m *BuildLogChunkMutation) {
 		var (
 			err   error
@@ -12158,9 +12218,15 @@ func (m BuildLogChunkMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of BuildLogChunk entities.
+func (m *BuildLogChunkMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *BuildLogChunkMutation) ID() (id int, exists bool) {
+func (m *BuildLogChunkMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -12171,12 +12237,12 @@ func (m *BuildLogChunkMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *BuildLogChunkMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *BuildLogChunkMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -12391,7 +12457,7 @@ func (m *BuildLogChunkMutation) ResetLastLineIndex() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *BuildLogChunkMutation) SetBazelInvocationID(id int) {
+func (m *BuildLogChunkMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -12406,7 +12472,7 @@ func (m *BuildLogChunkMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *BuildLogChunkMutation) BazelInvocationID() (id int, exists bool) {
+func (m *BuildLogChunkMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -12416,7 +12482,7 @@ func (m *BuildLogChunkMutation) BazelInvocationID() (id int, exists bool) {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *BuildLogChunkMutation) BazelInvocationIDs() (ids []int) {
+func (m *BuildLogChunkMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -12729,10 +12795,10 @@ type ConnectionMetadataMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	connection_last_open_at *time.Time
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	done                    bool
 	oldValue                func(context.Context) (*ConnectionMetadata, error)
@@ -12759,7 +12825,7 @@ func newConnectionMetadataMutation(c config, op Op, opts ...connectionmetadataOp
 }
 
 // withConnectionMetadataID sets the ID field of the mutation.
-func withConnectionMetadataID(id int) connectionmetadataOption {
+func withConnectionMetadataID(id int64) connectionmetadataOption {
 	return func(m *ConnectionMetadataMutation) {
 		var (
 			err   error
@@ -12809,9 +12875,15 @@ func (m ConnectionMetadataMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ConnectionMetadata entities.
+func (m *ConnectionMetadataMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ConnectionMetadataMutation) ID() (id int, exists bool) {
+func (m *ConnectionMetadataMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -12822,12 +12894,12 @@ func (m *ConnectionMetadataMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ConnectionMetadataMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ConnectionMetadataMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -12874,7 +12946,7 @@ func (m *ConnectionMetadataMutation) ResetConnectionLastOpenAt() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *ConnectionMetadataMutation) SetBazelInvocationID(id int) {
+func (m *ConnectionMetadataMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -12889,7 +12961,7 @@ func (m *ConnectionMetadataMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *ConnectionMetadataMutation) BazelInvocationID() (id int, exists bool) {
+func (m *ConnectionMetadataMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -12899,7 +12971,7 @@ func (m *ConnectionMetadataMutation) BazelInvocationID() (id int, exists bool) {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *ConnectionMetadataMutation) BazelInvocationIDs() (ids []int) {
+func (m *ConnectionMetadataMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -13122,13 +13194,13 @@ type CumulativeMetricsMutation struct {
 	config
 	op              Op
 	typ             string
-	id              *int
+	id              *int64
 	num_analyses    *int32
 	addnum_analyses *int32
 	num_builds      *int32
 	addnum_builds   *int32
 	clearedFields   map[string]struct{}
-	metrics         *int
+	metrics         *int64
 	clearedmetrics  bool
 	done            bool
 	oldValue        func(context.Context) (*CumulativeMetrics, error)
@@ -13155,7 +13227,7 @@ func newCumulativeMetricsMutation(c config, op Op, opts ...cumulativemetricsOpti
 }
 
 // withCumulativeMetricsID sets the ID field of the mutation.
-func withCumulativeMetricsID(id int) cumulativemetricsOption {
+func withCumulativeMetricsID(id int64) cumulativemetricsOption {
 	return func(m *CumulativeMetricsMutation) {
 		var (
 			err   error
@@ -13205,9 +13277,15 @@ func (m CumulativeMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of CumulativeMetrics entities.
+func (m *CumulativeMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *CumulativeMetricsMutation) ID() (id int, exists bool) {
+func (m *CumulativeMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -13218,12 +13296,12 @@ func (m *CumulativeMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *CumulativeMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *CumulativeMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -13374,7 +13452,7 @@ func (m *CumulativeMetricsMutation) ResetNumBuilds() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *CumulativeMetricsMutation) SetMetricsID(id int) {
+func (m *CumulativeMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -13389,7 +13467,7 @@ func (m *CumulativeMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *CumulativeMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *CumulativeMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -13399,7 +13477,7 @@ func (m *CumulativeMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *CumulativeMetricsMutation) MetricsIDs() (ids []int) {
+func (m *CumulativeMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -13681,12 +13759,12 @@ type EvaluationStatMutation struct {
 	config
 	op                         Op
 	typ                        string
-	id                         *int
+	id                         *int64
 	skyfunction_name           *string
 	count                      *int64
 	addcount                   *int64
 	clearedFields              map[string]struct{}
-	build_graph_metrics        *int
+	build_graph_metrics        *int64
 	clearedbuild_graph_metrics bool
 	done                       bool
 	oldValue                   func(context.Context) (*EvaluationStat, error)
@@ -13713,7 +13791,7 @@ func newEvaluationStatMutation(c config, op Op, opts ...evaluationstatOption) *E
 }
 
 // withEvaluationStatID sets the ID field of the mutation.
-func withEvaluationStatID(id int) evaluationstatOption {
+func withEvaluationStatID(id int64) evaluationstatOption {
 	return func(m *EvaluationStatMutation) {
 		var (
 			err   error
@@ -13763,9 +13841,15 @@ func (m EvaluationStatMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of EvaluationStat entities.
+func (m *EvaluationStatMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *EvaluationStatMutation) ID() (id int, exists bool) {
+func (m *EvaluationStatMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -13776,12 +13860,12 @@ func (m *EvaluationStatMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *EvaluationStatMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *EvaluationStatMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -13911,7 +13995,7 @@ func (m *EvaluationStatMutation) ResetCount() {
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by id.
-func (m *EvaluationStatMutation) SetBuildGraphMetricsID(id int) {
+func (m *EvaluationStatMutation) SetBuildGraphMetricsID(id int64) {
 	m.build_graph_metrics = &id
 }
 
@@ -13926,7 +14010,7 @@ func (m *EvaluationStatMutation) BuildGraphMetricsCleared() bool {
 }
 
 // BuildGraphMetricsID returns the "build_graph_metrics" edge ID in the mutation.
-func (m *EvaluationStatMutation) BuildGraphMetricsID() (id int, exists bool) {
+func (m *EvaluationStatMutation) BuildGraphMetricsID() (id int64, exists bool) {
 	if m.build_graph_metrics != nil {
 		return *m.build_graph_metrics, true
 	}
@@ -13936,7 +14020,7 @@ func (m *EvaluationStatMutation) BuildGraphMetricsID() (id int, exists bool) {
 // BuildGraphMetricsIDs returns the "build_graph_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BuildGraphMetricsID instead. It exists only for internal usage by the builders.
-func (m *EvaluationStatMutation) BuildGraphMetricsIDs() (ids []int) {
+func (m *EvaluationStatMutation) BuildGraphMetricsIDs() (ids []int64) {
 	if id := m.build_graph_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -14206,13 +14290,13 @@ type EventMetadataMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	handled                 *[]byte
 	event_received_at       *time.Time
 	version                 *int64
 	addversion              *int64
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	done                    bool
 	oldValue                func(context.Context) (*EventMetadata, error)
@@ -14239,7 +14323,7 @@ func newEventMetadataMutation(c config, op Op, opts ...eventmetadataOption) *Eve
 }
 
 // withEventMetadataID sets the ID field of the mutation.
-func withEventMetadataID(id int) eventmetadataOption {
+func withEventMetadataID(id int64) eventmetadataOption {
 	return func(m *EventMetadataMutation) {
 		var (
 			err   error
@@ -14289,9 +14373,15 @@ func (m EventMetadataMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of EventMetadata entities.
+func (m *EventMetadataMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *EventMetadataMutation) ID() (id int, exists bool) {
+func (m *EventMetadataMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -14302,12 +14392,12 @@ func (m *EventMetadataMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *EventMetadataMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *EventMetadataMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -14446,12 +14536,12 @@ func (m *EventMetadataMutation) ResetVersion() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (m *EventMetadataMutation) SetBazelInvocationID(i int) {
+func (m *EventMetadataMutation) SetBazelInvocationID(i int64) {
 	m.bazel_invocation = &i
 }
 
 // BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
-func (m *EventMetadataMutation) BazelInvocationID() (r int, exists bool) {
+func (m *EventMetadataMutation) BazelInvocationID() (r int64, exists bool) {
 	v := m.bazel_invocation
 	if v == nil {
 		return
@@ -14462,7 +14552,7 @@ func (m *EventMetadataMutation) BazelInvocationID() (r int, exists bool) {
 // OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the EventMetadata entity.
 // If the EventMetadata object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventMetadataMutation) OldBazelInvocationID(ctx context.Context) (v int, err error) {
+func (m *EventMetadataMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
 	}
@@ -14495,7 +14585,7 @@ func (m *EventMetadataMutation) BazelInvocationCleared() bool {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *EventMetadataMutation) BazelInvocationIDs() (ids []int) {
+func (m *EventMetadataMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -14619,7 +14709,7 @@ func (m *EventMetadataMutation) SetField(name string, value ent.Value) error {
 		m.SetVersion(v)
 		return nil
 	case eventmetadata.FieldBazelInvocationID:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -14784,7 +14874,7 @@ type ExectionInfoMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	timeout_seconds         *int32
 	addtimeout_seconds      *int32
 	strategy                *string
@@ -14793,12 +14883,12 @@ type ExectionInfoMutation struct {
 	addexit_code            *int32
 	hostname                *string
 	clearedFields           map[string]struct{}
-	test_result             *int
+	test_result             *int64
 	clearedtest_result      bool
-	timing_breakdown        *int
+	timing_breakdown        *int64
 	clearedtiming_breakdown bool
-	resource_usage          map[int]struct{}
-	removedresource_usage   map[int]struct{}
+	resource_usage          map[int64]struct{}
+	removedresource_usage   map[int64]struct{}
 	clearedresource_usage   bool
 	done                    bool
 	oldValue                func(context.Context) (*ExectionInfo, error)
@@ -14825,7 +14915,7 @@ func newExectionInfoMutation(c config, op Op, opts ...exectioninfoOption) *Exect
 }
 
 // withExectionInfoID sets the ID field of the mutation.
-func withExectionInfoID(id int) exectioninfoOption {
+func withExectionInfoID(id int64) exectioninfoOption {
 	return func(m *ExectionInfoMutation) {
 		var (
 			err   error
@@ -14875,9 +14965,15 @@ func (m ExectionInfoMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ExectionInfo entities.
+func (m *ExectionInfoMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ExectionInfoMutation) ID() (id int, exists bool) {
+func (m *ExectionInfoMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -14888,12 +14984,12 @@ func (m *ExectionInfoMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ExectionInfoMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ExectionInfoMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -15191,7 +15287,7 @@ func (m *ExectionInfoMutation) ResetHostname() {
 }
 
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by id.
-func (m *ExectionInfoMutation) SetTestResultID(id int) {
+func (m *ExectionInfoMutation) SetTestResultID(id int64) {
 	m.test_result = &id
 }
 
@@ -15206,7 +15302,7 @@ func (m *ExectionInfoMutation) TestResultCleared() bool {
 }
 
 // TestResultID returns the "test_result" edge ID in the mutation.
-func (m *ExectionInfoMutation) TestResultID() (id int, exists bool) {
+func (m *ExectionInfoMutation) TestResultID() (id int64, exists bool) {
 	if m.test_result != nil {
 		return *m.test_result, true
 	}
@@ -15216,7 +15312,7 @@ func (m *ExectionInfoMutation) TestResultID() (id int, exists bool) {
 // TestResultIDs returns the "test_result" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TestResultID instead. It exists only for internal usage by the builders.
-func (m *ExectionInfoMutation) TestResultIDs() (ids []int) {
+func (m *ExectionInfoMutation) TestResultIDs() (ids []int64) {
 	if id := m.test_result; id != nil {
 		ids = append(ids, *id)
 	}
@@ -15230,7 +15326,7 @@ func (m *ExectionInfoMutation) ResetTestResult() {
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by id.
-func (m *ExectionInfoMutation) SetTimingBreakdownID(id int) {
+func (m *ExectionInfoMutation) SetTimingBreakdownID(id int64) {
 	m.timing_breakdown = &id
 }
 
@@ -15245,7 +15341,7 @@ func (m *ExectionInfoMutation) TimingBreakdownCleared() bool {
 }
 
 // TimingBreakdownID returns the "timing_breakdown" edge ID in the mutation.
-func (m *ExectionInfoMutation) TimingBreakdownID() (id int, exists bool) {
+func (m *ExectionInfoMutation) TimingBreakdownID() (id int64, exists bool) {
 	if m.timing_breakdown != nil {
 		return *m.timing_breakdown, true
 	}
@@ -15255,7 +15351,7 @@ func (m *ExectionInfoMutation) TimingBreakdownID() (id int, exists bool) {
 // TimingBreakdownIDs returns the "timing_breakdown" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TimingBreakdownID instead. It exists only for internal usage by the builders.
-func (m *ExectionInfoMutation) TimingBreakdownIDs() (ids []int) {
+func (m *ExectionInfoMutation) TimingBreakdownIDs() (ids []int64) {
 	if id := m.timing_breakdown; id != nil {
 		ids = append(ids, *id)
 	}
@@ -15269,9 +15365,9 @@ func (m *ExectionInfoMutation) ResetTimingBreakdown() {
 }
 
 // AddResourceUsageIDs adds the "resource_usage" edge to the ResourceUsage entity by ids.
-func (m *ExectionInfoMutation) AddResourceUsageIDs(ids ...int) {
+func (m *ExectionInfoMutation) AddResourceUsageIDs(ids ...int64) {
 	if m.resource_usage == nil {
-		m.resource_usage = make(map[int]struct{})
+		m.resource_usage = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.resource_usage[ids[i]] = struct{}{}
@@ -15289,9 +15385,9 @@ func (m *ExectionInfoMutation) ResourceUsageCleared() bool {
 }
 
 // RemoveResourceUsageIDs removes the "resource_usage" edge to the ResourceUsage entity by IDs.
-func (m *ExectionInfoMutation) RemoveResourceUsageIDs(ids ...int) {
+func (m *ExectionInfoMutation) RemoveResourceUsageIDs(ids ...int64) {
 	if m.removedresource_usage == nil {
-		m.removedresource_usage = make(map[int]struct{})
+		m.removedresource_usage = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.resource_usage, ids[i])
@@ -15300,7 +15396,7 @@ func (m *ExectionInfoMutation) RemoveResourceUsageIDs(ids ...int) {
 }
 
 // RemovedResourceUsage returns the removed IDs of the "resource_usage" edge to the ResourceUsage entity.
-func (m *ExectionInfoMutation) RemovedResourceUsageIDs() (ids []int) {
+func (m *ExectionInfoMutation) RemovedResourceUsageIDs() (ids []int64) {
 	for id := range m.removedresource_usage {
 		ids = append(ids, id)
 	}
@@ -15308,7 +15404,7 @@ func (m *ExectionInfoMutation) RemovedResourceUsageIDs() (ids []int) {
 }
 
 // ResourceUsageIDs returns the "resource_usage" edge IDs in the mutation.
-func (m *ExectionInfoMutation) ResourceUsageIDs() (ids []int) {
+func (m *ExectionInfoMutation) ResourceUsageIDs() (ids []int64) {
 	for id := range m.resource_usage {
 		ids = append(ids, id)
 	}
@@ -15706,12 +15802,12 @@ type GarbageMetricsMutation struct {
 	config
 	op                    Op
 	typ                   string
-	id                    *int
+	id                    *int64
 	_type                 *string
 	garbage_collected     *int64
 	addgarbage_collected  *int64
 	clearedFields         map[string]struct{}
-	memory_metrics        *int
+	memory_metrics        *int64
 	clearedmemory_metrics bool
 	done                  bool
 	oldValue              func(context.Context) (*GarbageMetrics, error)
@@ -15738,7 +15834,7 @@ func newGarbageMetricsMutation(c config, op Op, opts ...garbagemetricsOption) *G
 }
 
 // withGarbageMetricsID sets the ID field of the mutation.
-func withGarbageMetricsID(id int) garbagemetricsOption {
+func withGarbageMetricsID(id int64) garbagemetricsOption {
 	return func(m *GarbageMetricsMutation) {
 		var (
 			err   error
@@ -15788,9 +15884,15 @@ func (m GarbageMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of GarbageMetrics entities.
+func (m *GarbageMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *GarbageMetricsMutation) ID() (id int, exists bool) {
+func (m *GarbageMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -15801,12 +15903,12 @@ func (m *GarbageMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *GarbageMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *GarbageMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -15936,7 +16038,7 @@ func (m *GarbageMetricsMutation) ResetGarbageCollected() {
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by id.
-func (m *GarbageMetricsMutation) SetMemoryMetricsID(id int) {
+func (m *GarbageMetricsMutation) SetMemoryMetricsID(id int64) {
 	m.memory_metrics = &id
 }
 
@@ -15951,7 +16053,7 @@ func (m *GarbageMetricsMutation) MemoryMetricsCleared() bool {
 }
 
 // MemoryMetricsID returns the "memory_metrics" edge ID in the mutation.
-func (m *GarbageMetricsMutation) MemoryMetricsID() (id int, exists bool) {
+func (m *GarbageMetricsMutation) MemoryMetricsID() (id int64, exists bool) {
 	if m.memory_metrics != nil {
 		return *m.memory_metrics, true
 	}
@@ -15961,7 +16063,7 @@ func (m *GarbageMetricsMutation) MemoryMetricsID() (id int, exists bool) {
 // MemoryMetricsIDs returns the "memory_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MemoryMetricsID instead. It exists only for internal usage by the builders.
-func (m *GarbageMetricsMutation) MemoryMetricsIDs() (ids []int) {
+func (m *GarbageMetricsMutation) MemoryMetricsIDs() (ids []int64) {
 	if id := m.memory_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -16231,12 +16333,12 @@ type IncompleteBuildLogMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	snippet_id              *int32
 	addsnippet_id           *int32
 	log_snippet             *[]byte
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	done                    bool
 	oldValue                func(context.Context) (*IncompleteBuildLog, error)
@@ -16263,7 +16365,7 @@ func newIncompleteBuildLogMutation(c config, op Op, opts ...incompletebuildlogOp
 }
 
 // withIncompleteBuildLogID sets the ID field of the mutation.
-func withIncompleteBuildLogID(id int) incompletebuildlogOption {
+func withIncompleteBuildLogID(id int64) incompletebuildlogOption {
 	return func(m *IncompleteBuildLogMutation) {
 		var (
 			err   error
@@ -16313,9 +16415,15 @@ func (m IncompleteBuildLogMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of IncompleteBuildLog entities.
+func (m *IncompleteBuildLogMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *IncompleteBuildLogMutation) ID() (id int, exists bool) {
+func (m *IncompleteBuildLogMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -16326,12 +16434,12 @@ func (m *IncompleteBuildLogMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *IncompleteBuildLogMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *IncompleteBuildLogMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -16434,12 +16542,12 @@ func (m *IncompleteBuildLogMutation) ResetLogSnippet() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (m *IncompleteBuildLogMutation) SetBazelInvocationID(i int) {
+func (m *IncompleteBuildLogMutation) SetBazelInvocationID(i int64) {
 	m.bazel_invocation = &i
 }
 
 // BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
-func (m *IncompleteBuildLogMutation) BazelInvocationID() (r int, exists bool) {
+func (m *IncompleteBuildLogMutation) BazelInvocationID() (r int64, exists bool) {
 	v := m.bazel_invocation
 	if v == nil {
 		return
@@ -16450,7 +16558,7 @@ func (m *IncompleteBuildLogMutation) BazelInvocationID() (r int, exists bool) {
 // OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the IncompleteBuildLog entity.
 // If the IncompleteBuildLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IncompleteBuildLogMutation) OldBazelInvocationID(ctx context.Context) (v int, err error) {
+func (m *IncompleteBuildLogMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
 	}
@@ -16483,7 +16591,7 @@ func (m *IncompleteBuildLogMutation) BazelInvocationCleared() bool {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *IncompleteBuildLogMutation) BazelInvocationIDs() (ids []int) {
+func (m *IncompleteBuildLogMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -16593,7 +16701,7 @@ func (m *IncompleteBuildLogMutation) SetField(name string, value ent.Value) erro
 		m.SetLogSnippet(v)
 		return nil
 	case incompletebuildlog.FieldBazelInvocationID:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -16755,20 +16863,20 @@ type InstanceNameMutation struct {
 	config
 	op                       Op
 	typ                      string
-	id                       *int
+	id                       *int64
 	name                     *string
 	clearedFields            map[string]struct{}
-	bazel_invocations        map[int]struct{}
-	removedbazel_invocations map[int]struct{}
+	bazel_invocations        map[int64]struct{}
+	removedbazel_invocations map[int64]struct{}
 	clearedbazel_invocations bool
-	builds                   map[int]struct{}
-	removedbuilds            map[int]struct{}
+	builds                   map[int64]struct{}
+	removedbuilds            map[int64]struct{}
 	clearedbuilds            bool
-	blobs                    map[int]struct{}
-	removedblobs             map[int]struct{}
+	blobs                    map[int64]struct{}
+	removedblobs             map[int64]struct{}
 	clearedblobs             bool
-	targets                  map[int]struct{}
-	removedtargets           map[int]struct{}
+	targets                  map[int64]struct{}
+	removedtargets           map[int64]struct{}
 	clearedtargets           bool
 	done                     bool
 	oldValue                 func(context.Context) (*InstanceName, error)
@@ -16795,7 +16903,7 @@ func newInstanceNameMutation(c config, op Op, opts ...instancenameOption) *Insta
 }
 
 // withInstanceNameID sets the ID field of the mutation.
-func withInstanceNameID(id int) instancenameOption {
+func withInstanceNameID(id int64) instancenameOption {
 	return func(m *InstanceNameMutation) {
 		var (
 			err   error
@@ -16845,9 +16953,15 @@ func (m InstanceNameMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of InstanceName entities.
+func (m *InstanceNameMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *InstanceNameMutation) ID() (id int, exists bool) {
+func (m *InstanceNameMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -16858,12 +16972,12 @@ func (m *InstanceNameMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *InstanceNameMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *InstanceNameMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -16910,9 +17024,9 @@ func (m *InstanceNameMutation) ResetName() {
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by ids.
-func (m *InstanceNameMutation) AddBazelInvocationIDs(ids ...int) {
+func (m *InstanceNameMutation) AddBazelInvocationIDs(ids ...int64) {
 	if m.bazel_invocations == nil {
-		m.bazel_invocations = make(map[int]struct{})
+		m.bazel_invocations = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.bazel_invocations[ids[i]] = struct{}{}
@@ -16930,9 +17044,9 @@ func (m *InstanceNameMutation) BazelInvocationsCleared() bool {
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (m *InstanceNameMutation) RemoveBazelInvocationIDs(ids ...int) {
+func (m *InstanceNameMutation) RemoveBazelInvocationIDs(ids ...int64) {
 	if m.removedbazel_invocations == nil {
-		m.removedbazel_invocations = make(map[int]struct{})
+		m.removedbazel_invocations = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.bazel_invocations, ids[i])
@@ -16941,7 +17055,7 @@ func (m *InstanceNameMutation) RemoveBazelInvocationIDs(ids ...int) {
 }
 
 // RemovedBazelInvocations returns the removed IDs of the "bazel_invocations" edge to the BazelInvocation entity.
-func (m *InstanceNameMutation) RemovedBazelInvocationsIDs() (ids []int) {
+func (m *InstanceNameMutation) RemovedBazelInvocationsIDs() (ids []int64) {
 	for id := range m.removedbazel_invocations {
 		ids = append(ids, id)
 	}
@@ -16949,7 +17063,7 @@ func (m *InstanceNameMutation) RemovedBazelInvocationsIDs() (ids []int) {
 }
 
 // BazelInvocationsIDs returns the "bazel_invocations" edge IDs in the mutation.
-func (m *InstanceNameMutation) BazelInvocationsIDs() (ids []int) {
+func (m *InstanceNameMutation) BazelInvocationsIDs() (ids []int64) {
 	for id := range m.bazel_invocations {
 		ids = append(ids, id)
 	}
@@ -16964,9 +17078,9 @@ func (m *InstanceNameMutation) ResetBazelInvocations() {
 }
 
 // AddBuildIDs adds the "builds" edge to the Build entity by ids.
-func (m *InstanceNameMutation) AddBuildIDs(ids ...int) {
+func (m *InstanceNameMutation) AddBuildIDs(ids ...int64) {
 	if m.builds == nil {
-		m.builds = make(map[int]struct{})
+		m.builds = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.builds[ids[i]] = struct{}{}
@@ -16984,9 +17098,9 @@ func (m *InstanceNameMutation) BuildsCleared() bool {
 }
 
 // RemoveBuildIDs removes the "builds" edge to the Build entity by IDs.
-func (m *InstanceNameMutation) RemoveBuildIDs(ids ...int) {
+func (m *InstanceNameMutation) RemoveBuildIDs(ids ...int64) {
 	if m.removedbuilds == nil {
-		m.removedbuilds = make(map[int]struct{})
+		m.removedbuilds = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.builds, ids[i])
@@ -16995,7 +17109,7 @@ func (m *InstanceNameMutation) RemoveBuildIDs(ids ...int) {
 }
 
 // RemovedBuilds returns the removed IDs of the "builds" edge to the Build entity.
-func (m *InstanceNameMutation) RemovedBuildsIDs() (ids []int) {
+func (m *InstanceNameMutation) RemovedBuildsIDs() (ids []int64) {
 	for id := range m.removedbuilds {
 		ids = append(ids, id)
 	}
@@ -17003,7 +17117,7 @@ func (m *InstanceNameMutation) RemovedBuildsIDs() (ids []int) {
 }
 
 // BuildsIDs returns the "builds" edge IDs in the mutation.
-func (m *InstanceNameMutation) BuildsIDs() (ids []int) {
+func (m *InstanceNameMutation) BuildsIDs() (ids []int64) {
 	for id := range m.builds {
 		ids = append(ids, id)
 	}
@@ -17018,9 +17132,9 @@ func (m *InstanceNameMutation) ResetBuilds() {
 }
 
 // AddBlobIDs adds the "blobs" edge to the Blob entity by ids.
-func (m *InstanceNameMutation) AddBlobIDs(ids ...int) {
+func (m *InstanceNameMutation) AddBlobIDs(ids ...int64) {
 	if m.blobs == nil {
-		m.blobs = make(map[int]struct{})
+		m.blobs = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.blobs[ids[i]] = struct{}{}
@@ -17038,9 +17152,9 @@ func (m *InstanceNameMutation) BlobsCleared() bool {
 }
 
 // RemoveBlobIDs removes the "blobs" edge to the Blob entity by IDs.
-func (m *InstanceNameMutation) RemoveBlobIDs(ids ...int) {
+func (m *InstanceNameMutation) RemoveBlobIDs(ids ...int64) {
 	if m.removedblobs == nil {
-		m.removedblobs = make(map[int]struct{})
+		m.removedblobs = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.blobs, ids[i])
@@ -17049,7 +17163,7 @@ func (m *InstanceNameMutation) RemoveBlobIDs(ids ...int) {
 }
 
 // RemovedBlobs returns the removed IDs of the "blobs" edge to the Blob entity.
-func (m *InstanceNameMutation) RemovedBlobsIDs() (ids []int) {
+func (m *InstanceNameMutation) RemovedBlobsIDs() (ids []int64) {
 	for id := range m.removedblobs {
 		ids = append(ids, id)
 	}
@@ -17057,7 +17171,7 @@ func (m *InstanceNameMutation) RemovedBlobsIDs() (ids []int) {
 }
 
 // BlobsIDs returns the "blobs" edge IDs in the mutation.
-func (m *InstanceNameMutation) BlobsIDs() (ids []int) {
+func (m *InstanceNameMutation) BlobsIDs() (ids []int64) {
 	for id := range m.blobs {
 		ids = append(ids, id)
 	}
@@ -17072,9 +17186,9 @@ func (m *InstanceNameMutation) ResetBlobs() {
 }
 
 // AddTargetIDs adds the "targets" edge to the Target entity by ids.
-func (m *InstanceNameMutation) AddTargetIDs(ids ...int) {
+func (m *InstanceNameMutation) AddTargetIDs(ids ...int64) {
 	if m.targets == nil {
-		m.targets = make(map[int]struct{})
+		m.targets = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.targets[ids[i]] = struct{}{}
@@ -17092,9 +17206,9 @@ func (m *InstanceNameMutation) TargetsCleared() bool {
 }
 
 // RemoveTargetIDs removes the "targets" edge to the Target entity by IDs.
-func (m *InstanceNameMutation) RemoveTargetIDs(ids ...int) {
+func (m *InstanceNameMutation) RemoveTargetIDs(ids ...int64) {
 	if m.removedtargets == nil {
-		m.removedtargets = make(map[int]struct{})
+		m.removedtargets = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.targets, ids[i])
@@ -17103,7 +17217,7 @@ func (m *InstanceNameMutation) RemoveTargetIDs(ids ...int) {
 }
 
 // RemovedTargets returns the removed IDs of the "targets" edge to the Target entity.
-func (m *InstanceNameMutation) RemovedTargetsIDs() (ids []int) {
+func (m *InstanceNameMutation) RemovedTargetsIDs() (ids []int64) {
 	for id := range m.removedtargets {
 		ids = append(ids, id)
 	}
@@ -17111,7 +17225,7 @@ func (m *InstanceNameMutation) RemovedTargetsIDs() (ids []int) {
 }
 
 // TargetsIDs returns the "targets" edge IDs in the mutation.
-func (m *InstanceNameMutation) TargetsIDs() (ids []int) {
+func (m *InstanceNameMutation) TargetsIDs() (ids []int64) {
 	for id := range m.targets {
 		ids = append(ids, id)
 	}
@@ -17423,7 +17537,7 @@ type InvocationFilesMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	name                    *string
 	content                 *string
 	digest                  *string
@@ -17431,7 +17545,7 @@ type InvocationFilesMutation struct {
 	addsize_bytes           *int64
 	digest_function         *string
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	done                    bool
 	oldValue                func(context.Context) (*InvocationFiles, error)
@@ -17458,7 +17572,7 @@ func newInvocationFilesMutation(c config, op Op, opts ...invocationfilesOption) 
 }
 
 // withInvocationFilesID sets the ID field of the mutation.
-func withInvocationFilesID(id int) invocationfilesOption {
+func withInvocationFilesID(id int64) invocationfilesOption {
 	return func(m *InvocationFilesMutation) {
 		var (
 			err   error
@@ -17508,9 +17622,15 @@ func (m InvocationFilesMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of InvocationFiles entities.
+func (m *InvocationFilesMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *InvocationFilesMutation) ID() (id int, exists bool) {
+func (m *InvocationFilesMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -17521,12 +17641,12 @@ func (m *InvocationFilesMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *InvocationFilesMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *InvocationFilesMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -17790,7 +17910,7 @@ func (m *InvocationFilesMutation) ResetDigestFunction() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *InvocationFilesMutation) SetBazelInvocationID(id int) {
+func (m *InvocationFilesMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -17805,7 +17925,7 @@ func (m *InvocationFilesMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *InvocationFilesMutation) BazelInvocationID() (id int, exists bool) {
+func (m *InvocationFilesMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -17815,7 +17935,7 @@ func (m *InvocationFilesMutation) BazelInvocationID() (id int, exists bool) {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *InvocationFilesMutation) BazelInvocationIDs() (ids []int) {
+func (m *InvocationFilesMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -18148,7 +18268,7 @@ type InvocationTargetMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	success                 *bool
 	tags                    *[]string
 	appendtags              []string
@@ -18161,9 +18281,9 @@ type InvocationTargetMutation struct {
 	failure_message         *string
 	abort_reason            *invocationtarget.AbortReason
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
-	target                  *int
+	target                  *int64
 	clearedtarget           bool
 	done                    bool
 	oldValue                func(context.Context) (*InvocationTarget, error)
@@ -18190,7 +18310,7 @@ func newInvocationTargetMutation(c config, op Op, opts ...invocationtargetOption
 }
 
 // withInvocationTargetID sets the ID field of the mutation.
-func withInvocationTargetID(id int) invocationtargetOption {
+func withInvocationTargetID(id int64) invocationtargetOption {
 	return func(m *InvocationTargetMutation) {
 		var (
 			err   error
@@ -18240,9 +18360,15 @@ func (m InvocationTargetMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of InvocationTarget entities.
+func (m *InvocationTargetMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *InvocationTargetMutation) ID() (id int, exists bool) {
+func (m *InvocationTargetMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -18253,12 +18379,12 @@ func (m *InvocationTargetMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *InvocationTargetMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *InvocationTargetMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -18665,7 +18791,7 @@ func (m *InvocationTargetMutation) ResetAbortReason() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *InvocationTargetMutation) SetBazelInvocationID(id int) {
+func (m *InvocationTargetMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -18680,7 +18806,7 @@ func (m *InvocationTargetMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *InvocationTargetMutation) BazelInvocationID() (id int, exists bool) {
+func (m *InvocationTargetMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -18690,7 +18816,7 @@ func (m *InvocationTargetMutation) BazelInvocationID() (id int, exists bool) {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *InvocationTargetMutation) BazelInvocationIDs() (ids []int) {
+func (m *InvocationTargetMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -18704,7 +18830,7 @@ func (m *InvocationTargetMutation) ResetBazelInvocation() {
 }
 
 // SetTargetID sets the "target" edge to the Target entity by id.
-func (m *InvocationTargetMutation) SetTargetID(id int) {
+func (m *InvocationTargetMutation) SetTargetID(id int64) {
 	m.target = &id
 }
 
@@ -18719,7 +18845,7 @@ func (m *InvocationTargetMutation) TargetCleared() bool {
 }
 
 // TargetID returns the "target" edge ID in the mutation.
-func (m *InvocationTargetMutation) TargetID() (id int, exists bool) {
+func (m *InvocationTargetMutation) TargetID() (id int64, exists bool) {
 	if m.target != nil {
 		return *m.target, true
 	}
@@ -18729,7 +18855,7 @@ func (m *InvocationTargetMutation) TargetID() (id int, exists bool) {
 // TargetIDs returns the "target" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TargetID instead. It exists only for internal usage by the builders.
-func (m *InvocationTargetMutation) TargetIDs() (ids []int) {
+func (m *InvocationTargetMutation) TargetIDs() (ids []int64) {
 	if id := m.target; id != nil {
 		ids = append(ids, *id)
 	}
@@ -19144,7 +19270,7 @@ type MemoryMetricsMutation struct {
 	config
 	op                                      Op
 	typ                                     string
-	id                                      *int
+	id                                      *int64
 	peak_post_gc_heap_size                  *int64
 	addpeak_post_gc_heap_size               *int64
 	used_heap_size_post_build               *int64
@@ -19152,10 +19278,10 @@ type MemoryMetricsMutation struct {
 	peak_post_gc_tenured_space_heap_size    *int64
 	addpeak_post_gc_tenured_space_heap_size *int64
 	clearedFields                           map[string]struct{}
-	metrics                                 *int
+	metrics                                 *int64
 	clearedmetrics                          bool
-	garbage_metrics                         map[int]struct{}
-	removedgarbage_metrics                  map[int]struct{}
+	garbage_metrics                         map[int64]struct{}
+	removedgarbage_metrics                  map[int64]struct{}
 	clearedgarbage_metrics                  bool
 	done                                    bool
 	oldValue                                func(context.Context) (*MemoryMetrics, error)
@@ -19182,7 +19308,7 @@ func newMemoryMetricsMutation(c config, op Op, opts ...memorymetricsOption) *Mem
 }
 
 // withMemoryMetricsID sets the ID field of the mutation.
-func withMemoryMetricsID(id int) memorymetricsOption {
+func withMemoryMetricsID(id int64) memorymetricsOption {
 	return func(m *MemoryMetricsMutation) {
 		var (
 			err   error
@@ -19232,9 +19358,15 @@ func (m MemoryMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of MemoryMetrics entities.
+func (m *MemoryMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *MemoryMetricsMutation) ID() (id int, exists bool) {
+func (m *MemoryMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -19245,12 +19377,12 @@ func (m *MemoryMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *MemoryMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *MemoryMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -19471,7 +19603,7 @@ func (m *MemoryMetricsMutation) ResetPeakPostGcTenuredSpaceHeapSize() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *MemoryMetricsMutation) SetMetricsID(id int) {
+func (m *MemoryMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -19486,7 +19618,7 @@ func (m *MemoryMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *MemoryMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *MemoryMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -19496,7 +19628,7 @@ func (m *MemoryMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *MemoryMetricsMutation) MetricsIDs() (ids []int) {
+func (m *MemoryMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -19510,9 +19642,9 @@ func (m *MemoryMetricsMutation) ResetMetrics() {
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by ids.
-func (m *MemoryMetricsMutation) AddGarbageMetricIDs(ids ...int) {
+func (m *MemoryMetricsMutation) AddGarbageMetricIDs(ids ...int64) {
 	if m.garbage_metrics == nil {
-		m.garbage_metrics = make(map[int]struct{})
+		m.garbage_metrics = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.garbage_metrics[ids[i]] = struct{}{}
@@ -19530,9 +19662,9 @@ func (m *MemoryMetricsMutation) GarbageMetricsCleared() bool {
 }
 
 // RemoveGarbageMetricIDs removes the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
-func (m *MemoryMetricsMutation) RemoveGarbageMetricIDs(ids ...int) {
+func (m *MemoryMetricsMutation) RemoveGarbageMetricIDs(ids ...int64) {
 	if m.removedgarbage_metrics == nil {
-		m.removedgarbage_metrics = make(map[int]struct{})
+		m.removedgarbage_metrics = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.garbage_metrics, ids[i])
@@ -19541,7 +19673,7 @@ func (m *MemoryMetricsMutation) RemoveGarbageMetricIDs(ids ...int) {
 }
 
 // RemovedGarbageMetrics returns the removed IDs of the "garbage_metrics" edge to the GarbageMetrics entity.
-func (m *MemoryMetricsMutation) RemovedGarbageMetricsIDs() (ids []int) {
+func (m *MemoryMetricsMutation) RemovedGarbageMetricsIDs() (ids []int64) {
 	for id := range m.removedgarbage_metrics {
 		ids = append(ids, id)
 	}
@@ -19549,7 +19681,7 @@ func (m *MemoryMetricsMutation) RemovedGarbageMetricsIDs() (ids []int) {
 }
 
 // GarbageMetricsIDs returns the "garbage_metrics" edge IDs in the mutation.
-func (m *MemoryMetricsMutation) GarbageMetricsIDs() (ids []int) {
+func (m *MemoryMetricsMutation) GarbageMetricsIDs() (ids []int64) {
 	for id := range m.garbage_metrics {
 		ids = append(ids, id)
 	}
@@ -19895,27 +20027,27 @@ type MetricsMutation struct {
 	config
 	op                         Op
 	typ                        string
-	id                         *int
+	id                         *int64
 	clearedFields              map[string]struct{}
-	bazel_invocation           *int
+	bazel_invocation           *int64
 	clearedbazel_invocation    bool
-	action_summary             *int
+	action_summary             *int64
 	clearedaction_summary      bool
-	memory_metrics             *int
+	memory_metrics             *int64
 	clearedmemory_metrics      bool
-	target_metrics             *int
+	target_metrics             *int64
 	clearedtarget_metrics      bool
-	package_metrics            *int
+	package_metrics            *int64
 	clearedpackage_metrics     bool
-	timing_metrics             *int
+	timing_metrics             *int64
 	clearedtiming_metrics      bool
-	cumulative_metrics         *int
+	cumulative_metrics         *int64
 	clearedcumulative_metrics  bool
-	artifact_metrics           *int
+	artifact_metrics           *int64
 	clearedartifact_metrics    bool
-	network_metrics            *int
+	network_metrics            *int64
 	clearednetwork_metrics     bool
-	build_graph_metrics        *int
+	build_graph_metrics        *int64
 	clearedbuild_graph_metrics bool
 	done                       bool
 	oldValue                   func(context.Context) (*Metrics, error)
@@ -19942,7 +20074,7 @@ func newMetricsMutation(c config, op Op, opts ...metricsOption) *MetricsMutation
 }
 
 // withMetricsID sets the ID field of the mutation.
-func withMetricsID(id int) metricsOption {
+func withMetricsID(id int64) metricsOption {
 	return func(m *MetricsMutation) {
 		var (
 			err   error
@@ -19992,9 +20124,15 @@ func (m MetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Metrics entities.
+func (m *MetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *MetricsMutation) ID() (id int, exists bool) {
+func (m *MetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -20005,12 +20143,12 @@ func (m *MetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *MetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *MetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -20021,7 +20159,7 @@ func (m *MetricsMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *MetricsMutation) SetBazelInvocationID(id int) {
+func (m *MetricsMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -20036,7 +20174,7 @@ func (m *MetricsMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *MetricsMutation) BazelInvocationID() (id int, exists bool) {
+func (m *MetricsMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -20046,7 +20184,7 @@ func (m *MetricsMutation) BazelInvocationID() (id int, exists bool) {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) BazelInvocationIDs() (ids []int) {
+func (m *MetricsMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20060,7 +20198,7 @@ func (m *MetricsMutation) ResetBazelInvocation() {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
-func (m *MetricsMutation) SetActionSummaryID(id int) {
+func (m *MetricsMutation) SetActionSummaryID(id int64) {
 	m.action_summary = &id
 }
 
@@ -20075,7 +20213,7 @@ func (m *MetricsMutation) ActionSummaryCleared() bool {
 }
 
 // ActionSummaryID returns the "action_summary" edge ID in the mutation.
-func (m *MetricsMutation) ActionSummaryID() (id int, exists bool) {
+func (m *MetricsMutation) ActionSummaryID() (id int64, exists bool) {
 	if m.action_summary != nil {
 		return *m.action_summary, true
 	}
@@ -20085,7 +20223,7 @@ func (m *MetricsMutation) ActionSummaryID() (id int, exists bool) {
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ActionSummaryID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) ActionSummaryIDs() (ids []int) {
+func (m *MetricsMutation) ActionSummaryIDs() (ids []int64) {
 	if id := m.action_summary; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20099,7 +20237,7 @@ func (m *MetricsMutation) ResetActionSummary() {
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by id.
-func (m *MetricsMutation) SetMemoryMetricsID(id int) {
+func (m *MetricsMutation) SetMemoryMetricsID(id int64) {
 	m.memory_metrics = &id
 }
 
@@ -20114,7 +20252,7 @@ func (m *MetricsMutation) MemoryMetricsCleared() bool {
 }
 
 // MemoryMetricsID returns the "memory_metrics" edge ID in the mutation.
-func (m *MetricsMutation) MemoryMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) MemoryMetricsID() (id int64, exists bool) {
 	if m.memory_metrics != nil {
 		return *m.memory_metrics, true
 	}
@@ -20124,7 +20262,7 @@ func (m *MetricsMutation) MemoryMetricsID() (id int, exists bool) {
 // MemoryMetricsIDs returns the "memory_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MemoryMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) MemoryMetricsIDs() (ids []int) {
+func (m *MetricsMutation) MemoryMetricsIDs() (ids []int64) {
 	if id := m.memory_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20138,7 +20276,7 @@ func (m *MetricsMutation) ResetMemoryMetrics() {
 }
 
 // SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by id.
-func (m *MetricsMutation) SetTargetMetricsID(id int) {
+func (m *MetricsMutation) SetTargetMetricsID(id int64) {
 	m.target_metrics = &id
 }
 
@@ -20153,7 +20291,7 @@ func (m *MetricsMutation) TargetMetricsCleared() bool {
 }
 
 // TargetMetricsID returns the "target_metrics" edge ID in the mutation.
-func (m *MetricsMutation) TargetMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) TargetMetricsID() (id int64, exists bool) {
 	if m.target_metrics != nil {
 		return *m.target_metrics, true
 	}
@@ -20163,7 +20301,7 @@ func (m *MetricsMutation) TargetMetricsID() (id int, exists bool) {
 // TargetMetricsIDs returns the "target_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TargetMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) TargetMetricsIDs() (ids []int) {
+func (m *MetricsMutation) TargetMetricsIDs() (ids []int64) {
 	if id := m.target_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20177,7 +20315,7 @@ func (m *MetricsMutation) ResetTargetMetrics() {
 }
 
 // SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by id.
-func (m *MetricsMutation) SetPackageMetricsID(id int) {
+func (m *MetricsMutation) SetPackageMetricsID(id int64) {
 	m.package_metrics = &id
 }
 
@@ -20192,7 +20330,7 @@ func (m *MetricsMutation) PackageMetricsCleared() bool {
 }
 
 // PackageMetricsID returns the "package_metrics" edge ID in the mutation.
-func (m *MetricsMutation) PackageMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) PackageMetricsID() (id int64, exists bool) {
 	if m.package_metrics != nil {
 		return *m.package_metrics, true
 	}
@@ -20202,7 +20340,7 @@ func (m *MetricsMutation) PackageMetricsID() (id int, exists bool) {
 // PackageMetricsIDs returns the "package_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // PackageMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) PackageMetricsIDs() (ids []int) {
+func (m *MetricsMutation) PackageMetricsIDs() (ids []int64) {
 	if id := m.package_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20216,7 +20354,7 @@ func (m *MetricsMutation) ResetPackageMetrics() {
 }
 
 // SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by id.
-func (m *MetricsMutation) SetTimingMetricsID(id int) {
+func (m *MetricsMutation) SetTimingMetricsID(id int64) {
 	m.timing_metrics = &id
 }
 
@@ -20231,7 +20369,7 @@ func (m *MetricsMutation) TimingMetricsCleared() bool {
 }
 
 // TimingMetricsID returns the "timing_metrics" edge ID in the mutation.
-func (m *MetricsMutation) TimingMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) TimingMetricsID() (id int64, exists bool) {
 	if m.timing_metrics != nil {
 		return *m.timing_metrics, true
 	}
@@ -20241,7 +20379,7 @@ func (m *MetricsMutation) TimingMetricsID() (id int, exists bool) {
 // TimingMetricsIDs returns the "timing_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TimingMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) TimingMetricsIDs() (ids []int) {
+func (m *MetricsMutation) TimingMetricsIDs() (ids []int64) {
 	if id := m.timing_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20255,7 +20393,7 @@ func (m *MetricsMutation) ResetTimingMetrics() {
 }
 
 // SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by id.
-func (m *MetricsMutation) SetCumulativeMetricsID(id int) {
+func (m *MetricsMutation) SetCumulativeMetricsID(id int64) {
 	m.cumulative_metrics = &id
 }
 
@@ -20270,7 +20408,7 @@ func (m *MetricsMutation) CumulativeMetricsCleared() bool {
 }
 
 // CumulativeMetricsID returns the "cumulative_metrics" edge ID in the mutation.
-func (m *MetricsMutation) CumulativeMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) CumulativeMetricsID() (id int64, exists bool) {
 	if m.cumulative_metrics != nil {
 		return *m.cumulative_metrics, true
 	}
@@ -20280,7 +20418,7 @@ func (m *MetricsMutation) CumulativeMetricsID() (id int, exists bool) {
 // CumulativeMetricsIDs returns the "cumulative_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // CumulativeMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) CumulativeMetricsIDs() (ids []int) {
+func (m *MetricsMutation) CumulativeMetricsIDs() (ids []int64) {
 	if id := m.cumulative_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20294,7 +20432,7 @@ func (m *MetricsMutation) ResetCumulativeMetrics() {
 }
 
 // SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by id.
-func (m *MetricsMutation) SetArtifactMetricsID(id int) {
+func (m *MetricsMutation) SetArtifactMetricsID(id int64) {
 	m.artifact_metrics = &id
 }
 
@@ -20309,7 +20447,7 @@ func (m *MetricsMutation) ArtifactMetricsCleared() bool {
 }
 
 // ArtifactMetricsID returns the "artifact_metrics" edge ID in the mutation.
-func (m *MetricsMutation) ArtifactMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) ArtifactMetricsID() (id int64, exists bool) {
 	if m.artifact_metrics != nil {
 		return *m.artifact_metrics, true
 	}
@@ -20319,7 +20457,7 @@ func (m *MetricsMutation) ArtifactMetricsID() (id int, exists bool) {
 // ArtifactMetricsIDs returns the "artifact_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ArtifactMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) ArtifactMetricsIDs() (ids []int) {
+func (m *MetricsMutation) ArtifactMetricsIDs() (ids []int64) {
 	if id := m.artifact_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20333,7 +20471,7 @@ func (m *MetricsMutation) ResetArtifactMetrics() {
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by id.
-func (m *MetricsMutation) SetNetworkMetricsID(id int) {
+func (m *MetricsMutation) SetNetworkMetricsID(id int64) {
 	m.network_metrics = &id
 }
 
@@ -20348,7 +20486,7 @@ func (m *MetricsMutation) NetworkMetricsCleared() bool {
 }
 
 // NetworkMetricsID returns the "network_metrics" edge ID in the mutation.
-func (m *MetricsMutation) NetworkMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) NetworkMetricsID() (id int64, exists bool) {
 	if m.network_metrics != nil {
 		return *m.network_metrics, true
 	}
@@ -20358,7 +20496,7 @@ func (m *MetricsMutation) NetworkMetricsID() (id int, exists bool) {
 // NetworkMetricsIDs returns the "network_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // NetworkMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) NetworkMetricsIDs() (ids []int) {
+func (m *MetricsMutation) NetworkMetricsIDs() (ids []int64) {
 	if id := m.network_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20372,7 +20510,7 @@ func (m *MetricsMutation) ResetNetworkMetrics() {
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by id.
-func (m *MetricsMutation) SetBuildGraphMetricsID(id int) {
+func (m *MetricsMutation) SetBuildGraphMetricsID(id int64) {
 	m.build_graph_metrics = &id
 }
 
@@ -20387,7 +20525,7 @@ func (m *MetricsMutation) BuildGraphMetricsCleared() bool {
 }
 
 // BuildGraphMetricsID returns the "build_graph_metrics" edge ID in the mutation.
-func (m *MetricsMutation) BuildGraphMetricsID() (id int, exists bool) {
+func (m *MetricsMutation) BuildGraphMetricsID() (id int64, exists bool) {
 	if m.build_graph_metrics != nil {
 		return *m.build_graph_metrics, true
 	}
@@ -20397,7 +20535,7 @@ func (m *MetricsMutation) BuildGraphMetricsID() (id int, exists bool) {
 // BuildGraphMetricsIDs returns the "build_graph_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BuildGraphMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) BuildGraphMetricsIDs() (ids []int) {
+func (m *MetricsMutation) BuildGraphMetricsIDs() (ids []int64) {
 	if id := m.build_graph_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -20757,12 +20895,12 @@ type MissDetailMutation struct {
 	config
 	op                             Op
 	typ                            string
-	id                             *int
+	id                             *int64
 	reason                         *string
 	count                          *int32
 	addcount                       *int32
 	clearedFields                  map[string]struct{}
-	action_cache_statistics        *int
+	action_cache_statistics        *int64
 	clearedaction_cache_statistics bool
 	done                           bool
 	oldValue                       func(context.Context) (*MissDetail, error)
@@ -20789,7 +20927,7 @@ func newMissDetailMutation(c config, op Op, opts ...missdetailOption) *MissDetai
 }
 
 // withMissDetailID sets the ID field of the mutation.
-func withMissDetailID(id int) missdetailOption {
+func withMissDetailID(id int64) missdetailOption {
 	return func(m *MissDetailMutation) {
 		var (
 			err   error
@@ -20839,9 +20977,15 @@ func (m MissDetailMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of MissDetail entities.
+func (m *MissDetailMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *MissDetailMutation) ID() (id int, exists bool) {
+func (m *MissDetailMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -20852,12 +20996,12 @@ func (m *MissDetailMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *MissDetailMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *MissDetailMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -20974,7 +21118,7 @@ func (m *MissDetailMutation) ResetCount() {
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by id.
-func (m *MissDetailMutation) SetActionCacheStatisticsID(id int) {
+func (m *MissDetailMutation) SetActionCacheStatisticsID(id int64) {
 	m.action_cache_statistics = &id
 }
 
@@ -20989,7 +21133,7 @@ func (m *MissDetailMutation) ActionCacheStatisticsCleared() bool {
 }
 
 // ActionCacheStatisticsID returns the "action_cache_statistics" edge ID in the mutation.
-func (m *MissDetailMutation) ActionCacheStatisticsID() (id int, exists bool) {
+func (m *MissDetailMutation) ActionCacheStatisticsID() (id int64, exists bool) {
 	if m.action_cache_statistics != nil {
 		return *m.action_cache_statistics, true
 	}
@@ -20999,7 +21143,7 @@ func (m *MissDetailMutation) ActionCacheStatisticsID() (id int, exists bool) {
 // ActionCacheStatisticsIDs returns the "action_cache_statistics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ActionCacheStatisticsID instead. It exists only for internal usage by the builders.
-func (m *MissDetailMutation) ActionCacheStatisticsIDs() (ids []int) {
+func (m *MissDetailMutation) ActionCacheStatisticsIDs() (ids []int64) {
 	if id := m.action_cache_statistics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -21263,14 +21407,14 @@ type NamedSetOfFilesMutation struct {
 	config
 	op                  Op
 	typ                 string
-	id                  *int
+	id                  *int64
 	clearedFields       map[string]struct{}
-	output_group        *int
+	output_group        *int64
 	clearedoutput_group bool
-	files               map[int]struct{}
-	removedfiles        map[int]struct{}
+	files               map[int64]struct{}
+	removedfiles        map[int64]struct{}
 	clearedfiles        bool
-	file_sets           *int
+	file_sets           *int64
 	clearedfile_sets    bool
 	done                bool
 	oldValue            func(context.Context) (*NamedSetOfFiles, error)
@@ -21297,7 +21441,7 @@ func newNamedSetOfFilesMutation(c config, op Op, opts ...namedsetoffilesOption) 
 }
 
 // withNamedSetOfFilesID sets the ID field of the mutation.
-func withNamedSetOfFilesID(id int) namedsetoffilesOption {
+func withNamedSetOfFilesID(id int64) namedsetoffilesOption {
 	return func(m *NamedSetOfFilesMutation) {
 		var (
 			err   error
@@ -21347,9 +21491,15 @@ func (m NamedSetOfFilesMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of NamedSetOfFiles entities.
+func (m *NamedSetOfFilesMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *NamedSetOfFilesMutation) ID() (id int, exists bool) {
+func (m *NamedSetOfFilesMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -21360,12 +21510,12 @@ func (m *NamedSetOfFilesMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *NamedSetOfFilesMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *NamedSetOfFilesMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -21376,7 +21526,7 @@ func (m *NamedSetOfFilesMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by id.
-func (m *NamedSetOfFilesMutation) SetOutputGroupID(id int) {
+func (m *NamedSetOfFilesMutation) SetOutputGroupID(id int64) {
 	m.output_group = &id
 }
 
@@ -21391,7 +21541,7 @@ func (m *NamedSetOfFilesMutation) OutputGroupCleared() bool {
 }
 
 // OutputGroupID returns the "output_group" edge ID in the mutation.
-func (m *NamedSetOfFilesMutation) OutputGroupID() (id int, exists bool) {
+func (m *NamedSetOfFilesMutation) OutputGroupID() (id int64, exists bool) {
 	if m.output_group != nil {
 		return *m.output_group, true
 	}
@@ -21401,7 +21551,7 @@ func (m *NamedSetOfFilesMutation) OutputGroupID() (id int, exists bool) {
 // OutputGroupIDs returns the "output_group" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // OutputGroupID instead. It exists only for internal usage by the builders.
-func (m *NamedSetOfFilesMutation) OutputGroupIDs() (ids []int) {
+func (m *NamedSetOfFilesMutation) OutputGroupIDs() (ids []int64) {
 	if id := m.output_group; id != nil {
 		ids = append(ids, *id)
 	}
@@ -21415,9 +21565,9 @@ func (m *NamedSetOfFilesMutation) ResetOutputGroup() {
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by ids.
-func (m *NamedSetOfFilesMutation) AddFileIDs(ids ...int) {
+func (m *NamedSetOfFilesMutation) AddFileIDs(ids ...int64) {
 	if m.files == nil {
-		m.files = make(map[int]struct{})
+		m.files = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.files[ids[i]] = struct{}{}
@@ -21435,9 +21585,9 @@ func (m *NamedSetOfFilesMutation) FilesCleared() bool {
 }
 
 // RemoveFileIDs removes the "files" edge to the TestFile entity by IDs.
-func (m *NamedSetOfFilesMutation) RemoveFileIDs(ids ...int) {
+func (m *NamedSetOfFilesMutation) RemoveFileIDs(ids ...int64) {
 	if m.removedfiles == nil {
-		m.removedfiles = make(map[int]struct{})
+		m.removedfiles = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.files, ids[i])
@@ -21446,7 +21596,7 @@ func (m *NamedSetOfFilesMutation) RemoveFileIDs(ids ...int) {
 }
 
 // RemovedFiles returns the removed IDs of the "files" edge to the TestFile entity.
-func (m *NamedSetOfFilesMutation) RemovedFilesIDs() (ids []int) {
+func (m *NamedSetOfFilesMutation) RemovedFilesIDs() (ids []int64) {
 	for id := range m.removedfiles {
 		ids = append(ids, id)
 	}
@@ -21454,7 +21604,7 @@ func (m *NamedSetOfFilesMutation) RemovedFilesIDs() (ids []int) {
 }
 
 // FilesIDs returns the "files" edge IDs in the mutation.
-func (m *NamedSetOfFilesMutation) FilesIDs() (ids []int) {
+func (m *NamedSetOfFilesMutation) FilesIDs() (ids []int64) {
 	for id := range m.files {
 		ids = append(ids, id)
 	}
@@ -21469,7 +21619,7 @@ func (m *NamedSetOfFilesMutation) ResetFiles() {
 }
 
 // SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by id.
-func (m *NamedSetOfFilesMutation) SetFileSetsID(id int) {
+func (m *NamedSetOfFilesMutation) SetFileSetsID(id int64) {
 	m.file_sets = &id
 }
 
@@ -21484,7 +21634,7 @@ func (m *NamedSetOfFilesMutation) FileSetsCleared() bool {
 }
 
 // FileSetsID returns the "file_sets" edge ID in the mutation.
-func (m *NamedSetOfFilesMutation) FileSetsID() (id int, exists bool) {
+func (m *NamedSetOfFilesMutation) FileSetsID() (id int64, exists bool) {
 	if m.file_sets != nil {
 		return *m.file_sets, true
 	}
@@ -21494,7 +21644,7 @@ func (m *NamedSetOfFilesMutation) FileSetsID() (id int, exists bool) {
 // FileSetsIDs returns the "file_sets" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // FileSetsID instead. It exists only for internal usage by the builders.
-func (m *NamedSetOfFilesMutation) FileSetsIDs() (ids []int) {
+func (m *NamedSetOfFilesMutation) FileSetsIDs() (ids []int64) {
 	if id := m.file_sets; id != nil {
 		ids = append(ids, *id)
 	}
@@ -21738,11 +21888,11 @@ type NetworkMetricsMutation struct {
 	config
 	op                          Op
 	typ                         string
-	id                          *int
+	id                          *int64
 	clearedFields               map[string]struct{}
-	metrics                     *int
+	metrics                     *int64
 	clearedmetrics              bool
-	system_network_stats        *int
+	system_network_stats        *int64
 	clearedsystem_network_stats bool
 	done                        bool
 	oldValue                    func(context.Context) (*NetworkMetrics, error)
@@ -21769,7 +21919,7 @@ func newNetworkMetricsMutation(c config, op Op, opts ...networkmetricsOption) *N
 }
 
 // withNetworkMetricsID sets the ID field of the mutation.
-func withNetworkMetricsID(id int) networkmetricsOption {
+func withNetworkMetricsID(id int64) networkmetricsOption {
 	return func(m *NetworkMetricsMutation) {
 		var (
 			err   error
@@ -21819,9 +21969,15 @@ func (m NetworkMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of NetworkMetrics entities.
+func (m *NetworkMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *NetworkMetricsMutation) ID() (id int, exists bool) {
+func (m *NetworkMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -21832,12 +21988,12 @@ func (m *NetworkMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *NetworkMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *NetworkMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -21848,7 +22004,7 @@ func (m *NetworkMetricsMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *NetworkMetricsMutation) SetMetricsID(id int) {
+func (m *NetworkMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -21863,7 +22019,7 @@ func (m *NetworkMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *NetworkMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *NetworkMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -21873,7 +22029,7 @@ func (m *NetworkMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *NetworkMetricsMutation) MetricsIDs() (ids []int) {
+func (m *NetworkMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -21887,7 +22043,7 @@ func (m *NetworkMetricsMutation) ResetMetrics() {
 }
 
 // SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by id.
-func (m *NetworkMetricsMutation) SetSystemNetworkStatsID(id int) {
+func (m *NetworkMetricsMutation) SetSystemNetworkStatsID(id int64) {
 	m.system_network_stats = &id
 }
 
@@ -21902,7 +22058,7 @@ func (m *NetworkMetricsMutation) SystemNetworkStatsCleared() bool {
 }
 
 // SystemNetworkStatsID returns the "system_network_stats" edge ID in the mutation.
-func (m *NetworkMetricsMutation) SystemNetworkStatsID() (id int, exists bool) {
+func (m *NetworkMetricsMutation) SystemNetworkStatsID() (id int64, exists bool) {
 	if m.system_network_stats != nil {
 		return *m.system_network_stats, true
 	}
@@ -21912,7 +22068,7 @@ func (m *NetworkMetricsMutation) SystemNetworkStatsID() (id int, exists bool) {
 // SystemNetworkStatsIDs returns the "system_network_stats" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // SystemNetworkStatsID instead. It exists only for internal usage by the builders.
-func (m *NetworkMetricsMutation) SystemNetworkStatsIDs() (ids []int) {
+func (m *NetworkMetricsMutation) SystemNetworkStatsIDs() (ids []int64) {
 	if id := m.system_network_stats; id != nil {
 		ids = append(ids, *id)
 	}
@@ -22128,14 +22284,14 @@ type OutputGroupMutation struct {
 	config
 	op                  Op
 	typ                 string
-	id                  *int
+	id                  *int64
 	name                *string
 	incomplete          *bool
 	clearedFields       map[string]struct{}
-	inline_files        map[int]struct{}
-	removedinline_files map[int]struct{}
+	inline_files        map[int64]struct{}
+	removedinline_files map[int64]struct{}
 	clearedinline_files bool
-	file_sets           *int
+	file_sets           *int64
 	clearedfile_sets    bool
 	done                bool
 	oldValue            func(context.Context) (*OutputGroup, error)
@@ -22162,7 +22318,7 @@ func newOutputGroupMutation(c config, op Op, opts ...outputgroupOption) *OutputG
 }
 
 // withOutputGroupID sets the ID field of the mutation.
-func withOutputGroupID(id int) outputgroupOption {
+func withOutputGroupID(id int64) outputgroupOption {
 	return func(m *OutputGroupMutation) {
 		var (
 			err   error
@@ -22212,9 +22368,15 @@ func (m OutputGroupMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of OutputGroup entities.
+func (m *OutputGroupMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *OutputGroupMutation) ID() (id int, exists bool) {
+func (m *OutputGroupMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -22225,12 +22387,12 @@ func (m *OutputGroupMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *OutputGroupMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *OutputGroupMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -22339,9 +22501,9 @@ func (m *OutputGroupMutation) ResetIncomplete() {
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by ids.
-func (m *OutputGroupMutation) AddInlineFileIDs(ids ...int) {
+func (m *OutputGroupMutation) AddInlineFileIDs(ids ...int64) {
 	if m.inline_files == nil {
-		m.inline_files = make(map[int]struct{})
+		m.inline_files = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.inline_files[ids[i]] = struct{}{}
@@ -22359,9 +22521,9 @@ func (m *OutputGroupMutation) InlineFilesCleared() bool {
 }
 
 // RemoveInlineFileIDs removes the "inline_files" edge to the TestFile entity by IDs.
-func (m *OutputGroupMutation) RemoveInlineFileIDs(ids ...int) {
+func (m *OutputGroupMutation) RemoveInlineFileIDs(ids ...int64) {
 	if m.removedinline_files == nil {
-		m.removedinline_files = make(map[int]struct{})
+		m.removedinline_files = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.inline_files, ids[i])
@@ -22370,7 +22532,7 @@ func (m *OutputGroupMutation) RemoveInlineFileIDs(ids ...int) {
 }
 
 // RemovedInlineFiles returns the removed IDs of the "inline_files" edge to the TestFile entity.
-func (m *OutputGroupMutation) RemovedInlineFilesIDs() (ids []int) {
+func (m *OutputGroupMutation) RemovedInlineFilesIDs() (ids []int64) {
 	for id := range m.removedinline_files {
 		ids = append(ids, id)
 	}
@@ -22378,7 +22540,7 @@ func (m *OutputGroupMutation) RemovedInlineFilesIDs() (ids []int) {
 }
 
 // InlineFilesIDs returns the "inline_files" edge IDs in the mutation.
-func (m *OutputGroupMutation) InlineFilesIDs() (ids []int) {
+func (m *OutputGroupMutation) InlineFilesIDs() (ids []int64) {
 	for id := range m.inline_files {
 		ids = append(ids, id)
 	}
@@ -22393,7 +22555,7 @@ func (m *OutputGroupMutation) ResetInlineFiles() {
 }
 
 // SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by id.
-func (m *OutputGroupMutation) SetFileSetsID(id int) {
+func (m *OutputGroupMutation) SetFileSetsID(id int64) {
 	m.file_sets = &id
 }
 
@@ -22408,7 +22570,7 @@ func (m *OutputGroupMutation) FileSetsCleared() bool {
 }
 
 // FileSetsID returns the "file_sets" edge ID in the mutation.
-func (m *OutputGroupMutation) FileSetsID() (id int, exists bool) {
+func (m *OutputGroupMutation) FileSetsID() (id int64, exists bool) {
 	if m.file_sets != nil {
 		return *m.file_sets, true
 	}
@@ -22418,7 +22580,7 @@ func (m *OutputGroupMutation) FileSetsID() (id int, exists bool) {
 // FileSetsIDs returns the "file_sets" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // FileSetsID instead. It exists only for internal usage by the builders.
-func (m *OutputGroupMutation) FileSetsIDs() (ids []int) {
+func (m *OutputGroupMutation) FileSetsIDs() (ids []int64) {
 	if id := m.file_sets; id != nil {
 		ids = append(ids, *id)
 	}
@@ -22701,7 +22863,7 @@ type PackageLoadMetricsMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	name                    *string
 	load_duration           *int64
 	addload_duration        *int64
@@ -22714,7 +22876,7 @@ type PackageLoadMetricsMutation struct {
 	package_overhead        *uint64
 	addpackage_overhead     *int64
 	clearedFields           map[string]struct{}
-	package_metrics         *int
+	package_metrics         *int64
 	clearedpackage_metrics  bool
 	done                    bool
 	oldValue                func(context.Context) (*PackageLoadMetrics, error)
@@ -22741,7 +22903,7 @@ func newPackageLoadMetricsMutation(c config, op Op, opts ...packageloadmetricsOp
 }
 
 // withPackageLoadMetricsID sets the ID field of the mutation.
-func withPackageLoadMetricsID(id int) packageloadmetricsOption {
+func withPackageLoadMetricsID(id int64) packageloadmetricsOption {
 	return func(m *PackageLoadMetricsMutation) {
 		var (
 			err   error
@@ -22791,9 +22953,15 @@ func (m PackageLoadMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of PackageLoadMetrics entities.
+func (m *PackageLoadMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *PackageLoadMetricsMutation) ID() (id int, exists bool) {
+func (m *PackageLoadMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -22804,12 +22972,12 @@ func (m *PackageLoadMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *PackageLoadMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *PackageLoadMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -23219,7 +23387,7 @@ func (m *PackageLoadMetricsMutation) ResetPackageOverhead() {
 }
 
 // SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by id.
-func (m *PackageLoadMetricsMutation) SetPackageMetricsID(id int) {
+func (m *PackageLoadMetricsMutation) SetPackageMetricsID(id int64) {
 	m.package_metrics = &id
 }
 
@@ -23234,7 +23402,7 @@ func (m *PackageLoadMetricsMutation) PackageMetricsCleared() bool {
 }
 
 // PackageMetricsID returns the "package_metrics" edge ID in the mutation.
-func (m *PackageLoadMetricsMutation) PackageMetricsID() (id int, exists bool) {
+func (m *PackageLoadMetricsMutation) PackageMetricsID() (id int64, exists bool) {
 	if m.package_metrics != nil {
 		return *m.package_metrics, true
 	}
@@ -23244,7 +23412,7 @@ func (m *PackageLoadMetricsMutation) PackageMetricsID() (id int, exists bool) {
 // PackageMetricsIDs returns the "package_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // PackageMetricsID instead. It exists only for internal usage by the builders.
-func (m *PackageLoadMetricsMutation) PackageMetricsIDs() (ids []int) {
+func (m *PackageLoadMetricsMutation) PackageMetricsIDs() (ids []int64) {
 	if id := m.package_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -23654,14 +23822,14 @@ type PackageMetricsMutation struct {
 	config
 	op                          Op
 	typ                         string
-	id                          *int
+	id                          *int64
 	packages_loaded             *int64
 	addpackages_loaded          *int64
 	clearedFields               map[string]struct{}
-	metrics                     *int
+	metrics                     *int64
 	clearedmetrics              bool
-	package_load_metrics        map[int]struct{}
-	removedpackage_load_metrics map[int]struct{}
+	package_load_metrics        map[int64]struct{}
+	removedpackage_load_metrics map[int64]struct{}
 	clearedpackage_load_metrics bool
 	done                        bool
 	oldValue                    func(context.Context) (*PackageMetrics, error)
@@ -23688,7 +23856,7 @@ func newPackageMetricsMutation(c config, op Op, opts ...packagemetricsOption) *P
 }
 
 // withPackageMetricsID sets the ID field of the mutation.
-func withPackageMetricsID(id int) packagemetricsOption {
+func withPackageMetricsID(id int64) packagemetricsOption {
 	return func(m *PackageMetricsMutation) {
 		var (
 			err   error
@@ -23738,9 +23906,15 @@ func (m PackageMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of PackageMetrics entities.
+func (m *PackageMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *PackageMetricsMutation) ID() (id int, exists bool) {
+func (m *PackageMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -23751,12 +23925,12 @@ func (m *PackageMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *PackageMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *PackageMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -23837,7 +24011,7 @@ func (m *PackageMetricsMutation) ResetPackagesLoaded() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *PackageMetricsMutation) SetMetricsID(id int) {
+func (m *PackageMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -23852,7 +24026,7 @@ func (m *PackageMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *PackageMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *PackageMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -23862,7 +24036,7 @@ func (m *PackageMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *PackageMetricsMutation) MetricsIDs() (ids []int) {
+func (m *PackageMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -23876,9 +24050,9 @@ func (m *PackageMetricsMutation) ResetMetrics() {
 }
 
 // AddPackageLoadMetricIDs adds the "package_load_metrics" edge to the PackageLoadMetrics entity by ids.
-func (m *PackageMetricsMutation) AddPackageLoadMetricIDs(ids ...int) {
+func (m *PackageMetricsMutation) AddPackageLoadMetricIDs(ids ...int64) {
 	if m.package_load_metrics == nil {
-		m.package_load_metrics = make(map[int]struct{})
+		m.package_load_metrics = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.package_load_metrics[ids[i]] = struct{}{}
@@ -23896,9 +24070,9 @@ func (m *PackageMetricsMutation) PackageLoadMetricsCleared() bool {
 }
 
 // RemovePackageLoadMetricIDs removes the "package_load_metrics" edge to the PackageLoadMetrics entity by IDs.
-func (m *PackageMetricsMutation) RemovePackageLoadMetricIDs(ids ...int) {
+func (m *PackageMetricsMutation) RemovePackageLoadMetricIDs(ids ...int64) {
 	if m.removedpackage_load_metrics == nil {
-		m.removedpackage_load_metrics = make(map[int]struct{})
+		m.removedpackage_load_metrics = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.package_load_metrics, ids[i])
@@ -23907,7 +24081,7 @@ func (m *PackageMetricsMutation) RemovePackageLoadMetricIDs(ids ...int) {
 }
 
 // RemovedPackageLoadMetrics returns the removed IDs of the "package_load_metrics" edge to the PackageLoadMetrics entity.
-func (m *PackageMetricsMutation) RemovedPackageLoadMetricsIDs() (ids []int) {
+func (m *PackageMetricsMutation) RemovedPackageLoadMetricsIDs() (ids []int64) {
 	for id := range m.removedpackage_load_metrics {
 		ids = append(ids, id)
 	}
@@ -23915,7 +24089,7 @@ func (m *PackageMetricsMutation) RemovedPackageLoadMetricsIDs() (ids []int) {
 }
 
 // PackageLoadMetricsIDs returns the "package_load_metrics" edge IDs in the mutation.
-func (m *PackageMetricsMutation) PackageLoadMetricsIDs() (ids []int) {
+func (m *PackageMetricsMutation) PackageLoadMetricsIDs() (ids []int64) {
 	for id := range m.package_load_metrics {
 		ids = append(ids, id)
 	}
@@ -24191,11 +24365,11 @@ type ResourceUsageMutation struct {
 	config
 	op                    Op
 	typ                   string
-	id                    *int
+	id                    *int64
 	name                  *string
 	value                 *string
 	clearedFields         map[string]struct{}
-	execution_info        *int
+	execution_info        *int64
 	clearedexecution_info bool
 	done                  bool
 	oldValue              func(context.Context) (*ResourceUsage, error)
@@ -24222,7 +24396,7 @@ func newResourceUsageMutation(c config, op Op, opts ...resourceusageOption) *Res
 }
 
 // withResourceUsageID sets the ID field of the mutation.
-func withResourceUsageID(id int) resourceusageOption {
+func withResourceUsageID(id int64) resourceusageOption {
 	return func(m *ResourceUsageMutation) {
 		var (
 			err   error
@@ -24272,9 +24446,15 @@ func (m ResourceUsageMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ResourceUsage entities.
+func (m *ResourceUsageMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ResourceUsageMutation) ID() (id int, exists bool) {
+func (m *ResourceUsageMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -24285,12 +24465,12 @@ func (m *ResourceUsageMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ResourceUsageMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ResourceUsageMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -24399,7 +24579,7 @@ func (m *ResourceUsageMutation) ResetValue() {
 }
 
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
-func (m *ResourceUsageMutation) SetExecutionInfoID(id int) {
+func (m *ResourceUsageMutation) SetExecutionInfoID(id int64) {
 	m.execution_info = &id
 }
 
@@ -24414,7 +24594,7 @@ func (m *ResourceUsageMutation) ExecutionInfoCleared() bool {
 }
 
 // ExecutionInfoID returns the "execution_info" edge ID in the mutation.
-func (m *ResourceUsageMutation) ExecutionInfoID() (id int, exists bool) {
+func (m *ResourceUsageMutation) ExecutionInfoID() (id int64, exists bool) {
 	if m.execution_info != nil {
 		return *m.execution_info, true
 	}
@@ -24424,7 +24604,7 @@ func (m *ResourceUsageMutation) ExecutionInfoID() (id int, exists bool) {
 // ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ExecutionInfoID instead. It exists only for internal usage by the builders.
-func (m *ResourceUsageMutation) ExecutionInfoIDs() (ids []int) {
+func (m *ResourceUsageMutation) ExecutionInfoIDs() (ids []int64) {
 	if id := m.execution_info; id != nil {
 		ids = append(ids, *id)
 	}
@@ -24679,13 +24859,13 @@ type RunnerCountMutation struct {
 	config
 	op                    Op
 	typ                   string
-	id                    *int
+	id                    *int64
 	name                  *string
 	exec_kind             *string
 	actions_executed      *int64
 	addactions_executed   *int64
 	clearedFields         map[string]struct{}
-	action_summary        *int
+	action_summary        *int64
 	clearedaction_summary bool
 	done                  bool
 	oldValue              func(context.Context) (*RunnerCount, error)
@@ -24712,7 +24892,7 @@ func newRunnerCountMutation(c config, op Op, opts ...runnercountOption) *RunnerC
 }
 
 // withRunnerCountID sets the ID field of the mutation.
-func withRunnerCountID(id int) runnercountOption {
+func withRunnerCountID(id int64) runnercountOption {
 	return func(m *RunnerCountMutation) {
 		var (
 			err   error
@@ -24762,9 +24942,15 @@ func (m RunnerCountMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of RunnerCount entities.
+func (m *RunnerCountMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *RunnerCountMutation) ID() (id int, exists bool) {
+func (m *RunnerCountMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -24775,12 +24961,12 @@ func (m *RunnerCountMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *RunnerCountMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *RunnerCountMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -24959,7 +25145,7 @@ func (m *RunnerCountMutation) ResetActionsExecuted() {
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
-func (m *RunnerCountMutation) SetActionSummaryID(id int) {
+func (m *RunnerCountMutation) SetActionSummaryID(id int64) {
 	m.action_summary = &id
 }
 
@@ -24974,7 +25160,7 @@ func (m *RunnerCountMutation) ActionSummaryCleared() bool {
 }
 
 // ActionSummaryID returns the "action_summary" edge ID in the mutation.
-func (m *RunnerCountMutation) ActionSummaryID() (id int, exists bool) {
+func (m *RunnerCountMutation) ActionSummaryID() (id int64, exists bool) {
 	if m.action_summary != nil {
 		return *m.action_summary, true
 	}
@@ -24984,7 +25170,7 @@ func (m *RunnerCountMutation) ActionSummaryID() (id int, exists bool) {
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ActionSummaryID instead. It exists only for internal usage by the builders.
-func (m *RunnerCountMutation) ActionSummaryIDs() (ids []int) {
+func (m *RunnerCountMutation) ActionSummaryIDs() (ids []int64) {
 	if id := m.action_summary; id != nil {
 		ids = append(ids, *id)
 	}
@@ -25277,7 +25463,7 @@ type SourceControlMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	provider                *sourcecontrol.Provider
 	instance_url            *string
 	repo                    *string
@@ -25295,7 +25481,7 @@ type SourceControlMutation struct {
 	runner_os               *string
 	workspace               *string
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	done                    bool
 	oldValue                func(context.Context) (*SourceControl, error)
@@ -25322,7 +25508,7 @@ func newSourceControlMutation(c config, op Op, opts ...sourcecontrolOption) *Sou
 }
 
 // withSourceControlID sets the ID field of the mutation.
-func withSourceControlID(id int) sourcecontrolOption {
+func withSourceControlID(id int64) sourcecontrolOption {
 	return func(m *SourceControlMutation) {
 		var (
 			err   error
@@ -25372,9 +25558,15 @@ func (m SourceControlMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of SourceControl entities.
+func (m *SourceControlMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *SourceControlMutation) ID() (id int, exists bool) {
+func (m *SourceControlMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -25385,12 +25577,12 @@ func (m *SourceControlMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *SourceControlMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *SourceControlMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -26185,7 +26377,7 @@ func (m *SourceControlMutation) ResetWorkspace() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *SourceControlMutation) SetBazelInvocationID(id int) {
+func (m *SourceControlMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -26200,7 +26392,7 @@ func (m *SourceControlMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *SourceControlMutation) BazelInvocationID() (id int, exists bool) {
+func (m *SourceControlMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -26210,7 +26402,7 @@ func (m *SourceControlMutation) BazelInvocationID() (id int, exists bool) {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *SourceControlMutation) BazelInvocationIDs() (ids []int) {
+func (m *SourceControlMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -26787,7 +26979,7 @@ type SystemNetworkStatsMutation struct {
 	config
 	op                           Op
 	typ                          string
-	id                           *int
+	id                           *int64
 	bytes_sent                   *uint64
 	addbytes_sent                *int64
 	bytes_recv                   *uint64
@@ -26805,7 +26997,7 @@ type SystemNetworkStatsMutation struct {
 	peak_packets_recv_per_sec    *uint64
 	addpeak_packets_recv_per_sec *int64
 	clearedFields                map[string]struct{}
-	network_metrics              *int
+	network_metrics              *int64
 	clearednetwork_metrics       bool
 	done                         bool
 	oldValue                     func(context.Context) (*SystemNetworkStats, error)
@@ -26832,7 +27024,7 @@ func newSystemNetworkStatsMutation(c config, op Op, opts ...systemnetworkstatsOp
 }
 
 // withSystemNetworkStatsID sets the ID field of the mutation.
-func withSystemNetworkStatsID(id int) systemnetworkstatsOption {
+func withSystemNetworkStatsID(id int64) systemnetworkstatsOption {
 	return func(m *SystemNetworkStatsMutation) {
 		var (
 			err   error
@@ -26882,9 +27074,15 @@ func (m SystemNetworkStatsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of SystemNetworkStats entities.
+func (m *SystemNetworkStatsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *SystemNetworkStatsMutation) ID() (id int, exists bool) {
+func (m *SystemNetworkStatsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -26895,12 +27093,12 @@ func (m *SystemNetworkStatsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *SystemNetworkStatsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *SystemNetworkStatsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -27471,7 +27669,7 @@ func (m *SystemNetworkStatsMutation) ResetPeakPacketsRecvPerSec() {
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by id.
-func (m *SystemNetworkStatsMutation) SetNetworkMetricsID(id int) {
+func (m *SystemNetworkStatsMutation) SetNetworkMetricsID(id int64) {
 	m.network_metrics = &id
 }
 
@@ -27486,7 +27684,7 @@ func (m *SystemNetworkStatsMutation) NetworkMetricsCleared() bool {
 }
 
 // NetworkMetricsID returns the "network_metrics" edge ID in the mutation.
-func (m *SystemNetworkStatsMutation) NetworkMetricsID() (id int, exists bool) {
+func (m *SystemNetworkStatsMutation) NetworkMetricsID() (id int64, exists bool) {
 	if m.network_metrics != nil {
 		return *m.network_metrics, true
 	}
@@ -27496,7 +27694,7 @@ func (m *SystemNetworkStatsMutation) NetworkMetricsID() (id int, exists bool) {
 // NetworkMetricsIDs returns the "network_metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // NetworkMetricsID instead. It exists only for internal usage by the builders.
-func (m *SystemNetworkStatsMutation) NetworkMetricsIDs() (ids []int) {
+func (m *SystemNetworkStatsMutation) NetworkMetricsIDs() (ids []int64) {
 	if id := m.network_metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -27988,18 +28186,18 @@ type TargetMutation struct {
 	config
 	op                          Op
 	typ                         string
-	id                          *int
+	id                          *int64
 	label                       *string
 	aspect                      *string
 	target_kind                 *string
 	clearedFields               map[string]struct{}
-	instance_name               *int
+	instance_name               *int64
 	clearedinstance_name        bool
-	invocation_targets          map[int]struct{}
-	removedinvocation_targets   map[int]struct{}
+	invocation_targets          map[int64]struct{}
+	removedinvocation_targets   map[int64]struct{}
 	clearedinvocation_targets   bool
-	target_kind_mappings        map[int]struct{}
-	removedtarget_kind_mappings map[int]struct{}
+	target_kind_mappings        map[int64]struct{}
+	removedtarget_kind_mappings map[int64]struct{}
 	clearedtarget_kind_mappings bool
 	done                        bool
 	oldValue                    func(context.Context) (*Target, error)
@@ -28026,7 +28224,7 @@ func newTargetMutation(c config, op Op, opts ...targetOption) *TargetMutation {
 }
 
 // withTargetID sets the ID field of the mutation.
-func withTargetID(id int) targetOption {
+func withTargetID(id int64) targetOption {
 	return func(m *TargetMutation) {
 		var (
 			err   error
@@ -28076,9 +28274,15 @@ func (m TargetMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Target entities.
+func (m *TargetMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TargetMutation) ID() (id int, exists bool) {
+func (m *TargetMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -28089,12 +28293,12 @@ func (m *TargetMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TargetMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TargetMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -28213,7 +28417,7 @@ func (m *TargetMutation) ResetTargetKind() {
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by id.
-func (m *TargetMutation) SetInstanceNameID(id int) {
+func (m *TargetMutation) SetInstanceNameID(id int64) {
 	m.instance_name = &id
 }
 
@@ -28228,7 +28432,7 @@ func (m *TargetMutation) InstanceNameCleared() bool {
 }
 
 // InstanceNameID returns the "instance_name" edge ID in the mutation.
-func (m *TargetMutation) InstanceNameID() (id int, exists bool) {
+func (m *TargetMutation) InstanceNameID() (id int64, exists bool) {
 	if m.instance_name != nil {
 		return *m.instance_name, true
 	}
@@ -28238,7 +28442,7 @@ func (m *TargetMutation) InstanceNameID() (id int, exists bool) {
 // InstanceNameIDs returns the "instance_name" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // InstanceNameID instead. It exists only for internal usage by the builders.
-func (m *TargetMutation) InstanceNameIDs() (ids []int) {
+func (m *TargetMutation) InstanceNameIDs() (ids []int64) {
 	if id := m.instance_name; id != nil {
 		ids = append(ids, *id)
 	}
@@ -28252,9 +28456,9 @@ func (m *TargetMutation) ResetInstanceName() {
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
-func (m *TargetMutation) AddInvocationTargetIDs(ids ...int) {
+func (m *TargetMutation) AddInvocationTargetIDs(ids ...int64) {
 	if m.invocation_targets == nil {
-		m.invocation_targets = make(map[int]struct{})
+		m.invocation_targets = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.invocation_targets[ids[i]] = struct{}{}
@@ -28272,9 +28476,9 @@ func (m *TargetMutation) InvocationTargetsCleared() bool {
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (m *TargetMutation) RemoveInvocationTargetIDs(ids ...int) {
+func (m *TargetMutation) RemoveInvocationTargetIDs(ids ...int64) {
 	if m.removedinvocation_targets == nil {
-		m.removedinvocation_targets = make(map[int]struct{})
+		m.removedinvocation_targets = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.invocation_targets, ids[i])
@@ -28283,7 +28487,7 @@ func (m *TargetMutation) RemoveInvocationTargetIDs(ids ...int) {
 }
 
 // RemovedInvocationTargets returns the removed IDs of the "invocation_targets" edge to the InvocationTarget entity.
-func (m *TargetMutation) RemovedInvocationTargetsIDs() (ids []int) {
+func (m *TargetMutation) RemovedInvocationTargetsIDs() (ids []int64) {
 	for id := range m.removedinvocation_targets {
 		ids = append(ids, id)
 	}
@@ -28291,7 +28495,7 @@ func (m *TargetMutation) RemovedInvocationTargetsIDs() (ids []int) {
 }
 
 // InvocationTargetsIDs returns the "invocation_targets" edge IDs in the mutation.
-func (m *TargetMutation) InvocationTargetsIDs() (ids []int) {
+func (m *TargetMutation) InvocationTargetsIDs() (ids []int64) {
 	for id := range m.invocation_targets {
 		ids = append(ids, id)
 	}
@@ -28306,9 +28510,9 @@ func (m *TargetMutation) ResetInvocationTargets() {
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by ids.
-func (m *TargetMutation) AddTargetKindMappingIDs(ids ...int) {
+func (m *TargetMutation) AddTargetKindMappingIDs(ids ...int64) {
 	if m.target_kind_mappings == nil {
-		m.target_kind_mappings = make(map[int]struct{})
+		m.target_kind_mappings = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.target_kind_mappings[ids[i]] = struct{}{}
@@ -28326,9 +28530,9 @@ func (m *TargetMutation) TargetKindMappingsCleared() bool {
 }
 
 // RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (m *TargetMutation) RemoveTargetKindMappingIDs(ids ...int) {
+func (m *TargetMutation) RemoveTargetKindMappingIDs(ids ...int64) {
 	if m.removedtarget_kind_mappings == nil {
-		m.removedtarget_kind_mappings = make(map[int]struct{})
+		m.removedtarget_kind_mappings = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.target_kind_mappings, ids[i])
@@ -28337,7 +28541,7 @@ func (m *TargetMutation) RemoveTargetKindMappingIDs(ids ...int) {
 }
 
 // RemovedTargetKindMappings returns the removed IDs of the "target_kind_mappings" edge to the TargetKindMapping entity.
-func (m *TargetMutation) RemovedTargetKindMappingsIDs() (ids []int) {
+func (m *TargetMutation) RemovedTargetKindMappingsIDs() (ids []int64) {
 	for id := range m.removedtarget_kind_mappings {
 		ids = append(ids, id)
 	}
@@ -28345,7 +28549,7 @@ func (m *TargetMutation) RemovedTargetKindMappingsIDs() (ids []int) {
 }
 
 // TargetKindMappingsIDs returns the "target_kind_mappings" edge IDs in the mutation.
-func (m *TargetMutation) TargetKindMappingsIDs() (ids []int) {
+func (m *TargetMutation) TargetKindMappingsIDs() (ids []int64) {
 	for id := range m.target_kind_mappings {
 		ids = append(ids, id)
 	}
@@ -28657,13 +28861,13 @@ type TargetKindMappingMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	start_time_in_ms        *int64
 	addstart_time_in_ms     *int64
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
-	target                  *int
+	target                  *int64
 	clearedtarget           bool
 	done                    bool
 	oldValue                func(context.Context) (*TargetKindMapping, error)
@@ -28690,7 +28894,7 @@ func newTargetKindMappingMutation(c config, op Op, opts ...targetkindmappingOpti
 }
 
 // withTargetKindMappingID sets the ID field of the mutation.
-func withTargetKindMappingID(id int) targetkindmappingOption {
+func withTargetKindMappingID(id int64) targetkindmappingOption {
 	return func(m *TargetKindMappingMutation) {
 		var (
 			err   error
@@ -28740,9 +28944,15 @@ func (m TargetKindMappingMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TargetKindMapping entities.
+func (m *TargetKindMappingMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TargetKindMappingMutation) ID() (id int, exists bool) {
+func (m *TargetKindMappingMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -28753,12 +28963,12 @@ func (m *TargetKindMappingMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TargetKindMappingMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TargetKindMappingMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -28769,12 +28979,12 @@ func (m *TargetKindMappingMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (m *TargetKindMappingMutation) SetBazelInvocationID(i int) {
+func (m *TargetKindMappingMutation) SetBazelInvocationID(i int64) {
 	m.bazel_invocation = &i
 }
 
 // BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
-func (m *TargetKindMappingMutation) BazelInvocationID() (r int, exists bool) {
+func (m *TargetKindMappingMutation) BazelInvocationID() (r int64, exists bool) {
 	v := m.bazel_invocation
 	if v == nil {
 		return
@@ -28785,7 +28995,7 @@ func (m *TargetKindMappingMutation) BazelInvocationID() (r int, exists bool) {
 // OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the TargetKindMapping entity.
 // If the TargetKindMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetKindMappingMutation) OldBazelInvocationID(ctx context.Context) (v int, err error) {
+func (m *TargetKindMappingMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
 	}
@@ -28805,12 +29015,12 @@ func (m *TargetKindMappingMutation) ResetBazelInvocationID() {
 }
 
 // SetTargetID sets the "target_id" field.
-func (m *TargetKindMappingMutation) SetTargetID(i int) {
+func (m *TargetKindMappingMutation) SetTargetID(i int64) {
 	m.target = &i
 }
 
 // TargetID returns the value of the "target_id" field in the mutation.
-func (m *TargetKindMappingMutation) TargetID() (r int, exists bool) {
+func (m *TargetKindMappingMutation) TargetID() (r int64, exists bool) {
 	v := m.target
 	if v == nil {
 		return
@@ -28821,7 +29031,7 @@ func (m *TargetKindMappingMutation) TargetID() (r int, exists bool) {
 // OldTargetID returns the old "target_id" field's value of the TargetKindMapping entity.
 // If the TargetKindMapping object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetKindMappingMutation) OldTargetID(ctx context.Context) (v int, err error) {
+func (m *TargetKindMappingMutation) OldTargetID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTargetID is only allowed on UpdateOne operations")
 	}
@@ -28924,7 +29134,7 @@ func (m *TargetKindMappingMutation) BazelInvocationCleared() bool {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *TargetKindMappingMutation) BazelInvocationIDs() (ids []int) {
+func (m *TargetKindMappingMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -28951,7 +29161,7 @@ func (m *TargetKindMappingMutation) TargetCleared() bool {
 // TargetIDs returns the "target" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TargetID instead. It exists only for internal usage by the builders.
-func (m *TargetKindMappingMutation) TargetIDs() (ids []int) {
+func (m *TargetKindMappingMutation) TargetIDs() (ids []int64) {
 	if id := m.target; id != nil {
 		ids = append(ids, *id)
 	}
@@ -29047,14 +29257,14 @@ func (m *TargetKindMappingMutation) OldField(ctx context.Context, name string) (
 func (m *TargetKindMappingMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case targetkindmapping.FieldBazelInvocationID:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBazelInvocationID(v)
 		return nil
 	case targetkindmapping.FieldTargetID:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -29250,7 +29460,7 @@ type TargetMetricsMutation struct {
 	config
 	op                                          Op
 	typ                                         string
-	id                                          *int
+	id                                          *int64
 	targets_loaded                              *int64
 	addtargets_loaded                           *int64
 	targets_configured                          *int64
@@ -29258,7 +29468,7 @@ type TargetMetricsMutation struct {
 	targets_configured_not_including_aspects    *int64
 	addtargets_configured_not_including_aspects *int64
 	clearedFields                               map[string]struct{}
-	metrics                                     *int
+	metrics                                     *int64
 	clearedmetrics                              bool
 	done                                        bool
 	oldValue                                    func(context.Context) (*TargetMetrics, error)
@@ -29285,7 +29495,7 @@ func newTargetMetricsMutation(c config, op Op, opts ...targetmetricsOption) *Tar
 }
 
 // withTargetMetricsID sets the ID field of the mutation.
-func withTargetMetricsID(id int) targetmetricsOption {
+func withTargetMetricsID(id int64) targetmetricsOption {
 	return func(m *TargetMetricsMutation) {
 		var (
 			err   error
@@ -29335,9 +29545,15 @@ func (m TargetMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TargetMetrics entities.
+func (m *TargetMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TargetMetricsMutation) ID() (id int, exists bool) {
+func (m *TargetMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -29348,12 +29564,12 @@ func (m *TargetMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TargetMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TargetMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -29574,7 +29790,7 @@ func (m *TargetMetricsMutation) ResetTargetsConfiguredNotIncludingAspects() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *TargetMetricsMutation) SetMetricsID(id int) {
+func (m *TargetMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -29589,7 +29805,7 @@ func (m *TargetMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *TargetMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *TargetMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -29599,7 +29815,7 @@ func (m *TargetMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *TargetMetricsMutation) MetricsIDs() (ids []int) {
+func (m *TargetMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}
@@ -29916,7 +30132,7 @@ type TestCollectionMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	label                   *string
 	overall_status          *testcollection.OverallStatus
 	strategy                *string
@@ -29926,12 +30142,12 @@ type TestCollectionMutation struct {
 	duration_ms             *int64
 	addduration_ms          *int64
 	clearedFields           map[string]struct{}
-	bazel_invocation        *int
+	bazel_invocation        *int64
 	clearedbazel_invocation bool
-	test_summary            *int
+	test_summary            *int64
 	clearedtest_summary     bool
-	test_results            map[int]struct{}
-	removedtest_results     map[int]struct{}
+	test_results            map[int64]struct{}
+	removedtest_results     map[int64]struct{}
 	clearedtest_results     bool
 	done                    bool
 	oldValue                func(context.Context) (*TestCollection, error)
@@ -29958,7 +30174,7 @@ func newTestCollectionMutation(c config, op Op, opts ...testcollectionOption) *T
 }
 
 // withTestCollectionID sets the ID field of the mutation.
-func withTestCollectionID(id int) testcollectionOption {
+func withTestCollectionID(id int64) testcollectionOption {
 	return func(m *TestCollectionMutation) {
 		var (
 			err   error
@@ -30008,9 +30224,15 @@ func (m TestCollectionMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TestCollection entities.
+func (m *TestCollectionMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TestCollectionMutation) ID() (id int, exists bool) {
+func (m *TestCollectionMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -30021,12 +30243,12 @@ func (m *TestCollectionMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TestCollectionMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TestCollectionMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -30401,7 +30623,7 @@ func (m *TestCollectionMutation) ResetDurationMs() {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *TestCollectionMutation) SetBazelInvocationID(id int) {
+func (m *TestCollectionMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
 }
 
@@ -30416,7 +30638,7 @@ func (m *TestCollectionMutation) BazelInvocationCleared() bool {
 }
 
 // BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *TestCollectionMutation) BazelInvocationID() (id int, exists bool) {
+func (m *TestCollectionMutation) BazelInvocationID() (id int64, exists bool) {
 	if m.bazel_invocation != nil {
 		return *m.bazel_invocation, true
 	}
@@ -30426,7 +30648,7 @@ func (m *TestCollectionMutation) BazelInvocationID() (id int, exists bool) {
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *TestCollectionMutation) BazelInvocationIDs() (ids []int) {
+func (m *TestCollectionMutation) BazelInvocationIDs() (ids []int64) {
 	if id := m.bazel_invocation; id != nil {
 		ids = append(ids, *id)
 	}
@@ -30440,7 +30662,7 @@ func (m *TestCollectionMutation) ResetBazelInvocation() {
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by id.
-func (m *TestCollectionMutation) SetTestSummaryID(id int) {
+func (m *TestCollectionMutation) SetTestSummaryID(id int64) {
 	m.test_summary = &id
 }
 
@@ -30455,7 +30677,7 @@ func (m *TestCollectionMutation) TestSummaryCleared() bool {
 }
 
 // TestSummaryID returns the "test_summary" edge ID in the mutation.
-func (m *TestCollectionMutation) TestSummaryID() (id int, exists bool) {
+func (m *TestCollectionMutation) TestSummaryID() (id int64, exists bool) {
 	if m.test_summary != nil {
 		return *m.test_summary, true
 	}
@@ -30465,7 +30687,7 @@ func (m *TestCollectionMutation) TestSummaryID() (id int, exists bool) {
 // TestSummaryIDs returns the "test_summary" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TestSummaryID instead. It exists only for internal usage by the builders.
-func (m *TestCollectionMutation) TestSummaryIDs() (ids []int) {
+func (m *TestCollectionMutation) TestSummaryIDs() (ids []int64) {
 	if id := m.test_summary; id != nil {
 		ids = append(ids, *id)
 	}
@@ -30479,9 +30701,9 @@ func (m *TestCollectionMutation) ResetTestSummary() {
 }
 
 // AddTestResultIDs adds the "test_results" edge to the TestResultBES entity by ids.
-func (m *TestCollectionMutation) AddTestResultIDs(ids ...int) {
+func (m *TestCollectionMutation) AddTestResultIDs(ids ...int64) {
 	if m.test_results == nil {
-		m.test_results = make(map[int]struct{})
+		m.test_results = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.test_results[ids[i]] = struct{}{}
@@ -30499,9 +30721,9 @@ func (m *TestCollectionMutation) TestResultsCleared() bool {
 }
 
 // RemoveTestResultIDs removes the "test_results" edge to the TestResultBES entity by IDs.
-func (m *TestCollectionMutation) RemoveTestResultIDs(ids ...int) {
+func (m *TestCollectionMutation) RemoveTestResultIDs(ids ...int64) {
 	if m.removedtest_results == nil {
-		m.removedtest_results = make(map[int]struct{})
+		m.removedtest_results = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.test_results, ids[i])
@@ -30510,7 +30732,7 @@ func (m *TestCollectionMutation) RemoveTestResultIDs(ids ...int) {
 }
 
 // RemovedTestResults returns the removed IDs of the "test_results" edge to the TestResultBES entity.
-func (m *TestCollectionMutation) RemovedTestResultsIDs() (ids []int) {
+func (m *TestCollectionMutation) RemovedTestResultsIDs() (ids []int64) {
 	for id := range m.removedtest_results {
 		ids = append(ids, id)
 	}
@@ -30518,7 +30740,7 @@ func (m *TestCollectionMutation) RemovedTestResultsIDs() (ids []int) {
 }
 
 // TestResultsIDs returns the "test_results" edge IDs in the mutation.
-func (m *TestCollectionMutation) TestResultsIDs() (ids []int) {
+func (m *TestCollectionMutation) TestResultsIDs() (ids []int64) {
 	for id := range m.test_results {
 		ids = append(ids, id)
 	}
@@ -30950,7 +31172,7 @@ type TestFileMutation struct {
 	config
 	op                 Op
 	typ                string
-	id                 *int
+	id                 *int64
 	digest             *string
 	file               *string
 	length             *int64
@@ -30959,7 +31181,7 @@ type TestFileMutation struct {
 	prefix             *[]string
 	appendprefix       []string
 	clearedFields      map[string]struct{}
-	test_result        *int
+	test_result        *int64
 	clearedtest_result bool
 	done               bool
 	oldValue           func(context.Context) (*TestFile, error)
@@ -30986,7 +31208,7 @@ func newTestFileMutation(c config, op Op, opts ...testfileOption) *TestFileMutat
 }
 
 // withTestFileID sets the ID field of the mutation.
-func withTestFileID(id int) testfileOption {
+func withTestFileID(id int64) testfileOption {
 	return func(m *TestFileMutation) {
 		var (
 			err   error
@@ -31036,9 +31258,15 @@ func (m TestFileMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TestFile entities.
+func (m *TestFileMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TestFileMutation) ID() (id int, exists bool) {
+func (m *TestFileMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -31049,12 +31277,12 @@ func (m *TestFileMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TestFileMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TestFileMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -31347,7 +31575,7 @@ func (m *TestFileMutation) ResetPrefix() {
 }
 
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by id.
-func (m *TestFileMutation) SetTestResultID(id int) {
+func (m *TestFileMutation) SetTestResultID(id int64) {
 	m.test_result = &id
 }
 
@@ -31362,7 +31590,7 @@ func (m *TestFileMutation) TestResultCleared() bool {
 }
 
 // TestResultID returns the "test_result" edge ID in the mutation.
-func (m *TestFileMutation) TestResultID() (id int, exists bool) {
+func (m *TestFileMutation) TestResultID() (id int64, exists bool) {
 	if m.test_result != nil {
 		return *m.test_result, true
 	}
@@ -31372,7 +31600,7 @@ func (m *TestFileMutation) TestResultID() (id int, exists bool) {
 // TestResultIDs returns the "test_result" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TestResultID instead. It exists only for internal usage by the builders.
-func (m *TestFileMutation) TestResultIDs() (ids []int) {
+func (m *TestFileMutation) TestResultIDs() (ids []int64) {
 	if id := m.test_result; id != nil {
 		ids = append(ids, *id)
 	}
@@ -31711,7 +31939,7 @@ type TestResultBESMutation struct {
 	config
 	op                                 Op
 	typ                                string
-	id                                 *int
+	id                                 *int64
 	test_status                        *testresultbes.TestStatus
 	status_details                     *string
 	label                              *string
@@ -31726,12 +31954,12 @@ type TestResultBESMutation struct {
 	test_attempt_duration              *int64
 	addtest_attempt_duration           *int64
 	clearedFields                      map[string]struct{}
-	test_collection                    *int
+	test_collection                    *int64
 	clearedtest_collection             bool
-	test_action_output                 map[int]struct{}
-	removedtest_action_output          map[int]struct{}
+	test_action_output                 map[int64]struct{}
+	removedtest_action_output          map[int64]struct{}
 	clearedtest_action_output          bool
-	execution_info                     *int
+	execution_info                     *int64
 	clearedexecution_info              bool
 	done                               bool
 	oldValue                           func(context.Context) (*TestResultBES, error)
@@ -31758,7 +31986,7 @@ func newTestResultBESMutation(c config, op Op, opts ...testresultbesOption) *Tes
 }
 
 // withTestResultBESID sets the ID field of the mutation.
-func withTestResultBESID(id int) testresultbesOption {
+func withTestResultBESID(id int64) testresultbesOption {
 	return func(m *TestResultBESMutation) {
 		var (
 			err   error
@@ -31808,9 +32036,15 @@ func (m TestResultBESMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TestResultBES entities.
+func (m *TestResultBESMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TestResultBESMutation) ID() (id int, exists bool) {
+func (m *TestResultBESMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -31821,12 +32055,12 @@ func (m *TestResultBESMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TestResultBESMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TestResultBESMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -32357,7 +32591,7 @@ func (m *TestResultBESMutation) ResetTestAttemptDuration() {
 }
 
 // SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by id.
-func (m *TestResultBESMutation) SetTestCollectionID(id int) {
+func (m *TestResultBESMutation) SetTestCollectionID(id int64) {
 	m.test_collection = &id
 }
 
@@ -32372,7 +32606,7 @@ func (m *TestResultBESMutation) TestCollectionCleared() bool {
 }
 
 // TestCollectionID returns the "test_collection" edge ID in the mutation.
-func (m *TestResultBESMutation) TestCollectionID() (id int, exists bool) {
+func (m *TestResultBESMutation) TestCollectionID() (id int64, exists bool) {
 	if m.test_collection != nil {
 		return *m.test_collection, true
 	}
@@ -32382,7 +32616,7 @@ func (m *TestResultBESMutation) TestCollectionID() (id int, exists bool) {
 // TestCollectionIDs returns the "test_collection" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TestCollectionID instead. It exists only for internal usage by the builders.
-func (m *TestResultBESMutation) TestCollectionIDs() (ids []int) {
+func (m *TestResultBESMutation) TestCollectionIDs() (ids []int64) {
 	if id := m.test_collection; id != nil {
 		ids = append(ids, *id)
 	}
@@ -32396,9 +32630,9 @@ func (m *TestResultBESMutation) ResetTestCollection() {
 }
 
 // AddTestActionOutputIDs adds the "test_action_output" edge to the TestFile entity by ids.
-func (m *TestResultBESMutation) AddTestActionOutputIDs(ids ...int) {
+func (m *TestResultBESMutation) AddTestActionOutputIDs(ids ...int64) {
 	if m.test_action_output == nil {
-		m.test_action_output = make(map[int]struct{})
+		m.test_action_output = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.test_action_output[ids[i]] = struct{}{}
@@ -32416,9 +32650,9 @@ func (m *TestResultBESMutation) TestActionOutputCleared() bool {
 }
 
 // RemoveTestActionOutputIDs removes the "test_action_output" edge to the TestFile entity by IDs.
-func (m *TestResultBESMutation) RemoveTestActionOutputIDs(ids ...int) {
+func (m *TestResultBESMutation) RemoveTestActionOutputIDs(ids ...int64) {
 	if m.removedtest_action_output == nil {
-		m.removedtest_action_output = make(map[int]struct{})
+		m.removedtest_action_output = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.test_action_output, ids[i])
@@ -32427,7 +32661,7 @@ func (m *TestResultBESMutation) RemoveTestActionOutputIDs(ids ...int) {
 }
 
 // RemovedTestActionOutput returns the removed IDs of the "test_action_output" edge to the TestFile entity.
-func (m *TestResultBESMutation) RemovedTestActionOutputIDs() (ids []int) {
+func (m *TestResultBESMutation) RemovedTestActionOutputIDs() (ids []int64) {
 	for id := range m.removedtest_action_output {
 		ids = append(ids, id)
 	}
@@ -32435,7 +32669,7 @@ func (m *TestResultBESMutation) RemovedTestActionOutputIDs() (ids []int) {
 }
 
 // TestActionOutputIDs returns the "test_action_output" edge IDs in the mutation.
-func (m *TestResultBESMutation) TestActionOutputIDs() (ids []int) {
+func (m *TestResultBESMutation) TestActionOutputIDs() (ids []int64) {
 	for id := range m.test_action_output {
 		ids = append(ids, id)
 	}
@@ -32450,7 +32684,7 @@ func (m *TestResultBESMutation) ResetTestActionOutput() {
 }
 
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
-func (m *TestResultBESMutation) SetExecutionInfoID(id int) {
+func (m *TestResultBESMutation) SetExecutionInfoID(id int64) {
 	m.execution_info = &id
 }
 
@@ -32465,7 +32699,7 @@ func (m *TestResultBESMutation) ExecutionInfoCleared() bool {
 }
 
 // ExecutionInfoID returns the "execution_info" edge ID in the mutation.
-func (m *TestResultBESMutation) ExecutionInfoID() (id int, exists bool) {
+func (m *TestResultBESMutation) ExecutionInfoID() (id int64, exists bool) {
 	if m.execution_info != nil {
 		return *m.execution_info, true
 	}
@@ -32475,7 +32709,7 @@ func (m *TestResultBESMutation) ExecutionInfoID() (id int, exists bool) {
 // ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ExecutionInfoID instead. It exists only for internal usage by the builders.
-func (m *TestResultBESMutation) ExecutionInfoIDs() (ids []int) {
+func (m *TestResultBESMutation) ExecutionInfoIDs() (ids []int64) {
 	if id := m.execution_info; id != nil {
 		ids = append(ids, *id)
 	}
@@ -32976,7 +33210,7 @@ type TestSummaryMutation struct {
 	config
 	op                     Op
 	typ                    string
-	id                     *int
+	id                     *int64
 	overall_status         *testsummary.OverallStatus
 	total_run_count        *int32
 	addtotal_run_count     *int32
@@ -32996,13 +33230,13 @@ type TestSummaryMutation struct {
 	addtotal_run_duration  *int64
 	label                  *string
 	clearedFields          map[string]struct{}
-	test_collection        *int
+	test_collection        *int64
 	clearedtest_collection bool
-	passed                 map[int]struct{}
-	removedpassed          map[int]struct{}
+	passed                 map[int64]struct{}
+	removedpassed          map[int64]struct{}
 	clearedpassed          bool
-	failed                 map[int]struct{}
-	removedfailed          map[int]struct{}
+	failed                 map[int64]struct{}
+	removedfailed          map[int64]struct{}
 	clearedfailed          bool
 	done                   bool
 	oldValue               func(context.Context) (*TestSummary, error)
@@ -33029,7 +33263,7 @@ func newTestSummaryMutation(c config, op Op, opts ...testsummaryOption) *TestSum
 }
 
 // withTestSummaryID sets the ID field of the mutation.
-func withTestSummaryID(id int) testsummaryOption {
+func withTestSummaryID(id int64) testsummaryOption {
 	return func(m *TestSummaryMutation) {
 		var (
 			err   error
@@ -33079,9 +33313,15 @@ func (m TestSummaryMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TestSummary entities.
+func (m *TestSummaryMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TestSummaryMutation) ID() (id int, exists bool) {
+func (m *TestSummaryMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -33092,12 +33332,12 @@ func (m *TestSummaryMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TestSummaryMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TestSummaryMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -33766,7 +34006,7 @@ func (m *TestSummaryMutation) ResetLabel() {
 }
 
 // SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by id.
-func (m *TestSummaryMutation) SetTestCollectionID(id int) {
+func (m *TestSummaryMutation) SetTestCollectionID(id int64) {
 	m.test_collection = &id
 }
 
@@ -33781,7 +34021,7 @@ func (m *TestSummaryMutation) TestCollectionCleared() bool {
 }
 
 // TestCollectionID returns the "test_collection" edge ID in the mutation.
-func (m *TestSummaryMutation) TestCollectionID() (id int, exists bool) {
+func (m *TestSummaryMutation) TestCollectionID() (id int64, exists bool) {
 	if m.test_collection != nil {
 		return *m.test_collection, true
 	}
@@ -33791,7 +34031,7 @@ func (m *TestSummaryMutation) TestCollectionID() (id int, exists bool) {
 // TestCollectionIDs returns the "test_collection" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TestCollectionID instead. It exists only for internal usage by the builders.
-func (m *TestSummaryMutation) TestCollectionIDs() (ids []int) {
+func (m *TestSummaryMutation) TestCollectionIDs() (ids []int64) {
 	if id := m.test_collection; id != nil {
 		ids = append(ids, *id)
 	}
@@ -33805,9 +34045,9 @@ func (m *TestSummaryMutation) ResetTestCollection() {
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by ids.
-func (m *TestSummaryMutation) AddPassedIDs(ids ...int) {
+func (m *TestSummaryMutation) AddPassedIDs(ids ...int64) {
 	if m.passed == nil {
-		m.passed = make(map[int]struct{})
+		m.passed = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.passed[ids[i]] = struct{}{}
@@ -33825,9 +34065,9 @@ func (m *TestSummaryMutation) PassedCleared() bool {
 }
 
 // RemovePassedIDs removes the "passed" edge to the TestFile entity by IDs.
-func (m *TestSummaryMutation) RemovePassedIDs(ids ...int) {
+func (m *TestSummaryMutation) RemovePassedIDs(ids ...int64) {
 	if m.removedpassed == nil {
-		m.removedpassed = make(map[int]struct{})
+		m.removedpassed = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.passed, ids[i])
@@ -33836,7 +34076,7 @@ func (m *TestSummaryMutation) RemovePassedIDs(ids ...int) {
 }
 
 // RemovedPassed returns the removed IDs of the "passed" edge to the TestFile entity.
-func (m *TestSummaryMutation) RemovedPassedIDs() (ids []int) {
+func (m *TestSummaryMutation) RemovedPassedIDs() (ids []int64) {
 	for id := range m.removedpassed {
 		ids = append(ids, id)
 	}
@@ -33844,7 +34084,7 @@ func (m *TestSummaryMutation) RemovedPassedIDs() (ids []int) {
 }
 
 // PassedIDs returns the "passed" edge IDs in the mutation.
-func (m *TestSummaryMutation) PassedIDs() (ids []int) {
+func (m *TestSummaryMutation) PassedIDs() (ids []int64) {
 	for id := range m.passed {
 		ids = append(ids, id)
 	}
@@ -33859,9 +34099,9 @@ func (m *TestSummaryMutation) ResetPassed() {
 }
 
 // AddFailedIDs adds the "failed" edge to the TestFile entity by ids.
-func (m *TestSummaryMutation) AddFailedIDs(ids ...int) {
+func (m *TestSummaryMutation) AddFailedIDs(ids ...int64) {
 	if m.failed == nil {
-		m.failed = make(map[int]struct{})
+		m.failed = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.failed[ids[i]] = struct{}{}
@@ -33879,9 +34119,9 @@ func (m *TestSummaryMutation) FailedCleared() bool {
 }
 
 // RemoveFailedIDs removes the "failed" edge to the TestFile entity by IDs.
-func (m *TestSummaryMutation) RemoveFailedIDs(ids ...int) {
+func (m *TestSummaryMutation) RemoveFailedIDs(ids ...int64) {
 	if m.removedfailed == nil {
-		m.removedfailed = make(map[int]struct{})
+		m.removedfailed = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.failed, ids[i])
@@ -33890,7 +34130,7 @@ func (m *TestSummaryMutation) RemoveFailedIDs(ids ...int) {
 }
 
 // RemovedFailed returns the removed IDs of the "failed" edge to the TestFile entity.
-func (m *TestSummaryMutation) RemovedFailedIDs() (ids []int) {
+func (m *TestSummaryMutation) RemovedFailedIDs() (ids []int64) {
 	for id := range m.removedfailed {
 		ids = append(ids, id)
 	}
@@ -33898,7 +34138,7 @@ func (m *TestSummaryMutation) RemovedFailedIDs() (ids []int) {
 }
 
 // FailedIDs returns the "failed" edge IDs in the mutation.
-func (m *TestSummaryMutation) FailedIDs() (ids []int) {
+func (m *TestSummaryMutation) FailedIDs() (ids []int64) {
 	for id := range m.failed {
 		ids = append(ids, id)
 	}
@@ -34491,14 +34731,14 @@ type TimingBreakdownMutation struct {
 	config
 	op                    Op
 	typ                   string
-	id                    *int
+	id                    *int64
 	name                  *string
 	time                  *string
 	clearedFields         map[string]struct{}
-	execution_info        *int
+	execution_info        *int64
 	clearedexecution_info bool
-	child                 map[int]struct{}
-	removedchild          map[int]struct{}
+	child                 map[int64]struct{}
+	removedchild          map[int64]struct{}
 	clearedchild          bool
 	done                  bool
 	oldValue              func(context.Context) (*TimingBreakdown, error)
@@ -34525,7 +34765,7 @@ func newTimingBreakdownMutation(c config, op Op, opts ...timingbreakdownOption) 
 }
 
 // withTimingBreakdownID sets the ID field of the mutation.
-func withTimingBreakdownID(id int) timingbreakdownOption {
+func withTimingBreakdownID(id int64) timingbreakdownOption {
 	return func(m *TimingBreakdownMutation) {
 		var (
 			err   error
@@ -34575,9 +34815,15 @@ func (m TimingBreakdownMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TimingBreakdown entities.
+func (m *TimingBreakdownMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TimingBreakdownMutation) ID() (id int, exists bool) {
+func (m *TimingBreakdownMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -34588,12 +34834,12 @@ func (m *TimingBreakdownMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TimingBreakdownMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TimingBreakdownMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -34702,7 +34948,7 @@ func (m *TimingBreakdownMutation) ResetTime() {
 }
 
 // SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
-func (m *TimingBreakdownMutation) SetExecutionInfoID(id int) {
+func (m *TimingBreakdownMutation) SetExecutionInfoID(id int64) {
 	m.execution_info = &id
 }
 
@@ -34717,7 +34963,7 @@ func (m *TimingBreakdownMutation) ExecutionInfoCleared() bool {
 }
 
 // ExecutionInfoID returns the "execution_info" edge ID in the mutation.
-func (m *TimingBreakdownMutation) ExecutionInfoID() (id int, exists bool) {
+func (m *TimingBreakdownMutation) ExecutionInfoID() (id int64, exists bool) {
 	if m.execution_info != nil {
 		return *m.execution_info, true
 	}
@@ -34727,7 +34973,7 @@ func (m *TimingBreakdownMutation) ExecutionInfoID() (id int, exists bool) {
 // ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ExecutionInfoID instead. It exists only for internal usage by the builders.
-func (m *TimingBreakdownMutation) ExecutionInfoIDs() (ids []int) {
+func (m *TimingBreakdownMutation) ExecutionInfoIDs() (ids []int64) {
 	if id := m.execution_info; id != nil {
 		ids = append(ids, *id)
 	}
@@ -34741,9 +34987,9 @@ func (m *TimingBreakdownMutation) ResetExecutionInfo() {
 }
 
 // AddChildIDs adds the "child" edge to the TimingChild entity by ids.
-func (m *TimingBreakdownMutation) AddChildIDs(ids ...int) {
+func (m *TimingBreakdownMutation) AddChildIDs(ids ...int64) {
 	if m.child == nil {
-		m.child = make(map[int]struct{})
+		m.child = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.child[ids[i]] = struct{}{}
@@ -34761,9 +35007,9 @@ func (m *TimingBreakdownMutation) ChildCleared() bool {
 }
 
 // RemoveChildIDs removes the "child" edge to the TimingChild entity by IDs.
-func (m *TimingBreakdownMutation) RemoveChildIDs(ids ...int) {
+func (m *TimingBreakdownMutation) RemoveChildIDs(ids ...int64) {
 	if m.removedchild == nil {
-		m.removedchild = make(map[int]struct{})
+		m.removedchild = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.child, ids[i])
@@ -34772,7 +35018,7 @@ func (m *TimingBreakdownMutation) RemoveChildIDs(ids ...int) {
 }
 
 // RemovedChild returns the removed IDs of the "child" edge to the TimingChild entity.
-func (m *TimingBreakdownMutation) RemovedChildIDs() (ids []int) {
+func (m *TimingBreakdownMutation) RemovedChildIDs() (ids []int64) {
 	for id := range m.removedchild {
 		ids = append(ids, id)
 	}
@@ -34780,7 +35026,7 @@ func (m *TimingBreakdownMutation) RemovedChildIDs() (ids []int) {
 }
 
 // ChildIDs returns the "child" edge IDs in the mutation.
-func (m *TimingBreakdownMutation) ChildIDs() (ids []int) {
+func (m *TimingBreakdownMutation) ChildIDs() (ids []int64) {
 	for id := range m.child {
 		ids = append(ids, id)
 	}
@@ -35064,11 +35310,11 @@ type TimingChildMutation struct {
 	config
 	op                      Op
 	typ                     string
-	id                      *int
+	id                      *int64
 	name                    *string
 	time                    *string
 	clearedFields           map[string]struct{}
-	timing_breakdown        *int
+	timing_breakdown        *int64
 	clearedtiming_breakdown bool
 	done                    bool
 	oldValue                func(context.Context) (*TimingChild, error)
@@ -35095,7 +35341,7 @@ func newTimingChildMutation(c config, op Op, opts ...timingchildOption) *TimingC
 }
 
 // withTimingChildID sets the ID field of the mutation.
-func withTimingChildID(id int) timingchildOption {
+func withTimingChildID(id int64) timingchildOption {
 	return func(m *TimingChildMutation) {
 		var (
 			err   error
@@ -35145,9 +35391,15 @@ func (m TimingChildMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TimingChild entities.
+func (m *TimingChildMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TimingChildMutation) ID() (id int, exists bool) {
+func (m *TimingChildMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -35158,12 +35410,12 @@ func (m *TimingChildMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TimingChildMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TimingChildMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -35272,7 +35524,7 @@ func (m *TimingChildMutation) ResetTime() {
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by id.
-func (m *TimingChildMutation) SetTimingBreakdownID(id int) {
+func (m *TimingChildMutation) SetTimingBreakdownID(id int64) {
 	m.timing_breakdown = &id
 }
 
@@ -35287,7 +35539,7 @@ func (m *TimingChildMutation) TimingBreakdownCleared() bool {
 }
 
 // TimingBreakdownID returns the "timing_breakdown" edge ID in the mutation.
-func (m *TimingChildMutation) TimingBreakdownID() (id int, exists bool) {
+func (m *TimingChildMutation) TimingBreakdownID() (id int64, exists bool) {
 	if m.timing_breakdown != nil {
 		return *m.timing_breakdown, true
 	}
@@ -35297,7 +35549,7 @@ func (m *TimingChildMutation) TimingBreakdownID() (id int, exists bool) {
 // TimingBreakdownIDs returns the "timing_breakdown" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // TimingBreakdownID instead. It exists only for internal usage by the builders.
-func (m *TimingChildMutation) TimingBreakdownIDs() (ids []int) {
+func (m *TimingChildMutation) TimingBreakdownIDs() (ids []int64) {
 	if id := m.timing_breakdown; id != nil {
 		ids = append(ids, *id)
 	}
@@ -35552,7 +35804,7 @@ type TimingMetricsMutation struct {
 	config
 	op                               Op
 	typ                              string
-	id                               *int
+	id                               *int64
 	cpu_time_in_ms                   *int64
 	addcpu_time_in_ms                *int64
 	wall_time_in_ms                  *int64
@@ -35564,7 +35816,7 @@ type TimingMetricsMutation struct {
 	actions_execution_start_in_ms    *int64
 	addactions_execution_start_in_ms *int64
 	clearedFields                    map[string]struct{}
-	metrics                          *int
+	metrics                          *int64
 	clearedmetrics                   bool
 	done                             bool
 	oldValue                         func(context.Context) (*TimingMetrics, error)
@@ -35591,7 +35843,7 @@ func newTimingMetricsMutation(c config, op Op, opts ...timingmetricsOption) *Tim
 }
 
 // withTimingMetricsID sets the ID field of the mutation.
-func withTimingMetricsID(id int) timingmetricsOption {
+func withTimingMetricsID(id int64) timingmetricsOption {
 	return func(m *TimingMetricsMutation) {
 		var (
 			err   error
@@ -35641,9 +35893,15 @@ func (m TimingMetricsMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TimingMetrics entities.
+func (m *TimingMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TimingMetricsMutation) ID() (id int, exists bool) {
+func (m *TimingMetricsMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -35654,12 +35912,12 @@ func (m *TimingMetricsMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TimingMetricsMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *TimingMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -36020,7 +36278,7 @@ func (m *TimingMetricsMutation) ResetActionsExecutionStartInMs() {
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *TimingMetricsMutation) SetMetricsID(id int) {
+func (m *TimingMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
 }
 
@@ -36035,7 +36293,7 @@ func (m *TimingMetricsMutation) MetricsCleared() bool {
 }
 
 // MetricsID returns the "metrics" edge ID in the mutation.
-func (m *TimingMetricsMutation) MetricsID() (id int, exists bool) {
+func (m *TimingMetricsMutation) MetricsID() (id int64, exists bool) {
 	if m.metrics != nil {
 		return *m.metrics, true
 	}
@@ -36045,7 +36303,7 @@ func (m *TimingMetricsMutation) MetricsID() (id int, exists bool) {
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // MetricsID instead. It exists only for internal usage by the builders.
-func (m *TimingMetricsMutation) MetricsIDs() (ids []int) {
+func (m *TimingMetricsMutation) MetricsIDs() (ids []int64) {
 	if id := m.metrics; id != nil {
 		ids = append(ids, *id)
 	}

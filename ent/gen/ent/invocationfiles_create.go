@@ -84,14 +84,20 @@ func (ifc *InvocationFilesCreate) SetNillableDigestFunction(s *string) *Invocati
 	return ifc
 }
 
+// SetID sets the "id" field.
+func (ifc *InvocationFilesCreate) SetID(i int64) *InvocationFilesCreate {
+	ifc.mutation.SetID(i)
+	return ifc
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ifc *InvocationFilesCreate) SetBazelInvocationID(id int) *InvocationFilesCreate {
+func (ifc *InvocationFilesCreate) SetBazelInvocationID(id int64) *InvocationFilesCreate {
 	ifc.mutation.SetBazelInvocationID(id)
 	return ifc
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (ifc *InvocationFilesCreate) SetNillableBazelInvocationID(id *int) *InvocationFilesCreate {
+func (ifc *InvocationFilesCreate) SetNillableBazelInvocationID(id *int64) *InvocationFilesCreate {
 	if id != nil {
 		ifc = ifc.SetBazelInvocationID(*id)
 	}
@@ -154,8 +160,10 @@ func (ifc *InvocationFilesCreate) sqlSave(ctx context.Context) (*InvocationFiles
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	ifc.mutation.id = &_node.ID
 	ifc.mutation.done = true
 	return _node, nil
@@ -164,9 +172,13 @@ func (ifc *InvocationFilesCreate) sqlSave(ctx context.Context) (*InvocationFiles
 func (ifc *InvocationFilesCreate) createSpec() (*InvocationFiles, *sqlgraph.CreateSpec) {
 	var (
 		_node = &InvocationFiles{config: ifc.config}
-		_spec = sqlgraph.NewCreateSpec(invocationfiles.Table, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(invocationfiles.Table, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = ifc.conflict
+	if id, ok := ifc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := ifc.mutation.Name(); ok {
 		_spec.SetField(invocationfiles.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -195,7 +207,7 @@ func (ifc *InvocationFilesCreate) createSpec() (*InvocationFiles, *sqlgraph.Crea
 			Columns: []string{invocationfiles.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -346,16 +358,24 @@ func (u *InvocationFilesUpsert) ClearDigestFunction() *InvocationFilesUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.InvocationFiles.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(invocationfiles.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *InvocationFilesUpsertOne) UpdateNewValues() *InvocationFilesUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(invocationfiles.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -507,7 +527,7 @@ func (u *InvocationFilesUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *InvocationFilesUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *InvocationFilesUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -516,7 +536,7 @@ func (u *InvocationFilesUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *InvocationFilesUpsertOne) IDX(ctx context.Context) int {
+func (u *InvocationFilesUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -570,9 +590,9 @@ func (ifcb *InvocationFilesCreateBulk) Save(ctx context.Context) ([]*InvocationF
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -660,10 +680,20 @@ type InvocationFilesUpsertBulk struct {
 //	client.InvocationFiles.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(invocationfiles.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *InvocationFilesUpsertBulk) UpdateNewValues() *InvocationFilesUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(invocationfiles.FieldID)
+			}
+		}
+	}))
 	return u
 }
 

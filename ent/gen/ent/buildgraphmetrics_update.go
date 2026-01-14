@@ -274,13 +274,13 @@ func (bgmu *BuildGraphMetricsUpdate) ClearPostInvocationSkyframeNodeCount() *Bui
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bgmu *BuildGraphMetricsUpdate) SetMetricsID(id int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetMetricsID(id int64) *BuildGraphMetricsUpdate {
 	bgmu.mutation.SetMetricsID(id)
 	return bgmu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bgmu *BuildGraphMetricsUpdate) SetNillableMetricsID(id *int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetNillableMetricsID(id *int64) *BuildGraphMetricsUpdate {
 	if id != nil {
 		bgmu = bgmu.SetMetricsID(*id)
 	}
@@ -293,13 +293,13 @@ func (bgmu *BuildGraphMetricsUpdate) SetMetrics(m *Metrics) *BuildGraphMetricsUp
 }
 
 // SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID.
-func (bgmu *BuildGraphMetricsUpdate) SetDirtiedValuesID(id int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetDirtiedValuesID(id int64) *BuildGraphMetricsUpdate {
 	bgmu.mutation.SetDirtiedValuesID(id)
 	return bgmu
 }
 
 // SetNillableDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmu *BuildGraphMetricsUpdate) SetNillableDirtiedValuesID(id *int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetNillableDirtiedValuesID(id *int64) *BuildGraphMetricsUpdate {
 	if id != nil {
 		bgmu = bgmu.SetDirtiedValuesID(*id)
 	}
@@ -312,13 +312,13 @@ func (bgmu *BuildGraphMetricsUpdate) SetDirtiedValues(e *EvaluationStat) *BuildG
 }
 
 // SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID.
-func (bgmu *BuildGraphMetricsUpdate) SetChangedValuesID(id int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetChangedValuesID(id int64) *BuildGraphMetricsUpdate {
 	bgmu.mutation.SetChangedValuesID(id)
 	return bgmu
 }
 
 // SetNillableChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmu *BuildGraphMetricsUpdate) SetNillableChangedValuesID(id *int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetNillableChangedValuesID(id *int64) *BuildGraphMetricsUpdate {
 	if id != nil {
 		bgmu = bgmu.SetChangedValuesID(*id)
 	}
@@ -331,13 +331,13 @@ func (bgmu *BuildGraphMetricsUpdate) SetChangedValues(e *EvaluationStat) *BuildG
 }
 
 // SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID.
-func (bgmu *BuildGraphMetricsUpdate) SetBuiltValuesID(id int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetBuiltValuesID(id int64) *BuildGraphMetricsUpdate {
 	bgmu.mutation.SetBuiltValuesID(id)
 	return bgmu
 }
 
 // SetNillableBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmu *BuildGraphMetricsUpdate) SetNillableBuiltValuesID(id *int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetNillableBuiltValuesID(id *int64) *BuildGraphMetricsUpdate {
 	if id != nil {
 		bgmu = bgmu.SetBuiltValuesID(*id)
 	}
@@ -350,13 +350,13 @@ func (bgmu *BuildGraphMetricsUpdate) SetBuiltValues(e *EvaluationStat) *BuildGra
 }
 
 // SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID.
-func (bgmu *BuildGraphMetricsUpdate) SetCleanedValuesID(id int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetCleanedValuesID(id int64) *BuildGraphMetricsUpdate {
 	bgmu.mutation.SetCleanedValuesID(id)
 	return bgmu
 }
 
 // SetNillableCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmu *BuildGraphMetricsUpdate) SetNillableCleanedValuesID(id *int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetNillableCleanedValuesID(id *int64) *BuildGraphMetricsUpdate {
 	if id != nil {
 		bgmu = bgmu.SetCleanedValuesID(*id)
 	}
@@ -369,13 +369,13 @@ func (bgmu *BuildGraphMetricsUpdate) SetCleanedValues(e *EvaluationStat) *BuildG
 }
 
 // SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID.
-func (bgmu *BuildGraphMetricsUpdate) SetEvaluatedValuesID(id int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetEvaluatedValuesID(id int64) *BuildGraphMetricsUpdate {
 	bgmu.mutation.SetEvaluatedValuesID(id)
 	return bgmu
 }
 
 // SetNillableEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmu *BuildGraphMetricsUpdate) SetNillableEvaluatedValuesID(id *int) *BuildGraphMetricsUpdate {
+func (bgmu *BuildGraphMetricsUpdate) SetNillableEvaluatedValuesID(id *int64) *BuildGraphMetricsUpdate {
 	if id != nil {
 		bgmu = bgmu.SetEvaluatedValuesID(*id)
 	}
@@ -462,7 +462,7 @@ func (bgmu *BuildGraphMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuild
 }
 
 func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	if ps := bgmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -559,7 +559,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -572,7 +572,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -588,7 +588,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -601,7 +601,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -617,7 +617,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -630,7 +630,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -646,7 +646,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -659,7 +659,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -675,7 +675,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -688,7 +688,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -704,7 +704,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -717,7 +717,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -991,13 +991,13 @@ func (bgmuo *BuildGraphMetricsUpdateOne) ClearPostInvocationSkyframeNodeCount() 
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetMetricsID(id int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetMetricsID(id int64) *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.SetMetricsID(id)
 	return bgmuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableMetricsID(id *int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableMetricsID(id *int64) *BuildGraphMetricsUpdateOne {
 	if id != nil {
 		bgmuo = bgmuo.SetMetricsID(*id)
 	}
@@ -1010,13 +1010,13 @@ func (bgmuo *BuildGraphMetricsUpdateOne) SetMetrics(m *Metrics) *BuildGraphMetri
 }
 
 // SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetDirtiedValuesID(id int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetDirtiedValuesID(id int64) *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.SetDirtiedValuesID(id)
 	return bgmuo
 }
 
 // SetNillableDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableDirtiedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableDirtiedValuesID(id *int64) *BuildGraphMetricsUpdateOne {
 	if id != nil {
 		bgmuo = bgmuo.SetDirtiedValuesID(*id)
 	}
@@ -1029,13 +1029,13 @@ func (bgmuo *BuildGraphMetricsUpdateOne) SetDirtiedValues(e *EvaluationStat) *Bu
 }
 
 // SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetChangedValuesID(id int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetChangedValuesID(id int64) *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.SetChangedValuesID(id)
 	return bgmuo
 }
 
 // SetNillableChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableChangedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableChangedValuesID(id *int64) *BuildGraphMetricsUpdateOne {
 	if id != nil {
 		bgmuo = bgmuo.SetChangedValuesID(*id)
 	}
@@ -1048,13 +1048,13 @@ func (bgmuo *BuildGraphMetricsUpdateOne) SetChangedValues(e *EvaluationStat) *Bu
 }
 
 // SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetBuiltValuesID(id int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetBuiltValuesID(id int64) *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.SetBuiltValuesID(id)
 	return bgmuo
 }
 
 // SetNillableBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableBuiltValuesID(id *int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableBuiltValuesID(id *int64) *BuildGraphMetricsUpdateOne {
 	if id != nil {
 		bgmuo = bgmuo.SetBuiltValuesID(*id)
 	}
@@ -1067,13 +1067,13 @@ func (bgmuo *BuildGraphMetricsUpdateOne) SetBuiltValues(e *EvaluationStat) *Buil
 }
 
 // SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetCleanedValuesID(id int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetCleanedValuesID(id int64) *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.SetCleanedValuesID(id)
 	return bgmuo
 }
 
 // SetNillableCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableCleanedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableCleanedValuesID(id *int64) *BuildGraphMetricsUpdateOne {
 	if id != nil {
 		bgmuo = bgmuo.SetCleanedValuesID(*id)
 	}
@@ -1086,13 +1086,13 @@ func (bgmuo *BuildGraphMetricsUpdateOne) SetCleanedValues(e *EvaluationStat) *Bu
 }
 
 // SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetEvaluatedValuesID(id int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetEvaluatedValuesID(id int64) *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.SetEvaluatedValuesID(id)
 	return bgmuo
 }
 
 // SetNillableEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableEvaluatedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableEvaluatedValuesID(id *int64) *BuildGraphMetricsUpdateOne {
 	if id != nil {
 		bgmuo = bgmuo.SetEvaluatedValuesID(*id)
 	}
@@ -1192,7 +1192,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateB
 }
 
 func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *BuildGraphMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	id, ok := bgmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "BuildGraphMetrics.id" for update`)}
@@ -1306,7 +1306,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1319,7 +1319,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1335,7 +1335,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1348,7 +1348,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1364,7 +1364,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1377,7 +1377,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1393,7 +1393,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1406,7 +1406,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1422,7 +1422,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1435,7 +1435,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1451,7 +1451,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1464,7 +1464,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

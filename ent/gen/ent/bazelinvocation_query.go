@@ -431,8 +431,8 @@ func (biq *BazelInvocationQuery) FirstX(ctx context.Context) *BazelInvocation {
 
 // FirstID returns the first BazelInvocation ID from the query.
 // Returns a *NotFoundError when no BazelInvocation ID was found.
-func (biq *BazelInvocationQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (biq *BazelInvocationQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = biq.Limit(1).IDs(setContextOp(ctx, biq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -444,7 +444,7 @@ func (biq *BazelInvocationQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (biq *BazelInvocationQuery) FirstIDX(ctx context.Context) int {
+func (biq *BazelInvocationQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := biq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -482,8 +482,8 @@ func (biq *BazelInvocationQuery) OnlyX(ctx context.Context) *BazelInvocation {
 // OnlyID is like Only, but returns the only BazelInvocation ID in the query.
 // Returns a *NotSingularError when more than one BazelInvocation ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (biq *BazelInvocationQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (biq *BazelInvocationQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = biq.Limit(2).IDs(setContextOp(ctx, biq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -499,7 +499,7 @@ func (biq *BazelInvocationQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (biq *BazelInvocationQuery) OnlyIDX(ctx context.Context) int {
+func (biq *BazelInvocationQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := biq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -527,7 +527,7 @@ func (biq *BazelInvocationQuery) AllX(ctx context.Context) []*BazelInvocation {
 }
 
 // IDs executes the query and returns a list of BazelInvocation IDs.
-func (biq *BazelInvocationQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (biq *BazelInvocationQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if biq.ctx.Unique == nil && biq.path != nil {
 		biq.Unique(true)
 	}
@@ -539,7 +539,7 @@ func (biq *BazelInvocationQuery) IDs(ctx context.Context) (ids []int, err error)
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (biq *BazelInvocationQuery) IDsX(ctx context.Context) []int {
+func (biq *BazelInvocationQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := biq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -1072,8 +1072,8 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 }
 
 func (biq *BazelInvocationQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InstanceName)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BazelInvocation)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BazelInvocation)
 	for i := range nodes {
 		if nodes[i].instance_name_bazel_invocations == nil {
 			continue
@@ -1104,8 +1104,8 @@ func (biq *BazelInvocationQuery) loadInstanceName(ctx context.Context, query *In
 	return nil
 }
 func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Build)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BazelInvocation)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BazelInvocation)
 	for i := range nodes {
 		if nodes[i].build_invocations == nil {
 			continue
@@ -1136,8 +1136,8 @@ func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuer
 	return nil
 }
 func (biq *BazelInvocationQuery) loadAuthenticatedUser(ctx context.Context, query *AuthenticatedUserQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *AuthenticatedUser)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BazelInvocation)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BazelInvocation)
 	for i := range nodes {
 		if nodes[i].authenticated_user_bazel_invocations == nil {
 			continue
@@ -1169,7 +1169,7 @@ func (biq *BazelInvocationQuery) loadAuthenticatedUser(ctx context.Context, quer
 }
 func (biq *BazelInvocationQuery) loadEventMetadata(ctx context.Context, query *EventMetadataQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *EventMetadata)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1196,7 +1196,7 @@ func (biq *BazelInvocationQuery) loadEventMetadata(ctx context.Context, query *E
 }
 func (biq *BazelInvocationQuery) loadConnectionMetadata(ctx context.Context, query *ConnectionMetadataQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *ConnectionMetadata)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1227,7 +1227,7 @@ func (biq *BazelInvocationQuery) loadConnectionMetadata(ctx context.Context, que
 }
 func (biq *BazelInvocationQuery) loadProblems(ctx context.Context, query *BazelInvocationProblemQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *BazelInvocationProblem)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1258,7 +1258,7 @@ func (biq *BazelInvocationQuery) loadProblems(ctx context.Context, query *BazelI
 }
 func (biq *BazelInvocationQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Metrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1286,7 +1286,7 @@ func (biq *BazelInvocationQuery) loadMetrics(ctx context.Context, query *Metrics
 }
 func (biq *BazelInvocationQuery) loadIncompleteBuildLogs(ctx context.Context, query *IncompleteBuildLogQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *IncompleteBuildLog)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1316,7 +1316,7 @@ func (biq *BazelInvocationQuery) loadIncompleteBuildLogs(ctx context.Context, qu
 }
 func (biq *BazelInvocationQuery) loadBuildLogChunks(ctx context.Context, query *BuildLogChunkQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *BuildLogChunk)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1347,7 +1347,7 @@ func (biq *BazelInvocationQuery) loadBuildLogChunks(ctx context.Context, query *
 }
 func (biq *BazelInvocationQuery) loadInvocationFiles(ctx context.Context, query *InvocationFilesQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationFiles)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1378,7 +1378,7 @@ func (biq *BazelInvocationQuery) loadInvocationFiles(ctx context.Context, query 
 }
 func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *TestCollectionQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *TestCollection)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1409,7 +1409,7 @@ func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *
 }
 func (biq *BazelInvocationQuery) loadInvocationTargets(ctx context.Context, query *InvocationTargetQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1440,7 +1440,7 @@ func (biq *BazelInvocationQuery) loadInvocationTargets(ctx context.Context, quer
 }
 func (biq *BazelInvocationQuery) loadTargetKindMappings(ctx context.Context, query *TargetKindMappingQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *TargetKindMapping)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1470,7 +1470,7 @@ func (biq *BazelInvocationQuery) loadTargetKindMappings(ctx context.Context, que
 }
 func (biq *BazelInvocationQuery) loadSourceControl(ctx context.Context, query *SourceControlQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *SourceControl)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BazelInvocation)
+	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -1510,7 +1510,7 @@ func (biq *BazelInvocationQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (biq *BazelInvocationQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64))
 	_spec.From = biq.sql
 	if unique := biq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

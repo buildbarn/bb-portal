@@ -39,3 +39,10 @@ func (GarbageMetrics) Indexes() []ent.Index {
 		index.Edges("memory_metrics"),
 	}
 }
+
+// Mixin of the GarbageMetrics.
+func (GarbageMetrics) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		Int64IdMixin{},
+	}
+}

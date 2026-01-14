@@ -135,8 +135,8 @@ func (tbq *TimingBreakdownQuery) FirstX(ctx context.Context) *TimingBreakdown {
 
 // FirstID returns the first TimingBreakdown ID from the query.
 // Returns a *NotFoundError when no TimingBreakdown ID was found.
-func (tbq *TimingBreakdownQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tbq *TimingBreakdownQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tbq.Limit(1).IDs(setContextOp(ctx, tbq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -148,7 +148,7 @@ func (tbq *TimingBreakdownQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tbq *TimingBreakdownQuery) FirstIDX(ctx context.Context) int {
+func (tbq *TimingBreakdownQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := tbq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -186,8 +186,8 @@ func (tbq *TimingBreakdownQuery) OnlyX(ctx context.Context) *TimingBreakdown {
 // OnlyID is like Only, but returns the only TimingBreakdown ID in the query.
 // Returns a *NotSingularError when more than one TimingBreakdown ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tbq *TimingBreakdownQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (tbq *TimingBreakdownQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = tbq.Limit(2).IDs(setContextOp(ctx, tbq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -203,7 +203,7 @@ func (tbq *TimingBreakdownQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tbq *TimingBreakdownQuery) OnlyIDX(ctx context.Context) int {
+func (tbq *TimingBreakdownQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := tbq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -231,7 +231,7 @@ func (tbq *TimingBreakdownQuery) AllX(ctx context.Context) []*TimingBreakdown {
 }
 
 // IDs executes the query and returns a list of TimingBreakdown IDs.
-func (tbq *TimingBreakdownQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (tbq *TimingBreakdownQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if tbq.ctx.Unique == nil && tbq.path != nil {
 		tbq.Unique(true)
 	}
@@ -243,7 +243,7 @@ func (tbq *TimingBreakdownQuery) IDs(ctx context.Context) (ids []int, err error)
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tbq *TimingBreakdownQuery) IDsX(ctx context.Context) []int {
+func (tbq *TimingBreakdownQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := tbq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -474,8 +474,8 @@ func (tbq *TimingBreakdownQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 }
 
 func (tbq *TimingBreakdownQuery) loadExecutionInfo(ctx context.Context, query *ExectionInfoQuery, nodes []*TimingBreakdown, init func(*TimingBreakdown), assign func(*TimingBreakdown, *ExectionInfo)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TimingBreakdown)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*TimingBreakdown)
 	for i := range nodes {
 		if nodes[i].exection_info_timing_breakdown == nil {
 			continue
@@ -507,7 +507,7 @@ func (tbq *TimingBreakdownQuery) loadExecutionInfo(ctx context.Context, query *E
 }
 func (tbq *TimingBreakdownQuery) loadChild(ctx context.Context, query *TimingChildQuery, nodes []*TimingBreakdown, init func(*TimingBreakdown), assign func(*TimingBreakdown, *TimingChild)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TimingBreakdown)
+	nodeids := make(map[int64]*TimingBreakdown)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -550,7 +550,7 @@ func (tbq *TimingBreakdownQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tbq *TimingBreakdownQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(timingbreakdown.Table, timingbreakdown.Columns, sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(timingbreakdown.Table, timingbreakdown.Columns, sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt64))
 	_spec.From = tbq.sql
 	if unique := tbq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

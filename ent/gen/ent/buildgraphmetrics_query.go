@@ -226,8 +226,8 @@ func (bgmq *BuildGraphMetricsQuery) FirstX(ctx context.Context) *BuildGraphMetri
 
 // FirstID returns the first BuildGraphMetrics ID from the query.
 // Returns a *NotFoundError when no BuildGraphMetrics ID was found.
-func (bgmq *BuildGraphMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bgmq *BuildGraphMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bgmq.Limit(1).IDs(setContextOp(ctx, bgmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -239,7 +239,7 @@ func (bgmq *BuildGraphMetricsQuery) FirstID(ctx context.Context) (id int, err er
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) FirstIDX(ctx context.Context) int {
+func (bgmq *BuildGraphMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := bgmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -277,8 +277,8 @@ func (bgmq *BuildGraphMetricsQuery) OnlyX(ctx context.Context) *BuildGraphMetric
 // OnlyID is like Only, but returns the only BuildGraphMetrics ID in the query.
 // Returns a *NotSingularError when more than one BuildGraphMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (bgmq *BuildGraphMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (bgmq *BuildGraphMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = bgmq.Limit(2).IDs(setContextOp(ctx, bgmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -294,7 +294,7 @@ func (bgmq *BuildGraphMetricsQuery) OnlyID(ctx context.Context) (id int, err err
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (bgmq *BuildGraphMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := bgmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -322,7 +322,7 @@ func (bgmq *BuildGraphMetricsQuery) AllX(ctx context.Context) []*BuildGraphMetri
 }
 
 // IDs executes the query and returns a list of BuildGraphMetrics IDs.
-func (bgmq *BuildGraphMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (bgmq *BuildGraphMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if bgmq.ctx.Unique == nil && bgmq.path != nil {
 		bgmq.Unique(true)
 	}
@@ -334,7 +334,7 @@ func (bgmq *BuildGraphMetricsQuery) IDs(ctx context.Context) (ids []int, err err
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) IDsX(ctx context.Context) []int {
+func (bgmq *BuildGraphMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := bgmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -633,8 +633,8 @@ func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHo
 }
 
 func (bgmq *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *Metrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BuildGraphMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BuildGraphMetrics)
 	for i := range nodes {
 		if nodes[i].metrics_build_graph_metrics == nil {
 			continue
@@ -665,8 +665,8 @@ func (bgmq *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *Metr
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadDirtiedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BuildGraphMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BuildGraphMetrics)
 	for i := range nodes {
 		if nodes[i].build_graph_metrics_dirtied_values == nil {
 			continue
@@ -697,8 +697,8 @@ func (bgmq *BuildGraphMetricsQuery) loadDirtiedValues(ctx context.Context, query
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadChangedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BuildGraphMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BuildGraphMetrics)
 	for i := range nodes {
 		if nodes[i].build_graph_metrics_changed_values == nil {
 			continue
@@ -729,8 +729,8 @@ func (bgmq *BuildGraphMetricsQuery) loadChangedValues(ctx context.Context, query
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadBuiltValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BuildGraphMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BuildGraphMetrics)
 	for i := range nodes {
 		if nodes[i].build_graph_metrics_built_values == nil {
 			continue
@@ -761,8 +761,8 @@ func (bgmq *BuildGraphMetricsQuery) loadBuiltValues(ctx context.Context, query *
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadCleanedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BuildGraphMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*BuildGraphMetrics)
 	for i := range nodes {
 		if nodes[i].build_graph_metrics_cleaned_values == nil {
 			continue
@@ -794,7 +794,7 @@ func (bgmq *BuildGraphMetricsQuery) loadCleanedValues(ctx context.Context, query
 }
 func (bgmq *BuildGraphMetricsQuery) loadEvaluatedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BuildGraphMetrics)
+	nodeids := make(map[int64]*BuildGraphMetrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -834,7 +834,7 @@ func (bgmq *BuildGraphMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (bgmq *BuildGraphMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	_spec.From = bgmq.sql
 	if unique := bgmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

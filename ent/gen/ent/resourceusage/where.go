@@ -9,47 +9,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.ResourceUsage {
+func ID(id int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.ResourceUsage {
+func IDEQ(id int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.ResourceUsage {
+func IDNEQ(id int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.ResourceUsage {
+func IDIn(ids ...int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.ResourceUsage {
+func IDNotIn(ids ...int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.ResourceUsage {
+func IDGT(id int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.ResourceUsage {
+func IDGTE(id int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.ResourceUsage {
+func IDLT(id int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.ResourceUsage {
+func IDLTE(id int64) predicate.ResourceUsage {
 	return predicate.ResourceUsage(sql.FieldLTE(FieldID, id))
 }
 

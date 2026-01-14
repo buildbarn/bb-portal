@@ -16,7 +16,7 @@ import (
 type GarbageMetrics struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Type holds the value of the "type" field.
 	Type string `json:"type,omitempty"`
 	// GarbageCollected holds the value of the "garbage_collected" field.
@@ -24,7 +24,7 @@ type GarbageMetrics struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GarbageMetricsQuery when eager-loading is set.
 	Edges                          GarbageMetricsEdges `json:"edges"`
-	memory_metrics_garbage_metrics *int
+	memory_metrics_garbage_metrics *int64
 	selectValues                   sql.SelectValues
 }
 
@@ -81,7 +81,7 @@ func (gm *GarbageMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			gm.ID = int(value.Int64)
+			gm.ID = int64(value.Int64)
 		case garbagemetrics.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
@@ -98,8 +98,8 @@ func (gm *GarbageMetrics) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field memory_metrics_garbage_metrics", value)
 			} else if value.Valid {
-				gm.memory_metrics_garbage_metrics = new(int)
-				*gm.memory_metrics_garbage_metrics = int(value.Int64)
+				gm.memory_metrics_garbage_metrics = new(int64)
+				*gm.memory_metrics_garbage_metrics = int64(value.Int64)
 			}
 		default:
 			gm.selectValues.Set(columns[i], values[i])

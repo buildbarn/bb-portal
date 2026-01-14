@@ -111,13 +111,13 @@ func (tmu *TargetMetricsUpdate) ClearTargetsConfiguredNotIncludingAspects() *Tar
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmu *TargetMetricsUpdate) SetMetricsID(id int) *TargetMetricsUpdate {
+func (tmu *TargetMetricsUpdate) SetMetricsID(id int64) *TargetMetricsUpdate {
 	tmu.mutation.SetMetricsID(id)
 	return tmu
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmu *TargetMetricsUpdate) SetNillableMetricsID(id *int) *TargetMetricsUpdate {
+func (tmu *TargetMetricsUpdate) SetNillableMetricsID(id *int64) *TargetMetricsUpdate {
 	if id != nil {
 		tmu = tmu.SetMetricsID(*id)
 	}
@@ -174,7 +174,7 @@ func (tmu *TargetMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
 	if ps := tmu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -217,7 +217,7 @@ func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{targetmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -230,7 +230,7 @@ func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Columns: []string{targetmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -342,13 +342,13 @@ func (tmuo *TargetMetricsUpdateOne) ClearTargetsConfiguredNotIncludingAspects() 
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmuo *TargetMetricsUpdateOne) SetMetricsID(id int) *TargetMetricsUpdateOne {
+func (tmuo *TargetMetricsUpdateOne) SetMetricsID(id int64) *TargetMetricsUpdateOne {
 	tmuo.mutation.SetMetricsID(id)
 	return tmuo
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmuo *TargetMetricsUpdateOne) SetNillableMetricsID(id *int) *TargetMetricsUpdateOne {
+func (tmuo *TargetMetricsUpdateOne) SetNillableMetricsID(id *int64) *TargetMetricsUpdateOne {
 	if id != nil {
 		tmuo = tmuo.SetMetricsID(*id)
 	}
@@ -418,7 +418,7 @@ func (tmuo *TargetMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetMetrics, err error) {
-	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
 	id, ok := tmuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TargetMetrics.id" for update`)}
@@ -478,7 +478,7 @@ func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetM
 			Columns: []string{targetmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -491,7 +491,7 @@ func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetM
 			Columns: []string{targetmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

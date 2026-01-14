@@ -109,8 +109,8 @@ func (gmq *GarbageMetricsQuery) FirstX(ctx context.Context) *GarbageMetrics {
 
 // FirstID returns the first GarbageMetrics ID from the query.
 // Returns a *NotFoundError when no GarbageMetrics ID was found.
-func (gmq *GarbageMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (gmq *GarbageMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = gmq.Limit(1).IDs(setContextOp(ctx, gmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (gmq *GarbageMetricsQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) FirstIDX(ctx context.Context) int {
+func (gmq *GarbageMetricsQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := gmq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -160,8 +160,8 @@ func (gmq *GarbageMetricsQuery) OnlyX(ctx context.Context) *GarbageMetrics {
 // OnlyID is like Only, but returns the only GarbageMetrics ID in the query.
 // Returns a *NotSingularError when more than one GarbageMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (gmq *GarbageMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (gmq *GarbageMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = gmq.Limit(2).IDs(setContextOp(ctx, gmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (gmq *GarbageMetricsQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) OnlyIDX(ctx context.Context) int {
+func (gmq *GarbageMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := gmq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -205,7 +205,7 @@ func (gmq *GarbageMetricsQuery) AllX(ctx context.Context) []*GarbageMetrics {
 }
 
 // IDs executes the query and returns a list of GarbageMetrics IDs.
-func (gmq *GarbageMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (gmq *GarbageMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if gmq.ctx.Unique == nil && gmq.path != nil {
 		gmq.Unique(true)
 	}
@@ -217,7 +217,7 @@ func (gmq *GarbageMetricsQuery) IDs(ctx context.Context) (ids []int, err error) 
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) IDsX(ctx context.Context) []int {
+func (gmq *GarbageMetricsQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := gmq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -421,8 +421,8 @@ func (gmq *GarbageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (gmq *GarbageMetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetricsQuery, nodes []*GarbageMetrics, init func(*GarbageMetrics), assign func(*GarbageMetrics, *MemoryMetrics)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*GarbageMetrics)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*GarbageMetrics)
 	for i := range nodes {
 		if nodes[i].memory_metrics_garbage_metrics == nil {
 			continue
@@ -466,7 +466,7 @@ func (gmq *GarbageMetricsQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (gmq *GarbageMetricsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(garbagemetrics.Table, garbagemetrics.Columns, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(garbagemetrics.Table, garbagemetrics.Columns, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64))
 	_spec.From = gmq.sql
 	if unique := gmq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
