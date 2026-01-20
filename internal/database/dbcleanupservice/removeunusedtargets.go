@@ -2,10 +2,10 @@ package dbcleanupservice
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 // RemoveUnusedTargets removes Targets that have no InvocationTargets or
@@ -24,6 +24,7 @@ func (dc *DbCleanupService) RemoveUnusedTargets(ctx context.Context) error {
 		return util.StatusWrap(err, "Failed to remove unused Targets")
 	}
 
-	slog.Info("Removed unused targets", "count", deletedRows)
+	span.SetAttributes(attribute.KeyValue{Key: "unused_targets_removed", Value: attribute.IntValue(deletedRows)})
+
 	return nil
 }

@@ -2,11 +2,11 @@ package dbcleanupservice
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 // RemoveTargetKindMappings removes TargetKindMappings for BazelInvocations
@@ -26,6 +26,7 @@ func (dc *DbCleanupService) RemoveTargetKindMappings(ctx context.Context) error 
 		return util.StatusWrap(err, "Failed to remove old TargetKindMappings")
 	}
 
-	slog.Info("Removed old TargetKindMappings", "count", deletedRows)
+	span.SetAttributes(attribute.KeyValue{Key: "target_kind_mappings_removed", Value: attribute.IntValue(deletedRows)})
+
 	return nil
 }
