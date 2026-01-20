@@ -21,6 +21,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -96,7 +97,6 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 			case <-ctx.Done():
 				return nil
 			default:
-				slog.Info("Starting database cleanup")
 				if err := dc.LockInvocationsWithNoRecentConnections(ctx); err != nil {
 					slog.Warn("Failed to lock unfinished invocations with no recent connections", "err", err)
 				}
@@ -124,7 +124,6 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				if err := dc.RemoveUnusedTargets(ctx); err != nil {
 					slog.Warn("Failed to remove unused targets", "err", err)
 				}
-				slog.Info("Finished database cleanup")
 			}
 		}
 	})
@@ -134,8 +133,6 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 // stream has been interrupted, and no new connection has been made within a
 // certain period of time.
 func (dc *DbCleanupService) LockInvocationsWithNoRecentConnections(ctx context.Context) error {
-	slog.Info("Locking unfinished invocations with no recent connections")
-
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentEvents")
 	defer span.End()
 
@@ -155,15 +152,14 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentConnections(ctx context.C
 		return util.StatusWrap(err, "Failed to lock invocations")
 	}
 
-	slog.Info("Locked unfinished invocations", "count", invocationsUpdated)
+	span.SetAttributes(attribute.KeyValue{Key: "invocations_locked", Value: attribute.IntValue(invocationsUpdated)})
+
 	return nil
 }
 
 // LockInvocationsWithNoRecentEvents locks invocations that have not received any new
 // events in a certain period of time.
 func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Context) error {
-	slog.Info("Locking unfinished invocations that has no recent events")
-
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentEvents")
 	defer span.End()
 
@@ -195,7 +191,6 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 	}
 
 	if len(invocationsToLock) == 0 {
-		slog.Info("No invocations to lock")
 		return common.RollbackAndWrapError(tx, nil)
 	}
 
@@ -236,15 +231,15 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 	if err != nil {
 		return util.StatusWrap(err, "Failed to commit transaction")
 	}
-	slog.Info("Locked unfinished invocations", "count", invocationsUpdated)
+
+	span.SetAttributes(attribute.KeyValue{Key: "invocations_locked", Value: attribute.IntValue(invocationsUpdated)})
+
 	return nil
 }
 
 // RemoveOldInvocationConnections removes InvocationConnections for invocations
 // that have completed.
 func (dc *DbCleanupService) RemoveOldInvocationConnections(ctx context.Context) error {
-	slog.Info("Locking old invocation connections")
-
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocationConnections")
 	defer span.End()
 
@@ -258,7 +253,8 @@ func (dc *DbCleanupService) RemoveOldInvocationConnections(ctx context.Context) 
 		return util.StatusWrap(err, "Failed to lock invocations")
 	}
 
-	slog.Info("Removed old invocations connections", "count", deletedRows)
+	span.SetAttributes(attribute.KeyValue{Key: "invocation_connections_deleted", Value: attribute.IntValue(deletedRows)})
+
 	return nil
 }
 
@@ -268,7 +264,7 @@ func (dc *DbCleanupService) DeleteIncompleteLogs(ctx context.Context) error {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.DeleteIncompleteLogs")
 	defer span.End()
 
-	_, err := dc.db.Ent().IncompleteBuildLog.Delete().
+	deletedRows, err := dc.db.Ent().IncompleteBuildLog.Delete().
 		Where(
 			incompletebuildlog.HasBazelInvocationWith(
 				bazelinvocation.HasBuildLogChunks(),
@@ -281,14 +277,14 @@ func (dc *DbCleanupService) DeleteIncompleteLogs(ctx context.Context) error {
 		return util.StatusWrap(err, "Could not delete incompleted build logs")
 	}
 
+	span.SetAttributes(attribute.KeyValue{Key: "incomplete_logs_deleted", Value: attribute.IntValue(deletedRows)})
+
 	return nil
 }
 
 // RemoveOldInvocations removes invocations that have completed before a
 // certain cutoff time.
 func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
-	slog.Info("Removing old invocations")
-
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocations")
 	defer span.End()
 
@@ -302,15 +298,15 @@ func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
 	if err != nil {
 		return util.StatusWrap(err, "Failed to remove old invocations")
 	}
-	slog.Info("Removed old invocations", "count", deletedInvocation)
+
+	span.SetAttributes(attribute.KeyValue{Key: "deleted_invocations", Value: attribute.IntValue(deletedInvocation)})
+
 	return nil
 }
 
 // RemoveBuildsWithoutInvocations removes builds that do not have any
 // associated invocations.
 func (dc *DbCleanupService) RemoveBuildsWithoutInvocations(ctx context.Context) error {
-	slog.Info("Removing builds without invocations")
-
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveBuildsWithoutInvocations")
 	defer span.End()
 
@@ -322,6 +318,8 @@ func (dc *DbCleanupService) RemoveBuildsWithoutInvocations(ctx context.Context) 
 	if err != nil {
 		return util.StatusWrap(err, "Failed to remove builds without invocations")
 	}
-	slog.Info("Removed builds without invocations", "count", deletedBuilds)
+
+	span.SetAttributes(attribute.KeyValue{Key: "deleted_builds", Value: attribute.IntValue(deletedBuilds)})
+
 	return nil
 }
