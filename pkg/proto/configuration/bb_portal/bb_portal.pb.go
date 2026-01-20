@@ -611,13 +611,12 @@ func (*BuildEventStreamService_SaveDataLevel_BasicAndTarget) isBuildEventStreamS
 }
 
 type BuildEventStreamService_DatabaseCleanupConfiguration struct {
-	state                       protoimpl.MessageState `protogen:"open.v1"`
-	CleanupInterval             *durationpb.Duration   `protobuf:"bytes,1,opt,name=cleanup_interval,json=cleanupInterval,proto3" json:"cleanup_interval,omitempty"`
-	InvocationConnectionTimeout *durationpb.Duration   `protobuf:"bytes,2,opt,name=invocation_connection_timeout,json=invocationConnectionTimeout,proto3" json:"invocation_connection_timeout,omitempty"`
-	InvocationMessageTimeout    *durationpb.Duration   `protobuf:"bytes,3,opt,name=invocation_message_timeout,json=invocationMessageTimeout,proto3" json:"invocation_message_timeout,omitempty"`
-	InvocationRetention         *durationpb.Duration   `protobuf:"bytes,4,opt,name=invocation_retention,json=invocationRetention,proto3" json:"invocation_retention,omitempty"`
-	unknownFields               protoimpl.UnknownFields
-	sizeCache                   protoimpl.SizeCache
+	state                    protoimpl.MessageState `protogen:"open.v1"`
+	CleanupInterval          *durationpb.Duration   `protobuf:"bytes,1,opt,name=cleanup_interval,json=cleanupInterval,proto3" json:"cleanup_interval,omitempty"`
+	InvocationMessageTimeout *durationpb.Duration   `protobuf:"bytes,3,opt,name=invocation_message_timeout,json=invocationMessageTimeout,proto3" json:"invocation_message_timeout,omitempty"`
+	InvocationRetention      *durationpb.Duration   `protobuf:"bytes,4,opt,name=invocation_retention,json=invocationRetention,proto3" json:"invocation_retention,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *BuildEventStreamService_DatabaseCleanupConfiguration) Reset() {
@@ -657,13 +656,6 @@ func (x *BuildEventStreamService_DatabaseCleanupConfiguration) GetCleanupInterva
 	return nil
 }
 
-func (x *BuildEventStreamService_DatabaseCleanupConfiguration) GetInvocationConnectionTimeout() *durationpb.Duration {
-	if x != nil {
-		return x.InvocationConnectionTimeout
-	}
-	return nil
-}
-
 func (x *BuildEventStreamService_DatabaseCleanupConfiguration) GetInvocationMessageTimeout() *durationpb.Duration {
 	if x != nil {
 		return x.InvocationMessageTimeout
@@ -691,7 +683,7 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_p
 	"\"AuthMetadataExtractorConfiguration\x12\x88\x01\n" +
 	"*external_id_extraction_jmespath_expression\x18\x01 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR&externalIdExtractionJmespathExpression\x12\x8a\x01\n" +
 	"+display_name_extraction_jmespath_expression\x18\x02 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR'displayNameExtractionJmespathExpression\x12\x84\x01\n" +
-	"(user_info_extraction_jmespath_expression\x18\x03 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR$userInfoExtractionJmespathExpression\"\xd2\t\n" +
+	"(user_info_extraction_jmespath_expression\x18\x03 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR$userInfoExtractionJmespathExpression\"\xf3\b\n" +
 	"\x17BuildEventStreamService\x12T\n" +
 	"\fgrpc_servers\x18\x01 \x03(\v21.buildbarn.configuration.grpc.ServerConfigurationR\vgrpcServers\x12G\n" +
 	"\bdatabase\x18\x02 \x01(\v2+.buildbarn.configuration.bb_portal.DatabaseR\bdatabase\x123\n" +
@@ -703,10 +695,9 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_p
 	"\rSaveDataLevel\x12.\n" +
 	"\x05basic\x18\x01 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05basic\x12B\n" +
 	"\x10basic_and_target\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x0ebasicAndTargetB\a\n" +
-	"\x05level\x1a\xea\x02\n" +
+	"\x05level\x1a\x8b\x02\n" +
 	"\x1cDatabaseCleanupConfiguration\x12D\n" +
-	"\x10cleanup_interval\x18\x01 \x01(\v2\x19.google.protobuf.DurationR\x0fcleanupInterval\x12]\n" +
-	"\x1dinvocation_connection_timeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\x1binvocationConnectionTimeout\x12W\n" +
+	"\x10cleanup_interval\x18\x01 \x01(\v2\x19.google.protobuf.DurationR\x0fcleanupInterval\x12W\n" +
 	"\x1ainvocation_message_timeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\x18invocationMessageTimeout\x12L\n" +
 	"\x14invocation_retention\x18\x04 \x01(\v2\x19.google.protobuf.DurationR\x13invocationRetentionJ\x04\b\x03\x10\x04J\x04\b\x06\x10\a\"\xd5\x03\n" +
 	"\x0eBrowserService\x12z\n" +
@@ -787,14 +778,13 @@ var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_por
 	16, // 21: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveDataLevel.basic:type_name -> google.protobuf.Empty
 	16, // 22: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveDataLevel.basic_and_target:type_name -> google.protobuf.Empty
 	17, // 23: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.cleanup_interval:type_name -> google.protobuf.Duration
-	17, // 24: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_connection_timeout:type_name -> google.protobuf.Duration
-	17, // 25: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_message_timeout:type_name -> google.protobuf.Duration
-	17, // 26: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_retention:type_name -> google.protobuf.Duration
-	27, // [27:27] is the sub-list for method output_type
-	27, // [27:27] is the sub-list for method input_type
-	27, // [27:27] is the sub-list for extension type_name
-	27, // [27:27] is the sub-list for extension extendee
-	0,  // [0:27] is the sub-list for field type_name
+	17, // 24: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_message_timeout:type_name -> google.protobuf.Duration
+	17, // 25: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_retention:type_name -> google.protobuf.Duration
+	26, // [26:26] is the sub-list for method output_type
+	26, // [26:26] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() {

@@ -81,13 +81,6 @@ message BuildEventStreamService {
     // Recommended value: '60s'
     google.protobuf.Duration cleanup_interval = 1;
 
-    // If the gRPC connection that uploads BES messages for an invocation
-    // has been interrupted and not re-established within this duration,
-    // the invocation is considered abandoned, and will be locked to
-    // prevent further modifications.
-    // Recommended value: '60s'
-    google.protobuf.Duration invocation_connection_timeout = 2;
-
     // If an invocation that has not yet received the last message in the BES
     // stream does not receive any new messages within this duration, the
     // invocation is considered abandoned, and will be locked to prevent further

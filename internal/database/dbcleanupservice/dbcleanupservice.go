@@ -2,20 +2,14 @@ package dbcleanupservice
 
 import (
 	"context"
-	"database/sql"
 	"log/slog"
 	"math/rand/v2"
-	"strings"
 	"time"
 
-	entsql "entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/internal/database"
-	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/clock"
@@ -30,20 +24,22 @@ import (
 // database to remove old data that is no longer needed. This includes:
 //
 //  1. Locking unfinished invocations that have not received any new event
-//     metadata for a certain period of time (invocationMessageTimeout).
-//  2. Removing event metadata for invocations that have completed and
-//     whose completion time is older than invocationMessageTimeout.
-//  3. Removing invocations that have completed and whose completion time
+//     metadata for a certain period of time (invocationMessageTimeout) and
+//     setting their end time if it is not set.
+//  2. Compacting logs by normalizing and compressing them.
+//  3. Deleting incomplete logs that have been compacted.
+//  4. Removing invocations that have completed and whose completion time
 //     is older than invocationRetention.
-//  4. Removing builds that do not have any associated invocations.
+//  5. Removing builds that do not have any associated invocations.
+//  6. Removing old TargetKindMappings.
+//  7. Removing unused targets.
 type DbCleanupService struct {
-	db                          database.Client
-	clock                       clock.Clock
-	cleanupInterval             time.Duration
-	invocationConnectionTimeout time.Duration
-	invocationMessageTimeout    time.Duration
-	invocationRetention         time.Duration
-	tracer                      trace.Tracer
+	db                       database.Client
+	clock                    clock.Clock
+	cleanupInterval          time.Duration
+	invocationMessageTimeout time.Duration
+	invocationRetention      time.Duration
+	tracer                   trace.Tracer
 }
 
 // NewDbCleanupService creates a new DbCleanupService.
@@ -58,11 +54,6 @@ func NewDbCleanupService(
 		return nil, util.StatusWrap(err, "Failed to parse cleanupInterval parameter time")
 	}
 
-	invocationConnectionTimeout := cleanupConfiguration.InvocationConnectionTimeout
-	if err := invocationConnectionTimeout.CheckValid(); err != nil {
-		return nil, util.StatusWrap(err, "Failed to parse invocationConnectionTimeout parameter time")
-	}
-
 	invocationMessageTimeout := cleanupConfiguration.InvocationMessageTimeout
 	if err := invocationMessageTimeout.CheckValid(); err != nil {
 		return nil, util.StatusWrap(err, "Failed to parse invocationMessageTimeout parameter time")
@@ -74,13 +65,12 @@ func NewDbCleanupService(
 	}
 
 	return &DbCleanupService{
-		db:                          db,
-		clock:                       clock,
-		cleanupInterval:             cleanupInterval.AsDuration(),
-		invocationConnectionTimeout: invocationConnectionTimeout.AsDuration(),
-		invocationMessageTimeout:    invocationMessageTimeout.AsDuration(),
-		invocationRetention:         invocationRetention.AsDuration(),
-		tracer:                      tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"),
+		db:                       db,
+		clock:                    clock,
+		cleanupInterval:          cleanupInterval.AsDuration(),
+		invocationMessageTimeout: invocationMessageTimeout.AsDuration(),
+		invocationRetention:      invocationRetention.AsDuration(),
+		tracer:                   tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"),
 	}, nil
 }
 
@@ -97,14 +87,11 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 			case <-ctx.Done():
 				return nil
 			default:
-				if err := dc.LockInvocationsWithNoRecentConnections(ctx); err != nil {
-					slog.Warn("Failed to lock unfinished invocations with no recent connections", "err", err)
-				}
 				if err := dc.LockInvocationsWithNoRecentEvents(ctx); err != nil {
 					slog.Warn("Failed to lock unfinished invocations with no recent events", "err", err)
 				}
-				if err := dc.RemoveOldInvocationConnections(ctx); err != nil {
-					slog.Warn("Failed to remove old invocation connections", "err", err)
+				if err := dc.UpdateInvocationEndedAtFromEvents(ctx); err != nil {
+					slog.Warn("Failed to update invocation ended_at from event metadata", "err", err)
 				}
 				if err := dc.CompactLogs(ctx); err != nil {
 					slog.Warn("Failed to compact logs", "err", err)
@@ -127,135 +114,6 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 			}
 		}
 	})
-}
-
-// LockInvocationsWithNoRecentConnections locks invocations where the gRPC
-// stream has been interrupted, and no new connection has been made within a
-// certain period of time.
-func (dc *DbCleanupService) LockInvocationsWithNoRecentConnections(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentEvents")
-	defer span.End()
-
-	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationConnectionTimeout)
-
-	invocationsUpdated, err := dc.db.Ent().BazelInvocation.Update().
-		Where(
-			bazelinvocation.BepCompleted(false),
-			bazelinvocation.HasConnectionMetadataWith(
-				connectionmetadata.ConnectionLastOpenAtLT(cutoffTime),
-			),
-		).
-		SetBepCompleted(true).
-		SetEndedAt(cutoffTime).
-		Save(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to lock invocations")
-	}
-
-	span.SetAttributes(attribute.KeyValue{Key: "invocations_locked", Value: attribute.IntValue(invocationsUpdated)})
-
-	return nil
-}
-
-// LockInvocationsWithNoRecentEvents locks invocations that have not received any new
-// events in a certain period of time.
-func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentEvents")
-	defer span.End()
-
-	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationMessageTimeout)
-
-	tx, err := dc.db.BeginTx(ctx, &entsql.TxOptions{Isolation: sql.LevelSerializable})
-	if err != nil {
-		return util.StatusWrap(err, "Failed to create transaction")
-	}
-
-	var invocationsToLock []struct {
-		InvocationDbID int64  `sql:"invocation_db_id"`
-		MaxTime        string `sql:"max_time"`
-	}
-
-	err = tx.Ent().EventMetadata.
-		Query().
-		Modify(func(sel *entsql.Selector) {
-			sel.Select(
-				entsql.As(sel.C(eventmetadata.BazelInvocationColumn), "invocation_db_id"),
-				entsql.As(entsql.Max(sel.C(eventmetadata.FieldEventReceivedAt)), "max_time"),
-			)
-			sel.GroupBy(sel.C(eventmetadata.BazelInvocationColumn))
-			sel.Having(entsql.LT(entsql.Max(sel.C(eventmetadata.FieldEventReceivedAt)), cutoffTime))
-		}).
-		Scan(ctx, &invocationsToLock)
-	if err != nil {
-		return common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to query invocations to lock"))
-	}
-
-	if len(invocationsToLock) == 0 {
-		return common.RollbackAndWrapError(tx, nil)
-	}
-
-	for _, r := range invocationsToLock {
-		// Sqlite does not fully support the RFC 3339 format, so we need to replace the space
-		// between the date and time with a 'T'.
-		endedAt, err := time.Parse(time.RFC3339Nano, strings.Replace(r.MaxTime, " ", "T", 1))
-		if err != nil {
-			return common.RollbackAndWrapError(tx, util.StatusWrapf(err, "Failed to parse time %s", r.MaxTime))
-		}
-		err = tx.Ent().BazelInvocation.
-			Update().
-			Where(
-				bazelinvocation.IDEQ(r.InvocationDbID),
-				bazelinvocation.EndedAtIsNil(),
-			).
-			SetEndedAt(endedAt).
-			Exec(ctx)
-		if err != nil {
-			return common.RollbackAndWrapError(tx, util.StatusWrapf(err, "Failed to set ended_at for invocation %s", r.InvocationDbID))
-		}
-	}
-
-	invocationIDs := make([]int64, 0, len(invocationsToLock))
-	for _, r := range invocationsToLock {
-		invocationIDs = append(invocationIDs, r.InvocationDbID)
-	}
-
-	invocationsUpdated, err := tx.Ent().BazelInvocation.
-		Update().
-		Where(bazelinvocation.IDIn(invocationIDs...)).
-		SetBepCompleted(true).
-		Save(ctx)
-	if err != nil {
-		return common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to lock invocations"))
-	}
-	err = tx.Commit()
-	if err != nil {
-		return util.StatusWrap(err, "Failed to commit transaction")
-	}
-
-	span.SetAttributes(attribute.KeyValue{Key: "invocations_locked", Value: attribute.IntValue(invocationsUpdated)})
-
-	return nil
-}
-
-// RemoveOldInvocationConnections removes InvocationConnections for invocations
-// that have completed.
-func (dc *DbCleanupService) RemoveOldInvocationConnections(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocationConnections")
-	defer span.End()
-
-	deletedRows, err := dc.db.Ent().ConnectionMetadata.Delete().
-		Where(
-			connectionmetadata.HasBazelInvocationWith(
-				bazelinvocation.BepCompleted(true),
-			),
-		).Exec(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to lock invocations")
-	}
-
-	span.SetAttributes(attribute.KeyValue{Key: "invocation_connections_deleted", Value: attribute.IntValue(deletedRows)})
-
-	return nil
 }
 
 // DeleteIncompleteLogs deletes logs which have had their incomplete

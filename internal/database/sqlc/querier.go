@@ -35,6 +35,7 @@ type Querier interface {
 	FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error)
 	GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error)
 	LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error)
+	UpdateCompletedInvocationWithEndTimeFromEventMetadata(ctx context.Context) (int64, error)
 	UpdateEventMetadata(ctx context.Context, arg UpdateEventMetadataParams) (int64, error)
 	UpdateTestSummariesBulk(ctx context.Context, arg UpdateTestSummariesBulkParams) (int64, error)
 }

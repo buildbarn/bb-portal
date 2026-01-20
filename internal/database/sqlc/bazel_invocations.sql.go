@@ -66,3 +66,21 @@ func (q *Queries) LockBazelInvocationCompletion(ctx context.Context, id int64) (
 	err := row.Scan(&i.ID, &i.BepCompleted)
 	return i, err
 }
+
+const updateCompletedInvocationWithEndTimeFromEventMetadata = `-- name: UpdateCompletedInvocationWithEndTimeFromEventMetadata :execrows
+UPDATE bazel_invocations bi
+SET
+  ended_at = em.event_received_at
+FROM event_metadata em
+WHERE bi.id = em.bazel_invocation_id
+  AND bi.bep_completed = true
+  AND bi.ended_at IS NULL
+`
+
+func (q *Queries) UpdateCompletedInvocationWithEndTimeFromEventMetadata(ctx context.Context) (int64, error) {
+	result, err := q.db.ExecContext(ctx, updateCompletedInvocationWithEndTimeFromEventMetadata)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}

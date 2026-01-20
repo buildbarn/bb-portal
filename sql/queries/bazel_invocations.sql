@@ -25,3 +25,12 @@ WHERE invocation_id = sqlc.arg(invocation_id)
   AND authenticated_user_bazel_invocations IS NOT DISTINCT FROM sqlc.arg(authenticated_user_id)
   AND bep_completed = false
 LIMIT 1;
+
+-- name: UpdateCompletedInvocationWithEndTimeFromEventMetadata :execrows
+UPDATE bazel_invocations bi
+SET
+  ended_at = em.event_received_at
+FROM event_metadata em
+WHERE bi.id = em.bazel_invocation_id
+  AND bi.bep_completed = true
+  AND bi.ended_at IS NULL;

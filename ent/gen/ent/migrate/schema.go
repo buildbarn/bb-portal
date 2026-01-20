@@ -283,6 +283,11 @@ var (
 				Columns: []*schema.Column{BazelInvocationsColumns[2]},
 			},
 			{
+				Name:    "bazelinvocation_ended_at",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationsColumns[3]},
+			},
+			{
 				Name:    "bazelinvocation_build_invocations",
 				Unique:  false,
 				Columns: []*schema.Column{BazelInvocationsColumns[31]},
