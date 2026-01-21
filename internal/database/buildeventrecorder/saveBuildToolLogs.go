@@ -9,7 +9,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 )
 
-func (r *BuildEventRecorder) saveBuildToolLogs(ctx context.Context, tx *ent.Client, buildToolLogs *bes.BuildToolLogs) error {
+func (r *buildEventRecorder) saveBuildToolLogs(ctx context.Context, tx *ent.Client, buildToolLogs *bes.BuildToolLogs) error {
 	if buildToolLogs == nil {
 		return nil
 	}

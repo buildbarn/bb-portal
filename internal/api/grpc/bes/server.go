@@ -18,7 +18,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
-	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
@@ -27,15 +26,12 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
+type buildEventRecorderFactory func(ctx context.Context, instanceName, invocationID string) (buildeventrecorder.BuildEventRecorder, error)
+
 // BuildEventServer implements the Build Event Service.
 // It receives events and forwards them to a BuildEventChannel.
 type BuildEventServer struct {
-	db                     database.Client
-	instanceNameAuthorizer auth.Authorizer
-	saveDataLevel          *bb_portal.BuildEventStreamService_SaveDataLevel
-	tracerProvider         trace.TracerProvider
-	extractors             *authmetadataextraction.AuthMetadataExtractors
-	uuidGenerator          util.UUIDGenerator
+	buildEventRecorderFactory buildEventRecorderFactory
 }
 
 // NewBuildEventServer creates a new BuildEventServer
@@ -64,12 +60,27 @@ func NewBuildEventServer(db database.Client, configuration *bb_portal.Applicatio
 	}
 
 	return &BuildEventServer{
-		instanceNameAuthorizer: instanceNameAuthorizer,
-		db:                     db,
-		saveDataLevel:          saveDataLevel,
-		tracerProvider:         tracerProvider,
-		extractors:             extractors,
-		uuidGenerator:          uuidGenerator,
+		buildEventRecorderFactory: func(ctx context.Context, instanceName, invocationID string) (buildeventrecorder.BuildEventRecorder, error) {
+			recorder, err := buildeventrecorder.NewBuildEventRecorder(
+				ctx,
+				db,
+				instanceNameAuthorizer,
+				saveDataLevel,
+				tracerProvider,
+				instanceName,
+				invocationID,
+				true, /* isRealTime */
+				extractors,
+				uuidGenerator,
+			)
+			if err != nil {
+				return nil, err
+			}
+			return buildeventrecorder.NewMinDurationBuildEventRecorder(
+				buildeventrecorder.NewMetricsBuildEventRecorder(recorder),
+				besConfiguration.MinEventBatchDuration.AsDuration(),
+			), nil
+		},
 	}, nil
 }
 
@@ -139,19 +150,7 @@ func (s *BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuild
 	streamID := req.GetOrderedBuildEvent().GetStreamId()
 
 	// initialize with the first message
-	buildEventRecorder, err := buildeventrecorder.NewBuildEventRecorder(
-		ctx,
-		s.db,
-		s.instanceNameAuthorizer,
-		s.saveDataLevel,
-		s.tracerProvider,
-		req.GetProjectId(),
-		streamID.GetInvocationId(),
-		streamID.GetBuildId(),
-		true, // isRealTime
-		s.extractors,
-		s.uuidGenerator,
-	)
+	buildEventRecorder, err := s.buildEventRecorderFactory(ctx, req.GetProjectId(), streamID.GetInvocationId())
 	if err != nil {
 		return util.StatusWrap(err, "Could not initialize build event recorder")
 	}

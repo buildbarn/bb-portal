@@ -20,7 +20,7 @@ import (
 // saveTestResultBatch efficiently saves a batch of target
 // completed for a set of events where the corresponding target
 // configured event has already been handled.
-func (r *BuildEventRecorder) saveTestResultBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveTestResultBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	if len(batch) == 0 {
 		return nil
 	}

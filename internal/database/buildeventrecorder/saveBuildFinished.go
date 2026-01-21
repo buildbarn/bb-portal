@@ -10,7 +10,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveBuildFinished(ctx context.Context, tx *ent.Client, finished *bes.BuildFinished) error {
+func (r *buildEventRecorder) saveBuildFinished(ctx context.Context, tx *ent.Client, finished *bes.BuildFinished) error {
 	if finished == nil {
 		return nil
 	}

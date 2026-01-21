@@ -23,7 +23,7 @@ import (
 // saveTargetCompletedBatch efficiently saves a batch of target
 // completed for a set of events where the corresponding target
 // configured event has already been handled.
-func (r *BuildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	if len(batch) == 0 {
 		return nil
 	}
@@ -155,7 +155,7 @@ func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocatio
 	return nil
 }
 
-func (r *BuildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) error {
 	params := sqlc.CreateTestSummariesBulkParams{
 		BazelInvocationID: int64(r.InvocationDbID),
 		InstanceNameID:    int64(r.InstanceNameDbID),
@@ -212,7 +212,7 @@ type completedTargetInfo struct {
 
 // resolveTargetInfo fetches TargetID and StartTimeInMs from the database
 // by joining TargetKindMapping with Target.
-func (r *BuildEventRecorder) resolveTargetInfo(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) (map[invocationTargetKey]completedTargetInfo, error) {
+func (r *buildEventRecorder) resolveTargetInfo(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) (map[invocationTargetKey]completedTargetInfo, error) {
 	// Deduplicate keys, this logic should not be required as each
 	// completed event should refer back to a single configured event.
 	keys := make([]invocationTargetKey, 0, len(batch))
