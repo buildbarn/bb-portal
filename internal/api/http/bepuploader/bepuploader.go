@@ -105,7 +105,8 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		DiscardUnknown: true,
 	}
 
-	var buildEventRecorder *buildeventrecorder.BuildEventRecorder = nil
+	var buildEventRecorder buildeventrecorder.BuildEventRecorder = nil
+	var invocationID string
 
 	sequenceNumber := uint32(0)
 	eventBuffer := make([]buildeventrecorder.BuildEventWithInfo, 0)
@@ -124,7 +125,7 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		}
 
 		if buildEventRecorder == nil {
-			invocationID := bazelEvent.GetStarted().GetUuid()
+			invocationID = bazelEvent.GetStarted().GetUuid()
 			// Bazel does create an InvocationId for query commands, but
 			// for some reason does not write this into the Started
 			// event for queries.
@@ -142,7 +143,6 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 				b.tracerProvider,
 				"", // instanceName
 				invocationID,
-				"",    // correlatedInvocationID
 				false, // isRealTime,
 				b.extractors,
 				b.uuidGenerator,
@@ -163,7 +163,7 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 	if err := scanner.Err(); err != nil {
 		return "", http.StatusInternalServerError, util.StatusWrap(err, "Failed to read build event file")
 	}
-	return buildEventRecorder.InvocationID, http.StatusOK, nil
+	return invocationID, http.StatusOK, nil
 }
 
 // ServeHTTP handles upload of build event files via HTTP.

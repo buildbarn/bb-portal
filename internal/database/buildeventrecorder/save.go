@@ -24,7 +24,7 @@ func eventTypeName(buildEvent *bes.BuildEvent) string {
 	return "<nil>"
 }
 
-func (r *BuildEventRecorder) saveEvent(
+func (r *buildEventRecorder) saveEvent(
 	ctx context.Context,
 	info BuildEventWithInfo,
 ) (err error) {
@@ -83,7 +83,7 @@ func (r *BuildEventRecorder) saveEvent(
 	return nil
 }
 
-func (r *BuildEventRecorder) saveBuildEvent(
+func (r *buildEventRecorder) saveBuildEvent(
 	ctx context.Context,
 	tx database.Tx,
 	buildEvent *bes.BuildEvent,

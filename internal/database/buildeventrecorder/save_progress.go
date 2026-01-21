@@ -14,7 +14,7 @@ import (
 
 // saveProgressBatch is an efficient implementation of save progress for
 // a batch of progress events.
-func (r *BuildEventRecorder) saveProgressBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveProgressBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	if len(batch) == 0 {
 		return nil
 	}

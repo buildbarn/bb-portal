@@ -9,7 +9,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveOptionsParsed(ctx context.Context, tx *ent.Client, optionsParsed *bes.OptionsParsed) error {
+func (r *buildEventRecorder) saveOptionsParsed(ctx context.Context, tx *ent.Client, optionsParsed *bes.OptionsParsed) error {
 	if optionsParsed == nil {
 		return nil
 	}

@@ -11,7 +11,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func (r *BuildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	ctx, span := r.tracer.Start(
 		ctx,
 		"BuildEventRecorder.saveBatch",
@@ -94,7 +94,7 @@ func (r *BuildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWi
 }
 
 // SaveBatch saves a batch of build events to the database.
-func (r *BuildEventRecorder) SaveBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) SaveBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	ctx, span := r.tracer.Start(
 		ctx,
 		"BuildEventRecorder.SaveBatch",
