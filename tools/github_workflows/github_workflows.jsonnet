@@ -125,7 +125,7 @@ local lint_steps = [
       push: { branches: ["main"] },
       workflow_dispatch: null,
     },
-    permissions: { contents: "read", "id-token": "write" },
+    permissions: { contents: "read", "packages": "write" },
     jobs: {
       publish_backend: {
         name: "Publish Backend (Bazel)",
