@@ -16,6 +16,8 @@ import { PublicEnvScript } from 'next-runtime-env';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import GrpcClientsProvider from '@/context/GrpcClientsProvider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { isRetryableGrpcError } from '@/utils/grpcStatus';
+import { Status } from '@/lib/grpc-client/google/rpc/status';
 
 const PREFERS_DARK_KEY = 'prefers-dark';
 
@@ -64,7 +66,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   const [extraAppBarMenuItems, setExtraAppBarMenuItems] = useState<ItemType[]>([]);
 
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: (failureCount: number, error: Error) => {
+          if (failureCount >= 3) {
+            return false;
+          }
+          return isRetryableGrpcError(Status.fromJSON(error));
+        },
+      },
+    },
+  });
 
   return (
     <>

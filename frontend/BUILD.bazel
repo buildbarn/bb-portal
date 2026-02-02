@@ -24,6 +24,7 @@ PROTO_FILES = {
     "google_timestamp": ("timestamp", "google/protobuf", "@protobuf//:timestamp_proto"),
     "google_wrappers": ("wrappers", "google/protobuf", "@protobuf//:wrappers_proto"),
     "google_status": ("status", "google/rpc", "@googleapis//google/rpc:status_proto"),
+    "google_code": ("code", "google/rpc", "@googleapis//google/rpc:code_proto"),
     "opentelemetry_common": ("common", "opentelemetry/proto/common/v1", "@opentelemetry-proto//:common_proto"),
 }
 

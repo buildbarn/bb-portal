@@ -2,7 +2,7 @@ import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Space, Spin } from "antd";
 import { env } from "next-runtime-env";
-import { GrpcErrorCodes } from "../../utils/grpcErrorCodes";
+import { Code } from "@/lib/grpc-client/google/rpc/code";
 import ExecuteResponseDisplay from "../ExecutionResponseDisplay";
 import OperationStateDisplay from "../OperationStateDisplay";
 import PortalAlert from "../PortalAlert";
@@ -22,7 +22,7 @@ const OperationDetails: React.FC<Props> = ({ operationID }) => {
           operationName: operationID,
         },
         status: {
-          code: GrpcErrorCodes.UNAVAILABLE,
+          code: Code.UNAVAILABLE,
           message: "Operation was killed through the web interface",
         },
       });

@@ -1,5 +1,3 @@
-import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import themeStyles from "@/theme/theme.module.css";
 import {
   CheckCircleFilled,
   ClockCircleFilled,
@@ -8,7 +6,9 @@ import {
   LoadingOutlined,
 } from "@ant-design/icons";
 import { Tag } from "antd";
-import { GrpcErrorCodes } from "../../utils/grpcErrorCodes";
+import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import { Code } from "@/lib/grpc-client/google/rpc/code";
+import themeStyles from "@/theme/theme.module.css";
 
 interface Props {
   operation: OperationState;
@@ -43,7 +43,7 @@ const OperationStatusTag: React.FC<Props> = ({ operation }) => {
         >
           <span className={themeStyles.tagContent}>
             Failed with status code{" "}
-            <code>{GrpcErrorCodes[operation.completed.status?.code]}</code>
+            <code>{Code[operation.completed.status?.code]}</code>
           </span>
         </Tag>
       );
