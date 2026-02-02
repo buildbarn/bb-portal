@@ -33,7 +33,7 @@ const FooterLink: React.FC<FooterLinkProps> = ({ text, href, icon }) => {
       iconElement = undefined;
       break;
     default:
-      iconElement = <img src={icon} width={24} height={24} />;
+      iconElement = <img src={icon} width={20} height={20} />;
   }
 
   if (!href) {

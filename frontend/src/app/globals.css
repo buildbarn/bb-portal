@@ -27,7 +27,7 @@
   --card-border-rgb: 131, 134, 135;
 
   --app-bar-height: 64px; /* The configured (via Ant) height of the Application Bar at the top of the page */
-  --footer-height: 65px; /* The configured (via Ant) height of the Footer at the bottom of the page */
+  --footer-height: 75px; /* The configured (via Ant) height of the Footer at the bottom of the page */
   --sider-width: 280px; /* The configured (via Ant) width of the Sider at the left of the page */
 
   --ant-card-box-shadow: /* Reuse the box shadow from the Ant Card component */ rgba(0, 0, 0, 0.03) 0px 1px 2px 0px,
