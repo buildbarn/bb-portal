@@ -17,6 +17,9 @@ func NewGraphqlHandler(dbClient *ent.Client, tracerProvider trace.TracerProvider
 	srv.Use(extension.Introspection{})
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 	srv.Use(otelgqlgen.New(otelgqlgen.WithTracerProvider(tracerProvider)))
+	// A fixed complexity limit for incoming GraphQL queries.
+	// See https://gqlgen.com/master/reference/complexity/ for more details.
+	srv.Use(extension.FixedComplexityLimit(1000))
 
 	return srv
 }
