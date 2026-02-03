@@ -11,6 +11,7 @@ local_path_override(
 )
 
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
+bazel_dep(name = "ape", version = "1.1.0")
 bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
 bazel_dep(name = "com_github_buildbarn_bb_browser")
 bazel_dep(name = "com_github_buildbarn_bb_remote_execution")
@@ -180,4 +181,53 @@ SQLC_PLATFORMS = {
         urls = ["https://github.com/sqlc-dev/sqlc/releases/download/v%s/sqlc_%s_%s.tar.gz" % (SQLC_VERSION, SQLC_VERSION, platform)],
     )
     for platform, sha in SQLC_PLATFORMS.items()
+]
+
+# Embedded Postgres tooling. Used to run tests sqlc generation, without needing
+# to have a Postgres server installed on the system.
+EMBEDDED_POSTGRES_VERSION = "18.1.0"
+
+EMBEDDED_POSTGRES_PLATFORMS = {
+    "darwin-amd64": {
+        "sha": "3b4f16dcf57250d8f9c5e9270a7dfc3921b66d66534d00f8f366e8263e862d11",
+        "url_platform_name": "darwin-amd64",
+        "tar_platform_name": "darwin-x86_64",
+    },
+    "darwin-arm64": {
+        "sha": "7398c6c19d11594a944dc0ddc79fdbb611164312e1f509a8c86b09724027401e",
+        "url_platform_name": "darwin-arm64v8",
+        "tar_platform_name": "darwin-arm_64",
+    },
+    "linux-amd64": {
+        "sha": "65d0723e0274ad3ec6230dcbdfe034af6ee096fce15a77b0f9b8be71d2702934",
+        "url_platform_name": "linux-amd64",
+        "tar_platform_name": "linux-x86_64",
+    },
+    "linux-arm64": {
+        "sha": "ea0f16b754fc0a10d9d8993bbd426c20f8c709b318b28e49b42d9cac1c958b8f",
+        "url_platform_name": "linux-arm64v8",
+        "tar_platform_name": "linux-arm_64",
+    },
+}
+
+[
+    http_archive(
+        name = "embedded_postgres_" + name,
+        build_file_content = """
+filegroup(
+    name = "nested_tar",
+    srcs = ["postgres-%s.txz"],
+    visibility = ["//visibility:public"],
+)
+""" % platform["tar_platform_name"],
+        sha256 = platform["sha"],
+        type = "zip",
+        urls = ["https://repo1.maven.org/maven2/io/zonky/test/postgres/embedded-postgres-binaries-%s/%s/embedded-postgres-binaries-%s-%s.jar" % (
+            platform["url_platform_name"],
+            EMBEDDED_POSTGRES_VERSION,
+            platform["url_platform_name"],
+            EMBEDDED_POSTGRES_VERSION,
+        )],
+    )
+    for name, platform in EMBEDDED_POSTGRES_PLATFORMS.items()
 ]

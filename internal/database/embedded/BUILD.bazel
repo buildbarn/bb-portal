@@ -1,8 +1,10 @@
 load("@rules_go//go:def.bzl", "go_library")
+load(":unpack.bzl", "unpack")
 
 go_library(
     name = "embedded",
     srcs = ["embedded.go"],
+    data = [":extraced_embedded_postgres"],
     importpath = "github.com/buildbarn/bb-portal/internal/database/embedded",
     visibility = ["//:__subpackages__"],
     deps = [
@@ -12,5 +14,51 @@ go_library(
         "@com_github_jackc_pgx_v5//stdlib",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_grpc//status",
+        "@rules_go//go/runfiles",
     ],
+)
+
+unpack(
+    name = "extraced_embedded_postgres",
+    src = ":embedded_postgres",
+)
+
+alias(
+    name = "embedded_postgres",
+    actual = select({
+        "@platforms//os:linux": ":embedded_postgres_linux",
+        "@platforms//os:macos": ":embedded_postgres_macos",
+    }),
+    target_compatible_with = select({
+        "@platforms//os:linux": [],
+        "@platforms//os:macos": [],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "embedded_postgres_linux",
+    actual = select({
+        "@platforms//cpu:x86_64": "@embedded_postgres_linux-amd64//:nested_tar",
+        "@platforms//cpu:aarch64": "@embedded_postgres_linux-arm64//:nested_tar",
+    }),
+    target_compatible_with = select({
+        "@platforms//cpu:aarch64": ["@platforms//os:linux"],
+        "@platforms//cpu:x86_64": ["@platforms//os:linux"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+)
+
+alias(
+    name = "embedded_postgres_macos",
+    actual = select({
+        "@platforms//cpu:x86_64": "@embedded_postgres_darwin-amd64//:nested_tar",
+        "@platforms//cpu:aarch64": "@embedded_postgres_darwin-arm64//:nested_tar",
+    }),
+    target_compatible_with = select({
+        "@platforms//cpu:aarch64": ["@platforms//os:macos"],
+        "@platforms//cpu:x86_64": ["@platforms//os:macos"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
 )
