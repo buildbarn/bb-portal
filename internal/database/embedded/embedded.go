@@ -11,6 +11,7 @@ import (
 	// Register the pgx driver.
 	_ "github.com/jackc/pgx/v5/stdlib"
 
+	"github.com/bazelbuild/rules_go/go/runfiles"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	embeddedpostgres "github.com/fergusstrange/embedded-postgres"
 	"github.com/google/uuid"
@@ -41,9 +42,24 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 	const user, database = "postgres", "postgres"
 	password := uuid.New().String()
 
-	runtimePath, err := os.MkdirTemp(os.TempDir(), "embedded_db_runtime")
+	binariesPath, err := runfiles.Rlocation("com_github_buildbarn_bb_portal/internal/database/embedded/extraced_embedded_postgres.extracted")
+	if err != nil {
+		return nil, util.StatusWrap(err, "Could not find embedded postgres binaries")
+	}
+
+	// TODO: We cannot use os.TempDir() here. In most Buildbarn Remote
+	// Execution setups the $TMPDIR variable points to a fuse file system.
+	// Postgres cannot have its data directory on such a file system, because
+	// postgres requires a folder with permissions set to 0700. Maybe we could
+	// fool postgres in some way to accept a mode for its temporary files?
+	runtimePath, err := os.MkdirTemp("/tmp", "embedded_db_runtime")
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create temp dir for embedded postgres runtime")
+	}
+
+	dataPath, err := os.MkdirTemp("/tmp", "embedded_db_data")
+	if err != nil {
+		return nil, util.StatusWrap(err, "Could not create temporary data directory for embedded postgres")
 	}
 
 	config := embeddedpostgres.DefaultConfig().
@@ -52,7 +68,14 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 		Logger(logger).
 		Username(user).
 		Password(password).
-		RuntimePath(runtimePath)
+		RuntimePath(runtimePath).
+		DataPath(dataPath).
+		BinariesPath(binariesPath).
+		// Bazel is used to provide the embedded Postgres binaries. If bazel
+		// fails to provide them, we do not want embedded-postgres-go to
+		// attempt to download them from the internet. Instead, we want it to
+		// fail immediately.
+		BinaryRepositoryURL("FAKE_URL_TO_DISABLE_EMBEDDED_POSTGRES_FROM_FETCHING_BINARIES")
 
 	postgres := embeddedpostgres.NewDatabase(config)
 
