@@ -1,0 +1,428 @@
+{
+  "bazelInvocation": {
+    "actions": [
+      {
+        "commandLine": [
+          "external/bazel_tools/tools/test/test-setup.sh",
+          "test/integrationtest/integrationtest_test_/integrationtest_test"
+        ],
+        "configuration": {
+          "configurationID": "a807b43c07fd2ad95f991746772b57f35d2bcb822e73c58dd9594bd80ce4ee6c",
+          "cpu": "k8",
+          "id": "Q29uZmlndXJhdGlvbjoxMw==",
+          "makeVariables": {
+            "BINDIR": "bazel-out/k8-fastbuild/bin",
+            "COMPILATION_MODE": "fastbuild",
+            "GENDIR": "bazel-out/k8-fastbuild/bin",
+            "TARGET_CPU": "k8"
+          },
+          "mnemonic": "k8-fastbuild",
+          "platformName": "k8"
+        },
+        "endTime": null,
+        "exitCode": 1,
+        "failureCode": "NO_KEEP_GOING_TEST_FAILURE",
+        "failureMessage": "Testing //test/integrationtest:integrationtest_test failed: Test failed, aborting",
+        "id": "QWN0aW9uOjI=",
+        "label": "//test/integrationtest:integrationtest_test",
+        "startTime": null,
+        "stderrHash": "",
+        "stderrHashFunction": "",
+        "stderrSizeBytes": 0,
+        "stdoutHash": "",
+        "stdoutHashFunction": "",
+        "stdoutSizeBytes": 0,
+        "success": false,
+        "type": "TestRunner"
+      }
+    ],
+    "authenticatedUser": null,
+    "bazelCommand": {
+      "cmdLine": [
+        "--jobs=200",
+        "--notest_keep_going",
+        "--build_event_json_file=test2.bep.ndjson"
+      ],
+      "command": "test",
+      "executable": "bazel",
+      "explicitCmdLine": "--jobs=200 --notest_keep_going --build_event_json_file=test2.bep.ndjson",
+      "explicitStartupOptions": [],
+      "id": "",
+      "residual": "//...",
+      "startupOptions": [
+        "--max_idle_secs=10800",
+        "--noshutdown_on_low_sys_mem",
+        "--connect_timeout_secs=30",
+        "--output_user_root=/root/.cache/bazel/_bazel_root",
+        "--output_base=/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c",
+        "--failure_detail_out=/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c/failure_detail.rawproto",
+        "--idle_server_tasks",
+        "--write_command_log",
+        "--nowatchfs",
+        "--nofatal_event_bus_exceptions",
+        "--nowindows_enable_symlinks",
+        "--noclient_debug"
+      ]
+    },
+    "bazelVersion": "8.1.1",
+    "bepCompleted": false,
+    "build": null,
+    "configurations": [
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjoxMw==",
+        "mnemonic": "k8-fastbuild"
+      },
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjoxNA==",
+        "mnemonic": "k8-fastbuild"
+      }
+    ],
+    "endedAt": "2026-02-04T09:03:27.366Z",
+    "exitCodeName": "TESTS_FAILED",
+    "hostname": "3280a8b94607",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjg=",
+    "instanceName": {
+      "name": ""
+    },
+    "invocationID": "64719226-555e-494d-9918-0fd25d468b1e",
+    "isCiWorker": false,
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 2,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjc=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM2",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM3",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM4",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM5",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjQw",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjQx",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 41,
+              "id": "TWlzc0RldGFpOjQy",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            }
+          ],
+          "misses": 41,
+          "saveTimeInMs": 1,
+          "sizeInBytes": 1439630
+        },
+        "actionData": [
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 40,
+            "firstStartedMs": 1770195805736,
+            "id": "QWN0aW9uRGF0YTozNA==",
+            "lastEndedMs": 1770195807359,
+            "mnemonic": "TestRunner",
+            "systemTime": 1575,
+            "userTime": 614
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1,
+            "firstStartedMs": 1770195805695,
+            "id": "QWN0aW9uRGF0YTozNQ==",
+            "lastEndedMs": 1770195805697,
+            "mnemonic": "BazelWorkspaceStatusAction",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozNg==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CcStrip",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozNw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "Action",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozOA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "NpmLifecycleHook",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozOQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GoLink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0MA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CopyToDirectory",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0MQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "PackageTar",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Mg==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "Jsonnet",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Mw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GoStdlib",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0NA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CppModuleMap",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0NQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GoProtocGen",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Ng==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "OCIIndex",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Nw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "UnresolvedSymlink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0OA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CopyFile",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0OQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "ExecutableSymlink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1MA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "Genrule",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1MQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "NpmPackageExtract",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1Mg==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GenProtoDescriptorSet",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1Mw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "OCIDescriptor",
+            "systemTime": 0,
+            "userTime": 0
+          }
+        ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
+        "actionsExecuted": 41,
+        "id": "QWN0aW9uU3VtbWFyeTo4",
+        "remoteCacheHits": 0,
+        "runnerCount": [
+          {
+            "actionsExecuted": 41,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTk=",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 71,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6MjA=",
+            "name": "processwrapper-sandbox"
+          }
+        ]
+      },
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjg=",
+        "outputArtifactsFromActionCacheCount": 30,
+        "outputArtifactsFromActionCacheSizeInBytes": 1590662,
+        "outputArtifactsSeenCount": 106,
+        "outputArtifactsSeenSizeInBytes": 1605489,
+        "sourceArtifactsReadCount": 32,
+        "sourceArtifactsReadSizeInBytes": 1613088,
+        "topLevelArtifactsCount": 240,
+        "topLevelArtifactsSizeInBytes": 443979231
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6OA==",
+        "numAnalyses": 14,
+        "numBuilds": 13
+      },
+      "id": "TWV0cmljczo4",
+      "memoryMetrics": {
+        "garbageMetrics": [],
+        "id": "TWVtb3J5TWV0cmljczo4",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": {
+        "id": "TmV0d29ya01ldHJpY3M6Mw==",
+        "systemNetworkStats": {
+          "bytesRecv": 1910564395,
+          "bytesSent": 8046056,
+          "id": "U3lzdGVtTmV0d29ya1N0YXRzOjM=",
+          "packetsRecv": 117907,
+          "packetsSent": 97504,
+          "peakBytesRecvPerSec": 446898144,
+          "peakBytesSentPerSec": 19205,
+          "peakPacketsRecvPerSec": 20403,
+          "peakPacketsSentPerSec": 0
+        }
+      },
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6OA==",
+        "packageLoadMetrics": [],
+        "packagesLoaded": 0
+      },
+      "targetMetrics": {
+        "id": "VGFyZ2V0TWV0cmljczo4",
+        "targetsConfigured": 0,
+        "targetsConfiguredNotIncludingAspects": 0,
+        "targetsLoaded": 0
+      },
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 48,
+        "cpuTimeInMs": 3290,
+        "executionPhaseTimeInMs": 1652,
+        "id": "VGltaW5nTWV0cmljczo4",
+        "wallTimeInMs": 1982
+      }
+    },
+    "numFetches": 0,
+    "profile": null,
+    "sourceControl": null,
+    "startedAt": "2026-02-04T09:03:25.376Z",
+    "stepLabel": "",
+    "user": {
+      "Email": "",
+      "LDAP": "root"
+    }
+  }
+}

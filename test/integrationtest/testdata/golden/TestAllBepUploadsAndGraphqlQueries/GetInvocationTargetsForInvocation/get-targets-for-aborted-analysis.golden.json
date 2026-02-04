@@ -1,0 +1,22 @@
+{
+  "bazelInvocation": {
+    "invocationTargets": {
+      "edges": [],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    },
+    "numSkipped": {
+      "totalCount": 0
+    },
+    "numSuccessful": {
+      "totalCount": 0
+    },
+    "numTotal": {
+      "totalCount": 0
+    }
+  }
+}

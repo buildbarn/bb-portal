@@ -60,6 +60,18 @@ var (
 		filename:     "nextjs_analysis_fail.bep.ndjson",
 		invocationID: "df7178e2-a815-4654-a409-d18e845d1e35",
 	}
+	abortedAnalysis = bepFile{
+		filename:     "bb_portal_no_analyze.bep.ndjson",
+		invocationID: "bb2b45d9-d695-4194-8fdc-01ba50477a92",
+	}
+	abortedBuild = bepFile{
+		filename:     "bb_portal_no_build.bep.ndjson",
+		invocationID: "76651929-40d8-4f79-a2de-6a4a5092b76c",
+	}
+	abortedTests = bepFile{
+		filename:     "bb_portal_aborted_tests.ndjson",
+		invocationID: "64719226-555e-494d-9918-0fd25d468b1e",
+	}
 	authenticatedUserUUID = "8bdb3187-e36c-487e-95b8-f8ca28a82068"
 
 	// An authenticated user UUID not present in any BEP file.
@@ -98,6 +110,9 @@ var (
 				{bepFile: successfulBazelTest},
 				{bepFile: failedBazelTest},
 				{bepFile: failedBazelAnalysis},
+				{bepFile: abortedAnalysis},
+				{bepFile: abortedBuild},
+				{bepFile: abortedTests},
 			},
 			graphqlTestCases: graphqlTestTable{
 				"LoadFullBazelInvocationDetails": {
@@ -131,6 +146,21 @@ var (
 							"invocationID": invocationIDNotFound,
 						},
 						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
 					},
 				},
 				"FindBuildByUUID": {
@@ -166,6 +196,16 @@ var (
 					"get targets for failed analysis": {
 						variables: testkit.Variables{
 							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get targets for aborted analysis": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get targets for aborted build": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
 						},
 					},
 				},
@@ -205,6 +245,13 @@ var (
 							"label":        "//packages/one:one",
 							"aspect":       "",
 							"targetKind":   "_npm_package rule",
+						},
+					},
+				},
+				"GetTestsForInvocation": {
+					"get tests for aborted tests": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
 						},
 					},
 				},

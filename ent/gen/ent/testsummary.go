@@ -35,7 +35,7 @@ type TestSummary struct {
 	// LastStopTime holds the value of the "last_stop_time" field.
 	LastStopTime time.Time `json:"last_stop_time,omitempty"`
 	// TotalRunDurationInMs holds the value of the "total_run_duration_in_ms" field.
-	TotalRunDurationInMs int64 `json:"total_run_duration_in_ms,omitempty"`
+	TotalRunDurationInMs *int64 `json:"total_run_duration_in_ms,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestSummaryQuery when eager-loading is set.
 	Edges                          TestSummaryEdges `json:"edges"`
@@ -164,7 +164,8 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field total_run_duration_in_ms", values[i])
 			} else if value.Valid {
-				ts.TotalRunDurationInMs = value.Int64
+				ts.TotalRunDurationInMs = new(int64)
+				*ts.TotalRunDurationInMs = value.Int64
 			}
 		case testsummary.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -243,8 +244,10 @@ func (ts *TestSummary) String() string {
 	builder.WriteString("last_stop_time=")
 	builder.WriteString(ts.LastStopTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("total_run_duration_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", ts.TotalRunDurationInMs))
+	if v := ts.TotalRunDurationInMs; v != nil {
+		builder.WriteString("total_run_duration_in_ms=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

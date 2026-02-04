@@ -59,7 +59,15 @@ func (r *BuildEventRecorder) saveTestResultBatch(ctx context.Context, batch []Bu
 		return status.Error(codes.InvalidArgument, "Attempted to configure targets for an invocation but the invocation was already completed.")
 	}
 
-	if err := createTestResultsBulk(ctx, r.InvocationDbID, r.InstanceNameDbID, tx, batch); err != nil {
+	// Don't handle aborted events.
+	filteredBatch := make([]BuildEventWithInfo, 0, len(batch))
+	for _, x := range batch {
+		if x.Event.GetTestResult() != nil {
+			filteredBatch = append(filteredBatch, x)
+		}
+	}
+
+	if err := createTestResultsBulk(ctx, r.InvocationDbID, r.InstanceNameDbID, tx, filteredBatch); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert test results")
 	}
 
