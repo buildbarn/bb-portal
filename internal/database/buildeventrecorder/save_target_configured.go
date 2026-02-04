@@ -59,12 +59,20 @@ func (r *BuildEventRecorder) saveTargetConfiguredBatch(ctx context.Context, batc
 		return status.Error(codes.InvalidArgument, "Attempted to configure targets for an invocation but the invocation was already completed.")
 	}
 
-	targetIds, err := getOrCreateTargets(ctx, r.InstanceNameDbID, tx, batch)
+	// Don't handle aborted events.
+	filteredBatch := make([]BuildEventWithInfo, 0, len(batch))
+	for _, x := range batch {
+		if x.Event.GetConfigured() != nil {
+			filteredBatch = append(filteredBatch, x)
+		}
+	}
+
+	targetIds, err := getOrCreateTargets(ctx, r.InstanceNameDbID, tx, filteredBatch)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to get or create targets")
 	}
 
-	if err := createTargetKindMappingsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, batch, targetIds); err != nil {
+	if err := createTargetKindMappingsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, filteredBatch, targetIds); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert event metadata")
 	}
 

@@ -57,23 +57,31 @@ func (r *BuildEventRecorder) saveTestSummaryBatch(ctx context.Context, batch []B
 		return status.Error(codes.InvalidArgument, "Attempted to configure targets for an invocation but the invocation was already completed.")
 	}
 
+	// Don't handle aborted events.
+	filteredBatch := make([]BuildEventWithInfo, 0, len(batch))
+	for _, x := range batch {
+		if x.Event.GetTestSummary() != nil {
+			filteredBatch = append(filteredBatch, x)
+		}
+	}
+
 	params := sqlc.UpdateTestSummariesBulkParams{
 		BazelInvocationID: int64(r.InvocationDbID),
 		InstanceNameID:    int64(r.InstanceNameDbID),
-		Labels:            make([]string, len(batch)),
-		ConfigIds:         make([]string, len(batch)),
-		OverallStatuses:   make([]string, len(batch)),
-		TotalRunCounts:    make([]int32, len(batch)),
-		RunCounts:         make([]int32, len(batch)),
-		AttemptCounts:     make([]int32, len(batch)),
-		ShardCounts:       make([]int32, len(batch)),
-		TotalNumCacheds:   make([]int32, len(batch)),
-		StartTimes:        make([]time.Time, len(batch)),
-		StopTimes:         make([]time.Time, len(batch)),
-		Durations:         make([]int64, len(batch)),
+		Labels:            make([]string, len(filteredBatch)),
+		ConfigIds:         make([]string, len(filteredBatch)),
+		OverallStatuses:   make([]string, len(filteredBatch)),
+		TotalRunCounts:    make([]int32, len(filteredBatch)),
+		RunCounts:         make([]int32, len(filteredBatch)),
+		AttemptCounts:     make([]int32, len(filteredBatch)),
+		ShardCounts:       make([]int32, len(filteredBatch)),
+		TotalNumCacheds:   make([]int32, len(filteredBatch)),
+		StartTimes:        make([]time.Time, len(filteredBatch)),
+		StopTimes:         make([]time.Time, len(filteredBatch)),
+		Durations:         make([]int64, len(filteredBatch)),
 	}
 
-	for i, x := range batch {
+	for i, x := range filteredBatch {
 		be := x.Event
 		testSummaryID := be.GetId().GetTestSummary()
 		testSummary := be.GetTestSummary()
@@ -114,7 +122,7 @@ func (r *BuildEventRecorder) saveTestSummaryBatch(ctx context.Context, batch []B
 	if err != nil {
 		return util.StatusWrap(err, "Failed to bulk update test summaries")
 	}
-	if affectedRows != int64(len(batch)) {
+	if affectedRows != int64(len(filteredBatch)) {
 		return status.Errorf(codes.Internal, "Expected to update %d test summaries, but only updated %d", len(batch), affectedRows)
 	}
 

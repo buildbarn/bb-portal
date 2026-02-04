@@ -49,7 +49,7 @@ func (TestSummary) Fields() []ent.Field {
 		field.Time("last_stop_time").Optional(),
 
 		// The total runtime of the test.
-		field.Int64("total_run_duration_in_ms").Optional().
+		field.Int64("total_run_duration_in_ms").Optional().Nillable().
 			Annotations(entgql.OrderField("TOTAL_RUN_DURATION_IN_MS")),
 	}
 }

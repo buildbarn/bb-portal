@@ -31052,7 +31052,7 @@ func (m *TestSummaryMutation) TotalRunDurationInMs() (r int64, exists bool) {
 // OldTotalRunDurationInMs returns the old "total_run_duration_in_ms" field's value of the TestSummary entity.
 // If the TestSummary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestSummaryMutation) OldTotalRunDurationInMs(ctx context.Context) (v int64, err error) {
+func (m *TestSummaryMutation) OldTotalRunDurationInMs(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTotalRunDurationInMs is only allowed on UpdateOne operations")
 	}

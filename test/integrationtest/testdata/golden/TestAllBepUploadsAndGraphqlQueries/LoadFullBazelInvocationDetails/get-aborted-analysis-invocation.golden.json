@@ -1,0 +1,149 @@
+{
+  "bazelInvocation": {
+    "actions": [],
+    "authenticatedUser": null,
+    "bazelCommand": {
+      "cmdLine": [
+        "--noanalyze",
+        "--build_event_json_file=noanalyze.bep.ndjson"
+      ],
+      "command": "build",
+      "executable": "bazel",
+      "explicitCmdLine": "--noanalyze --build_event_json_file=noanalyze.bep.ndjson",
+      "explicitStartupOptions": [],
+      "id": "",
+      "residual": "//...",
+      "startupOptions": [
+        "--max_idle_secs=10800",
+        "--noshutdown_on_low_sys_mem",
+        "--connect_timeout_secs=30",
+        "--output_user_root=/root/.cache/bazel/_bazel_root",
+        "--output_base=/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c",
+        "--failure_detail_out=/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c/failure_detail.rawproto",
+        "--idle_server_tasks",
+        "--write_command_log",
+        "--nowatchfs",
+        "--nofatal_event_bus_exceptions",
+        "--nowindows_enable_symlinks",
+        "--noclient_debug"
+      ]
+    },
+    "bazelVersion": "8.1.1",
+    "bepCompleted": false,
+    "build": null,
+    "configurations": [],
+    "endedAt": "2026-02-04T08:41:31.302Z",
+    "exitCodeName": "SUCCESS",
+    "hostname": "3280a8b94607",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjY=",
+    "instanceName": {
+      "name": ""
+    },
+    "invocationID": "bb2b45d9-d695-4194-8fdc-01ba50477a92",
+    "isCiWorker": false,
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 0,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjY=",
+          "loadTimeInMs": 0,
+          "missDetails": [],
+          "misses": 0,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 0
+        },
+        "actionData": [],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
+        "actionsExecuted": 0,
+        "id": "QWN0aW9uU3VtbWFyeTo2",
+        "remoteCacheHits": 0,
+        "runnerCount": [
+          {
+            "actionsExecuted": 0,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTc=",
+            "name": "total"
+          }
+        ]
+      },
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjY=",
+        "outputArtifactsFromActionCacheCount": 0,
+        "outputArtifactsFromActionCacheSizeInBytes": 0,
+        "outputArtifactsSeenCount": 0,
+        "outputArtifactsSeenSizeInBytes": 0,
+        "sourceArtifactsReadCount": 0,
+        "sourceArtifactsReadSizeInBytes": 0,
+        "topLevelArtifactsCount": 0,
+        "topLevelArtifactsSizeInBytes": 0
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6Ng==",
+        "numAnalyses": 8,
+        "numBuilds": 8
+      },
+      "id": "TWV0cmljczo2",
+      "memoryMetrics": {
+        "garbageMetrics": [
+          {
+            "garbageCollected": 2192568,
+            "id": "R2FyYmFnZU1ldHJpY3M6MQ==",
+            "type": "G1 Survivor Space"
+          },
+          {
+            "garbageCollected": 167772160,
+            "id": "R2FyYmFnZU1ldHJpY3M6Mg==",
+            "type": "G1 Eden Space"
+          }
+        ],
+        "id": "TWVtb3J5TWV0cmljczo2",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": {
+        "id": "TmV0d29ya01ldHJpY3M6MQ==",
+        "systemNetworkStats": {
+          "bytesRecv": 1760331567,
+          "bytesSent": 7096193,
+          "id": "U3lzdGVtTmV0d29ya1N0YXRzOjE=",
+          "packetsRecv": 102817,
+          "packetsSent": 88046,
+          "peakBytesRecvPerSec": 446898144,
+          "peakBytesSentPerSec": 19205,
+          "peakPacketsRecvPerSec": 20403,
+          "peakPacketsSentPerSec": 0
+        }
+      },
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6Ng==",
+        "packageLoadMetrics": [],
+        "packagesLoaded": 0
+      },
+      "targetMetrics": {
+        "id": "VGFyZ2V0TWV0cmljczo2",
+        "targetsConfigured": 0,
+        "targetsConfiguredNotIncludingAspects": 0,
+        "targetsLoaded": 0
+      },
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 0,
+        "cpuTimeInMs": 8660,
+        "executionPhaseTimeInMs": 0,
+        "id": "VGltaW5nTWV0cmljczo2",
+        "wallTimeInMs": 1232
+      }
+    },
+    "numFetches": 1,
+    "profile": null,
+    "sourceControl": null,
+    "startedAt": "2026-02-04T08:41:30.06Z",
+    "stepLabel": "",
+    "user": {
+      "Email": "",
+      "LDAP": ""
+    }
+  }
+}

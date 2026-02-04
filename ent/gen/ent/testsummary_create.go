@@ -286,7 +286,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 	}
 	if value, ok := tsc.mutation.TotalRunDurationInMs(); ok {
 		_spec.SetField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
-		_node.TotalRunDurationInMs = value
+		_node.TotalRunDurationInMs = &value
 	}
 	if nodes := tsc.mutation.InvocationTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

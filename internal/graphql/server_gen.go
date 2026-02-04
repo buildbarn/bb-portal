@@ -20025,9 +20025,9 @@ func (ec *executionContext) _TestSummary_totalRunDurationInMs(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int64)
+	res := resTmp.(*int64)
 	fc.Result = res
-	return ec.marshalOInt2int64(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TestSummary_totalRunDurationInMs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {

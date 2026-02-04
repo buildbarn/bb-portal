@@ -101,10 +101,13 @@ export const TestTab: React.FC<Props> = ({ invocationId }) => {
 
   const parsedData: TestTabRowType[] = useMemo(() => {
     return parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => {
-      console.table(ts);
       var cachedLocally: boolean | null = null;
       var cachedRemotely: boolean | null = null;
-      if (ts.testResults !== null && ts.testResults !== undefined) {
+      if (
+        ts.testResults !== null &&
+        ts.testResults !== undefined &&
+        ts.testResults.length > 0
+      ) {
         if (ts.testResults.every((tr) => tr.cachedLocally === true)) {
           cachedLocally = true;
         } else if (ts.testResults.some((tr) => tr.cachedLocally === false)) {
