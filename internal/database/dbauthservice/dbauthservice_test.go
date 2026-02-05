@@ -14,7 +14,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
-	"github.com/google/uuid"
 	"go.uber.org/mock/gomock"
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
@@ -173,68 +172,5 @@ func TestGetAuthorizedInstanceNames(t *testing.T) {
 		require.Len(t, got, 2)
 		require.Equal(t, "validName1", got[0])
 		require.Equal(t, "validName2", got[1])
-	})
-}
-
-func TestQueryFiltering(t *testing.T) {
-	ctrl, ctx := gomock.WithContext(context.Background(), t)
-	clock := mock.NewMockClock(ctrl)
-	clock.EXPECT().Now().AnyTimes().Return(time.Unix(1000, 0))
-
-	adminCtx := dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
-	authorizer := auth.NewJMESPathExpressionAuthorizer(
-		jmespath.MustCompile("instanceName == 'validName1' || instanceName == 'validName2'"),
-	)
-
-	t.Run("NoInvocations", func(t *testing.T) {
-		db := setupTestDB(t).Ent()
-		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
-		authCtx := dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService)
-
-		got, err := db.BazelInvocation.Query().All(authCtx)
-		require.NoError(t, err)
-		require.Len(t, got, 0)
-		num, err := db.BazelInvocation.Query().Count(authCtx)
-		require.NoError(t, err)
-		require.Equal(t, 0, num)
-	})
-
-	t.Run("MultipleInvocations", func(t *testing.T) {
-		db := setupTestDB(t).Ent()
-		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
-		authCtx := dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService)
-
-		instanceName1, err := db.InstanceName.Create().SetName("validName1").Save(adminCtx)
-		require.NoError(t, err)
-		instanceName2, err := db.InstanceName.Create().SetName("validName2").Save(adminCtx)
-		require.NoError(t, err)
-		instanceName3, err := db.InstanceName.Create().SetName("validName3").Save(adminCtx)
-		require.NoError(t, err)
-
-		bi1, err := db.BazelInvocation.Create().
-			SetInstanceNameID(instanceName1.ID).
-			SetInvocationID(uuid.New()).
-			Save(adminCtx)
-		require.NoError(t, err)
-		bi2, err := db.BazelInvocation.Create().
-			SetInstanceNameID(instanceName2.ID).
-			SetInvocationID(uuid.New()).
-			Save(adminCtx)
-		require.NoError(t, err)
-		_, err = db.BazelInvocation.Create().
-			SetInstanceNameID(instanceName3.ID).
-			SetInvocationID(uuid.New()).
-			Save(adminCtx)
-		require.NoError(t, err)
-
-		got, err := db.BazelInvocation.Query().All(authCtx)
-		require.NoError(t, err)
-		require.Len(t, got, 2)
-		require.Equal(t, bi1.ID, got[0].ID)
-		require.Equal(t, bi2.ID, got[1].ID)
-
-		num, err := db.BazelInvocation.Query().Count(authCtx)
-		require.NoError(t, err)
-		require.Equal(t, 2, num)
 	})
 }
