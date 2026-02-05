@@ -6,35 +6,16 @@ import (
 
 	"entgo.io/ent/entql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/privacy"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 )
-
-func addDefaultFilter(f privacy.Filter, authorizedInstanceNames []any) entql.P {
-	return entql.HasEdgeWith(
-		"instance_name",
-		entql.FieldIn("name", authorizedInstanceNames...),
-	)
-}
-
-func addAuthenticatedUserFilter(f privacy.Filter, authorizedInstanceNames []any) entql.P {
-	return entql.HasEdgeWith(
-		"bazel_invocations",
-		addDefaultFilter(f, authorizedInstanceNames),
-	)
-}
-
-func addTestSummaryFilter(f privacy.Filter, authorizedInstanceNames []any) entql.P {
-	return entql.HasEdgeWith(
-		testsummary.InvocationTargetColumn,
-		entql.HasEdgeWith(
-			invocationtarget.TargetColumn,
-			addDefaultFilter(f, authorizedInstanceNames),
-		),
-	)
-}
 
 func privacyFilterFunc(ctx context.Context, f privacy.Filter, filterFunc func(privacy.Filter, []any) entql.P) error {
 	if dbauthservice.BypassDbAuthServiceFromContext(ctx) {
@@ -60,34 +41,68 @@ func privacyFilterFunc(ctx context.Context, f privacy.Filter, filterFunc func(pr
 // Policy for AuthenticatedUser.
 func (AuthenticatedUser) Policy() ent.Policy {
 	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
-		return privacyFilterFunc(ctx, f, addAuthenticatedUserFilter)
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				authenticateduser.EdgeBazelInvocations,
+				entql.HasEdgeWith(
+					bazelinvocation.EdgeInstanceName,
+					entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+				),
+			)
+		})
 	})
 }
 
 // Policy for BazelInvocation.
 func (BazelInvocation) Policy() ent.Policy {
 	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
-		return privacyFilterFunc(ctx, f, addDefaultFilter)
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				bazelinvocation.EdgeInstanceName,
+				entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+			)
+		})
 	})
 }
 
 // Policy for Build.
 func (Build) Policy() ent.Policy {
 	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
-		return privacyFilterFunc(ctx, f, addDefaultFilter)
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				build.EdgeInstanceName,
+				entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+			)
+		})
 	})
 }
 
 // Policy for Target.
 func (Target) Policy() ent.Policy {
 	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
-		return privacyFilterFunc(ctx, f, addDefaultFilter)
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				target.EdgeInstanceName,
+				entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+			)
+		})
 	})
 }
 
 // Policy for TestSummary.
 func (TestSummary) Policy() ent.Policy {
 	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
-		return privacyFilterFunc(ctx, f, addTestSummaryFilter)
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				testsummary.EdgeInvocationTarget,
+				entql.HasEdgeWith(
+					invocationtarget.EdgeTarget,
+					entql.HasEdgeWith(
+						target.EdgeInstanceName,
+						entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+					),
+				),
+			)
+		})
 	})
 }
