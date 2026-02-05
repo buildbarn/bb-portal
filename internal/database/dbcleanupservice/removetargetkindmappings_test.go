@@ -7,6 +7,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
+	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace/noop"
@@ -31,7 +32,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
@@ -45,7 +46,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
@@ -75,7 +76,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("NoTargetKindMappings", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
@@ -97,7 +98,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("SingleTargetKindMapping", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
@@ -127,7 +128,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("MultipleTargetKindMappings", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")

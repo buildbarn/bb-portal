@@ -30,10 +30,10 @@ go_test(
     deps = [
         "//ent/gen/ent/invocationtarget",
         "//ent/gen/ent/runtime",
-        "//internal/database",
         "//internal/database/dbauthservice",
         "//internal/database/embedded",
         "//internal/mock",
+        "//test/testutils",
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/jmespath",
         "@com_github_google_uuid//:uuid",

@@ -1,0 +1,13 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "testutils",
+    srcs = ["testutils.go"],
+    importpath = "github.com/buildbarn/bb-portal/test/testutils",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//internal/database",
+        "//internal/database/embedded",
+        "@com_github_stretchr_testify//require",
+    ],
+)

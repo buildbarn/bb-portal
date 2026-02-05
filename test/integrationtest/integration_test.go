@@ -15,6 +15,7 @@ import (
 	databasecommon "github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/testkit"
+	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
@@ -291,7 +292,7 @@ func runTestCase(t *testing.T, queryRegistry *testkit.QueryRegistry, testCase te
 		uuidGenerator = uuid.NewRandom
 	}
 
-	db := setupTestDB(t)
+	db := testutils.SetupTestDB(t, dbProvider)
 
 	bepUploader := setupTestBepUploader(t, db, testCase, uuidGenerator)
 

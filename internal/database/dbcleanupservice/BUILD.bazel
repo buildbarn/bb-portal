@@ -54,6 +54,7 @@ go_test(
         "//internal/database/embedded",
         "//internal/mock",
         "//pkg/proto/configuration/bb_portal",
+        "//test/testutils",
         "@com_github_buildbarn_bb_storage//pkg/clock",
         "@com_github_google_uuid//:uuid",
         "@com_github_klauspost_compress//zstd",

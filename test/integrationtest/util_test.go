@@ -30,35 +30,13 @@ var dbProvider *embedded.DatabaseProvider
 
 func TestMain(m *testing.M) {
 	var err error
-	tmpDir, err := os.MkdirTemp(os.TempDir(), "embedded_db_test")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Could not create temp dir: %v\n", err)
-		os.Exit(1)
-	}
-
-	dbProvider, err = embedded.NewDatabaseProvider(tmpDir, os.Stderr)
+	dbProvider, err = embedded.NewDatabaseProvider(os.Stderr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not start embedded DB: %v\n", err)
 		os.Exit(1)
 	}
-	defer func() {
-		dbProvider.Cleanup()
-		os.RemoveAll(tmpDir)
-	}()
-
-	code := m.Run()
-	os.Exit(code)
-}
-
-func setupTestDB(t testing.TB) database.Client {
-	conn, err := dbProvider.CreateDatabase()
-	require.NoError(t, err)
-	db, err := database.New("postgres", conn)
-	require.NoError(t, err)
-	t.Cleanup(func() { conn.Close() })
-	err = db.Ent().Schema.Create(context.Background())
-	require.NoError(t, err)
-	return db
+	defer dbProvider.Cleanup()
+	os.Exit(m.Run())
 }
 
 func createMockUUIDGenerator(t *testing.T, uuidString string, times int) util.UUIDGenerator {

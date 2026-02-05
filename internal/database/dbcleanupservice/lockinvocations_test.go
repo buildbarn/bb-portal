@@ -10,6 +10,7 @@ import (
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
+	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace/noop"
@@ -24,7 +25,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations-NoEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
@@ -33,7 +34,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation-NoEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		startInv, err := client.BazelInvocation.Create().
@@ -55,7 +56,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("FinishedInvocation-NoEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		startInv, err := client.BazelInvocation.Create().
@@ -79,7 +80,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation-RecentEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
@@ -107,7 +108,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("FinishedInvocation-RecentEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
@@ -136,7 +137,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation-OldEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
@@ -164,7 +165,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("FinishedInvocation-OldEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
@@ -193,7 +194,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("MultipleMixedInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
@@ -249,7 +250,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
@@ -258,7 +259,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	})
 
 	t.Run("NoEndedAt-NoEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		startInv, err := client.BazelInvocation.Create().
@@ -279,7 +280,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	})
 
 	t.Run("WithEndedAt-NoEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invEndedAt := time.Unix(1600000000, 0)
@@ -303,7 +304,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	})
 
 	t.Run("NoEndedAt-WithEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		eventEndedAt := time.Unix(1600000100, 0)
@@ -333,7 +334,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	})
 
 	t.Run("WithEndedAt-WithEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invEndedAt := time.Unix(1600000000, 0)
@@ -365,7 +366,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	})
 
 	t.Run("MultipleMixedInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
@@ -416,7 +417,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	})
 
 	t.Run("DontUpdateUnfinishedInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
