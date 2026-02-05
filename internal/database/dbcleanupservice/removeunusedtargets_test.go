@@ -7,6 +7,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
+	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace/noop"
@@ -20,7 +21,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoTargets", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
@@ -34,7 +35,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("UnusedTarget", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().
@@ -61,7 +62,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("TargetWithInvocationTarget", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().
@@ -101,7 +102,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("TargetWithTargetKindMapping", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().
@@ -140,7 +141,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("TargetWithInvocationTargetAndTargetKindMapping", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().

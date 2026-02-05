@@ -21,11 +21,7 @@ func main() {
 			return status.Error(codes.InvalidArgument, "Usage: bb_export_schema")
 		}
 
-		dir, err := os.MkdirTemp(os.TempDir(), "schema_export")
-		if err != nil {
-			return util.StatusWrap(err, "Could not create temp dir for database")
-		}
-		dbProvider, err := embedded.NewDatabaseProvider(dir, os.Stderr)
+		dbProvider, err := embedded.NewDatabaseProvider(os.Stderr)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create database provider for schema export")
 		}

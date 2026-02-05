@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 
 	// Register the pgx driver.
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -23,11 +24,12 @@ type DatabaseProvider struct {
 	user, password string
 	port           int
 	db             *sql.DB
+	runtimePath    string
 }
 
 // NewDatabaseProvider creates and starts an ephemeral Postgres
 // instance that can provide databases on demand.
-func NewDatabaseProvider(runtimePath string, logger io.Writer) (*DatabaseProvider, error) {
+func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 	// Ask the kernel for a free port.
 	listener, err := net.Listen("tcp", "localhost:0")
 	if err != nil {
@@ -38,6 +40,11 @@ func NewDatabaseProvider(runtimePath string, logger io.Writer) (*DatabaseProvide
 
 	const user, database = "postgres", "postgres"
 	password := uuid.New().String()
+
+	runtimePath, err := os.MkdirTemp(os.TempDir(), "embedded_db_runtime")
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to create temp dir for embedded postgres runtime")
+	}
 
 	config := embeddedpostgres.DefaultConfig().
 		Port(uint32(port)).
@@ -61,10 +68,12 @@ func NewDatabaseProvider(runtimePath string, logger io.Writer) (*DatabaseProvide
 	}
 
 	return &DatabaseProvider{
-		user:     user,
-		password: password,
-		port:     port,
-		db:       db,
+		postgres:    postgres,
+		user:        user,
+		password:    password,
+		port:        port,
+		db:          db,
+		runtimePath: runtimePath,
 	}, nil
 }
 
@@ -87,12 +96,14 @@ func (d *DatabaseProvider) CreateDatabase() (*sql.DB, error) {
 
 // Cleanup closes the primary connection and stops the postgres server.
 func (d *DatabaseProvider) Cleanup() error {
-	var err1, err2 error
+	var err1, err2, err3 error
 	if d.db != nil {
 		err1 = d.db.Close()
 	}
 	if d.postgres != nil {
 		err2 = d.postgres.Stop()
 	}
-	return errors.Join(err1, err2)
+	err3 = os.RemoveAll(d.runtimePath)
+
+	return errors.Join(err1, err2, err3)
 }

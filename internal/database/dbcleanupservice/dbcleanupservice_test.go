@@ -9,6 +9,7 @@ import (
 
 	"github.com/RoaringBitmap/roaring"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/klauspost/compress/zstd"
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
@@ -35,35 +36,13 @@ var dbProvider *embedded.DatabaseProvider
 
 func TestMain(m *testing.M) {
 	var err error
-	tmpDir, err := os.MkdirTemp(os.TempDir(), "embedded_db_test")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Could not create temp dir: %v\n", err)
-		os.Exit(1)
-	}
-
-	dbProvider, err = embedded.NewDatabaseProvider(tmpDir, os.Stderr)
+	dbProvider, err = embedded.NewDatabaseProvider(os.Stderr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not start embedded DB: %v\n", err)
 		os.Exit(1)
 	}
-	defer func() {
-		dbProvider.Cleanup()
-		os.RemoveAll(tmpDir)
-	}()
-
-	code := m.Run()
-	os.Exit(code)
-}
-
-func setupTestDB(t testing.TB) database.Client {
-	conn, err := dbProvider.CreateDatabase()
-	require.NoError(t, err)
-	db, err := database.New("postgres", conn)
-	require.NoError(t, err)
-	t.Cleanup(func() { conn.Close() })
-	err = db.Ent().Schema.Create(context.Background())
-	require.NoError(t, err)
-	return db
+	defer dbProvider.Cleanup()
+	os.Exit(m.Run())
 }
 
 func getNewDbCleanupService(db database.Client, clock clock.Clock, traceProvider trace.TracerProvider) (*dbcleanupservice.DbCleanupService, error) {
@@ -117,7 +96,7 @@ func TestCompactLogs(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("FinishedInvocationWithoutIncompleteLog", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
@@ -155,7 +134,7 @@ func TestCompactLogs(t *testing.T) {
 	}
 
 	t.Run("FinishedInvocationWithIncompleteLog", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
@@ -195,7 +174,7 @@ func TestCompactLogs(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocationWithIncompleteLog", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
@@ -226,7 +205,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
@@ -241,7 +220,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("InvocationNotCompleted", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
@@ -263,7 +242,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("InvocationCompletedButNotOld", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
@@ -286,7 +265,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("InvocationCompletedAndOld", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
@@ -309,7 +288,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("MultipleInvocationsMixed", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		// Old and completed
@@ -362,7 +341,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoBuilds", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
@@ -376,7 +355,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	})
 
 	t.Run("BuildWithInvocation", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
@@ -400,7 +379,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	})
 
 	t.Run("BuildWithoutInvocation", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
@@ -418,7 +397,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	})
 
 	t.Run("MultipleBuildsMixed", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 

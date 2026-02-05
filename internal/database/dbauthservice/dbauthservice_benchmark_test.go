@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
+	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
@@ -35,7 +36,7 @@ func BenchmarkDbAuthService_GetAuthorizedInstanceNames(b *testing.B) {
 			},
 		})),
 	)
-	db := setupTestDB(b).Ent()
+	db := testutils.SetupTestDB(b, dbProvider).Ent()
 	authorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.roles, 'admin')"),
 	)

@@ -20,6 +20,7 @@ go_test(
         "//internal/mock",
         "//pkg/proto/configuration/bb_portal",
         "//pkg/testkit",
+        "//test/testutils",
         "@com_github_99designs_gqlgen//graphql",
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
