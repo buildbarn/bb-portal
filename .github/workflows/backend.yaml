@@ -16,17 +16,17 @@
             {
                "if": "matrix.host.platform_name == 'linux_amd64'",
                "name": "linux_amd64: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64 //..."
+               "run": "bazel test --test_output=errors //..."
             },
             {
                "if": "matrix.host.platform_name == 'linux_arm64'",
                "name": "linux_arm64: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_arm64 //..."
+               "run": "bazel test --test_output=errors //..."
             },
             {
                "if": "matrix.host.cross_compile",
                "name": "Cross-platform builds",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_amd64,@rules_go//go/toolchain:darwin_arm64,@rules_go//go/toolchain:freebsd_amd64,@rules_go//go/toolchain:windows_amd64 //..."
+               "run": "bazel build --platforms=@com_github_buildbarn_bb_storage//tools/platforms:darwin_amd64,@com_github_buildbarn_bb_storage//tools/platforms:darwin_arm64,@com_github_buildbarn_bb_storage//tools/platforms:freebsd_amd64,@com_github_buildbarn_bb_storage//tools/platforms:windows_amd64 --@bazel_tools//tools/test:incompatible_use_default_test_toolchain=False //..."
             }
          ],
          "strategy": {

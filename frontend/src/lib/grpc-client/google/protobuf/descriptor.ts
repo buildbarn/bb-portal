@@ -33,6 +33,8 @@ export enum Edition {
    */
   EDITION_2023 = 1000,
   EDITION_2024 = 1001,
+  /** EDITION_UNSTABLE - A placeholder edition for developing and testing unscheduled features. */
+  EDITION_UNSTABLE = 9999,
   /**
    * EDITION_1_TEST_ONLY - Placeholder editions for testing feature resolution.  These should not be
    * used or relied on outside of tests.
@@ -71,6 +73,9 @@ export function editionFromJSON(object: any): Edition {
     case 1001:
     case "EDITION_2024":
       return Edition.EDITION_2024;
+    case 9999:
+    case "EDITION_UNSTABLE":
+      return Edition.EDITION_UNSTABLE;
     case 1:
     case "EDITION_1_TEST_ONLY":
       return Edition.EDITION_1_TEST_ONLY;
@@ -110,6 +115,8 @@ export function editionToJSON(object: Edition): string {
       return "EDITION_2023";
     case Edition.EDITION_2024:
       return "EDITION_2024";
+    case Edition.EDITION_UNSTABLE:
+      return "EDITION_UNSTABLE";
     case Edition.EDITION_1_TEST_ONLY:
       return "EDITION_1_TEST_ONLY";
     case Edition.EDITION_2_TEST_ONLY:
@@ -1130,7 +1137,12 @@ export interface FieldOptions {
   deprecated?:
     | boolean
     | undefined;
-  /** For Google-internal migration only. Do not use. */
+  /**
+   * DEPRECATED. DO NOT USE!
+   * For Google-internal migration only. Do not use.
+   *
+   * @deprecated
+   */
   weak?:
     | boolean
     | undefined;

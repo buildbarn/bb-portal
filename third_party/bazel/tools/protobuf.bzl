@@ -1,3 +1,5 @@
+load("@com_google_protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
+
 def _get_proto_src_impl(ctx):
     proto_inputs = ctx.attr.proto[ProtoInfo].direct_sources
     srcs = [

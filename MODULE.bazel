@@ -10,46 +10,46 @@ local_path_override(
     path = "third_party/bazel",
 )
 
-bazel_dep(name = "aspect_bazel_lib", version = "2.21.2")
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
 bazel_dep(name = "com_github_buildbarn_bb_browser")
 bazel_dep(name = "com_github_buildbarn_bb_remote_execution")
 bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "com_github_buildbarn_go_xdr")
-bazel_dep(name = "gazelle", version = "0.45.0")
-bazel_dep(name = "googleapis", version = "0.0.0-20250826-a92cee39")
-bazel_dep(name = "googletest", version = "1.16.0")
-bazel_dep(name = "protobuf", version = "31.1")
+bazel_dep(name = "gazelle", version = "0.47.0")
+bazel_dep(name = "googleapis", version = "0.0.0-20260109-6145b5ff")
+bazel_dep(name = "googletest", version = "1.17.0")
+bazel_dep(name = "protobuf", version = "33.4")
 bazel_dep(name = "platforms", version = "1.0.0")
-bazel_dep(name = "rules_go", version = "0.57.0")
+bazel_dep(name = "rules_go", version = "0.59.0")
+bazel_dep(name = "rules_img", version = "0.3.4")
 bazel_dep(name = "rules_jsonnet", version = "0.7.2")
-bazel_dep(name = "rules_oci", version = "2.2.6")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_shell", version = "0.6.1")
-bazel_dep(name = "toolchains_llvm", version = "1.5.0")
-bazel_dep(name = "opentelemetry-proto", version = "1.7.0")
+bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+bazel_dep(name = "opentelemetry-proto", version = "1.8.0")
 
 git_override(
     module_name = "bazel_remote_apis",
-    commit = "824e1ba94b2db15f68ceff97ae6da503fbc26985",
+    commit = "080cf125032eb61b21a53c72c1a09a45145fc152",
     remote = "https://github.com/bazelbuild/remote-apis.git",
 )
 
 git_override(
     module_name = "com_github_buildbarn_bb_browser",
-    commit = "9886820de1cc9ad4183bf765266161260d514d91",
+    commit = "765b497e89eefc1fa39acb015559ce0c9c490dd7",
     remote = "https://github.com/buildbarn/bb-browser.git",
 )
 
 git_override(
     module_name = "com_github_buildbarn_bb_remote_execution",
-    commit = "83bbddc17a9188fe4a88c13aea56bf9909250b6c",
+    commit = "749fb408bd300672b8f13860253d07fdc26c49ff",
     remote = "https://github.com/buildbarn/bb-remote-execution.git",
 )
 
 git_override(
     module_name = "com_github_buildbarn_bb_storage",
-    commit = "7199df9e3c26961561ee32953216d7058f274b44",
+    commit = "bebcf0861b91da71f9dec8ae8dd5bb2f8a0e1169",
     remote = "https://github.com/buildbarn/bb-storage.git",
 )
 
@@ -75,12 +75,17 @@ single_version_override(
 )
 
 single_version_override(
+    module_name = "jsonnet_go",
+    patches = ["//:patches/jsonnet_go/bazel-9.diff"],
+)
+
+single_version_override(
     module_name = "toolchains_llvm",
     patches = ["//:patches/toolchains_llvm/non-root.diff"],
 )
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
-go_sdk.download(version = "1.24.7")
+go_sdk.download(version = "1.25.4")
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.gazelle_override(
