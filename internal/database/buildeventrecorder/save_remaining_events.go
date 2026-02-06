@@ -3,78 +3,55 @@ package buildeventrecorder
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"reflect"
-	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
-	otelcodes "go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func eventTypeName(buildEvent *bes.BuildEvent) string {
-	if eventPayload := buildEvent.GetId().GetId(); eventPayload != nil {
-		return reflect.TypeOf(eventPayload).Elem().Name()
-	}
-	return "<nil>"
-}
-
-func (r *buildEventRecorder) saveEvent(
+func (r *buildEventRecorder) saveRemainingBatch(
 	ctx context.Context,
-	info BuildEventWithInfo,
+	batch []BuildEventWithInfo,
 ) (err error) {
-	buildEvent := info.Event
-	sequenceNumber := info.SequenceNumber
-	ctx, span := r.tracer.Start(ctx,
-		fmt.Sprintf("BuildEventRecorder.saveEvent_%s", eventTypeName(buildEvent)),
+	ctx, span := r.tracer.Start(
+		ctx,
+		"BuildEventRecorder.saveIndividualEvents",
 		trace.WithAttributes(
+			attribute.Int("batch_size", len(batch)),
 			attribute.String("invocation.id", r.InvocationID),
 			attribute.String("invocation.instance_name", r.InstanceName),
-			attribute.Int("build_event.sequence_number", int(sequenceNumber)),
-			attribute.String("build_event.type", eventTypeName(buildEvent)),
 		),
 	)
-	defer func() {
-		if err != nil {
-			span.SetStatus(otelcodes.Error, err.Error())
-			span.RecordError(err)
-		}
-		span.End()
-	}()
+	defer span.End()
 
-	// ReadCommitted is most often going to be sufficient, but there may
-	// be edge cases in some saveBuildEvent implementations.
-	//
-	// The outer logic revolving around bep_completed and event metadata
-	// is guaranteed to be consistent during the transaction due to the
-	// use of a shared read lock for the invocation and an optimistic
-	// lock for the event metadata.
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create transaction")
 	}
 	defer tx.Rollback()
-
 	lock, err := tx.Sqlc().LockBazelInvocationCompletion(ctx, int64(r.InvocationDbID))
 	if err != nil {
 		return util.StatusWrap(err, "Failed to lock bep completed for invocation")
 	}
 	if lock.BepCompleted {
-		return status.Error(codes.FailedPrecondition, "Attempted to insert a build event but  but the invocation was already completed.")
+		return status.Error(codes.FailedPrecondition, "Attempted to insert build events but the invocation was already completed.")
 	}
 
-	err = r.saveBuildEvent(ctx, tx, buildEvent)
-	if err != nil {
-		return util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId())
+	for _, info := range batch {
+		buildEvent := info.Event
+		err = r.saveBuildEvent(ctx, tx, buildEvent)
+		if err != nil {
+			return util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId())
+		}
 	}
 
-	r.handledEvents.bitmap.Add(sequenceNumber)
-	r.saveHandledEvents(ctx, tx, time.Now())
+	if err := r.saveHandledEventsForBatch(ctx, batch, tx); err != nil {
+		return util.StatusWrap(err, "Failed to bulk insert event metadata")
+	}
 
 	err = tx.Commit()
 	if err != nil {
