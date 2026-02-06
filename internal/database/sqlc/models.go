@@ -280,6 +280,13 @@ type PackageMetric struct {
 	MetricsPackageMetrics sql.NullInt64
 }
 
+type PgClass struct {
+	Oid            interface{}
+	Relname        string
+	Relpages       int32
+	Relispartition bool
+}
+
 type RunnerCount struct {
 	ID                       int64
 	Name                     sql.NullString

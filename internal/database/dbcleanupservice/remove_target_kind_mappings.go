@@ -3,8 +3,8 @@ package dbcleanupservice
 import (
 	"context"
 
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
+	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -15,18 +15,20 @@ func (dc *DbCleanupService) RemoveTargetKindMappings(ctx context.Context) error 
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveTargetKindMappings")
 	defer span.End()
 
-	deletedRows, err := dc.db.Ent().TargetKindMapping.Delete().
-		Where(
-			targetkindmapping.HasBazelInvocationWith(
-				bazelinvocation.BepCompletedEQ(true),
-			),
-		).
-		Exec(ctx)
+	start, count, err := dc.nextSlice(ctx, targetkindmapping.Table)
+	if err != nil {
+		return err
+	}
+
+	deleted, err := dc.db.Sqlc().DeleteTargetKindMappingsFromPages(ctx, sqlc.DeleteTargetKindMappingsFromPagesParams{
+		FromPage: start,
+		Pages:    count,
+	})
 	if err != nil {
 		return util.StatusWrap(err, "Failed to remove old TargetKindMappings")
 	}
 
-	span.SetAttributes(attribute.KeyValue{Key: "target_kind_mappings_removed", Value: attribute.IntValue(deletedRows)})
+	span.SetAttributes(attribute.Int64("target_kind_mappings_removed", deleted))
 
 	return nil
 }

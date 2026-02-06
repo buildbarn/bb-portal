@@ -8,6 +8,7 @@ package sqlc
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -48,6 +49,29 @@ func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvo
 	return id, err
 }
 
+const deleteOldInvocationsFromPages = `-- name: DeleteOldInvocationsFromPages :execrows
+DELETE FROM bazel_invocations
+WHERE
+    ctid >= format('(%s,0)', $1::bigint)::tid
+    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+    AND ended_at < $3::timestamptz
+    AND bep_completed = true
+`
+
+type DeleteOldInvocationsFromPagesParams struct {
+	FromPage   int64
+	Pages      int64
+	CutoffTime time.Time
+}
+
+func (q *Queries) DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteOldInvocationsFromPages, arg.FromPage, arg.Pages, arg.CutoffTime)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const lockBazelInvocationCompletion = `-- name: LockBazelInvocationCompletion :one
 SELECT id, bep_completed
 FROM bazel_invocations
@@ -65,6 +89,34 @@ func (q *Queries) LockBazelInvocationCompletion(ctx context.Context, id int64) (
 	var i LockBazelInvocationCompletionRow
 	err := row.Scan(&i.ID, &i.BepCompleted)
 	return i, err
+}
+
+const lockStaleInvocationsFromPages = `-- name: LockStaleInvocationsFromPages :execrows
+UPDATE bazel_invocations
+SET bep_completed = true
+WHERE
+    ctid >= format('(%s,0)', $1::bigint)::tid
+    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+    AND bep_completed = false
+    AND EXISTS (
+        SELECT 1 FROM event_metadata em
+        WHERE em.bazel_invocation_id = bazel_invocations.id
+        AND em.event_received_at <= $3::timestamptz
+    )
+`
+
+type LockStaleInvocationsFromPagesParams struct {
+	FromPage   int64
+	Pages      int64
+	CutoffTime time.Time
+}
+
+func (q *Queries) LockStaleInvocationsFromPages(ctx context.Context, arg LockStaleInvocationsFromPagesParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, lockStaleInvocationsFromPages, arg.FromPage, arg.Pages, arg.CutoffTime)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const updateCompletedInvocationWithEndTimeFromEventMetadata = `-- name: UpdateCompletedInvocationWithEndTimeFromEventMetadata :execrows
