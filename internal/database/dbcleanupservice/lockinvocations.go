@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -16,21 +16,24 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 	defer span.End()
 
 	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationMessageTimeout)
+	start, count, err := dc.nextSlice(ctx, bazelinvocation.Table)
+	if err != nil || count == 0 {
+		return err
+	}
 
-	updatedRows, err := dc.db.Ent().BazelInvocation.Update().
-		Where(
-			bazelinvocation.BepCompleted(false),
-			bazelinvocation.HasEventMetadataWith(
-				eventmetadata.EventReceivedAtLTE(cutoffTime),
-			),
-		).
-		SetBepCompleted(true).
-		Save(ctx)
+	updatedRows, err := dc.db.Sqlc().LockStaleInvocationsFromPages(
+		ctx,
+		sqlc.LockStaleInvocationsFromPagesParams{
+			FromPage:   start,
+			Pages:      count,
+			CutoffTime: cutoffTime,
+		},
+	)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to lock invocations")
 	}
 
-	span.SetAttributes(attribute.KeyValue{Key: "invocations_locked", Value: attribute.IntValue(updatedRows)})
+	span.SetAttributes(attribute.Int64("invocations_locked", updatedRows))
 
 	return nil
 }

@@ -35,3 +35,21 @@ ORDER BY
     aspect COLLATE "C",
     target_kind COLLATE "C"
 RETURNING id, label, aspect, target_kind;
+
+-- name: DeleteUnusedTargetsFromPages :execrows
+DELETE FROM targets
+WHERE
+    ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
+    AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
+    AND (
+        NOT EXISTS (
+            SELECT 1 FROM "invocation_targets" 
+            WHERE "target_invocation_targets" = "targets"."id"
+        )
+    )
+    AND (
+        NOT EXISTS (
+            SELECT 1 FROM "target_kind_mappings" 
+            WHERE "target_id" = "targets"."id"
+        )
+    );
