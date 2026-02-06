@@ -11,7 +11,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func (r *buildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWithInfo) (err error) {
 	ctx, span := r.tracer.Start(
 		ctx,
 		"BuildEventRecorder.saveBatch",
@@ -23,73 +23,39 @@ func (r *buildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWi
 	)
 	defer span.End()
 
-	batch, rest, err := filterProgress(batch)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to filter progress events from batch")
-	}
+	batch, rest := filterProgress(batch)
 	if err = r.saveProgressBatch(ctx, batch); err != nil {
 		return util.StatusWrap(err, "Failed to save batch progress events")
 	}
 
-	batch, rest, err = filterConfigurationBatch(rest)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to filter configuration events from batch")
-	}
+	batch, rest = filterConfigurationBatch(rest)
 	if err = r.saveConfigurationBatch(ctx, batch); err != nil {
 		return util.StatusWrap(err, "Failed to save batch configuration events")
 	}
 
-	batch, rest, err = filterTargetConfiguredBatch(rest)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to filter target configured events from batch")
-	}
+	batch, rest = filterTargetConfiguredBatch(rest)
 	if err = r.saveTargetConfiguredBatch(ctx, batch); err != nil {
 		return util.StatusWrap(err, "Failed to save batch target configured events")
 	}
 
-	batch, rest, err = filterTargetCompletedBatch(rest)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to filter target completed events from batch")
-	}
+	batch, rest = filterTargetCompletedBatch(rest)
 	if err = r.saveTargetCompletedBatch(ctx, batch); err != nil {
 		return util.StatusWrap(err, "Failed to save batch target completed events")
 	}
 
-	batch, rest, err = filterTestResultBatch(rest)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to filter test result events from batch")
-	}
+	batch, rest = filterTestResultBatch(rest)
 	if err = r.saveTestResultBatch(ctx, batch); err != nil {
 		return util.StatusWrap(err, "Failed to save batch test result events")
 	}
 
-	batch, rest, err = filterTestSummaryBatch(rest)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to filter test summary events from batch")
-	}
+	batch, rest = filterTestSummaryBatch(rest)
 	if err = r.saveTestSummaryBatch(ctx, batch); err != nil {
 		return util.StatusWrap(err, "Failed to save batch test summary events")
 	}
 
-	// These are events which are not handled by the individual event
-	// handler, they are filtered out to efficiently save their event
-	// metadata in a batch.
-	batch, rest, err = filterIgnoredIndividualEvents(rest)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to ignored events from batch")
+	if err = r.saveRemainingBatch(ctx, rest); err != nil {
+		return util.StatusWrap(err, "Failed to save individual events")
 	}
-	if err = r.saveIgnoredEventsBatch(ctx, batch); err != nil {
-		return util.StatusWrap(err, "Failed to save ignored events")
-	}
-
-	// The remaining events tend to not arrive in large batches and may
-	// as well be handled one by one.
-	for _, info := range rest {
-		if err := r.saveEvent(ctx, info); err != nil {
-			return util.StatusWrap(err, "Failed to save individual event")
-		}
-	}
-
 	return nil
 }
 
@@ -158,7 +124,7 @@ func filterNilEvents(batch []BuildEventWithInfo) []BuildEventWithInfo {
 	return ret
 }
 
-func filterProgress(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
+func filterProgress(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo) {
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
 		case *bes.BuildEventId_Progress:
@@ -167,10 +133,10 @@ func filterProgress(batch []BuildEventWithInfo) (filtered, rest []BuildEventWith
 			rest = append(rest, x)
 		}
 	}
-	return filtered, rest, nil
+	return filtered, rest
 }
 
-func filterConfigurationBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
+func filterConfigurationBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo) {
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
 		case *bes.BuildEventId_Configuration:
@@ -179,22 +145,10 @@ func filterConfigurationBatch(batch []BuildEventWithInfo) (filtered, rest []Buil
 			rest = append(rest, x)
 		}
 	}
-	return filtered, rest, nil
+	return filtered, rest
 }
 
-func filterNamedSet(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
-	for _, x := range batch {
-		switch x.Event.GetId().GetId().(type) {
-		case *bes.BuildEventId_NamedSet:
-			filtered = append(filtered, x)
-		default:
-			rest = append(rest, x)
-		}
-	}
-	return filtered, rest, nil
-}
-
-func filterTargetCompletedBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
+func filterTargetCompletedBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo) {
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
 		case *bes.BuildEventId_TargetCompleted:
@@ -203,10 +157,10 @@ func filterTargetCompletedBatch(batch []BuildEventWithInfo) (filtered, rest []Bu
 			rest = append(rest, x)
 		}
 	}
-	return filtered, rest, nil
+	return filtered, rest
 }
 
-func filterTargetConfiguredBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
+func filterTargetConfiguredBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo) {
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
 		case *bes.BuildEventId_TargetConfigured:
@@ -219,10 +173,10 @@ func filterTargetConfiguredBatch(batch []BuildEventWithInfo) (filtered, rest []B
 			rest = append(rest, x)
 		}
 	}
-	return filtered, rest, nil
+	return filtered, rest
 }
 
-func filterTestResultBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
+func filterTestResultBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo) {
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
 		case *bes.BuildEventId_TestResult:
@@ -231,10 +185,10 @@ func filterTestResultBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEv
 			rest = append(rest, x)
 		}
 	}
-	return filtered, rest, nil
+	return filtered, rest
 }
 
-func filterTestSummaryBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
+func filterTestSummaryBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo) {
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
 		case *bes.BuildEventId_TestSummary:
@@ -243,30 +197,5 @@ func filterTestSummaryBatch(batch []BuildEventWithInfo) (filtered, rest []BuildE
 			rest = append(rest, x)
 		}
 	}
-	return filtered, rest, nil
-}
-
-func filterIgnoredIndividualEvents(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
-	for _, x := range batch {
-		switch x.Event.GetId().GetId().(type) {
-		case *bes.BuildEventId_Started,
-			*bes.BuildEventId_ActionCompleted,
-			*bes.BuildEventId_BuildMetadata,
-			*bes.BuildEventId_OptionsParsed,
-			*bes.BuildEventId_BuildFinished,
-			*bes.BuildEventId_BuildMetrics,
-			*bes.BuildEventId_StructuredCommandLine,
-			*bes.BuildEventId_Fetch,
-			*bes.BuildEventId_TestResult,
-			*bes.BuildEventId_TestSummary,
-			*bes.BuildEventId_BuildToolLogs,
-			*bes.BuildEventId_WorkspaceStatus:
-			// The above event types are handled.
-			rest = append(rest, x)
-		default:
-			// All other event types are ignored.
-			filtered = append(filtered, x)
-		}
-	}
-	return filtered, rest, nil
+	return filtered, rest
 }
