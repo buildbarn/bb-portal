@@ -79,6 +79,19 @@ export interface ListOperationsRequest {
   pageSize: number;
   /** The standard list page token. */
   pageToken: string;
+  /**
+   * When set to `true`, operations that are reachable are returned as normal,
+   * and those that are unreachable are returned in the
+   * [ListOperationsResponse.unreachable] field.
+   *
+   * This can only be `true` when reading across collections e.g. when `parent`
+   * is set to `"projects/example/locations/-"`.
+   *
+   * This field is not by default supported and will result in an
+   * `UNIMPLEMENTED` error if set unless explicitly documented otherwise in
+   * service or product specific documentation.
+   */
+  returnPartialSuccess: boolean;
 }
 
 /**
@@ -90,6 +103,13 @@ export interface ListOperationsResponse {
   operations: Operation[];
   /** The standard List next-page token. */
   nextPageToken: string;
+  /**
+   * Unordered list. Unreachable resources. Populated when the request sets
+   * `ListOperationsRequest.return_partial_success` and reads across
+   * collections e.g. when attempting to list all resources across all supported
+   * locations.
+   */
+  unreachable: string[];
 }
 
 /**
@@ -350,7 +370,7 @@ export const GetOperationRequest: MessageFns<GetOperationRequest> = {
 };
 
 function createBaseListOperationsRequest(): ListOperationsRequest {
-  return { name: "", filter: "", pageSize: 0, pageToken: "" };
+  return { name: "", filter: "", pageSize: 0, pageToken: "", returnPartialSuccess: false };
 }
 
 export const ListOperationsRequest: MessageFns<ListOperationsRequest> = {
@@ -366,6 +386,9 @@ export const ListOperationsRequest: MessageFns<ListOperationsRequest> = {
     }
     if (message.pageToken !== "") {
       writer.uint32(26).string(message.pageToken);
+    }
+    if (message.returnPartialSuccess !== false) {
+      writer.uint32(40).bool(message.returnPartialSuccess);
     }
     return writer;
   },
@@ -409,6 +432,14 @@ export const ListOperationsRequest: MessageFns<ListOperationsRequest> = {
           message.pageToken = reader.string();
           continue;
         }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.returnPartialSuccess = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -424,6 +455,9 @@ export const ListOperationsRequest: MessageFns<ListOperationsRequest> = {
       filter: isSet(object.filter) ? globalThis.String(object.filter) : "",
       pageSize: isSet(object.pageSize) ? globalThis.Number(object.pageSize) : 0,
       pageToken: isSet(object.pageToken) ? globalThis.String(object.pageToken) : "",
+      returnPartialSuccess: isSet(object.returnPartialSuccess)
+        ? globalThis.Boolean(object.returnPartialSuccess)
+        : false,
     };
   },
 
@@ -441,6 +475,9 @@ export const ListOperationsRequest: MessageFns<ListOperationsRequest> = {
     if (message.pageToken !== "") {
       obj.pageToken = message.pageToken;
     }
+    if (message.returnPartialSuccess !== false) {
+      obj.returnPartialSuccess = message.returnPartialSuccess;
+    }
     return obj;
   },
 
@@ -453,12 +490,13 @@ export const ListOperationsRequest: MessageFns<ListOperationsRequest> = {
     message.filter = object.filter ?? "";
     message.pageSize = object.pageSize ?? 0;
     message.pageToken = object.pageToken ?? "";
+    message.returnPartialSuccess = object.returnPartialSuccess ?? false;
     return message;
   },
 };
 
 function createBaseListOperationsResponse(): ListOperationsResponse {
-  return { operations: [], nextPageToken: "" };
+  return { operations: [], nextPageToken: "", unreachable: [] };
 }
 
 export const ListOperationsResponse: MessageFns<ListOperationsResponse> = {
@@ -468,6 +506,9 @@ export const ListOperationsResponse: MessageFns<ListOperationsResponse> = {
     }
     if (message.nextPageToken !== "") {
       writer.uint32(18).string(message.nextPageToken);
+    }
+    for (const v of message.unreachable) {
+      writer.uint32(26).string(v!);
     }
     return writer;
   },
@@ -495,6 +536,14 @@ export const ListOperationsResponse: MessageFns<ListOperationsResponse> = {
           message.nextPageToken = reader.string();
           continue;
         }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.unreachable.push(reader.string());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -510,6 +559,9 @@ export const ListOperationsResponse: MessageFns<ListOperationsResponse> = {
         ? object.operations.map((e: any) => Operation.fromJSON(e))
         : [],
       nextPageToken: isSet(object.nextPageToken) ? globalThis.String(object.nextPageToken) : "",
+      unreachable: globalThis.Array.isArray(object?.unreachable)
+        ? object.unreachable.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -521,6 +573,9 @@ export const ListOperationsResponse: MessageFns<ListOperationsResponse> = {
     if (message.nextPageToken !== "") {
       obj.nextPageToken = message.nextPageToken;
     }
+    if (message.unreachable?.length) {
+      obj.unreachable = message.unreachable;
+    }
     return obj;
   },
 
@@ -531,6 +586,7 @@ export const ListOperationsResponse: MessageFns<ListOperationsResponse> = {
     const message = createBaseListOperationsResponse();
     message.operations = object.operations?.map((e) => Operation.fromPartial(e)) || [];
     message.nextPageToken = object.nextPageToken ?? "";
+    message.unreachable = object.unreachable?.map((e) => e) || [];
     return message;
   },
 };
