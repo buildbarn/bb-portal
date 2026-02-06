@@ -1,7 +1,6 @@
-import type { ActionData } from "@/graphql/__generated__/graphql";
 import type { Maybe } from "graphql/jsutils/Maybe";
-import ActionsPieChart, { type ActionsChartItem } from "../ActionsPieChart";
-import { chartColor } from "../ActionsPieChart/utils";
+import type { ActionData } from "@/graphql/__generated__/graphql";
+import SummaryPieChart, { type SummaryChartItem } from "../SummaryPieChart";
 import { nullPercent } from "../Utilities/nullPercent";
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 }
 
 const ActionTypeMetrics: React.FC<Props> = ({ actionData }) => {
-  const actions: ActionsChartItem[] = [];
+  const actions: SummaryChartItem[] = [];
   const totalActionsExecuted = actionData?.reduce(
     (accumulator, item) => accumulator + (item.actionsExecuted ?? 0),
     0,
@@ -17,19 +16,18 @@ const ActionTypeMetrics: React.FC<Props> = ({ actionData }) => {
 
   if (actionData) {
     actionData.forEach((item: ActionData, index: number) => {
-      const chartItem: ActionsChartItem = {
+      const chartItem: SummaryChartItem = {
         key: index,
         value: item.mnemonic ?? "",
         percent: nullPercent(item.actionsExecuted, totalActionsExecuted, 0),
         count: item.actionsExecuted ?? 0,
-        color: chartColor(index),
         type: "square",
       };
       actions.push(chartItem);
     });
   }
 
-  return <ActionsPieChart items={actions} />;
+  return <SummaryPieChart items={actions} />;
 };
 
 export default ActionTypeMetrics;

@@ -1,5 +1,5 @@
 import type { RunnerCount } from "@/graphql/__generated__/graphql";
-import ActionsPieChart, { type ActionsChartItem } from "../ActionsPieChart";
+import SummaryPieChart, { type SummaryChartItem } from "../SummaryPieChart";
 import { nullPercent } from "../Utilities/nullPercent";
 
 interface Props {
@@ -18,12 +18,12 @@ function colorSwitchOnExecStrat(exec: string) {
 }
 
 const ActionRunnerMetrics: React.FC<Props> = ({ runnerMetrics }) => {
-  const chartItems: ActionsChartItem[] = [];
+  const chartItems: SummaryChartItem[] = [];
   const totalCount: number =
     runnerMetrics.find((i) => i.name === "total")?.actionsExecuted ?? 0;
 
   runnerMetrics.forEach((item: RunnerCount, index: number) => {
-    const chartItem: ActionsChartItem = {
+    const chartItem: SummaryChartItem = {
       key: index,
       value: item.name ?? "",
       count: item.actionsExecuted ?? 0,
@@ -36,7 +36,7 @@ const ActionRunnerMetrics: React.FC<Props> = ({ runnerMetrics }) => {
     }
   });
 
-  return <ActionsPieChart items={chartItems} />;
+  return <SummaryPieChart items={chartItems} />;
 };
 
 export default ActionRunnerMetrics;

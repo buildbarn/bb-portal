@@ -3,8 +3,7 @@ import type {
   Maybe,
   MissDetail,
 } from "@/graphql/__generated__/graphql";
-import ActionsPieChart, { type ActionsChartItem } from "../ActionsPieChart";
-import { chartColor } from "../ActionsPieChart/utils";
+import SummaryPieChart, { type SummaryChartItem } from "../SummaryPieChart";
 import { nullPercent } from "../Utilities/nullPercent";
 
 interface Props {
@@ -12,15 +11,14 @@ interface Props {
 }
 
 const ActionCacheMissMetrics: React.FC<Props> = ({ acStatistics }) => {
-  const chartItems: ActionsChartItem[] = [];
+  const chartItems: SummaryChartItem[] = [];
 
   if (acStatistics) {
     acStatistics?.missDetails?.forEach((item: MissDetail, index: number) => {
-      const chartItem: ActionsChartItem = {
+      const chartItem: SummaryChartItem = {
         key: index,
         count: item.count ?? 0,
         percent: nullPercent(item.count, acStatistics?.misses, 0),
-        color: chartColor(index),
         value: item.reason ?? "",
         type: "square",
       };
@@ -28,7 +26,7 @@ const ActionCacheMissMetrics: React.FC<Props> = ({ acStatistics }) => {
     });
   }
 
-  return <ActionsPieChart items={chartItems} />;
+  return <SummaryPieChart items={chartItems} />;
 };
 
 export default ActionCacheMissMetrics;
