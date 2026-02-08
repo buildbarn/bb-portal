@@ -46,6 +46,7 @@ go_library(
         "@com_github_gorilla_mux//:mux",
         "@com_github_improbable_eng_grpc_web//go/grpcweb",
         "@com_github_rs_cors//:cors",
+        "@io_opentelemetry_go_contrib_instrumentation_github_com_gorilla_mux_otelmux//:otelmux",
         "@io_opentelemetry_go_otel//:otel",
         "@io_opentelemetry_go_otel_trace//:trace",
         "@org_golang_google_genproto//googleapis/devtools/build/v1:build",
