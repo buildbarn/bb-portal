@@ -2,7 +2,6 @@
 
 import type React from 'react';
 import Content from '@/components/Content';
-import useScreenSize from '@/utils/screen';
 import PortalCard from '@/components/PortalCard';
 import { RocketFilled } from '@ant-design/icons';
 import BuildsTable from "@/components/BuildsTable";
@@ -10,10 +9,10 @@ import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
 import PageDisabled from '@/components/PageDisabled';
 
 const Page: React.FC = () => {
-  const screenSize = useScreenSize();
   if (!isFeatureEnabled(FeatureType.BES) || !isFeatureEnabled(FeatureType.BES_PAGE_BUILDS)) {
     return <PageDisabled />;
   }
+
   return (
     <Content
       content={
@@ -21,7 +20,7 @@ const Page: React.FC = () => {
           icon={<RocketFilled rotate={20}/>}
           titleBits={[<span key="title">Bazel Builds</span>]}
         >
-          <BuildsTable height={screenSize.height - 370} />
+          <BuildsTable />
         </PortalCard>
       }
     />
