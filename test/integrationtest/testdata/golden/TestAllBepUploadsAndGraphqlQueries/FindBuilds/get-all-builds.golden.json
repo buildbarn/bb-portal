@@ -9,6 +9,12 @@
           "timestamp": "2024-05-13T23:43:23.045Z"
         }
       }
-    ]
+    ],
+    "pageInfo": {
+      "endCursor": "gaFp0wAAAAAAAAAB",
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": "gaFp0wAAAAAAAAAB"
+    }
   }
 }

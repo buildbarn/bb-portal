@@ -6,6 +6,7 @@ import {
   Divider,
   DatePicker,
   TimeRangePickerProps,
+  Tooltip,
 } from "antd";
 import { FilterDropdownProps } from "antd/es/table/interface";
 import dayjs from "dayjs";
@@ -100,47 +101,72 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
 
 interface InputFilterProps extends FilterDropdownProps {
   placeholder: string;
-  testID?: string;
+  dataValidator?: (value: string) => boolean | undefined;
+  validationTooltip?: string;
 }
 
 export const SearchWidget: React.FC<InputFilterProps> = ({
   placeholder,
+  dataValidator,
+  validationTooltip,
   selectedKeys,
   setSelectedKeys,
   clearFilters,
   confirm,
-  testID,
 }) => {
   if (!clearFilters) {
     // Pretty sure ant-design's types are just too loose, don't expect to ever be called without this callback
     return <p>Selections unavailable... missing callback</p>;
   }
+
+  const isDataValid = () => {
+    if (!dataValidator) {
+      return true;
+    }
+    return (
+      selectedKeys[0] === undefined ||
+      selectedKeys[0] === "" ||
+      dataValidator(selectedKeys[0] as string)
+    );
+  };
+
+  const checkedConfirm = () => {
+    if (isDataValid()) {
+      confirm();
+    }
+  };
+
   return (
-    <div data-testid={testID}>
-      <Space direction="vertical">
-        <Input
-          placeholder={placeholder}
-          value={selectedKeys && selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onBlur={() => confirm()}
-          onPressEnter={() => confirm()}
-          className={[
-            styles.searchWidgetInput,
-            styles.searchWidgetTextInput,
-          ].join(" ")}
-        />
-        <Divider className={styles.searchWidgetDivider} />
-        <div className={styles.searchWidgetButtons}>
-          <ResetButton clearFilters={clearFilters} />
-          <div className={styles.searchWidgetButtonsSpacing} />
-          <Button type="primary" size="small" onClick={() => confirm()}>
+    <Space direction="vertical">
+      <Input
+        placeholder={placeholder}
+        value={selectedKeys[0]}
+        onChange={(e) =>
+          setSelectedKeys(e.target.value ? [e.target.value] : [])
+        }
+        onBlur={() => checkedConfirm()}
+        onPressEnter={() => checkedConfirm()}
+        className={[
+          styles.searchWidgetInput,
+          styles.searchWidgetTextInput,
+        ].join(" ")}
+      />
+      <Divider className={styles.searchWidgetDivider} />
+      <div className={styles.searchWidgetButtons}>
+        <ResetButton clearFilters={clearFilters} />
+        <div className={styles.searchWidgetButtonsSpacing} />
+        <Tooltip title={isDataValid() ? undefined : validationTooltip}>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => checkedConfirm()}
+            disabled={isDataValid() === false}
+          >
             OK
           </Button>
-        </div>
-      </Space>
-    </div>
+        </Tooltip>
+      </div>
+    </Space>
   );
 };
 
