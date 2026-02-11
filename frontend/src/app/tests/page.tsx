@@ -21,6 +21,7 @@ const Page: React.FC = () => {
                     <PortalCard
                         icon={<ExperimentFilled />}
                         extraBits={[<Alert
+                            key="search-by-label"
                             showIcon
                             message = "Search by label and/or instance name to further refine your result"
                             type = "info"

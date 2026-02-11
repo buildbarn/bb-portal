@@ -261,7 +261,7 @@ const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
   return titleBits;
 }
 
-const getExtraBits = (invocationOverview: BazelInvocationInfoFragment, isNestedWithinBuildCard?: boolean): React.ReactNode[] => {
+const getExtraBits = (invocationOverview: BazelInvocationInfoFragment): React.ReactNode[] => {
   const {
     invocationID,
     instanceName,
@@ -287,7 +287,7 @@ const getExtraBits = (invocationOverview: BazelInvocationInfoFragment, isNestedW
       invocationID={invocationID}
     />,
   );
-  if (!isNestedWithinBuildCard && build?.buildUUID) {
+  if (build?.buildUUID) {
     extraBits.unshift(
       <span key="build">
         Build <Link href={`/builds/${build.buildUUID}`}>{build.buildUUID}</Link>
@@ -297,12 +297,11 @@ const getExtraBits = (invocationOverview: BazelInvocationInfoFragment, isNestedW
   return extraBits;
 }
 
-
-const BazelInvocation: React.FC<{
+interface Props {
   invocationOverview: BazelInvocationInfoFragment;
-  isNestedWithinBuildCard?: boolean;
-  collapsed?: boolean;
-}> = ({ invocationOverview, isNestedWithinBuildCard }) => {
+}
+
+const BazelInvocation: React.FC<Props> = ({ invocationOverview }) => {
   const [activeKey, setActiveKey] = useState(
     localStorage.getItem("bazelInvocationViewActiveTabKey") ??
     "BazelInvocationTabs-Overview"
@@ -319,13 +318,13 @@ const BazelInvocation: React.FC<{
   );
 
   const extraBits = useMemo(
-    () => getExtraBits(invocationOverview, isNestedWithinBuildCard),
-    [invocationOverview, isNestedWithinBuildCard]
+    () => getExtraBits(invocationOverview),
+    [invocationOverview]
   );
 
   const items = useMemo(
     () => getTabItems(invocationOverview),
-    [invocationOverview, isNestedWithinBuildCard]
+    [invocationOverview]
   );
 
   function checkIfNotHidden(key: string) {
@@ -335,7 +334,6 @@ const BazelInvocation: React.FC<{
 
   return (
     <PortalCard
-      type={isNestedWithinBuildCard ? "inner" : undefined}
       icon={<BuildOutlined />}
       titleBits={titleBits}
       extraBits={extraBits}

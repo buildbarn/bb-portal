@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ReactNode, Key } from 'react';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 import { MenuItemLabel, MenuItemTag } from '@/components/MenuItemLabel';
 import { FeatureType, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
