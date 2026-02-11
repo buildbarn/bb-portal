@@ -1,12 +1,21 @@
 import { gql } from "@/graphql/__generated__";
 
-const FIND_BUILDS_QUERY = gql(/* GraphQL */ `
+export const FIND_BUILDS_QUERY = gql(/* GraphQL */ `
   query FindBuilds(
-    $first: Int!
+    $after: Cursor
+    $first: Int
+    $before: Cursor
+    $last: Int
     $orderBy: BuildOrder
     $where: BuildWhereInput
   ) {
-    findBuilds(first: $first, orderBy: $orderBy, where: $where) {
+    findBuilds(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
       edges {
         node {
           ...BuildNode
@@ -24,5 +33,3 @@ export const BUILD_NODE_FRAGMENT = gql(/* GraphQL */ `
     timestamp
   }
 `);
-
-export default FIND_BUILDS_QUERY;
