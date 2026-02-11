@@ -23,6 +23,9 @@ importers:
       '@apollo/experimental-nextjs-app-support':
         specifier: ^0.10.0
         version: 0.10.0(@apollo/client@3.10.2(@types/react@18.3.1)(graphql-ws@5.16.0(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(next@14.2.3(@babel/core@7.26.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+      '@bufbuild/protobuf':
+        specifier: ^2.11.0
+        version: 2.11.0
       '@tanstack/react-query':
         specifier: ^5.66.0
         version: 5.66.0(react@18.3.1)
@@ -47,6 +50,9 @@ importers:
       next-runtime-env:
         specifier: ^3.2.2
         version: 3.2.2(next@14.2.3(@babel/core@7.26.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+      nice-grpc-common:
+        specifier: ^2.0.2
+        version: 2.0.2
       nice-grpc-web:
         specifier: ^3.3.5
         version: 3.3.5(ws@8.18.0)

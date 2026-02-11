@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Dropdown, DropdownProps, MenuProps, Popover, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import { MenuItemType } from 'antd/lib/menu/hooks/useItems';
+import { MenuItemType } from 'antd/es/menu/interface';
 import Link from '@/components/Link';
 
 export interface DownloadOpts {

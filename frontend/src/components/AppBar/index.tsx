@@ -19,16 +19,22 @@ export const SetExtraAppBarMenuItemsContext = createContext<
   React.Dispatch<React.SetStateAction<ItemType[]>> | undefined
 >(undefined);
 
-const APP_BAR_MENU_ITEMS: ItemType[] = [
-  getItem({ depth: 0, href: '/builds', title: 'Builds', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_BUILDS] }),
-  getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_INVOCATIONS] }),
-  getItem({ depth: 0, href: '/trends', title: 'Trends', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TRENDS] }),
-  getItem({ depth: 0, href: '/tests', title: 'Tests', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TESTS] }),
-  getItem({ depth: 0, href: '/targets', title: 'Targets', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TARGETS] }),
-  getItem({ depth: 0, href: '/browser', title: 'Browser', requiredFeatures: [FeatureType.BROWSER] }),
-  getItem({ depth: 0, href: '/scheduler', title: 'Scheduler', requiredFeatures: [FeatureType.SCHEDULER] }),
-  getItem({ depth: 0, href: '/operations', title: 'Operations', requiredFeatures: [FeatureType.OPERATIONS] }),
-].filter(item => item !== undefined);
+const getAppBarMenuItems = (): ItemType[] => {
+  const items: (ItemType | undefined)[] = [
+    getItem({ depth: 0, href: '/builds', title: 'Builds', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_BUILDS] }),
+    getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_INVOCATIONS] }),
+    getItem({ depth: 0, href: '/trends', title: 'Trends', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TRENDS] }),
+    getItem({ depth: 0, href: '/tests', title: 'Tests', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TESTS] }),
+    getItem({ depth: 0, href: '/targets', title: 'Targets', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TARGETS] }),
+    getItem({ depth: 0, href: '/browser', title: 'Browser', requiredFeatures: [FeatureType.BROWSER] }),
+    getItem({ depth: 0, href: '/scheduler', title: 'Scheduler', requiredFeatures: [FeatureType.SCHEDULER] }),
+    getItem({ depth: 0, href: '/operations', title: 'Operations', requiredFeatures: [FeatureType.OPERATIONS] }),
+  ];
+  return items.filter((item): item is ItemType => item !== undefined);
+}
+
+const APP_BAR_MENU_ITEMS: ItemType[] = getAppBarMenuItems()
+
 
 type Props = {
   toggleTheme: () => void;

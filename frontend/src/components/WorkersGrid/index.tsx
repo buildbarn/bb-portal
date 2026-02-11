@@ -6,6 +6,7 @@ import type {
   BuildQueueStateClient,
   DeepPartial,
   ListWorkersRequest,
+  ListWorkersResponse,
   SizeClassQueueName,
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
@@ -62,7 +63,7 @@ const WorkersGrid: React.FC<Props> = ({
 }) => {
   const { buildQueueStateClient } = useGrpcClients();
 
-  const { data, isError, isLoading, error } = useQuery({
+  const { data, isError, isLoading, error } = useQuery<ListWorkersResponse>({
     queryKey: [
       "listWorkers",
       listWorkerFilterType,
@@ -109,8 +110,9 @@ const WorkersGrid: React.FC<Props> = ({
               currentOperation: value.currentOperation && {
                 ...value.currentOperation,
                 invocationName: {
-                  ...value.currentOperation?.invocationName,
+                  ...value.currentOperation.invocationName,
                   sizeClassQueueName: sizeClassQueueName,
+                  ids: value.currentOperation.invocationName?.ids ?? [],
                 },
               },
             };

@@ -3,7 +3,7 @@
 import React, { Key, useState } from 'react';
 import { Layout, Menu, MenuProps } from 'antd';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 import styles from '@/components/SiderBar/index.module.css';
 
 export const SIDEBAR_MENU_INLINE_INDENT = 24;

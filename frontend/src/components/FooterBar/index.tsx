@@ -10,6 +10,7 @@ import { Layout, Space } from "antd";
 import { env } from "next-runtime-env";
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 
 interface FooterLinkProps {
   text: string;
@@ -33,7 +34,7 @@ const FooterLink: React.FC<FooterLinkProps> = ({ text, href, icon }) => {
       iconElement = undefined;
       break;
     default:
-      iconElement = <img src={icon} width={20} height={20} />;
+      iconElement = <Image src={icon} width={20} height={20} alt="Footer icon" />;
   }
 
   if (!href) {

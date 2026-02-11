@@ -2,7 +2,7 @@
 
 import React, { Key } from 'react';
 import { FloatButton, Layout, MenuProps } from 'antd';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 import styles from '@/components/Content/index.module.css';
 import SiderBar from '@/components/SiderBar';
 import Breadcrumbs from '@/components/Breadcrumbs';
