@@ -99,18 +99,20 @@ export const InvocationTargetsTable: React.FC<Props> = ({
   }
 
   const invocationTargets = parseGraphqlEdgeList<InvocationTargetsTableRowType>(
-    data?.bazelInvocation.invocationTargets,
+    data?.getBazelInvocation?.invocationTargets,
   );
 
   return (
     <>
       <InvocationTargetsMetrics
         targetMetrics={targetMetrics}
-        invocationTargetsCount={data?.bazelInvocation.numTotal.totalCount}
+        invocationTargetsCount={data?.getBazelInvocation?.numTotal.totalCount}
         invocationTargetsBuiltSuccessfully={
-          data?.bazelInvocation.numSuccessful.totalCount
+          data?.getBazelInvocation?.numSuccessful.totalCount
         }
-        invocationTargetsSkipped={data?.bazelInvocation.numSkipped.totalCount}
+        invocationTargetsSkipped={
+          data?.getBazelInvocation?.numSkipped.totalCount
+        }
       />
       <CursorTable<InvocationTargetsTableRowType>
         rowKey={"id"}
@@ -141,12 +143,14 @@ export const InvocationTargetsTable: React.FC<Props> = ({
         }}
         pageInfo={{
           startCursor:
-            data?.bazelInvocation.invocationTargets.pageInfo.startCursor,
-          endCursor: data?.bazelInvocation.invocationTargets.pageInfo.endCursor,
+            data?.getBazelInvocation?.invocationTargets.pageInfo.startCursor,
+          endCursor:
+            data?.getBazelInvocation?.invocationTargets.pageInfo.endCursor,
           hasNextPage:
-            data?.bazelInvocation.invocationTargets.pageInfo.hasNextPage,
+            data?.getBazelInvocation?.invocationTargets.pageInfo.hasNextPage,
           hasPreviousPage:
-            data?.bazelInvocation.invocationTargets.pageInfo.hasPreviousPage,
+            data?.getBazelInvocation?.invocationTargets.pageInfo
+              .hasPreviousPage,
         }}
         paginationVariables={paginationVariables}
         setPaginationVariables={setPaginationVariables}

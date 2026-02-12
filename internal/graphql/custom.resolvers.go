@@ -6,8 +6,6 @@ package graphql
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
@@ -64,41 +62,55 @@ func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInv
 	}, nil
 }
 
-// BazelInvocation is the resolver for the bazelInvocation field.
-func (r *queryResolver) BazelInvocation(ctx context.Context, invocationID string) (*ent.BazelInvocation, error) {
-	invocationUUID, err := uuid.Parse(invocationID)
+// GetAuthenticatedUser is the resolver for the getAuthenticatedUser field.
+func (r *queryResolver) GetAuthenticatedUser(ctx context.Context, userUUID uuid.UUID) (*ent.AuthenticatedUser, error) {
+	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
+	// need it, but somehow it does.
+	query, err := r.client.AuthenticatedUser.Query().Where(authenticateduser.UserUUID(userUUID)).CollectFields(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("invocationID was not a UUID: %w", err)
+		return nil, err
 	}
-	return r.client.BazelInvocation.Query().Where(bazelinvocation.InvocationID(invocationUUID)).First(ctx)
+	return query.First(ctx)
 }
 
-// GetAuthenticatedUser is the resolver for the getAuthenticatedUser field.
-func (r *queryResolver) GetAuthenticatedUser(ctx context.Context, userUUID *uuid.UUID) (*ent.AuthenticatedUser, error) {
-	if userUUID == nil {
-		return nil, errors.New("userUUID must be provided")
+// GetBazelInvocation is the resolver for the getBazelInvocation field.
+func (r *queryResolver) GetBazelInvocation(ctx context.Context, invocationID uuid.UUID) (*ent.BazelInvocation, error) {
+	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
+	// need it, but somehow it does.
+	query, err := r.client.BazelInvocation.Query().Where(bazelinvocation.InvocationID(invocationID)).CollectFields(ctx)
+	if err != nil {
+		return nil, err
 	}
-	return r.client.AuthenticatedUser.Query().Where(authenticateduser.UserUUID(*userUUID)).First(ctx)
+	return query.First(ctx)
 }
 
 // GetBuild is the resolver for the getBuild field.
-func (r *queryResolver) GetBuild(ctx context.Context, buildURL *string, buildUUID *uuid.UUID) (*ent.Build, error) {
-	if buildUUID == nil {
-		return nil, errors.New("buildUUID must be provided")
+func (r *queryResolver) GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent.Build, error) {
+	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
+	// need it, but somehow it does.
+	query, err := r.client.Build.Query().Where(build.BuildUUID(buildUUID)).CollectFields(ctx)
+	if err != nil {
+		return nil, err
 	}
-	return r.client.Build.Query().Where(build.BuildUUID(*buildUUID)).First(ctx)
+	return query.First(ctx)
 }
 
 // GetTarget is the resolver for the getTarget field.
 func (r *queryResolver) GetTarget(ctx context.Context, instanceName, label, aspect, targetKind string) (*ent.Target, error) {
-	return r.client.Target.Query().Where(
+	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
+	// need it, but somehow it does.
+	query, err := r.client.Target.Query().Where(
 		target.LabelEQ(label),
 		target.Aspect(aspect),
 		target.TargetKind(targetKind),
 		target.HasInstanceNameWith(
 			instancename.Name(instanceName),
 		),
-	).Only(ctx)
+	).CollectFields(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return query.First(ctx)
 }
 
 // InvocationTargetsTotalDurationMillis is the resolver for the invocationTargetsTotalDurationMillis field.

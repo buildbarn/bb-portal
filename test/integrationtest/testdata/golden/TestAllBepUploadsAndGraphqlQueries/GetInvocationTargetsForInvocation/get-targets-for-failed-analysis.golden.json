@@ -1,5 +1,5 @@
 {
-  "bazelInvocation": {
+  "getBazelInvocation": {
     "invocationTargets": {
       "edges": [
         {

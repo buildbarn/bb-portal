@@ -15,7 +15,9 @@ import { InvocationTargetTagList } from "../InvocationTargetTagList";
 export type InvocationTargetsTableRowType = NonNullable<
   NonNullable<
     NonNullable<
-      GetInvocationTargetsForInvocationQuery["bazelInvocation"]["invocationTargets"]["edges"]
+      NonNullable<
+        GetInvocationTargetsForInvocationQuery["getBazelInvocation"]
+      >["invocationTargets"]["edges"]
     >[number]
   >["node"]
 >;

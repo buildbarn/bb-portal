@@ -10,11 +10,11 @@ const ConditionalToolInvocationLink: React.FC<Props> = ({
   toolInvocationID,
 }) => {
   const { data } = useQuery(CHECK_IF_INVOCATION_EXISTS, {
-    variables: { invocationId: toolInvocationID },
+    variables: { invocationID: toolInvocationID },
     fetchPolicy: "cache-and-network",
   });
 
-  if (data?.bazelInvocation !== undefined)
+  if (data?.getBazelInvocation !== undefined)
     return (
       <Link href={`/bazel-invocations/${toolInvocationID}`}>
         {toolInvocationID}

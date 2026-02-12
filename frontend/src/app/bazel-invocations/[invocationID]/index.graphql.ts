@@ -1,8 +1,8 @@
 import { gql } from "@/graphql/__generated__";
 
 export const LOAD_FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
-  query LoadFullBazelInvocationDetails($invocationID: String!) {
-    bazelInvocation(invocationId: $invocationID) {
+  query LoadFullBazelInvocationDetails($invocationID: UUID!) {
+    getBazelInvocation(invocationID: $invocationID) {
       ...BazelInvocationInfo
     }
   }
