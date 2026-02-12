@@ -21,11 +21,47 @@ message PostgresSource {
 }
 
 message Database {
+  message DatabaseConnectionPoolConfiguration {
+    // The maximum number of simultaneous open connections to the
+    // database. Should be set to a value such that you do not exceed
+    // your upstream databases maximum number of connections. If set to
+    // 0 implies unlimited number of connections.
+    //
+    // Recommended value: Consult your database vendor documentation (or
+    // 10).
+    int32 max_open_connections = 1;
+
+    // The maximum number of idle connections to the database that the
+    // pool should keep on standby for future use rather than close and
+    // reopen connections. If set to 0 all sql statements will open a
+    // new connection which has very poor performance behavior.
+    //
+    // Recommended value: Match max_open_connections
+    int32 max_idle_connections = 2;
+
+    // The maximum lifetime of an indvidual connection before recycling
+    // the connection.
+    //
+    // Recommended value: '120s' (2 minutes)
+    google.protobuf.Duration connection_max_lifetime = 3;
+
+    // The maximum time a connection will be kept idle during periods of
+    // low traffic.
+    //
+    // Recommended value: '30s'
+    google.protobuf.Duration connection_max_idle_time = 4;
+  }
+
   // Was 'SqliteSource', configuration for running with a SQLite
   // database.
   reserved 1;
+
   // Database source type. Currently only Postgres is supported.
   oneof source { PostgresSource postgres = 2; }
+
+  // Database connection pool configuraiton, if not specified the
+  // default values of the runtime will be used.
+  DatabaseConnectionPoolConfiguration connection_pool_configuration = 3;
 }
 
 message AuthMetadataExtractorConfiguration {

@@ -76,6 +76,12 @@
       postgres: {
         connectionString: 'postgresql://app:password@localhost:5432/app',
       },
+      connectionPoolConfiguration: {
+        maxOpenConnections: 10,
+        maxIdleConnections: 10,
+        connectionMaxLifetime: '120s',
+        connectionMaxIdleTime: '30s',
+      },
     },
     enableBepFileUpload: true,
     enableGraphqlPlayground: true,
