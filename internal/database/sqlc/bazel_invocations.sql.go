@@ -24,9 +24,9 @@ WITH new_row AS (
     ON CONFLICT (invocation_id) DO NOTHING
     RETURNING id
 )
-SELECT id FROM new_row
+SELECT id, true AS created FROM new_row
 UNION ALL
-SELECT id FROM bazel_invocations
+SELECT id, false AS created FROM bazel_invocations
 WHERE invocation_id = $1
   AND instance_name_bazel_invocations = $2
   AND authenticated_user_bazel_invocations IS NOT DISTINCT FROM $3
@@ -40,13 +40,20 @@ type CreateBazelInvocationParams struct {
 	AuthenticatedUserID sql.NullInt64
 }
 
-// An idempotent function for creating bazel invocations. If the
-// invocation already exists, it will return the existing id.
-func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (int64, error) {
+type CreateBazelInvocationRow struct {
+	ID      int64
+	Created bool
+}
+
+// A function for creating bazel invocations. It
+// returns the ID and a bool `created`: `true`
+// if the invocation was created, `false` if
+// the invocation already existed.
+func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (CreateBazelInvocationRow, error) {
 	row := q.db.QueryRowContext(ctx, createBazelInvocation, arg.InvocationID, arg.InstanceNameID, arg.AuthenticatedUserID)
-	var id int64
-	err := row.Scan(&id)
-	return id, err
+	var i CreateBazelInvocationRow
+	err := row.Scan(&i.ID, &i.Created)
+	return i, err
 }
 
 const deleteOldInvocationsFromPages = `-- name: DeleteOldInvocationsFromPages :execrows

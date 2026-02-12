@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "prometheus_metrics",
@@ -6,7 +6,28 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/pkg/prometheus_metrics",
     visibility = ["//visibility:public"],
     deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/bazelinvocation",
+        "//internal/database/dbauthservice",
+        "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_prometheus_client_golang//prometheus",
-        "@com_github_prometheus_client_golang//prometheus/promauto",
+    ],
+)
+
+go_test(
+    name = "prometheus_metrics_test",
+    srcs = ["metrics_test.go"],
+    deps = [
+        ":prometheus_metrics",
+        "//internal/database/buildeventrecorder",
+        "//internal/database/embedded",
+        "//pkg/authmetadataextraction",
+        "//test/testutils",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_prometheus_client_golang//prometheus/testutil",
+        "@com_github_stretchr_testify//require",
     ],
 )
