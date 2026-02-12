@@ -7,7 +7,7 @@ import (
 	// Register the pgx driver.
 	_ "github.com/jackc/pgx/v5/stdlib"
 
-	"entgo.io/ent/dialect"
+	dbdialect "entgo.io/ent/dialect"
 
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -46,13 +46,14 @@ func CalculateBuildUUID(buildURL, instanceName string) uuid.UUID {
 
 // NewSQLConnectionFromConfiguration creates an otel decorated sql
 // connection.
-func NewSQLConnectionFromConfiguration(dbConfig *bb_portal.Database, tracerProvider trace.TracerProvider) (string, *sql.DB, error) {
+func NewSQLConnectionFromConfiguration(dbConfig *bb_portal.Database, tracerProvider trace.TracerProvider) (dialect string, db *sql.DB, err error) {
 	switch dbConfig := dbConfig.Source.(type) {
 	case *bb_portal.Database_Postgres:
 		if dbConfig.Postgres.ConnectionString == "" {
 			return "", nil, status.Error(codes.InvalidArgument, "Empty connection string for postgres database")
 		}
-		db, err := otelsql.Open(
+		dialect = dbdialect.Postgres
+		db, err = otelsql.Open(
 			"pgx",
 			dbConfig.Postgres.ConnectionString,
 			otelsql.WithTracerProvider(tracerProvider),
@@ -61,8 +62,20 @@ func NewSQLConnectionFromConfiguration(dbConfig *bb_portal.Database, tracerProvi
 		if err != nil {
 			return "", nil, util.StatusWrap(err, "Failed to open postgres database")
 		}
-		return dialect.Postgres, db, nil
 	default:
 		return "", nil, status.Error(codes.InvalidArgument, "Missing database configuration")
 	}
+
+	if poolConfig := dbConfig.ConnectionPoolConfiguration; poolConfig != nil {
+		db.SetMaxOpenConns(int(poolConfig.MaxOpenConnections))
+		db.SetMaxIdleConns(int(poolConfig.MaxIdleConnections))
+		if poolConfig.ConnectionMaxLifetime != nil {
+			db.SetConnMaxLifetime(poolConfig.ConnectionMaxLifetime.AsDuration())
+		}
+		if poolConfig.ConnectionMaxIdleTime != nil {
+			db.SetConnMaxIdleTime(poolConfig.ConnectionMaxIdleTime.AsDuration())
+		}
+	}
+
+	return dialect, db, nil
 }
