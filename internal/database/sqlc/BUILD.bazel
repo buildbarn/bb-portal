@@ -3,6 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "sqlc",
     srcs = [
+        "authenticated_users.sql.go",
         "bazel_invocations.sql.go",
         "db.go",
         "event_metadata.sql.go",

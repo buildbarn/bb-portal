@@ -101,6 +101,9 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				if err := dc.RemoveOldInvocations(ctx); err != nil {
 					slog.Warn("Failed to remove old invocations", "err", err)
 				}
+				if err := dc.RemoveInactiveUsers(ctx); err != nil {
+					slog.Warn("Failed to remove users without invocations")
+				}
 				if err := dc.RemoveBuildsWithoutInvocations(ctx); err != nil {
 					slog.Warn("Failed to remove builds without invocations", "err", err)
 				}
