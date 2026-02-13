@@ -1,9 +1,9 @@
-import type { FindBuildFromUuidFragment } from "@/app/builds/[buildUUID]/[[...slugs]]/types";
-import InvocationTimeline from "@/components/InvocationTimeline";
 import { Collapse, Typography } from "antd";
+import InvocationTimeline from "@/components/InvocationTimeline";
+import type { GetBuildInvocationFragment } from "@/graphql/__generated__/graphql";
 
 interface Props {
-  invocations: FindBuildFromUuidFragment[];
+  invocations: GetBuildInvocationFragment[];
 }
 
 const CollapsableInvocationTimeline: React.FC<Props> = ({ invocations }) => {
