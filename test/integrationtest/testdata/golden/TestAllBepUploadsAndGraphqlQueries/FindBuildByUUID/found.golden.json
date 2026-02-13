@@ -3,18 +3,28 @@
     "buildURL": "https://example.com/build/1234",
     "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
     "id": "QnVpbGQ6MQ==",
-    "invocations": [
-      {
-        "bepCompleted": false,
-        "endedAt": "2024-05-13T23:43:26.247Z",
-        "exitCodeName": "TESTS_FAILED",
-        "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
-        "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
-        "sourceControl": null,
-        "startedAt": "2024-05-13T23:43:23.045Z",
-        "userLdap": "nameless"
+    "invocations": {
+      "edges": [
+        {
+          "node": {
+            "bepCompleted": false,
+            "endedAt": "2024-05-13T23:43:26.247Z",
+            "exitCodeName": "TESTS_FAILED",
+            "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
+            "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
+            "sourceControl": null,
+            "startedAt": "2024-05-13T23:43:23.045Z",
+            "userLdap": "nameless"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "gaFp0wAAAAAAAAAE",
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": "gaFp0wAAAAAAAAAE"
       }
-    ],
+    },
     "timestamp": "2024-05-13T23:43:23.045Z"
   }
 }

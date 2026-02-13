@@ -226,16 +226,25 @@ func (b *Build) InstanceName(ctx context.Context) (*InstanceName, error) {
 	return result, err
 }
 
-func (b *Build) Invocations(ctx context.Context) (result []*BazelInvocation, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = b.NamedInvocations(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = b.Edges.InvocationsOrErr()
+func (b *Build) Invocations(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *BazelInvocationOrder, where *BazelInvocationWhereInput,
+) (*BazelInvocationConnection, error) {
+	opts := []BazelInvocationPaginateOption{
+		WithBazelInvocationOrder(orderBy),
+		WithBazelInvocationFilter(where.Filter),
 	}
-	if IsNotLoaded(err) {
-		result, err = b.QueryInvocations().All(ctx)
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := b.Edges.totalCount[1][alias]
+	if nodes, err := b.NamedInvocations(alias); err == nil || hasTotalCount {
+		pager, err := newBazelInvocationPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &BazelInvocationConnection{Edges: []*BazelInvocationEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
 	}
-	return result, err
+	return b.QueryInvocations().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (bgm *BuildGraphMetrics) Metrics(ctx context.Context) (*Metrics, error) {

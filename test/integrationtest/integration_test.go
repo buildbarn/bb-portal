@@ -167,12 +167,12 @@ var (
 				"FindBuildByUUID": {
 					"found": {
 						variables: testkit.Variables{
-							"uuid": databasecommon.CalculateBuildUUID("https://example.com/build/1234", ""),
+							"buildUUID": databasecommon.CalculateBuildUUID("https://example.com/build/1234", ""),
 						},
 					},
 					"not found": {
 						variables: testkit.Variables{
-							"uuid": databasecommon.CalculateBuildUUID("https://example.com/build/4321", ""),
+							"buildUUID": databasecommon.CalculateBuildUUID("https://example.com/build/4321", ""),
 						},
 						wantErr: errBuildNotFound,
 					},
