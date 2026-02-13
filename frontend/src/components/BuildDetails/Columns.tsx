@@ -1,139 +1,108 @@
 import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 import { Space, type TableColumnsType, Typography } from "antd";
 import Link from "next/link";
-import type { FindBuildFromUuidFragment } from "@/app/builds/[buildUUID]/[[...slugs]]/types";
+import { validate as uuidValidate } from "uuid";
 import styles from "@/components/AppBar/index.module.css";
-import type { FindBuildByUuidQuery } from "@/graphql/__generated__/graphql";
+import type { GetBuildInvocationFragment } from "@/graphql/__generated__/graphql";
 import { InvocationResultTag } from "../InvocationResultTag";
 import { invocationResultTagFilters } from "../InvocationResultTag/filters";
 import PortalDuration from "../PortalDuration";
 import SearchWidget, { SearchFilterIcon } from "../SearchWidgets";
 
-export const getColumns = (
-  data: FindBuildByUuidQuery,
-): TableColumnsType<FindBuildFromUuidFragment> => {
-  const workflow_filters: string[] = Array.from(
-    new Set(
-      data?.getBuild?.invocations?.map(
-        (x) => x.sourceControl?.workflow ?? "",
-      ) ?? [],
+export const columns: TableColumnsType<GetBuildInvocationFragment> = [
+  {
+    key: "workflow",
+    title: "Workflow",
+    dataIndex: ["sourceControl", "workflow"],
+    filterSearch: true,
+    filterDropdown: (filterProps) => (
+      <SearchWidget placeholder="Workflow..." {...filterProps} />
     ),
-  );
-
-  const job_filters: string[] = Array.from(
-    new Set(
-      data?.getBuild?.invocations?.map((x) => x.sourceControl?.job ?? "") ?? [],
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
-  );
-
-  const action_filters: string[] = Array.from(
-    new Set(
-      data?.getBuild?.invocations?.map((x) => x.sourceControl?.action ?? "") ??
-        [],
+  },
+  {
+    key: "job",
+    title: "Job",
+    dataIndex: ["sourceControl", "job"],
+    filterSearch: true,
+    filterDropdown: (filterProps) => (
+      <SearchWidget placeholder="Job..." {...filterProps} />
     ),
-  );
-
-  return [
-    {
-      title: "Workflow",
-      dataIndex: ["sourceControl","workflow"],
-      filterSearch: true,
-      filterIcon: (filtered) => (
-        <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
-      ),
-      onFilter: (value, record) =>
-        record.sourceControl?.workflow?.includes(value.toString())
-          ? true
-          : false,
-      sorter: (a, b) =>
-        (a.sourceControl?.workflow ?? "").localeCompare(
-          b.sourceControl?.workflow ?? "",
-        ),
-      filters: workflow_filters.map((x) => ({ text: x, value: x })),
-    },
-    {
-      title: "Job",
-      dataIndex: ["sourceControl","job"],
-      filterSearch: true,
-      filterIcon: (filtered) => (
-        <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
-      ),
-      onFilter: (value, record) =>
-        record.sourceControl?.job?.includes(value.toString()) ? true : false,
-      sorter: (a, b) =>
-        (a.sourceControl?.job ?? "").localeCompare(b.sourceControl?.job ?? ""),
-      filters: job_filters.map((x) => ({ text: x, value: x })),
-    },
-    {
-      title: "Action",
-      dataIndex: ["sourceControl", "action"],
-      filterSearch: true,
-      filterIcon: (filtered) => (
-        <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
-      ),
-      onFilter: (value, record) =>
-        record.sourceControl?.action?.includes(value.toString()) ? true : false,
-      sorter: (a, b) =>
-        (a.sourceControl?.action ?? "").localeCompare(
-          b.sourceControl?.action ?? "",
-        ),
-      filters: action_filters.map((x) => ({ text: x, value: x })),
-    },
-    {
-      title: "Invocation ID",
-      dataIndex: "invocationID",
-      filterSearch: true,
-      filterDropdown: (filterProps) => (
-        <SearchWidget placeholder="Target Pattern..." {...filterProps} />
-      ),
-      filterIcon: (filtered) => (
-        <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
-      ),
-      onFilter: (value, record) =>
-        record.invocationID.includes(value.toString()) ? true : false,
-      render: (_, record) => (
-        <Space>
-          <span className={styles.copyIcon}>
-            <Typography.Text
-              copyable={{ text: record.invocationID ?? "Copy" }}
-            />
-          </span>
-          <Link href={"/bazel-invocations/" + record.invocationID}>
-            {record.invocationID}
-          </Link>
-        </Space>
-      ),
-    },
-    {
-      title: "Duration",
-      dataIndex: "startedAt",
-      render: (_, record) => (
-        <PortalDuration
-          key="duration"
-          from={record.startedAt}
-          to={record.endedAt}
-          includeIcon
-          includePopover
-          formatConfig={{smallestUnit: "s"}}
-        />
-      ),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      filterSearch: true,
-      render: (_, record) => (
-        <InvocationResultTag
-          key="result"
-          exitCodeName={record.exitCodeName || undefined}
-          bepCompleted={record.bepCompleted}
-        />
-      ),
-      filterIcon: (filtered) => (
-        <SearchFilterIcon icon={<FilterOutlined />} filtered={filtered} />
-      ),
-      onFilter: (value, record) => record.exitCodeName == value,
-      filters: invocationResultTagFilters,
-    },
-  ];
-};
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+    ),
+  },
+  {
+    key: "action",
+    title: "Action",
+    dataIndex: ["sourceControl", "action"],
+    filterSearch: true,
+    filterDropdown: (filterProps) => (
+      <SearchWidget placeholder="Action..." {...filterProps} />
+    ),
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+    ),
+  },
+  {
+    key: "invocationID",
+    title: "Invocation ID",
+    dataIndex: "invocationID",
+    filterSearch: true,
+    filterDropdown: (filterProps) => (
+      <SearchWidget
+        placeholder="Invocation ID..."
+        {...filterProps}
+        dataValidator={uuidValidate}
+        validationTooltip="The search string needs to be a valid UUID"
+      />
+    ),
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+    ),
+    render: (_, record) => (
+      <Space>
+        <span className={styles.copyIcon}>
+          <Typography.Text copyable={{ text: record.invocationID ?? "Copy" }} />
+        </span>
+        <Link href={`/bazel-invocations/${record.invocationID}`}>
+          {record.invocationID}
+        </Link>
+      </Space>
+    ),
+  },
+  {
+    key: "duration",
+    title: "Duration",
+    dataIndex: "startedAt",
+    render: (_, record) => (
+      <PortalDuration
+        key="duration"
+        from={record.startedAt}
+        to={record.endedAt}
+        includeIcon
+        includePopover
+        formatConfig={{ smallestUnit: "s" }}
+      />
+    ),
+  },
+  {
+    key: "status",
+    title: "Status",
+    dataIndex: "status",
+    filterSearch: true,
+    render: (_, record) => (
+      <InvocationResultTag
+        key="result"
+        exitCodeName={record.exitCodeName || undefined}
+        bepCompleted={record.bepCompleted}
+      />
+    ),
+    filters: invocationResultTagFilters,
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<FilterOutlined />} filtered={filtered} />
+    ),
+  },
+];
