@@ -13,6 +13,7 @@ PROTO_FILES = {
     "buildbarn_resourceusage": ("resourceusage", "buildbarn/resourceusage", "@com_github_buildbarn_bb_remote_execution//pkg/proto/resourceusage:resourceusage_proto"),
     "google_annotations": ("annotations", "google/api", "@googleapis//google/api:annotations_proto"),
     "google_client": ("client", "google/api", "@googleapis//google/api:client_proto"),
+    "google_field_behavior": ("field_behavior", "google/api", "@googleapis//google/api:field_behavior_proto"),
     "google_http": ("http", "google/api", "@googleapis//google/api:http_proto"),
     "google_launch_stage": ("launch_stage", "google/api", "@googleapis//google/api:launch_stage_proto"),
     "google_bytestream": ("bytestream", "google/bytestream", "@googleapis//google/bytestream:bytestream_proto"),

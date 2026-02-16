@@ -29,9 +29,6 @@ import (
 
 // BuildEventServer implements the Build Event Service.
 // It receives events and forwards them to a BuildEventChannel.
-// TODO: Should this support forwarding events? Users might want to create their own
-// tooling that reacts to build events, and it would be useful if this service could
-// forward events to those.
 type BuildEventServer struct {
 	db                     database.Client
 	instanceNameAuthorizer auth.Authorizer

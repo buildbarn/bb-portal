@@ -1,6 +1,6 @@
 module github.com/buildbarn/bb-portal
 
-go 1.24.7
+go 1.25.4
 
 // Existing patches don't apply against newer go-fuse.
 replace github.com/hanwen/go-fuse/v2 => github.com/hanwen/go-fuse/v2 v2.5.1
@@ -23,7 +23,7 @@ require (
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto v0.0.0
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0
 	github.com/bazelbuild/bazel/src/main/protobuf v0.0.0
-	github.com/bazelbuild/buildtools v0.0.0-20251031164759-f48b23493530
+	github.com/bazelbuild/buildtools v0.0.0-20260130104808-54a7200a18c1
 	github.com/bazelbuild/remote-apis v0.0.0-20250915115802-824e1ba94b2d
 	github.com/buildbarn/bb-remote-execution v0.0.0-20250227074154-20a2e6d4cc71
 	github.com/buildbarn/bb-storage v0.0.0-20251103073911-7199df9e3c26
@@ -34,7 +34,7 @@ require (
 	github.com/hedwigz/entviz v0.0.0-20221011080911-9d47f6f1d818
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jackc/pgx/v5 v5.7.5
-	github.com/klauspost/compress v1.18.1
+	github.com/klauspost/compress v1.18.3
 	github.com/lib/pq v1.10.9
 	github.com/machinebox/graphql v0.2.2
 	github.com/pkg/errors v0.9.1
@@ -44,15 +44,15 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.3.2
 	github.com/vektah/gqlparser/v2 v2.5.30
-	go.opentelemetry.io/otel v1.38.0
-	go.opentelemetry.io/otel/trace v1.38.0
+	go.opentelemetry.io/otel v1.39.0
+	go.opentelemetry.io/otel/trace v1.39.0
 	go.uber.org/mock v0.5.0
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067
-	golang.org/x/sync v0.17.0
-	google.golang.org/genproto v0.0.0-20251029180050-ab9386a59fda
-	google.golang.org/genproto/googleapis/bytestream v0.0.0-20251029180050-ab9386a59fda
-	google.golang.org/grpc v1.76.0
-	google.golang.org/protobuf v1.36.10
+	golang.org/x/sync v0.19.0
+	google.golang.org/genproto v0.0.0-20260128011058-8636f8732409
+	google.golang.org/genproto/googleapis/bytestream v0.0.0-20260128011058-8636f8732409
+	google.golang.org/grpc v1.78.0
+	google.golang.org/protobuf v1.36.11
 	mvdan.cc/gofumpt v0.9.2
 )
 
@@ -64,7 +64,7 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	cloud.google.com/go/iam v1.5.3 // indirect
-	cloud.google.com/go/longrunning v0.7.0 // indirect
+	cloud.google.com/go/longrunning v0.8.0 // indirect
 	cloud.google.com/go/monitoring v1.24.3 // indirect
 	cloud.google.com/go/storage v1.57.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.30.0 // indirect
@@ -98,7 +98,7 @@ require (
 	github.com/buildbarn/go-sha256tree v0.0.0-20250310211320-0f70f20e855b // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/cncf/xds/go v0.0.0-20250501225837-2ac532fd4443 // indirect
+	github.com/cncf/xds/go v0.0.0-20251022180443-0feb69152e9f // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/desertbit/timer v1.0.1 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.35.0 // indirect
@@ -116,7 +116,7 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-jsonnet v0.21.0 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.3.7 // indirect
 	github.com/googleapis/gax-go/v2 v2.15.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
@@ -155,23 +155,23 @@ require (
 	go.opentelemetry.io/contrib/propagators/b3 v1.38.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.38.0 // indirect
-	go.opentelemetry.io/otel/metric v1.38.0 // indirect
+	go.opentelemetry.io/otel/metric v1.39.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.38.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.38.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.8.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
-	golang.org/x/crypto v0.43.0 // indirect
+	golang.org/x/crypto v0.44.0 // indirect
 	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
 	golang.org/x/mod v0.29.0 // indirect
-	golang.org/x/net v0.46.0 // indirect
-	golang.org/x/oauth2 v0.32.0 // indirect
-	golang.org/x/sys v0.37.0 // indirect
-	golang.org/x/text v0.30.0 // indirect
+	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/oauth2 v0.33.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
 	golang.org/x/tools v0.38.0 // indirect
-	google.golang.org/api v0.254.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20251014184007-4626949a642f // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20251022142026-3a174f9686a8 // indirect
+	google.golang.org/api v0.256.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260122232226-8e98ce8d340d // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260122232226-8e98ce8d340d // indirect
 	google.golang.org/grpc/security/advancedtls v1.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.17 // indirect

@@ -21,7 +21,7 @@ local install_bazel(os_param, arch_param="x86_64") =
 local bazel_step(platform, if_cond) = {
   name: platform + ": build and test",
   'if': if_cond,
-  run: "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:%s //..." % platform,
+  run: "bazel test --test_output=errors //...",
 };
 
 // Define the list of platforms that need to be cross-compiled
@@ -37,9 +37,9 @@ local cross_build_step = {
   name: "Cross-platform builds",
   'if': "matrix.host.cross_compile",
   local platforms = std.join(",", [
-    "@rules_go//go/toolchain:%s" % p for p in cross_targets
+    "@com_github_buildbarn_bb_storage//tools/platforms:%s" % p for p in cross_targets
   ]),
-  run: "bazel build --platforms=%s //..." % platforms,
+  run: "bazel build --platforms=%s --@bazel_tools//tools/test:incompatible_use_default_test_toolchain=False //..." % platforms,
 };
 
 // Shared matrix definition

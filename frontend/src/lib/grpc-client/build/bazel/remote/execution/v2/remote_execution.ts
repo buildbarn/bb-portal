@@ -1735,15 +1735,18 @@ export interface SpliceBlobRequest {
    */
   instanceName: string;
   /**
-   * Expected digest of the spliced blob. The client SHOULD set this field due
+   * Expected digest of the spliced blob. The client MUST set this field due
    * to the following reasons:
    *  1. It allows the server to perform an early existence check of the blob
-   *     before spending the splicing effort, as described in the
-   *     [ContentAddressableStorage.SpliceBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SpliceBlob]
+   *     or existing chunks that assemble the blob before spending the splicing
+   *     effort, as described in the [ContentAddressableStorage.SpliceBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SpliceBlob]
    *     documentation.
    *  2. It allows servers with different storage backends to dispatch the
    *     request to the correct storage backend based on the size and/or the
    *     hash of the blob.
+   *  3. If chunking information already exists for the blob, it allows
+   *     the server to keep the existing chunking information or replace it with
+   *     new chunking information.
    */
   blobDigest:
     | Digest
@@ -1912,6 +1915,14 @@ export enum DigestFunction_Value {
    * See https://github.com/BLAKE3-team/BLAKE3.
    */
   BLAKE3 = 9,
+  /**
+   * GITSHA1 - Identical to SHA1, except that "blob ${sizeBytes}\0" is prepended to
+   * the blob's contents before hashing, where ${sizeBytes} corresponds to
+   * the decimal size of the original blob. This allows hashes of files to
+   * be converted from and to the ones used by the Git version control
+   * system.
+   */
+  GITSHA1 = 10,
   UNRECOGNIZED = -1,
 }
 
@@ -1947,6 +1958,9 @@ export function digestFunction_ValueFromJSON(object: any): DigestFunction_Value 
     case 9:
     case "BLAKE3":
       return DigestFunction_Value.BLAKE3;
+    case 10:
+    case "GITSHA1":
+      return DigestFunction_Value.GITSHA1;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -1976,6 +1990,8 @@ export function digestFunction_ValueToJSON(object: DigestFunction_Value): string
       return "SHA256TREE";
     case DigestFunction_Value.BLAKE3:
       return "BLAKE3";
+    case DigestFunction_Value.GITSHA1:
+      return "GITSHA1";
     case DigestFunction_Value.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -2186,7 +2202,7 @@ export interface CacheCapabilities {
    * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
    * operation.
    */
-  blobSplitSupport: boolean;
+  splitBlobSupport: boolean;
   /**
    * Whether blob splicing is supported for the particular server/instance. If
    * yes, the server/instance implements the specified behavior for blob
@@ -2194,7 +2210,7 @@ export interface CacheCapabilities {
    * [ContentAddressableStorage.SpliceBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SpliceBlob]
    * operation.
    */
-  blobSpliceSupport: boolean;
+  spliceBlobSupport: boolean;
 }
 
 /** Capabilities of the remote execution system. */
@@ -7485,8 +7501,8 @@ function createBaseCacheCapabilities(): CacheCapabilities {
     supportedCompressors: [],
     supportedBatchUpdateCompressors: [],
     maxCasBlobSizeBytes: "0",
-    blobSplitSupport: false,
-    blobSpliceSupport: false,
+    splitBlobSupport: false,
+    spliceBlobSupport: false,
   };
 }
 
@@ -7522,11 +7538,11 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     if (message.maxCasBlobSizeBytes !== "0") {
       writer.uint32(64).int64(message.maxCasBlobSizeBytes);
     }
-    if (message.blobSplitSupport !== false) {
-      writer.uint32(72).bool(message.blobSplitSupport);
+    if (message.splitBlobSupport !== false) {
+      writer.uint32(72).bool(message.splitBlobSupport);
     }
-    if (message.blobSpliceSupport !== false) {
-      writer.uint32(80).bool(message.blobSpliceSupport);
+    if (message.spliceBlobSupport !== false) {
+      writer.uint32(80).bool(message.spliceBlobSupport);
     }
     return writer;
   },
@@ -7637,7 +7653,7 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
             break;
           }
 
-          message.blobSplitSupport = reader.bool();
+          message.splitBlobSupport = reader.bool();
           continue;
         }
         case 10: {
@@ -7645,7 +7661,7 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
             break;
           }
 
-          message.blobSpliceSupport = reader.bool();
+          message.spliceBlobSupport = reader.bool();
           continue;
         }
       }
@@ -7681,8 +7697,8 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
         ? object.supportedBatchUpdateCompressors.map((e: any) => compressor_ValueFromJSON(e))
         : [],
       maxCasBlobSizeBytes: isSet(object.maxCasBlobSizeBytes) ? globalThis.String(object.maxCasBlobSizeBytes) : "0",
-      blobSplitSupport: isSet(object.blobSplitSupport) ? globalThis.Boolean(object.blobSplitSupport) : false,
-      blobSpliceSupport: isSet(object.blobSpliceSupport) ? globalThis.Boolean(object.blobSpliceSupport) : false,
+      splitBlobSupport: isSet(object.splitBlobSupport) ? globalThis.Boolean(object.splitBlobSupport) : false,
+      spliceBlobSupport: isSet(object.spliceBlobSupport) ? globalThis.Boolean(object.spliceBlobSupport) : false,
     };
   },
 
@@ -7714,11 +7730,11 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     if (message.maxCasBlobSizeBytes !== "0") {
       obj.maxCasBlobSizeBytes = message.maxCasBlobSizeBytes;
     }
-    if (message.blobSplitSupport !== false) {
-      obj.blobSplitSupport = message.blobSplitSupport;
+    if (message.splitBlobSupport !== false) {
+      obj.splitBlobSupport = message.splitBlobSupport;
     }
-    if (message.blobSpliceSupport !== false) {
-      obj.blobSpliceSupport = message.blobSpliceSupport;
+    if (message.spliceBlobSupport !== false) {
+      obj.spliceBlobSupport = message.spliceBlobSupport;
     }
     return obj;
   },
@@ -7742,8 +7758,8 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     message.supportedCompressors = object.supportedCompressors?.map((e) => e) || [];
     message.supportedBatchUpdateCompressors = object.supportedBatchUpdateCompressors?.map((e) => e) || [];
     message.maxCasBlobSizeBytes = object.maxCasBlobSizeBytes ?? "0";
-    message.blobSplitSupport = object.blobSplitSupport ?? false;
-    message.blobSpliceSupport = object.blobSpliceSupport ?? false;
+    message.splitBlobSupport = object.splitBlobSupport ?? false;
+    message.spliceBlobSupport = object.spliceBlobSupport ?? false;
     return message;
   },
 };
@@ -9466,19 +9482,19 @@ export const ContentAddressableStorageDefinition = {
       },
     },
     /**
-     * Split a blob into chunks.
+     * SplitBlob retrieves information about how a blob is split into chunks.
      *
-     * This call splits a blob into chunks, stores the chunks in the CAS, and
-     * returns a list of the chunk digests. Using this list, a client can check
-     * which chunks are locally available and just fetch the missing ones. The
-     * desired blob can be assembled by concatenating the fetched chunks in the
-     * order of the digests in the list.
+     * This call returns information about how a blob is split into chunks, and
+     * returns a list of the chunk digests. Using the returned list of chunk digests,
+     * a client can check which chunks are locally available and only fetch the
+     * missing ones. The desired blob can be assembled by concatenating the fetched
+     * chunks in the order of the digests in the list. The chunks SHOULD all be
+     * available in the CAS.
      *
-     * This rpc can be used to reduce the required data to download a large blob
-     * from CAS if chunks from earlier downloads of a different version of this
-     * blob are locally available. For this procedure to work properly, blobs
-     * SHOULD be split in a content-defined way, rather than with fixed-sized
-     * chunking.
+     * This API can be used to reduce the required data to download a large blob
+     * from CAS if some chunks from similar blobs are locally available. For this
+     * procedure to work properly, blobs SHOULD be split in a content-defined way,
+     * rather than with fixed-sized chunking.
      *
      * If a split request is answered successfully, a client can expect the
      * following guarantees from the server:
@@ -9488,7 +9504,7 @@ export const ContentAddressableStorageDefinition = {
      *
      * Servers which implement this functionality MUST declare that they support
      * it by setting the
-     * [CacheCapabilities.blob_split_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_split_support]
+     * [CacheCapabilities.split_blob_support][build.bazel.remote.execution.v2.CacheCapabilities.split_blob_support]
      * field accordingly.
      *
      * Clients MUST check that the server supports this capability, before using
@@ -9517,7 +9533,9 @@ export const ContentAddressableStorageDefinition = {
      *
      * Errors:
      *
-     * * `NOT_FOUND`: The requested blob is not present in the CAS.
+     * * `NOT_FOUND`: The requested blob is not present in the CAS, OR there is no
+     *   split information available for the blob, OR at least one chunk needed to
+     *   reconstruct the blob is missing from the CAS.
      * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
      *   chunks.
      */
@@ -9622,23 +9640,28 @@ export const ContentAddressableStorageDefinition = {
       },
     },
     /**
-     * Splice a blob from chunks.
+     * SpliceBlob tells the CAS how chunks can compose a blob.
      *
      * This is the complementary operation to the
      * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
      * function to handle the chunked upload of large blobs to save upload
      * traffic.
      *
+     * When uploading a large blob using chunked upload, clients MUST first upload
+     * all chunks to the CAS, then call this RPC to tell the server how those chunks
+     * compose the original blob. The chunks referenced in the SpliceBlob call SHOULD be
+     * available in the CAS before calling this RPC.
+     *
      * If a client needs to upload a large blob and is able to split a blob into
      * chunks in such a way that reusable chunks are obtained, e.g., by means of
      * content-defined chunking, it can first determine which parts of the blob
      * are already available in the remote CAS and upload the missing chunks, and
-     * then use this API to instruct the server to splice the original blob from
-     * the remotely available blob chunks.
+     * then use this API to store information on how the chunks compose the
+     * original blob.
      *
      * Servers which implement this functionality MUST declare that they support
      * it by setting the
-     * [CacheCapabilities.blob_splice_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_splice_support]
+     * [CacheCapabilities.splice_blob_support][build.bazel.remote.execution.v2.CacheCapabilities.splice_blob_support]
      * field accordingly.
      *
      * Clients MUST check that the server supports this capability, before using
@@ -9647,10 +9670,13 @@ export const ContentAddressableStorageDefinition = {
      * In order to ensure data consistency of the CAS, the server MUST only add
      * blobs to the CAS after verifying their digests. In particular, servers MUST NOT
      * trust digests provided by the client. The server MAY accept a request as no-op
-     * if the client-specified blob is already in CAS; the lifetime of that blob SHOULD
-     * be extended as usual. If the client-specified blob is not already in the CAS,
-     * the server SHOULD verify that the digest of the newly created blob matches the
-     * digest specified by the client, and reject the request if they differ.
+     * if the client-specified blob is already in CAS or if information on how to
+     * construct the blob from chunks is available. If the client-specified blob is
+     * not already in the CAS, the server MUST verify that the digest of the newly
+     * created blob assembled from chunks matches the digest specified by the
+     * client, and reject the request if they differ. Servers MAY choose to allow
+     * overwriting existing chunk mappings or to store multiple chunk mappings for
+     * the same blob.
      *
      * When blob splitting and splicing is used at the same time, the clients and
      * the server SHOULD agree out-of-band upon a chunking algorithm used by both
@@ -9664,6 +9690,11 @@ export const ContentAddressableStorageDefinition = {
      *   spliced blob.
      * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
      *   provided expected digest.
+     * * `ALREADY_EXISTS`: The blob already exists in CAS and the server did not
+     *   extend the lifetime of the chunks specified in the request, e.g. because
+     *   it prefers a different chunking and extended those instead. Clients can
+     *   call [SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+     *   to check what chunk mapping the server is using.
      */
     spliceBlob: {
       name: "SpliceBlob",
@@ -9830,19 +9861,19 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
     context: CallContext & CallContextExt,
   ): ServerStreamingMethodResult<DeepPartial<GetTreeResponse>>;
   /**
-   * Split a blob into chunks.
+   * SplitBlob retrieves information about how a blob is split into chunks.
    *
-   * This call splits a blob into chunks, stores the chunks in the CAS, and
-   * returns a list of the chunk digests. Using this list, a client can check
-   * which chunks are locally available and just fetch the missing ones. The
-   * desired blob can be assembled by concatenating the fetched chunks in the
-   * order of the digests in the list.
+   * This call returns information about how a blob is split into chunks, and
+   * returns a list of the chunk digests. Using the returned list of chunk digests,
+   * a client can check which chunks are locally available and only fetch the
+   * missing ones. The desired blob can be assembled by concatenating the fetched
+   * chunks in the order of the digests in the list. The chunks SHOULD all be
+   * available in the CAS.
    *
-   * This rpc can be used to reduce the required data to download a large blob
-   * from CAS if chunks from earlier downloads of a different version of this
-   * blob are locally available. For this procedure to work properly, blobs
-   * SHOULD be split in a content-defined way, rather than with fixed-sized
-   * chunking.
+   * This API can be used to reduce the required data to download a large blob
+   * from CAS if some chunks from similar blobs are locally available. For this
+   * procedure to work properly, blobs SHOULD be split in a content-defined way,
+   * rather than with fixed-sized chunking.
    *
    * If a split request is answered successfully, a client can expect the
    * following guarantees from the server:
@@ -9852,7 +9883,7 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    *
    * Servers which implement this functionality MUST declare that they support
    * it by setting the
-   * [CacheCapabilities.blob_split_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_split_support]
+   * [CacheCapabilities.split_blob_support][build.bazel.remote.execution.v2.CacheCapabilities.split_blob_support]
    * field accordingly.
    *
    * Clients MUST check that the server supports this capability, before using
@@ -9881,29 +9912,36 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    *
    * Errors:
    *
-   * * `NOT_FOUND`: The requested blob is not present in the CAS.
+   * * `NOT_FOUND`: The requested blob is not present in the CAS, OR there is no
+   *   split information available for the blob, OR at least one chunk needed to
+   *   reconstruct the blob is missing from the CAS.
    * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
    *   chunks.
    */
   splitBlob(request: SplitBlobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<SplitBlobResponse>>;
   /**
-   * Splice a blob from chunks.
+   * SpliceBlob tells the CAS how chunks can compose a blob.
    *
    * This is the complementary operation to the
    * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
    * function to handle the chunked upload of large blobs to save upload
    * traffic.
    *
+   * When uploading a large blob using chunked upload, clients MUST first upload
+   * all chunks to the CAS, then call this RPC to tell the server how those chunks
+   * compose the original blob. The chunks referenced in the SpliceBlob call SHOULD be
+   * available in the CAS before calling this RPC.
+   *
    * If a client needs to upload a large blob and is able to split a blob into
    * chunks in such a way that reusable chunks are obtained, e.g., by means of
    * content-defined chunking, it can first determine which parts of the blob
    * are already available in the remote CAS and upload the missing chunks, and
-   * then use this API to instruct the server to splice the original blob from
-   * the remotely available blob chunks.
+   * then use this API to store information on how the chunks compose the
+   * original blob.
    *
    * Servers which implement this functionality MUST declare that they support
    * it by setting the
-   * [CacheCapabilities.blob_splice_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_splice_support]
+   * [CacheCapabilities.splice_blob_support][build.bazel.remote.execution.v2.CacheCapabilities.splice_blob_support]
    * field accordingly.
    *
    * Clients MUST check that the server supports this capability, before using
@@ -9912,10 +9950,13 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    * In order to ensure data consistency of the CAS, the server MUST only add
    * blobs to the CAS after verifying their digests. In particular, servers MUST NOT
    * trust digests provided by the client. The server MAY accept a request as no-op
-   * if the client-specified blob is already in CAS; the lifetime of that blob SHOULD
-   * be extended as usual. If the client-specified blob is not already in the CAS,
-   * the server SHOULD verify that the digest of the newly created blob matches the
-   * digest specified by the client, and reject the request if they differ.
+   * if the client-specified blob is already in CAS or if information on how to
+   * construct the blob from chunks is available. If the client-specified blob is
+   * not already in the CAS, the server MUST verify that the digest of the newly
+   * created blob assembled from chunks matches the digest specified by the
+   * client, and reject the request if they differ. Servers MAY choose to allow
+   * overwriting existing chunk mappings or to store multiple chunk mappings for
+   * the same blob.
    *
    * When blob splitting and splicing is used at the same time, the clients and
    * the server SHOULD agree out-of-band upon a chunking algorithm used by both
@@ -9929,6 +9970,11 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    *   spliced blob.
    * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
    *   provided expected digest.
+   * * `ALREADY_EXISTS`: The blob already exists in CAS and the server did not
+   *   extend the lifetime of the chunks specified in the request, e.g. because
+   *   it prefers a different chunking and extended those instead. Clients can
+   *   call [SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+   *   to check what chunk mapping the server is using.
    */
   spliceBlob(
     request: SpliceBlobRequest,
@@ -10035,19 +10081,19 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    */
   getTree(request: DeepPartial<GetTreeRequest>, options?: CallOptions & CallOptionsExt): AsyncIterable<GetTreeResponse>;
   /**
-   * Split a blob into chunks.
+   * SplitBlob retrieves information about how a blob is split into chunks.
    *
-   * This call splits a blob into chunks, stores the chunks in the CAS, and
-   * returns a list of the chunk digests. Using this list, a client can check
-   * which chunks are locally available and just fetch the missing ones. The
-   * desired blob can be assembled by concatenating the fetched chunks in the
-   * order of the digests in the list.
+   * This call returns information about how a blob is split into chunks, and
+   * returns a list of the chunk digests. Using the returned list of chunk digests,
+   * a client can check which chunks are locally available and only fetch the
+   * missing ones. The desired blob can be assembled by concatenating the fetched
+   * chunks in the order of the digests in the list. The chunks SHOULD all be
+   * available in the CAS.
    *
-   * This rpc can be used to reduce the required data to download a large blob
-   * from CAS if chunks from earlier downloads of a different version of this
-   * blob are locally available. For this procedure to work properly, blobs
-   * SHOULD be split in a content-defined way, rather than with fixed-sized
-   * chunking.
+   * This API can be used to reduce the required data to download a large blob
+   * from CAS if some chunks from similar blobs are locally available. For this
+   * procedure to work properly, blobs SHOULD be split in a content-defined way,
+   * rather than with fixed-sized chunking.
    *
    * If a split request is answered successfully, a client can expect the
    * following guarantees from the server:
@@ -10057,7 +10103,7 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    *
    * Servers which implement this functionality MUST declare that they support
    * it by setting the
-   * [CacheCapabilities.blob_split_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_split_support]
+   * [CacheCapabilities.split_blob_support][build.bazel.remote.execution.v2.CacheCapabilities.split_blob_support]
    * field accordingly.
    *
    * Clients MUST check that the server supports this capability, before using
@@ -10086,29 +10132,36 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    *
    * Errors:
    *
-   * * `NOT_FOUND`: The requested blob is not present in the CAS.
+   * * `NOT_FOUND`: The requested blob is not present in the CAS, OR there is no
+   *   split information available for the blob, OR at least one chunk needed to
+   *   reconstruct the blob is missing from the CAS.
    * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
    *   chunks.
    */
   splitBlob(request: DeepPartial<SplitBlobRequest>, options?: CallOptions & CallOptionsExt): Promise<SplitBlobResponse>;
   /**
-   * Splice a blob from chunks.
+   * SpliceBlob tells the CAS how chunks can compose a blob.
    *
    * This is the complementary operation to the
    * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
    * function to handle the chunked upload of large blobs to save upload
    * traffic.
    *
+   * When uploading a large blob using chunked upload, clients MUST first upload
+   * all chunks to the CAS, then call this RPC to tell the server how those chunks
+   * compose the original blob. The chunks referenced in the SpliceBlob call SHOULD be
+   * available in the CAS before calling this RPC.
+   *
    * If a client needs to upload a large blob and is able to split a blob into
    * chunks in such a way that reusable chunks are obtained, e.g., by means of
    * content-defined chunking, it can first determine which parts of the blob
    * are already available in the remote CAS and upload the missing chunks, and
-   * then use this API to instruct the server to splice the original blob from
-   * the remotely available blob chunks.
+   * then use this API to store information on how the chunks compose the
+   * original blob.
    *
    * Servers which implement this functionality MUST declare that they support
    * it by setting the
-   * [CacheCapabilities.blob_splice_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_splice_support]
+   * [CacheCapabilities.splice_blob_support][build.bazel.remote.execution.v2.CacheCapabilities.splice_blob_support]
    * field accordingly.
    *
    * Clients MUST check that the server supports this capability, before using
@@ -10117,10 +10170,13 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    * In order to ensure data consistency of the CAS, the server MUST only add
    * blobs to the CAS after verifying their digests. In particular, servers MUST NOT
    * trust digests provided by the client. The server MAY accept a request as no-op
-   * if the client-specified blob is already in CAS; the lifetime of that blob SHOULD
-   * be extended as usual. If the client-specified blob is not already in the CAS,
-   * the server SHOULD verify that the digest of the newly created blob matches the
-   * digest specified by the client, and reject the request if they differ.
+   * if the client-specified blob is already in CAS or if information on how to
+   * construct the blob from chunks is available. If the client-specified blob is
+   * not already in the CAS, the server MUST verify that the digest of the newly
+   * created blob assembled from chunks matches the digest specified by the
+   * client, and reject the request if they differ. Servers MAY choose to allow
+   * overwriting existing chunk mappings or to store multiple chunk mappings for
+   * the same blob.
    *
    * When blob splitting and splicing is used at the same time, the clients and
    * the server SHOULD agree out-of-band upon a chunking algorithm used by both
@@ -10134,6 +10190,11 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    *   spliced blob.
    * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
    *   provided expected digest.
+   * * `ALREADY_EXISTS`: The blob already exists in CAS and the server did not
+   *   extend the lifetime of the chunks specified in the request, e.g. because
+   *   it prefers a different chunking and extended those instead. Clients can
+   *   call [SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+   *   to check what chunk mapping the server is using.
    */
   spliceBlob(
     request: DeepPartial<SpliceBlobRequest>,
