@@ -19,7 +19,7 @@ const getTitleBits = (data: FindBuildByUuidQuery): React.ReactNode[] => {
         {data?.getBuild?.buildUUID}
       </Typography.Text>
     </span>,
-    <span className={styles.copyIcon}>
+    <span key="copy-icon" className={styles.copyIcon}>
       <Typography.Text
         copyable={{ text: data?.getBuild?.buildUUID ?? "Copy" }}
       />
@@ -41,7 +41,7 @@ const getTitleBits = (data: FindBuildByUuidQuery): React.ReactNode[] => {
 
 const getExtraBits = (data: FindBuildByUuidQuery): React.ReactNode[] => {
   return [
-    <Typography.Text code ellipsis className={styles.startedAt}>
+    <Typography.Text key="timestamp" code ellipsis className={styles.startedAt}>
       {dayjs(data?.getBuild?.timestamp).format("YYYY-MM-DD hh:mm:ss A")}
     </Typography.Text>,
   ];

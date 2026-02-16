@@ -3,7 +3,7 @@
 import '@/app/globals.css';
 import { ConfigProvider, Layout } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 import styles from '@/app/layout.module.css';
 import RootStyleRegistry from '@/components/RootStyleRegistry';
 import AppBar, { SetExtraAppBarMenuItemsContext } from '@/components/AppBar';

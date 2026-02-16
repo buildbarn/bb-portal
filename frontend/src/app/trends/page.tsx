@@ -92,7 +92,7 @@ const PageContent: React.FC = () => {
                         <PortalCard
                             type='inner'
                             icon={<ClockCircleFilled />}
-                            titleBits={[<span>Invocation Durations</span>]}>
+                            titleBits={[<span key="invocation-durations">Invocation Durations</span>]}>
                             <Row>
                                 <Space size="large">
                                     <Statistic title="Total" value={data?.findBazelInvocations.totalCount} valueStyle={{ color: "#82ca9d" }} />
