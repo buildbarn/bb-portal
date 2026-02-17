@@ -34,7 +34,6 @@
       ]
     },
     "bazelVersion": "7.1.0",
-    "bepCompleted": false,
     "build": {
       "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
       "id": "QnVpbGQ6MQ=="
@@ -51,6 +50,7 @@
         "mnemonic": "darwin_arm64-fastbuild"
       }
     ],
+    "connectionMetadata": null,
     "endedAt": "2024-05-13T23:43:26.247Z",
     "exitCodeName": "TESTS_FAILED",
     "hostname": "Namelesss-MacBook-Pro.local",

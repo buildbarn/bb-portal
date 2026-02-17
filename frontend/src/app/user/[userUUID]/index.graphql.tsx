@@ -26,7 +26,10 @@ export const AUTHENTICATED_USER_NODE_FRAGMENT = gql(/* GraphQL */ `
           endedAt
           startedAt
           exitCodeName
-          bepCompleted
+          connectionMetadata {
+            connectionLastOpenAt
+            timeSinceLastConnectionMillis
+          }
         }
       }
     }

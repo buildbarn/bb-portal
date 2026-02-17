@@ -9,5 +9,5 @@ export interface InvocationInfo {
   invocationId: string;
   timestamps: (number | undefined)[];
   exitCodeName: string | undefined;
-  bepCompleted: boolean;
+  timeSinceLastConnectionMillis: number | undefined;
 }

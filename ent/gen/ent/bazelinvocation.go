@@ -13,6 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -103,7 +104,7 @@ type BazelInvocationEdges struct {
 	// EventMetadata holds the value of the event_metadata edge.
 	EventMetadata *EventMetadata `json:"event_metadata,omitempty"`
 	// ConnectionMetadata holds the value of the connection_metadata edge.
-	ConnectionMetadata []*ConnectionMetadata `json:"connection_metadata,omitempty"`
+	ConnectionMetadata *ConnectionMetadata `json:"connection_metadata,omitempty"`
 	// Configurations holds the value of the configurations edge.
 	Configurations []*Configuration `json:"configurations,omitempty"`
 	// Actions holds the value of the actions edge.
@@ -126,9 +127,8 @@ type BazelInvocationEdges struct {
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [14]bool
 	// totalCount holds the count of the edges above.
-	totalCount [8]map[string]int
+	totalCount [9]map[string]int
 
-	namedConnectionMetadata  map[string][]*ConnectionMetadata
 	namedConfigurations      map[string][]*Configuration
 	namedActions             map[string][]*Action
 	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
@@ -183,10 +183,12 @@ func (e BazelInvocationEdges) EventMetadataOrErr() (*EventMetadata, error) {
 }
 
 // ConnectionMetadataOrErr returns the ConnectionMetadata value or an error if the edge
-// was not loaded in eager-loading.
-func (e BazelInvocationEdges) ConnectionMetadataOrErr() ([]*ConnectionMetadata, error) {
-	if e.loadedTypes[4] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BazelInvocationEdges) ConnectionMetadataOrErr() (*ConnectionMetadata, error) {
+	if e.ConnectionMetadata != nil {
 		return e.ConnectionMetadata, nil
+	} else if e.loadedTypes[4] {
+		return nil, &NotFoundError{label: connectionmetadata.Label}
 	}
 	return nil, &NotLoadedError{edge: "connection_metadata"}
 }
@@ -720,30 +722,6 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventWorkspaceStatus))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedConnectionMetadata returns the ConnectionMetadata named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedConnectionMetadata(name string) ([]*ConnectionMetadata, error) {
-	if bi.Edges.namedConnectionMetadata == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bi.Edges.namedConnectionMetadata[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bi *BazelInvocation) appendNamedConnectionMetadata(name string, edges ...*ConnectionMetadata) {
-	if bi.Edges.namedConnectionMetadata == nil {
-		bi.Edges.namedConnectionMetadata = make(map[string][]*ConnectionMetadata)
-	}
-	if len(edges) == 0 {
-		bi.Edges.namedConnectionMetadata[name] = []*ConnectionMetadata{}
-	} else {
-		bi.Edges.namedConnectionMetadata[name] = append(bi.Edges.namedConnectionMetadata[name], edges...)
-	}
 }
 
 // NamedConfigurations returns the Configurations named value or an error if the edge was not

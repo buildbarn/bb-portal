@@ -32,18 +32,27 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
 
   const invocationsInfo: InvocationInfo[] = useMemo(
     () =>
-      invocations.map((entry) => {
-        return {
-          invocationId: entry.invocationID,
-          // Timestamp interval in milliseconds since UNIX epoch.
-          timestamps: [
-            dayjs(entry.startedAt).valueOf(),
-            entry.endedAt ? dayjs(entry.endedAt).valueOf() : dayjs().valueOf(),
-          ],
-          exitCodeName: entry.exitCodeName || undefined,
-          bepCompleted: entry.bepCompleted,
-        };
-      }),
+      invocations
+        .filter((entry) => !!entry.startedAt)
+        .map((entry) => {
+          const startTime = entry.startedAt;
+          let endTime = entry.endedAt;
+          if (!endTime) {
+            endTime = entry.connectionMetadata?.connectionLastOpenAt;
+          }
+          if (!endTime) {
+            endTime = new Date();
+          }
+          return {
+            invocationId: entry.invocationID,
+            // Timestamp interval in milliseconds since UNIX epoch.
+            timestamps: [dayjs(startTime).valueOf(), dayjs(endTime).valueOf()],
+            exitCodeName: entry.exitCodeName || undefined,
+            timeSinceLastConnectionMillis:
+              entry.connectionMetadata?.timeSinceLastConnectionMillis ||
+              undefined,
+          };
+        }),
     [invocations],
   );
 
@@ -133,7 +142,7 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
               key={entry.invocationId}
               fill={getInvocationResultTagColor(
                 entry.exitCodeName,
-                entry.bepCompleted,
+                entry.timeSinceLastConnectionMillis,
               )}
             />
           ))}

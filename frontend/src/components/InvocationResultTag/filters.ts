@@ -1,23 +1,24 @@
 import type { FilterValue } from "antd/es/table/interface";
 import type { BazelInvocationWhereInput } from "@/graphql/__generated__/graphql";
-import { InvocationExitCodes, InvocationResultTagEnum } from "./enum";
+import {
+  INVOCATION_IN_PROGRESS_TIMEOUT,
+  InvocationExitCodes,
+  InvocationResult,
+} from "./enum";
 
 export const invocationResultTagFilters = [
-  { text: "Succeeded", value: InvocationResultTagEnum.SUCCESS },
-  { text: "Unstable", value: InvocationResultTagEnum.UNSTABLE },
-  { text: "Parsing Failed", value: InvocationResultTagEnum.PARSING_FAILURE },
-  { text: "Build Failed", value: InvocationResultTagEnum.BUILD_FAILURE },
-  { text: "Tests Failed", value: InvocationResultTagEnum.TESTS_FAILED },
-  { text: "Remote error", value: InvocationResultTagEnum.REMOTE_ERROR },
-  { text: "Not Built", value: InvocationResultTagEnum.NOT_BUILT },
-  { text: "Aborted", value: InvocationResultTagEnum.ABORTED },
-  { text: "Interrupted", value: InvocationResultTagEnum.INTERRUPTED },
-  { text: "Status Unknown", value: InvocationResultTagEnum.UNKNOWN },
-  { text: "In Progress", value: InvocationResultTagEnum.IN_PROGRESS },
-  {
-    text: "BEP Upload Aborted",
-    value: InvocationResultTagEnum.BEP_UPLOAD_ABORTED,
-  },
+  { text: "Succeeded", value: InvocationResult.SUCCESS },
+  { text: "Unstable", value: InvocationResult.UNSTABLE },
+  { text: "Parsing Failed", value: InvocationResult.PARSING_FAILURE },
+  { text: "Build Failed", value: InvocationResult.BUILD_FAILURE },
+  { text: "Tests Failed", value: InvocationResult.TESTS_FAILED },
+  { text: "Remote error", value: InvocationResult.REMOTE_ERROR },
+  { text: "Not Built", value: InvocationResult.NOT_BUILT },
+  { text: "Aborted", value: InvocationResult.ABORTED },
+  { text: "Interrupted", value: InvocationResult.INTERRUPTED },
+  { text: "Unknown exit code", value: InvocationResult.UNKNOWN_EXIT_CODE },
+  { text: "In Progress", value: InvocationResult.IN_PROGRESS },
+  { text: "Disconnected", value: InvocationResult.DISCONNECTED },
 ];
 
 export const applyInvocationResultTagFilter = (
@@ -25,29 +26,41 @@ export const applyInvocationResultTagFilter = (
 ): BazelInvocationWhereInput[] => {
   const filters: BazelInvocationWhereInput[] = [];
   value.forEach((v) => {
-    const tag = v as InvocationResultTagEnum;
+    const connectionCutoff = new Date(
+      Date.now() - INVOCATION_IN_PROGRESS_TIMEOUT,
+    );
+    const tag = v as InvocationResult;
     switch (tag) {
-      case InvocationResultTagEnum.IN_PROGRESS:
+      case InvocationResult.IN_PROGRESS:
         filters.push({
           and: [
-            { bepCompleted: false },
             { or: [{ exitCodeNameIsNil: true }, { exitCodeName: "" }] },
+            {
+              hasConnectionMetadataWith: [
+                { connectionLastOpenAtGTE: connectionCutoff },
+              ],
+            },
           ],
         });
         break;
-      case InvocationResultTagEnum.BEP_UPLOAD_ABORTED:
+      case InvocationResult.DISCONNECTED:
         filters.push({
           and: [
-            { bepCompleted: true },
             { or: [{ exitCodeNameIsNil: true }, { exitCodeName: "" }] },
+            {
+              hasConnectionMetadataWith: [
+                { connectionLastOpenAtLT: connectionCutoff },
+              ],
+            },
           ],
         });
         break;
-      case InvocationResultTagEnum.UNKNOWN:
+      case InvocationResult.UNKNOWN_EXIT_CODE:
         filters.push({
           and: [
             { exitCodeNameNotIn: Object.values(InvocationExitCodes) },
-            { or: [{ exitCodeNameNotNil: true }, { exitCodeNameNEQ: "" }] },
+            { exitCodeNameNotNil: true },
+            { exitCodeNameNEQ: "" },
           ],
         });
         break;

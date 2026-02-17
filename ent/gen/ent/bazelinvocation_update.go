@@ -650,19 +650,23 @@ func (biu *BazelInvocationUpdate) SetEventMetadata(e *EventMetadata) *BazelInvoc
 	return biu.SetEventMetadataID(e.ID)
 }
 
-// AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
-func (biu *BazelInvocationUpdate) AddConnectionMetadatumIDs(ids ...int64) *BazelInvocationUpdate {
-	biu.mutation.AddConnectionMetadatumIDs(ids...)
+// SetConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID.
+func (biu *BazelInvocationUpdate) SetConnectionMetadataID(id int64) *BazelInvocationUpdate {
+	biu.mutation.SetConnectionMetadataID(id)
 	return biu
 }
 
-// AddConnectionMetadata adds the "connection_metadata" edges to the ConnectionMetadata entity.
-func (biu *BazelInvocationUpdate) AddConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdate {
-	ids := make([]int64, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// SetNillableConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableConnectionMetadataID(id *int64) *BazelInvocationUpdate {
+	if id != nil {
+		biu = biu.SetConnectionMetadataID(*id)
 	}
-	return biu.AddConnectionMetadatumIDs(ids...)
+	return biu
+}
+
+// SetConnectionMetadata sets the "connection_metadata" edge to the ConnectionMetadata entity.
+func (biu *BazelInvocationUpdate) SetConnectionMetadata(c *ConnectionMetadata) *BazelInvocationUpdate {
+	return biu.SetConnectionMetadataID(c.ID)
 }
 
 // AddConfigurationIDs adds the "configurations" edge to the Configuration entity by IDs.
@@ -837,25 +841,10 @@ func (biu *BazelInvocationUpdate) ClearEventMetadata() *BazelInvocationUpdate {
 	return biu
 }
 
-// ClearConnectionMetadata clears all "connection_metadata" edges to the ConnectionMetadata entity.
+// ClearConnectionMetadata clears the "connection_metadata" edge to the ConnectionMetadata entity.
 func (biu *BazelInvocationUpdate) ClearConnectionMetadata() *BazelInvocationUpdate {
 	biu.mutation.ClearConnectionMetadata()
 	return biu
-}
-
-// RemoveConnectionMetadatumIDs removes the "connection_metadata" edge to ConnectionMetadata entities by IDs.
-func (biu *BazelInvocationUpdate) RemoveConnectionMetadatumIDs(ids ...int64) *BazelInvocationUpdate {
-	biu.mutation.RemoveConnectionMetadatumIDs(ids...)
-	return biu
-}
-
-// RemoveConnectionMetadata removes "connection_metadata" edges to ConnectionMetadata entities.
-func (biu *BazelInvocationUpdate) RemoveConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdate {
-	ids := make([]int64, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return biu.RemoveConnectionMetadatumIDs(ids...)
 }
 
 // ClearConfigurations clears all "configurations" edges to the Configuration entity.
@@ -1367,7 +1356,7 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.ConnectionMetadataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.ConnectionMetadataTable,
 			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
@@ -1375,28 +1364,12 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biu.mutation.RemovedConnectionMetadataIDs(); len(nodes) > 0 && !biu.mutation.ConnectionMetadataCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ConnectionMetadataTable,
-			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := biu.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.ConnectionMetadataTable,
 			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
@@ -2411,19 +2384,23 @@ func (biuo *BazelInvocationUpdateOne) SetEventMetadata(e *EventMetadata) *BazelI
 	return biuo.SetEventMetadataID(e.ID)
 }
 
-// AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
-func (biuo *BazelInvocationUpdateOne) AddConnectionMetadatumIDs(ids ...int64) *BazelInvocationUpdateOne {
-	biuo.mutation.AddConnectionMetadatumIDs(ids...)
+// SetConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID.
+func (biuo *BazelInvocationUpdateOne) SetConnectionMetadataID(id int64) *BazelInvocationUpdateOne {
+	biuo.mutation.SetConnectionMetadataID(id)
 	return biuo
 }
 
-// AddConnectionMetadata adds the "connection_metadata" edges to the ConnectionMetadata entity.
-func (biuo *BazelInvocationUpdateOne) AddConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdateOne {
-	ids := make([]int64, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// SetNillableConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableConnectionMetadataID(id *int64) *BazelInvocationUpdateOne {
+	if id != nil {
+		biuo = biuo.SetConnectionMetadataID(*id)
 	}
-	return biuo.AddConnectionMetadatumIDs(ids...)
+	return biuo
+}
+
+// SetConnectionMetadata sets the "connection_metadata" edge to the ConnectionMetadata entity.
+func (biuo *BazelInvocationUpdateOne) SetConnectionMetadata(c *ConnectionMetadata) *BazelInvocationUpdateOne {
+	return biuo.SetConnectionMetadataID(c.ID)
 }
 
 // AddConfigurationIDs adds the "configurations" edge to the Configuration entity by IDs.
@@ -2598,25 +2575,10 @@ func (biuo *BazelInvocationUpdateOne) ClearEventMetadata() *BazelInvocationUpdat
 	return biuo
 }
 
-// ClearConnectionMetadata clears all "connection_metadata" edges to the ConnectionMetadata entity.
+// ClearConnectionMetadata clears the "connection_metadata" edge to the ConnectionMetadata entity.
 func (biuo *BazelInvocationUpdateOne) ClearConnectionMetadata() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearConnectionMetadata()
 	return biuo
-}
-
-// RemoveConnectionMetadatumIDs removes the "connection_metadata" edge to ConnectionMetadata entities by IDs.
-func (biuo *BazelInvocationUpdateOne) RemoveConnectionMetadatumIDs(ids ...int64) *BazelInvocationUpdateOne {
-	biuo.mutation.RemoveConnectionMetadatumIDs(ids...)
-	return biuo
-}
-
-// RemoveConnectionMetadata removes "connection_metadata" edges to ConnectionMetadata entities.
-func (biuo *BazelInvocationUpdateOne) RemoveConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdateOne {
-	ids := make([]int64, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return biuo.RemoveConnectionMetadatumIDs(ids...)
 }
 
 // ClearConfigurations clears all "configurations" edges to the Configuration entity.
@@ -3158,7 +3120,7 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.ConnectionMetadataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.ConnectionMetadataTable,
 			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
@@ -3166,28 +3128,12 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biuo.mutation.RemovedConnectionMetadataIDs(); len(nodes) > 0 && !biuo.mutation.ConnectionMetadataCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ConnectionMetadataTable,
-			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := biuo.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.ConnectionMetadataTable,
 			Columns: []string{bazelinvocation.ConnectionMetadataColumn},

@@ -125,7 +125,7 @@ func (cmc *ConnectionMetadataCreate) createSpec() (*ConnectionMetadata, *sqlgrap
 	}
 	if nodes := cmc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   connectionmetadata.BazelInvocationTable,
 			Columns: []string{connectionmetadata.BazelInvocationColumn},

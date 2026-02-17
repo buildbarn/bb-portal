@@ -7,7 +7,7 @@
       "edges": [
         {
           "node": {
-            "bepCompleted": false,
+            "connectionMetadata": null,
             "endedAt": "2024-05-13T23:43:26.247Z",
             "exitCodeName": "TESTS_FAILED",
             "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",

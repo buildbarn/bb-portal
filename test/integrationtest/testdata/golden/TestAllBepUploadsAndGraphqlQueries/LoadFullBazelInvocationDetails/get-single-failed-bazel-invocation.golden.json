@@ -76,7 +76,6 @@
       ]
     },
     "bazelVersion": "7.1.0",
-    "bepCompleted": false,
     "build": null,
     "configurations": [
       {
@@ -90,6 +89,7 @@
         "mnemonic": "darwin_arm64-fastbuild"
       }
     ],
+    "connectionMetadata": null,
     "endedAt": "2024-05-03T00:24:16.367Z",
     "exitCodeName": "BUILD_FAILURE",
     "hostname": "Namelesss-MacBook-Pro.local",

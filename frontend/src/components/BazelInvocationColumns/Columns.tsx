@@ -68,8 +68,8 @@ export const durationColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
   title: 'Duration',
   render: (_, record) => (
     <PortalDuration
-      from={record.startedAt}
-      to={record.endedAt}
+      from={record.startedAt || undefined}
+      to={record.endedAt ? record.endedAt : record.connectionMetadata?.connectionLastOpenAt || undefined}
       includePopover
       formatConfig={{smallestUnit: "s"}}
     />
@@ -80,7 +80,7 @@ export const statusColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
   key: 'result',
   width: 120,
   title: 'Result',
-  render: (_, record) => <InvocationResultTag exitCodeName={record.exitCodeName || undefined} bepCompleted={record.bepCompleted} />,
+  render: (_, record) => <InvocationResultTag exitCodeName={record.exitCodeName || undefined} timeSinceLastConnectionMillis={record.connectionMetadata?.timeSinceLastConnectionMillis || undefined} />,
   filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
   filters: invocationResultTagFilters,
   applyFilter: applyInvocationResultTagFilter,

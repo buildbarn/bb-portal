@@ -6705,8 +6705,7 @@ type BazelInvocationMutation struct {
 	clearedauthenticated_user               bool
 	event_metadata                          *int64
 	clearedevent_metadata                   bool
-	connection_metadata                     map[int64]struct{}
-	removedconnection_metadata              map[int64]struct{}
+	connection_metadata                     *int64
 	clearedconnection_metadata              bool
 	configurations                          map[int64]struct{}
 	removedconfigurations                   map[int64]struct{}
@@ -8463,14 +8462,9 @@ func (m *BazelInvocationMutation) ResetEventMetadata() {
 	m.clearedevent_metadata = false
 }
 
-// AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by ids.
-func (m *BazelInvocationMutation) AddConnectionMetadatumIDs(ids ...int64) {
-	if m.connection_metadata == nil {
-		m.connection_metadata = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.connection_metadata[ids[i]] = struct{}{}
-	}
+// SetConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by id.
+func (m *BazelInvocationMutation) SetConnectionMetadataID(id int64) {
+	m.connection_metadata = &id
 }
 
 // ClearConnectionMetadata clears the "connection_metadata" edge to the ConnectionMetadata entity.
@@ -8483,29 +8477,20 @@ func (m *BazelInvocationMutation) ConnectionMetadataCleared() bool {
 	return m.clearedconnection_metadata
 }
 
-// RemoveConnectionMetadatumIDs removes the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
-func (m *BazelInvocationMutation) RemoveConnectionMetadatumIDs(ids ...int64) {
-	if m.removedconnection_metadata == nil {
-		m.removedconnection_metadata = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.connection_metadata, ids[i])
-		m.removedconnection_metadata[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedConnectionMetadata returns the removed IDs of the "connection_metadata" edge to the ConnectionMetadata entity.
-func (m *BazelInvocationMutation) RemovedConnectionMetadataIDs() (ids []int64) {
-	for id := range m.removedconnection_metadata {
-		ids = append(ids, id)
+// ConnectionMetadataID returns the "connection_metadata" edge ID in the mutation.
+func (m *BazelInvocationMutation) ConnectionMetadataID() (id int64, exists bool) {
+	if m.connection_metadata != nil {
+		return *m.connection_metadata, true
 	}
 	return
 }
 
 // ConnectionMetadataIDs returns the "connection_metadata" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ConnectionMetadataID instead. It exists only for internal usage by the builders.
 func (m *BazelInvocationMutation) ConnectionMetadataIDs() (ids []int64) {
-	for id := range m.connection_metadata {
-		ids = append(ids, id)
+	if id := m.connection_metadata; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -8514,7 +8499,6 @@ func (m *BazelInvocationMutation) ConnectionMetadataIDs() (ids []int64) {
 func (m *BazelInvocationMutation) ResetConnectionMetadata() {
 	m.connection_metadata = nil
 	m.clearedconnection_metadata = false
-	m.removedconnection_metadata = nil
 }
 
 // AddConfigurationIDs adds the "configurations" edge to the Configuration entity by ids.
@@ -9829,11 +9813,9 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			return []ent.Value{*id}
 		}
 	case bazelinvocation.EdgeConnectionMetadata:
-		ids := make([]ent.Value, 0, len(m.connection_metadata))
-		for id := range m.connection_metadata {
-			ids = append(ids, id)
+		if id := m.connection_metadata; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case bazelinvocation.EdgeConfigurations:
 		ids := make([]ent.Value, 0, len(m.configurations))
 		for id := range m.configurations {
@@ -9891,9 +9873,6 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 14)
-	if m.removedconnection_metadata != nil {
-		edges = append(edges, bazelinvocation.EdgeConnectionMetadata)
-	}
 	if m.removedconfigurations != nil {
 		edges = append(edges, bazelinvocation.EdgeConfigurations)
 	}
@@ -9922,12 +9901,6 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case bazelinvocation.EdgeConnectionMetadata:
-		ids := make([]ent.Value, 0, len(m.removedconnection_metadata))
-		for id := range m.removedconnection_metadata {
-			ids = append(ids, id)
-		}
-		return ids
 	case bazelinvocation.EdgeConfigurations:
 		ids := make([]ent.Value, 0, len(m.removedconfigurations))
 		for id := range m.removedconfigurations {
@@ -10073,6 +10046,9 @@ func (m *BazelInvocationMutation) ClearEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeEventMetadata:
 		m.ClearEventMetadata()
+		return nil
+	case bazelinvocation.EdgeConnectionMetadata:
+		m.ClearConnectionMetadata()
 		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ClearMetrics()

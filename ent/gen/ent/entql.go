@@ -818,7 +818,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph.MustAddE(
 		"connection_metadata",
 		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.ConnectionMetadataTable,
 			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
@@ -1022,7 +1022,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph.MustAddE(
 		"bazel_invocation",
 		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   connectionmetadata.BazelInvocationTable,
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
