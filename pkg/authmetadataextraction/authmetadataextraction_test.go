@@ -9,16 +9,14 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
-	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
-	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/stretchr/testify/require"
 )
 
 // TestAuthMetadataExtractorsFromConfiguration Tests creating extractors from a configuration.
 func TestAuthMetadataExtractorsFromConfiguration(t *testing.T) {
-	externalIDExtractor := exampleExternalIDExtractor()
-	displayNameExtractor := exampleDisplayNameExtractor()
-	userInfoExtractor := exampleUserInfoExtractor()
+	externalIDExtractor := authmetadataextraction.ExampleExternalIDExtractor()
+	displayNameExtractor := authmetadataextraction.ExampleDisplayNameExtractor()
+	userInfoExtractor := authmetadataextraction.ExampleUserInfoExtractor()
 
 	t.Run("NilExtractorConfig", func(t *testing.T) {
 		var config *bb_portal.AuthMetadataExtractorConfiguration = nil
@@ -93,14 +91,13 @@ func TestAuthMetadataExtractorsFromConfiguration(t *testing.T) {
 
 // AuthenticatedUserSummaryFromContext Tests user summary creation from authentication metadata in the context.
 func TestAuthenticatedUserSummaryFromContext_ValidUserSummaryAttributes(t *testing.T) {
-	extractors := exampleAuthMetadataExtractors()
-	validExternalID := exampleExternalID()
-	validDisplayName := exampleDisplayName()
-	validUserInfo := exampleUserInfo()
+	extractors := authmetadataextraction.ExampleAuthMetadataExtractors()
+	validExternalID := authmetadataextraction.ExampleExternalID()
+	validDisplayName := authmetadataextraction.ExampleDisplayName()
+	validUserInfo := authmetadataextraction.ExampleUserInfo()
+	authMetadata := authmetadataextraction.AuthMetadataFromFields(&validExternalID, &validDisplayName, validUserInfo)
 
 	t.Run("NilExtractors", func(t *testing.T) {
-		authMetadata, err := authMetadataFromFields(&validExternalID, &validDisplayName, validUserInfo)
-		require.NoError(t, err)
 		ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), authMetadata)
 		userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, nil)
 
@@ -108,7 +105,6 @@ func TestAuthenticatedUserSummaryFromContext_ValidUserSummaryAttributes(t *testi
 	})
 
 	t.Run("ValidUserSummary", func(t *testing.T) {
-		authMetadata := util.Must(authMetadataFromFields(&validExternalID, &validDisplayName, validUserInfo))
 		ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), authMetadata)
 		userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, extractors)
 
@@ -119,10 +115,10 @@ func TestAuthenticatedUserSummaryFromContext_ValidUserSummaryAttributes(t *testi
 }
 
 func TestAuthenticatedUserSummaryFromContext_NilUserSummaryAttributes(t *testing.T) {
-	extractors := exampleAuthMetadataExtractors()
-	validExternalID := exampleExternalID()
-	validDisplayName := exampleDisplayName()
-	validUserInfo := exampleUserInfo()
+	extractors := authmetadataextraction.ExampleAuthMetadataExtractors()
+	validExternalID := authmetadataextraction.ExampleExternalID()
+	validDisplayName := authmetadataextraction.ExampleDisplayName()
+	validUserInfo := authmetadataextraction.ExampleUserInfo()
 
 	type setup struct {
 		externalID  *string
@@ -173,8 +169,7 @@ func TestAuthenticatedUserSummaryFromContext_NilUserSummaryAttributes(t *testing
 			slog.SetDefault(testLogger)
 			defer slog.SetDefault(originalLogger)
 
-			authMetadata, err := authMetadataFromFields(tt.setup.externalID, tt.setup.displayName, tt.setup.userInfo)
-			require.NoError(t, err)
+			authMetadata := authmetadataextraction.AuthMetadataFromFields(tt.setup.externalID, tt.setup.displayName, tt.setup.userInfo)
 			ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), authMetadata)
 			userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, extractors)
 
@@ -198,76 +193,4 @@ func TestAuthenticatedUserSummaryFromContext_NilUserSummaryAttributes(t *testing
 			}
 		})
 	}
-}
-
-func exampleExternalIDExtractor() jmespath.Expression {
-	return jmespath.Expression{Expression: "authenticationMetadata.private.external_id"}
-}
-
-func exampleDisplayNameExtractor() jmespath.Expression {
-	return jmespath.Expression{Expression: "authenticationMetadata.private.display_name"}
-}
-
-func exampleUserInfoExtractor() jmespath.Expression {
-	return jmespath.Expression{Expression: "authenticationMetadata.public"}
-}
-
-func exampleAuthMetadataExtractors() *authmetadataextraction.AuthMetadataExtractors {
-	externalIDExtractor := exampleExternalIDExtractor()
-	displayNameExtractor := exampleDisplayNameExtractor()
-	userInfoExtractor := exampleUserInfoExtractor()
-
-	config := bb_portal.AuthMetadataExtractorConfiguration{
-		ExternalIdExtractionJmespathExpression:  &externalIDExtractor,
-		DisplayNameExtractionJmespathExpression: &displayNameExtractor,
-		UserInfoExtractionJmespathExpression:    &userInfoExtractor,
-	}
-
-	return util.Must(authmetadataextraction.AuthMetadataExtractorsFromConfiguration(&config, nil))
-}
-
-func exampleExternalID() string {
-	return "12345678-1234-1234-1234-123456789abc"
-}
-
-func exampleDisplayName() string {
-	return "example_username"
-}
-
-func exampleUserInfo() map[string]any {
-	return map[string]any{
-		"full_name": "Example Name",
-		"age":       float64(30),
-		"contact_information": map[string]any{
-			"email":        "user@example.com",
-			"phone_number": "800-555-0199",
-		},
-	}
-}
-
-func authMetadataFromFields(externalID, displayName *string, userInfo map[string]any) (*auth.AuthenticationMetadata, error) {
-	var private map[string]any
-	var public map[string]any
-	if externalID == nil && displayName == nil {
-		private = nil
-	} else {
-		private = map[string]any{}
-		if externalID != nil {
-			private["external_id"] = *externalID
-		}
-		if displayName != nil {
-			private["display_name"] = *displayName
-		}
-	}
-
-	if userInfo != nil {
-		public = userInfo
-	}
-
-	authenticationMetadata := map[string]any{
-		"private": private,
-		"public":  public,
-	}
-
-	return auth.NewAuthenticationMetadataFromRaw(authenticationMetadata)
 }
