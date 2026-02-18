@@ -18,9 +18,15 @@ WITH new_row AS (
     INSERT INTO bazel_invocations (
         invocation_id,
         instance_name_bazel_invocations,
-        authenticated_user_bazel_invocations
+        authenticated_user_bazel_invocations,
+        created_timestamp
     )
-    VALUES ($1, $2, $3)
+    VALUES (
+      $1,
+      $2,
+      $3,
+      $4::timestamptz
+    )
     ON CONFLICT (invocation_id) DO NOTHING
     RETURNING id
 )
@@ -38,6 +44,7 @@ type CreateBazelInvocationParams struct {
 	InvocationID        uuid.UUID
 	InstanceNameID      int64
 	AuthenticatedUserID sql.NullInt64
+	CreatedTimestamp    time.Time
 }
 
 type CreateBazelInvocationRow struct {
@@ -50,7 +57,12 @@ type CreateBazelInvocationRow struct {
 // if the invocation was created, `false` if
 // the invocation already existed.
 func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (CreateBazelInvocationRow, error) {
-	row := q.db.QueryRowContext(ctx, createBazelInvocation, arg.InvocationID, arg.InstanceNameID, arg.AuthenticatedUserID)
+	row := q.db.QueryRowContext(ctx, createBazelInvocation,
+		arg.InvocationID,
+		arg.InstanceNameID,
+		arg.AuthenticatedUserID,
+		arg.CreatedTimestamp,
+	)
 	var i CreateBazelInvocationRow
 	err := row.Scan(&i.ID, &i.Created)
 	return i, err
@@ -61,7 +73,7 @@ DELETE FROM bazel_invocations
 WHERE
     ctid >= format('(%s,0)', $1::bigint)::tid
     AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND ended_at < $3::timestamptz
+    AND created_timestamp < $3::timestamptz
     AND bep_completed = true
 `
 

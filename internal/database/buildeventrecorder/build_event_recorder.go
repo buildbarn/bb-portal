@@ -199,6 +199,7 @@ func FindOrCreateInvocation(
 		InvocationID:        invocationUUID,
 		InstanceNameID:      instanceNameDbID,
 		AuthenticatedUserID: userID,
+		CreatedTimestamp:    time.Now(),
 	})
 	if err != nil {
 		if err == sql.ErrNoRows {

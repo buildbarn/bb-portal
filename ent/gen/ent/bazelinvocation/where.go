@@ -61,6 +61,11 @@ func InvocationID(v uuid.UUID) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldInvocationID, v))
 }
 
+// CreatedTimestamp applies equality check predicate on the "created_timestamp" field. It's identical to CreatedTimestampEQ.
+func CreatedTimestamp(v time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCreatedTimestamp, v))
+}
+
 // StartedAt applies equality check predicate on the "started_at" field. It's identical to StartedAtEQ.
 func StartedAt(v time.Time) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldStartedAt, v))
@@ -219,6 +224,46 @@ func InvocationIDLT(v uuid.UUID) predicate.BazelInvocation {
 // InvocationIDLTE applies the LTE predicate on the "invocation_id" field.
 func InvocationIDLTE(v uuid.UUID) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldLTE(FieldInvocationID, v))
+}
+
+// CreatedTimestampEQ applies the EQ predicate on the "created_timestamp" field.
+func CreatedTimestampEQ(v time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCreatedTimestamp, v))
+}
+
+// CreatedTimestampNEQ applies the NEQ predicate on the "created_timestamp" field.
+func CreatedTimestampNEQ(v time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldCreatedTimestamp, v))
+}
+
+// CreatedTimestampIn applies the In predicate on the "created_timestamp" field.
+func CreatedTimestampIn(vs ...time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldCreatedTimestamp, vs...))
+}
+
+// CreatedTimestampNotIn applies the NotIn predicate on the "created_timestamp" field.
+func CreatedTimestampNotIn(vs ...time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldCreatedTimestamp, vs...))
+}
+
+// CreatedTimestampGT applies the GT predicate on the "created_timestamp" field.
+func CreatedTimestampGT(v time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldCreatedTimestamp, v))
+}
+
+// CreatedTimestampGTE applies the GTE predicate on the "created_timestamp" field.
+func CreatedTimestampGTE(v time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldCreatedTimestamp, v))
+}
+
+// CreatedTimestampLT applies the LT predicate on the "created_timestamp" field.
+func CreatedTimestampLT(v time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldCreatedTimestamp, v))
+}
+
+// CreatedTimestampLTE applies the LTE predicate on the "created_timestamp" field.
+func CreatedTimestampLTE(v time.Time) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldCreatedTimestamp, v))
 }
 
 // StartedAtEQ applies the EQ predicate on the "started_at" field.

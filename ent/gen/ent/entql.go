@@ -180,6 +180,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Type: "BazelInvocation",
 		Fields: map[string]*sqlgraph.FieldSpec{
 			bazelinvocation.FieldInvocationID:                        {Type: field.TypeUUID, Column: bazelinvocation.FieldInvocationID},
+			bazelinvocation.FieldCreatedTimestamp:                    {Type: field.TypeTime, Column: bazelinvocation.FieldCreatedTimestamp},
 			bazelinvocation.FieldStartedAt:                           {Type: field.TypeTime, Column: bazelinvocation.FieldStartedAt},
 			bazelinvocation.FieldEndedAt:                             {Type: field.TypeTime, Column: bazelinvocation.FieldEndedAt},
 			bazelinvocation.FieldChangeNumber:                        {Type: field.TypeInt, Column: bazelinvocation.FieldChangeNumber},
@@ -2146,6 +2147,11 @@ func (f *BazelInvocationFilter) WhereID(p entql.Int64P) {
 // WhereInvocationID applies the entql [16]byte predicate on the invocation_id field.
 func (f *BazelInvocationFilter) WhereInvocationID(p entql.ValueP) {
 	f.Where(p.Field(bazelinvocation.FieldInvocationID))
+}
+
+// WhereCreatedTimestamp applies the entql time.Time predicate on the created_timestamp field.
+func (f *BazelInvocationFilter) WhereCreatedTimestamp(p entql.TimeP) {
+	f.Where(p.Field(bazelinvocation.FieldCreatedTimestamp))
 }
 
 // WhereStartedAt applies the entql time.Time predicate on the started_at field.

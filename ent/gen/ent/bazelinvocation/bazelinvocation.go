@@ -15,6 +15,8 @@ const (
 	FieldID = "id"
 	// FieldInvocationID holds the string denoting the invocation_id field in the database.
 	FieldInvocationID = "invocation_id"
+	// FieldCreatedTimestamp holds the string denoting the created_timestamp field in the database.
+	FieldCreatedTimestamp = "created_timestamp"
 	// FieldStartedAt holds the string denoting the started_at field in the database.
 	FieldStartedAt = "started_at"
 	// FieldEndedAt holds the string denoting the ended_at field in the database.
@@ -205,6 +207,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldInvocationID,
+	FieldCreatedTimestamp,
 	FieldStartedAt,
 	FieldEndedAt,
 	FieldChangeNumber,
@@ -293,6 +296,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByInvocationID orders the results by the invocation_id field.
 func ByInvocationID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldInvocationID, opts...).ToFunc()
+}
+
+// ByCreatedTimestamp orders the results by the created_timestamp field.
+func ByCreatedTimestamp(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedTimestamp, opts...).ToFunc()
 }
 
 // ByStartedAt orders the results by the started_at field.

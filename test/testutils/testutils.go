@@ -3,6 +3,7 @@ package testutils
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database"
@@ -39,5 +40,6 @@ func CreateInstanceName(ctx context.Context, t *testing.T, client *ent.Client, n
 func StartCreateInvocation(client *ent.Client, instanceName *ent.InstanceName) *ent.BazelInvocationCreate {
 	return client.BazelInvocation.Create().
 		SetInvocationID(uuid.New()).
-		SetInstanceName(instanceName)
+		SetInstanceName(instanceName).
+		SetCreatedTimestamp(time.Time{})
 }

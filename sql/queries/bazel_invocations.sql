@@ -14,9 +14,15 @@ WITH new_row AS (
     INSERT INTO bazel_invocations (
         invocation_id,
         instance_name_bazel_invocations,
-        authenticated_user_bazel_invocations
+        authenticated_user_bazel_invocations,
+        created_timestamp
     )
-    VALUES (sqlc.arg(invocation_id), sqlc.arg(instance_name_id), sqlc.arg(authenticated_user_id))
+    VALUES (
+      sqlc.arg(invocation_id),
+      sqlc.arg(instance_name_id),
+      sqlc.arg(authenticated_user_id),
+      sqlc.arg(created_timestamp)::timestamptz
+    )
     ON CONFLICT (invocation_id) DO NOTHING
     RETURNING id
 )
@@ -56,5 +62,5 @@ DELETE FROM bazel_invocations
 WHERE
     ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
     AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
-    AND ended_at < sqlc.arg(cutoff_time)::timestamptz
+    AND created_timestamp < sqlc.arg(cutoff_time)::timestamptz
     AND bep_completed = true;
