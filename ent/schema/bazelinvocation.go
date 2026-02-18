@@ -22,6 +22,9 @@ func (BazelInvocation) Fields() []ent.Field {
 		// The bazel client invocation ID.
 		field.UUID("invocation_id", uuid.UUID{}).Unique().Immutable(),
 
+		// Time when the invocation was first inserted into the database.
+		field.Time("created_timestamp").Immutable().Annotations(entgql.Skip()),
+
 		// Time the event started.
 		field.Time("started_at").Optional().Annotations(entgql.OrderField("STARTED_AT")),
 

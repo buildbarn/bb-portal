@@ -27,6 +27,8 @@ type BazelInvocation struct {
 	ID int64 `json:"id,omitempty"`
 	// InvocationID holds the value of the "invocation_id" field.
 	InvocationID uuid.UUID `json:"invocation_id,omitempty"`
+	// CreatedTimestamp holds the value of the "created_timestamp" field.
+	CreatedTimestamp time.Time `json:"created_timestamp,omitempty"`
 	// StartedAt holds the value of the "started_at" field.
 	StartedAt time.Time `json:"started_at,omitempty"`
 	// EndedAt holds the value of the "ended_at" field.
@@ -289,7 +291,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldHostname, bazelinvocation.FieldProfileName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName, bazelinvocation.FieldCommandLineCommand, bazelinvocation.FieldCommandLineExecutable, bazelinvocation.FieldCommandLineResidual:
 			values[i] = new(sql.NullString)
-		case bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
+		case bazelinvocation.FieldCreatedTimestamp, bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
 		case bazelinvocation.FieldInvocationID:
 			values[i] = new(uuid.UUID)
@@ -325,6 +327,12 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field invocation_id", values[i])
 			} else if value != nil {
 				bi.InvocationID = *value
+			}
+		case bazelinvocation.FieldCreatedTimestamp:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_timestamp", values[i])
+			} else if value.Valid {
+				bi.CreatedTimestamp = value.Time
 			}
 		case bazelinvocation.FieldStartedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -632,6 +640,9 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", bi.ID))
 	builder.WriteString("invocation_id=")
 	builder.WriteString(fmt.Sprintf("%v", bi.InvocationID))
+	builder.WriteString(", ")
+	builder.WriteString("created_timestamp=")
+	builder.WriteString(bi.CreatedTimestamp.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("started_at=")
 	builder.WriteString(bi.StartedAt.Format(time.ANSIC))
