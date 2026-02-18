@@ -35,6 +35,7 @@ go_library(
         "@com_github_99designs_gqlgen//graphql/handler/transport",
         "@com_github_99designs_gqlgen//graphql/introspection",
         "@com_github_aereal_otelgqlgen//:otelgqlgen",
+        "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_google_uuid//:uuid",
         "@com_github_vektah_gqlparser_v2//:gqlparser",
         "@com_github_vektah_gqlparser_v2//ast",

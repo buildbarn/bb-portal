@@ -11,6 +11,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
+	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
 // ID is the resolver for the id field.
@@ -447,7 +448,14 @@ func (r *bazelInvocationWhereInputResolver) IDNeq(ctx context.Context, obj *ent.
 
 // IDIn is the resolver for the idIn field.
 func (r *bazelInvocationWhereInputResolver) IDIn(ctx context.Context, obj *ent.BazelInvocationWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+	for _, ID := range data {
+		_, dbID, err := helpers.GraphQLTypeAndIntIDFromID(ID)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to parse arguments to IDIn resolver")
+		}
+		obj.IDIn = append(obj.IDIn, dbID)
+	}
+	return nil
 }
 
 // IDNotIn is the resolver for the idNotIn field.

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Content from "@/components/Content";
 import { useQuery } from "@apollo/client";
 import {
@@ -18,6 +18,7 @@ import PageDisabled from '@/components/PageDisabled';
 import PortalCard from '@/components/PortalCard';
 import { BuildOutlined } from '@ant-design/icons';
 import PortalAlert from '@/components/PortalAlert';
+import { shouldPollInvocation } from '@/utils/shouldPollInvocation';
 
 interface PageParams {
   params: {
@@ -40,17 +41,24 @@ const Page: React.FC<PageParams> = ({ params }) => {
 }
 
 const PageContent: React.FC<PageParams> = ({ params }) => {
-  const { data, error, loading } = useQuery<LoadFullBazelInvocationDetailsQuery>(
+  const { data, error, loading, stopPolling } = useQuery<LoadFullBazelInvocationDetailsQuery>(
     LOAD_FULL_BAZEL_INVOCATION_DETAILS,
     {
       variables: { invocationID: params.invocationID },
       fetchPolicy: 'cache-and-network',
       // nextFetchPolicy prevents unnecessary refetches if the logs are fetched
       nextFetchPolicy: 'cache-only',
-      notifyOnNetworkStatusChange: true,
+      pollInterval: 5000,
     },
   );
   const invocation = getFragmentData(BAZEL_INVOCATION_FRAGMENT, data?.getBazelInvocation);
+
+  // Poll continuously until the invocation is completed. Then we should stop.
+  useEffect(() => {
+    if (!shouldPollInvocation(invocation)) {
+      stopPolling();
+    }
+  }, [invocation, stopPolling]);
 
   if (loading) {
     return (
