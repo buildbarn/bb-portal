@@ -105,6 +105,7 @@ const BazelInvocationsTable: React.FC = () => {
       dataSource={dataSource}
       rowKey={item => item.id}
       loading={loading}
+      size="small"
       locale={{
         emptyText: (
           <Typography.Text

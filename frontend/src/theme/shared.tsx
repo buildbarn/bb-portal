@@ -17,7 +17,10 @@ const shared = {
     },
     Popover: {
       titleMinWidth: 0,
-    }
+    },
+    Table: {
+      cellPaddingBlockSM: 2,
+    },
   },
   token: {
     fontFamily: '-apple-system, system-ui, BlinkMacSystemFont;',
