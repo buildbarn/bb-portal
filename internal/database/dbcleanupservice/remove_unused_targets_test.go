@@ -8,7 +8,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/test/testutils"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/mock/gomock"
@@ -38,12 +37,9 @@ func TestRemoveUnusedTargets(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
-		instanceName, err := client.InstanceName.Create().
-			SetName("instance").
-			Save(ctx)
-		require.NoError(t, err)
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "instance")
 
-		_, err = client.Target.Create().
+		_, err := client.Target.Create().
 			SetInstanceName(instanceName).
 			SetLabel("testLabel").
 			SetAspect("testAspect").
@@ -65,10 +61,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
-		instanceName, err := client.InstanceName.Create().
-			SetName("instance").
-			Save(ctx)
-		require.NoError(t, err)
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "instance")
 
 		target, err := client.Target.Create().
 			SetInstanceName(instanceName).
@@ -78,10 +71,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		invocation, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceName(instanceName).
-			Save(ctx)
+		invocation, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 
 		_, err = client.InvocationTarget.Create().
@@ -105,10 +95,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
-		instanceName, err := client.InstanceName.Create().
-			SetName("instance").
-			Save(ctx)
-		require.NoError(t, err)
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "instance")
 
 		target, err := client.Target.Create().
 			SetInstanceName(instanceName).
@@ -118,10 +105,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		invocation, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceName(instanceName).
-			Save(ctx)
+		invocation, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 
 		_, err = client.TargetKindMapping.Create().
@@ -144,10 +128,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
-		instanceName, err := client.InstanceName.Create().
-			SetName("instance").
-			Save(ctx)
-		require.NoError(t, err)
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "instance")
 
 		target, err := client.Target.Create().
 			SetInstanceName(instanceName).
@@ -157,10 +138,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		invocation, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceName(instanceName).
-			Save(ctx)
+		invocation, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 
 		_, err = client.InvocationTarget.Create().

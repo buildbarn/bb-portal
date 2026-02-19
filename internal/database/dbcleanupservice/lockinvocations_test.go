@@ -11,7 +11,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/test/testutils"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/mock/gomock"
@@ -36,11 +35,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	t.Run("UnfinishedInvocation-NoEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		startInv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			Save(ctx)
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		startInv, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
@@ -58,10 +54,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	t.Run("FinishedInvocation-NoEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		startInv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		startInv, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
@@ -82,11 +76,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	t.Run("UnfinishedInvocation-RecentEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		invocationDb, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			Save(ctx)
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		invocationDb, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
@@ -110,10 +101,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	t.Run("FinishedInvocation-RecentEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		invocationDb, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		invocationDb, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -139,11 +128,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	t.Run("UnfinishedInvocation-OldEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		invocationDb, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			Save(ctx)
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		invocationDb, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
@@ -167,10 +153,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	t.Run("FinishedInvocation-OldEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		invocationDb, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		invocationDb, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -196,13 +180,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	t.Run("MultipleMixedInvocations", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
 		// old event metadata -> should be locked
-		invOld, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			Save(ctx)
+		invOld, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
 			SetBazelInvocationID(invOld.ID).
@@ -213,10 +194,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 
 		// recent event metadata -> should remain unlocked
-		invRecent, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			Save(ctx)
+		invRecent, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
 			SetBazelInvocationID(invRecent.ID).
@@ -261,10 +239,8 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	t.Run("NoEndedAt-NoEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		startInv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		startInv, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -282,11 +258,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	t.Run("WithEndedAt-NoEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 		invEndedAt := time.Unix(1600000000, 0)
-		startInv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		startInv, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			SetEndedAt(invEndedAt).
 			Save(ctx)
@@ -306,11 +280,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	t.Run("NoEndedAt-WithEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 		eventEndedAt := time.Unix(1600000100, 0)
-		invocationDb, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		invocationDb, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -336,12 +308,10 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	t.Run("WithEndedAt-WithEventMetadata", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 		invEndedAt := time.Unix(1600000000, 0)
 		eventEndedAt := time.Unix(1600000100, 0)
-		invocationDb, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		invocationDb, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			SetEndedAt(invEndedAt).
 			Save(ctx)
@@ -368,12 +338,10 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	t.Run("MultipleMixedInvocations", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
 		// No EndedAt, With EventMetadata -> should be updated
-		invToUpdate, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		invToUpdate, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -387,9 +355,7 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 		require.NoError(t, err)
 
 		// With EndedAt, With EventMetadata -> should remain unchanged
-		invUnchanged, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		invUnchanged, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			SetEndedAt(time.Unix(1600000000, 0)).
 			Save(ctx)
@@ -419,12 +385,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 	t.Run("DontUpdateUnfinishedInvocations", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
-		invToNotUpdate, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			Save(ctx)
+		invToNotUpdate, err := testutils.StartCreateInvocation(client, instanceName).Save(ctx)
 		require.NoError(t, err)
 		eventEndedAt := time.Unix(1600000200, 0)
 		_, err = client.EventMetadata.Create().

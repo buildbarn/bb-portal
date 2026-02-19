@@ -54,14 +54,6 @@ func getNewDbCleanupService(db database.Client, clock clock.Clock, traceProvider
 	return dbcleanupservice.NewDbCleanupService(db, clock, cleanupConfiguration, traceProvider)
 }
 
-func createInstanceName(t *testing.T, ctx context.Context, client *ent.Client, name string) int64 {
-	in, err := client.InstanceName.Create().
-		SetName(name).
-		Save(ctx)
-	require.NoError(t, err)
-	return in.ID
-}
-
 func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.Client, invocationDbID int64) {
 	logSnippets := []string{
 		"\u001b[32mComputing main repo mapping:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m 0 packages loaded\n",
@@ -98,10 +90,8 @@ func TestCompactLogs(t *testing.T) {
 	t.Run("FinishedInvocationWithoutIncompleteLog", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		inv, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -136,10 +126,8 @@ func TestCompactLogs(t *testing.T) {
 	t.Run("FinishedInvocationWithIncompleteLog", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		inv, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -176,10 +164,8 @@ func TestCompactLogs(t *testing.T) {
 	t.Run("UnfinishedInvocationWithIncompleteLog", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		inv, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(false).
 			Save(ctx)
 		require.NoError(t, err)
@@ -220,13 +206,11 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	t.Run("BuildWithInvocation", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
-		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
+		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
-		_, err = client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		_, err = testutils.StartCreateInvocation(client, instanceName).
 			SetBuild(buildObj).
 			Save(ctx)
 		require.NoError(t, err)
@@ -244,9 +228,9 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	t.Run("BuildWithoutInvocation", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
-		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
+		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
@@ -262,22 +246,20 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	t.Run("MultipleBuildsMixed", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
 		// Build with invocation
-		buildWithInv, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
+		buildWithInv, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
-		_, err = client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		_, err = testutils.StartCreateInvocation(client, instanceName).
 			SetBuild(buildWithInv).
 			Save(ctx)
 		require.NoError(t, err)
 		// Build without invocation
-		_, err = client.Build.Create().SetBuildURL("2").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
+		_, err = client.Build.Create().SetBuildURL("2").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 		// Another build without invocation
-		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
+		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)

@@ -65,11 +65,8 @@ func TestRemoveInactiveUser(t *testing.T) {
 			SetUserUUID(uuid.New()).
 			Save(ctx)
 		require.NoError(t, err)
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		_, err = client.BazelInvocation.
-			Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceNameDb := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		_, err = testutils.StartCreateInvocation(client, instanceNameDb).
 			SetStartedAt(time.Now()).
 			SetAuthenticatedUser(user).
 			Save(ctx)
@@ -103,11 +100,8 @@ func TestRemoveInactiveUser(t *testing.T) {
 			SetUserUUID(uuid.New()).
 			Save(ctx)
 		require.NoError(t, err)
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		_, err = client.BazelInvocation.
-			Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceNameDb := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		_, err = testutils.StartCreateInvocation(client, instanceNameDb).
 			SetStartedAt(time.Now()).
 			SetAuthenticatedUser(activeUser).
 			Save(ctx)

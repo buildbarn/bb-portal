@@ -53,10 +53,8 @@ func TestGetInstanceNames(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
-		_, err := db.InstanceName.Create().SetName("validName").Save(ctx)
-		require.NoError(t, err)
-		_, err = db.InstanceName.Create().SetName("/invalidName/").Save(ctx)
-		require.NoError(t, err)
+		testutils.CreateInstanceName(ctx, t, db, "validName")
+		testutils.CreateInstanceName(ctx, t, db, "/invalidName/")
 
 		clock.EXPECT().Now().Return(time.Unix(1000, 0))
 		got := dbAuthService.GetInstanceNames(ctx)
@@ -68,12 +66,9 @@ func TestGetInstanceNames(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
-		_, err := db.InstanceName.Create().SetName("validName1").Save(ctx)
-		require.NoError(t, err)
-		_, err = db.InstanceName.Create().SetName("validName2").Save(ctx)
-		require.NoError(t, err)
-		_, err = db.InstanceName.Create().SetName("validName3").Save(ctx)
-		require.NoError(t, err)
+		testutils.CreateInstanceName(ctx, t, db, "validName1")
+		testutils.CreateInstanceName(ctx, t, db, "validName2")
+		testutils.CreateInstanceName(ctx, t, db, "validName3")
 
 		clock.EXPECT().Now().Return(time.Unix(1000, 0))
 		got := dbAuthService.GetInstanceNames(ctx)
@@ -87,10 +82,8 @@ func TestGetInstanceNames(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, time.Second*10)
 
-		_, err := db.InstanceName.Create().SetName("validName1").Save(ctx)
-		require.NoError(t, err)
-		_, err = db.InstanceName.Create().SetName("validName2").Save(ctx)
-		require.NoError(t, err)
+		testutils.CreateInstanceName(ctx, t, db, "validName1")
+		testutils.CreateInstanceName(ctx, t, db, "validName2")
 
 		clock.EXPECT().Now().Return(time.Unix(1000, 0))
 		got := dbAuthService.GetInstanceNames(ctx)
@@ -99,8 +92,7 @@ func TestGetInstanceNames(t *testing.T) {
 		require.Equal(t, "validName2", got[1].String())
 
 		clock.EXPECT().Now().Return(time.Unix(1005, 0))
-		_, err = db.InstanceName.Create().SetName("validName3").Save(ctx)
-		require.NoError(t, err)
+		testutils.CreateInstanceName(ctx, t, db, "validName3")
 
 		got = dbAuthService.GetInstanceNames(ctx)
 		require.Len(t, got, 2)
@@ -137,14 +129,10 @@ func TestGetAuthorizedInstanceNames(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
-		_, err := db.InstanceName.Create().SetName("validName1").Save(ctx)
-		require.NoError(t, err)
-		_, err = db.InstanceName.Create().SetName("validName2").Save(ctx)
-		require.NoError(t, err)
-		_, err = db.InstanceName.Create().SetName("validName3").Save(ctx)
-		require.NoError(t, err)
-		_, err = db.InstanceName.Create().SetName("validName4").Save(ctx)
-		require.NoError(t, err)
+		testutils.CreateInstanceName(ctx, t, db, "validName1")
+		testutils.CreateInstanceName(ctx, t, db, "validName2")
+		testutils.CreateInstanceName(ctx, t, db, "validName3")
+		testutils.CreateInstanceName(ctx, t, db, "validName4")
 
 		got := dbAuthService.GetAuthorizedInstanceNames(ctx)
 		require.Len(t, got, 2)
