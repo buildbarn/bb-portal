@@ -1,0 +1,3 @@
+test --test_output=errors
+common --incompatible_strict_action_env
+common:rbe --remote_download_minimal

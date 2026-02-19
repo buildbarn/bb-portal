@@ -1,3 +1,2 @@
-build --incompatible_strict_action_env
-
-test --test_output=errors
+import %workspace%/../../.common.bazelrc
+try-import %workspace%/../../.user.bazelrc
