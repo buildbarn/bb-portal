@@ -1,0 +1,13 @@
+diff --git buildifier/internal/factory.bzl buildifier/internal/factory.bzl
+index 88b81323..18a3a669 100644
+--- buildifier/internal/factory.bzl
++++ buildifier/internal/factory.bzl
+@@ -40,7 +40,7 @@ def buildifier_attr_factory(test_rule = False):
+     attrs = {
+         "buildifier": attr.label(
+             default = "//buildifier",
+-            cfg = "exec",
++            cfg = "target",
+             executable = True,
+         ),
+         "verbose": attr.bool(
