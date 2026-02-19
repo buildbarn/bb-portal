@@ -1,1 +1,7 @@
 run --workspace_status_command="bash tools/workspace-status.sh"
+
+common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc
+common --@rules_go//go/config:pure
+
+import %workspace%/.common.bazelrc
+try-import %workspace%/.user.bazelrc
