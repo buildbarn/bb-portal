@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "buildeventrecorder",
@@ -55,6 +55,23 @@ go_library(
         "@com_github_sqlc_dev_pqtype//:pqtype",
         "@io_opentelemetry_go_otel//attribute",
         "@io_opentelemetry_go_otel_trace//:trace",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)
+
+go_test(
+    name = "buildeventrecorder_test",
+    srcs = ["build_event_recorder_test.go"],
+    deps = [
+        ":buildeventrecorder",
+        "//ent/gen/ent/runtime",
+        "//internal/database/dbauthservice",
+        "//internal/database/embedded",
+        "//test/testutils",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_prometheus_client_golang//prometheus",
+        "@com_github_stretchr_testify//require",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_grpc//status",
     ],
