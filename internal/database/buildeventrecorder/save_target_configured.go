@@ -20,7 +20,7 @@ type targetKey struct {
 
 // saveTargetConfiguredBatch efficiently saves a batch of target
 // configured events.
-func (r *BuildEventRecorder) saveTargetConfiguredBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveTargetConfiguredBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	if len(batch) == 0 {
 		return nil
 	}

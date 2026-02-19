@@ -117,6 +117,13 @@ message BuildEventStreamService {
   // "files" corresponds to any files that are specified within the
   // buildbarn.configuration.jmespath.Expression configuration.
   AuthMetadataExtractorConfiguration auth_metadata_key_configuration = 9;
+
+  // The minimum duration in between handling two event batches. Setting
+  // this to a value above zero reduces load on the database by managing
+  // events in larger batches. For batches which already take longer to
+  // process than min_event_batch_duration this has no impact.
+  // Recommended value: '0.1s'
+  google.protobuf.Duration min_event_batch_duration = 10;
 }
 
 message BrowserService {

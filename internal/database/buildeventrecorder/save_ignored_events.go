@@ -8,7 +8,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func (r *BuildEventRecorder) saveIgnoredEventsBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveIgnoredEventsBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	if len(batch) == 0 {
 		return nil
 	}

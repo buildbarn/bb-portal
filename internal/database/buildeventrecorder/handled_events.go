@@ -10,7 +10,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) loadHandledEvents(ctx context.Context) error {
+func (r *buildEventRecorder) loadHandledEvents(ctx context.Context) error {
 	r.handledEvents.bitmap = roaring.NewBitmap()
 	eventMetadata, err := r.db.Sqlc().GetOrCreateEventMetadata(ctx, int64(r.InvocationDbID))
 	if err != nil {
@@ -27,7 +27,7 @@ func (r *BuildEventRecorder) loadHandledEvents(ctx context.Context) error {
 	return nil
 }
 
-func (r *BuildEventRecorder) saveHandledEvents(ctx context.Context, db database.Handle, timestamp time.Time) error {
+func (r *buildEventRecorder) saveHandledEvents(ctx context.Context, db database.Handle, timestamp time.Time) error {
 	r.handledEvents.bitmap.RunOptimize()
 	bytes, err := r.handledEvents.bitmap.ToBytes()
 	if err != nil {
@@ -47,7 +47,7 @@ func (r *BuildEventRecorder) saveHandledEvents(ctx context.Context, db database.
 	return nil
 }
 
-func (r *BuildEventRecorder) filterHandledEvents(batch []BuildEventWithInfo) []BuildEventWithInfo {
+func (r *buildEventRecorder) filterHandledEvents(batch []BuildEventWithInfo) []BuildEventWithInfo {
 	unhandled := make([]BuildEventWithInfo, 0, len(batch))
 	for _, event := range batch {
 		if !r.handledEvents.bitmap.Contains(event.SequenceNumber) {
@@ -57,7 +57,7 @@ func (r *BuildEventRecorder) filterHandledEvents(batch []BuildEventWithInfo) []B
 	return unhandled
 }
 
-func (r *BuildEventRecorder) saveHandledEventsForBatch(ctx context.Context, batch []BuildEventWithInfo, handle database.Handle) error {
+func (r *buildEventRecorder) saveHandledEventsForBatch(ctx context.Context, batch []BuildEventWithInfo, handle database.Handle) error {
 	sequences := make([]uint32, len(batch))
 	for i, x := range batch {
 		sequences[i] = x.SequenceNumber

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/RoaringBitmap/roaring"
@@ -39,20 +38,28 @@ type BuildEventWithInfo struct {
 	AddedAt time.Time
 }
 
-// BuildEventRecorder contains information about a Bazel invocation that is
-// required when processing individual build events.
-type BuildEventRecorder struct {
+// BuildEventRecorder performs the actual recording of build events for
+// an invocation to the storage layer.
+type BuildEventRecorder interface {
+	// StartLoggingConnectionMetadata starts a logging routine that will
+	// log that there is a connection alive and well for the specific
+	// invocation.
+	StartLoggingConnectionMetadata(ctx context.Context)
+	// SaveBatch saves a batch of build events to the storage layer.
+	SaveBatch(ctx context.Context, batch []BuildEventWithInfo) error
+}
+
+type buildEventRecorder struct {
 	db            database.Client
 	handledEvents handledEvents
 	saveDataLevel *bb_portal.BuildEventStreamService_SaveDataLevel
 	tracer        trace.Tracer
 
-	InstanceName           string
-	InstanceNameDbID       int64
-	InvocationID           string
-	InvocationDbID         int64
-	CorrelatedInvocationID string
-	IsRealTime             bool
+	InstanceName     string
+	InstanceNameDbID int64
+	InvocationID     string
+	InvocationDbID   int64
+	IsRealTime       bool
 }
 
 type handledEvents struct {
@@ -70,11 +77,10 @@ func NewBuildEventRecorder(
 	tracerProvider trace.TracerProvider,
 	instanceName string,
 	invocationID string,
-	correlatedInvocationID string,
 	isRealTime bool,
 	extractors *authmetadataextraction.AuthMetadataExtractors,
 	uuidGenerator util.UUIDGenerator,
-) (*BuildEventRecorder, error) {
+) (BuildEventRecorder, error) {
 	if invocationID == "" {
 		return nil, status.Error(codes.InvalidArgument, "Invocation ID is required")
 	}
@@ -94,17 +100,16 @@ func NewBuildEventRecorder(
 		return nil, util.StatusWrap(err, "Failed to find or create bazel invocation")
 	}
 
-	return &BuildEventRecorder{
+	return &buildEventRecorder{
 		db:            db,
 		saveDataLevel: saveDataLevel,
 		tracer:        tracer,
 
-		InstanceName:           instanceName,
-		InstanceNameDbID:       instanceNameDbID,
-		InvocationID:           invocationID,
-		InvocationDbID:         invocationDbID,
-		CorrelatedInvocationID: correlatedInvocationID,
-		IsRealTime:             isRealTime,
+		InstanceName:     instanceName,
+		InstanceNameDbID: instanceNameDbID,
+		InvocationID:     invocationID,
+		InvocationDbID:   invocationDbID,
+		IsRealTime:       isRealTime,
 	}, nil
 }
 
@@ -182,22 +187,22 @@ func findOrCreateInvocation(
 // logs connection metadata for the invocation associated with this
 // BuildEventRecorder. It continues to do so until the provided context
 // is canceled.
-func (r *BuildEventRecorder) StartLoggingConnectionMetadata(ctx context.Context) {
+func (r *buildEventRecorder) StartLoggingConnectionMetadata(ctx context.Context) {
 	go func() {
 		for {
 			select {
 			case <-ctx.Done():
 				return
 			default:
-				err := r.db.Ent().ConnectionMetadata.Create().
+				// It's both fine and expected that we fail to log
+				// connection metadata. That simply means we do not have
+				// a timestamp for the connection.
+				_ = r.db.Ent().ConnectionMetadata.Create().
 					SetBazelInvocationID(r.InvocationDbID).
 					SetConnectionLastOpenAt(time.Now().UTC()).
 					OnConflictColumns(connectionmetadata.BazelInvocationColumn).
 					UpdateNewValues().
 					Exec(ctx)
-				if err != nil {
-					slog.Warn("Failed to log connection metadata", "err", err)
-				}
 				time.Sleep(1 * time.Second)
 			}
 		}

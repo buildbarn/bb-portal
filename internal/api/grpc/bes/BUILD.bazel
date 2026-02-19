@@ -18,7 +18,6 @@ go_library(
         "//pkg/authmetadataextraction",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "//pkg/proto/configuration/bb_portal",
-        "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/auth/configuration",
         "@com_github_buildbarn_bb_storage//pkg/grpc",
         "@com_github_buildbarn_bb_storage//pkg/program",

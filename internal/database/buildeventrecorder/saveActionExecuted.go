@@ -49,7 +49,7 @@ func getErrorCodeFromFailureDetail(failureDetail *protobuf.FailureDetail) string
 	return ""
 }
 
-func (r *BuildEventRecorder) saveActionExecuted(ctx context.Context, tx *ent.Client, actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) error {
+func (r *buildEventRecorder) saveActionExecuted(ctx context.Context, tx *ent.Client, actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) error {
 	if actionExecuted == nil || actionCompletedID == nil {
 		return nil
 	}

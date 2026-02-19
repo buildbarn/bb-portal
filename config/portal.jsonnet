@@ -85,6 +85,7 @@
       invocationMessageTimeout: '3600s',
       invocationRetention: '604800s',
     },
+    minEventBatchDuration: '0.1s',
   },
 
   // The BrowserService can be disabled by not setting this field.

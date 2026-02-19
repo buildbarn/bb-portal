@@ -15,7 +15,7 @@ import (
 
 // saveConfigurationBatch is an efficient implementation of save configuration for
 // a batch of configuration events.
-func (r *BuildEventRecorder) saveConfigurationBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) saveConfigurationBatch(ctx context.Context, batch []BuildEventWithInfo) error {
 	if len(batch) == 0 {
 		return nil
 	}
