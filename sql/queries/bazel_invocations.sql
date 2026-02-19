@@ -3,6 +3,7 @@ SELECT id, bep_completed
 FROM bazel_invocations
 WHERE id = sqlc.arg(id)
 FOR SHARE;
+
 -- name: CreateBazelInvocation :one
 --
 -- An idempotent function for creating bazel invocations. If the
@@ -26,6 +27,19 @@ WHERE invocation_id = sqlc.arg(invocation_id)
   AND bep_completed = false
 LIMIT 1;
 
+-- name: LockStaleInvocationsFromPages :execrows
+UPDATE bazel_invocations
+SET bep_completed = true
+WHERE
+    ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
+    AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
+    AND bep_completed = false
+    AND EXISTS (
+        SELECT 1 FROM event_metadata em
+        WHERE em.bazel_invocation_id = bazel_invocations.id
+        AND em.event_received_at <= sqlc.arg(cutoff_time)::timestamptz
+    );
+
 -- name: UpdateCompletedInvocationWithEndTimeFromEventMetadata :execrows
 UPDATE bazel_invocations bi
 SET
@@ -34,3 +48,11 @@ FROM event_metadata em
 WHERE bi.id = em.bazel_invocation_id
   AND bi.bep_completed = true
   AND bi.ended_at IS NULL;
+
+-- name: DeleteOldInvocationsFromPages :execrows
+DELETE FROM bazel_invocations
+WHERE
+    ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
+    AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
+    AND ended_at < sqlc.arg(cutoff_time)::timestamptz
+    AND bep_completed = true;

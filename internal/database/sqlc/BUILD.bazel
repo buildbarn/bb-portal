@@ -10,6 +10,7 @@ go_library(
         "instance_names.sql.go",
         "invocation_targets.sql.go",
         "models.go",
+        "postgres.sql.go",
         "querier.go",
         "target_kind_mappings.sql.go",
         "targets.sql.go",

@@ -6,9 +6,7 @@ import (
 	"math/rand/v2"
 	"time"
 
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -16,7 +14,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -35,6 +32,7 @@ import (
 //  7. Removing unused targets.
 type DbCleanupService struct {
 	db                       database.Client
+	counter                  int64
 	clock                    clock.Clock
 	cleanupInterval          time.Duration
 	invocationMessageTimeout time.Duration
@@ -66,6 +64,7 @@ func NewDbCleanupService(
 
 	return &DbCleanupService{
 		db:                       db,
+		counter:                  rand.Int64N(65536),
 		clock:                    clock,
 		cleanupInterval:          cleanupInterval.AsDuration(),
 		invocationMessageTimeout: invocationMessageTimeout.AsDuration(),
@@ -80,6 +79,7 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 	group.Go(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
 		ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 		for {
+			dc.counter++
 			// Add 5% jitter to the cleanup interval
 			timeToSleep := dc.cleanupInterval + time.Duration((rand.Float64()*0.1-0.05)*float64(dc.cleanupInterval))
 			time.Sleep(timeToSleep)
@@ -114,52 +114,6 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 			}
 		}
 	})
-}
-
-// DeleteIncompleteLogs deletes logs which have had their incomplete
-// build logs normalized.
-func (dc *DbCleanupService) DeleteIncompleteLogs(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.DeleteIncompleteLogs")
-	defer span.End()
-
-	deletedRows, err := dc.db.Ent().IncompleteBuildLog.Delete().
-		Where(
-			incompletebuildlog.HasBazelInvocationWith(
-				bazelinvocation.HasBuildLogChunks(),
-			),
-		).
-		Exec(ctx)
-	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, "Could not delete incompleted build logs")
-		return util.StatusWrap(err, "Could not delete incompleted build logs")
-	}
-
-	span.SetAttributes(attribute.KeyValue{Key: "incomplete_logs_deleted", Value: attribute.IntValue(deletedRows)})
-
-	return nil
-}
-
-// RemoveOldInvocations removes invocations that have completed before a
-// certain cutoff time.
-func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocations")
-	defer span.End()
-
-	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationRetention)
-	deletedInvocation, err := dc.db.Ent().BazelInvocation.Delete().
-		Where(
-			bazelinvocation.BepCompleted(true),
-			bazelinvocation.EndedAtLT(cutoffTime),
-		).
-		Exec(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to remove old invocations")
-	}
-
-	span.SetAttributes(attribute.KeyValue{Key: "deleted_invocations", Value: attribute.IntValue(deletedInvocation)})
-
-	return nil
 }
 
 // RemoveBuildsWithoutInvocations removes builds that do not have any
