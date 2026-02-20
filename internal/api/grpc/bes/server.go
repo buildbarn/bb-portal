@@ -35,7 +35,7 @@ type BuildEventServer struct {
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BuildEventServer, error) {
+func NewBuildEventServer(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BuildEventServer, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -71,7 +71,6 @@ func NewBuildEventServer(db database.Client, configuration *bb_portal.Applicatio
 				invocationID,
 				true, /* isRealTime */
 				extractors,
-				uuidGenerator,
 			)
 			if err != nil {
 				return nil, err

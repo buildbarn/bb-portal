@@ -39,11 +39,10 @@ type BepUploader struct {
 	saveDataLevel          *bb_portal.BuildEventStreamService_SaveDataLevel
 	tracerProvider         trace.TracerProvider
 	extractors             *authmetadataextraction.AuthMetadataExtractors
-	uuidGenerator          util.UUIDGenerator
 }
 
 // NewBepUploader creates a new BepUploader
-func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BepUploader, error) {
+func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BepUploader, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -73,7 +72,6 @@ func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConf
 		saveDataLevel:          saveDataLevel,
 		tracerProvider:         tracerProvider,
 		extractors:             extractors,
-		uuidGenerator:          uuidGenerator,
 	}, nil
 }
 
@@ -129,7 +127,6 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		invocationID,
 		false, // isRealTime,
 		b.extractors,
-		b.uuidGenerator,
 	)
 	if err != nil {
 		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to create BuildEventRecorder")

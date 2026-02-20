@@ -20,7 +20,8 @@
       "contact_information": {
         "email": "user@example.com",
         "phone_number": "800-555-0199"
-      }
+      },
+      "full_name": "Example Name"
     }
   }
 }

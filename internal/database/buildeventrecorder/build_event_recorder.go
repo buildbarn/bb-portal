@@ -82,7 +82,6 @@ func NewBuildEventRecorder(
 	invocationID string,
 	isRealTime bool,
 	extractors *authmetadataextraction.AuthMetadataExtractors,
-	uuidGenerator util.UUIDGenerator,
 ) (BuildEventRecorder, error) {
 	if invocationID == "" {
 		return nil, status.Error(codes.InvalidArgument, "Invocation ID is required")
@@ -93,7 +92,7 @@ func NewBuildEventRecorder(
 
 	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
 
-	userDb, err := FindOrCreateAuthenticatedUser(ctx, db, extractors, uuidGenerator, prometheusmetrics.AuthenticatedUsersCount)
+	userDb, err := FindOrCreateAuthenticatedUser(ctx, db, extractors, prometheusmetrics.AuthenticatedUsersCount)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create authenticated user")
 	}
@@ -122,7 +121,6 @@ func FindOrCreateAuthenticatedUser(
 	ctx context.Context,
 	db database.Client,
 	extractors *authmetadataextraction.AuthMetadataExtractors,
-	uuidGenerator util.UUIDGenerator,
 	authenticatedUsersGauge prometheus.Gauge,
 ) (*int64, error) {
 	userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, extractors)
@@ -152,7 +150,7 @@ func FindOrCreateAuthenticatedUser(
 
 	authenticatedUserDb, err := db.Sqlc().CreateAuthenticatedUser(ctx,
 		sqlc.CreateAuthenticatedUserParams{
-			UserUuid:    util.Must(uuidGenerator()),
+			UserUuid:    uuid.NewSHA1(uuid.NameSpaceURL, []byte(userSummary.ExternalID)),
 			ExternalID:  userSummary.ExternalID,
 			DisplayName: displayName,
 			UserInfo:    userInfo,

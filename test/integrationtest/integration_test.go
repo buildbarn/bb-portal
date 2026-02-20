@@ -8,17 +8,17 @@ import (
 	"os"
 	"testing"
 
-	"github.com/google/uuid"
-
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 	databasecommon "github.com/buildbarn/bb-portal/internal/database/common"
+	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/testkit"
 	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/google/uuid"
 	gql "github.com/machinebox/graphql"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -73,7 +73,8 @@ var (
 		filename:     "bb_portal_aborted_tests.ndjson",
 		invocationID: "64719226-555e-494d-9918-0fd25d468b1e",
 	}
-	authenticatedUserUUID = "8bdb3187-e36c-487e-95b8-f8ca28a82068"
+	authenticatedUserExternalID = authmetadataextraction.ExampleExternalID()
+	authenticatedUserUUID       = uuid.NewSHA1(uuid.NameSpaceURL, []byte(authenticatedUserExternalID)).String()
 
 	// An authenticated user UUID not present in any BEP file.
 	authenticatedUserUUIDNotFound = "A80031E0-1A11-4543-894C-13C48056074A"
@@ -272,16 +273,10 @@ var (
 			},
 			ctx: auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromRaw(map[string]any{
 				"private": map[string]any{
-					"external_id":  "6b939a5f-95b9-4a7c-ad89-961fb96c5cd1",
-					"display_name": "example_username",
+					"external_id":  authmetadataextraction.ExampleExternalID(),
+					"display_name": authmetadataextraction.ExampleDisplayName(),
 				},
-				"public": map[string]any{
-					"age": 30,
-					"contact_information": map[string]any{
-						"email":        "user@example.com",
-						"phone_number": "800-555-0199",
-					},
-				},
+				"public": authmetadataextraction.ExampleUserInfo(),
 			}))),
 			mockUUID: &authenticatedUserUUID,
 			graphqlTestCases: graphqlTestTable{
@@ -328,17 +323,9 @@ func runTestCase(t *testing.T, queryRegistry *testkit.QueryRegistry, testCase te
 	if ctx == nil {
 		ctx = context.Background()
 	}
-
-	var uuidGenerator util.UUIDGenerator
-	if testCase.mockUUID != nil {
-		uuidGenerator = createMockUUIDGenerator(t, *testCase.mockUUID, len(testCase.bepFileTestCases))
-	} else {
-		uuidGenerator = uuid.NewRandom
-	}
-
 	db := testutils.SetupTestDB(t, dbProvider)
 
-	bepUploader := setupTestBepUploader(t, db, testCase, uuidGenerator)
+	bepUploader := setupTestBepUploader(t, db, testCase)
 
 	for _, bepFileTestCase := range testCase.bepFileTestCases {
 		t.Run(fmt.Sprintf("SavingFileToDb_%s", bepFileTestCase.bepFile.filename), func(t *testing.T) {
