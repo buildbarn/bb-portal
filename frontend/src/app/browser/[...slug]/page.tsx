@@ -70,6 +70,20 @@ const Page: React.FC<PageParams> = ({ params }) => {
           </PortalCard>
         );
 
+      case BrowserPageType.Tree:
+        return (
+          <PortalCard
+            icon={<FolderOpenFilled />}
+            titleBits={[<span key="title">Tree directory</span>]}
+          >
+            <div>
+              Tree objects are not supported. Please set{" "}
+              <code>forceUploadTreesAndDirectories: true</code>{" "}
+              in your <code>bb_worker.jsonnet</code>.
+            </div>
+          </PortalCard>
+        );
+
       case BrowserPageType.HistoricalExecuteResponse:
         return (
           <PortalCard
