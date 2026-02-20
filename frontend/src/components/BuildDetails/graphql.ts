@@ -50,5 +50,6 @@ export const GET_BUILD_INVOCATION_FRAGMENT = gql(/* GraphQL */ `
       connectionLastOpenAt
       timeSinceLastConnectionMillis
     }
+    originalCommandLine
   }
 `);

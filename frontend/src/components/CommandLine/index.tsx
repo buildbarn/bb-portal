@@ -1,12 +1,12 @@
 import { CodeOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Empty, List, Row, Tooltip, Typography } from 'antd';
+import { Empty, List, Tooltip } from 'antd';
 import React from 'react';
 import PortalCard from '../PortalCard';
 
 // TODO: find a way to apply these interfaces automatically to the
 // output of graphql while remaining a scalar with regard to the graphql
 // api.
-interface CommandLineData {
+export interface CommandLineData {
   executable: string
   command: string
   options: CommandLineOptions[]
@@ -14,7 +14,7 @@ interface CommandLineData {
   residual: string[]
 }
 
-interface CommandLineOptions {
+export interface CommandLineOptions {
   option: string
   value: string
 }

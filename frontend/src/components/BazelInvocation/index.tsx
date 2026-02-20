@@ -38,6 +38,7 @@ import { InvocationTargetsTab } from "../InvocationTargets/InvocationTargetsTab"
 import UserStatusIndicator from "../UserStatusIndicator";
 import { InvocationResultTag } from "../InvocationResultTag";
 import { ActionsTab } from "../ActionsTab";
+import { commandLineDataToString } from "@/utils/commandLineDataToString";
 
 const DEFAULT_TAB_KEY = "BazelInvocationTabs-Overview";
 
@@ -76,16 +77,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
   const hideTestsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TESTS);
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
 
-  const command = ((cmd) => {
-    if (!cmd)
-      return "unknown"
-    return [
-      cmd.executable,
-      cmd.command,
-      ...cmd.options.map((x: any) => `--${x?.option}=${x?.value}`),
-      ...cmd.residual,
-    ].join(" ");
-  })(originalCommandLine)
+  const command = commandLineDataToString(originalCommandLine)
 
   const items: TabsProps["items"] = [];
   items.push({
