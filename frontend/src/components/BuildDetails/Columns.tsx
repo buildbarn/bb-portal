@@ -1,13 +1,16 @@
 import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 import { Space, type TableColumnsType, Typography } from "antd";
-import Link from "next/link";
 import { validate as uuidValidate } from "uuid";
-import styles from "@/components/AppBar/index.module.css";
+import appbarStyles from "@/components/AppBar/index.module.css";
 import type { GetBuildInvocationFragment } from "@/graphql/__generated__/graphql";
+import CodeLink from "../CodeLink";
+import type { CommandLineData } from "../CommandLine";
+import CommandLinePreview from "../CommandLinePreview";
 import { InvocationResultTag } from "../InvocationResultTag";
 import { invocationResultTagFilters } from "../InvocationResultTag/filters";
 import PortalDuration from "../PortalDuration";
 import SearchWidget, { SearchFilterIcon } from "../SearchWidgets";
+import buildDetailsStyles from "./index.module.css";
 
 export const columns: TableColumnsType<GetBuildInvocationFragment> = [
   {
@@ -47,6 +50,20 @@ export const columns: TableColumnsType<GetBuildInvocationFragment> = [
     ),
   },
   {
+    key: "command",
+    title: "Command",
+    filterSearch: false,
+    className: buildDetailsStyles.commandColumnCell,
+    render: (_, record) => (
+      <div className={buildDetailsStyles.commandWrapper}>
+        <CommandLinePreview
+          command={record.originalCommandLine as CommandLineData}
+          copyable
+        />
+      </div>
+    ),
+  },
+  {
     key: "invocationID",
     title: "Invocation ID",
     dataIndex: "invocationID",
@@ -64,12 +81,14 @@ export const columns: TableColumnsType<GetBuildInvocationFragment> = [
     ),
     render: (_, record) => (
       <Space>
-        <span className={styles.copyIcon}>
+        <span className={appbarStyles.copyIcon}>
           <Typography.Text copyable={{ text: record.invocationID ?? "Copy" }} />
         </span>
-        <Link href={`/bazel-invocations/${record.invocationID}`}>
-          {record.invocationID}
-        </Link>
+        <CodeLink
+          text={record.invocationID}
+          url={`/bazel-invocations/${record.invocationID}`}
+          abbreviate
+        />
       </Space>
     ),
   },

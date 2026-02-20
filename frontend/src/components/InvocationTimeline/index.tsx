@@ -1,5 +1,4 @@
 import { theme } from "antd";
-import Link from "next/link";
 import { useMemo } from "react";
 import {
   Bar,
@@ -17,6 +16,8 @@ import {
   readableDurationFromDates,
   readableDurationFromMilliseconds,
 } from "@/utils/time";
+import CommandLinePreview from "../CommandLinePreview";
+import PortalAlert from "../PortalAlert";
 import type { InvocationInfo, TickProps } from "./types";
 import { getInvocationResultTagColor } from "./utils";
 
@@ -51,6 +52,10 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
             timeSinceLastConnectionMillis:
               entry.connectionMetadata?.timeSinceLastConnectionMillis ||
               undefined,
+            command: entry.originalCommandLine,
+            job: entry.sourceControl?.job,
+            workflow: entry.sourceControl?.workflow,
+            action: entry.sourceControl?.action,
           };
         }),
     [invocations],
@@ -61,20 +66,33 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
     () =>
       invocationsInfo
         .flatMap((entry) => entry.timestamps)
-        .filter((t): t is number => typeof t === "number"),
+        // Provide sort function because otherwise JS converts the numbers to strings and sorts
+        .sort((a, b) => a - b)
+        .filter(
+          // Remove duplicates, which cause issues with the rendering.
+          (timestamp, index, array) => !index || timestamp !== array[index - 1],
+        ),
     [invocationsInfo],
   );
-  const min = Math.min(...ticks);
-  const max = Math.max(...ticks);
+
+  if (invocationsInfo.length < 1)
+    return (
+      <PortalAlert
+        showIcon
+        type="warning"
+        message="The provided invocations list was empty"
+      />
+    );
+
+  const min = ticks[0];
+  const max = ticks[ticks.length - 1];
 
   const renderVerticalAxisTick = ({ x, y, payload }: TickProps) => {
     return (
       <g transform={`translate(${x},${y})`}>
-        <Link href={`/bazel-invocations/${payload.value}`}>
-          <text x={0} y={0} dy={8} textAnchor="end" fill={token.colorLink}>
-            {`${payload.value.slice(0, 5)}...`}
-          </text>
-        </Link>
+        <text x={0} y={0} dy={8} textAnchor="end" fill={token.colorText}>
+          {`${payload.value.slice(0, 5)}...`}
+        </text>
       </g>
     );
   };
@@ -84,10 +102,20 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
       height={invocationsInfo.length * BAR_HEIGHT + CHART_PADDING}
       width="100%"
     >
-      <BarChart layout="vertical" data={invocationsInfo}>
+      <BarChart
+        layout="vertical"
+        data={invocationsInfo}
+        onClick={(state) => {
+          if (state.activePayload !== undefined)
+            return window.open(
+              `/bazel-invocations/${state.activePayload?.at(0).payload.invocationId}`,
+            );
+        }}
+      >
         <XAxis
           domain={[min, max]}
           type="number"
+          interval={"preserveStartEnd"}
           ticks={ticks}
           tickFormatter={(value) => {
             return readableDurationFromDates(
@@ -105,31 +133,57 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
         />
         <CartesianGrid horizontal={false} syncWithTicks strokeDasharray="3 3" />
         <Tooltip
-          // The label text turns white (against a white background, turning
-          // it practically invisible) in dark mode unless color is set.
-          labelStyle={{ color: "black" }}
+          contentStyle={{
+            backgroundColor: token.colorBgContainer,
+            borderColor: token.colorBgTextActive,
+          }}
+          wrapperStyle={{ maxWidth: "50vw", zIndex: 999 }}
           labelFormatter={(label, payload) => {
-            const startedAt: number | undefined =
-              payload[0]?.payload?.timestamps[0];
-            const endedAt: number | undefined =
-              payload[0]?.payload?.timestamps[1];
+            const invocationEntry = payload[0]?.payload;
             return (
+              // The labels are wrapped in a span with `display: block` to
+              // simulate a div for text formatting purposes. Using divs
+              // directly would cause hydration errors as the label
+              // formatter wraps the elements below in a <p> tag.
               <>
-                <b>{label}</b>
-                {startedAt && (
-                  <p>Started at: {dayjs(startedAt).toISOString()}</p>
+                <b>Invocation ID:</b> <code>{label}</code>
+                {invocationEntry?.workflow && (
+                  <span style={{ display: "block" }}>
+                    <b>Workflow: </b> <code>{invocationEntry?.workflow}</code>
+                  </span>
                 )}
-                {endedAt && <p>Ended at: {dayjs(endedAt).toISOString()}</p>}
+                {invocationEntry?.job && (
+                  <span style={{ display: "block" }}>
+                    <b>Job: </b> <code>{invocationEntry?.job}</code>
+                  </span>
+                )}
+                {invocationEntry?.action && (
+                  <span style={{ display: "block" }}>
+                    <b>Action: </b> <code>{invocationEntry?.action}</code>
+                  </span>
+                )}
+                {invocationEntry?.timestamps[0] && (
+                  <span style={{ display: "block" }}>
+                    <b>Duration: </b>
+                    {readableDurationFromMilliseconds(
+                      payload[0].payload?.timestamps[1] -
+                        payload[0].payload?.timestamps[0],
+                    )}
+                  </span>
+                )}
+                {invocationEntry?.command && (
+                  <>
+                    <b>Bazel command: </b>{" "}
+                    <CommandLinePreview
+                      codeBlockWrapper
+                      command={invocationEntry.command}
+                    />
+                  </>
+                )}
               </>
             );
           }}
-          formatter={(value: number[], name: string) => {
-            // TODO: Handle in-progress invocations
-            return [
-              readableDurationFromMilliseconds(value[1] - value[0]),
-              name,
-            ];
-          }}
+          formatter={() => []}
         />
         <Bar
           dataKey="timestamps"

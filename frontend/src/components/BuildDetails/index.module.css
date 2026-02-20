@@ -1,0 +1,10 @@
+.commandColumnCell {
+  max-width: 15vw;
+}
+
+.commandWrapper {
+  white-space: nowrap;
+  text-overflow: "[…]";
+  display: block;
+  overflow: hidden;
+}
