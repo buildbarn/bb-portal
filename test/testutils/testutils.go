@@ -13,6 +13,7 @@ import (
 func SetupTestDB(t testing.TB, dbProvider *embedded.DatabaseProvider) database.Client {
 	conn, err := dbProvider.CreateDatabase()
 	require.NoError(t, err)
+	conn.SetMaxOpenConns(1)
 	db, err := database.New("postgres", conn)
 	require.NoError(t, err)
 	t.Cleanup(func() { conn.Close() })
