@@ -431,13 +431,13 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		BazelInvocation      func(childComplexity int, invocationID string) int
 		FindBazelInvocations func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
 		FindBuilds           func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) int
 		FindTargets          func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.TargetWhereInput) int
 		FindTestSummaries    func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.TestSummaryOrder, where *ent.TestSummaryWhereInput) int
-		GetAuthenticatedUser func(childComplexity int, userUUID *uuid.UUID) int
-		GetBuild             func(childComplexity int, buildURL *string, buildUUID *uuid.UUID) int
+		GetAuthenticatedUser func(childComplexity int, userUUID uuid.UUID) int
+		GetBazelInvocation   func(childComplexity int, invocationID uuid.UUID) int
+		GetBuild             func(childComplexity int, buildUUID uuid.UUID) int
 		GetTarget            func(childComplexity int, instanceName string, label string, aspect string, targetKind string) int
 		Node                 func(childComplexity int, id string) int
 		Nodes                func(childComplexity int, ids []string) int
@@ -655,9 +655,9 @@ type QueryResolver interface {
 	FindBuilds(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error)
 	FindTargets(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error)
 	FindTestSummaries(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.TestSummaryOrder, where *ent.TestSummaryWhereInput) (*ent.TestSummaryConnection, error)
-	BazelInvocation(ctx context.Context, invocationID string) (*ent.BazelInvocation, error)
-	GetAuthenticatedUser(ctx context.Context, userUUID *uuid.UUID) (*ent.AuthenticatedUser, error)
-	GetBuild(ctx context.Context, buildURL *string, buildUUID *uuid.UUID) (*ent.Build, error)
+	GetAuthenticatedUser(ctx context.Context, userUUID uuid.UUID) (*ent.AuthenticatedUser, error)
+	GetBazelInvocation(ctx context.Context, invocationID uuid.UUID) (*ent.BazelInvocation, error)
+	GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent.Build, error)
 	GetTarget(ctx context.Context, instanceName string, label string, aspect string, targetKind string) (*ent.Target, error)
 }
 type RunnerCountResolver interface {
@@ -2585,18 +2585,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Profile.SizeInBytes(childComplexity), true
 
-	case "Query.bazelInvocation":
-		if e.complexity.Query.BazelInvocation == nil {
-			break
-		}
-
-		args, err := ec.field_Query_bazelInvocation_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.BazelInvocation(childComplexity, args["invocationId"].(string)), true
-
 	case "Query.findBazelInvocations":
 		if e.complexity.Query.FindBazelInvocations == nil {
 			break
@@ -2655,7 +2643,19 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.GetAuthenticatedUser(childComplexity, args["userUUID"].(*uuid.UUID)), true
+		return e.complexity.Query.GetAuthenticatedUser(childComplexity, args["userUUID"].(uuid.UUID)), true
+
+	case "Query.getBazelInvocation":
+		if e.complexity.Query.GetBazelInvocation == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getBazelInvocation_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetBazelInvocation(childComplexity, args["invocationID"].(uuid.UUID)), true
 
 	case "Query.getBuild":
 		if e.complexity.Query.GetBuild == nil {
@@ -2667,7 +2667,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.GetBuild(childComplexity, args["buildURL"].(*string), args["buildUUID"].(*uuid.UUID)), true
+		return e.complexity.Query.GetBuild(childComplexity, args["buildUUID"].(uuid.UUID)), true
 
 	case "Query.getTarget":
 		if e.complexity.Query.GetTarget == nil {
@@ -3820,34 +3820,6 @@ func (ec *executionContext) field_Query___type_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_bazelInvocation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := ec.field_Query_bazelInvocation_argsInvocationID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["invocationId"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_Query_bazelInvocation_argsInvocationID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	if _, ok := rawArgs["invocationId"]; !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("invocationId"))
-	if tmp, ok := rawArgs["invocationId"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
 func (ec *executionContext) field_Query_findBazelInvocations_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -4410,69 +4382,74 @@ func (ec *executionContext) field_Query_getAuthenticatedUser_args(ctx context.Co
 func (ec *executionContext) field_Query_getAuthenticatedUser_argsUserUUID(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*uuid.UUID, error) {
+) (uuid.UUID, error) {
 	if _, ok := rawArgs["userUUID"]; !ok {
-		var zeroVal *uuid.UUID
+		var zeroVal uuid.UUID
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUID"))
 	if tmp, ok := rawArgs["userUUID"]; ok {
-		return ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		return ec.unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 	}
 
-	var zeroVal *uuid.UUID
+	var zeroVal uuid.UUID
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getBazelInvocation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_getBazelInvocation_argsInvocationID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["invocationID"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_getBazelInvocation_argsInvocationID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (uuid.UUID, error) {
+	if _, ok := rawArgs["invocationID"]; !ok {
+		var zeroVal uuid.UUID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("invocationID"))
+	if tmp, ok := rawArgs["invocationID"]; ok {
+		return ec.unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+	}
+
+	var zeroVal uuid.UUID
 	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Query_getBuild_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := ec.field_Query_getBuild_argsBuildURL(ctx, rawArgs)
+	arg0, err := ec.field_Query_getBuild_argsBuildUUID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["buildURL"] = arg0
-	arg1, err := ec.field_Query_getBuild_argsBuildUUID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["buildUUID"] = arg1
+	args["buildUUID"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_Query_getBuild_argsBuildURL(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*string, error) {
-	if _, ok := rawArgs["buildURL"]; !ok {
-		var zeroVal *string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("buildURL"))
-	if tmp, ok := rawArgs["buildURL"]; ok {
-		return ec.unmarshalOString2ᚖstring(ctx, tmp)
-	}
-
-	var zeroVal *string
-	return zeroVal, nil
-}
-
 func (ec *executionContext) field_Query_getBuild_argsBuildUUID(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (*uuid.UUID, error) {
+) (uuid.UUID, error) {
 	if _, ok := rawArgs["buildUUID"]; !ok {
-		var zeroVal *uuid.UUID
+		var zeroVal uuid.UUID
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("buildUUID"))
 	if tmp, ok := rawArgs["buildUUID"]; ok {
-		return ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		return ec.unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 	}
 
-	var zeroVal *uuid.UUID
+	var zeroVal uuid.UUID
 	return zeroVal, nil
 }
 
@@ -16224,8 +16201,8 @@ func (ec *executionContext) fieldContext_Query_findTestSummaries(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_bazelInvocation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_bazelInvocation(ctx, field)
+func (ec *executionContext) _Query_getAuthenticatedUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getAuthenticatedUser(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -16238,24 +16215,87 @@ func (ec *executionContext) _Query_bazelInvocation(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().BazelInvocation(rctx, fc.Args["invocationId"].(string))
+		return ec.resolvers.Query().GetAuthenticatedUser(rctx, fc.Args["userUUID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AuthenticatedUser)
+	fc.Result = res
+	return ec.marshalOAuthenticatedUser2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getAuthenticatedUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AuthenticatedUser_id(ctx, field)
+			case "userUUID":
+				return ec.fieldContext_AuthenticatedUser_userUUID(ctx, field)
+			case "externalID":
+				return ec.fieldContext_AuthenticatedUser_externalID(ctx, field)
+			case "displayName":
+				return ec.fieldContext_AuthenticatedUser_displayName(ctx, field)
+			case "userInfo":
+				return ec.fieldContext_AuthenticatedUser_userInfo(ctx, field)
+			case "bazelInvocations":
+				return ec.fieldContext_AuthenticatedUser_bazelInvocations(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AuthenticatedUser", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
 		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getAuthenticatedUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getBazelInvocation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getBazelInvocation(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetBazelInvocation(rctx, fc.Args["invocationID"].(uuid.UUID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*ent.BazelInvocation)
 	fc.Result = res
-	return ec.marshalNBazelInvocation2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocation(ctx, field.Selections, res)
+	return ec.marshalOBazelInvocation2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_bazelInvocation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getBazelInvocation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -16330,73 +16370,7 @@ func (ec *executionContext) fieldContext_Query_bazelInvocation(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_bazelInvocation_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_getAuthenticatedUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getAuthenticatedUser(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAuthenticatedUser(rctx, fc.Args["userUUID"].(*uuid.UUID))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.AuthenticatedUser)
-	fc.Result = res
-	return ec.marshalOAuthenticatedUser2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUser(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_getAuthenticatedUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_AuthenticatedUser_id(ctx, field)
-			case "userUUID":
-				return ec.fieldContext_AuthenticatedUser_userUUID(ctx, field)
-			case "externalID":
-				return ec.fieldContext_AuthenticatedUser_externalID(ctx, field)
-			case "displayName":
-				return ec.fieldContext_AuthenticatedUser_displayName(ctx, field)
-			case "userInfo":
-				return ec.fieldContext_AuthenticatedUser_userInfo(ctx, field)
-			case "bazelInvocations":
-				return ec.fieldContext_AuthenticatedUser_bazelInvocations(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AuthenticatedUser", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getAuthenticatedUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getBazelInvocation_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -16417,7 +16391,7 @@ func (ec *executionContext) _Query_getBuild(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetBuild(rctx, fc.Args["buildURL"].(*string), fc.Args["buildUUID"].(*uuid.UUID))
+		return ec.resolvers.Query().GetBuild(rctx, fc.Args["buildUUID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -44857,28 +44831,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "bazelInvocation":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_bazelInvocation(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "getAuthenticatedUser":
 			field := field
 
@@ -44889,6 +44841,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getAuthenticatedUser(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getBazelInvocation":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getBazelInvocation(ctx, field)
 				return res
 			}
 
@@ -46665,10 +46636,6 @@ func (ec *executionContext) marshalNBazelCommand2ᚖgithubᚗcomᚋbuildbarnᚋb
 		return graphql.Null
 	}
 	return ec._BazelCommand(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNBazelInvocation2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocation(ctx context.Context, sel ast.SelectionSet, v ent.BazelInvocation) graphql.Marshaler {
-	return ec._BazelInvocation(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNBazelInvocation2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocation(ctx context.Context, sel ast.SelectionSet, v *ent.BazelInvocation) graphql.Marshaler {

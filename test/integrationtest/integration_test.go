@@ -176,9 +176,6 @@ var (
 						},
 						wantErr: errBuildNotFound,
 					},
-					"error when neither are specified": {
-						wantErr: errors.New("buildUUID must be provided"),
-					},
 				},
 				"FindBuilds": {
 					"get all builds": {

@@ -1,7 +1,7 @@
 import { gql } from "@/graphql/__generated__";
 
 export const FIND_BUILD_BY_UUID_QUERY = gql(/* GraphQL */ `
-  query FindBuildByUUID($uuid: UUID) {
+  query FindBuildByUUID($uuid: UUID!) {
     getBuild(buildUUID: $uuid) {
       id
       buildURL
