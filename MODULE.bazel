@@ -140,6 +140,7 @@ use_repo(
     "com_github_vektah_gqlparser_v2",
     "io_entgo_contrib",
     "io_entgo_ent",
+    "io_opentelemetry_go_contrib_instrumentation_github_com_gorilla_mux_otelmux",
     "io_opentelemetry_go_otel",
     "io_opentelemetry_go_otel_trace",
     "org_golang_google_genproto",

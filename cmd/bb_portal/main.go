@@ -22,6 +22,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 
@@ -79,6 +80,7 @@ func main() {
 			return status.Error(codes.Internal, "Otel tracer provider is nil")
 		}
 		router := mux.NewRouter()
+		router.Use(otelmux.Middleware("bb-portal-http", otelmux.WithTracerProvider(tracerProvider)))
 
 		err = NewGrpcWebSchedulerService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
 		if err != nil {
