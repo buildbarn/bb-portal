@@ -59,6 +59,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{ActionsColumns[17]},
 			},
+			{
+				Name:    "action_configuration_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionsColumns[16]},
+			},
 		},
 	}
 	// ActionCacheStatisticsColumns holds the columns for the "action_cache_statistics" table.
@@ -297,6 +302,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{BazelInvocationsColumns[32]},
 			},
+			{
+				Name:    "bazelinvocation_authenticated_user_bazel_invocations",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationsColumns[30]},
+			},
 		},
 	}
 	// BuildsColumns holds the columns for the "builds" table.
@@ -335,6 +345,11 @@ var (
 				Name:    "build_timestamp",
 				Unique:  false,
 				Columns: []*schema.Column{BuildsColumns[3]},
+			},
+			{
+				Name:    "build_instance_name_builds",
+				Unique:  false,
+				Columns: []*schema.Column{BuildsColumns[4]},
 			},
 			{
 				Name:    "build_build_url_instance_name_builds",
@@ -405,6 +420,11 @@ var (
 				Name:    "buildlogchunk_chunk_index_bazel_invocation_build_log_chunks",
 				Unique:  true,
 				Columns: []*schema.Column{BuildLogChunksColumns[2], BuildLogChunksColumns[5]},
+			},
+			{
+				Name:    "buildlogchunk_bazel_invocation_build_log_chunks",
+				Unique:  false,
+				Columns: []*schema.Column{BuildLogChunksColumns[5]},
 			},
 		},
 	}

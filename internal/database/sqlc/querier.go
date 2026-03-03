@@ -40,6 +40,7 @@ type Querier interface {
 	GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error)
 	LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error)
 	LockStaleInvocationsFromPages(ctx context.Context, arg LockStaleInvocationsFromPagesParams) (int64, error)
+	SelectForeignKeysWithoutIndexes(ctx context.Context) ([]SelectForeignKeysWithoutIndexesRow, error)
 	//
 	// Returns the number of physical blocks of a table
 	SelectPages(ctx context.Context, tableName string) (int32, error)

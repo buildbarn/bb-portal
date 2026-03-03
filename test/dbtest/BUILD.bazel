@@ -1,0 +1,12 @@
+load("@rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "dbtest_test",
+    srcs = ["dbindex_test.go"],
+    deps = [
+        "//internal/database/dbauthservice",
+        "//internal/database/embedded",
+        "//test/testutils",
+        "@com_github_stretchr_testify//require",
+    ],
+)

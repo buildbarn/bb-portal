@@ -80,6 +80,7 @@ func (Action) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("label"),
 		index.Edges("bazel_invocation"),
+		index.Edges("configuration"),
 	}
 }
 
