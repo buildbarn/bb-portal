@@ -245,11 +245,40 @@ type NetworkMetric struct {
 	MetricsNetworkMetrics sql.NullInt64
 }
 
+type PgAttribute struct {
+	Attrelid interface{}
+	Attname  string
+	Attnum   int16
+}
+
 type PgClass struct {
 	Oid            interface{}
 	Relname        string
+	Relnamespace   interface{}
 	Relpages       int32
 	Relispartition bool
+}
+
+type PgConstraint struct {
+	Oid          interface{}
+	Conname      string
+	Connamespace interface{}
+	Contype      string
+	Conrelid     interface{}
+	Confrelid    interface{}
+	Conkey       []int16
+}
+
+type PgIndex struct {
+	Indexrelid interface{}
+	Indrelid   interface{}
+	Indisvalid bool
+	Indkey     interface{}
+}
+
+type PgNamespace struct {
+	Oid     interface{}
+	Nspname string
 }
 
 type RunnerCount struct {

@@ -181,6 +181,7 @@ func (BazelInvocation) Indexes() []ent.Index {
 		index.Fields("ended_at"),
 		index.Edges("build"),
 		index.Edges("instance_name"),
+		index.Edges("authenticated_user"),
 	}
 }
 
