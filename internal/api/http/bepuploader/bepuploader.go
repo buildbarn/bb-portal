@@ -3,7 +3,6 @@ package bepuploader
 import (
 	"bufio"
 	"context"
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -26,7 +25,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 )
 
 const (
@@ -79,16 +77,6 @@ func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConf
 	}, nil
 }
 
-func getEventHash(buildEvent *bes.BuildEvent) ([]byte, error) {
-	marshalOptions := proto.MarshalOptions{Deterministic: true}
-	data, err := marshalOptions.Marshal(buildEvent)
-	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to marshal build event")
-	}
-	hash := sha256.Sum256(data)
-	return hash[:], nil
-}
-
 // RecordEventNdjsonFile records all build events from an ndjson bep file.
 func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader) (string, int, error) {
 	// We can safely bypass authorization checks here, as we check that the
@@ -105,9 +93,6 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		DiscardUnknown: true,
 	}
 
-	var buildEventRecorder buildeventrecorder.BuildEventRecorder = nil
-	var invocationID string
-
 	sequenceNumber := uint32(0)
 	eventBuffer := make([]buildeventrecorder.BuildEventWithInfo, 0)
 	for scanner.Scan() {
@@ -123,40 +108,33 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		if err != nil {
 			return "", http.StatusBadRequest, util.StatusWrap(err, "Failed to unmarshal JSON BES event")
 		}
-
-		if buildEventRecorder == nil {
-			invocationID = bazelEvent.GetStarted().GetUuid()
-			// Bazel does create an InvocationId for query commands, but
-			// for some reason does not write this into the Started
-			// event for queries.
-			if invocationID == "" {
-				if bazelEvent.GetStarted().GetCommand() != "query" {
-					return "", http.StatusBadRequest, status.Error(codes.InvalidArgument, "An invocation must have an invocation id")
-				}
-				invocationID = uuid.NewString()
-			}
-			buildEventRecorder, err = buildeventrecorder.NewBuildEventRecorder(
-				ctx,
-				b.db,
-				b.instanceNameAuthorizer,
-				b.saveDataLevel,
-				b.tracerProvider,
-				"", // instanceName
-				invocationID,
-				false, // isRealTime,
-				b.extractors,
-				b.uuidGenerator,
-			)
-			if err != nil {
-				return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to create BuildEventRecorder")
-			}
-		}
-
 		eventBuffer = append(eventBuffer, buildeventrecorder.BuildEventWithInfo{
 			Event:          &bazelEvent,
 			SequenceNumber: sequenceNumber,
 		})
 	}
+
+	invocationID, err := getInvocationIDFromEventBuffer(eventBuffer)
+	if err != nil {
+		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to get InvocationID")
+	}
+
+	buildEventRecorder, err := buildeventrecorder.NewBuildEventRecorder(
+		ctx,
+		b.db,
+		b.instanceNameAuthorizer,
+		b.saveDataLevel,
+		b.tracerProvider,
+		"", // instanceName
+		invocationID,
+		false, // isRealTime,
+		b.extractors,
+		b.uuidGenerator,
+	)
+	if err != nil {
+		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to create BuildEventRecorder")
+	}
+
 	if err := buildEventRecorder.SaveBatch(ctx, eventBuffer); err != nil {
 		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to record build event")
 	}
@@ -252,4 +230,30 @@ func gprcErrorCodeToHTTPStatus(err error) int {
 	default:
 		return http.StatusInternalServerError
 	}
+}
+
+func getStartedEventFromEventBuffer(eventBuffer []buildeventrecorder.BuildEventWithInfo) *bes.BuildStarted {
+	for _, event := range eventBuffer {
+		if started := event.Event.GetStarted(); started != nil {
+			return started
+		}
+	}
+	return nil
+}
+
+func getInvocationIDFromEventBuffer(eventBuffer []buildeventrecorder.BuildEventWithInfo) (string, error) {
+	started := getStartedEventFromEventBuffer(eventBuffer)
+	if started == nil {
+		return "", status.Error(codes.InvalidArgument, "No started event found in the uploaded file")
+	}
+	if started.Uuid == "" {
+		// Bazel does create an InvocationID for query commands, but
+		// for some reason does not write this into the Started event
+		// for queries, so we generate a new one instead.
+		if started.Command == "query" {
+			return uuid.NewString(), nil
+		}
+		return "", status.Error(codes.InvalidArgument, "The started event does not have an invocation ID")
+	}
+	return started.Uuid, nil
 }
