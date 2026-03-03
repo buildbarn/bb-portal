@@ -9,6 +9,51 @@ import (
 	"context"
 )
 
+const selectForeignKeysWithoutIndexes = `-- name: SelectForeignKeysWithoutIndexes :many
+SELECT 
+    c.conrelid::regclass::text AS table_name,
+    c.conname AS foreign_key_name
+FROM pg_constraint c
+JOIN pg_namespace n ON n.oid = c.connamespace
+WHERE c.contype = 'f'
+  AND n.nspname = 'public'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM pg_index i
+      WHERE i.indrelid = c.conrelid
+        AND (string_to_array(i.indkey::text, ' '))[1] = (c.conkey)[1]::text
+  )
+ORDER BY table_name, foreign_key_name
+`
+
+type SelectForeignKeysWithoutIndexesRow struct {
+	TableName      string
+	ForeignKeyName string
+}
+
+func (q *Queries) SelectForeignKeysWithoutIndexes(ctx context.Context) ([]SelectForeignKeysWithoutIndexesRow, error) {
+	rows, err := q.db.QueryContext(ctx, selectForeignKeysWithoutIndexes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectForeignKeysWithoutIndexesRow
+	for rows.Next() {
+		var i SelectForeignKeysWithoutIndexesRow
+		if err := rows.Scan(&i.TableName, &i.ForeignKeyName); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectPages = `-- name: SelectPages :one
 SELECT 
     relpages

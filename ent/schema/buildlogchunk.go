@@ -53,6 +53,7 @@ func (BuildLogChunk) Indexes() []ent.Index {
 		// (and ordered and starts at zero but this is not encoded in
 		// the database model).
 		index.Edges("bazel_invocation").Fields("chunk_index").Unique(),
+		index.Edges("bazel_invocation"),
 	}
 }
 
