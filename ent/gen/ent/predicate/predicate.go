@@ -42,12 +42,6 @@ type Configuration func(*sql.Selector)
 // ConnectionMetadata is the predicate function for connectionmetadata builders.
 type ConnectionMetadata func(*sql.Selector)
 
-// CumulativeMetrics is the predicate function for cumulativemetrics builders.
-type CumulativeMetrics func(*sql.Selector)
-
-// EvaluationStat is the predicate function for evaluationstat builders.
-type EvaluationStat func(*sql.Selector)
-
 // EventMetadata is the predicate function for eventmetadata builders.
 type EventMetadata func(*sql.Selector)
 
@@ -77,12 +71,6 @@ type MissDetail func(*sql.Selector)
 
 // NetworkMetrics is the predicate function for networkmetrics builders.
 type NetworkMetrics func(*sql.Selector)
-
-// PackageLoadMetrics is the predicate function for packageloadmetrics builders.
-type PackageLoadMetrics func(*sql.Selector)
-
-// PackageMetrics is the predicate function for packagemetrics builders.
-type PackageMetrics func(*sql.Selector)
 
 // RunnerCount is the predicate function for runnercount builders.
 type RunnerCount func(*sql.Selector)

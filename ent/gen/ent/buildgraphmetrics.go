@@ -9,7 +9,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
@@ -38,34 +37,20 @@ type BuildGraphMetrics struct {
 	PostInvocationSkyframeNodeCount int32 `json:"post_invocation_skyframe_node_count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildGraphMetricsQuery when eager-loading is set.
-	Edges                              BuildGraphMetricsEdges `json:"edges"`
-	build_graph_metrics_dirtied_values *int64
-	build_graph_metrics_changed_values *int64
-	build_graph_metrics_built_values   *int64
-	build_graph_metrics_cleaned_values *int64
-	metrics_build_graph_metrics        *int64
-	selectValues                       sql.SelectValues
+	Edges                       BuildGraphMetricsEdges `json:"edges"`
+	metrics_build_graph_metrics *int64
+	selectValues                sql.SelectValues
 }
 
 // BuildGraphMetricsEdges holds the relations/edges for other nodes in the graph.
 type BuildGraphMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
 	Metrics *Metrics `json:"metrics,omitempty"`
-	// DirtiedValues holds the value of the dirtied_values edge.
-	DirtiedValues *EvaluationStat `json:"dirtied_values,omitempty"`
-	// ChangedValues holds the value of the changed_values edge.
-	ChangedValues *EvaluationStat `json:"changed_values,omitempty"`
-	// BuiltValues holds the value of the built_values edge.
-	BuiltValues *EvaluationStat `json:"built_values,omitempty"`
-	// CleanedValues holds the value of the cleaned_values edge.
-	CleanedValues *EvaluationStat `json:"cleaned_values,omitempty"`
-	// EvaluatedValues holds the value of the evaluated_values edge.
-	EvaluatedValues *EvaluationStat `json:"evaluated_values,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [6]bool
+	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
-	totalCount [6]map[string]int
+	totalCount [1]map[string]int
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
@@ -79,61 +64,6 @@ func (e BuildGraphMetricsEdges) MetricsOrErr() (*Metrics, error) {
 	return nil, &NotLoadedError{edge: "metrics"}
 }
 
-// DirtiedValuesOrErr returns the DirtiedValues value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e BuildGraphMetricsEdges) DirtiedValuesOrErr() (*EvaluationStat, error) {
-	if e.DirtiedValues != nil {
-		return e.DirtiedValues, nil
-	} else if e.loadedTypes[1] {
-		return nil, &NotFoundError{label: evaluationstat.Label}
-	}
-	return nil, &NotLoadedError{edge: "dirtied_values"}
-}
-
-// ChangedValuesOrErr returns the ChangedValues value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e BuildGraphMetricsEdges) ChangedValuesOrErr() (*EvaluationStat, error) {
-	if e.ChangedValues != nil {
-		return e.ChangedValues, nil
-	} else if e.loadedTypes[2] {
-		return nil, &NotFoundError{label: evaluationstat.Label}
-	}
-	return nil, &NotLoadedError{edge: "changed_values"}
-}
-
-// BuiltValuesOrErr returns the BuiltValues value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e BuildGraphMetricsEdges) BuiltValuesOrErr() (*EvaluationStat, error) {
-	if e.BuiltValues != nil {
-		return e.BuiltValues, nil
-	} else if e.loadedTypes[3] {
-		return nil, &NotFoundError{label: evaluationstat.Label}
-	}
-	return nil, &NotLoadedError{edge: "built_values"}
-}
-
-// CleanedValuesOrErr returns the CleanedValues value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e BuildGraphMetricsEdges) CleanedValuesOrErr() (*EvaluationStat, error) {
-	if e.CleanedValues != nil {
-		return e.CleanedValues, nil
-	} else if e.loadedTypes[4] {
-		return nil, &NotFoundError{label: evaluationstat.Label}
-	}
-	return nil, &NotLoadedError{edge: "cleaned_values"}
-}
-
-// EvaluatedValuesOrErr returns the EvaluatedValues value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e BuildGraphMetricsEdges) EvaluatedValuesOrErr() (*EvaluationStat, error) {
-	if e.EvaluatedValues != nil {
-		return e.EvaluatedValues, nil
-	} else if e.loadedTypes[5] {
-		return nil, &NotFoundError{label: evaluationstat.Label}
-	}
-	return nil, &NotLoadedError{edge: "evaluated_values"}
-}
-
 // scanValues returns the types for scanning values from sql.Rows.
 func (*BuildGraphMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -141,15 +71,7 @@ func (*BuildGraphMetrics) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case buildgraphmetrics.FieldID, buildgraphmetrics.FieldActionLookupValueCount, buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects, buildgraphmetrics.FieldActionCount, buildgraphmetrics.FieldActionCountNotIncludingAspects, buildgraphmetrics.FieldInputFileConfiguredTargetCount, buildgraphmetrics.FieldOutputFileConfiguredTargetCount, buildgraphmetrics.FieldOtherConfiguredTargetCount, buildgraphmetrics.FieldOutputArtifactCount, buildgraphmetrics.FieldPostInvocationSkyframeNodeCount:
 			values[i] = new(sql.NullInt64)
-		case buildgraphmetrics.ForeignKeys[0]: // build_graph_metrics_dirtied_values
-			values[i] = new(sql.NullInt64)
-		case buildgraphmetrics.ForeignKeys[1]: // build_graph_metrics_changed_values
-			values[i] = new(sql.NullInt64)
-		case buildgraphmetrics.ForeignKeys[2]: // build_graph_metrics_built_values
-			values[i] = new(sql.NullInt64)
-		case buildgraphmetrics.ForeignKeys[3]: // build_graph_metrics_cleaned_values
-			values[i] = new(sql.NullInt64)
-		case buildgraphmetrics.ForeignKeys[4]: // metrics_build_graph_metrics
+		case buildgraphmetrics.ForeignKeys[0]: // metrics_build_graph_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -228,34 +150,6 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 			}
 		case buildgraphmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_dirtied_values", value)
-			} else if value.Valid {
-				bgm.build_graph_metrics_dirtied_values = new(int64)
-				*bgm.build_graph_metrics_dirtied_values = int64(value.Int64)
-			}
-		case buildgraphmetrics.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_changed_values", value)
-			} else if value.Valid {
-				bgm.build_graph_metrics_changed_values = new(int64)
-				*bgm.build_graph_metrics_changed_values = int64(value.Int64)
-			}
-		case buildgraphmetrics.ForeignKeys[2]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_built_values", value)
-			} else if value.Valid {
-				bgm.build_graph_metrics_built_values = new(int64)
-				*bgm.build_graph_metrics_built_values = int64(value.Int64)
-			}
-		case buildgraphmetrics.ForeignKeys[3]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_cleaned_values", value)
-			} else if value.Valid {
-				bgm.build_graph_metrics_cleaned_values = new(int64)
-				*bgm.build_graph_metrics_cleaned_values = int64(value.Int64)
-			}
-		case buildgraphmetrics.ForeignKeys[4]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_build_graph_metrics", value)
 			} else if value.Valid {
 				bgm.metrics_build_graph_metrics = new(int64)
@@ -277,31 +171,6 @@ func (bgm *BuildGraphMetrics) Value(name string) (ent.Value, error) {
 // QueryMetrics queries the "metrics" edge of the BuildGraphMetrics entity.
 func (bgm *BuildGraphMetrics) QueryMetrics() *MetricsQuery {
 	return NewBuildGraphMetricsClient(bgm.config).QueryMetrics(bgm)
-}
-
-// QueryDirtiedValues queries the "dirtied_values" edge of the BuildGraphMetrics entity.
-func (bgm *BuildGraphMetrics) QueryDirtiedValues() *EvaluationStatQuery {
-	return NewBuildGraphMetricsClient(bgm.config).QueryDirtiedValues(bgm)
-}
-
-// QueryChangedValues queries the "changed_values" edge of the BuildGraphMetrics entity.
-func (bgm *BuildGraphMetrics) QueryChangedValues() *EvaluationStatQuery {
-	return NewBuildGraphMetricsClient(bgm.config).QueryChangedValues(bgm)
-}
-
-// QueryBuiltValues queries the "built_values" edge of the BuildGraphMetrics entity.
-func (bgm *BuildGraphMetrics) QueryBuiltValues() *EvaluationStatQuery {
-	return NewBuildGraphMetricsClient(bgm.config).QueryBuiltValues(bgm)
-}
-
-// QueryCleanedValues queries the "cleaned_values" edge of the BuildGraphMetrics entity.
-func (bgm *BuildGraphMetrics) QueryCleanedValues() *EvaluationStatQuery {
-	return NewBuildGraphMetricsClient(bgm.config).QueryCleanedValues(bgm)
-}
-
-// QueryEvaluatedValues queries the "evaluated_values" edge of the BuildGraphMetrics entity.
-func (bgm *BuildGraphMetrics) QueryEvaluatedValues() *EvaluationStatQuery {
-	return NewBuildGraphMetricsClient(bgm.config).QueryEvaluatedValues(bgm)
 }
 
 // Update returns a builder for updating this BuildGraphMetrics.

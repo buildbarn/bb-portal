@@ -24,8 +24,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
@@ -36,8 +34,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
@@ -119,8 +115,6 @@ func checkColumn(table, column string) error {
 			buildlogchunk.Table:         buildlogchunk.ValidColumn,
 			configuration.Table:         configuration.ValidColumn,
 			connectionmetadata.Table:    connectionmetadata.ValidColumn,
-			cumulativemetrics.Table:     cumulativemetrics.ValidColumn,
-			evaluationstat.Table:        evaluationstat.ValidColumn,
 			eventmetadata.Table:         eventmetadata.ValidColumn,
 			garbagemetrics.Table:        garbagemetrics.ValidColumn,
 			incompletebuildlog.Table:    incompletebuildlog.ValidColumn,
@@ -131,8 +125,6 @@ func checkColumn(table, column string) error {
 			metrics.Table:               metrics.ValidColumn,
 			missdetail.Table:            missdetail.ValidColumn,
 			networkmetrics.Table:        networkmetrics.ValidColumn,
-			packageloadmetrics.Table:    packageloadmetrics.ValidColumn,
-			packagemetrics.Table:        packagemetrics.ValidColumn,
 			runnercount.Table:           runnercount.ValidColumn,
 			sourcecontrol.Table:         sourcecontrol.ValidColumn,
 			systemnetworkstats.Table:    systemnetworkstats.ValidColumn,

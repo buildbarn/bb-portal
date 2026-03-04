@@ -46,22 +46,8 @@ func (Metrics) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
-		// Package metrics.
-		edge.To("package_metrics", PackageMetrics.Type).
-			Unique().
-			Annotations(
-				entsql.OnDelete(entsql.Cascade),
-			),
-
 		// Timing metrics.
 		edge.To("timing_metrics", TimingMetrics.Type).
-			Unique().
-			Annotations(
-				entsql.OnDelete(entsql.Cascade),
-			),
-
-		// Cumulative metrics.
-		edge.To("cumulative_metrics", CumulativeMetrics.Type).
 			Unique().
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),

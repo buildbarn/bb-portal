@@ -20,12 +20,8 @@ const (
 	EdgeMemoryMetrics = "memory_metrics"
 	// EdgeTargetMetrics holds the string denoting the target_metrics edge name in mutations.
 	EdgeTargetMetrics = "target_metrics"
-	// EdgePackageMetrics holds the string denoting the package_metrics edge name in mutations.
-	EdgePackageMetrics = "package_metrics"
 	// EdgeTimingMetrics holds the string denoting the timing_metrics edge name in mutations.
 	EdgeTimingMetrics = "timing_metrics"
-	// EdgeCumulativeMetrics holds the string denoting the cumulative_metrics edge name in mutations.
-	EdgeCumulativeMetrics = "cumulative_metrics"
 	// EdgeArtifactMetrics holds the string denoting the artifact_metrics edge name in mutations.
 	EdgeArtifactMetrics = "artifact_metrics"
 	// EdgeNetworkMetrics holds the string denoting the network_metrics edge name in mutations.
@@ -62,13 +58,6 @@ const (
 	TargetMetricsInverseTable = "target_metrics"
 	// TargetMetricsColumn is the table column denoting the target_metrics relation/edge.
 	TargetMetricsColumn = "metrics_target_metrics"
-	// PackageMetricsTable is the table that holds the package_metrics relation/edge.
-	PackageMetricsTable = "package_metrics"
-	// PackageMetricsInverseTable is the table name for the PackageMetrics entity.
-	// It exists in this package in order to avoid circular dependency with the "packagemetrics" package.
-	PackageMetricsInverseTable = "package_metrics"
-	// PackageMetricsColumn is the table column denoting the package_metrics relation/edge.
-	PackageMetricsColumn = "metrics_package_metrics"
 	// TimingMetricsTable is the table that holds the timing_metrics relation/edge.
 	TimingMetricsTable = "timing_metrics"
 	// TimingMetricsInverseTable is the table name for the TimingMetrics entity.
@@ -76,13 +65,6 @@ const (
 	TimingMetricsInverseTable = "timing_metrics"
 	// TimingMetricsColumn is the table column denoting the timing_metrics relation/edge.
 	TimingMetricsColumn = "metrics_timing_metrics"
-	// CumulativeMetricsTable is the table that holds the cumulative_metrics relation/edge.
-	CumulativeMetricsTable = "cumulative_metrics"
-	// CumulativeMetricsInverseTable is the table name for the CumulativeMetrics entity.
-	// It exists in this package in order to avoid circular dependency with the "cumulativemetrics" package.
-	CumulativeMetricsInverseTable = "cumulative_metrics"
-	// CumulativeMetricsColumn is the table column denoting the cumulative_metrics relation/edge.
-	CumulativeMetricsColumn = "metrics_cumulative_metrics"
 	// ArtifactMetricsTable is the table that holds the artifact_metrics relation/edge.
 	ArtifactMetricsTable = "artifact_metrics"
 	// ArtifactMetricsInverseTable is the table name for the ArtifactMetrics entity.
@@ -168,24 +150,10 @@ func ByTargetMetricsField(field string, opts ...sql.OrderTermOption) OrderOption
 	}
 }
 
-// ByPackageMetricsField orders the results by package_metrics field.
-func ByPackageMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPackageMetricsStep(), sql.OrderByField(field, opts...))
-	}
-}
-
 // ByTimingMetricsField orders the results by timing_metrics field.
 func ByTimingMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newTimingMetricsStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// ByCumulativeMetricsField orders the results by cumulative_metrics field.
-func ByCumulativeMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newCumulativeMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -237,25 +205,11 @@ func newTargetMetricsStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2O, false, TargetMetricsTable, TargetMetricsColumn),
 	)
 }
-func newPackageMetricsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PackageMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, false, PackageMetricsTable, PackageMetricsColumn),
-	)
-}
 func newTimingMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TimingMetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, false, TimingMetricsTable, TimingMetricsColumn),
-	)
-}
-func newCumulativeMetricsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(CumulativeMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, false, CumulativeMetricsTable, CumulativeMetricsColumn),
 	)
 }
 func newArtifactMetricsStep() *sqlgraph.Step {
