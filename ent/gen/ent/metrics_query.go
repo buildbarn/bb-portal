@@ -16,11 +16,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
@@ -37,9 +35,7 @@ type MetricsQuery struct {
 	withActionSummary     *ActionSummaryQuery
 	withMemoryMetrics     *MemoryMetricsQuery
 	withTargetMetrics     *TargetMetricsQuery
-	withPackageMetrics    *PackageMetricsQuery
 	withTimingMetrics     *TimingMetricsQuery
-	withCumulativeMetrics *CumulativeMetricsQuery
 	withArtifactMetrics   *ArtifactMetricsQuery
 	withNetworkMetrics    *NetworkMetricsQuery
 	withBuildGraphMetrics *BuildGraphMetricsQuery
@@ -170,28 +166,6 @@ func (mq *MetricsQuery) QueryTargetMetrics() *TargetMetricsQuery {
 	return query
 }
 
-// QueryPackageMetrics chains the current query on the "package_metrics" edge.
-func (mq *MetricsQuery) QueryPackageMetrics() *PackageMetricsQuery {
-	query := (&PackageMetricsClient{config: mq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := mq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
-			sqlgraph.To(packagemetrics.Table, packagemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, metrics.PackageMetricsTable, metrics.PackageMetricsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
 // QueryTimingMetrics chains the current query on the "timing_metrics" edge.
 func (mq *MetricsQuery) QueryTimingMetrics() *TimingMetricsQuery {
 	query := (&TimingMetricsClient{config: mq.config}).Query()
@@ -207,28 +181,6 @@ func (mq *MetricsQuery) QueryTimingMetrics() *TimingMetricsQuery {
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(timingmetrics.Table, timingmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.TimingMetricsTable, metrics.TimingMetricsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryCumulativeMetrics chains the current query on the "cumulative_metrics" edge.
-func (mq *MetricsQuery) QueryCumulativeMetrics() *CumulativeMetricsQuery {
-	query := (&CumulativeMetricsClient{config: mq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := mq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
-			sqlgraph.To(cumulativemetrics.Table, cumulativemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, metrics.CumulativeMetricsTable, metrics.CumulativeMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -498,9 +450,7 @@ func (mq *MetricsQuery) Clone() *MetricsQuery {
 		withActionSummary:     mq.withActionSummary.Clone(),
 		withMemoryMetrics:     mq.withMemoryMetrics.Clone(),
 		withTargetMetrics:     mq.withTargetMetrics.Clone(),
-		withPackageMetrics:    mq.withPackageMetrics.Clone(),
 		withTimingMetrics:     mq.withTimingMetrics.Clone(),
-		withCumulativeMetrics: mq.withCumulativeMetrics.Clone(),
 		withArtifactMetrics:   mq.withArtifactMetrics.Clone(),
 		withNetworkMetrics:    mq.withNetworkMetrics.Clone(),
 		withBuildGraphMetrics: mq.withBuildGraphMetrics.Clone(),
@@ -555,17 +505,6 @@ func (mq *MetricsQuery) WithTargetMetrics(opts ...func(*TargetMetricsQuery)) *Me
 	return mq
 }
 
-// WithPackageMetrics tells the query-builder to eager-load the nodes that are connected to
-// the "package_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithPackageMetrics(opts ...func(*PackageMetricsQuery)) *MetricsQuery {
-	query := (&PackageMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	mq.withPackageMetrics = query
-	return mq
-}
-
 // WithTimingMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "timing_metrics" edge. The optional arguments are used to configure the query builder of the edge.
 func (mq *MetricsQuery) WithTimingMetrics(opts ...func(*TimingMetricsQuery)) *MetricsQuery {
@@ -574,17 +513,6 @@ func (mq *MetricsQuery) WithTimingMetrics(opts ...func(*TimingMetricsQuery)) *Me
 		opt(query)
 	}
 	mq.withTimingMetrics = query
-	return mq
-}
-
-// WithCumulativeMetrics tells the query-builder to eager-load the nodes that are connected to
-// the "cumulative_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithCumulativeMetrics(opts ...func(*CumulativeMetricsQuery)) *MetricsQuery {
-	query := (&CumulativeMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	mq.withCumulativeMetrics = query
 	return mq
 }
 
@@ -678,14 +606,12 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 		nodes       = []*Metrics{}
 		withFKs     = mq.withFKs
 		_spec       = mq.querySpec()
-		loadedTypes = [10]bool{
+		loadedTypes = [8]bool{
 			mq.withBazelInvocation != nil,
 			mq.withActionSummary != nil,
 			mq.withMemoryMetrics != nil,
 			mq.withTargetMetrics != nil,
-			mq.withPackageMetrics != nil,
 			mq.withTimingMetrics != nil,
-			mq.withCumulativeMetrics != nil,
 			mq.withArtifactMetrics != nil,
 			mq.withNetworkMetrics != nil,
 			mq.withBuildGraphMetrics != nil,
@@ -742,21 +668,9 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 			return nil, err
 		}
 	}
-	if query := mq.withPackageMetrics; query != nil {
-		if err := mq.loadPackageMetrics(ctx, query, nodes, nil,
-			func(n *Metrics, e *PackageMetrics) { n.Edges.PackageMetrics = e }); err != nil {
-			return nil, err
-		}
-	}
 	if query := mq.withTimingMetrics; query != nil {
 		if err := mq.loadTimingMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *TimingMetrics) { n.Edges.TimingMetrics = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := mq.withCumulativeMetrics; query != nil {
-		if err := mq.loadCumulativeMetrics(ctx, query, nodes, nil,
-			func(n *Metrics, e *CumulativeMetrics) { n.Edges.CumulativeMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -902,34 +816,6 @@ func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetr
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *PackageMetrics)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*Metrics)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-	}
-	query.withFKs = true
-	query.Where(predicate.PackageMetrics(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(metrics.PackageMetricsColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.metrics_package_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_package_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_package_metrics" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
 func (mq *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TimingMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
@@ -953,34 +839,6 @@ func (mq *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetr
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "metrics_timing_metrics" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (mq *MetricsQuery) loadCumulativeMetrics(ctx context.Context, query *CumulativeMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *CumulativeMetrics)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*Metrics)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-	}
-	query.withFKs = true
-	query.Where(predicate.CumulativeMetrics(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(metrics.CumulativeMetricsColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.metrics_cumulative_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_cumulative_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_cumulative_metrics" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

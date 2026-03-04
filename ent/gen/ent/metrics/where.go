@@ -145,29 +145,6 @@ func HasTargetMetricsWith(preds ...predicate.TargetMetrics) predicate.Metrics {
 	})
 }
 
-// HasPackageMetrics applies the HasEdge predicate on the "package_metrics" edge.
-func HasPackageMetrics() predicate.Metrics {
-	return predicate.Metrics(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, PackageMetricsTable, PackageMetricsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasPackageMetricsWith applies the HasEdge predicate on the "package_metrics" edge with a given conditions (other predicates).
-func HasPackageMetricsWith(preds ...predicate.PackageMetrics) predicate.Metrics {
-	return predicate.Metrics(func(s *sql.Selector) {
-		step := newPackageMetricsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasTimingMetrics applies the HasEdge predicate on the "timing_metrics" edge.
 func HasTimingMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
@@ -183,29 +160,6 @@ func HasTimingMetrics() predicate.Metrics {
 func HasTimingMetricsWith(preds ...predicate.TimingMetrics) predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := newTimingMetricsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasCumulativeMetrics applies the HasEdge predicate on the "cumulative_metrics" edge.
-func HasCumulativeMetrics() predicate.Metrics {
-	return predicate.Metrics(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, CumulativeMetricsTable, CumulativeMetricsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasCumulativeMetricsWith applies the HasEdge predicate on the "cumulative_metrics" edge with a given conditions (other predicates).
-func HasCumulativeMetricsWith(preds ...predicate.CumulativeMetrics) predicate.Metrics {
-	return predicate.Metrics(func(s *sql.Selector) {
-		step := newCumulativeMetricsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

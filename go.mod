@@ -21,7 +21,6 @@ require (
 	github.com/RoaringBitmap/roaring v1.9.4
 	github.com/aereal/otelgqlgen v0.10.2
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto v0.0.0
-	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0
 	github.com/bazelbuild/bazel/src/main/protobuf v0.0.0
 	github.com/bazelbuild/buildtools v0.0.0-20260130104808-54a7200a18c1
 	github.com/bazelbuild/remote-apis v0.0.0-20250915115802-824e1ba94b2d
@@ -56,6 +55,8 @@ require (
 	google.golang.org/protobuf v1.36.11
 	mvdan.cc/gofumpt v0.9.2
 )
+
+require github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0 // indirect
 
 require (
 	ariga.io/atlas v0.32.0 // indirect
