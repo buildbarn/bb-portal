@@ -38,7 +38,7 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
           // Timestamp interval in milliseconds since UNIX epoch.
           timestamps: [
             dayjs(entry.startedAt).valueOf(),
-            entry.endedAt ? dayjs(entry.endedAt).valueOf() : undefined,
+            entry.endedAt ? dayjs(entry.endedAt).valueOf() : dayjs().valueOf(),
           ],
           exitCodeName: entry.exitCodeName || undefined,
           bepCompleted: entry.bepCompleted,
