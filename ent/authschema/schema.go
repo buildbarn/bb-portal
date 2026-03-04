@@ -29,10 +29,6 @@ type (
 	Configuration struct{ schema.Configuration }
 	// ConnectionMetadata reexport with auth policy added
 	ConnectionMetadata struct{ schema.ConnectionMetadata }
-	// CumulativeMetrics reexport with auth policy added
-	CumulativeMetrics struct{ schema.CumulativeMetrics }
-	// EvaluationStat reexport with auth policy added
-	EvaluationStat struct{ schema.EvaluationStat }
 	// EventMetadata reexport with auth policy added
 	EventMetadata struct{ schema.EventMetadata }
 	// GarbageMetrics reexport with auth policy added
@@ -53,10 +49,6 @@ type (
 	MissDetail struct{ schema.MissDetail }
 	// NetworkMetrics reexport with auth policy added
 	NetworkMetrics struct{ schema.NetworkMetrics }
-	// PackageLoadMetrics reexport with auth policy added
-	PackageLoadMetrics struct{ schema.PackageLoadMetrics }
-	// PackageMetrics reexport with auth policy added
-	PackageMetrics struct{ schema.PackageMetrics }
 	// RunnerCount reexport with auth policy added
 	RunnerCount struct{ schema.RunnerCount }
 	// SourceControl reexport with auth policy added

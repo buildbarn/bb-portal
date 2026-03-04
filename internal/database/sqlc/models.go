@@ -140,10 +140,6 @@ type BuildGraphMetric struct {
 	OtherConfiguredTargetCount                sql.NullInt32
 	OutputArtifactCount                       sql.NullInt32
 	PostInvocationSkyframeNodeCount           sql.NullInt32
-	BuildGraphMetricsDirtiedValues            sql.NullInt64
-	BuildGraphMetricsChangedValues            sql.NullInt64
-	BuildGraphMetricsBuiltValues              sql.NullInt64
-	BuildGraphMetricsCleanedValues            sql.NullInt64
 	MetricsBuildGraphMetrics                  sql.NullInt64
 }
 
@@ -171,20 +167,6 @@ type ConnectionMetadatum struct {
 	ID                                int64
 	ConnectionLastOpenAt              time.Time
 	BazelInvocationConnectionMetadata int64
-}
-
-type CumulativeMetric struct {
-	ID                       int64
-	NumAnalyses              sql.NullInt32
-	NumBuilds                sql.NullInt32
-	MetricsCumulativeMetrics sql.NullInt64
-}
-
-type EvaluationStat struct {
-	ID                               int64
-	SkyfunctionName                  sql.NullString
-	Count                            sql.NullInt64
-	BuildGraphMetricsEvaluatedValues sql.NullInt64
 }
 
 type EventMetadatum struct {
@@ -261,23 +243,6 @@ type MissDetail struct {
 type NetworkMetric struct {
 	ID                    int64
 	MetricsNetworkMetrics sql.NullInt64
-}
-
-type PackageLoadMetric struct {
-	ID                               int64
-	Name                             sql.NullString
-	LoadDuration                     sql.NullInt64
-	NumTargets                       sql.NullInt64
-	ComputationSteps                 sql.NullInt64
-	NumTransitiveLoads               sql.NullInt64
-	PackageOverhead                  sql.NullInt64
-	PackageMetricsPackageLoadMetrics sql.NullInt64
-}
-
-type PackageMetric struct {
-	ID                    int64
-	PackagesLoaded        sql.NullInt64
-	MetricsPackageMetrics sql.NullInt64
 }
 
 type PgClass struct {

@@ -38,10 +38,6 @@ type Tx struct {
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
 	ConnectionMetadata *ConnectionMetadataClient
-	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
-	CumulativeMetrics *CumulativeMetricsClient
-	// EvaluationStat is the client for interacting with the EvaluationStat builders.
-	EvaluationStat *EvaluationStatClient
 	// EventMetadata is the client for interacting with the EventMetadata builders.
 	EventMetadata *EventMetadataClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
@@ -62,10 +58,6 @@ type Tx struct {
 	MissDetail *MissDetailClient
 	// NetworkMetrics is the client for interacting with the NetworkMetrics builders.
 	NetworkMetrics *NetworkMetricsClient
-	// PackageLoadMetrics is the client for interacting with the PackageLoadMetrics builders.
-	PackageLoadMetrics *PackageLoadMetricsClient
-	// PackageMetrics is the client for interacting with the PackageMetrics builders.
-	PackageMetrics *PackageMetricsClient
 	// RunnerCount is the client for interacting with the RunnerCount builders.
 	RunnerCount *RunnerCountClient
 	// SourceControl is the client for interacting with the SourceControl builders.
@@ -227,8 +219,6 @@ func (tx *Tx) init() {
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
-	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)
-	tx.EvaluationStat = NewEvaluationStatClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
 	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
@@ -239,8 +229,6 @@ func (tx *Tx) init() {
 	tx.Metrics = NewMetricsClient(tx.config)
 	tx.MissDetail = NewMissDetailClient(tx.config)
 	tx.NetworkMetrics = NewNetworkMetricsClient(tx.config)
-	tx.PackageLoadMetrics = NewPackageLoadMetricsClient(tx.config)
-	tx.PackageMetrics = NewPackageMetricsClient(tx.config)
 	tx.RunnerCount = NewRunnerCountClient(tx.config)
 	tx.SourceControl = NewSourceControlClient(tx.config)
 	tx.SystemNetworkStats = NewSystemNetworkStatsClient(tx.config)

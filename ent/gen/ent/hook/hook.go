@@ -153,30 +153,6 @@ func (f ConnectionMetadataFunc) Mutate(ctx context.Context, m ent.Mutation) (ent
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ConnectionMetadataMutation", m)
 }
 
-// The CumulativeMetricsFunc type is an adapter to allow the use of ordinary
-// function as CumulativeMetrics mutator.
-type CumulativeMetricsFunc func(context.Context, *ent.CumulativeMetricsMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f CumulativeMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.CumulativeMetricsMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CumulativeMetricsMutation", m)
-}
-
-// The EvaluationStatFunc type is an adapter to allow the use of ordinary
-// function as EvaluationStat mutator.
-type EvaluationStatFunc func(context.Context, *ent.EvaluationStatMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f EvaluationStatFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.EvaluationStatMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EvaluationStatMutation", m)
-}
-
 // The EventMetadataFunc type is an adapter to allow the use of ordinary
 // function as EventMetadata mutator.
 type EventMetadataFunc func(context.Context, *ent.EventMetadataMutation) (ent.Value, error)
@@ -295,30 +271,6 @@ func (f NetworkMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NetworkMetricsMutation", m)
-}
-
-// The PackageLoadMetricsFunc type is an adapter to allow the use of ordinary
-// function as PackageLoadMetrics mutator.
-type PackageLoadMetricsFunc func(context.Context, *ent.PackageLoadMetricsMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PackageLoadMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.PackageLoadMetricsMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PackageLoadMetricsMutation", m)
-}
-
-// The PackageMetricsFunc type is an adapter to allow the use of ordinary
-// function as PackageMetrics mutator.
-type PackageMetricsFunc func(context.Context, *ent.PackageMetricsMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PackageMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.PackageMetricsMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PackageMetricsMutation", m)
 }
 
 // The RunnerCountFunc type is an adapter to allow the use of ordinary

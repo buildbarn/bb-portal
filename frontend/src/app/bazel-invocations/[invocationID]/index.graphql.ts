@@ -59,11 +59,6 @@ fragment BazelInvocationInfo on BazelInvocation {
       topLevelArtifactsCount
       topLevelArtifactsSizeInBytes
     }
-    cumulativeMetrics {
-      id
-      numBuilds
-      numAnalyses
-    }
     memoryMetrics {
       id
       usedHeapSizePostBuild
@@ -101,19 +96,6 @@ fragment BazelInvocationInfo on BazelInvocation {
         peakBytesRecvPerSec
         peakPacketsSentPerSec
         peakPacketsRecvPerSec
-      }
-    }
-    packageMetrics {
-      id
-      packagesLoaded
-      packageLoadMetrics {
-        id
-        name
-        numTargets
-        loadDuration
-        packageOverhead
-        computationSteps
-        numTransitiveLoads
       }
     }
   }

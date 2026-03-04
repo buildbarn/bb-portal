@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
@@ -174,101 +173,6 @@ func (bgmc *BuildGraphMetricsCreate) SetMetrics(m *Metrics) *BuildGraphMetricsCr
 	return bgmc.SetMetricsID(m.ID)
 }
 
-// SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetDirtiedValuesID(id int64) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetDirtiedValuesID(id)
-	return bgmc
-}
-
-// SetNillableDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableDirtiedValuesID(id *int64) *BuildGraphMetricsCreate {
-	if id != nil {
-		bgmc = bgmc.SetDirtiedValuesID(*id)
-	}
-	return bgmc
-}
-
-// SetDirtiedValues sets the "dirtied_values" edge to the EvaluationStat entity.
-func (bgmc *BuildGraphMetricsCreate) SetDirtiedValues(e *EvaluationStat) *BuildGraphMetricsCreate {
-	return bgmc.SetDirtiedValuesID(e.ID)
-}
-
-// SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetChangedValuesID(id int64) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetChangedValuesID(id)
-	return bgmc
-}
-
-// SetNillableChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableChangedValuesID(id *int64) *BuildGraphMetricsCreate {
-	if id != nil {
-		bgmc = bgmc.SetChangedValuesID(*id)
-	}
-	return bgmc
-}
-
-// SetChangedValues sets the "changed_values" edge to the EvaluationStat entity.
-func (bgmc *BuildGraphMetricsCreate) SetChangedValues(e *EvaluationStat) *BuildGraphMetricsCreate {
-	return bgmc.SetChangedValuesID(e.ID)
-}
-
-// SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetBuiltValuesID(id int64) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetBuiltValuesID(id)
-	return bgmc
-}
-
-// SetNillableBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableBuiltValuesID(id *int64) *BuildGraphMetricsCreate {
-	if id != nil {
-		bgmc = bgmc.SetBuiltValuesID(*id)
-	}
-	return bgmc
-}
-
-// SetBuiltValues sets the "built_values" edge to the EvaluationStat entity.
-func (bgmc *BuildGraphMetricsCreate) SetBuiltValues(e *EvaluationStat) *BuildGraphMetricsCreate {
-	return bgmc.SetBuiltValuesID(e.ID)
-}
-
-// SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetCleanedValuesID(id int64) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetCleanedValuesID(id)
-	return bgmc
-}
-
-// SetNillableCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableCleanedValuesID(id *int64) *BuildGraphMetricsCreate {
-	if id != nil {
-		bgmc = bgmc.SetCleanedValuesID(*id)
-	}
-	return bgmc
-}
-
-// SetCleanedValues sets the "cleaned_values" edge to the EvaluationStat entity.
-func (bgmc *BuildGraphMetricsCreate) SetCleanedValues(e *EvaluationStat) *BuildGraphMetricsCreate {
-	return bgmc.SetCleanedValuesID(e.ID)
-}
-
-// SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetEvaluatedValuesID(id int64) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetEvaluatedValuesID(id)
-	return bgmc
-}
-
-// SetNillableEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableEvaluatedValuesID(id *int64) *BuildGraphMetricsCreate {
-	if id != nil {
-		bgmc = bgmc.SetEvaluatedValuesID(*id)
-	}
-	return bgmc
-}
-
-// SetEvaluatedValues sets the "evaluated_values" edge to the EvaluationStat entity.
-func (bgmc *BuildGraphMetricsCreate) SetEvaluatedValues(e *EvaluationStat) *BuildGraphMetricsCreate {
-	return bgmc.SetEvaluatedValuesID(e.ID)
-}
-
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
 func (bgmc *BuildGraphMetricsCreate) Mutation() *BuildGraphMetricsMutation {
 	return bgmc.mutation
@@ -387,90 +291,6 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.metrics_build_graph_metrics = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := bgmc.mutation.DirtiedValuesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   buildgraphmetrics.DirtiedValuesTable,
-			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.build_graph_metrics_dirtied_values = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := bgmc.mutation.ChangedValuesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   buildgraphmetrics.ChangedValuesTable,
-			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.build_graph_metrics_changed_values = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := bgmc.mutation.BuiltValuesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   buildgraphmetrics.BuiltValuesTable,
-			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.build_graph_metrics_built_values = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := bgmc.mutation.CleanedValuesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   buildgraphmetrics.CleanedValuesTable,
-			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.build_graph_metrics_cleaned_values = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := bgmc.mutation.EvaluatedValuesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   buildgraphmetrics.EvaluatedValuesTable,
-			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

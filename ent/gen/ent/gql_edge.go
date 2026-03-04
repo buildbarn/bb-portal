@@ -177,18 +177,6 @@ func (bi *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (bi *BazelInvocation) InvocationFiles(ctx context.Context) (result []*InvocationFiles, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = bi.NamedInvocationFiles(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = bi.Edges.InvocationFilesOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = bi.QueryInvocationFiles().All(ctx)
-	}
-	return result, err
-}
-
 func (bi *BazelInvocation) InvocationTargets(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTargetOrder, where *InvocationTargetWhereInput,
 ) (*InvocationTargetConnection, error) {
@@ -197,7 +185,7 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[7][alias]
+	totalCount, hasTotalCount := bi.Edges.totalCount[6][alias]
 	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
@@ -255,46 +243,6 @@ func (bgm *BuildGraphMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (bgm *BuildGraphMetrics) DirtiedValues(ctx context.Context) (*EvaluationStat, error) {
-	result, err := bgm.Edges.DirtiedValuesOrErr()
-	if IsNotLoaded(err) {
-		result, err = bgm.QueryDirtiedValues().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (bgm *BuildGraphMetrics) ChangedValues(ctx context.Context) (*EvaluationStat, error) {
-	result, err := bgm.Edges.ChangedValuesOrErr()
-	if IsNotLoaded(err) {
-		result, err = bgm.QueryChangedValues().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (bgm *BuildGraphMetrics) BuiltValues(ctx context.Context) (*EvaluationStat, error) {
-	result, err := bgm.Edges.BuiltValuesOrErr()
-	if IsNotLoaded(err) {
-		result, err = bgm.QueryBuiltValues().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (bgm *BuildGraphMetrics) CleanedValues(ctx context.Context) (*EvaluationStat, error) {
-	result, err := bgm.Edges.CleanedValuesOrErr()
-	if IsNotLoaded(err) {
-		result, err = bgm.QueryCleanedValues().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (bgm *BuildGraphMetrics) EvaluatedValues(ctx context.Context) (*EvaluationStat, error) {
-	result, err := bgm.Edges.EvaluatedValuesOrErr()
-	if IsNotLoaded(err) {
-		result, err = bgm.QueryEvaluatedValues().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (c *Configuration) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
 	result, err := c.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
@@ -325,22 +273,6 @@ func (c *Configuration) Actions(ctx context.Context) (result []*Action, err erro
 		result, err = c.QueryActions().All(ctx)
 	}
 	return result, err
-}
-
-func (cm *CumulativeMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := cm.Edges.MetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = cm.QueryMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (es *EvaluationStat) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
-	result, err := es.Edges.BuildGraphMetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = es.QueryBuildGraphMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
 }
 
 func (gm *GarbageMetrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, error) {
@@ -385,14 +317,6 @@ func (in *InstanceName) Targets(ctx context.Context) (result []*Target, err erro
 		result, err = in.QueryTargets().All(ctx)
 	}
 	return result, err
-}
-
-func (_if *InvocationFiles) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := _if.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = _if.QueryBazelInvocation().Only(ctx)
-	}
-	return result, MaskNotFound(err)
 }
 
 func (it *InvocationTarget) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
@@ -483,26 +407,10 @@ func (m *Metrics) TargetMetrics(ctx context.Context) (*TargetMetrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) PackageMetrics(ctx context.Context) (*PackageMetrics, error) {
-	result, err := m.Edges.PackageMetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = m.QueryPackageMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (m *Metrics) TimingMetrics(ctx context.Context) (*TimingMetrics, error) {
 	result, err := m.Edges.TimingMetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = m.QueryTimingMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (m *Metrics) CumulativeMetrics(ctx context.Context) (*CumulativeMetrics, error) {
-	result, err := m.Edges.CumulativeMetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = m.QueryCumulativeMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -553,34 +461,6 @@ func (nm *NetworkMetrics) SystemNetworkStats(ctx context.Context) (*SystemNetwor
 		result, err = nm.QuerySystemNetworkStats().Only(ctx)
 	}
 	return result, MaskNotFound(err)
-}
-
-func (plm *PackageLoadMetrics) PackageMetrics(ctx context.Context) (*PackageMetrics, error) {
-	result, err := plm.Edges.PackageMetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = plm.QueryPackageMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (pm *PackageMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := pm.Edges.MetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = pm.QueryMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (pm *PackageMetrics) PackageLoadMetrics(ctx context.Context) (result []*PackageLoadMetrics, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = pm.NamedPackageLoadMetrics(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = pm.Edges.PackageLoadMetricsOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = pm.QueryPackageLoadMetrics().All(ctx)
-	}
-	return result, err
 }
 
 func (rc *RunnerCount) ActionSummary(ctx context.Context) (*ActionSummary, error) {
