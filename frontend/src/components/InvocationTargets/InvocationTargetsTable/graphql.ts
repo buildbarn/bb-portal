@@ -2,7 +2,7 @@ import { gql } from "@/graphql/__generated__";
 
 export const GET_INVOCATION_TARGETS_FOR_INVOCATION = gql(/* GraphQl */ `
   query GetInvocationTargetsForInvocation(
-    $invocationID: String!
+    $invocationID: UUID!
     $after: Cursor
     $first: Int
     $before: Cursor
@@ -10,7 +10,7 @@ export const GET_INVOCATION_TARGETS_FOR_INVOCATION = gql(/* GraphQl */ `
     $orderBy: InvocationTargetOrder
     $where: InvocationTargetWhereInput
   ){
-    bazelInvocation(invocationId: $invocationID) {
+    getBazelInvocation(invocationID: $invocationID) {
       invocationTargets(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where){
         pageInfo {
           startCursor
