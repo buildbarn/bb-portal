@@ -1,20 +1,19 @@
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import { BrowserPageParams } from "@/types/BrowserPageType";
+import { parseBrowserPageSlug } from "@/utils/parseBrowserPageSlug";
 
-export const historicalExecuteResponseUrlFromOperation = (
+export const historicalExecuteResponseDigestFromOperation = (
   operation: OperationState,
-): string | undefined => {
-  if (
-    operation.completed?.message.startsWith("Action details (uncached result):")
-  ) {
-    return operation.completed.message.substring(34);
+): BrowserPageParams | undefined => {
+  if (!operation.completed?.message.startsWith("Action details (uncached result):")) {
+    return undefined
   }
-  return undefined;
-};
+  const url = operation.completed.message.substring(34);
+  const index = url.indexOf("/browser/")
 
-export const historicalExecuteResponseDigestFromUrl = (
-  url: string | undefined,
-): string | undefined => {
-  if (!url) return undefined;
-  const match = url.match(/([a-f0-9]{64})-[0-9]+/);
-  return match ? match[0] : undefined;
+  if (index === -1) {
+    return undefined
+  }
+  const urlSegments = url.substring(index + 9).split("/").filter(segment => segment)
+  return parseBrowserPageSlug(urlSegments)
 };

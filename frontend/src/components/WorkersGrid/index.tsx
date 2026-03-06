@@ -10,22 +10,16 @@ import type {
   SizeClassQueueName,
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import { ListWorkerFilterType } from "@/types/ListWorkerFilterType";
-import PortalAlert from "../PortalAlert";
-import WorkersInfo from "../WorkersInfo";
-import WorkersTable from "../WorkersTable";
+import PortalAlert from "@/components/PortalAlert";
+import WorkersInfo from "@/components/WorkersInfo";
+import WorkersTable from "@/components/WorkersTable";
+import { WorkerListStatus, WorkerSearchParams } from "@/routes/scheduler.worker";
 
 const LIST_WORKERS_PAGE_SIZE = 100;
 
-interface Props {
-  listWorkerFilterType: ListWorkerFilterType;
-  sizeClassQueueName: SizeClassQueueName;
-  paginationCursor?: WorkerState["id"];
-}
-
 const fetchWorkers = async (
   client: BuildQueueStateClient,
-  listWorkerFilterType: ListWorkerFilterType,
+  workerStatusFilter: WorkerListStatus,
   sizeClassQueueName: SizeClassQueueName,
   paginationCursor?: WorkerState["id"],
 ) => {
@@ -38,13 +32,13 @@ const fetchWorkers = async (
     requestBody.startAfter = { workerId: paginationCursor };
   }
 
-  switch (listWorkerFilterType) {
-    case ListWorkerFilterType.ALL:
+  switch (workerStatusFilter) {
+    case WorkerListStatus.ALL:
       requestBody.filter = {
         all: sizeClassQueueName,
       };
       break;
-    case ListWorkerFilterType.EXECUTING:
+    case WorkerListStatus.EXECUTING:
       requestBody.filter = {
         executing: {
           sizeClassQueueName: sizeClassQueueName,
@@ -56,26 +50,26 @@ const fetchWorkers = async (
   return client.listWorkers(requestBody);
 };
 
-const WorkersGrid: React.FC<Props> = ({
-  listWorkerFilterType,
-  sizeClassQueueName,
-  paginationCursor,
+const WorkersGrid: React.FC<WorkerSearchParams> = ({
+  workerStatusFilter, 
+  sizeClassQueueName, 
+  cursor
 }) => {
   const { buildQueueStateClient } = useGrpcClients();
 
   const { data, isError, isLoading, error } = useQuery<ListWorkersResponse>({
     queryKey: [
       "listWorkers",
-      listWorkerFilterType,
+      workerStatusFilter,
       sizeClassQueueName,
-      paginationCursor,
+      cursor,
     ],
     queryFn: () =>
       fetchWorkers(
         buildQueueStateClient,
-        listWorkerFilterType,
+        workerStatusFilter,
         sizeClassQueueName,
-        paginationCursor,
+        cursor,
       ),
     placeholderData: (previousData, _) => previousData,
   });
@@ -101,7 +95,7 @@ const WorkersGrid: React.FC<Props> = ({
       </Row>
       <Row>
         <WorkersTable
-          listWorkerFilterType={listWorkerFilterType}
+          workerStatusFilter={workerStatusFilter}
           data={data?.workers.map((value: WorkerState) => {
             // Size class queue is not included in
             // workerState, so we set it manually.

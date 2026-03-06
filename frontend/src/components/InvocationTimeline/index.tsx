@@ -20,6 +20,7 @@ import CommandLinePreview from "../CommandLinePreview";
 import PortalAlert from "../PortalAlert";
 import type { InvocationInfo, TickProps } from "./types";
 import { getInvocationResultTagColor } from "./utils";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Props {
   invocations: GetBuildInvocationFragment[];
@@ -29,6 +30,7 @@ const BAR_HEIGHT = 20;
 const CHART_PADDING = 40;
 
 const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
+  const navigate = useNavigate()
   const { token } = theme.useToken();
 
   const invocationsInfo: InvocationInfo[] = useMemo(
@@ -106,10 +108,12 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
         layout="vertical"
         data={invocationsInfo}
         onClick={(state) => {
-          if (state.activePayload !== undefined)
-            return window.open(
-              `/bazel-invocations/${state.activePayload?.at(0).payload.invocationId}`,
-            );
+          if (state.activeLabel !== undefined) {
+            navigate({
+              to: "/bazel-invocations/$invocationID",
+              params: { invocationID: `${state.activeLabel}` }
+            })
+          }
         }}
       >
         <XAxis

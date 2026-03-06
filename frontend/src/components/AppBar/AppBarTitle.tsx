@@ -1,13 +1,12 @@
-"use client";
 import { Typography } from "antd";
-import { env } from "next-runtime-env";
-import Link from "next/link";
+import { env } from "@/utils/env";
+import { Link } from '@tanstack/react-router';
 
 const AppBarTitle = () => {
   return (
-    <Link href="/">
+    <Link to="/">
       <Typography.Title level={3}>
-        {env("NEXT_PUBLIC_COMPANY_NAME")} Buildbarn Portal
+        {`${env.companyName ? `${env.companyName} ` : ''}Buildbarn Portal`}
       </Typography.Title>
     </Link>
   );

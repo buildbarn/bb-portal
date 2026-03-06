@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
-import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { RequestMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
@@ -8,30 +7,25 @@ import themeStyles from "@/theme/theme.module.css";
 import OperationsInvocationFilter from "../OperationsInvocationFilter";
 import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
+import { OperationsFilterParams } from "@/routes/operations.index";
 
 const PAGE_SIZE = 1000;
 
-const OperationsTable: React.FC = () => {
-  const { buildQueueStateClient } = useGrpcClients();
-  const searchParams = useSearchParams();
-  const filterInvocationId = searchParams.get("filter_invocation_id");
+interface Props {
+  filter: OperationsFilterParams;
+}
 
-  const getSerializedFilterInvocationId = (searchParam: string | null) => {
-    if (searchParam) {
-      const parsedSearchParam = JSON.parse(decodeURIComponent(searchParam));
-      return {
-        typeUrl: parsedSearchParam["@type"],
-        value: RequestMetadata.encode(parsedSearchParam).finish(),
-      };
-    }
-    return undefined;
-  };
+const OperationsTable: React.FC<Props> = ({ filter }) => {
+  const { buildQueueStateClient } = useGrpcClients();
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["operationsTable", filterInvocationId],
+    queryKey: ["operationsTable", filter],
     queryFn: buildQueueStateClient.listOperations.bind(window, {
       pageSize: PAGE_SIZE,
-      filterInvocationId: getSerializedFilterInvocationId(filterInvocationId),
+      filterInvocationId: filter ?{
+        typeUrl: filter?.["@type"],
+        value: RequestMetadata.encode(filter as any).finish(),
+      }: undefined
     }),
     staleTime: Number.POSITIVE_INFINITY,
     refetchOnMount: "always",
@@ -53,7 +47,7 @@ const OperationsTable: React.FC = () => {
 
   return (
     <>
-      <OperationsInvocationFilter filterInvocationId={filterInvocationId} />
+      <OperationsInvocationFilter filter={filter} />
       <Table
         loading={isLoading}
         dataSource={data?.operations}

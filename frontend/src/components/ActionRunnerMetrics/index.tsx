@@ -28,8 +28,7 @@ const ActionRunnerMetrics: React.FC<Props> = ({ runnerMetrics }) => {
       value: item.name ?? "",
       count: item.actionsExecuted ?? 0,
       percent: nullPercent(item.actionsExecuted, totalCount, 0),
-      color: colorSwitchOnExecStrat(item.execKind ?? ""),
-      type: "square",
+      fill: colorSwitchOnExecStrat(item.execKind ?? ""),
     };
     if (chartItem.value !== "total") {
       chartItems.push(chartItem);

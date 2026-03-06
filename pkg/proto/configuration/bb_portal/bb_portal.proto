@@ -4,6 +4,7 @@ package buildbarn.configuration.bb_portal;
 
 import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
+import "github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth/auth.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobstore.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto";
@@ -189,6 +190,28 @@ message SchedulerService {
   uint32 listOperationsPageSize = 3;
 }
 
+message FrontendService {
+  message FrontendSource {
+    oneof source {
+      // Serve the frontend that is embedded in the Go binary. This is the
+      // recommended setup in production.
+      google.protobuf.Empty embedded = 1;
+
+      // Serve a proxied frontend from the specified URL. This is useful for
+      // development purposes, since then you can do hot reloading of the UI.
+      string proxy = 2;
+    }
+  }
+
+  // Controls where the frontend should be served from.
+  FrontendSource frontend_source = 1;
+
+  // Configuration for the frontend. This configuration is injected into the
+  // frontend when it is served by the backend.
+  buildbarn.configuration.frontend.PortalFrontendConfiguration frontend_config =
+      2;
+}
+
 message ApplicationConfiguration {
   // Configuration for the main HTTP server for the application. All HTTP
   // traffic is routed through this server, including gRPC-Web traffic from the
@@ -212,14 +235,12 @@ message ApplicationConfiguration {
   buildbarn.configuration.auth.AuthorizerConfiguration
       instance_name_authorizer = 7;
 
-  // URL to proxy frontend reqeusts to. If this is not set or it is an empty
-  // string, the frontend proxy will not be started.
-  string frontend_proxy_url = 8;
+  // Was 'frontend_proxy_url'. Replaced by 'frontend_service_configuration'.
+  reserved 8;
 
-  // Origins that are allowed to make requests to the backend. If this is not
-  // configured correctly, it will cause CORS errors in the browser. If the
-  // frontend will exclusively be accessed from the same origin as
-  // the backend, this should be ignored.
-  // Set to "*" to allow all origins.
-  repeated string allowed_origins = 9;
+  // Was 'allowed_origins'. Not needed now that the frontend is required to be
+  // served by the backend.
+  reserved 9;
+
+  FrontendService frontend_service_configuration = 10;
 }

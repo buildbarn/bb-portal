@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client";
-import Link from "next/link";
+import { useQuery } from "@apollo/client/react";
+import { Link } from '@tanstack/react-router';
 import { CHECK_IF_INVOCATION_EXISTS } from "./graphql";
 
 interface Props {
@@ -16,7 +16,10 @@ const ConditionalToolInvocationLink: React.FC<Props> = ({
 
   if (data?.getBazelInvocation !== undefined)
     return (
-      <Link href={`/bazel-invocations/${toolInvocationID}`}>
+      <Link
+        to={`/bazel-invocations/$invocationID`}
+        params={{ invocationID: toolInvocationID }}
+      >
         {toolInvocationID}
       </Link>
     );

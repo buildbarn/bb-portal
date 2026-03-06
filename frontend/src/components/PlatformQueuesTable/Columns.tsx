@@ -1,30 +1,11 @@
-import type { SizeClassQueueName } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import { ListWorkerFilterType } from "@/types/ListWorkerFilterType";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import PropertyTagList from "../PropertyTagList";
 import type { PlatformQueueTableState } from "./types";
+import { WorkerListStatus } from "@/routes/scheduler.worker";
 
-const getWorkerPageUrlObject = (
-  record: PlatformQueueTableState,
-  listWorkerFilterType: ListWorkerFilterType,
-) => {
-  const sizeClassQueueName: SizeClassQueueName = {
-    platformQueueName: record.name,
-    sizeClass: record.sizeClassQueues[0].sizeClass,
-  };
-
-  return {
-    pathname: "/scheduler/workers",
-    query: {
-      listWorkerFilterType: listWorkerFilterType,
-      sizeClassQueueName: JSON.stringify(sizeClassQueueName),
-    },
-  };
-};
-
-const cellMergingLogic = (value: PlatformQueueTableState, index?: number) => {
+const cellMergingLogic = (value: PlatformQueueTableState) => {
   if (value.isFirstSizeClass) {
     return { rowSpan: value.numberOfSizeClasses };
   }
@@ -74,16 +55,30 @@ const executingWorkersColumn: ColumnType<PlatformQueueTableState> = {
   key: "executingWorkers",
   title: "Executing",
   render: (_, record) => {
-    let allWorkers = record.sizeClassQueues[0].workersCount;
+    const sizeClassInfo = record.sizeClassQueues[0];
+    let allWorkers = sizeClassInfo.workersCount;
     if (allWorkers === 0) {
       allWorkers = 100;
     }
     const executingWorkers =
-      record.sizeClassQueues[0].rootInvocation?.executingWorkersCount || 0;
+      sizeClassInfo.rootInvocation?.executingWorkersCount || 0;
     const percentage = ((executingWorkers / allWorkers) * 100).toFixed(2);
     return (
       <Link
-        href={getWorkerPageUrlObject(record, ListWorkerFilterType.EXECUTING)}
+        to="/scheduler/worker"
+        search={{
+          workerStatusFilter: WorkerListStatus.EXECUTING,
+          sizeClassQueueName: {
+            platformQueueName: {
+              instanceNamePrefix: record.name?.instanceNamePrefix || '',
+              platform: {
+                properties: record.name?.platform?.properties || []
+              },
+            },
+            sizeClass: record.sizeClassQueues[0]?.sizeClass,
+          },
+          cursor: undefined
+        }}
       >
         {executingWorkers} ({percentage}%)
       </Link>
@@ -105,7 +100,21 @@ const allWorkersColumn: ColumnType<PlatformQueueTableState> = {
   key: "allWorkers",
   title: "All workers",
   render: (_, record) => (
-    <Link href={getWorkerPageUrlObject(record, ListWorkerFilterType.ALL)}>
+    <Link
+      to="/scheduler/worker"
+      search={{
+        workerStatusFilter: WorkerListStatus.ALL,
+        sizeClassQueueName: {
+          platformQueueName: {
+            instanceNamePrefix: record.name?.instanceNamePrefix || '',
+            platform: {
+              properties: record.name?.platform?.properties || []
+            },
+          },
+          sizeClass: record.sizeClassQueues[0]?.sizeClass,
+        },
+        cursor: undefined
+      }}>
       {record.sizeClassQueues[0].workersCount}
     </Link>
   ),

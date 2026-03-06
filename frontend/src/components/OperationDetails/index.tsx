@@ -1,7 +1,7 @@
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Space, Spin } from "antd";
-import { env } from "next-runtime-env";
+import { env } from "@/utils/env";
 import { Code } from "@/lib/grpc-client/google/rpc/code";
 import ExecuteResponseDisplay from "../ExecutionResponseDisplay";
 import OperationStateDisplay from "../OperationStateDisplay";
@@ -48,7 +48,7 @@ const OperationDetails: React.FC<Props> = ({ operationID }) => {
     queryKey: ["killOperationsButtonState", operationID],
     queryFn: async (): Promise<boolean> => {
       const response = await fetch(
-        `${env("NEXT_PUBLIC_BES_BACKEND_URL") || ""}/api/v1/checkPermissions/killOperation/${operationID}`,
+        `/api/v1/checkPermissions/killOperation/${operationID}`,
       );
       return (await response.json()).allowed;
     },

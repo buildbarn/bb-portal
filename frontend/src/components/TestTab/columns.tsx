@@ -8,11 +8,10 @@ import {
   TestSummaryOrderField,
 } from "@/graphql/__generated__/graphql";
 import { readableDurationFromMilliseconds } from "@/utils/time";
-import { generateLinkToTargetsPage } from "@/utils/urlGenerator";
 import styles from "../../theme/theme.module.css";
-import Link from "../Link";
 import NullBooleanTag from "../NullableBooleanTag";
 import TestStatusTag, { type TestStatusEnum } from "../TestStatusTag";
+import { Link } from "@tanstack/react-router";
 
 export type TestTabRowType = NonNullable<
   NonNullable<
@@ -85,12 +84,8 @@ export const columns: TableColumnsType<TestTabRowType> = [
     dataIndex: "label",
     render: (_, record) => (
       <Link
-        href={generateLinkToTargetsPage(
-          record.invocationTarget.target.instanceName.name,
-          record.invocationTarget.target.label,
-          record.invocationTarget.target.aspect,
-          record.invocationTarget.target.targetKind,
-        )}
+        to="/targets/$targetID/tests"
+        params={{targetID: record.invocationTarget.target.id}}
       >
         {record.invocationTarget.target.label}
       </Link>

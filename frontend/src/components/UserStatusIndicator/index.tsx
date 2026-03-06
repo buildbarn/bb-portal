@@ -1,6 +1,6 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Tooltip, theme } from "antd";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import type { BazelInvocationNodeFragment } from "@/graphql/__generated__/graphql";
 
 const { useToken } = theme;
@@ -18,7 +18,7 @@ const UserStatusIndicator: React.FC<Props> = ({ authenticatedUser, user }) => {
           <UserOutlined style={{ color: token.colorText }} />
         </Tooltip>{" "}
         <span style={{ color: token.colorLink }}>
-          <Link href={`/user/${authenticatedUser.userUUID}`}>
+          <Link to="/users/$userUUID" params={{userUUID: authenticatedUser.userUUID}}>
             {authenticatedUser?.displayName !== "" ? (
               authenticatedUser?.displayName
             ) : (

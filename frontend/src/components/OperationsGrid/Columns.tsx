@@ -1,62 +1,77 @@
-import CodeLink from "@/components/CodeLink";
+import { CodeLink } from "@/components/CodeLink";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { readableDurationFromDates } from "@/utils/time";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
 import {
-  historicalExecuteResponseDigestFromUrl,
-  historicalExecuteResponseUrlFromOperation,
+  historicalExecuteResponseDigestFromOperation,
 } from "../OperationStateDisplay/utils";
 import OperationStatusTag from "../OperationStatusTag";
-import { operationsStateToActionPageUrl } from "./utils";
+import { operationsStateToBrowserSplat } from "./utils";
+import { generateBrowserSplat } from "@/utils/urlGenerator";
+import { BrowserPageType } from "@/types/BrowserPageType";
 
 const operationNameColumn: ColumnType<OperationState> = {
+  key: "name",
   title: "Operation name",
-  dataIndex: "name",
-  render: (value: string) => (
-    <CodeLink url={`/operations/${value}`} text={value} abbreviate />
+  render: (_, record) => (
+    <CodeLink
+      text={record.name}
+      link={{
+        to: "/operations/$operationID",
+        params: { operationID: record.name },
+      }}
+    />
   ),
 };
 
 const timeoutColumn: ColumnType<OperationState> = {
+  key: "timeout",
   title: "Timeout",
-  dataIndex: "timeout",
-  render: (value: Date | undefined) => (
+  render: (_, record) => (
     <Typography.Text>
-      {value
-        ? readableDurationFromDates(new Date(), value, {
-            precision: 1,
-            smallestUnit: "s",
-          })
+      {record.timeout
+        ? readableDurationFromDates(new Date(), record.timeout, {
+          precision: 1,
+          smallestUnit: "s",
+        })
         : "∞"}
     </Typography.Text>
   ),
 };
 
 const actionDigestColumn: ColumnType<OperationState> = {
-  title: "Action digest / Historical execute response digest",
   key: "actionDigest",
-  render: (record: OperationState) => {
-    const historical_execute_response_url =
-      historicalExecuteResponseUrlFromOperation(record);
-    const historical_execute_response_digest =
-      historicalExecuteResponseDigestFromUrl(historical_execute_response_url);
+  title: "Action digest / Historical execute response digest",
+  render: (_, record: OperationState) => {
+    const historicalExecuteResponseBrowserPageParams =
+      historicalExecuteResponseDigestFromOperation(record);
 
-    if (historical_execute_response_digest && historical_execute_response_url) {
+    if (historicalExecuteResponseBrowserPageParams) {
       return (
         <CodeLink
-          text={historical_execute_response_digest}
-          url={historical_execute_response_url}
-          abbreviate
+          text={historicalExecuteResponseBrowserPageParams.digest.hash}
+          link={{
+            to: "/browser/$",
+            params: {
+              _splat:
+                generateBrowserSplat(historicalExecuteResponseBrowserPageParams.instanceName,
+                  historicalExecuteResponseBrowserPageParams.digestFunction,
+                  historicalExecuteResponseBrowserPageParams.digest,
+                  BrowserPageType.HistoricalExecuteResponse),
+            }
+          }}
         />
       );
     }
 
     return (
       <CodeLink
-        text={`${record.actionDigest?.hash}`}
-        url={`${operationsStateToActionPageUrl(record)}`}
-        abbreviate
+        text={`${record.actionDigest?.hash}-${record.actionDigest?.sizeBytes}`}
+        link={{
+          to: "/browser/$",
+          params: { _splat: operationsStateToBrowserSplat(record) }
+        }}
       />
     );
   },

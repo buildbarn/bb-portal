@@ -134,7 +134,6 @@ use_repo(
     "com_github_pkg_errors",
     "com_github_prometheus_client_golang",
     "com_github_roaringbitmap_roaring",
-    "com_github_rs_cors",
     "com_github_sqlc_dev_pqtype",
     "com_github_stretchr_testify",
     "com_github_uptrace_opentelemetry_go_extra_otelsql",

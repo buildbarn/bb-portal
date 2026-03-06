@@ -40,7 +40,6 @@ require (
 	github.com/machinebox/graphql v0.2.2
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.23.2
-	github.com/rs/cors v1.11.1
 	github.com/sqlc-dev/pqtype v0.3.0
 	github.com/stretchr/testify v1.11.1
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.3.2
@@ -58,7 +57,10 @@ require (
 	mvdan.cc/gofumpt v0.9.2
 )
 
-require github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0 // indirect
+require (
+	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0 // indirect
+	github.com/rs/cors v1.11.1 // indirect
+)
 
 require (
 	ariga.io/atlas v0.32.0 // indirect

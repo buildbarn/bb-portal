@@ -1,82 +1,68 @@
 # Buildbarn Portal
 
-Buildbarn Portal is a web service written in React and Go that can display Bazel build output in browsable, digestible fashion.
-The service consumes [Build Event Protocol](https://bazel.build/remote/bep) (BEP) data, from local files or as streamed via the [Build Event Service](https://bazel.build/remote/bep#build-event-service) protocol.
+Buildbarn Portal is a web service written in React and Go that can display and
+visualize Bazel builds and Buildbarn cluster information.
 
-Buildbarn Portal groups Bazel invocations into builds based on the observed setting of the `BUILD_URL` environment variable.
-If this environment variable is set during an invocation, the invocation will be attributed to a build as identified by the URL.
-Buildbarn Portal displays analyzed build output either for individual Bazel invocations, or for builds comprising multiple Bazel invocations.
-The grouping of Bazel invocations by build is a differentiating feature of the Buildbarn Portal.
+The service consumes [Build Event Protocol](https://bazel.build/remote/bep)
+(BEP) data, from local files or as streamed via the
+[Build Event Service](https://bazel.build/remote/bep#build-event-service)
+protocol, and displays the build results in a web interface.
 
-Buildbarn Portal uses a local file-backed database to persist its data so users can continue referencing analyzed results beyond initial viewing.
-The service offers basic functionality for browsing and searching among these persisted Bazel invocation results.
+Buildbarn Portal can display data from the Buildbarn Build Queue State API,
+which is used to list, among other things, available workers and current
+operations. It is aimed to be a replacement for the web interface of
+bb-scheduler.
+
+It can also display and visualize data from the Buildbarn CAS and Action Cache,
+similarly to bb-browser, which it is aimed at replacing.
 
 ## Configuration
 
-The backend is configured via a jsonnet configuration file. Look at `config/portal.jsonnet` for an example configuration
-file, and `pkg/proto/configuration/bb_portal/bb_portal.proto` for the configuration schema.
+Both the backend and the frontend is configured via a jsonnet configuration
+file. Look at `config/portal.jsonnet` for an example configuration file, and
+`pkg/proto/configuration/bb_portal/bb_portal.proto` and
+`pkg/proto/configuration/frontend/frontend.proto` for the configuration schema.
 
-The frontend is configured via environment variables. The following environment variables can be used:
+## Frontend
 
-| Variable | Default value | Description |
-|----------|---------------|-------------|
-| `NEXT_PUBLIC_BES_BACKEND_URL` | `http://localhost:8081` | The URL that the frontend uses to connect to the backend. |
-| `NEXT_PUBLIC_BES_GRPC_BACKEND_URL` | `grpc://localhost:8082` | The gRPC URL where the backend listens for the BES. |
-| `NEXT_PUBLIC_COMPANY_NAME` | `Example Co` | Used to display the company name in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BEP_UPLOAD` | `true` | Enables the upload of BEP files via the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BES` | `true` | Enables the BES features in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_BUILDS` | `true` | Enables the Builds pages in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_INVOCATIONS` | `true` | Enables the Invocations pages in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TARGETS` | `true` | Enables the Targets pages in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TESTS` | `true` | Enables the Tests pages in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TRENDS` | `true` | Enables the Trends pages in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_BROWSER` | `true` | Enables the Browser pages in the UI. |
-| `NEXT_PUBLIC_ENABLED_FEATURES_SCHEDULER` | `true` | Enables the Scheduler pages in the UI. |
-| `NEXT_PUBLIC_FOOTER_CONTENT_JSON` | `[{"text": "Buildteam", "href": "https://buildteamworld.slack.com/archives/CD6HZC750", "icon": "slack"}]` | JSON array of links to display in the footer. Each link should have `text`, `href`, and `icon` properties. The `icon` can be a URL or one of `slack`, `github` and `discord`. |
+The frontend is configured in the same Jsonnet file as the backend by using the
+field `frontendServiceConfiguration.frontendConfig`. The frontend configuration
+type is defined in `pkg/proto/configuration/frontend/frontend.proto`.
 
-## Setting Up Buildbarn Portal
+The Go backend serves the frontend, either as a proxy to the Vite development
+server, or by embedding the production build of the frontend into the Go
+binary. The frontend must be served by the backend as it is the backend that
+injects the configuration into the frontend.
 
-From `./frontend`, run:
+During development it is recommended to run the backend and frontend
+separately. Setup and run the frontend with
 
 ```
 npm install
-```
-
-## Running the Application
-
-### Running the Backend
-
-From repository root, run:
-
-```
-bazel run //cmd/bb_portal -- $PWD/config/portal.jsonnet
-```
-
-The backend runs a reverse proxy for the frontend.
-
-### Running the Frontend
-
-From `./frontend`, run:
-
-```
 npm run dev
 ```
 
-### Change where the backend listens
+## Backend
 
-You can run the backend on different bind addresses, but you'll need to update
-the frontend too. Modify the backend ports in the config file, and run the frontend:
+The backend can be started with
+```
+bazel run //cmd/bb_portal -- $PWD/config/portal.jsonnet
+```
+In development it is recommended to proxy frontend requests to the Vite
+development server by using the config
+```
+frontendServiceConfiguration.frontendSource.proxy: 'http://localhost:5173'
+```
+and starting the backend with
+```
+bazel run //cmd/bb_portal --//pkg/frontend:embed_frontend=False -- $PWD/config/portal.jsonnet
+```
+to avoid having the rebuild the frontend every time you start the backend.
 
-```
-NEXT_PUBLIC_BES_BACKEND_URL=http://localhost:9091 NEXT_PUBLIC_BES_GRPC_BACKEND_URL=grpc://localhost:9092 npm run dev
-```
 
 ## Using the Application
 
-Go to <http://localhost:3000> or <http://localhost:8081> (which goes through a reverse proxy in the go backend).
-
-> **_NOTE:_** Should the frontend be served on a different url, remember to
-> update `frontendProxyUrl` and/or `allowedOrigins` in the configuration.
+Go to <http://localhost:8081>.
 
 The home page of the application will appear as follows:
 

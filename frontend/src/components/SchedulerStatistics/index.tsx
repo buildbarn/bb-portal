@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton, Space, Statistic } from "antd";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import PortalAlert from "../PortalAlert";
@@ -40,7 +40,7 @@ export const SchedulerStatistics: React.FC = () => {
     <Statistic
       title="Total number of operations"
       value={data.paginationInfo?.totalEntries}
-      valueRender={(value) => <Link href="/operations">{value}</Link>}
+      valueRender={(value) => <Link to="/operations">{value}</Link>}
     />
   );
 };

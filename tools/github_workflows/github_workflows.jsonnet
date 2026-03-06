@@ -120,7 +120,7 @@ local lint_steps = [
   },
 
   "publish-docker.yaml": {
-    name: "Build and publish docker images",
+    name: "Build and publish docker image",
     on: {
       push: { branches: ["main"] },
       workflow_dispatch: null,
@@ -128,7 +128,7 @@ local lint_steps = [
     permissions: { contents: "read", "packages": "write" },
     jobs: {
       publish_backend: {
-        name: "Publish Backend (Bazel)",
+        name: "Build and publish docker image",
         "runs-on": "ubuntu-24.04-arm",
         steps: [
           checkout_step,
@@ -137,69 +137,6 @@ local lint_steps = [
           {
             name: "Build and push backend",
             run: "bazel run --stamp //cmd/bb_portal:bb_portal_container_push"
-          },
-        ],
-      },
-      publish_frontend_images: {
-        name: "Build Frontend (${{ matrix.arch }})",
-        "runs-on": "${{ matrix.runner }}",
-        strategy: {
-          matrix: {
-            include: [
-              { arch: "arm64", runner: "ubuntu-24.04-arm" },
-              { arch: "amd64", runner: "ubuntu-24.04" },
-            ],
-          },
-        },
-        steps: [
-          checkout_step,
-          docker_credentials_step,
-          {
-            name: "Set tag variables",
-            run: |||
-              echo "TIMESTAMP=$(TZ=UTC date --date "@$(git show -s --format=%ct HEAD)" +%Y%m%dT%H%M%SZ)" >> $GITHUB_ENV
-              echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-            |||
-          },
-          {
-            name: "Build and push variant",
-            uses: "docker/build-push-action@v4",
-            with: {
-              context: "frontend",
-              file: "./frontend/Dockerfile",
-              push: true,
-              tags: "ghcr.io/buildbarn/bb-portal-frontend:${{ env.TIMESTAMP }}-${{ env.SHA_SHORT }}-${{ matrix.arch }}",
-            },
-          },
-        ],
-      },
-
-      publish_frontend_manifest: {
-        name: "Merge Frontend Manifest",
-        needs: ["publish_frontend_images"],
-        "runs-on": "ubuntu-24.04-arm",
-        steps: [
-          checkout_step,
-          docker_credentials_step,
-          {
-            name: "Set tag variables",
-            run: |||
-              echo "TIMESTAMP=$(TZ=UTC date --date "@$(git show -s --format=%ct HEAD)" +%Y%m%dT%H%M%SZ)" >> $GITHUB_ENV
-              echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-            |||
-          },
-          {
-            name: "Create and Push Manifest",
-            run: |||
-              # Base image name
-              IMAGE="ghcr.io/buildbarn/bb-portal-frontend"
-              TAG="${{ env.TIMESTAMP }}-${{ env.SHA_SHORT }}"
-
-              # Create a manifest list (a "virtual" image) that points to both arch-specific images
-              docker buildx imagetools create -t ${IMAGE}:${TAG} \
-                ${IMAGE}:${TAG}-amd64 \
-                ${IMAGE}:${TAG}-arm64
-            |||
           },
         ],
       },
@@ -219,15 +156,36 @@ local lint_steps = [
         steps: [
           checkout_step,
           {
-            name: "Build docker image",
-            uses: "docker/build-push-action@v4",
+            name: "Setup Node.js",
+            uses: "actions/setup-node@v4",
             with: {
-              context: "frontend/",
-              file: "./frontend/Dockerfile",
-              push: false,
-              tags: "ghcr.io/buildbarn/bb-portal-frontend",
+              "node-version-file": "frontend/.nvmrc",
             },
           },
+          {
+            name: "Install dependencies",
+            run: "npm ci",
+            "working-directory": "frontend",
+          },
+          {
+            name: "Generate frontend files",
+            run: "npm run generate",
+            "working-directory": "frontend",
+          },
+          {
+            name: "Check if any generated files changed",
+            run: "git add . && git diff --exit-code HEAD --"
+          },
+          {
+            name: "Test",
+            run: "npm run test",
+            "working-directory": "frontend",
+          },
+          {
+            name: "Build",
+            run: "npm run build",
+            "working-directory": "frontend",
+          }
         ],
       },
     },

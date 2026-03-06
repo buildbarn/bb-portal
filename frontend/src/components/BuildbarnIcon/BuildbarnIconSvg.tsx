@@ -17,44 +17,44 @@ const BuildbarnIconSvg: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
         height="60"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        pointer-events="all"
+        strokeWidth="20"
+        pointerEvents="all"
       />
       <path
-        stroke-linecap="round"
+        strokeLinecap="round"
         d="M 10 250 L 50 90 L 210 11 L 370 90 L 410 250"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        stroke-miterlimit="10"
-        pointer-events="stroke"
+        strokeWidth="20"
+        strokeMiterlimit="10"
+        pointerEvents="stroke"
       />
       <path
-        stroke-linecap="round"
+        strokeLinecap="round"
         d="M 70 410 L 70 210"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        stroke-miterlimit="10"
-        pointer-events="stroke"
+        strokeWidth="20"
+        strokeMiterlimit="10"
+        pointerEvents="stroke"
       />
       <path
-        stroke-linecap="round"
+        strokeLinecap="round"
         d="M 350 410 L 350 210"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        stroke-miterlimit="10"
-        pointer-events="stroke"
+        strokeWidth="20"
+        strokeMiterlimit="10"
+        pointerEvents="stroke"
       />
       <path
-        stroke-linecap="round"
+        strokeLinecap="round"
         d="M 10 410 L 410 410"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        stroke-miterlimit="10"
-        pointer-events="stroke"
+        strokeWidth="20"
+        strokeMiterlimit="10"
+        pointerEvents="stroke"
       />
       <rect
         x="140"
@@ -63,26 +63,26 @@ const BuildbarnIconSvg: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
         height="140"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        pointer-events="all"
+        strokeWidth="20"
+        pointerEvents="all"
       />
       <path
-        stroke-linecap="round"
+        strokeLinecap="round"
         d="M 140 410 L 280 270"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        stroke-miterlimit="10"
-        pointer-events="stroke"
+        strokeWidth="20"
+        strokeMiterlimit="10"
+        pointerEvents="stroke"
       />
       <path
-        stroke-linecap="round"
+        strokeLinecap="round"
         d="M 140 270 L 280 410"
         fill="none"
         stroke={props.stroke || "rgb(0, 0, 0)"}
-        stroke-width="20"
-        stroke-miterlimit="10"
-        pointer-events="stroke"
+        strokeWidth="20"
+        strokeMiterlimit="10"
+        pointerEvents="stroke"
       />
     </g>
   </svg>

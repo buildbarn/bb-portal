@@ -1,18 +1,16 @@
-'use client';
 
 import React, { Key } from 'react';
 import { FloatButton, Layout, MenuProps } from 'antd';
 import { ItemType } from 'antd/es/menu/interface';
 import styles from '@/components/Content/index.module.css';
 import SiderBar from '@/components/SiderBar';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import FooterBar from '@/components/FooterBar';
 import useScreenSize from '@/utils/screen';
 
 export const SIDER_BAR_MINIMUM_SCREEN_WIDTH = 932;
 
 interface Props {
-  breadcrumbSegmentTitles?: string[];
   sidebarMenuKey?: Key;
   sidebarMenuItems?: ItemType[];
   sidebarMenuDefaultSelectedKeys?: Key[];
@@ -24,7 +22,6 @@ interface Props {
 }
 
 const Content: React.FC<Props> = ({
-  breadcrumbSegmentTitles,
   sidebarMenuKey,
   sidebarMenuItems,
   sidebarMenuDefaultSelectedKeys,
@@ -52,7 +49,7 @@ const Content: React.FC<Props> = ({
       ) : null}
       <Layout className={showSiderBar ? styles.contentWithSiderBar : undefined}>
         <div className={styles.container}>
-          <Breadcrumbs segmentTitles={breadcrumbSegmentTitles} />
+          <Breadcrumbs />
           <Layout.Content className={styles.content}>{content}</Layout.Content>
           <div className={styles.footer}>
             <FooterBar />

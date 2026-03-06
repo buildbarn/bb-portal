@@ -2,9 +2,8 @@ import React from 'react';
 import { Alert, Typography } from 'antd';
 import { AlertProps } from 'antd/lib/alert';
 import styles from './index.module.css';
-import IntrinsicAttributes = JSX.IntrinsicAttributes;
 
-type Props = IntrinsicAttributes & AlertProps;
+type Props = AlertProps;
 
 const PortalAlert: React.FC<Props> = ({ className, message, ...props }) => {
     return (

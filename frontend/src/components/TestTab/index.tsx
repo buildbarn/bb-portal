@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import type { FilterValue, SorterResult } from "antd/es/table/interface";
 import React, { useMemo } from "react";
 import {

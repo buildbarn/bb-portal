@@ -4,7 +4,7 @@ import {
 } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Tooltip } from "antd";
-import { env } from "next-runtime-env";
+import { env } from "@/utils/env";
 import DownloadButton from "@/components/DownloadButton";
 import PortalCard from "@/components/PortalCard";
 import LogViewer from "../LogViewer";
@@ -19,7 +19,7 @@ const fetchLog = async (id: string, start = 0, end = -1): Promise<string> => {
     start_line: start.toString(),
     end_line: end.toString(),
   });
-  const uri = `${env("NEXT_PUBLIC_BES_BACKEND_URL")}/api/v1/invocations/${id}/log?${params}`;
+  const uri = `/api/v1/invocations/${id}/log?${params}`;
   const response = await fetch(uri);
   if (!response.ok) throw new Error("Failed to fetch logs");
   return response.text();
@@ -32,7 +32,7 @@ const BuildLogsDisplay: React.FC<Props> = ({ invocationId, rawCommand }) => {
     queryFn: () => fetchLog(invocationId),
   });
 
-  const logDownloadUrl = `${env("NEXT_PUBLIC_BES_BACKEND_URL")}/api/v1/invocations/${invocationId}/log`;
+  const logDownloadUrl = `/api/v1/invocations/${invocationId}/log`;
 
   return (
     <PortalCard

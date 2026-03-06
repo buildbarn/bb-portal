@@ -1,4 +1,3 @@
-'use client';
 
 import React from 'react';
 import { BulbOutlined, GithubOutlined } from '@ant-design/icons';

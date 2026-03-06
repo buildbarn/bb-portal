@@ -5,7 +5,6 @@ import {
   PATH_HASH_BASE_HASH,
   PathHashes,
   containsPathHashes,
-  generateFileSystemReferenceQueryParams,
   readBloomFilter,
 } from "./bloomFilter";
 
@@ -66,27 +65,12 @@ test("containsPathHashes", () => {
   ).toBe(false);
 });
 
-test("generateFileSystemReferenceQueryParams", () => {
-  expect(generateFileSystemReferenceQueryParams(undefined)).toBeUndefined();
-
-  expect(
-    generateFileSystemReferenceQueryParams({
-      digest: Digest.create({
-        hash: "01234",
-        sizeBytes: "999",
-      }),
-      pathHashesBaseHash: "56789",
-    }),
-  ).toEqual({
-    fileSystemAccessProfile:
-      '{"digest":{"hash":"01234","sizeBytes":"999"},"pathHashesBaseHash":"56789"}',
-  });
-});
-
 test("PathHashes", () => {
   expect(new PathHashes().baseHash).toEqual(BigInt(PATH_HASH_BASE_HASH));
 
   expect(new PathHashes(BigInt("123456789")).baseHash).toEqual(
     BigInt("123456789"),
   );
+
+  expect(new PathHashes(BigInt("123456789")).toString()).toEqual("123456789");
 });

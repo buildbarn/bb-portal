@@ -18,7 +18,7 @@ import {
   type ByteStreamClient,
   ByteStreamDefinition,
 } from "@/lib/grpc-client/google/bytestream/bytestream";
-import { env } from "next-runtime-env";
+import { env } from "@/utils/env";
 import { createChannel, createClient } from "nice-grpc-web";
 import type { ReactNode } from "react";
 import { GrpcClientsContext } from "./GrpcClientsContext";
@@ -29,7 +29,7 @@ export interface GrpcClientsProviderProps {
 
 const GrpcClientsProvider = ({ children }: GrpcClientsProviderProps) => {
   const grpcChannel = createChannel(
-    `${env("NEXT_PUBLIC_BES_BACKEND_URL") || ""}/api/v1/grpcweb`,
+    "/api/v1/grpcweb",
   );
 
   const buildQueueStateClient: BuildQueueStateClient = createClient(

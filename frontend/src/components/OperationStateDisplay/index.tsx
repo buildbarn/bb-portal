@@ -1,4 +1,4 @@
-import CodeLink from "@/components/CodeLink";
+import { CodeLink } from "@/components/CodeLink";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import themeStyles from "@/theme/theme.module.css";
 import { protobufToObjectWithTypeField } from "@/utils/protobufToObject";
@@ -8,14 +8,15 @@ import {
 } from "@/utils/time";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { Descriptions, Space, Tag } from "antd";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import OperationStatusTag from "../OperationStatusTag";
-import { operationsStateToActionPageUrl } from "../OperationsGrid/utils";
+import { operationsStateToBrowserSplat } from "../OperationsGrid/utils";
 import PropertyTagList from "../PropertyTagList";
 import {
-  historicalExecuteResponseDigestFromUrl,
-  historicalExecuteResponseUrlFromOperation,
+  historicalExecuteResponseDigestFromOperation,
 } from "./utils";
+import { generateBrowserSplat } from "@/utils/urlGenerator";
+import { BrowserPageType } from "@/types/BrowserPageType";
 
 interface Props {
   operation: OperationState;
@@ -26,10 +27,8 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
     return JSON.stringify(protobufToObjectWithTypeField(value, false));
   });
 
-  const historical_execute_response_url =
-    historicalExecuteResponseUrlFromOperation(operation);
-  const historical_execute_response_digest =
-    historicalExecuteResponseDigestFromUrl(historical_execute_response_url);
+  const historicalExecuteResponseBrowserPageParams =
+    historicalExecuteResponseDigestFromOperation(operation);
 
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
@@ -56,39 +55,58 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
         </Descriptions.Item>
         <Descriptions.Item label="Invocation IDs">
           <ul>
-            {invocationMetadata?.map((value) => (
-              <li key={value}>
-                <Link
-                  href={{
-                    pathname: "/operations",
-                    query: {
-                      filter_invocation_id: value,
-                    },
-                  }}
-                >
-                  {value}
-                </Link>
-              </li>
-            ))}
+            {invocationMetadata?.map((value) => {
+              let metadataObject = undefined
+              try {
+                metadataObject = JSON.parse(value)
+              } catch {
+                console.error("Failed to deserialize invocation metadata object")
+              }
+              return (
+                <li key={value}>
+                  <Link
+                    to="/operations"
+                    search={{
+                      filter: metadataObject,
+                    }}
+                  >
+                    {value}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </Descriptions.Item>
         <Descriptions.Item label="Action digest">
           {operation.actionDigest && (
             <CodeLink
               text={`${operation.actionDigest.hash}-${operation.actionDigest.sizeBytes}`}
-              url={operationsStateToActionPageUrl(operation) || ""}
+              link={{
+                to: "/browser/$",
+                params: {
+                  _splat: operationsStateToBrowserSplat(operation),
+                },
+              }}
             />
           )}
         </Descriptions.Item>
-        {historical_execute_response_url &&
-          historical_execute_response_digest && (
-            <Descriptions.Item label="Historical execute response digest">
-              <CodeLink
-                text={historical_execute_response_digest}
-                url={historical_execute_response_url}
-              />
-            </Descriptions.Item>
-          )}
+        {historicalExecuteResponseBrowserPageParams && (
+          <Descriptions.Item label="Historical execute response digest">
+            <CodeLink
+              text={historicalExecuteResponseBrowserPageParams.digest.hash}
+              link={{
+                to: "/browser/$",
+                params: {
+                  _splat:
+                    generateBrowserSplat(historicalExecuteResponseBrowserPageParams.instanceName,
+                      historicalExecuteResponseBrowserPageParams.digestFunction,
+                      historicalExecuteResponseBrowserPageParams.digest,
+                      BrowserPageType.HistoricalExecuteResponse),
+                }
+              }}
+            />
+          </Descriptions.Item>
+        )}
         <Descriptions.Item label="Timeout">
           {operation.timeout &&
             readableDurationFromDates(new Date(), operation.timeout, {

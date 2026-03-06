@@ -1,6 +1,4 @@
-"use client";
 
-import type { UrlObject } from "node:url";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import {
   type Digest,
@@ -15,20 +13,20 @@ import {
   type BloomFilterReader,
   PathHashes,
   containsPathHashes,
-  generateFileSystemReferenceQueryParams,
   readBloomFilter,
 } from "@/utils/bloomFilter";
 import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
 import { readableFileSizeFromString } from "@/utils/filesize";
-import { generateDirectoryUrl, generateFileUrl } from "@/utils/urlGenerator";
+import { generateBrowserSplat, generateFileUrl } from "@/utils/urlGenerator";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Flex, Space, Spin, Typography } from "antd";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import React, { useEffect } from "react";
 import PortalAlert from "../PortalAlert";
 import CopyBbClientdDirectoryButton from "./CopyBbClientdDirectoryButton";
 import DownloadAsTarballButton from "./DownloadAsTarballButton";
+import { BrowserPageType } from "@/types/BrowserPageType";
 
 const FETCH_STALE_TIME = 30000;
 
@@ -38,8 +36,8 @@ interface Params {
   inputRootDigest: Digest;
   fileSystemAccessProfile: FileSystemAccessProfile | undefined;
   fileSystemAccessProfileReference:
-    | FileSystemAccessProfileReference
-    | undefined;
+  | FileSystemAccessProfileReference
+  | undefined;
 }
 
 const BrowserDirectory: React.FC<Params> = ({
@@ -65,9 +63,9 @@ const BrowserDirectory: React.FC<Params> = ({
         pathHashes={
           bloomFilterReader
             ? new PathHashes(
-                fileSystemAccessProfileReference &&
-                  BigInt(fileSystemAccessProfileReference?.pathHashesBaseHash),
-              )
+              fileSystemAccessProfileReference?.pathHashesBaseHash ?
+                BigInt(fileSystemAccessProfileReference?.pathHashesBaseHash) : undefined,
+            )
             : undefined
         }
         fileSystemAccessProfileRef={fileSystemAccessProfileReference}
@@ -119,7 +117,7 @@ const fetchDirectory = async (
   );
 };
 
-const RecursiveDirectoryNode: React.FC<{
+interface RecursiveDirectoryNodeProps {
   instanceName: string;
   digestFunction: DigestFunction_Value;
   directoryDigest: Digest;
@@ -128,8 +126,10 @@ const RecursiveDirectoryNode: React.FC<{
   bloomFilterReader?: BloomFilterReader;
   pathHashes?: PathHashes;
   willBePrefetched?: boolean;
-  fileSystemAccessProfileRef: FileSystemAccessProfileReference | undefined;
-}> = ({
+  fileSystemAccessProfileRef: Partial<FileSystemAccessProfileReference> | undefined;
+}
+
+const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
   instanceName,
   digestFunction,
   directoryDigest,
@@ -227,17 +227,20 @@ const RecursiveDirectoryNode: React.FC<{
         <DirectoryNode
           isDirectory={true}
           name={`${directoryName}/`}
-          href={{
-            pathname: generateDirectoryUrl(
-              instanceName,
-              digestFunction,
-              directoryDigest,
-            ),
-            query: generateFileSystemReferenceQueryParams(
-              fileSystemAccessProfileRef,
-              pathHashes,
-            ),
-          }}
+          linkWrapper={(children) => (
+            <Link
+              to="/browser/$"
+              params={{ _splat: generateBrowserSplat(instanceName, digestFunction, directoryDigest, BrowserPageType.Directory) }}
+              search={pathHashes ? {
+                fileSystemAccessProfile: {
+                  digest: fileSystemAccessProfileRef?.digest,
+                  pathHashesBaseHash: pathHashes?.toString()
+                }
+              } : undefined}
+            >
+              {children}
+            </Link>
+          )}
           sizeBytes={directoryDigest.sizeBytes}
           permissions="drwxr-xr-x"
           expanded={expanded}
@@ -266,29 +269,29 @@ const RecursiveDirectoryNode: React.FC<{
                 />
               ),
           )}
-          {data.files.map((file) => (
-            <DirectoryNode
-              key={file.name}
-              name={file.name}
-              href={{
-                pathname: file.digest
-                  ? generateFileUrl(
-                      instanceName,
-                      digestFunction,
-                      file.digest,
-                      file.name,
-                    )
-                  : undefined,
-              }}
-              sizeBytes={file.digest?.sizeBytes}
-              permissions={`-r-${file.isExecutable ? "x" : "-"}r-${
-                file.isExecutable ? "x" : "-"
-              }r-${file.isExecutable ? "x" : "-"}`}
-              willBePrefetched={calcWillBePrefetched(
-                pathHashes?.appendComponent(file.name),
-              )}
-            />
-          ))}
+          {data.files.map((file) => {
+            const digest = file.digest;
+            return (
+              <DirectoryNode
+                key={file.name}
+                name={file.name}
+                linkWrapper={digest ? (children) => (
+                  <a href={generateFileUrl(
+                    instanceName,
+                    digestFunction,
+                    digest,
+                    file.name,
+                  )}>{children}</a>
+                ) : undefined}
+                sizeBytes={file.digest?.sizeBytes}
+                permissions={`-r-${file.isExecutable ? "x" : "-"}r-${file.isExecutable ? "x" : "-"
+                  }r-${file.isExecutable ? "x" : "-"}`}
+                willBePrefetched={calcWillBePrefetched(
+                  pathHashes?.appendComponent(file.name),
+                )}
+              />
+            )
+          })}
           {data.symlinks.map((symlink) => (
             <DirectoryNode
               key={symlink.name}
@@ -306,19 +309,21 @@ const ROW_HEIGHT = 20;
 const BUTTON_WIDTH = 32;
 const BUTTON_PADDING = 8;
 
-const DirectoryNode: React.FC<{
+interface DirectoryNodeProps {
   isDirectory?: boolean;
   name: string;
-  href?: UrlObject;
+  linkWrapper?: (children: React.ReactNode) => React.ReactNode;
   sizeBytes?: string;
   permissions: string;
   expanded?: boolean;
   setExpanded?: (expanded: boolean) => void;
   willBePrefetched?: boolean;
-}> = ({
+}
+
+const DirectoryNode: React.FC<DirectoryNodeProps> = ({
   isDirectory = false,
   name,
-  href,
+  linkWrapper,
   sizeBytes,
   permissions,
   expanded,
@@ -357,8 +362,8 @@ const DirectoryNode: React.FC<{
             {expanded ? <DownOutlined /> : <RightOutlined />}
           </Button>
         )}
-        {href ? (
-          <Link href={href}>{formattedFileName()}</Link>
+        {linkWrapper ? (
+          linkWrapper(formattedFileName())
         ) : (
           <Typography.Text>{formattedFileName()}</Typography.Text>
         )}

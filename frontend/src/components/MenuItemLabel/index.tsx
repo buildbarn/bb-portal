@@ -1,7 +1,6 @@
 import React, { ForwardedRef, forwardRef, useLayoutEffect, useRef } from 'react';
-import Link from 'next/link';
+import { Link, useLocation } from '@tanstack/react-router';
 import { Tag } from 'antd';
-import { usePathname } from 'next/navigation';
 import styles from '@/components/MenuItemLabel/index.module.css';
 import { UpdateSidebarMenuExpandedWidthFunction } from '@/components/Utilities/navigation';
 import { SIDEBAR_MENU_INLINE_INDENT } from '@/components/SiderBar';
@@ -22,7 +21,7 @@ export interface Props {
 }
 
 export const MenuItemLabel = forwardRef((props: Props, ref: ForwardedRef<HTMLDivElement>) => {
-  const pathname = usePathname();
+  const {pathname} = useLocation();
   const menuItemLabelRef = useRef<HTMLAnchorElement>(null);
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -51,7 +50,7 @@ export const MenuItemLabel = forwardRef((props: Props, ref: ForwardedRef<HTMLDiv
     };
   }, [props]);
   let label = (
-    <Link ref={menuItemLabelRef} href={props.href} className={styles.menuItemLabel}>
+    <Link ref={menuItemLabelRef} to={props.href} className={styles.menuItemLabel}>
       {props.title}
     </Link>
   );

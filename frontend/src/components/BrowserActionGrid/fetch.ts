@@ -217,7 +217,7 @@ async function fetchPreviousExecutionStats(
     return await initialSizeClassCacheClient.getPreviousExecutionStats({
       digestFunction: browserPageParams.digestFunction,
       instanceName: browserPageParams.instanceName,
-      reducedActionDigest: getReducedActionDigest_SHA256(
+      reducedActionDigest: await getReducedActionDigest_SHA256(
         action.commandDigest,
         action.platform,
       ),
@@ -418,7 +418,7 @@ async function fetchFileSystemAccessProfile(
     return await fileSystemAccessCacheClient.getFileSystemAccessProfile({
       digestFunction: browserPageParams.digestFunction,
       instanceName: browserPageParams.instanceName,
-      reducedActionDigest: getReducedActionDigest_SHA256(
+      reducedActionDigest: await getReducedActionDigest_SHA256(
         action.commandDigest,
         action.platform,
       ),

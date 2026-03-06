@@ -20,7 +20,6 @@ const ActionCacheMissMetrics: React.FC<Props> = ({ acStatistics }) => {
         count: item.count ?? 0,
         percent: nullPercent(item.count, acStatistics?.misses, 0),
         value: item.reason ?? "",
-        type: "square",
       };
       chartItems.push(chartItem);
     });
