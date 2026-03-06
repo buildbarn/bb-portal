@@ -3,12 +3,8 @@ package main
 import (
 	"context"
 	"log"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"reflect"
-	"slices"
 	"time"
 
 	_ "net/http/pprof"
@@ -19,7 +15,6 @@ import (
 	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/mux"
-	"github.com/rs/cors"
 
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 	"go.opentelemetry.io/otel"
@@ -39,6 +34,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/graphql"
+	"github.com/buildbarn/bb-portal/pkg/frontend"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
@@ -91,14 +87,14 @@ func main() {
 		}
 		// This must be the last service created for the router, as it will
 		// handle all unmatched requests.
-		err = newFrontendProxyService(&configuration, router)
+		err = frontend.ServeFrontend(configuration.FrontendServiceConfiguration, router)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create frontend proxy service")
 		}
 
 		http_server.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
-			http_server.NewMetricsHandler(allowCorsWrapper(configuration.AllowedOrigins, router), "PortalUI"),
+			http_server.NewMetricsHandler(router, "PortalUI"),
 			siblingsGroup,
 			grpcClientFactory,
 		)
@@ -224,38 +220,4 @@ func addGraphqlHandler(
 		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	}
 	return nil
-}
-
-func newFrontendProxyService(configuration *bb_portal.ApplicationConfiguration, router *mux.Router) error {
-	if configuration.FrontendProxyUrl == "" {
-		log.Println("No frontend proxy URL specified, skipping proxying")
-		return nil
-	}
-	remote, err := url.Parse(configuration.FrontendProxyUrl)
-	if err != nil {
-		return util.StatusWrapf(err, "Failed to parse frontend proxy URL")
-	}
-
-	// Return 404 for all API requests not already handled.
-	router.PathPrefix("/api/").Handler(router.NotFoundHandler)
-
-	log.Println("Proxying frontend to", remote)
-	router.PathPrefix("/").Handler(httputil.NewSingleHostReverseProxy(remote))
-	return nil
-}
-
-func allowCorsWrapper(allowedOrigins []string, httpHandler http.Handler) http.Handler {
-	if allowedOrigins == nil {
-		log.Println("No allowed origins specified, CORS disabled")
-		return httpHandler
-	}
-	return cors.New(
-		cors.Options{
-			AllowOriginFunc: func(origin string) bool {
-				return slices.Contains(allowedOrigins, origin) || slices.Contains(allowedOrigins, "*")
-			},
-			AllowedMethods: []string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-			AllowedHeaders: []string{"Authorization", "Content-Type", "X-Grpc-Web", "X-Requested-With"},
-		},
-	).Handler(httpHandler)
 }

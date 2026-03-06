@@ -35,7 +35,6 @@ export const ActionsTab: React.FC<Props> = ({ instanceName, actions }) => {
       items={items(instanceName, actions)}
       bordered={true}
       defaultActiveKey={actions && actions.length === 1 ? [actions[0].id] : []}
-      destroyInactivePanel
       className={themeStyles.collapse}
     />
   );

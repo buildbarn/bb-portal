@@ -1,0 +1,75 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: rgba(0, 0, 0, 0.88);
+  --link-color: #1677ff;
+  --spinner-color: #1677ff;
+}
+
+:root[data-theme="dark"] {
+  --bg-color: #141414;
+  --text-color: rgba(255, 255, 255, 0.85);
+  --link-color: #1677ff;
+  --spinner-color: #177ddc;
+}
+
+body {
+  background-color: var(--bg-color);
+  margin: 0;
+}
+
+.preloader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont;
+  color: var(--text-color);
+  text-align: center;
+  padding-top: 48px;
+}
+
+.preloader-h1 {
+  font-size: 38px;
+  font-weight: 600;
+  margin: 0 48px 24px;
+  line-height: 1.2;
+}
+
+.preloader-h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 48px 24px;
+}
+
+.preloader-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.preloader-footer h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.preloader-footer a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.preloader-throbber {
+  margin-top: 32px;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(150, 150, 150, 0.2);
+  border-top-color: var(--spinner-color);
+  border-radius: 50%;
+  animation: preloader-spin 1s linear infinite;
+}
+
+@keyframes preloader-spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package buildbarn.configuration.frontend;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend";
+
+// Configuration for the portal frontend. This configuration is injected into
+// the frontend by the backend when the index.html is served.
+message PortalFrontendConfiguration {
+  message FeatureFlags {
+    message HomePage {
+      // Enables/Disables the BEP file upload area on the home page.
+      google.protobuf.Empty file_upload = 1;
+
+      // Enables/Disables the BES upload instructions on the home page.
+      google.protobuf.Empty instructions = 2;
+    }
+
+    message BesFeatureFlags {
+      // Enables/Disables the builds page and sub-pages.
+      google.protobuf.Empty page_builds = 1;
+
+      // Enables/Disables the invocations page and sub-pages.
+      google.protobuf.Empty page_invocations = 2;
+
+      // Enables/Disables the targets page and sub-pages, as well as the
+      // targets tab on a invocation.
+      google.protobuf.Empty page_targets = 3;
+
+      // Enables/Disables the tests page and sub-pages, as well as the tests
+      // tab on a invocation.
+      google.protobuf.Empty page_tests = 4;
+
+      // Enables/Disables the trends page.
+      google.protobuf.Empty page_trends = 5;
+    }
+
+    // Enable/Disable features on the starting page of the interface.
+    HomePage home = 1;
+
+    // Enable/Disable the Build Event Stream interface, or parts of it.
+    BesFeatureFlags bes = 2;
+
+    // Enable/Disable the browser tab and pages. The browser pages is used to
+    // browse the contents of the CAS and Action Cache. Disable if you are
+    // using bb-browser.
+    google.protobuf.Empty browser = 3;
+
+    // Enable/Disable the scheduler and operations tabs and pages. Disable this
+    // if you don't want to connect Portal to the scheduler of a Buildbarn
+    // cluster.
+    google.protobuf.Empty scheduler = 4;
+  }
+
+  // Feature flags used to turn features in the frontend on/off, such as
+  // certain pages or sections of pages. Make sure that the feature flags are
+  // in sync with the services configured for the backend.
+  //
+  // The frontend feature flags only affect the frontend. The underlying APIs
+  // are still available, so just using these flags is not enough to secure
+  // your confidential data.
+  FeatureFlags feature_flags = 1;
+
+  // The URL of the BES gRPC backend. Used to tell users where to point their
+  // `--bes_backend` flag to.
+  string grpc_backend_url = 2;
+
+  // Used to personalize the title of the frontend.
+  string company_name = 3;
+
+  message FooterElement {
+    // The text to display in the footer.
+    string text = 1;
+    // The URL to link to. Optional.
+    string href = 2;
+
+    message Icon {
+      // The icon to display. Slack, Github and Discord are built in. Otherwise
+      // use a url that points to a image.
+      oneof icon {
+        string url = 1;
+        google.protobuf.Empty slack = 2;
+        google.protobuf.Empty github = 3;
+        google.protobuf.Empty discord = 4;
+      }
+    }
+    // Icon for the footer element. Optional.
+    Icon icon = 3;
+  }
+
+  // Customize the content of the footer. These elements are shown in a row at
+  // the bottom of the page, and can be used to link out to useful places.
+  repeated FooterElement footer_content = 4;
+}

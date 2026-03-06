@@ -1,24 +1,30 @@
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
+import { BrowserPageType } from "@/types/BrowserPageType";
+import { generateBrowserSplat } from "@/utils/urlGenerator";
 
-export const operationsStateToActionPageUrl = (
-  operation: OperationState,
-): string | undefined => {
+export const instanceNameFromOperationState = (operation: OperationState): string => {
   const instanceNamePrefix =
     operation.invocationName?.sizeClassQueueName?.platformQueueName
       ?.instanceNamePrefix;
   const instanceNameSuffix = operation.instanceNameSuffix;
-  const digestFunction = digestFunctionValueToString(operation.digestFunction);
-  const actionDigestHash = operation.actionDigest?.hash;
-  const actionDigestSizeBytes = operation.actionDigest?.sizeBytes;
 
-  if (!digestFunction || !actionDigestHash || !actionDigestSizeBytes) {
+  const instanceName = []
+  if (instanceNamePrefix) instanceName.push(instanceNamePrefix)
+  if (instanceNameSuffix) instanceName.push(instanceNameSuffix)
+
+  return instanceName.join("/")
+}
+
+export const operationsStateToBrowserSplat = (
+  operation: OperationState,
+): string | undefined => {
+  if (operation.actionDigest === undefined) {
     return undefined;
   }
-
-  let url = "/browser";
-  if (instanceNamePrefix) url += `/${instanceNamePrefix}`;
-  if (instanceNameSuffix) url += `/${instanceNameSuffix}`;
-  url += `/blobs/${digestFunction}/action/${actionDigestHash}-${actionDigestSizeBytes}`;
-  return url;
+  return generateBrowserSplat(
+    instanceNameFromOperationState(operation),
+    operation.digestFunction,
+    operation.actionDigest,
+    BrowserPageType.Action
+  )
 };

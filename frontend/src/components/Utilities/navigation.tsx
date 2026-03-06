@@ -1,9 +1,7 @@
-'use client';
 
 import React, { ReactNode, Key } from 'react';
 import { ItemType } from 'antd/es/menu/interface';
 import { MenuItemLabel, MenuItemTag } from '@/components/MenuItemLabel';
-import { FeatureType, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
 export type UpdateSidebarMenuExpandedWidthFunction = (updatedSidebarMenuExpandedWidth: number) => void;
 
@@ -18,7 +16,7 @@ interface ItemProps {
   disabled?: boolean;
   activeMenuItemRef?: React.RefObject<HTMLDivElement>;
   updateMenuItemWidth?: UpdateSidebarMenuExpandedWidthFunction;
-  requiredFeatures?: FeatureType[];
+  requiredFeatures?: (Record<string, any> | undefined)[];
 }
 
 export const getItem = ({
@@ -35,7 +33,7 @@ export const getItem = ({
   requiredFeatures,
 }: ItemProps): ItemType | undefined => {
   for (const feature of requiredFeatures || []) {
-    if (!isFeatureEnabled(feature)) {
+    if (!feature) {
       return undefined;
     }
   }

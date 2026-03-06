@@ -4,7 +4,7 @@ import {
   ClockCircleFilled,
   SearchOutlined,
 } from '@ant-design/icons';
-import Link from 'next/link';
+import { Link } from '@tanstack/react-router';
 import dayjs from 'dayjs';
 import styles from './Columns.module.css';
 import { BazelInvocationNodeFragment, BazelInvocationWhereInput } from '@/graphql/__generated__/graphql';
@@ -23,7 +23,14 @@ export const invocationIdColumn: ColumnTypeWithFilter<BazelInvocationNodeFragmen
   key: 'invocationID',
   width: 220,
   title: 'Invocation',
-  render: (_, record) => <Link href={`/bazel-invocations/${record.invocationID}`}>{record.invocationID}</Link>,
+  render: (_, record) => (
+    <Link
+      to={`/bazel-invocations/$invocationID`}
+      params={{ invocationID: record.invocationID }}
+    >
+      {record.invocationID}
+    </Link>
+  ),
   filterDropdown: filterProps => (
     <SearchWidget placeholder="Provide a Bazel invocation ID..." {...filterProps} />
   ),
@@ -71,7 +78,7 @@ export const durationColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
       from={record.startedAt || undefined}
       to={record.endedAt ? record.endedAt : record.connectionMetadata?.connectionLastOpenAt || undefined}
       includePopover
-      formatConfig={{smallestUnit: "s"}}
+      formatConfig={{ smallestUnit: "s" }}
     />
   ),
 };
@@ -90,7 +97,12 @@ export const buildColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
   key: 'build',
   width: 220,
   title: 'Build',
-  render: (_, record) => record.build && <Link href={`/builds/${record.build.buildUUID}`}>{record.build.buildUUID}</Link>,
+  render: (_, record) => record.build && (
+    <Link
+      to={`/builds/$buildUUID`}
+      params={{ buildUUID: record.build.buildUUID }}>
+      {record.build.buildUUID}
+    </Link>),
   filterDropdown: filterProps => (
     <SearchWidget placeholder="Provide a build UUID..." {...filterProps} />
   ),

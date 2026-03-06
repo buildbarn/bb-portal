@@ -21,7 +21,6 @@ const ActionTypeMetrics: React.FC<Props> = ({ actionData }) => {
         value: item.mnemonic ?? "",
         percent: nullPercent(item.actionsExecuted, totalActionsExecuted, 0),
         count: item.actionsExecuted ?? 0,
-        type: "square",
       };
       actions.push(chartItem);
     });

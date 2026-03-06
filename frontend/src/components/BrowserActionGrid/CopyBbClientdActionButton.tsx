@@ -1,4 +1,3 @@
-"use client";
 
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { BrowserPageParams } from "@/types/BrowserPageType";

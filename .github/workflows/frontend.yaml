@@ -9,14 +9,35 @@
                "uses": "actions/checkout@v4"
             },
             {
-               "name": "Build docker image",
-               "uses": "docker/build-push-action@v4",
+               "name": "Setup Node.js",
+               "uses": "actions/setup-node@v4",
                "with": {
-                  "context": "frontend/",
-                  "file": "./frontend/Dockerfile",
-                  "push": false,
-                  "tags": "ghcr.io/buildbarn/bb-portal-frontend"
+                  "node-version-file": "frontend/.nvmrc"
                }
+            },
+            {
+               "name": "Install dependencies",
+               "run": "npm ci",
+               "working-directory": "frontend"
+            },
+            {
+               "name": "Generate frontend files",
+               "run": "npm run generate",
+               "working-directory": "frontend"
+            },
+            {
+               "name": "Check if any generated files changed",
+               "run": "git add . && git diff --exit-code HEAD --"
+            },
+            {
+               "name": "Test",
+               "run": "npm run test",
+               "working-directory": "frontend"
+            },
+            {
+               "name": "Build",
+               "run": "npm run build",
+               "working-directory": "frontend"
             }
          ]
       }

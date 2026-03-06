@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "frontend",
+    srcs = ["frontend.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/frontend",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/proto/configuration/bb_portal",
+        "//pkg/proto/configuration/frontend",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_gorilla_mux//:mux",
+        "@org_golang_google_protobuf//encoding/protojson",
+    ],
+)

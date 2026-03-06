@@ -1,6 +1,6 @@
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 
 export interface FilesTableEntry {
   mode: string | undefined;
@@ -26,7 +26,7 @@ const filenameColumn: ColumnType<FilesTableEntry> = {
   title: "Filename",
   render: (_, record) => {
     if (record.href) {
-      return <Link href={record.href}>{record.filename}</Link>;
+      return <a href={record.href}>{record.filename}</a>;
     }
     return <Typography.Text>{record.filename}</Typography.Text>;
   },

@@ -11,6 +11,7 @@ export const GET_INVOCATION_TARGETS_FOR_INVOCATION = gql(/* GraphQl */ `
     $where: InvocationTargetWhereInput
   ){
     getBazelInvocation(invocationID: $invocationID) {
+      id
       invocationTargets(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where){
         pageInfo {
           startCursor

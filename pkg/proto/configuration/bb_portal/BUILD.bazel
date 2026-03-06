@@ -8,6 +8,7 @@ proto_library(
     import_prefix = "github.com/buildbarn/bb-portal",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/proto/configuration/frontend:frontend_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth:auth_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/blobstore:blobstore_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global:global_proto",
@@ -25,6 +26,7 @@ go_proto_library(
     proto = ":bb_portal_proto",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/proto/configuration/frontend",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/blobstore",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global",

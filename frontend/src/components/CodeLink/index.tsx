@@ -1,21 +1,18 @@
-import Link from "next/link";
+import { Link, LinkOptions } from "@tanstack/react-router";
 
 interface Props {
-  url: string;
   text: string;
-  abbreviate?: boolean;
+  link: LinkOptions
 }
 
-const CodeLink: React.FC<Props> = ({ url, text, abbreviate }) => {
+export const CodeLink: React.FC<Props> = ({ text, link }) => {
   return (
-    <Link href={url}>
+    <Link {...link}>
       <code>
-        {abbreviate === true && text.length > 11
+        {text.length > 11
           ? `${text.slice(0, 8)}...`
           : text}
       </code>
     </Link>
   );
 };
-
-export default CodeLink;

@@ -4,7 +4,7 @@ import {
 } from "@/graphql/__generated__/graphql";
 import { BranchesOutlined } from "@ant-design/icons";
 import { Descriptions, Row, Space } from "antd";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import type React from "react";
 import PortalCard from "../PortalCard";
 
@@ -125,9 +125,9 @@ type RepoLinkProps = {
 const RepoLink: React.FC<RepoLinkProps> = ({ text, url }) => {
   if (url) {
     return (
-      <Link target="_blank" href={url}>
+      <a target="_blank" href={url}>
         {text}
-      </Link>
+      </a>
     );
   }
   return <>{text}</>;

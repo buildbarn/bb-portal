@@ -1,4 +1,3 @@
-import Link from "@/components/Link";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
 import SystemMetricsDisplay from "../SystemMetricsDisplay";
@@ -12,7 +11,6 @@ import {
   RunnerCount
 } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
-import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import {
   AreaChartOutlined,
   BranchesOutlined,
@@ -39,6 +37,8 @@ import UserStatusIndicator from "../UserStatusIndicator";
 import { InvocationResultTag } from "../InvocationResultTag";
 import { ActionsTab } from "../ActionsTab";
 import { commandLineDataToString } from "@/utils/commandLineDataToString";
+import { Link } from "@tanstack/react-router";
+import { env } from "@/utils/env";
 
 const DEFAULT_TAB_KEY = "BazelInvocationTabs-Overview";
 
@@ -73,8 +73,8 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     (metrics?.timingMetrics == undefined || metrics?.timingMetrics == null)
     && (metrics?.networkMetrics == undefined || metrics?.networkMetrics == null);
   const hideFailedActionsTab: boolean = actions == undefined || actions == null || actions.length == 0;
-  const hideTargetsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS);
-  const hideTestsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TESTS);
+  const hideTargetsTab: boolean = !env.featureFlags?.bes?.pageTargets;
+  const hideTestsTab: boolean = !env.featureFlags?.bes?.pageTests;
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
 
   const command = commandLineDataToString(originalCommandLine)
@@ -181,8 +181,8 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
       children: (
         <Space direction="vertical" size="middle" className={themeStyles.space}>
           <InvocationTargetsTab
-          invocationId={invocationID}
-          targetMetrics={metrics?.targetMetrics ?? undefined}
+            invocationId={invocationID}
+            targetMetrics={metrics?.targetMetrics ?? undefined}
           />
         </Space>
       ),
@@ -193,7 +193,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     icon: <ExperimentOutlined />,
     children: (
       <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <TestTab invocationId={invocationID}/>
+        <TestTab invocationId={invocationID} />
       </Space>
     ),
   });
@@ -281,10 +281,10 @@ const getExtraBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
     <PortalDuration
       key="duration"
       from={invocationOverview.startedAt || undefined}
-      to={invocationOverview.endedAt ? invocationOverview.endedAt : invocationOverview.connectionMetadata?.connectionLastOpenAt }
+      to={invocationOverview.endedAt ? invocationOverview.endedAt : invocationOverview.connectionMetadata?.connectionLastOpenAt}
       includeIcon
       includePopover
-      formatConfig={{smallestUnit: "s"}}
+      formatConfig={{ smallestUnit: "s" }}
     />
   )
   if (profile) extraBits.push(
@@ -297,7 +297,10 @@ const getExtraBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
   if (build?.buildUUID) {
     extraBits.unshift(
       <span key="build">
-        Build <Link href={`/builds/${build.buildUUID}`}>{build.buildUUID}</Link>
+        Build <Link
+          to={`/builds/$buildUUID`}
+          params={{ buildUUID: build.buildUUID }}
+        >{build.buildUUID}</Link>
       </span>
     );
   }
@@ -350,8 +353,6 @@ const BazelInvocation: React.FC<Props> = ({ invocationOverview }) => {
         activeKey={checkIfNotHidden(activeKey)}
         onChange={onTabChange}
         defaultActiveKey={DEFAULT_TAB_KEY}
-        // TODO(isakstenstrom): Remove this when we can fetch partial logs.
-        destroyInactiveTabPane={true}
       />
     </PortalCard>
   );

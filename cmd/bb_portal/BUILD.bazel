@@ -22,6 +22,7 @@ go_library(
         "//internal/database/dbauthservice",
         "//internal/database/dbcleanupservice",
         "//internal/graphql",
+        "//pkg/frontend",
         "//pkg/prometheus_metrics",
         "//pkg/proto/configuration/bb_portal",
         "@bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_go_proto",
@@ -43,7 +44,6 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_gorilla_mux//:mux",
         "@com_github_improbable_eng_grpc_web//go/grpcweb",
-        "@com_github_rs_cors//:cors",
         "@io_opentelemetry_go_contrib_instrumentation_github_com_gorilla_mux_otelmux//:otelmux",
         "@io_opentelemetry_go_otel//:otel",
         "@io_opentelemetry_go_otel_trace//:trace",
@@ -62,7 +62,7 @@ multiarch_go_image(
 
 container_push_official(
     name = "bb_portal_container_push",
-    component = "bb-portal-backend",
+    component = "bb-portal",
     image = ":bb_portal_container",
 )
 

@@ -112,7 +112,7 @@ export const PortalCard: React.FC<Props> = ({ icon, titleBits, extraBits, classN
   );
   const extendedClassName = cardProps.type === 'inner' ? className : [className, styles.outer].join(' ');
   return (
-    <Card title={title} extra={extra} bordered={false} className={extendedClassName} {...cardProps}>
+    <Card title={title} extra={extra} variant='outlined' className={extendedClassName} {...cardProps}>
       <Space ref={cardRef} direction="vertical" size="middle" className={themeStyles.space}>
         {cardProps.children}
       </Space>

@@ -1,5 +1,3 @@
-// biome-ignore lint/style/useNodejsImportProtocol: This feature is only available in Node version 23.8+
-import { createHash } from "crypto";
 import {
   Action,
   Digest,
@@ -8,6 +6,12 @@ import {
   digestFunction_ValueFromJSON,
   digestFunction_ValueToJSON,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+
+export async function sha256hex(data: BufferSource): Promise<string> {
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
 
 export const digestFunctionValueFromString = (
   string: string,
@@ -38,10 +42,10 @@ export const includeDigestFunctionInCasFetch = (
 // Currently we only support SHA256, as some of the other
 // algorithms are difficult to implement in Node.
 // TODO: Handle different types of algorithms.
-export const getReducedActionDigest_SHA256 = (
+export const getReducedActionDigest_SHA256 = async (
   commandDigest: Digest,
   platform: Platform,
-): Digest => {
+): Promise<Digest> => {
   const encodedReducedAction = Action.encode(
     Action.fromPartial({
       commandDigest: commandDigest,
@@ -50,7 +54,7 @@ export const getReducedActionDigest_SHA256 = (
   ).finish();
 
   return Digest.create({
-    hash: createHash("sha256").update(encodedReducedAction).digest("hex"),
+    hash: await sha256hex(encodedReducedAction),
     sizeBytes: encodedReducedAction.length.toString(),
   });
 };

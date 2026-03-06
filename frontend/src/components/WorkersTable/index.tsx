@@ -1,18 +1,17 @@
 import { Flex, Row, Space, Table } from "antd";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import type {
   PaginationInfo,
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import themeStyles from "@/theme/theme.module.css";
-import type { ListWorkerFilterType } from "@/types/ListWorkerFilterType";
 import WorkersTablePageSelector from "../WorkersTablePageSelector";
 import WorkersTableTypeSelector from "../WorkersTableTypeSelector";
 import getColumns from "./Columns";
+import { Route, WorkerListStatus } from "@/routes/scheduler.worker";
 
 type Props = {
-  listWorkerFilterType: ListWorkerFilterType;
+  workerStatusFilter: WorkerListStatus;
   data: WorkerState[] | undefined;
   paginationInfo: PaginationInfo | undefined;
   isLoading: boolean;
@@ -20,36 +19,43 @@ type Props = {
 };
 
 const WorkersTable: React.FC<Props> = ({
-  listWorkerFilterType,
+  workerStatusFilter,
   data,
   paginationInfo,
   isLoading,
   pageSize,
 }) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const navigate = Route.useNavigate()
 
-  const changeUrlQueryValue = (key: string, value: string | undefined) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value === undefined) {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    router.replace(`${pathname}?${params.toString()}`);
-  };
-
-  const handleFilterChange = (value: ListWorkerFilterType) => {
-    changeUrlQueryValue("listWorkerFilterType", value);
+  const handleFilterChange = (value: WorkerListStatus) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        workerStatusFilter: value,
+        cursor: undefined
+      })
+    })
   };
 
   const goToNextPage = () => {
-    changeUrlQueryValue("paginationCursor", JSON.stringify(data?.at(-1)?.id));
+    const lastId = data?.at(-1)?.id;
+    if (!lastId) return;
+
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        cursor: lastId, 
+      }),
+    })
   };
 
   const goToFirstPage = () => {
-    changeUrlQueryValue("paginationCursor", undefined);
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        cursor: undefined, 
+      }),
+    });
   };
 
   return (
@@ -57,8 +63,8 @@ const WorkersTable: React.FC<Props> = ({
       <Row>
         <Flex style={{ width: "100%" }} justify="space-between" wrap>
           <WorkersTableTypeSelector
-            listWorkerFilterType={listWorkerFilterType}
-            setListWorkerFilterType={handleFilterChange}
+            workerStatusFilter={workerStatusFilter}
+            setWorkerStatusFilter={handleFilterChange}
           />
           {paginationInfo && (
             <WorkersTablePageSelector

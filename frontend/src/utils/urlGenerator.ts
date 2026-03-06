@@ -1,35 +1,25 @@
-import { env } from "next-runtime-env";
 import type {
   Digest,
   DigestFunction_Value,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { digestFunctionValueToString } from "./digestFunctionUtils";
+import { BrowserPageType } from "@/types/BrowserPageType";
 
-function getServeFileUrl(): string {
-  return `${env("NEXT_PUBLIC_BES_BACKEND_URL")}/api/v1/servefile`;
-}
-
-export function generateFileUrl(
+/////////////////////////////////////////////////////////////
+// Frontend internal URLs
+/////////////////////////////////////////////////////////////
+export function generateBrowserSplat(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
   digest: Digest,
-  fileName: string,
+  pageType: BrowserPageType,
 ): string {
-  return `${getServeFileUrl()}${instanceName ? `/${instanceName}` : ""}/blobs/${digestFunctionValueToString(
+  return `${instanceName ? `${instanceName}/` : ""}blobs/${digestFunctionValueToString(
     digestFunction,
-  )}/file/${digest.hash}-${digest.sizeBytes}/${fileName}`;
+  )}/${pageType}/${digest.hash}-${digest.sizeBytes}`;
 }
 
-export function generateCommandShellScriptUrl(
-  instanceName: string | undefined,
-  digestFunction: DigestFunction_Value,
-  digest: Digest,
-): string {
-  return `${getServeFileUrl()}${instanceName ? `/${instanceName}` : ""}/blobs/${digestFunctionValueToString(
-    digestFunction,
-  )}/command/${digest.hash}-${digest.sizeBytes}/?format=sh`;
-}
-
+// TODO (isakstenstrom): Remove once the browser file component is rewritten 
 export function generateTreeUrl(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
@@ -40,6 +30,7 @@ export function generateTreeUrl(
   )}/tree/${digest.hash}-${digest.sizeBytes}`;
 }
 
+// TODO (isakstenstrom): Remove once the browser file component is rewritten 
 export function generateDirectoryUrl(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
@@ -50,42 +41,33 @@ export function generateDirectoryUrl(
   )}/directory/${digest.hash}-${digest.sizeBytes}`;
 }
 
+/////////////////////////////////////////////////////////////
+// Backend URLs
+/////////////////////////////////////////////////////////////
+
+const BACKEND_SERVE_FILE_URL = "/api/v1/servefile"
+
+export function generateFileUrl(
+  instanceName: string | undefined,
+  digestFunction: DigestFunction_Value,
+  digest: Digest,
+  fileName: string,
+): string {
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${fileName}`
+}
+
+export function generateCommandShellScriptUrl(
+  instanceName: string | undefined,
+  digestFunction: DigestFunction_Value,
+  digest: Digest,
+): string {
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Command)}/?format=sh`
+}
+
 export function generateDirectoryTarballUrl(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
   digest: Digest,
 ): string {
-  return `${getServeFileUrl()}${instanceName ? `/${instanceName}` : ""}/blobs/${digestFunctionValueToString(
-    digestFunction,
-  )}/directory/${digest.hash}-${digest.sizeBytes}/?format=tar`;
-}
-
-export function generateLinkToTargetsPage(
-  instanceName: string,
-  label: string,
-  aspect: string,
-  targetKind: string,
-): string {
-  const params = new URLSearchParams({
-    instanceName: encodeURIComponent(encodeURIComponent(instanceName)),
-    label: encodeURIComponent(encodeURIComponent(label)),
-    aspect: encodeURIComponent(encodeURIComponent(aspect)),
-    targetKind: encodeURIComponent(encodeURIComponent(targetKind)),
-  });
-  return `/target?${params.toString()}`;
-}
-
-export function generateLinkToTestPage(
-  instanceName: string,
-  label: string,
-  aspect: string,
-  targetKind: string,
-): string {
-  const params = new URLSearchParams({
-    instanceName: encodeURIComponent(encodeURIComponent(instanceName)),
-    label: encodeURIComponent(encodeURIComponent(label)),
-    aspect: encodeURIComponent(encodeURIComponent(aspect)),
-    targetKind: encodeURIComponent(encodeURIComponent(targetKind)),
-  });
-  return `/test?${params.toString()}`;
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Directory)}/?format=tar`
 }

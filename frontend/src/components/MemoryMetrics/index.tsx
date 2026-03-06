@@ -1,19 +1,18 @@
-import React, { useCallback, useState } from "react";
-import { PieChart, Pie, Cell, Legend } from "recharts";
+import React from "react";
 import { Table, Row, Col, Statistic, Space } from "antd";
-import type { StatisticProps, TableColumnsType } from "antd/lib";
+import type { TableColumnsType } from "antd/lib";
 import { MemoryMetrics, GarbageMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { PieChartOutlined, HddOutlined } from "@ant-design/icons";
-import { renderActiveShape, newColorFind } from "../Utilities/renderShape";
 import styles from "../../theme/theme.module.css";
 import { readableFileSize } from "@/utils/filesize";
+import SummaryPieChart, { SummaryChartItem } from "../SummaryPieChart";
+import { nullPercent } from "../Utilities/nullPercent";
 
 interface GarbageMetricDetailDisplayType {
   key: React.Key;
   name: string;
   value: number;
-  color: string;
 }
 
 const garbage_columns: TableColumnsType<GarbageMetricDetailDisplayType> = [
@@ -41,18 +40,25 @@ const MemoryMetricsDisplay: React.FC<{
       key: index,
       name: item.type ?? "",
       value: item.garbageCollected ?? 0,
-      color: newColorFind(index) ?? "#333333",
     };
     garbage_data.push(gm);
   });
 
-  const [activeIndexRunner, setActiveIndexRunner] = useState(0);
-  const onRunnerPieEnter = useCallback(
-    (_: any, runner_idx: any) => {
-      setActiveIndexRunner(runner_idx);
-    },
-    [setActiveIndexRunner]
+  const chartItems: SummaryChartItem[] = [];
+  const totalGarbageCollected = memoryMetrics?.garbageMetrics?.reduce(
+    (acc, item) => acc + (item.garbageCollected ?? 0),
+    0,
   );
+
+  memoryMetrics?.garbageMetrics?.forEach((item: GarbageMetrics, index) => {
+    const chartItem: SummaryChartItem = {
+      key: index,
+      value: item.type ?? "",
+      percent: nullPercent(item.garbageCollected, totalGarbageCollected, 0),
+      count: item.garbageCollected ?? 0,
+    };
+    chartItems.push(chartItem);
+  });
 
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
@@ -84,25 +90,7 @@ const MemoryMetricsDisplay: React.FC<{
               icon={<PieChartOutlined />}
               titleBits={["Garbage Collection Breakdown"]}
             >
-              <PieChart width={500} height={500}>
-                <Pie
-                  activeIndex={activeIndexRunner}
-                  activeShape={renderActiveShape}
-                  data={garbage_data}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={70}
-                  outerRadius={90}
-                  onMouseEnter={onRunnerPieEnter}
-                >
-                  {garbage_data.map((entry, runner_index) => (
-                    <Cell key={`cell-${runner_index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Legend layout="vertical" />
-              </PieChart>
+              <SummaryPieChart items={chartItems} />
             </PortalCard>
           </Col>
           <Col span="12">

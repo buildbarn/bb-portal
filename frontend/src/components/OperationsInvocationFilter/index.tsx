@@ -1,30 +1,25 @@
 import { Button, Col, Divider, Row } from "antd";
-import { usePathname, useRouter } from "next/navigation";
 import styles from "./index.module.css";
+import { OperationsFilterParams } from "@/routes/operations.index";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Props {
-  filterInvocationId: string | null;
+  filter: OperationsFilterParams;
 }
 
-const OperationsInvocationFilter: React.FC<Props> = ({
-  filterInvocationId,
-}) => {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const handleFilterClear = () => router.replace(pathname);
-
-  if (filterInvocationId) {
+const OperationsInvocationFilter: React.FC<Props> = ({ filter }) => {
+  const navigate = useNavigate()
+  if (filter) {
     return (
       <Row>
         <Col span={4} className={styles.alignLeft}>
           <h3>Invocation ID:</h3>
         </Col>
-        <Col span={16} className={styles.alignCenter}>
-          <pre>{decodeURIComponent(filterInvocationId)}</pre>
+        <Col span={16} className={styles.alignLeft}>
+          <pre>{JSON.stringify(filter, null, 2)}</pre>
         </Col>
         <Col span={4} className={styles.alignRight}>
-          <Button type="primary" onClick={handleFilterClear}>
+          <Button type="primary" onClick={() => navigate({ search: undefined })}>
             Clear Invocation ID Filter
           </Button>
         </Col>

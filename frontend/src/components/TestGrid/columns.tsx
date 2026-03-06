@@ -1,9 +1,8 @@
 import { SearchOutlined } from "@ant-design/icons";
 import type { TableColumnsType } from "antd/lib";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import type { GetTestsQuery } from "@/graphql/__generated__/graphql";
-import { generateLinkToTestPage } from "@/utils/urlGenerator";
 
 export type TestGridRowDataType = NonNullable<
   NonNullable<
@@ -16,14 +15,7 @@ export const columns: TableColumnsType<TestGridRowDataType> = [
     title: "Target",
     dataIndex: "target",
     render: (_, record) => (
-      <Link
-        href={generateLinkToTestPage(
-          record.instanceName.name,
-          record.label,
-          record.aspect,
-          record.targetKind,
-        )}
-      >
+      <Link to="/targets/$targetID/tests" params={{targetID: record.id}}>
         {record.label}
       </Link>
     ),

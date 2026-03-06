@@ -1,9 +1,7 @@
 import type { SizeClassQueueName } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { Descriptions, Space } from "antd";
 import type React from "react";
-import { JSX } from "react/jsx-runtime";
 import PropertyTagList from "../PropertyTagList";
-import IntrinsicAttributes = JSX.IntrinsicAttributes;
 
 interface Props {
   sizeClassQueueName: SizeClassQueueName;

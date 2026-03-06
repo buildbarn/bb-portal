@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button, Dropdown, DropdownProps, MenuProps, Popover, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { MenuItemType } from 'antd/es/menu/interface';
-import Link from '@/components/Link';
 
 export interface DownloadOpts {
   url?: string;
@@ -57,9 +56,9 @@ const DownloadButton: React.FC<Props> = ({
   if (!items || items.length === 0) {
     return (
       <Button icon={<DownloadOutlined />} disabled={!enabled}>
-        <Link href={url ?? '#'} download={fileName} target="_self">
+        <a href={url ?? '#'} download={fileName} target="_self">
           {buttonLabel}
-        </Link>
+        </a>
       </Button>
     );
   }
@@ -74,9 +73,9 @@ const DownloadButton: React.FC<Props> = ({
     >
       <Space>
         <DownloadOutlined />
-        <Link href={url ?? '#'} download={fileName} target="_self">
+        <a href={url ?? '#'} download={fileName} target="_self">
           {buttonLabel}
-        </Link>
+        </a>
       </Space>
     </Dropdown.Button>
   );

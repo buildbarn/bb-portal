@@ -15,7 +15,7 @@ import {
 } from '@/graphql/__generated__/graphql';
 import themeStyles from '@/theme/theme.module.css';
 import { BuildOutlined } from '@ant-design/icons';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Space, Typography } from 'antd';
 import { FilterValue } from 'antd/lib/table/interface';
 import React from 'react';

@@ -24,22 +24,22 @@
       backends: [
         {
           otlpSpanExporter: {
-            address: "localhost:4317"
+            address: 'localhost:4317',
           },
-          batchSpanProcessor: {}
-        }
+          batchSpanProcessor: {},
+        },
       ],
       resourceAttributes: [
         {
-          key: "service.name",
+          key: 'service.name',
           value: {
-            stringValue: "bb-portal" 
-          }
-        }
+            stringValue: 'bb-portal',
+          },
+        },
       ],
       sampler: {
-        always: {}
-      }
+        always: {},
+      },
     },
     diagnosticsHttpServer: {
       httpServers: [{
@@ -51,8 +51,6 @@
       enableActiveSpans: true,
     },
   },
-  frontendProxyUrl: 'http://localhost:3000',
-  allowedOrigins: ['http://localhost:3000'],
 
   httpServers: [{
     listenAddresses: [':8081'],
@@ -111,6 +109,38 @@
       allow: {},
     },
     listOperationsPageSize: 500,
+  },
+
+  frontendServiceConfiguration: {
+    frontendSource: {
+      proxy: 'http://localhost:5173',
+    },
+    frontendConfig: {
+      companyName: 'Example Co',
+      grpcBackendUrl: 'grpc://localhost:8082',
+      featureFlags: {
+        home: {
+          fileUpload: {},
+          instructions: {},
+        },
+        bes: {
+          pageBuilds: {},
+          pageInvocations: {},
+          pageTargets: {},
+          pageTests: {},
+          pageTrends: {},
+        },
+        browser: {},
+        scheduler: {},
+      },
+      footerContent: [
+        {
+          text: 'Buildteam',
+          href: 'https://buildteamworld.slack.com/archives/CD6HZC750',
+          icon: { slack: {} },
+        },
+      ],
+    },
   },
 
 }

@@ -1,10 +1,10 @@
-'use client';
 
 import React, { Key, useState } from 'react';
 import { Layout, Menu, MenuProps } from 'antd';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { ItemType } from 'antd/es/menu/interface';
 import styles from '@/components/SiderBar/index.module.css';
+import { useLocation } from '@tanstack/react-router';
+import { getClosestKey } from '../Utilities/navigation';
 
 export const SIDEBAR_MENU_INLINE_INDENT = 24;
 
@@ -14,7 +14,7 @@ const SIDER_EXPANDED_WIDTH_LOCAL_STORAGE_KEY = 'sider-width';
 
 interface Props {
   menuKey?: Key;
-  items?: ItemType[];
+  items: ItemType[];
   defaultSelectedKeys?: Key[];
   defaultOpenKeys?: Key[];
   openKeys?: Key[];
@@ -31,12 +31,11 @@ const SiderBar: React.FC<Props> = ({
   onOpenChange,
   expandedWidth,
 }) => {
-  // This should be amended to put the search parameters in a known order
-  // Logic should then also be added to getItem() to sort them in the same order
-  // This is to enable the right menu items to be highlighted whenever they include search parameters
-  const searchParams = useSearchParams().toString();
-  const searchParamsKeySuffix = searchParams.length ? `?${searchParams}` : '';
-  const currentKey = `${usePathname()}${searchParamsKeySuffix}`;
+  const { pathname } = useLocation();
+  const closestKeyToPathname = getClosestKey(pathname, items);
+  const currentKeys = closestKeyToPathname
+    ? [closestKeyToPathname.toString()]
+    : [];
 
   const [siderWidth, setSiderWidth] = useState<number>(() => {
     const cachedExpandedState = window.localStorage.getItem(SIDER_EXPANDED_WIDTH_LOCAL_STORAGE_KEY);
@@ -53,7 +52,7 @@ const SiderBar: React.FC<Props> = ({
         mode="inline"
         defaultSelectedKeys={defaultSelectedKeys?.map(key => key.toString())}
         defaultOpenKeys={defaultOpenKeys?.map(key => key.toString())}
-        selectedKeys={[currentKey]}
+        selectedKeys={currentKeys}
         openKeys={openKeys?.map(key => key.toString())}
         onOpenChange={onOpenChange}
         onMouseMove={() => {

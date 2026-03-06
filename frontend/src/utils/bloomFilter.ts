@@ -77,34 +77,6 @@ export const containsPathHashes = (
   return true;
 };
 
-export const generateFileSystemReferenceQueryParams = (
-  fileSystemAccessProfileReference:
-    | FileSystemAccessProfileReference
-    | undefined,
-  pathHashes?: PathHashes,
-): ParsedUrlQueryInput | undefined => {
-  if (fileSystemAccessProfileReference === undefined) {
-    return undefined;
-  }
-
-  let newPathHash = pathHashes;
-
-  if (newPathHash === undefined) {
-    newPathHash = new PathHashes(
-      BigInt(fileSystemAccessProfileReference.pathHashesBaseHash),
-    );
-  }
-
-  return {
-    fileSystemAccessProfile: JSON.stringify(
-      FileSystemAccessProfileReference.toJSON({
-        digest: fileSystemAccessProfileReference.digest,
-        pathHashesBaseHash: newPathHash.baseHash.toString(),
-      }),
-    ),
-  };
-};
-
 export class PathHashes {
   baseHash: bigint;
   constructor(baseHash?: bigint) {
@@ -117,5 +89,9 @@ export class PathHashes {
       hash = (hash ^ BigInt(c.charCodeAt(0))) * FNV1A_PRIME;
     }
     return new PathHashes(BigInt.asUintN(64, hash));
+  }
+
+  toString(): string {
+    return this.baseHash.toString();
   }
 }

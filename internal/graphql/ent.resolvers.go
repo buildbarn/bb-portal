@@ -1144,7 +1144,18 @@ func (r *targetMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.Ta
 
 // ID is the resolver for the id field.
 func (r *targetWhereInputResolver) ID(ctx context.Context, obj *ent.TargetWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	if data == nil {
+		return nil
+	}
+	gqlType, dbID, err := helpers.GraphQLTypeAndIntIDFromID(*data)
+	if err != nil {
+		return fmt.Errorf("failed to parse invocation target ID: %w", err)
+	}
+	if gqlType != "Target" {
+		return fmt.Errorf("invalid ID type: expected Target, got %s", gqlType)
+	}
+	obj.ID = &dbID
+	return nil
 }
 
 // IDNeq is the resolver for the idNEQ field.

@@ -1,11 +1,12 @@
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { PreviousExecutionStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
-import type { BrowserPageParams } from "@/types/BrowserPageType";
+import { BrowserPageType, type BrowserPageParams } from "@/types/BrowserPageType";
 import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
 import { Descriptions, Space, Typography } from "antd";
-import Link from "next/link";
+import { Link } from '@tanstack/react-router';
 import PreviousExecutionsPlot from "../PreviousExecuteStatsPlot";
 import SizeClassOutcome from "../SizeClassOutcome";
+import { generateBrowserSplat } from "@/utils/urlGenerator";
 
 interface Props {
   browserParams: BrowserPageParams;
@@ -24,13 +25,13 @@ const BrowserPreviousExecutionsDisplay: React.FC<Props> = ({
     {showTitle && (
       <Typography.Title level={2}>
         <Link
-          href={`/browser/${
-            browserParams.instanceName
-          }/blobs/${digestFunctionValueToString(
+          to="/browser/$"
+          params={{_splat: generateBrowserSplat(
+            browserParams.instanceName,
             browserParams.digestFunction,
-          )}/previous_execution_stats/${
-            reducedActionDigest.hash
-          }-${reducedActionDigest.sizeBytes}`}
+            reducedActionDigest,
+            BrowserPageType.PreviousExecutionStats,
+          )}}
           style={{ textDecoration: "underline" }}
         >
           Previous execution stats

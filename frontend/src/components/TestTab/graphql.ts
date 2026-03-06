@@ -34,6 +34,7 @@ export const GET_TESTS_FOR_INVOCATION = gql(/* GraphQl */ `
           }
           invocationTarget {
             target {
+              id
               instanceName {
                 name
               }
