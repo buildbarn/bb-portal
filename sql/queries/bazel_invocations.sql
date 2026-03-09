@@ -49,10 +49,14 @@ WHERE bi.id = em.bazel_invocation_id
   AND bi.bep_completed = true
   AND bi.ended_at IS NULL;
 
--- name: DeleteOldInvocationsFromPages :execrows
+-- name: DeleteOldInvocations :execrows
 DELETE FROM bazel_invocations
-WHERE
-    ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
-    AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
-    AND ended_at < sqlc.arg(cutoff_time)::timestamptz
-    AND bep_completed = true;
+WHERE id IN (
+    SELECT id
+    FROM bazel_invocations
+    WHERE bep_completed = true
+      AND ended_at IS NOT NULL
+      AND ended_at < sqlc.arg(cutoff_time)::timestamptz
+    ORDER BY ended_at, id
+    LIMIT sqlc.arg(batch_size)::bigint
+);

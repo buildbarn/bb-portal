@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
+	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/google/uuid"
@@ -20,6 +21,12 @@ func TestRemoveOldInvocations(t *testing.T) {
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000200, 0)
 	traceProvider := noop.NewTracerProvider()
+
+	originalBatchSize := dbcleanupservice.DeleteOldInvocationsBatchSizeForTest()
+	dbcleanupservice.SetDeleteOldInvocationsBatchSizeForTest(2)
+	t.Cleanup(func() {
+		dbcleanupservice.SetDeleteOldInvocationsBatchSizeForTest(originalBatchSize)
+	})
 
 	t.Run("NoInvocations", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
@@ -67,6 +74,28 @@ func TestRemoveOldInvocations(t *testing.T) {
 			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-15 * time.Minute)).
+			Save(ctx)
+		require.NoError(t, err)
+
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
+		require.NoError(t, err)
+		clock.EXPECT().Now().Return(cleanupTime)
+		err = cleanup.RemoveOldInvocations(ctx)
+		require.NoError(t, err)
+
+		count, err := client.BazelInvocation.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 1, count)
+	})
+
+	t.Run("InvocationCompletedWithoutEndTime", func(t *testing.T) {
+		db := testutils.SetupTestDB(t, dbProvider)
+		client := db.Ent()
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		_, err := client.BazelInvocation.Create().
+			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
+			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -149,5 +178,30 @@ func TestRemoveOldInvocations(t *testing.T) {
 		count, err := client.BazelInvocation.Query().Count(ctx)
 		require.NoError(t, err)
 		require.Equal(t, 3, count)
+	})
+
+	t.Run("MultipleBatches", func(t *testing.T) {
+		db := testutils.SetupTestDB(t, dbProvider)
+		client := db.Ent()
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		for i := 0; i < 5; i++ {
+			_, err := client.BazelInvocation.Create().
+				SetInvocationID(uuid.New()).
+				SetInstanceNameID(instanceNameDbID).
+				SetBepCompleted(true).
+				SetEndedAt(cleanupTime.Add(time.Duration(-60-i) * time.Minute)).
+				Save(ctx)
+			require.NoError(t, err)
+		}
+
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
+		require.NoError(t, err)
+		clock.EXPECT().Now().Return(cleanupTime)
+		err = cleanup.RemoveOldInvocations(ctx)
+		require.NoError(t, err)
+
+		count, err := client.BazelInvocation.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 0, count)
 	})
 }

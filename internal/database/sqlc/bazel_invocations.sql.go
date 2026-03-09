@@ -49,23 +49,26 @@ func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvo
 	return id, err
 }
 
-const deleteOldInvocationsFromPages = `-- name: DeleteOldInvocationsFromPages :execrows
+const deleteOldInvocations = `-- name: DeleteOldInvocations :execrows
 DELETE FROM bazel_invocations
-WHERE
-    ctid >= format('(%s,0)', $1::bigint)::tid
-    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND ended_at < $3::timestamptz
-    AND bep_completed = true
+WHERE id IN (
+    SELECT id
+    FROM bazel_invocations
+    WHERE bep_completed = true
+      AND ended_at IS NOT NULL
+      AND ended_at < $1::timestamptz
+    ORDER BY ended_at, id
+    LIMIT $2::bigint
+)
 `
 
-type DeleteOldInvocationsFromPagesParams struct {
-	FromPage   int64
-	Pages      int64
+type DeleteOldInvocationsParams struct {
 	CutoffTime time.Time
+	BatchSize  int64
 }
 
-func (q *Queries) DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteOldInvocationsFromPages, arg.FromPage, arg.Pages, arg.CutoffTime)
+func (q *Queries) DeleteOldInvocations(ctx context.Context, arg DeleteOldInvocationsParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteOldInvocations, arg.CutoffTime, arg.BatchSize)
 	if err != nil {
 		return 0, err
 	}
