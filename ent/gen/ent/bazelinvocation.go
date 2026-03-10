@@ -126,7 +126,7 @@ type BazelInvocationEdges struct {
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [14]bool
 	// totalCount holds the count of the edges above.
-	totalCount [9]map[string]int
+	totalCount [8]map[string]int
 
 	namedConnectionMetadata  map[string][]*ConnectionMetadata
 	namedConfigurations      map[string][]*Configuration

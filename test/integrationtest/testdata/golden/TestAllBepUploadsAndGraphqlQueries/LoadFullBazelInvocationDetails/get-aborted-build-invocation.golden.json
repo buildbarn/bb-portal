@@ -282,11 +282,6 @@
         "topLevelArtifactsCount": 0,
         "topLevelArtifactsSizeInBytes": 0
       },
-      "cumulativeMetrics": {
-        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6Nw==",
-        "numAnalyses": 9,
-        "numBuilds": 8
-      },
       "id": "TWV0cmljczo3",
       "memoryMetrics": {
         "garbageMetrics": [
@@ -324,11 +319,6 @@
           "peakPacketsRecvPerSec": 20403,
           "peakPacketsSentPerSec": 0
         }
-      },
-      "packageMetrics": {
-        "id": "UGFja2FnZU1ldHJpY3M6Nw==",
-        "packageLoadMetrics": [],
-        "packagesLoaded": 1324
       },
       "targetMetrics": {
         "id": "VGFyZ2V0TWV0cmljczo3",

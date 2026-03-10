@@ -368,11 +368,6 @@
         "topLevelArtifactsCount": 240,
         "topLevelArtifactsSizeInBytes": 443979231
       },
-      "cumulativeMetrics": {
-        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6OA==",
-        "numAnalyses": 14,
-        "numBuilds": 13
-      },
       "id": "TWV0cmljczo4",
       "memoryMetrics": {
         "garbageMetrics": [],
@@ -394,11 +389,6 @@
           "peakPacketsRecvPerSec": 20403,
           "peakPacketsSentPerSec": 0
         }
-      },
-      "packageMetrics": {
-        "id": "UGFja2FnZU1ldHJpY3M6OA==",
-        "packageLoadMetrics": [],
-        "packagesLoaded": 0
       },
       "targetMetrics": {
         "id": "VGFyZ2V0TWV0cmljczo4",

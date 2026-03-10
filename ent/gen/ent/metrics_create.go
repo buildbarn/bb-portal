@@ -14,11 +14,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
@@ -113,25 +111,6 @@ func (mc *MetricsCreate) SetTargetMetrics(t *TargetMetrics) *MetricsCreate {
 	return mc.SetTargetMetricsID(t.ID)
 }
 
-// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (mc *MetricsCreate) SetPackageMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetPackageMetricsID(id)
-	return mc
-}
-
-// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillablePackageMetricsID(id *int64) *MetricsCreate {
-	if id != nil {
-		mc = mc.SetPackageMetricsID(*id)
-	}
-	return mc
-}
-
-// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
-func (mc *MetricsCreate) SetPackageMetrics(p *PackageMetrics) *MetricsCreate {
-	return mc.SetPackageMetricsID(p.ID)
-}
-
 // SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID.
 func (mc *MetricsCreate) SetTimingMetricsID(id int64) *MetricsCreate {
 	mc.mutation.SetTimingMetricsID(id)
@@ -149,25 +128,6 @@ func (mc *MetricsCreate) SetNillableTimingMetricsID(id *int64) *MetricsCreate {
 // SetTimingMetrics sets the "timing_metrics" edge to the TimingMetrics entity.
 func (mc *MetricsCreate) SetTimingMetrics(t *TimingMetrics) *MetricsCreate {
 	return mc.SetTimingMetricsID(t.ID)
-}
-
-// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
-func (mc *MetricsCreate) SetCumulativeMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetCumulativeMetricsID(id)
-	return mc
-}
-
-// SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableCumulativeMetricsID(id *int64) *MetricsCreate {
-	if id != nil {
-		mc = mc.SetCumulativeMetricsID(*id)
-	}
-	return mc
-}
-
-// SetCumulativeMetrics sets the "cumulative_metrics" edge to the CumulativeMetrics entity.
-func (mc *MetricsCreate) SetCumulativeMetrics(c *CumulativeMetrics) *MetricsCreate {
-	return mc.SetCumulativeMetricsID(c.ID)
 }
 
 // SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
@@ -359,22 +319,6 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.PackageMetricsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   metrics.PackageMetricsTable,
-			Columns: []string{metrics.PackageMetricsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	if nodes := mc.mutation.TimingMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -384,22 +328,6 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := mc.mutation.CumulativeMetricsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   metrics.CumulativeMetricsTable,
-			Columns: []string{metrics.CumulativeMetricsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

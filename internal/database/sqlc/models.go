@@ -140,10 +140,6 @@ type BuildGraphMetric struct {
 	OtherConfiguredTargetCount                sql.NullInt32
 	OutputArtifactCount                       sql.NullInt32
 	PostInvocationSkyframeNodeCount           sql.NullInt32
-	BuildGraphMetricsDirtiedValues            sql.NullInt64
-	BuildGraphMetricsChangedValues            sql.NullInt64
-	BuildGraphMetricsBuiltValues              sql.NullInt64
-	BuildGraphMetricsCleanedValues            sql.NullInt64
 	MetricsBuildGraphMetrics                  sql.NullInt64
 }
 
@@ -171,20 +167,6 @@ type ConnectionMetadatum struct {
 	ID                                int64
 	ConnectionLastOpenAt              time.Time
 	BazelInvocationConnectionMetadata int64
-}
-
-type CumulativeMetric struct {
-	ID                       int64
-	NumAnalyses              sql.NullInt32
-	NumBuilds                sql.NullInt32
-	MetricsCumulativeMetrics sql.NullInt64
-}
-
-type EvaluationStat struct {
-	ID                               int64
-	SkyfunctionName                  sql.NullString
-	Count                            sql.NullInt64
-	BuildGraphMetricsEvaluatedValues sql.NullInt64
 }
 
 type EventMetadatum struct {
@@ -263,28 +245,40 @@ type NetworkMetric struct {
 	MetricsNetworkMetrics sql.NullInt64
 }
 
-type PackageLoadMetric struct {
-	ID                               int64
-	Name                             sql.NullString
-	LoadDuration                     sql.NullInt64
-	NumTargets                       sql.NullInt64
-	ComputationSteps                 sql.NullInt64
-	NumTransitiveLoads               sql.NullInt64
-	PackageOverhead                  sql.NullInt64
-	PackageMetricsPackageLoadMetrics sql.NullInt64
-}
-
-type PackageMetric struct {
-	ID                    int64
-	PackagesLoaded        sql.NullInt64
-	MetricsPackageMetrics sql.NullInt64
+type PgAttribute struct {
+	Attrelid interface{}
+	Attname  string
+	Attnum   int16
 }
 
 type PgClass struct {
 	Oid            interface{}
 	Relname        string
+	Relnamespace   interface{}
 	Relpages       int32
 	Relispartition bool
+}
+
+type PgConstraint struct {
+	Oid          interface{}
+	Conname      string
+	Connamespace interface{}
+	Contype      string
+	Conrelid     interface{}
+	Confrelid    interface{}
+	Conkey       []int16
+}
+
+type PgIndex struct {
+	Indexrelid interface{}
+	Indrelid   interface{}
+	Indisvalid bool
+	Indkey     interface{}
+}
+
+type PgNamespace struct {
+	Oid     interface{}
+	Nspname string
 }
 
 type RunnerCount struct {

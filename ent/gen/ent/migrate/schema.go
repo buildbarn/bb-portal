@@ -59,6 +59,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{ActionsColumns[17]},
 			},
+			{
+				Name:    "action_configuration_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionsColumns[16]},
+			},
 		},
 	}
 	// ActionCacheStatisticsColumns holds the columns for the "action_cache_statistics" table.
@@ -297,6 +302,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{BazelInvocationsColumns[32]},
 			},
+			{
+				Name:    "bazelinvocation_authenticated_user_bazel_invocations",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationsColumns[30]},
+			},
 		},
 	}
 	// BuildsColumns holds the columns for the "builds" table.
@@ -337,6 +347,11 @@ var (
 				Columns: []*schema.Column{BuildsColumns[3]},
 			},
 			{
+				Name:    "build_instance_name_builds",
+				Unique:  false,
+				Columns: []*schema.Column{BuildsColumns[4]},
+			},
+			{
 				Name:    "build_build_url_instance_name_builds",
 				Unique:  true,
 				Columns: []*schema.Column{BuildsColumns[1], BuildsColumns[4]},
@@ -355,10 +370,6 @@ var (
 		{Name: "other_configured_target_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "output_artifact_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "post_invocation_skyframe_node_count", Type: field.TypeInt32, Nullable: true},
-		{Name: "build_graph_metrics_dirtied_values", Type: field.TypeInt64, Nullable: true},
-		{Name: "build_graph_metrics_changed_values", Type: field.TypeInt64, Nullable: true},
-		{Name: "build_graph_metrics_built_values", Type: field.TypeInt64, Nullable: true},
-		{Name: "build_graph_metrics_cleaned_values", Type: field.TypeInt64, Nullable: true},
 		{Name: "metrics_build_graph_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
 	}
 	// BuildGraphMetricsTable holds the schema information for the "build_graph_metrics" table.
@@ -368,32 +379,8 @@ var (
 		PrimaryKey: []*schema.Column{BuildGraphMetricsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "build_graph_metrics_evaluation_stats_dirtied_values",
-				Columns:    []*schema.Column{BuildGraphMetricsColumns[10]},
-				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "build_graph_metrics_evaluation_stats_changed_values",
-				Columns:    []*schema.Column{BuildGraphMetricsColumns[11]},
-				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "build_graph_metrics_evaluation_stats_built_values",
-				Columns:    []*schema.Column{BuildGraphMetricsColumns[12]},
-				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "build_graph_metrics_evaluation_stats_cleaned_values",
-				Columns:    []*schema.Column{BuildGraphMetricsColumns[13]},
-				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
 				Symbol:     "build_graph_metrics_metrics_build_graph_metrics",
-				Columns:    []*schema.Column{BuildGraphMetricsColumns[14]},
+				Columns:    []*schema.Column{BuildGraphMetricsColumns[10]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -402,7 +389,7 @@ var (
 			{
 				Name:    "buildgraphmetrics_metrics_build_graph_metrics",
 				Unique:  false,
-				Columns: []*schema.Column{BuildGraphMetricsColumns[14]},
+				Columns: []*schema.Column{BuildGraphMetricsColumns[10]},
 			},
 		},
 	}
@@ -433,6 +420,11 @@ var (
 				Name:    "buildlogchunk_chunk_index_bazel_invocation_build_log_chunks",
 				Unique:  true,
 				Columns: []*schema.Column{BuildLogChunksColumns[2], BuildLogChunksColumns[5]},
+			},
+			{
+				Name:    "buildlogchunk_bazel_invocation_build_log_chunks",
+				Unique:  false,
+				Columns: []*schema.Column{BuildLogChunksColumns[5]},
 			},
 		},
 	}
@@ -502,55 +494,6 @@ var (
 				Name:    "connectionmetadata_bazel_invocation_connection_metadata",
 				Unique:  true,
 				Columns: []*schema.Column{ConnectionMetadataColumns[2]},
-			},
-		},
-	}
-	// CumulativeMetricsColumns holds the columns for the "cumulative_metrics" table.
-	CumulativeMetricsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "num_analyses", Type: field.TypeInt32, Nullable: true},
-		{Name: "num_builds", Type: field.TypeInt32, Nullable: true},
-		{Name: "metrics_cumulative_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
-	}
-	// CumulativeMetricsTable holds the schema information for the "cumulative_metrics" table.
-	CumulativeMetricsTable = &schema.Table{
-		Name:       "cumulative_metrics",
-		Columns:    CumulativeMetricsColumns,
-		PrimaryKey: []*schema.Column{CumulativeMetricsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "cumulative_metrics_metrics_cumulative_metrics",
-				Columns:    []*schema.Column{CumulativeMetricsColumns[3]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "cumulativemetrics_metrics_cumulative_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{CumulativeMetricsColumns[3]},
-			},
-		},
-	}
-	// EvaluationStatsColumns holds the columns for the "evaluation_stats" table.
-	EvaluationStatsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "skyfunction_name", Type: field.TypeString, Nullable: true},
-		{Name: "count", Type: field.TypeInt64, Nullable: true},
-		{Name: "build_graph_metrics_evaluated_values", Type: field.TypeInt64, Unique: true, Nullable: true},
-	}
-	// EvaluationStatsTable holds the schema information for the "evaluation_stats" table.
-	EvaluationStatsTable = &schema.Table{
-		Name:       "evaluation_stats",
-		Columns:    EvaluationStatsColumns,
-		PrimaryKey: []*schema.Column{EvaluationStatsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "evaluation_stats_build_graph_metrics_evaluated_values",
-				Columns:    []*schema.Column{EvaluationStatsColumns[3]},
-				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -859,65 +802,6 @@ var (
 				Name:    "networkmetrics_metrics_network_metrics",
 				Unique:  false,
 				Columns: []*schema.Column{NetworkMetricsColumns[1]},
-			},
-		},
-	}
-	// PackageLoadMetricsColumns holds the columns for the "package_load_metrics" table.
-	PackageLoadMetricsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "load_duration", Type: field.TypeInt64, Nullable: true},
-		{Name: "num_targets", Type: field.TypeUint64, Nullable: true},
-		{Name: "computation_steps", Type: field.TypeUint64, Nullable: true},
-		{Name: "num_transitive_loads", Type: field.TypeUint64, Nullable: true},
-		{Name: "package_overhead", Type: field.TypeUint64, Nullable: true},
-		{Name: "package_metrics_package_load_metrics", Type: field.TypeInt64, Nullable: true},
-	}
-	// PackageLoadMetricsTable holds the schema information for the "package_load_metrics" table.
-	PackageLoadMetricsTable = &schema.Table{
-		Name:       "package_load_metrics",
-		Columns:    PackageLoadMetricsColumns,
-		PrimaryKey: []*schema.Column{PackageLoadMetricsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "package_load_metrics_package_metrics_package_load_metrics",
-				Columns:    []*schema.Column{PackageLoadMetricsColumns[7]},
-				RefColumns: []*schema.Column{PackageMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "packageloadmetrics_package_metrics_package_load_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{PackageLoadMetricsColumns[7]},
-			},
-		},
-	}
-	// PackageMetricsColumns holds the columns for the "package_metrics" table.
-	PackageMetricsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "packages_loaded", Type: field.TypeInt64, Nullable: true},
-		{Name: "metrics_package_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
-	}
-	// PackageMetricsTable holds the schema information for the "package_metrics" table.
-	PackageMetricsTable = &schema.Table{
-		Name:       "package_metrics",
-		Columns:    PackageMetricsColumns,
-		PrimaryKey: []*schema.Column{PackageMetricsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "package_metrics_metrics_package_metrics",
-				Columns:    []*schema.Column{PackageMetricsColumns[2]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "packagemetrics_metrics_package_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{PackageMetricsColumns[2]},
 			},
 		},
 	}
@@ -1263,8 +1147,6 @@ var (
 		BuildLogChunksTable,
 		ConfigurationsTable,
 		ConnectionMetadataTable,
-		CumulativeMetricsTable,
-		EvaluationStatsTable,
 		EventMetadataTable,
 		GarbageMetricsTable,
 		IncompleteBuildLogsTable,
@@ -1275,8 +1157,6 @@ var (
 		MetricsTable,
 		MissDetailsTable,
 		NetworkMetricsTable,
-		PackageLoadMetricsTable,
-		PackageMetricsTable,
 		RunnerCountsTable,
 		SourceControlsTable,
 		SystemNetworkStatsTable,
@@ -1300,16 +1180,10 @@ func init() {
 	BazelInvocationsTable.ForeignKeys[1].RefTable = BuildsTable
 	BazelInvocationsTable.ForeignKeys[2].RefTable = InstanceNamesTable
 	BuildsTable.ForeignKeys[0].RefTable = InstanceNamesTable
-	BuildGraphMetricsTable.ForeignKeys[0].RefTable = EvaluationStatsTable
-	BuildGraphMetricsTable.ForeignKeys[1].RefTable = EvaluationStatsTable
-	BuildGraphMetricsTable.ForeignKeys[2].RefTable = EvaluationStatsTable
-	BuildGraphMetricsTable.ForeignKeys[3].RefTable = EvaluationStatsTable
-	BuildGraphMetricsTable.ForeignKeys[4].RefTable = MetricsTable
+	BuildGraphMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConfigurationsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	EvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
@@ -1321,8 +1195,6 @@ func init() {
 	MetricsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	MissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable
 	NetworkMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	PackageLoadMetricsTable.ForeignKeys[0].RefTable = PackageMetricsTable
-	PackageMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	SourceControlsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	SystemNetworkStatsTable.ForeignKeys[0].RefTable = NetworkMetricsTable

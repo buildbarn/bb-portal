@@ -6,7 +6,6 @@ import (
 	"log/slog"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
-	besmetrics "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics"
 	bescore "github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-storage/pkg/util"
@@ -181,7 +180,6 @@ func (r *buildEventRecorder) saveBuildGraphMetrics(ctx context.Context, tx *ent.
 		return nil
 	}
 
-	// TODO:implement EvalutionStats once they exist on the proto
 	err := tx.BuildGraphMetrics.Create().
 		SetActionLookupValueCount(buildGraphMetrics.ActionLookupValueCount).
 		SetActionLookupValueCountNotIncludingAspects(buildGraphMetrics.ActionLookupValueCountNotIncludingAspects).
@@ -195,22 +193,6 @@ func (r *buildEventRecorder) saveBuildGraphMetrics(ctx context.Context, tx *ent.
 		Exec(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save build graph metrics to database")
-	}
-	return nil
-}
-
-func (r *buildEventRecorder) saveCumulativeMetrics(ctx context.Context, tx *ent.Client, cumulativeMetrics *bes.BuildMetrics_CumulativeMetrics, metricsDbID int64) error {
-	if cumulativeMetrics == nil {
-		return nil
-	}
-
-	err := tx.CumulativeMetrics.Create().
-		SetNumAnalyses(cumulativeMetrics.NumAnalyses).
-		SetNumBuilds(cumulativeMetrics.NumBuilds).
-		SetMetricsID(metricsDbID).
-		Exec(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save cumulative metrics to database")
 	}
 	return nil
 }
@@ -296,50 +278,6 @@ func (r *buildEventRecorder) saveNetworkMetrics(ctx context.Context, tx *ent.Cli
 	return nil
 }
 
-func (r *buildEventRecorder) savePackageLoadMetrics(ctx context.Context, tx *ent.Client, packageLoadMetrics []*besmetrics.PackageLoadMetrics, packageMetricsDbID int64) error {
-	if packageLoadMetrics == nil {
-		return nil
-	}
-
-	err := tx.PackageLoadMetrics.MapCreateBulk(packageLoadMetrics, func(create *ent.PackageLoadMetricsCreate, i int) {
-		packageLoadMetric := packageLoadMetrics[i]
-		plm := create.
-			SetPackageMetricsID(packageMetricsDbID).
-			SetName(*packageLoadMetric.Name).
-			SetNumTargets(*packageLoadMetric.NumTargets).
-			SetComputationSteps(*packageLoadMetric.ComputationSteps).
-			SetNumTransitiveLoads(*packageLoadMetric.NumTransitiveLoads).
-			SetPackageOverhead(*packageLoadMetric.PackageOverhead)
-		if packageLoadMetric.LoadDuration != nil {
-			plm.SetLoadDuration(packageLoadMetric.LoadDuration.AsDuration().Milliseconds())
-		}
-	}).Exec(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save package load metrics to database")
-	}
-	return nil
-}
-
-func (r *buildEventRecorder) savePackageMetrics(ctx context.Context, tx *ent.Client, packageMetrics *bes.BuildMetrics_PackageMetrics, metricsDbID int64) error {
-	if packageMetrics == nil {
-		return nil
-	}
-
-	packageMetricsDb, err := tx.PackageMetrics.Create().
-		SetPackagesLoaded(packageMetrics.PackagesLoaded).
-		SetMetricsID(metricsDbID).
-		Save(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save package metrics to database")
-	}
-
-	err = r.savePackageLoadMetrics(ctx, tx, packageMetrics.PackageLoadMetrics, packageMetricsDb.ID)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save package load metrics")
-	}
-	return nil
-}
-
 func (r *buildEventRecorder) saveTargetMetrics(ctx context.Context, tx *ent.Client, targetMetrics *bes.BuildMetrics_TargetMetrics, metricsDbID int64) error {
 	if targetMetrics == nil {
 		return nil
@@ -401,17 +339,9 @@ func (r *buildEventRecorder) saveBuildMetrics(ctx context.Context, tx *ent.Clien
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save build graph metrics")
 	}
-	err = r.saveCumulativeMetrics(ctx, tx, metrics.CumulativeMetrics, metricsDb.ID)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save cumulative metrics")
-	}
 	err = r.saveMemoryMetrics(ctx, tx, metrics.MemoryMetrics, metricsDb.ID)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save memory metrics")
-	}
-	err = r.savePackageMetrics(ctx, tx, metrics.PackageMetrics, metricsDb.ID)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save package metrics")
 	}
 	err = r.saveNetworkMetrics(ctx, tx, metrics.NetworkMetrics, metricsDb.ID)
 	if err != nil {

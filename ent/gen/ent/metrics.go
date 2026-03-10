@@ -12,11 +12,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
@@ -43,12 +41,8 @@ type MetricsEdges struct {
 	MemoryMetrics *MemoryMetrics `json:"memory_metrics,omitempty"`
 	// TargetMetrics holds the value of the target_metrics edge.
 	TargetMetrics *TargetMetrics `json:"target_metrics,omitempty"`
-	// PackageMetrics holds the value of the package_metrics edge.
-	PackageMetrics *PackageMetrics `json:"package_metrics,omitempty"`
 	// TimingMetrics holds the value of the timing_metrics edge.
 	TimingMetrics *TimingMetrics `json:"timing_metrics,omitempty"`
-	// CumulativeMetrics holds the value of the cumulative_metrics edge.
-	CumulativeMetrics *CumulativeMetrics `json:"cumulative_metrics,omitempty"`
 	// ArtifactMetrics holds the value of the artifact_metrics edge.
 	ArtifactMetrics *ArtifactMetrics `json:"artifact_metrics,omitempty"`
 	// NetworkMetrics holds the value of the network_metrics edge.
@@ -57,9 +51,9 @@ type MetricsEdges struct {
 	BuildGraphMetrics *BuildGraphMetrics `json:"build_graph_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [10]bool
+	loadedTypes [8]bool
 	// totalCount holds the count of the edges above.
-	totalCount [10]map[string]int
+	totalCount [8]map[string]int
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -106,37 +100,15 @@ func (e MetricsEdges) TargetMetricsOrErr() (*TargetMetrics, error) {
 	return nil, &NotLoadedError{edge: "target_metrics"}
 }
 
-// PackageMetricsOrErr returns the PackageMetrics value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e MetricsEdges) PackageMetricsOrErr() (*PackageMetrics, error) {
-	if e.PackageMetrics != nil {
-		return e.PackageMetrics, nil
-	} else if e.loadedTypes[4] {
-		return nil, &NotFoundError{label: packagemetrics.Label}
-	}
-	return nil, &NotLoadedError{edge: "package_metrics"}
-}
-
 // TimingMetricsOrErr returns the TimingMetrics value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e MetricsEdges) TimingMetricsOrErr() (*TimingMetrics, error) {
 	if e.TimingMetrics != nil {
 		return e.TimingMetrics, nil
-	} else if e.loadedTypes[5] {
+	} else if e.loadedTypes[4] {
 		return nil, &NotFoundError{label: timingmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "timing_metrics"}
-}
-
-// CumulativeMetricsOrErr returns the CumulativeMetrics value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e MetricsEdges) CumulativeMetricsOrErr() (*CumulativeMetrics, error) {
-	if e.CumulativeMetrics != nil {
-		return e.CumulativeMetrics, nil
-	} else if e.loadedTypes[6] {
-		return nil, &NotFoundError{label: cumulativemetrics.Label}
-	}
-	return nil, &NotLoadedError{edge: "cumulative_metrics"}
 }
 
 // ArtifactMetricsOrErr returns the ArtifactMetrics value or an error if the edge
@@ -144,7 +116,7 @@ func (e MetricsEdges) CumulativeMetricsOrErr() (*CumulativeMetrics, error) {
 func (e MetricsEdges) ArtifactMetricsOrErr() (*ArtifactMetrics, error) {
 	if e.ArtifactMetrics != nil {
 		return e.ArtifactMetrics, nil
-	} else if e.loadedTypes[7] {
+	} else if e.loadedTypes[5] {
 		return nil, &NotFoundError{label: artifactmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "artifact_metrics"}
@@ -155,7 +127,7 @@ func (e MetricsEdges) ArtifactMetricsOrErr() (*ArtifactMetrics, error) {
 func (e MetricsEdges) NetworkMetricsOrErr() (*NetworkMetrics, error) {
 	if e.NetworkMetrics != nil {
 		return e.NetworkMetrics, nil
-	} else if e.loadedTypes[8] {
+	} else if e.loadedTypes[6] {
 		return nil, &NotFoundError{label: networkmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "network_metrics"}
@@ -166,7 +138,7 @@ func (e MetricsEdges) NetworkMetricsOrErr() (*NetworkMetrics, error) {
 func (e MetricsEdges) BuildGraphMetricsOrErr() (*BuildGraphMetrics, error) {
 	if e.BuildGraphMetrics != nil {
 		return e.BuildGraphMetrics, nil
-	} else if e.loadedTypes[9] {
+	} else if e.loadedTypes[7] {
 		return nil, &NotFoundError{label: buildgraphmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "build_graph_metrics"}
@@ -242,19 +214,9 @@ func (m *Metrics) QueryTargetMetrics() *TargetMetricsQuery {
 	return NewMetricsClient(m.config).QueryTargetMetrics(m)
 }
 
-// QueryPackageMetrics queries the "package_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryPackageMetrics() *PackageMetricsQuery {
-	return NewMetricsClient(m.config).QueryPackageMetrics(m)
-}
-
 // QueryTimingMetrics queries the "timing_metrics" edge of the Metrics entity.
 func (m *Metrics) QueryTimingMetrics() *TimingMetricsQuery {
 	return NewMetricsClient(m.config).QueryTimingMetrics(m)
-}
-
-// QueryCumulativeMetrics queries the "cumulative_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryCumulativeMetrics() *CumulativeMetricsQuery {
-	return NewMetricsClient(m.config).QueryCumulativeMetrics(m)
 }
 
 // QueryArtifactMetrics queries the "artifact_metrics" edge of the Metrics entity.
