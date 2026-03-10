@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"flag"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -56,16 +58,18 @@ import (
 const (
 	readHeaderTimeout = 3 * time.Second
 	folderPermission  = 0o750
+	cleanupWorkerFlag = "cleanup-worker-only"
 )
 
 func main() {
 	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
-		if len(os.Args) != 2 {
-			return status.Error(codes.InvalidArgument, "Usage: bb_portal bb_portal.jsonnet")
+		configurationPath, runCleanupWorkerOnly, err := parseArguments(os.Args)
+		if err != nil {
+			return err
 		}
 		var configuration bb_portal.ApplicationConfiguration
-		if err := util.UnmarshalConfigurationFromFile(os.Args[1], &configuration); err != nil {
-			return util.StatusWrapf(err, "Failed to read configuration from %s", os.Args[1])
+		if err := util.UnmarshalConfigurationFromFile(configurationPath, &configuration); err != nil {
+			return util.StatusWrapf(err, "Failed to read configuration from %s", configurationPath)
 		}
 
 		prometheusmetrics.RegisterMetrics()
@@ -79,6 +83,16 @@ func main() {
 		if tracerProvider == nil || reflect.ValueOf(tracerProvider).IsNil() {
 			return status.Error(codes.Internal, "Otel tracer provider is nil")
 		}
+
+		if runCleanupWorkerOnly {
+			log.Println("Starting in cleanup worker only mode")
+			if err := startBuildEventStreamCleanupWorker(ctx, &configuration, dependenciesGroup, tracerProvider); err != nil {
+				return util.StatusWrap(err, "Failed to start BES cleanup worker")
+			}
+			lifecycleState.MarkReadyAndWait(siblingsGroup)
+			return nil
+		}
+
 		router := mux.NewRouter()
 		router.Use(otelmux.Middleware("bb-portal-http", otelmux.WithTracerProvider(tracerProvider)))
 
@@ -113,36 +127,56 @@ func main() {
 	})
 }
 
-func newBuildEventStreamService(
-	configuration *bb_portal.ApplicationConfiguration,
-	siblingsGroup program.Group,
-	dependenciesGroup program.Group,
-	grpcClientFactory bb_grpc.ClientFactory,
-	router *mux.Router,
-	tracerProvider trace.TracerProvider,
-) error {
-	besConfiguration := configuration.BesServiceConfiguration
-	if besConfiguration == nil {
-		log.Printf("Did not start BuildEventStream service because buildEventStreamConfiguration is not configured")
-		return nil
+func parseArguments(args []string) (string, bool, error) {
+	flagSet := flag.NewFlagSet(args[0], flag.ContinueOnError)
+	flagSet.SetOutput(io.Discard)
+	runCleanupWorkerOnly := flagSet.Bool(cleanupWorkerFlag, false, "Run only the BES cleanup worker")
+	if err := flagSet.Parse(args[1:]); err != nil {
+		return "", false, status.Errorf(codes.InvalidArgument, "Failed to parse flags: %v", err)
 	}
+	if flagSet.NArg() != 1 {
+		return "", false, status.Error(codes.InvalidArgument, "Usage: bb_portal [--cleanup-worker-only] bb_portal.jsonnet")
+	}
+	return flagSet.Arg(0), *runCleanupWorkerOnly, nil
+}
 
+func newBuildEventStreamDatabaseClient(
+	besConfiguration *bb_portal.BuildEventStreamService,
+	tracerProvider trace.TracerProvider,
+) (database.Client, error) {
 	dialect, connection, err := common.NewSQLConnectionFromConfiguration(besConfiguration.Database, tracerProvider)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to connect to database for BuildEventStreamService")
+		return nil, util.StatusWrap(err, "Failed to connect to database for BuildEventStreamService")
 	}
 
 	dbClient, err := database.New(dialect, connection)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to create database client from connection")
+		return nil, util.StatusWrap(err, "Failed to create database client from connection")
 	}
 
 	// Attempt to migrate towards ents model.
 	if err = dbClient.Ent().Schema.Create(context.Background(), migrate.WithDropIndex(true)); err != nil {
-		return util.StatusWrap(err, "Could not automatically migrate to desired schema")
+		return nil, util.StatusWrap(err, "Could not automatically migrate to desired schema")
+	}
+	return dbClient, nil
+}
+
+func startBuildEventStreamCleanupWorker(
+	ctx context.Context,
+	configuration *bb_portal.ApplicationConfiguration,
+	dependenciesGroup program.Group,
+	tracerProvider trace.TracerProvider,
+) error {
+	besConfiguration := configuration.BesServiceConfiguration
+	if besConfiguration == nil {
+		return status.Error(codes.InvalidArgument, "BuildEventStreamService must be configured when running cleanup worker")
 	}
 
-	// Configure the database cleanup service.
+	dbClient, err := newBuildEventStreamDatabaseClient(besConfiguration, tracerProvider)
+	if err != nil {
+		return err
+	}
+
 	cleanupConfiguration := besConfiguration.DatabaseCleanupConfiguration
 	if cleanupConfiguration == nil {
 		return status.Error(codes.InvalidArgument, "No databaseCleanupConfiguration configured for BuildEventStreamService")
@@ -158,7 +192,34 @@ func newBuildEventStreamService(
 		return util.StatusWrap(err, "Failed to create DatabaseCleanupService")
 	}
 
-	databaseCleanerService.StartDbCleanupService(context.Background(), dependenciesGroup)
+	databaseCleanerService.StartDbCleanupService(ctx, dependenciesGroup)
+	return nil
+}
+
+func newBuildEventStreamService(
+	configuration *bb_portal.ApplicationConfiguration,
+	siblingsGroup program.Group,
+	dependenciesGroup program.Group,
+	grpcClientFactory bb_grpc.ClientFactory,
+	router *mux.Router,
+	tracerProvider trace.TracerProvider,
+) error {
+	besConfiguration := configuration.BesServiceConfiguration
+	if besConfiguration == nil {
+		log.Printf("Did not start BuildEventStream service because buildEventStreamConfiguration is not configured")
+		return nil
+	}
+
+	dbClient, err := newBuildEventStreamDatabaseClient(besConfiguration, tracerProvider)
+	if err != nil {
+		return err
+	}
+
+	// Configure the database cleanup service.
+	cleanupConfiguration := besConfiguration.DatabaseCleanupConfiguration
+	if cleanupConfiguration == nil {
+		return status.Error(codes.InvalidArgument, "No databaseCleanupConfiguration configured for BuildEventStreamService")
+	}
 
 	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
 	if err != nil {
