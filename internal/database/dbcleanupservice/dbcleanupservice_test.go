@@ -94,6 +94,10 @@ func TestCompactLogs(t *testing.T) {
 	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	traceProvider := noop.NewTracerProvider()
+	originalBatchSize := dbcleanupservice.CompactLogsBatchSizeForTest()
+	t.Cleanup(func() {
+		dbcleanupservice.SetCompactLogsBatchSizeForTest(originalBatchSize)
+	})
 
 	t.Run("FinishedInvocationWithoutIncompleteLog", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
@@ -194,6 +198,52 @@ func TestCompactLogs(t *testing.T) {
 		err = cleanup.DeleteIncompleteLogs(ctx)
 		require.NoError(t, err)
 		requireIncompleteLogCount(t, client, 6)
+	})
+
+	t.Run("ProcessesFixedBatchPerRun", func(t *testing.T) {
+		dbcleanupservice.SetCompactLogsBatchSizeForTest(1)
+		t.Cleanup(func() {
+			dbcleanupservice.SetCompactLogsBatchSizeForTest(originalBatchSize)
+		})
+		db := testutils.SetupTestDB(t, dbProvider)
+		client := db.Ent()
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		firstInvocation, err := client.BazelInvocation.Create().
+			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
+			SetBepCompleted(true).
+			Save(ctx)
+		require.NoError(t, err)
+		secondInvocation, err := client.BazelInvocation.Create().
+			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
+			SetBepCompleted(true).
+			Save(ctx)
+		require.NoError(t, err)
+
+		populateIncompleteBuildLog(t, ctx, client, firstInvocation.ID)
+		populateIncompleteBuildLog(t, ctx, client, secondInvocation.ID)
+
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
+		require.NoError(t, err)
+
+		err = cleanup.CompactLogs(ctx)
+		require.NoError(t, err)
+
+		count, err := client.BazelInvocation.Query().
+			Where(bazelinvocation.HasBuildLogChunks()).
+			Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 1, count)
+
+		err = cleanup.CompactLogs(ctx)
+		require.NoError(t, err)
+
+		count, err = client.BazelInvocation.Query().
+			Where(bazelinvocation.HasBuildLogChunks()).
+			Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 2, count)
 	})
 }
 

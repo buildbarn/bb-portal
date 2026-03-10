@@ -14,6 +14,8 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
+var compactLogsBatchSize int = 10
+
 func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocation *ent.BazelInvocation) (err error) {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.normalizeInvocation")
 	defer func() {
@@ -100,6 +102,8 @@ func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
 				bazelinvocation.HasBuildLogChunks(),
 			),
 		).
+		Order(ent.Asc(bazelinvocation.FieldID)).
+		Limit(compactLogsBatchSize).
 		All(ctx)
 	if err != nil {
 		span.RecordError(err)
