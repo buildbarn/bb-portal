@@ -2,7 +2,7 @@ import { gql } from "@/graphql/__generated__";
 
 const GET_AUTHENTICATED_USER_BY_UUID = gql(/* GraphQL */ `
   query GetAuthenticatedUser(
-    $userUUID: UUID
+    $userUUID: UUID!
     $bazelInvocationsOrderBy: BazelInvocationOrder
   ) {
     getAuthenticatedUser(userUUID: $userUUID) {

@@ -50,7 +50,7 @@ const PageContent: React.FC<PageParams> = ({ params }) => {
       notifyOnNetworkStatusChange: true,
     },
   );
-  const invocation = getFragmentData(BAZEL_INVOCATION_FRAGMENT, data?.bazelInvocation);
+  const invocation = getFragmentData(BAZEL_INVOCATION_FRAGMENT, data?.getBazelInvocation);
 
   if (loading) {
     return (
