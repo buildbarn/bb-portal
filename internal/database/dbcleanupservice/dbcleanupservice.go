@@ -82,11 +82,10 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 			dc.counter++
 			// Add 5% jitter to the cleanup interval
 			timeToSleep := dc.cleanupInterval + time.Duration((rand.Float64()*0.1-0.05)*float64(dc.cleanupInterval))
-			time.Sleep(timeToSleep)
 			select {
 			case <-ctx.Done():
 				return nil
-			default:
+			case <-time.After(timeToSleep):
 				if err := dc.LockInvocationsWithNoRecentEvents(ctx); err != nil {
 					slog.Warn("Failed to lock unfinished invocations with no recent events", "err", err)
 				}
