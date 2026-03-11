@@ -1,9 +1,3 @@
-import type { FindBuildFromUuidFragment } from "@/app/builds/[buildUUID]/[[...slugs]]/types";
-import dayjs from "@/lib/dayjs";
-import {
-  readableDurationFromDates,
-  readableDurationFromMilliseconds,
-} from "@/utils/time";
 import { theme } from "antd";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -17,11 +11,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import type { GetBuildInvocationFragment } from "@/graphql/__generated__/graphql";
+import dayjs from "@/lib/dayjs";
+import {
+  readableDurationFromDates,
+  readableDurationFromMilliseconds,
+} from "@/utils/time";
 import type { InvocationInfo, TickProps } from "./types";
 import { getInvocationResultTagColor } from "./utils";
 
 interface Props {
-  invocations: FindBuildFromUuidFragment[];
+  invocations: GetBuildInvocationFragment[];
 }
 
 const BAR_HEIGHT = 20;
@@ -129,7 +129,13 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
           barSize={BAR_HEIGHT}
         >
           {invocationsInfo.map((entry) => (
-            <Cell key={entry.invocationId} fill={getInvocationResultTagColor(entry.exitCodeName, entry.bepCompleted)} />
+            <Cell
+              key={entry.invocationId}
+              fill={getInvocationResultTagColor(
+                entry.exitCodeName,
+                entry.bepCompleted,
+              )}
+            />
           ))}
         </Bar>
       </BarChart>

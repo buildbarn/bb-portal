@@ -36,6 +36,7 @@ func (Build) Edges() []ent.Edge {
 		edge.To("invocations", BazelInvocation.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
+				entgql.RelayConnection(),
 			),
 	}
 }

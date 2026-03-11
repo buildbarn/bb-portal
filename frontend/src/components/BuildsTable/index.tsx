@@ -1,113 +1,107 @@
-import React, { useCallback, useState } from 'react';
-import { Space, Table, TableProps, Typography } from 'antd';
-import { TablePaginationConfig } from 'antd/lib/table';
-import { RocketOutlined } from '@ant-design/icons';
-import { useQuery } from '@apollo/client';
-import { FilterValue } from 'antd/lib/table/interface';
-import getColumns from './Columns';
+import { useQuery } from "@apollo/client";
+import type { FilterValue } from "antd/es/table/interface";
+import React from "react";
+import { validate as uuidValidate } from "uuid";
 import {
-  BuildNodeFragment,
+  type BuildNodeFragment,
   BuildOrderField,
-  BuildWhereInput,
-  FindBuildsQueryVariables,
+  type BuildWhereInput,
   OrderDirection,
-} from '@/graphql/__generated__/graphql';
-import { getFragmentData } from '@/graphql/__generated__';
-import FIND_BUILDS_QUERY, {
-  BUILD_NODE_FRAGMENT
-} from '@/components/BuildsTable/query.graphql';
-import themeStyles from '@/theme/theme.module.css';
+} from "@/graphql/__generated__/graphql";
+import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
+import { CursorTable, getNewPaginationVariables } from "../CursorTable";
+import type { PaginationVariables } from "../CursorTable/types";
+import PortalAlert from "../PortalAlert";
+import { columns } from "./Columns";
+import { BUILD_NODE_FRAGMENT, FIND_BUILDS_QUERY } from "./query.graphql";
 
-const PAGE_SIZE = 100;
+const BuildsTable: React.FC = () => {
+  const [paginationVariables, setPaginationVariables] =
+    React.useState<PaginationVariables>(getNewPaginationVariables());
 
-type Props = {
-  height?: number;
-};
-
-const BuildsTable: React.FC<Props> = ({ height }) => {
-  const [variables, setVariables] = useState<FindBuildsQueryVariables>({
-    first: PAGE_SIZE,
-    orderBy: {
-      direction: OrderDirection.Desc,
-      field: BuildOrderField.Timestamp,
-    },
-  });
-
-  const { loading, data, previousData, error } = useQuery(FIND_BUILDS_QUERY, {
-    variables,
-    pollInterval: 120000,
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const onChange: TableProps<BuildNodeFragment>['onChange'] = useCallback(
-    (pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, extra: any) => {
-      const wheres: BuildWhereInput[] = [];
-      if (filters['buildUUID']?.length) {
-        wheres.push({ buildUUID: filters['buildUUID'][0].toString() });
-      }
-      if (filters['buildURL']?.length) {
-        wheres.push({ buildURLHasPrefix: filters['buildURL'][0].toString() });
-      }
-      if (filters['buildDate']?.length === 2) {
-        if (filters['buildDate'][0])  {
-          wheres.push({ timestampGTE: filters['buildDate'][0]});
-        }
-        if (filters['buildDate'][1])  {
-          wheres.push({ timestampLTE: filters['buildDate'][1]});
-        }
-      }
-
-      setVariables({
-        first: PAGE_SIZE,
-        where: wheres.length ? { and: [...wheres] } : wheres[0],
-        orderBy: {
-          direction: OrderDirection.Desc,
-          field: BuildOrderField.Timestamp,
-        },
-      });
-    },
-    [],
+  const [filterVariables, setFilterVariables] = React.useState<BuildWhereInput>(
+    {},
   );
 
-  const activeData = loading ? previousData : data;
+  const { data, loading, error } = useQuery(FIND_BUILDS_QUERY, {
+    variables: {
+      ...paginationVariables,
+      where: filterVariables,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: BuildOrderField.Timestamp,
+      },
+    },
+  });
 
-  let emptyText = 'No builds match the specified search criteria';
-  let dataSource: BuildNodeFragment[] = [];
+  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
+    const newFilters: BuildWhereInput[] = [];
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && value.length > 0) {
+        switch (key) {
+          case "buildUUID": {
+            const buildUUID = value[0] as string;
+            if (uuidValidate(buildUUID)) {
+              newFilters.push({ buildUUID: buildUUID as string });
+            }
+            break;
+          }
+          case "buildURL":
+            newFilters.push({ buildURLContainsFold: value[0] as string });
+            break;
+          case "buildDate":
+            if (value.length === 2) {
+              if (value[0]) {
+                newFilters.push({ timestampGTE: value[0] });
+              }
+              if (value[1]) {
+                newFilters.push({ timestampLTE: value[1] });
+              }
+            }
+            break;
+        }
+      }
+    });
+    setFilterVariables({ and: newFilters });
+  };
+
   if (error) {
-    emptyText = error.message;
-    dataSource = [];
-  } else {
-    const buildNodes = activeData?.findBuilds.edges?.flatMap(edge => edge?.node) ?? [];
-    const buildNodeFragments = buildNodes.map(node => getFragmentData(BUILD_NODE_FRAGMENT, node));
-    dataSource = buildNodeFragments.filter((nodeFragment): nodeFragment is BuildNodeFragment => !!nodeFragment);
+    return (
+      <PortalAlert
+        className="error"
+        message="There was a problem communicating with the backend server."
+      />
+    );
   }
 
+  const rowData = parseGraphqlEdgeListWithFragment(
+    BUILD_NODE_FRAGMENT,
+    data?.findBuilds,
+  );
+
   return (
-    <Table
-      columns={getColumns()}
-      virtual
-      scroll={{ y: height ? height : 320, scrollToFirstRowOnChange: true }}
-      dataSource={dataSource}
-      pagination={false}
-      rowKey={item => item.id}
-      onChange={onChange}
-      locale={{
-        emptyText: loading ? (
-          <Typography.Text disabled className={themeStyles.tableEmptyTextTypography}>
-            <Space>
-              <RocketOutlined rotate={160} />
-              <>Loading...</>
-            </Space>
-          </Typography.Text>
-        ) : (
-          <Typography.Text disabled className={themeStyles.tableEmptyTextTypography}>
-            <Space>
-              <RocketOutlined rotate={160} />
-              <>{emptyText}</>
-            </Space>
-          </Typography.Text>
-        ),
+    <CursorTable<BuildNodeFragment>
+      columns={columns}
+      loading={loading}
+      size="small"
+      rowKey="id"
+      onChange={(_pagination, filters, _sorter, _extra) =>
+        onFilterChange(filters)
+      }
+      dataSource={rowData}
+      pagination={{
+        position: "bottom",
+        justify: "end",
+        size: "middle",
       }}
+      pageInfo={{
+        startCursor: data?.findBuilds.pageInfo.startCursor || "",
+        endCursor: data?.findBuilds.pageInfo.endCursor || "",
+        hasNextPage: data?.findBuilds.pageInfo.hasNextPage || false,
+        hasPreviousPage: data?.findBuilds.pageInfo.hasPreviousPage || false,
+      }}
+      paginationVariables={paginationVariables}
+      setPaginationVariables={setPaginationVariables}
     />
   );
 };
