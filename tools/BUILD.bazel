@@ -7,7 +7,7 @@ sh_binary(
     args = [
         "$(rlocationpath @rules_go//go)",
         "$(rlocationpath @cc_mvdan_gofumpt//:gofumpt)",
-        "$(rlocationpath @llvm_toolchain//:bin/clang-format)",
+        "$(rlocationpath @ape//ape:clang-format)",
         "$(rlocationpath //:gazelle)",
         "$(rlocationpath :sqlc)",
         "$(rlocationpath //cmd/bb_export_schema)",
@@ -17,7 +17,7 @@ sh_binary(
         "//:gazelle",
         "//cmd/bb_export_schema",
         "@cc_mvdan_gofumpt//:gofumpt",
-        "@llvm_toolchain//:bin/clang-format",
+        "@ape//ape:clang-format",
         "@rules_go//go",
     ],
     deps = ["@rules_shell//shell/runfiles"],

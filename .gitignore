@@ -1,5 +1,6 @@
 .idea/
 .vscode/
+.user.bazelrc
 buildportal.db*
 bep-files/
 cmd/bb-portal/__debug*

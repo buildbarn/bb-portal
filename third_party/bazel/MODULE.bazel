@@ -14,6 +14,7 @@ http_archive(
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 bazel_dep(name = "grpc-java", version = "1.78.0")
 bazel_dep(name = "grpc", version = "1.76.0.bcr.1", repo_name = "com_github_grpc_grpc")
+bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "protobuf", version = "33.4", repo_name = "com_google_protobuf")
 bazel_dep(name = "rules_cc", version = "0.2.14")
 bazel_dep(name = "rules_java", version = "9.0.3")
@@ -24,3 +25,10 @@ bazel_dep(name = "rules_python", version = "1.7.0")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 use_repo(maven, "maven")
+
+bazel_dep(name = "toolchains_llvm_bootstrapped", version = "0.5.9")
+
+register_toolchains(
+    "@toolchains_llvm_bootstrapped//toolchain:all",
+    dev_dependency = True,
+)
