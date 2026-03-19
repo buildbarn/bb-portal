@@ -7,7 +7,7 @@ import type {
   OutputFile,
   OutputSymlink,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { generateDirectoryUrl, generateFileUrl } from "@/utils/urlGenerator";
+import { generateDirectoryUrl, generateFileUrl, generateTreeUrl } from "@/utils/urlGenerator";
 import type { FilesTableEntry } from "./Columns";
 
 export function filesTableEntryFromOutputDirectory(
@@ -15,17 +15,29 @@ export function filesTableEntryFromOutputDirectory(
   instanceName: string,
   digestFunction: DigestFunction_Value,
 ): FilesTableEntry {
-  const digest = outputDirectory.rootDirectoryDigest
-    ? outputDirectory.rootDirectoryDigest
-    : outputDirectory.treeDigest;
-
+  const [digest, url] = (() => {
+    if (outputDirectory.rootDirectoryDigest) {
+      return [
+        outputDirectory.rootDirectoryDigest,
+        generateDirectoryUrl(instanceName, digestFunction, outputDirectory.rootDirectoryDigest),
+      ]
+    } else if (outputDirectory.treeDigest) {
+      return [
+        outputDirectory.treeDigest,
+        generateTreeUrl(instanceName, digestFunction, outputDirectory.treeDigest),
+      ]
+    } else {
+      return [
+        undefined,
+        undefined,
+      ]
+    }
+  })();
   return {
     mode: "drwxr-xr-x",
     size: digest?.sizeBytes,
     filename: outputDirectory.path,
-    href: digest
-      ? generateDirectoryUrl(instanceName, digestFunction, digest)
-      : undefined,
+    href: url,
   };
 }
 

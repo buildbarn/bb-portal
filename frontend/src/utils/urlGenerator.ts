@@ -30,6 +30,16 @@ export function generateCommandShellScriptUrl(
   )}/command/${digest.hash}-${digest.sizeBytes}/?format=sh`;
 }
 
+export function generateTreeUrl(
+  instanceName: string | undefined,
+  digestFunction: DigestFunction_Value,
+  digest: Digest,
+): string {
+  return `/browser${instanceName ? `/${instanceName}` : ""}/blobs/${digestFunctionValueToString(
+    digestFunction,
+  )}/tree/${digest.hash}-${digest.sizeBytes}`;
+}
+
 export function generateDirectoryUrl(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
