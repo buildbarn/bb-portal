@@ -96,10 +96,10 @@
 
   // The BrowserService can be disabled by not setting this field.
   browserServiceConfiguration: {
-    contentAddressableStorage: { grpc: { address: 'localhost:8980' } },
-    actionCache: { grpc: { address: 'localhost:8980' } },
-    initialSizeClassCache: { grpc: { address: 'localhost:8980' } },
-    fileSystemAccessCache: { grpc: { address: 'localhost:8980' } },
+    contentAddressableStorage: { grpc: { client: { address: 'localhost:8980' } } },
+    actionCache: { grpc: { client: { address: 'localhost:8980' } } },
+    initialSizeClassCache: { grpc: { client: { address: 'localhost:8980' } } },
+    fileSystemAccessCache: { grpc: { client: { address: 'localhost:8980' } } },
   },
 
   // The SchedulerService can be disabled by not setting this field.
