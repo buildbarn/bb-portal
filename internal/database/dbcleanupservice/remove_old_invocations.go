@@ -5,6 +5,7 @@ import (
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
+	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -31,5 +32,6 @@ func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
 	}
 
 	span.SetAttributes(attribute.Int64("deleted_invocations", deleted))
+	prometheusmetrics.SyncInvocations(ctx, dc.db.Ent())
 	return nil
 }

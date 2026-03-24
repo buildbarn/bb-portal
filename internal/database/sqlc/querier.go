@@ -10,9 +10,19 @@ import (
 
 type Querier interface {
 	//
-	// An idempotent function for creating bazel invocations. If the
-	// invocation already exists, it will return the existing id.
-	CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (int64, error)
+	// A function for creating authenticated
+	// users. It returns the ID and a bool
+	// `created`: `true` if the user was
+	// created, `false` if the user already
+	// existed. The query uses the system column
+	// `xmax`, see docs for more information.
+	CreateAuthenticatedUser(ctx context.Context, arg CreateAuthenticatedUserParams) (CreateAuthenticatedUserRow, error)
+	//
+	// A function for creating bazel invocations. It
+	// returns the ID and a bool `created`: `true`
+	// if the invocation was created, `false` if
+	// the invocation already existed.
+	CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (CreateBazelInvocationRow, error)
 	CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncompleteBuildLogsParams) error
 	//
 	// An idempotent function for creating an instance name. If the instance

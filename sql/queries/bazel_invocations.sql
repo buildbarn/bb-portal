@@ -6,8 +6,10 @@ FOR SHARE;
 
 -- name: CreateBazelInvocation :one
 --
--- An idempotent function for creating bazel invocations. If the
--- invocation already exists, it will return the existing id.
+-- A function for creating bazel invocations. It
+-- returns the ID and a bool `created`: `true`
+-- if the invocation was created, `false` if
+-- the invocation already existed.
 WITH new_row AS (
     INSERT INTO bazel_invocations (
         invocation_id,
@@ -18,9 +20,9 @@ WITH new_row AS (
     ON CONFLICT (invocation_id) DO NOTHING
     RETURNING id
 )
-SELECT id FROM new_row
+SELECT id, true AS created FROM new_row
 UNION ALL
-SELECT id FROM bazel_invocations
+SELECT id, false AS created FROM bazel_invocations
 WHERE invocation_id = sqlc.arg(invocation_id)
   AND instance_name_bazel_invocations = sqlc.arg(instance_name_id)
   AND authenticated_user_bazel_invocations IS NOT DISTINCT FROM sqlc.arg(authenticated_user_id)

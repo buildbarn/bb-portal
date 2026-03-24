@@ -19,12 +19,12 @@ func (AuthenticatedUser) Fields() []ent.Field {
 	return []ent.Field{
 		// A UUID generated when the object is first created, used to fetch the
 		// user in GraphQL. Will not be change in the upsert in
-		// `findOrCreateAuthenticatedUser`.
+		// `FindOrCreateAuthenticatedUser`.
 		field.UUID("user_uuid", uuid.UUID{}).Unique().Immutable(),
 
 		// A string which the external identity provider uses to identify the user.
 		// This field is used as the index for upserting AuthenticatedUser objects
-		// in `findOrCreateAuthenticatedUser`.
+		// in `FindOrCreateAuthenticatedUser`.
 		// Defined by the bb-portal configuration key `external_id_extraction_jmespath_expression`.
 		field.String("external_id").Unique().Immutable(),
 

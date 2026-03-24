@@ -32,7 +32,6 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
-        "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/build",
         "//ent/gen/ent/configuration",
@@ -43,6 +42,7 @@ go_library(
         "//internal/database/common",
         "//internal/database/sqlc",
         "//pkg/authmetadataextraction",
+        "//pkg/prometheus_metrics",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf",
         "//pkg/proto/configuration/bb_portal",
@@ -52,6 +52,7 @@ go_library(
         "@com_github_google_uuid//:uuid",
         "@com_github_prometheus_client_golang//prometheus",
         "@com_github_roaringbitmap_roaring//:roaring",
+        "@com_github_sqlc_dev_pqtype//:pqtype",
         "@io_opentelemetry_go_otel//attribute",
         "@io_opentelemetry_go_otel_trace//:trace",
         "@org_golang_google_grpc//codes",

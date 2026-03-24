@@ -68,8 +68,6 @@ func main() {
 			return util.StatusWrapf(err, "Failed to read configuration from %s", os.Args[1])
 		}
 
-		prometheusmetrics.RegisterMetrics()
-
 		lifecycleState, grpcClientFactory, err := global.ApplyConfiguration(configuration.Global, dependenciesGroup)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
@@ -141,6 +139,8 @@ func newBuildEventStreamService(
 	if err = dbClient.Ent().Schema.Create(context.Background(), migrate.WithDropIndex(true)); err != nil {
 		return util.StatusWrap(err, "Could not automatically migrate to desired schema")
 	}
+
+	prometheusmetrics.SyncMetrics(dbClient.Ent())
 
 	// Configure the database cleanup service.
 	cleanupConfiguration := besConfiguration.DatabaseCleanupConfiguration

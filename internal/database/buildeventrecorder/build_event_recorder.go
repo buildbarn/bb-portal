@@ -3,21 +3,24 @@ package buildeventrecorder
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/RoaringBitmap/roaring"
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
+	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/sqlc-dev/pqtype"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -90,12 +93,12 @@ func NewBuildEventRecorder(
 
 	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
 
-	userDb, err := findOrCreateAuthenticatedUser(ctx, db, extractors, uuidGenerator)
+	userDb, err := FindOrCreateAuthenticatedUser(ctx, db, extractors, uuidGenerator, prometheusmetrics.AuthenticatedUsersCount)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create authenticated user")
 	}
 
-	instanceNameDbID, invocationDbID, err := findOrCreateInvocation(ctx, db, invocationID, instanceName, tracer, userDb)
+	instanceNameDbID, invocationDbID, err := FindOrCreateInvocation(ctx, db, invocationID, instanceName, tracer, userDb, prometheusmetrics.Invocations)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create bazel invocation")
 	}
@@ -113,40 +116,69 @@ func NewBuildEventRecorder(
 	}, nil
 }
 
-func findOrCreateAuthenticatedUser(
+// FindOrCreateAuthenticatedUser creates a user or
+// returns its ID if it already exists.
+func FindOrCreateAuthenticatedUser(
 	ctx context.Context,
 	db database.Client,
 	extractors *authmetadataextraction.AuthMetadataExtractors,
 	uuidGenerator util.UUIDGenerator,
+	authenticatedUsersGauge prometheus.Gauge,
 ) (*int64, error) {
 	userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, extractors)
 	if userSummary == nil {
 		return nil, nil
 	}
 
-	// UserUUID is immutable and will not be regenerated
-	// if the object already exists.
-	userRecord := db.Ent().AuthenticatedUser.Create().
-		SetUserUUID(util.Must(uuidGenerator())).
-		SetExternalID(userSummary.ExternalID).
-		SetNillableDisplayName(userSummary.DisplayName)
+	var displayName sql.NullString
+	if userSummary.DisplayName != nil {
+		displayName = sql.NullString{
+			String: *userSummary.DisplayName,
+			Valid:  true,
+		}
+	}
+
+	var userInfo pqtype.NullRawMessage
 	if userSummary.UserInfo != nil {
-		userRecord.SetUserInfo(userSummary.UserInfo)
+		userInfoRaw, err := json.Marshal(userSummary.UserInfo)
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to marshal UserInfo")
+		}
+		userInfo = pqtype.NullRawMessage{
+			RawMessage: userInfoRaw,
+			Valid:      true,
+		}
 	}
-	id, err := userRecord.OnConflictColumns(authenticateduser.FieldExternalID).UpdateNewValues().ID(ctx)
+
+	authenticatedUserDb, err := db.Sqlc().CreateAuthenticatedUser(ctx,
+		sqlc.CreateAuthenticatedUserParams{
+			UserUuid:    util.Must(uuidGenerator()),
+			ExternalID:  userSummary.ExternalID,
+			DisplayName: displayName,
+			UserInfo:    userInfo,
+		},
+	)
 	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to upsert authenticated user")
+		return nil, util.StatusWrap(err, "Failed to create authenticated user")
 	}
-	return &id, nil
+	if authenticatedUserDb.Created {
+		authenticatedUsersGauge.Inc()
+	}
+
+	return &authenticatedUserDb.ID, nil
 }
 
-func findOrCreateInvocation(
+// FindOrCreateInvocation creates an invocation or
+// returns its ID and associated instance name ID
+// if it already exists.
+func FindOrCreateInvocation(
 	ctx context.Context,
 	db database.Client,
 	invocationID string,
 	instanceName string,
 	tracer trace.Tracer,
 	authenticatedUserDbID *int64,
+	invocationsGaugeVec *prometheus.GaugeVec,
 ) (int64, int64, error) {
 	invocationUUID, err := uuid.Parse(invocationID)
 	if err != nil {
@@ -165,7 +197,7 @@ func findOrCreateInvocation(
 	// There is a race condition here where the just selected instance
 	// name becomes deleted between the select and the insert. This is
 	// fine as the client will retry.
-	invocationDbID, err := db.Sqlc().CreateBazelInvocation(ctx, sqlc.CreateBazelInvocationParams{
+	invocationDb, err := db.Sqlc().CreateBazelInvocation(ctx, sqlc.CreateBazelInvocationParams{
 		InvocationID:        invocationUUID,
 		InstanceNameID:      instanceNameDbID,
 		AuthenticatedUserID: userID,
@@ -179,8 +211,15 @@ func findOrCreateInvocation(
 		}
 		return 0, 0, util.StatusWrap(err, "Failed to create bazel invocation")
 	}
+	if invocationDb.Created {
+		if authenticatedUserDbID != nil {
+			invocationsGaugeVec.WithLabelValues(prometheusmetrics.AuthenticatedUsersLabel).Inc()
+		} else {
+			invocationsGaugeVec.WithLabelValues(prometheusmetrics.UnauthenticatedUsersLabel).Inc()
+		}
+	}
 
-	return instanceNameDbID, invocationDbID, nil
+	return instanceNameDbID, invocationDb.ID, nil
 }
 
 // StartLoggingConnectionMetadata starts a goroutine that periodically
