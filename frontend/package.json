@@ -8,7 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "generate": "graphql-codegen --config ./src/graphql/codegen.ts && ./scripts/grpc-client-gen.sh",
+    "generate": "npm run generate-graphql && npm run generate-grpc && npm run generate-possible-types",
+    "generate-graphql": "graphql-codegen --config ./src/graphql/codegen.ts",
+    "generate-grpc": "./tools/grpc-client-gen.sh",
+    "generate-possible-types": "node ./tools/create-possible-types.js",
     "predev": "npm run generate"
   },
   "dependencies": {
