@@ -12,7 +12,11 @@
     "generate-graphql": "graphql-codegen --config ./src/graphql/codegen.ts",
     "generate-grpc": "./tools/grpc-client-gen.sh",
     "generate-possible-types": "node ./tools/create-possible-types.js",
-    "predev": "npm run generate"
+    "predev": "npm run generate",
+    "format": "biome format --write",
+    "lint": "biome lint --write",
+    "check": "biome check --write",
+    "biome-ci": "biome ci"
   },
   "dependencies": {
     "@ant-design/colors": "^7.0.2",
@@ -47,6 +51,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
+    "@biomejs/biome": "2.4.8",
     "@graphql-codegen/cli": "^6.1.3",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@rolldown/plugin-babel": "^0.2.1",
