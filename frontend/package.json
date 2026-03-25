@@ -37,7 +37,10 @@
     "zod": "^4.3.6"
   },
   "pnpm": {
-    "onlyBuiltDependencies": []
+    "onlyBuiltDependencies": [],
+    "patchedDependencies": {
+      "vite@8.0.9": "patches/vite.patch"
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

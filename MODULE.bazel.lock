@@ -41,7 +41,8 @@
     "https://bcr.bazel.build/modules/aspect_rules_js/1.33.1/MODULE.bazel": "db3e7f16e471cf6827059d03af7c21859e7a0d2bc65429a3a11f005d46fc501b",
     "https://bcr.bazel.build/modules/aspect_rules_js/1.39.0/MODULE.bazel": "aece421d479e3c31dc3e5f6d49a12acc2700457c03c556650ec7a0ff23fc0d95",
     "https://bcr.bazel.build/modules/aspect_rules_js/3.0.1/MODULE.bazel": "130d15e83caf6fd46ba65a112686d93f20e6ee31e8171eb62f25b4eb11f663bf",
-    "https://bcr.bazel.build/modules/aspect_rules_js/3.0.1/source.json": "13f70405bd07d31ed155e21ec5c29f6a543cbef994b2ac03c0163a94d2354bf8",
+    "https://bcr.bazel.build/modules/aspect_rules_js/3.0.3/MODULE.bazel": "28a30e8fc33bf64a67835d64d124f6e05a7d59648dcb27b110fb3502f761e503",
+    "https://bcr.bazel.build/modules/aspect_rules_js/3.0.3/source.json": "bb8fff9a304452e1042af9522ad1d54d6f1d1fdf71c5127deadb6fd156654193",
     "https://bcr.bazel.build/modules/aspect_rules_lint/0.12.0/MODULE.bazel": "e767c5dbfeb254ec03275a7701b5cfde2c4d2873676804bc7cb27ddff3728fed",
     "https://bcr.bazel.build/modules/aspect_tools_telemetry/0.3.3/MODULE.bazel": "37c764292861c2f70314efa9846bb6dbb44fc0308903b3285da6528305450183",
     "https://bcr.bazel.build/modules/aspect_tools_telemetry/0.3.3/source.json": "605086bbc197743a0d360f7ddc550a1d4dfa0441bc807236e17170f636153348",
@@ -76,7 +77,8 @@
     "https://bcr.bazel.build/modules/bazel_lib/3.0.0-rc.0/MODULE.bazel": "d6e00979a98ac14ada5e31c8794708b41434d461e7e7ca39b59b765e6d233b18",
     "https://bcr.bazel.build/modules/bazel_lib/3.0.0/MODULE.bazel": "22b70b80ac89ad3f3772526cd9feee2fa412c2b01933fea7ed13238a448d370d",
     "https://bcr.bazel.build/modules/bazel_lib/3.2.0/MODULE.bazel": "39b50d94b9be6bda507862254e20c263f9b950e3160112348d10a938be9ce2c2",
-    "https://bcr.bazel.build/modules/bazel_lib/3.2.0/source.json": "a6f45a903134bebbf33a6166dd42b4c7ab45169de094b37a85f348ca41170a84",
+    "https://bcr.bazel.build/modules/bazel_lib/3.2.2/MODULE.bazel": "e2c890c8a515d6bca9c66d47718aa9e44b458fde64ec7204b8030bf2d349058c",
+    "https://bcr.bazel.build/modules/bazel_lib/3.2.2/source.json": "9e84e115c20e14652c5c21401ae85ff4daa8702e265b5c0b3bf89353f17aa212",
     "https://bcr.bazel.build/modules/bazel_skylib/1.0.3/MODULE.bazel": "bcb0fd896384802d1ad283b4e4eb4d718eebd8cb820b0a2c3a347fb971afd9d8",
     "https://bcr.bazel.build/modules/bazel_skylib/1.1.1/MODULE.bazel": "1add3e7d93ff2e6998f9e118022c84d163917d912f5afafb3058e3d2f1545b5e",
     "https://bcr.bazel.build/modules/bazel_skylib/1.2.0/MODULE.bazel": "44fe84260e454ed94ad326352a698422dbe372b21a1ac9f3eab76eb531223686",
@@ -479,7 +481,7 @@
     "@@aspect_tools_telemetry+//:extension.bzl%telemetry": {
       "general": {
         "bzlTransitiveDigest": "cl5A2O84vDL6Tt+Qga8FCj1DUDGqn+e7ly5rZ+4xvcc=",
-        "usagesDigest": "TQSuPERI87Z4Alo1eOWeUR3NGo5f3txcCOd4tpsGXmw=",
+        "usagesDigest": "eXfDYHWnaR9bNp0tnW6JLN9JL640fkz8B9hfJLw6FHE=",
         "recordedInputs": [
           "REPO_MAPPING:aspect_tools_telemetry+,bazel_lib bazel_lib+",
           "REPO_MAPPING:aspect_tools_telemetry+,bazel_skylib bazel_skylib+"
@@ -489,7 +491,7 @@
             "repoRuleId": "@@aspect_tools_telemetry+//:extension.bzl%tel_repository",
             "attributes": {
               "deps": {
-                "aspect_rules_js": "2.9.2",
+                "aspect_rules_js": "3.0.3",
                 "aspect_tools_telemetry": "0.3.3"
               }
             }
@@ -572,7 +574,7 @@
     "@@rules_nodejs+//nodejs:extensions.bzl%node": {
       "general": {
         "bzlTransitiveDigest": "4pUxCNc22K4I+6+4Nxu52Hur12tFRfa1JMsN5mdDv60=",
-        "usagesDigest": "9GLN+/zdyLiYXjpHbWVWKhupQO9R0FgFUVwPRzdMJ8Y=",
+        "usagesDigest": "2QMS7HrhsOs8CB7923Nf/w1mIadlkma4VJGTmWH6Yro=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "nodejs_linux_amd64": {
@@ -584,6 +586,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "linux_amd64"
             }
@@ -597,6 +600,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "linux_arm64"
             }
@@ -610,6 +614,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "linux_s390x"
             }
@@ -623,6 +628,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "linux_ppc64le"
             }
@@ -636,6 +642,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "darwin_amd64"
             }
@@ -649,6 +656,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "darwin_arm64"
             }
@@ -662,6 +670,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "windows_amd64"
             }
@@ -675,6 +684,7 @@
                 "https://nodejs.org/dist/v{version}/{filename}"
               ],
               "node_version": "22.22.0",
+              "node_version_from_nvmrc": "@@//frontend:.nvmrc",
               "include_headers": false,
               "platform": "windows_arm64"
             }
@@ -901,7 +911,7 @@
     "@@yq.bzl+//yq:extensions.bzl%yq": {
       "general": {
         "bzlTransitiveDigest": "61Uz+o5PnlY0jJfPZEUNqsKxnM/UCLeWsn5VVCc8u5Y=",
-        "usagesDigest": "UR1CCNR6utlxFGN7CggUJizI90l3uJoeopiAH0prpr4=",
+        "usagesDigest": "d6LYc0jBWHeivnXQugRBrSwkM83GSDwge0l8buSqero=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "yq_darwin_amd64": {
