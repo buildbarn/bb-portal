@@ -177,6 +177,11 @@ local lint_steps = [
             run: "git add . && git diff --exit-code HEAD --"
           },
           {
+            name: "Lint and format",
+            run: "npm run biome-ci",
+            "working-directory": "frontend",
+          },
+          {
             name: "Test",
             run: "npm run test",
             "working-directory": "frontend",
