@@ -1,8 +1,40 @@
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@rules_go//go:def.bzl", "go_library")
+
+bool_flag(
+    name = "embed_frontend",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "embed_enabled",
+    flag_values = {":embed_frontend": "True"},
+)
+
+copy_to_directory(
+    name = "embedded_frontend_files",
+    srcs = select({
+        ":embed_enabled": ["//frontend:dist"],
+        "//conditions:default": ["none_embed/index.html"],
+    }),
+    # Now there is only one rule creating this path
+    out = "embedded_frontend",
+    root_paths = select({
+        ":embed_enabled": ["frontend/dist"],
+        "//conditions:default": ["pkg/frontend/none_embed"],
+    }),
+)
 
 go_library(
     name = "frontend",
-    srcs = ["frontend.go"],
+    srcs = [
+        "embedded.go",
+        "frontend.go",
+        "spa_file_system.go",
+    ],
+    # keep
+    embedsrcs = [":embedded_frontend_files"],
     importpath = "github.com/buildbarn/bb-portal/pkg/frontend",
     visibility = ["//visibility:public"],
     deps = [
@@ -10,6 +42,7 @@ go_library(
         "//pkg/proto/configuration/frontend",
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_gorilla_mux//:mux",
+        "@com_github_klauspost_compress//zstd",
         "@org_golang_google_protobuf//encoding/protojson",
     ],
 )

@@ -24,18 +24,18 @@ func ServeFrontend(configuration *bb_portal.FrontendService, router *mux.Router)
 	// Return 404 for all API requests not already handled.
 	router.PathPrefix("/api/").Handler(router.NotFoundHandler)
 
-	if configuration.GetFrontendSource().GetSource() == nil {
-		return fmt.Errorf("No frontend source configured")
+	if configuration == nil {
+		return fmt.Errorf("No frontend service configuration found")
 	}
-	if configuration.GetFrontendConfig() == nil {
-		return fmt.Errorf("No frontend configuration found")
+	if configuration.FrontendSource == nil {
+		return fmt.Errorf("No frontend source configured")
 	}
 
 	switch s := configuration.FrontendSource.Source.(type) {
 	case *bb_portal.FrontendService_FrontendSource_Proxy:
-		return frontendProxy(configuration.FrontendConfig, router, s.Proxy)
+		return setupProxyHandler(router, s, configuration.FrontendConfig)
 	case *bb_portal.FrontendService_FrontendSource_Embedded:
-		panic("Embedded not implemented yet")
+		return setupEmbeddedHandler(router, configuration.FrontendConfig)
 	default:
 		return fmt.Errorf("Unknown frontend source type: %T", s)
 	}
@@ -51,43 +51,56 @@ func validateFrontendConfig(frontendConfig *frontend.PortalFrontendConfiguration
 	return nil
 }
 
-func frontendProxy(configuration *frontend.PortalFrontendConfiguration, router *mux.Router, proxyUrl string) error {
-	remote, err := url.Parse(proxyUrl)
-	if err != nil {
-		return util.StatusWrap(err, "Could not parse proxy url")
+func injectFrontendConfigScript(html []byte, frontendConfig *frontend.PortalFrontendConfiguration) ([]byte, error) {
+	if frontendConfig == nil {
+		return nil, fmt.Errorf("No frontend configuration found")
 	}
-	proxy := httputil.NewSingleHostReverseProxy(remote)
-
-	if err := validateFrontendConfig(configuration); err != nil {
-		return util.StatusWrap(err, "Error validating frontend config")
-	}
-
 	marshalOptions := protojson.MarshalOptions{
 		EmitUnpopulated: true,
 	}
-	protoConfig, err := marshalOptions.Marshal(configuration)
+	configProto, err := marshalOptions.Marshal(frontendConfig)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to marshal frontend configuration")
+	}
+	configScript := fmt.Appendf(nil, "<script>window.__env__ = %s</script>", string(configProto))
+	return bytes.ReplaceAll(html, []byte("<!-- BB_PORTAL_CONFIGURATION_PLACEHOLDER -->"), configScript), nil
+}
 
-	s := fmt.Sprintf("<script>window.__env__ = %s</script>", string(protoConfig))
+func setupProxyHandler(router *mux.Router, sourceConfig *bb_portal.FrontendService_FrontendSource_Proxy, frontendConfig *frontend.PortalFrontendConfiguration) error {
+	if sourceConfig == nil {
+		return fmt.Errorf("Frontend Proxy configuration is empty")
+	}
+	if sourceConfig.Proxy == "" {
+		return fmt.Errorf("Frontend Proxy URL is empty")
+	}
+	if err := validateFrontendConfig(frontendConfig); err != nil {
+		return util.StatusWrap(err, "Error validating frontend config")
+	}
 
-	// Intercept and modify the response
+	remote, err := url.Parse(sourceConfig.Proxy)
+	if err != nil {
+		return util.StatusWrap(err, "Could not parse proxy url")
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(remote)
 	proxy.ModifyResponse = func(r *http.Response) error {
 		if r.Header.Get("Content-Type") != "text/html" {
 			return nil
 		}
 
-		// Read the original body
-		oldBody, err := io.ReadAll(r.Body)
+		oldIndexContent, err := io.ReadAll(r.Body)
 		if err != nil {
 			return err
 		}
 		defer r.Body.Close()
 
-		// Perform the string replacement
-		newBody := bytes.ReplaceAll(oldBody, []byte("<!-- BB_PORTAL_CONFIGURATION_PLACEHOLDER -->"), []byte(s))
+		newIndexContent, err := injectFrontendConfigScript(oldIndexContent, frontendConfig)
+		if err != nil {
+			return err
+		}
 
-		// Update the body and the Content-Length header
-		r.Body = io.NopCloser(bytes.NewReader(newBody))
-		r.Header.Set("Content-Length", strconv.Itoa(len(newBody)))
+		r.Body = io.NopCloser(bytes.NewReader(newIndexContent))
+		r.Header.Set("Content-Length", strconv.Itoa(len(newIndexContent)))
 		return nil
 	}
 

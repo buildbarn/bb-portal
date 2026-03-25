@@ -90,9 +90,9 @@ find bazel-bin/ -path "*${go_module_name}*" -name '*.pb.go' | while read f; do
 done
 
 # Files embedded into Go binaries
-if git grep -q '^[[:space:]]*//go:embed '; then
-  bazel build $(git grep '^[[:space:]]*//go:embed ' | sed -e 's|\(.*\)/.*//go:embed |//\1:|; s|"||g; s| .*||' | sort -u)
-  git grep '^[[:space:]]*//go:embed ' | sed -e 's|\(.*\)/.*//go:embed |\1/|' | while read o; do
+if git grep -q '^[[:space:]]*//go:embed ' -- . ':!pkg/frontend'; then
+  bazel build $(git grep '^[[:space:]]*//go:embed ' -- . ':!pkg/frontend' | sed -e 's|\(.*\)/.*//go:embed |//\1:|; s|"||g; s| .*||' | sort -u)
+  git grep '^[[:space:]]*//go:embed ' -- . ':!pkg/frontend' | sed -e 's|\(.*\)/.*//go:embed |\1/|' | while read o; do
     if [ -e "bazel-bin/$o" ]; then
       rm -rf "$o"
       cp -RL "bazel-bin/$o" "$o"

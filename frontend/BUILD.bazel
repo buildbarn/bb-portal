@@ -1,5 +1,8 @@
 load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_file")
 load("@bazel_protos//tools:protobuf.bzl", "get_proto_src")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@npm//frontend:vite/package_json.bzl", vite_bin = "bin")
+load(":vite.bzl", "vite_build")
 
 PROTO_FILES = {
     "bazel_remote_execution": ("remote_execution", "build/bazel/remote/execution/v2", "@bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_proto"),
@@ -53,4 +56,38 @@ write_source_file(
         ":%s_proto" % key
         for key in PROTO_FILES.keys()
     ],
+)
+
+filegroup(
+    name = "generated_graphql_files",
+    srcs = glob(["src/graphql/__generated__/**"]),
+    visibility = ["//visibility:public"],
+)
+
+npm_link_all_packages(name = "node_modules")
+
+vite_bin.vite_binary(
+    name = "vite_binary",
+)
+
+vite_build(
+    name = "dist",
+    srcs = glob(
+        [
+            "src/**",
+            "public/**",
+        ],
+        allow_empty = True,
+        exclude = ["node_modules/**"],
+    ) + [
+        "index.html",
+        "package.json",
+        "tsconfig.json",
+        "vite.config.ts",
+        ":node_modules",
+    ],
+    # Run inside this directory, relative to the exec dir.
+    chdir = package_name(),
+    visibility = ["//visibility:public"],
+    vite_binary = ":vite_binary",
 )

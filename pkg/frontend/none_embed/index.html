@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <h1>No embedded frontend!</h1>
+    <p>This version of bb-portal has been built with the embedded frontend disabled.</p>
+    <h2>In development?</h2>
+    <p>
+      When developing bb-portal it is recomended to proxy frontend requests to the frontend development server by setting the <code>frontendSource</code> configuration to <code>proxy</code> in the config file.
+      That way you don't have to rebuild the frontend every time you start the backend.
+    </p>
+    <h2>
+      In production?
+    </h2>
+    <p>
+      Please remove the build flag <code>--//pkg/frontend:embed_frontend=False</code> and rebuild bb-portal to embed the proper frontend.
+    </p>
+  </body>
+</html>

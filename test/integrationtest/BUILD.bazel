@@ -7,7 +7,7 @@ go_test(
         "types_test.go",
         "util_test.go",
     ],
-    data = glob(["testdata/**"]) + ["//frontend/src/graphql:__generated__"],
+    data = glob(["testdata/**"]) + ["//frontend:generated_graphql_files"],
     deps = [
         "//ent/gen/ent/runtime",
         "//internal/api/http/bepuploader",

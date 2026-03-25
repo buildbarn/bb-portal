@@ -113,7 +113,10 @@
 
   frontendServiceConfiguration: {
     frontendSource: {
+      // NOTE: In production, you should use the `embedded` option instead of
+      // `proxy`.
       proxy: 'http://localhost:5173',
+      // embedded: {},
     },
     frontendConfig: {
       companyName: 'Example Co',

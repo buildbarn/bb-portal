@@ -1,0 +1,20 @@
+
+--- a/dist/node/chunks/node.js
++++ b/dist/node/chunks/node.js
+@@ -22427,10 +22427,15 @@
+ 				});
+ 				if (chunk && canInlineEntry) inlineEntryChunk.add(chunk.fileName);
+ 				const shortEmitName = normalizePath(path.relative(config.root, normalizedId));
++				// Normalize HTML paths for Bazel sandbox compatibility
++				const isBazelBuild = process.env.BAZEL_WORKSPACE || process.env.JS_BINARY__EXECROOT;
++				const normalizedEmitName = isBazelBuild && shortEmitName.includes('../../../')
++					? shortEmitName.split('/').pop() || shortEmitName
++					: shortEmitName;
+ 				this.emitFile({
+ 					type: "asset",
+ 					originalFileName: normalizedId,
+-					fileName: shortEmitName,
++					fileName: normalizedEmitName,
+ 					source: result
+ 				});
+ 			}
