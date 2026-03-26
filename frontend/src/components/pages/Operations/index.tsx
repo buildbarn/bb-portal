@@ -2,7 +2,7 @@
 import Content from "@/components/Content";
 import OperationsGrid from "@/components/OperationsGrid";
 import PortalCard from "@/components/PortalCard";
-import { OperationsFilterParams } from "@/routes/operations.index";
+import type { OperationsFilterParams } from "@/routes/operations.index";
 import { CodeFilled } from "@ant-design/icons";
 import type React from "react";
 

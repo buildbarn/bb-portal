@@ -8,7 +8,7 @@ import themeStyles from "@/theme/theme.module.css";
 import WorkersTablePageSelector from "../WorkersTablePageSelector";
 import WorkersTableTypeSelector from "../WorkersTableTypeSelector";
 import getColumns from "./Columns";
-import { Route, WorkerListStatus } from "@/routes/scheduler.worker";
+import { Route, type WorkerListStatus } from "@/routes/scheduler.worker";
 
 type Props = {
   workerStatusFilter: WorkerListStatus;

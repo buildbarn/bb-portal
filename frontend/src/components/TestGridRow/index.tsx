@@ -3,7 +3,6 @@ import { Space } from "antd";
 import type React from "react";
 import {
   type GetTestsForTargetQuery,
-  InvocationTargetOrderField,
   OrderDirection,
   TestSummaryOrderField,
 } from "@/graphql/__generated__/graphql";
@@ -59,7 +58,7 @@ const TestGridRow: React.FC<Props> = ({
     <Space size={0} style={{ paddingLeft: "40px" }}>
       {rowData.map((item) => (
         <TestGridBtn
-          key={"test-grid-btn" + item.id}
+          key={`test-grid-btn${item.id}`}
           invocationId={item.invocationTarget.bazelInvocation.invocationID}
           status={item.overallStatus as TestStatusEnum}
         />

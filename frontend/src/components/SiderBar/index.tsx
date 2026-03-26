@@ -1,7 +1,8 @@
 
-import React, { Key, useState } from 'react';
-import { Layout, Menu, MenuProps } from 'antd';
-import { ItemType } from 'antd/es/menu/interface';
+import type React from 'react';
+import { type Key, useState } from 'react'
+import { Layout, Menu, type MenuProps } from 'antd';
+import type { ItemType } from 'antd/es/menu/interface';
 import styles from '@/components/SiderBar/index.module.css';
 import { useLocation } from '@tanstack/react-router';
 import { getClosestKey } from '../Utilities/navigation';
@@ -40,7 +41,7 @@ const SiderBar: React.FC<Props> = ({
   const [siderWidth, setSiderWidth] = useState<number>(() => {
     const cachedExpandedState = window.localStorage.getItem(SIDER_EXPANDED_WIDTH_LOCAL_STORAGE_KEY);
     if (cachedExpandedState) {
-      return parseInt(cachedExpandedState);
+      return parseInt(cachedExpandedState, 10);
     }
     return DEFAULT_SIDER_WIDTH;
   });

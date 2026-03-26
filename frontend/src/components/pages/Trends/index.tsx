@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import Content from '@/components/Content';
 import PortalCard from '@/components/PortalCard';
 import { Space, Statistic, Row } from 'antd';
 import { ClockCircleFilled, LineChartOutlined } from '@ant-design/icons';
-import { FindBuildTimesQueryVariables, BazelInvocationNodeFragment } from '@/graphql/__generated__/graphql';
+import type { FindBuildTimesQueryVariables, BazelInvocationNodeFragment } from '@/graphql/__generated__/graphql';
 import { useQuery } from '@apollo/client/react';
 import FIND_BUILD_DURATIONS from './index.graphql';
 import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area } from 'recharts';
@@ -12,7 +13,7 @@ import { readableDurationFromMilliseconds } from '@/utils/time';
 
 export const TrendsPage: React.FC = () => {
 
-    const [variables, setVariables] = useState<FindBuildTimesQueryVariables>({
+    const [variables, _setVariables] = useState<FindBuildTimesQueryVariables>({
         first: 1000,
     });
 
@@ -23,11 +24,11 @@ export const TrendsPage: React.FC = () => {
     });
 
     const activeData = loading ? previousData : data;
-    let emptyText = 'No builds match the specified search criteria';
+    let _emptyText = 'No builds match the specified search criteria';
     let dataSource: BazelInvocationNodeFragment[] = []
 
     if (error) {
-        emptyText = error.message;
+        _emptyText = error.message;
         dataSource = [];
     } else {
         const buildTimes = activeData?.findBazelInvocations.edges?.flatMap(edge => edge?.node) ?? [];
@@ -41,9 +42,9 @@ export const TrendsPage: React.FC = () => {
         duration: number
     }
 
-    let dataPoints: graphPoint[] = []
+    const dataPoints: graphPoint[] = []
 
-    dataSource.map(x => {
+    dataSource.forEach(x => {
         var point: graphPoint = {
             invocationId: x.invocationID,
             from: x.startedAt,
@@ -86,10 +87,10 @@ export const TrendsPage: React.FC = () => {
                             <Row>
                                 <Space size="large">
                                     <Statistic title="Total" value={data?.findBazelInvocations.totalCount} valueStyle={{ color: "#82ca9d" }} />
-                                    <Statistic title="Average" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(avg, {smallestUnit: "ms"})} valueStyle={{ color: "#82ca9d" }} />
-                                    <Statistic title="Median" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(median, {smallestUnit: "ms"})} valueStyle={{ color: "#8884d8" }} />
-                                    <Statistic title="Max" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(max, {smallestUnit: "ms"})} />
-                                    <Statistic title="Min" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(min, {smallestUnit: "ms"})} />
+                                    <Statistic title="Average" value={dataPoints.length === 0 ? "-" : readableDurationFromMilliseconds(avg, {smallestUnit: "ms"})} valueStyle={{ color: "#82ca9d" }} />
+                                    <Statistic title="Median" value={dataPoints.length === 0 ? "-" : readableDurationFromMilliseconds(median, {smallestUnit: "ms"})} valueStyle={{ color: "#8884d8" }} />
+                                    <Statistic title="Max" value={dataPoints.length === 0 ? "-" : readableDurationFromMilliseconds(max, {smallestUnit: "ms"})} />
+                                    <Statistic title="Min" value={dataPoints.length === 0 ? "-" : readableDurationFromMilliseconds(min, {smallestUnit: "ms"})} />
                                 </Space>
                             </Row>
                             <Row>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Button, Dropdown, DropdownProps, MenuProps, Popover, Space } from 'antd';
+import type React from 'react';
+import { useState } from 'react';
+import { Button, Dropdown, type DropdownProps, type MenuProps, Popover, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import { MenuItemType } from 'antd/es/menu/interface';
+import type { MenuItemType } from 'antd/es/menu/interface';
 
 export interface DownloadOpts {
   url?: string;
@@ -31,7 +32,7 @@ const DownloadButton: React.FC<Props> = ({
 
   const handleMenuClick: MenuProps['onClick'] = e => {
     // Closing is delegated to item.
-    if (preventDefaultForKeys && preventDefaultForKeys.includes(e.key)) {
+    if (preventDefaultForKeys?.includes(e.key)) {
       e.domEvent.preventDefault();
     }
   };

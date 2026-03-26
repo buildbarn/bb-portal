@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Space, Typography, Upload, UploadFile, UploadProps } from 'antd'
+import type React from 'react';
+import { Space, Typography, Upload } from 'antd';
 import { FileAddTwoTone } from '@ant-design/icons';
+import type { UploadProps } from "antd";
 
 const { Dragger } = Upload;
 
@@ -11,23 +12,20 @@ interface Props {
 }
 
 const Uploader: React.FC<Props> = ({ label, description, action }) => {
-  const [fileList, setFileList] = useState<UploadFile[]>();
-
-  const handleChange: UploadProps['onChange'] = (info) => {
-    let newFileList = [...info.fileList];
-
-    newFileList = newFileList.map((file) => {
-      if (file.response && !file.error) {
-        file.url = file.response.Location;
-      }
-      return file;
-    });
-
-    setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ file }) => {
+    if (file.response && !file.error) {
+      file.url = file.response?.Location ?? file.url;
+    }
   };
 
   return (
-    <Dragger name="file" action={action} onChange={handleChange} accept=".ndjson" multiple>
+    <Dragger
+      name="file"
+      action={action}
+      onChange={handleChange}
+      accept=".ndjson"
+      multiple
+    >
       <Space direction="vertical" size="small">
         <Typography.Title level={1}>
           <FileAddTwoTone />

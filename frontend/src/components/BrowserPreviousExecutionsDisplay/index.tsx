@@ -1,7 +1,6 @@
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { PreviousExecutionStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
 import { BrowserPageType, type BrowserPageParams } from "@/types/BrowserPageType";
-import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
 import { Descriptions, Space, Typography } from "antd";
 import { Link } from '@tanstack/react-router';
 import PreviousExecutionsPlot from "../PreviousExecuteStatsPlot";

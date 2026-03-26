@@ -1,8 +1,8 @@
-import React, { ForwardedRef, forwardRef, useLayoutEffect, useRef } from 'react';
+import { type ForwardedRef, forwardRef, useLayoutEffect, useRef } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
 import { Tag } from 'antd';
 import styles from '@/components/MenuItemLabel/index.module.css';
-import { UpdateSidebarMenuExpandedWidthFunction } from '@/components/Utilities/navigation';
+import type { UpdateSidebarMenuExpandedWidthFunction } from '@/components/Utilities/navigation';
 import { SIDEBAR_MENU_INLINE_INDENT } from '@/components/SiderBar';
 
 export interface MenuItemTag {

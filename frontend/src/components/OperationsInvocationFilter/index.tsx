@@ -1,6 +1,6 @@
 import { Button, Col, Divider, Row } from "antd";
 import styles from "./index.module.css";
-import { OperationsFilterParams } from "@/routes/operations.index";
+import type { OperationsFilterParams } from "@/routes/operations.index";
 import { useNavigate } from "@tanstack/react-router";
 
 interface Props {

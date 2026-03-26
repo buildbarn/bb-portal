@@ -18,7 +18,6 @@ import {
   type ByteStreamClient,
   ByteStreamDefinition,
 } from "@/lib/grpc-client/google/bytestream/bytestream";
-import { env } from "@/utils/env";
 import { createChannel, createClient } from "nice-grpc-web";
 import type { ReactNode } from "react";
 import { GrpcClientsContext } from "./GrpcClientsContext";

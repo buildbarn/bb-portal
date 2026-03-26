@@ -4,7 +4,7 @@ import PortalCard from '@/components/PortalCard';
 import TargetGrid from '@/components/Targets/TargetGrid';
 import { DeploymentUnitOutlined } from '@ant-design/icons';
 import { Alert, Space } from 'antd';
-import React from 'react';
+import type React from 'react';
 
 export const TargetsPage: React.FC = () => {
     return (

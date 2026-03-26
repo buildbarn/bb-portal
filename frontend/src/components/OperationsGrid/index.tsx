@@ -7,7 +7,7 @@ import themeStyles from "@/theme/theme.module.css";
 import OperationsInvocationFilter from "../OperationsInvocationFilter";
 import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
-import { OperationsFilterParams } from "@/routes/operations.index";
+import type { OperationsFilterParams } from "@/routes/operations.index";
 
 const PAGE_SIZE = 1000;
 
@@ -24,7 +24,7 @@ const OperationsTable: React.FC<Props> = ({ filter }) => {
       pageSize: PAGE_SIZE,
       filterInvocationId: filter ?{
         typeUrl: filter?.["@type"],
-        value: RequestMetadata.encode(filter as any).finish(),
+        value: RequestMetadata.encode(RequestMetadata.fromPartial(filter)).finish(),
       }: undefined
     }),
     staleTime: Number.POSITIVE_INFINITY,

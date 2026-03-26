@@ -1,8 +1,8 @@
-import { Digest } from '@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution';
-import { BrowserPageParams } from '@/types/BrowserPageType';
+import type { Digest } from '@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution';
+import type { BrowserPageParams } from '@/types/BrowserPageType';
 import { generateCommandShellScriptUrl } from '@/utils/urlGenerator';
 import { Button } from 'antd';
-import React from 'react';
+import type React from 'react';
 
 interface Params {
   browserPageParams: BrowserPageParams;

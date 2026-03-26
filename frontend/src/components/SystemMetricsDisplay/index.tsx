@@ -1,8 +1,7 @@
-import React from "react";
+import type React from "react";
 import { Statistic, Space, Row } from 'antd';
-import { FieldTimeOutlined, BuildOutlined, } from "@ant-design/icons";
-import type { StatisticProps } from "antd/lib";
-import { NetworkMetrics, SystemNetworkStats, TimingMetrics } from "@/graphql/__generated__/graphql";
+import { FieldTimeOutlined, } from "@ant-design/icons";
+import type { SystemNetworkStats, TimingMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import { readableFileSize } from "@/utils/filesize";

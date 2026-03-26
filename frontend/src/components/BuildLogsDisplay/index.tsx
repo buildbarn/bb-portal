@@ -4,7 +4,6 @@ import {
 } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Tooltip } from "antd";
-import { env } from "@/utils/env";
 import DownloadButton from "@/components/DownloadButton";
 import PortalCard from "@/components/PortalCard";
 import LogViewer from "../LogViewer";

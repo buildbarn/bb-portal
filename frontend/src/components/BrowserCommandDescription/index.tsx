@@ -3,7 +3,6 @@ import type {
   Digest,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { BrowserPageType, type BrowserPageParams } from "@/types/BrowserPageType";
-import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
 import { Descriptions, Flex, Space, Typography } from "antd";
 import { Link } from '@tanstack/react-router';
 import type React from "react";

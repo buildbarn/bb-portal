@@ -1,4 +1,4 @@
-import { Link, LinkOptions } from "@tanstack/react-router";
+import { Link, type LinkOptions } from "@tanstack/react-router";
 
 interface Props {
   text: string;

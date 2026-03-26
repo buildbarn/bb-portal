@@ -7,12 +7,12 @@ import {
 import { Link } from '@tanstack/react-router';
 import dayjs from 'dayjs';
 import styles from './Columns.module.css';
-import { BazelInvocationNodeFragment, BazelInvocationWhereInput } from '@/graphql/__generated__/graphql';
+import type { BazelInvocationNodeFragment, BazelInvocationWhereInput } from '@/graphql/__generated__/graphql';
 import { SearchFilterIcon, SearchWidget, TimeRangeSelector } from '@/components/SearchWidgets';
 import PortalDuration from "@/components/PortalDuration";
 import UserStatusIndicator from '../UserStatusIndicator';
 import { InvocationResultTag } from '../InvocationResultTag';
-import { FilterValue } from 'antd/es/table/interface';
+import type { FilterValue } from 'antd/es/table/interface';
 import { applyInvocationResultTagFilter, invocationResultTagFilters } from '../InvocationResultTag/filters';
 
 type ColumnTypeWithFilter<T> = ColumnType<T> & {

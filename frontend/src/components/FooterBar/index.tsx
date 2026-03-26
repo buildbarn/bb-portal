@@ -7,12 +7,11 @@ import {
 } from "@ant-design/icons";
 import { Layout, Space } from "antd";
 import { env } from "@/utils/env";
-import { Link } from '@tanstack/react-router';
-import React from "react";
-import { PortalFrontendConfiguration_FooterElement } from "@/lib/grpc-client/portal/frontend/frontend";
+import type React from "react";
+import type { PortalFrontendConfiguration_FooterElement } from "@/lib/grpc-client/portal/frontend/frontend";
 
 const FooterLink: React.FC<PortalFrontendConfiguration_FooterElement> = ({ text, href, icon }) => {
-  let iconElement: React.ReactElement | undefined = undefined;
+  let iconElement: React.ReactElement | undefined ;
   if (icon?.url) {
     iconElement = <img src={icon.url} width={20} height={20} alt="Footer icon" />
   } else if (icon?.slack) {
@@ -33,7 +32,7 @@ const FooterLink: React.FC<PortalFrontendConfiguration_FooterElement> = ({ text,
   }
 
   return (
-    <a href={href} target="_blank">
+    <a href={href} target="_blank" rel="noopener">
       <Space>
         {iconElement}
         {text}
@@ -51,6 +50,7 @@ const FooterBar: React.FC<Props> = ({ className }) => {
     <Layout.Footer className={`${className} ${styles.footerBar}`}>
       <Space size="large">
         {env.footerContent.map((element: PortalFrontendConfiguration_FooterElement, index: number) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: This won't change
           <FooterLink key={index} {...element} />
         ))}
       </Space>

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Spin } from "antd";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
-import { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
+import type { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
 import BrowserDirectory from "../BrowserDirectory";
 import PortalAlert from "../PortalAlert";

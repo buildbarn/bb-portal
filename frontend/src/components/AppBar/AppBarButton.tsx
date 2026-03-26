@@ -1,12 +1,12 @@
 
-import React from 'react';
+import type React from 'react';
 import { Button, Tooltip } from 'antd';
 
 type Props = {
   icon: React.ReactNode;
   title: string;
   href?: string;
-  onMouseDown?: Function;
+  onMouseDown?: () => void;
 };
 
 const AppBarButton: React.FC<Props> = ({ icon, title, href, onMouseDown }) => {

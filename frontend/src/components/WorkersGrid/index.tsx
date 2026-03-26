@@ -13,7 +13,7 @@ import type {
 import PortalAlert from "@/components/PortalAlert";
 import WorkersInfo from "@/components/WorkersInfo";
 import WorkersTable from "@/components/WorkersTable";
-import { WorkerListStatus, WorkerSearchParams } from "@/routes/scheduler.worker";
+import { WorkerListStatus, type WorkerSearchParams } from "@/routes/scheduler.worker";
 
 const LIST_WORKERS_PAGE_SIZE = 100;
 

@@ -26,5 +26,5 @@ export const readableFileSizeFromString = (
   sizeBytes: string,
   precision = 3,
 ): string => {
-  return readableFileSize(Number.parseInt(sizeBytes), precision);
+  return readableFileSize(Number.parseInt(sizeBytes, 10), precision);
 };

@@ -1,10 +1,10 @@
-import {
+import type {
   Digest,
   DigestFunction_Value,
 } from '@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution';
 import { generateDirectoryTarballUrl } from '@/utils/urlGenerator';
 import { Button } from 'antd';
-import React from 'react';
+import type React from 'react';
 
 interface Params {
   instanceName: string;

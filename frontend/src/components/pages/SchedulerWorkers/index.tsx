@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import WorkersGrid from '@/components/WorkersGrid';
 import type { WorkerSearchParams } from '@/routes/scheduler.worker';
 import Content from '@/components/Content';

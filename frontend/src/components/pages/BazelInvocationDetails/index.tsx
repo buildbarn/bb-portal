@@ -1,8 +1,9 @@
 
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 import Content from "@/components/Content";
 import { useQuery } from "@apollo/client/react";
-import {
+import type {
   LoadFullBazelInvocationDetailsQuery
 } from '@/graphql/__generated__/graphql';
 import {

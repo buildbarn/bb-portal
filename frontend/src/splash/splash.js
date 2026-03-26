@@ -1,8 +1,8 @@
-(function() {
-  var env = window.__env__ || {};
-  var titleEl = document.getElementById('preloader-title');
+(() => {
+  const env = window.__env__ || {};
+  const titleEl = document.getElementById('preloader-title');
   if (titleEl) {
-    var companyPrefix = env.companyName ? env.companyName + ' ' : '';
-    titleEl.textContent = 'Welcome to the ' + companyPrefix + 'Buildbarn Portal';
+    const companyPrefix = env.companyName ? `${env.companyName} ` : '';
+    titleEl.textContent = `Welcome to the ${companyPrefix}Buildbarn Portal`;
   }
 })();

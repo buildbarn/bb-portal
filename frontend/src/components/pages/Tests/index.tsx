@@ -4,7 +4,7 @@ import PortalCard from '@/components/PortalCard';
 import TestGrid from '@/components/TestGrid';
 import { ExperimentFilled } from '@ant-design/icons';
 import { Alert, Space } from 'antd';
-import React from 'react';
+import type React from 'react';
 
 export const TestsPage: React.FC = () => {
     return (

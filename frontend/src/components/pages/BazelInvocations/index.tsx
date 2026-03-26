@@ -1,5 +1,5 @@
 
-import React from 'react';
+import type React from 'react';
 import Content from '@/components/Content';
 import PortalCard from '@/components/PortalCard';
 import { BuildFilled } from '@ant-design/icons';

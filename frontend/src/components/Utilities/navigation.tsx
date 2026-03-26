@@ -1,7 +1,9 @@
 
-import React, { ReactNode, Key } from 'react';
-import { ItemType } from 'antd/es/menu/interface';
-import { MenuItemLabel, MenuItemTag } from '@/components/MenuItemLabel';
+import type React from 'react';
+import type { ReactNode, Key } from 'react';
+import type { ItemType } from 'antd/es/menu/interface';
+import { MenuItemLabel, type MenuItemTag } from '@/components/MenuItemLabel';
+import type { Empty } from '@/lib/grpc-client/google/protobuf/empty';
 
 export type UpdateSidebarMenuExpandedWidthFunction = (updatedSidebarMenuExpandedWidth: number) => void;
 
@@ -16,7 +18,7 @@ interface ItemProps {
   disabled?: boolean;
   activeMenuItemRef?: React.RefObject<HTMLDivElement>;
   updateMenuItemWidth?: UpdateSidebarMenuExpandedWidthFunction;
-  requiredFeatures?: (Record<string, any> | undefined)[];
+  requiredFeatures?: (Empty | undefined)[];
 }
 
 export const getItem = ({
@@ -113,6 +115,7 @@ const getClosestItem = (key: Key, items: ItemType[]): ItemType | null => {
       if (item?.key?.toString() === key.toString().slice(0, item?.key?.toString().length)) {
         return item;
       }
+      return null;
     }, null) || null
   );
 };

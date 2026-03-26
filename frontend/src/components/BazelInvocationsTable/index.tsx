@@ -11,16 +11,16 @@ import FIND_BAZEL_INVOCATIONS_QUERY, {
 } from './query.graphql';
 import {
   BazelInvocationOrderField,
-  BazelInvocationWhereInput, OrderDirection
+  type BazelInvocationWhereInput, OrderDirection
 } from '@/graphql/__generated__/graphql';
 import themeStyles from '@/theme/theme.module.css';
 import { BuildOutlined } from '@ant-design/icons';
 import { useQuery } from '@apollo/client/react';
 import { Space, Typography } from 'antd';
-import { FilterValue } from 'antd/lib/table/interface';
+import type { FilterValue } from 'antd/lib/table/interface';
 import React from 'react';
 import { CursorTable, getNewPaginationVariables } from '../CursorTable';
-import { PaginationVariables } from '../CursorTable/types';
+import type { PaginationVariables } from '../CursorTable/types';
 import PortalAlert from "../PortalAlert";
 import styles from "@/theme/theme.module.css";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
@@ -111,7 +111,7 @@ const BazelInvocationsTable: React.FC = () => {
     );
   }
 
-  let emptyText = 'No Bazel invocations match the specified search criteria';
+  const emptyText = 'No Bazel invocations match the specified search criteria';
 
   return (
     <CursorTable
