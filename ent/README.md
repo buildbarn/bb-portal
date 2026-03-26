@@ -1,4 +1,6 @@
-# Ent models
+# Ent
+
+## Schema
 
 This directory contains the Ent schema definitions used by the application.
 
@@ -16,7 +18,7 @@ Why the two-step process
   2. Generate files from `ent/schema` without privacy policies.
   3. Generate files from `ent/authschema` to create the final files.
 
-## Adding a new schema
+### Adding a new schema
 
 To add a new schema:
 
@@ -34,3 +36,8 @@ To add a new schema:
 4. Add tests for the privacy policies in `ent/authschema/privacy_test.go`.
 5. Run `./tools/update_schema.sh` to regenerate the code with the new schema
    and policies.
+
+## Templates
+
+Templates used by Ent live in `ent/template`. These are used to change the code
+that Ent generates. When updating Ent, these probably need to be updated.

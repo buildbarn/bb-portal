@@ -295,17 +295,17 @@ func (a *ActionQuery) Paginate(
 	}
 	conn := &ActionConnection{Edges: []*ActionEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := a.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := a.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -544,17 +544,17 @@ func (acs *ActionCacheStatisticsQuery) Paginate(
 	}
 	conn := &ActionCacheStatisticsConnection{Edges: []*ActionCacheStatisticsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := acs.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := acs.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -793,17 +793,17 @@ func (ad *ActionDataQuery) Paginate(
 	}
 	conn := &ActionDataConnection{Edges: []*ActionDataEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := ad.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := ad.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -1042,17 +1042,17 @@ func (as *ActionSummaryQuery) Paginate(
 	}
 	conn := &ActionSummaryConnection{Edges: []*ActionSummaryEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := as.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := as.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -1291,17 +1291,17 @@ func (am *ArtifactMetricsQuery) Paginate(
 	}
 	conn := &ArtifactMetricsConnection{Edges: []*ArtifactMetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := am.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := am.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -1540,17 +1540,17 @@ func (au *AuthenticatedUserQuery) Paginate(
 	}
 	conn := &AuthenticatedUserConnection{Edges: []*AuthenticatedUserEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := au.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := au.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -1789,17 +1789,17 @@ func (bi *BazelInvocationQuery) Paginate(
 	}
 	conn := &BazelInvocationConnection{Edges: []*BazelInvocationEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := bi.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := bi.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -2103,17 +2103,17 @@ func (b *BuildQuery) Paginate(
 	}
 	conn := &BuildConnection{Edges: []*BuildEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := b.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := b.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -2399,17 +2399,17 @@ func (bgm *BuildGraphMetricsQuery) Paginate(
 	}
 	conn := &BuildGraphMetricsConnection{Edges: []*BuildGraphMetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := bgm.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := bgm.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -2648,17 +2648,17 @@ func (c *ConfigurationQuery) Paginate(
 	}
 	conn := &ConfigurationConnection{Edges: []*ConfigurationEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := c.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := c.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -2897,17 +2897,17 @@ func (cm *ConnectionMetadataQuery) Paginate(
 	}
 	conn := &ConnectionMetadataConnection{Edges: []*ConnectionMetadataEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := cm.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := cm.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -3146,17 +3146,17 @@ func (gm *GarbageMetricsQuery) Paginate(
 	}
 	conn := &GarbageMetricsConnection{Edges: []*GarbageMetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := gm.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := gm.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -3395,17 +3395,17 @@ func (in *InstanceNameQuery) Paginate(
 	}
 	conn := &InstanceNameConnection{Edges: []*InstanceNameEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := in.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := in.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -3644,17 +3644,17 @@ func (it *InvocationTargetQuery) Paginate(
 	}
 	conn := &InvocationTargetConnection{Edges: []*InvocationTargetEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := it.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := it.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -3958,17 +3958,17 @@ func (mm *MemoryMetricsQuery) Paginate(
 	}
 	conn := &MemoryMetricsConnection{Edges: []*MemoryMetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := mm.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := mm.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -4207,17 +4207,17 @@ func (m *MetricsQuery) Paginate(
 	}
 	conn := &MetricsConnection{Edges: []*MetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := m.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := m.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -4456,17 +4456,17 @@ func (md *MissDetailQuery) Paginate(
 	}
 	conn := &MissDetailConnection{Edges: []*MissDetailEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := md.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := md.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -4705,17 +4705,17 @@ func (nm *NetworkMetricsQuery) Paginate(
 	}
 	conn := &NetworkMetricsConnection{Edges: []*NetworkMetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := nm.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := nm.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -4954,17 +4954,17 @@ func (rc *RunnerCountQuery) Paginate(
 	}
 	conn := &RunnerCountConnection{Edges: []*RunnerCountEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := rc.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := rc.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -5203,17 +5203,17 @@ func (sc *SourceControlQuery) Paginate(
 	}
 	conn := &SourceControlConnection{Edges: []*SourceControlEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := sc.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := sc.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -5452,17 +5452,17 @@ func (sns *SystemNetworkStatsQuery) Paginate(
 	}
 	conn := &SystemNetworkStatsConnection{Edges: []*SystemNetworkStatsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := sns.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := sns.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -5701,17 +5701,17 @@ func (t *TargetQuery) Paginate(
 	}
 	conn := &TargetConnection{Edges: []*TargetEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := t.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := t.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -5950,17 +5950,17 @@ func (tm *TargetMetricsQuery) Paginate(
 	}
 	conn := &TargetMetricsConnection{Edges: []*TargetMetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := tm.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := tm.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -6199,17 +6199,17 @@ func (tr *TestResultQuery) Paginate(
 	}
 	conn := &TestResultConnection{Edges: []*TestResultEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := tr.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := tr.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -6448,17 +6448,17 @@ func (ts *TestSummaryQuery) Paginate(
 	}
 	conn := &TestSummaryConnection{Edges: []*TestSummaryEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := ts.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := ts.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
@@ -6762,17 +6762,17 @@ func (tm *TimingMetricsQuery) Paginate(
 	}
 	conn := &TimingMetricsConnection{Edges: []*TimingMetricsEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			c := tm.Clone()
-			c.ctx.Fields = nil
-			if conn.TotalCount, err = c.Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := tm.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
 		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
 	}
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil

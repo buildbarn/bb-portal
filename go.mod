@@ -15,6 +15,8 @@ replace (
 )
 
 require (
+	// NOTE: When updating entgo.io/ent and entgo.io/contrib, check if any of
+	// the templates in `./ent/template` needs to be updated.
 	entgo.io/contrib v0.6.0
 	entgo.io/ent v0.14.4
 	github.com/99designs/gqlgen v0.17.76
