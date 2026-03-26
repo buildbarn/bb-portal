@@ -1,10 +1,10 @@
 import { AnsiUp } from "ansi_up";
 import { Spin } from "antd";
 import React from "react";
+import { v4 as uuidv4 } from "uuid";
 import { WindowVirtualizer } from "virtua";
 import PortalAlert from "@/components/PortalAlert";
 import styles from "./index.module.css";
-import { v4 as uuidv4 } from 'uuid';
 
 const ansi = new AnsiUp();
 
@@ -17,10 +17,13 @@ interface Props {
 const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
   const lines = React.useMemo(() => {
     if (!log) return [];
-    return ansi.ansi_to_html(log).split("\n").map(line => ({
-      line,
-      key: uuidv4()
-    }));
+    return ansi
+      .ansi_to_html(log)
+      .split("\n")
+      .map((line) => ({
+        line,
+        key: uuidv4(),
+      }));
   }, [log]);
 
   if (loading === true)
@@ -56,9 +59,12 @@ const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
     <pre className={styles.logContainer}>
       <WindowVirtualizer>
         {lines.map((line) => (
-          // TODO: Remove the danger
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: Should be reworked
-          <span key={line.key} dangerouslySetInnerHTML={{ __html: line.line }} />
+          <span
+            key={line.key}
+            // TODO: Remove the danger
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: Should be reworked
+            dangerouslySetInnerHTML={{ __html: line.line }}
+          />
         ))}
       </WindowVirtualizer>
     </pre>

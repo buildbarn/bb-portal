@@ -1,9 +1,9 @@
+import { Link } from "@tanstack/react-router";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
-import { Link } from '@tanstack/react-router';
+import { WorkerListStatus } from "@/routes/scheduler.worker";
 import PropertyTagList from "../PropertyTagList";
 import type { PlatformQueueTableState } from "./types";
-import { WorkerListStatus } from "@/routes/scheduler.worker";
 
 const cellMergingLogic = (value: PlatformQueueTableState) => {
   if (value.isFirstSizeClass) {
@@ -70,14 +70,14 @@ const executingWorkersColumn: ColumnType<PlatformQueueTableState> = {
           workerStatusFilter: WorkerListStatus.EXECUTING,
           sizeClassQueueName: {
             platformQueueName: {
-              instanceNamePrefix: record.name?.instanceNamePrefix || '',
+              instanceNamePrefix: record.name?.instanceNamePrefix || "",
               platform: {
-                properties: record.name?.platform?.properties || []
+                properties: record.name?.platform?.properties || [],
               },
             },
             sizeClass: record.sizeClassQueues[0]?.sizeClass,
           },
-          cursor: undefined
+          cursor: undefined,
         }}
       >
         {executingWorkers} ({percentage}%)
@@ -106,15 +106,16 @@ const allWorkersColumn: ColumnType<PlatformQueueTableState> = {
         workerStatusFilter: WorkerListStatus.ALL,
         sizeClassQueueName: {
           platformQueueName: {
-            instanceNamePrefix: record.name?.instanceNamePrefix || '',
+            instanceNamePrefix: record.name?.instanceNamePrefix || "",
             platform: {
-              properties: record.name?.platform?.properties || []
+              properties: record.name?.platform?.properties || [],
             },
           },
           sizeClass: record.sizeClassQueues[0]?.sizeClass,
         },
-        cursor: undefined
-      }}>
+        cursor: undefined,
+      }}
+    >
       {record.sizeClassQueues[0].workersCount}
     </Link>
   ),

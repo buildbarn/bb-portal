@@ -1,5 +1,5 @@
+import { Link } from "@tanstack/react-router";
 import type { TableColumnsType } from "antd";
-import { Link } from '@tanstack/react-router';
 import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
 import styles from "@/theme/theme.module.css";
 import { readableDurationFromMilliseconds } from "@/utils/time";
@@ -33,7 +33,9 @@ export const columns: TableColumnsType<TestDetailsRowType> = [
     render: (_, record) => (
       <Link
         to="/bazel-invocations/$invocationID"
-        params={{ invocationID: record.invocationTarget.bazelInvocation.invocationID }}
+        params={{
+          invocationID: record.invocationTarget.bazelInvocation.invocationID,
+        }}
       >
         {record.invocationTarget.bazelInvocation.invocationID}
       </Link>

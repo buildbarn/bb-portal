@@ -7,7 +7,11 @@ import type {
   OutputFile,
   OutputSymlink,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { generateDirectoryUrl, generateFileUrl, generateTreeUrl } from "@/utils/urlGenerator";
+import {
+  generateDirectoryUrl,
+  generateFileUrl,
+  generateTreeUrl,
+} from "@/utils/urlGenerator";
 import type { FilesTableEntry } from "./Columns";
 
 export function filesTableEntryFromOutputDirectory(
@@ -19,18 +23,23 @@ export function filesTableEntryFromOutputDirectory(
     if (outputDirectory.rootDirectoryDigest) {
       return [
         outputDirectory.rootDirectoryDigest,
-        generateDirectoryUrl(instanceName, digestFunction, outputDirectory.rootDirectoryDigest),
-      ]
+        generateDirectoryUrl(
+          instanceName,
+          digestFunction,
+          outputDirectory.rootDirectoryDigest,
+        ),
+      ];
     } else if (outputDirectory.treeDigest) {
       return [
         outputDirectory.treeDigest,
-        generateTreeUrl(instanceName, digestFunction, outputDirectory.treeDigest),
-      ]
+        generateTreeUrl(
+          instanceName,
+          digestFunction,
+          outputDirectory.treeDigest,
+        ),
+      ];
     } else {
-      return [
-        undefined,
-        undefined,
-      ]
+      return [undefined, undefined];
     }
   })();
   return {

@@ -1,7 +1,3 @@
-import type {
-  ActionSummary,
-  RunnerCount,
-} from "@/graphql/__generated__/graphql";
 import {
   ClusterOutlined,
   DashboardOutlined,
@@ -9,6 +5,10 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import { Flex } from "antd";
+import type {
+  ActionSummary,
+  RunnerCount,
+} from "@/graphql/__generated__/graphql";
 import ActionCacheMissMetrics from "../ActionCacheMissMetrics";
 import ActionCacheOverview from "../ActionCacheOverview";
 import ActionRunnerMetrics from "../ActionRunnerMetrics";

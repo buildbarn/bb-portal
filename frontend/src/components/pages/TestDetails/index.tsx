@@ -1,5 +1,3 @@
-import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
-import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import {
   BorderInnerOutlined,
   ExperimentFilled,
@@ -16,23 +14,31 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
+import Content from "../../Content";
 import { CursorTable, getNewPaginationVariables } from "../../CursorTable";
 import type { PaginationVariables } from "../../CursorTable/types";
 import PortalAlert from "../../PortalAlert";
 import PortalCard from "../../PortalCard";
 import { columns, type TestDetailsRowType } from "./columns";
 import { GET_TEST_DETAILS } from "./graphql";
-import Content from "../../Content";
 
 interface Props {
-  targetID: string
-  aspect: string
-  label: string
-  kind: string
-  instanceName: string
+  targetID: string;
+  aspect: string;
+  label: string;
+  kind: string;
+  instanceName: string;
 }
 
-export const TestDetails: React.FC<Props> = ({ targetID, aspect, label, kind, instanceName }) => {
+export const TestDetails: React.FC<Props> = ({
+  targetID,
+  aspect,
+  label,
+  kind,
+  instanceName,
+}) => {
   const [paginationVariables, setPaginationVariables] =
     React.useState<PaginationVariables>(getNewPaginationVariables());
   const { data, loading, error } = useQuery<GetTestDetailsQuery>(
@@ -96,9 +102,7 @@ export const TestDetails: React.FC<Props> = ({ targetID, aspect, label, kind, in
         <Descriptions.Item label="Instance Name">
           {instanceName || "-"}
         </Descriptions.Item>
-        <Descriptions.Item label="Target Kind">
-          {kind || "-"}
-        </Descriptions.Item>
+        <Descriptions.Item label="Target Kind">{kind || "-"}</Descriptions.Item>
         <Descriptions.Item label="Target Label">
           <Typography.Text copyable>{label || "-"}</Typography.Text>
         </Descriptions.Item>
@@ -166,18 +170,18 @@ export const TestDetails: React.FC<Props> = ({ targetID, aspect, label, kind, in
 };
 
 export const TestDetailsPage: React.FC<Props> = (params) => {
-  return <Content
-    content={
-      <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-        <PortalCard
-          icon={<ExperimentFilled />}
-          titleBits={[<span key="title">Test Details</span>]}
-        >
-          <TestDetails
-            {...params}
-          />
-        </PortalCard>
-      </Space>
-    }
-  />
-}
+  return (
+    <Content
+      content={
+        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+          <PortalCard
+            icon={<ExperimentFilled />}
+            titleBits={[<span key="title">Test Details</span>]}
+          >
+            <TestDetails {...params} />
+          </PortalCard>
+        </Space>
+      }
+    />
+  );
+};

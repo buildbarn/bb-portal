@@ -1,8 +1,15 @@
-import type React from 'react';
-import { useState } from 'react';
-import { Button, Dropdown, type DropdownProps, type MenuProps, Popover, Space } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
-import type { MenuItemType } from 'antd/es/menu/interface';
+import { DownloadOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Dropdown,
+  type DropdownProps,
+  type MenuProps,
+  Popover,
+  Space,
+} from "antd";
+import type { MenuItemType } from "antd/es/menu/interface";
+import type React from "react";
+import { useState } from "react";
 
 export interface DownloadOpts {
   url?: string;
@@ -30,7 +37,7 @@ const DownloadButton: React.FC<Props> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const handleMenuClick: MenuProps['onClick'] = e => {
+  const handleMenuClick: MenuProps["onClick"] = (e) => {
     // Closing is delegated to item.
     if (preventDefaultForKeys?.includes(e.key)) {
       e.domEvent.preventDefault();
@@ -41,7 +48,9 @@ const DownloadButton: React.FC<Props> = ({
       setOpen(false);
     }, 750);
   };
-  const handleOpenChange: DropdownProps['onOpenChange'] = (nextOpen: boolean) => {
+  const handleOpenChange: DropdownProps["onOpenChange"] = (
+    nextOpen: boolean,
+  ) => {
     setOpen(nextOpen);
   };
   if (items) {
@@ -57,7 +66,7 @@ const DownloadButton: React.FC<Props> = ({
   if (!items || items.length === 0) {
     return (
       <Button icon={<DownloadOutlined />} disabled={!enabled}>
-        <a href={url ?? '#'} download={fileName} target="_self">
+        <a href={url ?? "#"} download={fileName} target="_self">
           {buttonLabel}
         </a>
       </Button>
@@ -74,7 +83,7 @@ const DownloadButton: React.FC<Props> = ({
     >
       <Space>
         <DownloadOutlined />
-        <a href={url ?? '#'} download={fileName} target="_self">
+        <a href={url ?? "#"} download={fileName} target="_self">
           {buttonLabel}
         </a>
       </Space>

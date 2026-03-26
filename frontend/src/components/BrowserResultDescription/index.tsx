@@ -1,11 +1,11 @@
+import { Descriptions, Space, Tag, Typography } from "antd";
+import Paragraph from "antd/es/typography/Paragraph";
+import type React from "react";
 import type { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { POSIXResourceUsage } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
 import { readableFileSizeFromString } from "@/utils/filesize";
 import { generateFileUrl } from "@/utils/urlGenerator";
-import { Descriptions, Space, Tag, Typography } from "antd";
-import Paragraph from "antd/es/typography/Paragraph";
-import type React from "react";
 import type { ActionConsoleOutput } from "../BrowserActionGrid/types";
 
 interface Params {
@@ -78,8 +78,8 @@ const BrowserResultDescription: React.FC<Params> = ({
         if (consoleOutput.digest && logLinkHref) {
           return (
             <Typography.Text>
-              The <a href={logLinkHref}>log file</a> for this action is to
-              large to display (
+              The <a href={logLinkHref}>log file</a> for this action is to large
+              to display (
               {readableFileSizeFromString(consoleOutput.digest.sizeBytes)}).
             </Typography.Text>
           );

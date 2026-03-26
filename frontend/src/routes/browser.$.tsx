@@ -1,35 +1,43 @@
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import z from "zod";
+import { BrowserPage } from "@/components/pages/Browser";
+import { generatePageTitle } from "@/utils/generatePageTitle";
 import { parseBrowserPageSlug } from "@/utils/parseBrowserPageSlug";
-import { generatePageTitle } from '@/utils/generatePageTitle';
-import { BrowserPage } from '@/components/pages/Browser';
-import { z } from 'zod';
 
 const BrowserSearchSchema = z.object({
-  fileSystemAccessProfile: z.object({
-    digest: z.object({
-      hash: z.string(),
-      sizeBytes: z.string(),
-    }).or(z.undefined()),
-    pathHashesBaseHash: z.string(),
-  }).optional(),
-})
+  fileSystemAccessProfile: z
+    .object({
+      digest: z
+        .object({
+          hash: z.string(),
+          sizeBytes: z.string(),
+        })
+        .or(z.undefined()),
+      pathHashesBaseHash: z.string(),
+    })
+    .optional(),
+});
 
-export type BrowserSearchParams = z.infer<typeof BrowserSearchSchema>
+export type BrowserSearchParams = z.infer<typeof BrowserSearchSchema>;
 
-export const Route = createFileRoute('/browser/$')({
+export const Route = createFileRoute("/browser/$")({
   component: RouteComponent,
   validateSearch: (search) => BrowserSearchSchema.parse(search),
   loader: ({ params }) => {
-    const browserPageParams = parseBrowserPageSlug((params._splat || '').split('/'));
+    const browserPageParams = parseBrowserPageSlug(
+      (params._splat || "").split("/"),
+    );
     if (!browserPageParams) {
       throw notFound();
     }
-    return browserPageParams
+    return browserPageParams;
   },
   head: (_ctx) => {
-    const browserPageParams = _ctx.loaderData
+    const browserPageParams = _ctx.loaderData;
     if (browserPageParams === undefined) {
-      return { meta: [{ title: generatePageTitle(["Browser", "Page Not Found"]) }] };
+      return {
+        meta: [{ title: generatePageTitle(["Browser", "Page Not Found"]) }],
+      };
     }
 
     const pageName = browserPageParams.browserPageType
@@ -38,9 +46,15 @@ export const Route = createFileRoute('/browser/$')({
       .join(" ");
 
     return {
-      meta: [{
-        title: generatePageTitle(["Browser", pageName, browserPageParams.digest.hash])
-      }]
+      meta: [
+        {
+          title: generatePageTitle([
+            "Browser",
+            pageName,
+            browserPageParams.digest.hash,
+          ]),
+        },
+      ],
     };
   },
 });

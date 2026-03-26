@@ -1,6 +1,3 @@
-import type { PreviousExecutionStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
-import { readableDurationFromSeconds } from "@/utils/time";
-import { protobufDurationToSeconds } from "@/utils/time";
 import {
   Legend,
   ReferenceArea,
@@ -10,6 +7,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import type { PreviousExecutionStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
+import {
+  protobufDurationToSeconds,
+  readableDurationFromSeconds,
+} from "@/utils/time";
 
 interface Props {
   prevStats: PreviousExecutionStats;

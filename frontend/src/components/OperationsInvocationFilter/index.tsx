@@ -1,14 +1,14 @@
-import { Button, Col, Divider, Row } from "antd";
-import styles from "./index.module.css";
-import type { OperationsFilterParams } from "@/routes/operations.index";
 import { useNavigate } from "@tanstack/react-router";
+import { Button, Col, Divider, Row } from "antd";
+import type { OperationsFilterParams } from "@/routes/operations.index";
+import styles from "./index.module.css";
 
 interface Props {
   filter: OperationsFilterParams;
 }
 
 const OperationsInvocationFilter: React.FC<Props> = ({ filter }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   if (filter) {
     return (
       <Row>
@@ -19,7 +19,10 @@ const OperationsInvocationFilter: React.FC<Props> = ({ filter }) => {
           <pre>{JSON.stringify(filter, null, 2)}</pre>
         </Col>
         <Col span={4} className={styles.alignRight}>
-          <Button type="primary" onClick={() => navigate({ search: undefined })}>
+          <Button
+            type="primary"
+            onClick={() => navigate({ search: undefined })}
+          >
             Clear Invocation ID Filter
           </Button>
         </Col>

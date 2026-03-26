@@ -2,8 +2,8 @@ import type {
   Digest,
   DigestFunction_Value,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { digestFunctionValueToString } from "./digestFunctionUtils";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import { digestFunctionValueToString } from "./digestFunctionUtils";
 
 /////////////////////////////////////////////////////////////
 // Frontend internal URLs
@@ -19,7 +19,7 @@ export function generateBrowserSplat(
   )}/${pageType}/${digest.hash}-${digest.sizeBytes}`;
 }
 
-// TODO (isakstenstrom): Remove once the browser file component is rewritten 
+// TODO (isakstenstrom): Remove once the browser file component is rewritten
 export function generateTreeUrl(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
@@ -30,7 +30,7 @@ export function generateTreeUrl(
   )}/tree/${digest.hash}-${digest.sizeBytes}`;
 }
 
-// TODO (isakstenstrom): Remove once the browser file component is rewritten 
+// TODO (isakstenstrom): Remove once the browser file component is rewritten
 export function generateDirectoryUrl(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
@@ -45,7 +45,7 @@ export function generateDirectoryUrl(
 // Backend URLs
 /////////////////////////////////////////////////////////////
 
-const BACKEND_SERVE_FILE_URL = "/api/v1/servefile"
+const BACKEND_SERVE_FILE_URL = "/api/v1/servefile";
 
 export function generateFileUrl(
   instanceName: string | undefined,
@@ -53,7 +53,7 @@ export function generateFileUrl(
   digest: Digest,
   fileName: string,
 ): string {
-  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${fileName}`
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${fileName}`;
 }
 
 export function generateCommandShellScriptUrl(
@@ -61,7 +61,7 @@ export function generateCommandShellScriptUrl(
   digestFunction: DigestFunction_Value,
   digest: Digest,
 ): string {
-  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Command)}/?format=sh`
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Command)}/?format=sh`;
 }
 
 export function generateDirectoryTarballUrl(
@@ -69,5 +69,5 @@ export function generateDirectoryTarballUrl(
   digestFunction: DigestFunction_Value,
   digest: Digest,
 ): string {
-  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Directory)}/?format=tar`
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Directory)}/?format=tar`;
 }

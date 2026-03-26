@@ -1,18 +1,17 @@
-
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { Descriptions, Space, Spin, Typography } from "antd";
-import { Link } from '@tanstack/react-router';
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
+import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
-import { BrowserPageType, type BrowserPageParams } from "@/types/BrowserPageType";
 import {
-  PATH_HASH_BASE_HASH
-} from "@/utils/bloomFilter";
-import {
-  getReducedActionDigest_SHA256
-} from "@/utils/digestFunctionUtils";
+  type BrowserPageParams,
+  BrowserPageType,
+} from "@/types/BrowserPageType";
+import { PATH_HASH_BASE_HASH } from "@/utils/bloomFilter";
+import { getReducedActionDigest_SHA256 } from "@/utils/digestFunctionUtils";
 import { readableFileSizeFromString } from "@/utils/filesize";
 import { readableDurationFromProtobufDuration } from "@/utils/time";
 import { generateBrowserSplat } from "@/utils/urlGenerator";
@@ -32,7 +31,6 @@ import PropertyTagList from "../PropertyTagList";
 import type { PropertyTagListEntry } from "../PropertyTagList/types";
 import CopyBbClientdActionButton from "./CopyBbClientdActionButton";
 import { fetchBrowserActionGrid } from "./fetch";
-import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 
 interface Params {
   browserPageParams: BrowserPageParams;
@@ -136,7 +134,7 @@ const BrowserActionGrid: React.FC<Params> = ({
                     browserPageParams.digestFunction,
                     data.actionDigest,
                     BrowserPageType.Action,
-                  )
+                  ),
                 }}
                 style={{ textDecoration: "underline" }}
               >
@@ -177,23 +175,20 @@ const BrowserActionGrid: React.FC<Params> = ({
         </Space>
       ) : (
         <Typography.Text>This action could not be found.</Typography.Text>
-      )
-      }
+      )}
 
-      {
-        data.casCommand ? (
-          <BrowserCommandDescription
-            browserPageParams={browserPageParams}
-            command={data.casCommand}
-            commandDigest={data.action.commandDigest}
-            showTitle={true}
-          />
-        ) : (
-          <Typography.Text>
-            The command of this action could not be found.
-          </Typography.Text>
-        )
-      }
+      {data.casCommand ? (
+        <BrowserCommandDescription
+          browserPageParams={browserPageParams}
+          command={data.casCommand}
+          commandDigest={data.action.commandDigest}
+          showTitle={true}
+        />
+      ) : (
+        <Typography.Text>
+          The command of this action could not be found.
+        </Typography.Text>
+      )}
 
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={2}>Result</Typography.Title>
@@ -211,38 +206,36 @@ const BrowserActionGrid: React.FC<Params> = ({
         )}
       </Space>
 
-      {
-        data.action.inputRootDigest && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={2}>
-              <Link
-                to="/browser/$"
-                params={{
-                  _splat: generateBrowserSplat(
-                    browserPageParams.instanceName,
-                    browserPageParams.digestFunction,
-                    data.action.inputRootDigest,
-                    BrowserPageType.Directory,
-                  )
-                }}
-                search={{
-                  fileSystemAccessProfile: fileSystemAccessProfileReference
-                }}
-                style={{ textDecoration: "underline" }}
-              >
-                Input files
-              </Link>
-            </Typography.Title>
-            <BrowserDirectory
-              instanceName={browserPageParams.instanceName}
-              digestFunction={browserPageParams.digestFunction}
-              inputRootDigest={data.action.inputRootDigest}
-              fileSystemAccessProfile={data.fileSystemAccessProfile}
-              fileSystemAccessProfileReference={fileSystemAccessProfileReference}
-            />
-          </Space>
-        )
-      }
+      {data.action.inputRootDigest && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={2}>
+            <Link
+              to="/browser/$"
+              params={{
+                _splat: generateBrowserSplat(
+                  browserPageParams.instanceName,
+                  browserPageParams.digestFunction,
+                  data.action.inputRootDigest,
+                  BrowserPageType.Directory,
+                ),
+              }}
+              search={{
+                fileSystemAccessProfile: fileSystemAccessProfileReference,
+              }}
+              style={{ textDecoration: "underline" }}
+            >
+              Input files
+            </Link>
+          </Typography.Title>
+          <BrowserDirectory
+            instanceName={browserPageParams.instanceName}
+            digestFunction={browserPageParams.digestFunction}
+            inputRootDigest={data.action.inputRootDigest}
+            fileSystemAccessProfile={data.fileSystemAccessProfile}
+            fileSystemAccessProfileReference={fileSystemAccessProfileReference}
+          />
+        </Space>
+      )}
 
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={2}>Output files</Typography.Title>
@@ -257,8 +250,7 @@ const BrowserActionGrid: React.FC<Params> = ({
         />
       </Space>
 
-      {
-        data.executeResponse?.serverLogs &&
+      {data.executeResponse?.serverLogs &&
         Object.keys(data.executeResponse.serverLogs).length !== 0 && (
           <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             <Typography.Title level={2}>Server logs</Typography.Title>
@@ -271,246 +263,231 @@ const BrowserActionGrid: React.FC<Params> = ({
               isPending={isPending}
             />
           </Space>
-        )
-      }
+        )}
 
-      {
-        data.executeResponse?.result?.executionMetadata && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={2}>Execution metadata</Typography.Title>
+      {data.executeResponse?.result?.executionMetadata && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={2}>Execution metadata</Typography.Title>
 
-            <Descriptions
-              column={1}
-              size="small"
-              bordered
-              styles={{ label: { width: "25%" }, content: { width: "75%" } }}
-            >
-              <Descriptions.Item label="Worker">
-                <PropertyTagList propertyList={workerPropertyList()} />
-              </Descriptions.Item>
-              <Descriptions.Item label="Timeline">
-                <ExecutionMetadataTimeline
-                  executionMetadata={
-                    data.executeResponse.result.executionMetadata
-                  }
-                />
-              </Descriptions.Item>
-              {data.executeResponse.result.executionMetadata
-                .virtualExecutionDuration && (
-                  <Descriptions.Item label="Virtual execution duration">
-                    {readableDurationFromProtobufDuration(
-                      data.executeResponse.result.executionMetadata
-                        .virtualExecutionDuration,
-                    )}
-                  </Descriptions.Item>
+          <Descriptions
+            column={1}
+            size="small"
+            bordered
+            styles={{ label: { width: "25%" }, content: { width: "75%" } }}
+          >
+            <Descriptions.Item label="Worker">
+              <PropertyTagList propertyList={workerPropertyList()} />
+            </Descriptions.Item>
+            <Descriptions.Item label="Timeline">
+              <ExecutionMetadataTimeline
+                executionMetadata={
+                  data.executeResponse.result.executionMetadata
+                }
+              />
+            </Descriptions.Item>
+            {data.executeResponse.result.executionMetadata
+              .virtualExecutionDuration && (
+              <Descriptions.Item label="Virtual execution duration">
+                {readableDurationFromProtobufDuration(
+                  data.executeResponse.result.executionMetadata
+                    .virtualExecutionDuration,
                 )}
-            </Descriptions>
-          </Space>
-        )
-      }
-
-      {
-        data.authenticationMetadata && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={3}>Authentication metadata</Typography.Title>
-
-            <Descriptions
-              column={1}
-              size="small"
-              bordered
-              styles={{ label: { width: "25%" }, content: { width: "75%" } }}
-            >
-              <Descriptions.Item label="Publicly displayable">
-                <pre>
-                  {JSON.stringify(data.authenticationMetadata.public, null, 2)}
-                </pre>
               </Descriptions.Item>
-            </Descriptions>
-          </Space>
-        )
-      }
+            )}
+          </Descriptions>
+        </Space>
+      )}
 
-      {
-        data.requestMetadata && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={3}>Request metadata</Typography.Title>
+      {data.authenticationMetadata && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={3}>Authentication metadata</Typography.Title>
 
-            <Descriptions
-              column={1}
-              size="small"
-              bordered
-              styles={{ label: { width: "25%" }, content: { width: "75%" } }}
-            >
-              {data.requestMetadata.toolDetails && (
-                <Descriptions.Item label="Tool">
-                  {`${data.requestMetadata.toolDetails.toolName} ${data.requestMetadata.toolDetails.toolVersion}`}
+          <Descriptions
+            column={1}
+            size="small"
+            bordered
+            styles={{ label: { width: "25%" }, content: { width: "75%" } }}
+          >
+            <Descriptions.Item label="Publicly displayable">
+              <pre>
+                {JSON.stringify(data.authenticationMetadata.public, null, 2)}
+              </pre>
+            </Descriptions.Item>
+          </Descriptions>
+        </Space>
+      )}
+
+      {data.requestMetadata && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={3}>Request metadata</Typography.Title>
+
+          <Descriptions
+            column={1}
+            size="small"
+            bordered
+            styles={{ label: { width: "25%" }, content: { width: "75%" } }}
+          >
+            {data.requestMetadata.toolDetails && (
+              <Descriptions.Item label="Tool">
+                {`${data.requestMetadata.toolDetails.toolName} ${data.requestMetadata.toolDetails.toolVersion}`}
+              </Descriptions.Item>
+            )}
+            <Descriptions.Item label="Tool invocation ID">
+              <ConditionalToolInvocationLink
+                toolInvocationID={data.requestMetadata.toolInvocationId}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item label="Correlated invocations ID">
+              {data.requestMetadata.correlatedInvocationsId}
+            </Descriptions.Item>
+            <Descriptions.Item label="Target ID">
+              {data.requestMetadata.targetId}
+            </Descriptions.Item>
+            <Descriptions.Item label="Action mnemonic">
+              {data.requestMetadata.actionMnemonic}
+            </Descriptions.Item>
+            <Descriptions.Item label="Action ID">
+              {data.requestMetadata.actionId}
+            </Descriptions.Item>
+            <Descriptions.Item label="Configuration ID">
+              {data.requestMetadata.configurationId}
+            </Descriptions.Item>
+          </Descriptions>
+        </Space>
+      )}
+
+      {data.posixResourceUsage && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={3}>POSIX resource usage</Typography.Title>
+
+          <Descriptions
+            column={1}
+            size="small"
+            bordered
+            styles={{ label: { width: "25%" }, content: { width: "75%" } }}
+          >
+            <Descriptions.Item label="CPU time">
+              {data.posixResourceUsage.userTime &&
+                `${readableDurationFromProtobufDuration(data.posixResourceUsage.userTime)} user`}
+              {data.posixResourceUsage.userTime &&
+                data.posixResourceUsage.systemTime &&
+                ","}{" "}
+              {data.posixResourceUsage.systemTime &&
+                `${readableDurationFromProtobufDuration(data.posixResourceUsage.systemTime)} system`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Maximum resident set size">
+              {readableFileSizeFromString(
+                data.posixResourceUsage.maximumResidentSetSize,
+              )}
+            </Descriptions.Item>
+            <Descriptions.Item label="Paging">
+              {`${data.posixResourceUsage.pageReclaims} reclaims, ${data.posixResourceUsage.pageFaults} faults, ${data.posixResourceUsage.swaps} swaps`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Block operations">
+              {`${data.posixResourceUsage.blockInputOperations} inputs, ${data.posixResourceUsage.blockOutputOperations} outputs`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Messages">
+              {`${data.posixResourceUsage.messagesSent} sent, ${data.posixResourceUsage.messagesReceived} received`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Signals">
+              {`${data.posixResourceUsage.signalsReceived} received`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Context switches">
+              {`${data.posixResourceUsage.voluntaryContextSwitches} voluntary, ${data.posixResourceUsage.involuntaryContextSwitches} involuntary`}
+            </Descriptions.Item>
+          </Descriptions>
+        </Space>
+      )}
+
+      {data.filePoolResourceUsage && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={3}>
+            File pool resource usage
+          </Typography.Title>
+
+          <Descriptions
+            column={1}
+            size="small"
+            bordered
+            styles={{ label: { width: "25%" }, content: { width: "75%" } }}
+          >
+            <Descriptions.Item label="Files created">
+              {data.filePoolResourceUsage.filesCreated}
+            </Descriptions.Item>
+            <Descriptions.Item label="Peak usage">
+              {`${
+                data.filePoolResourceUsage.filesCountPeak
+              } files, having a total size of ${readableFileSizeFromString(
+                data.filePoolResourceUsage.filesSizeBytesPeak,
+              )}`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Reads">
+              {`${
+                data.filePoolResourceUsage.readsCount
+              } operations, having a total size of ${readableFileSizeFromString(
+                data.filePoolResourceUsage.readsSizeBytes,
+              )}`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Writes">
+              {`${
+                data.filePoolResourceUsage.writesCount
+              } operations, having a total size of ${readableFileSizeFromString(
+                data.filePoolResourceUsage.writesSizeBytes,
+              )}`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Truncates">
+              {`${data.filePoolResourceUsage.truncatesCount} operations`}
+            </Descriptions.Item>
+          </Descriptions>
+        </Space>
+      )}
+
+      {data.inputRootResourceUsage && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={3}>
+            Input root resource usage
+          </Typography.Title>
+
+          <Descriptions
+            column={1}
+            size="small"
+            bordered
+            styles={{ label: { width: "25%" }, content: { width: "75%" } }}
+          >
+            <Descriptions.Item label="Directories">
+              {`${data.inputRootResourceUsage.directoriesResolved} resolved, ${data.inputRootResourceUsage.directoriesRead} read`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Files">
+              {`${data.inputRootResourceUsage.filesRead} read`}
+            </Descriptions.Item>
+          </Descriptions>
+        </Space>
+      )}
+
+      {data.monetaryResourceUsage && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={3}>Monetary resource usage</Typography.Title>
+
+          <Descriptions column={1} bordered>
+            {Object.entries(data.monetaryResourceUsage.expenses).map(
+              ([key, value]) => (
+                <Descriptions.Item key={key} label={key}>
+                  {`${value.currency} ${value.cost}`}
                 </Descriptions.Item>
-              )}
-              <Descriptions.Item label="Tool invocation ID">
-                <ConditionalToolInvocationLink
-                  toolInvocationID={data.requestMetadata.toolInvocationId}
-                />
-              </Descriptions.Item>
-              <Descriptions.Item label="Correlated invocations ID">
-                {data.requestMetadata.correlatedInvocationsId}
-              </Descriptions.Item>
-              <Descriptions.Item label="Target ID">
-                {data.requestMetadata.targetId}
-              </Descriptions.Item>
-              <Descriptions.Item label="Action mnemonic">
-                {data.requestMetadata.actionMnemonic}
-              </Descriptions.Item>
-              <Descriptions.Item label="Action ID">
-                {data.requestMetadata.actionId}
-              </Descriptions.Item>
-              <Descriptions.Item label="Configuration ID">
-                {data.requestMetadata.configurationId}
-              </Descriptions.Item>
-            </Descriptions>
-          </Space>
-        )
-      }
-
-      {
-        data.posixResourceUsage && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={3}>POSIX resource usage</Typography.Title>
-
-            <Descriptions
-              column={1}
-              size="small"
-              bordered
-              styles={{ label: { width: "25%" }, content: { width: "75%" } }}
-            >
-              <Descriptions.Item label="CPU time">
-                {data.posixResourceUsage.userTime &&
-                  `${readableDurationFromProtobufDuration(data.posixResourceUsage.userTime)} user`}
-                {data.posixResourceUsage.userTime &&
-                  data.posixResourceUsage.systemTime &&
-                  ","}{" "}
-                {data.posixResourceUsage.systemTime &&
-                  `${readableDurationFromProtobufDuration(data.posixResourceUsage.systemTime)} system`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Maximum resident set size">
-                {readableFileSizeFromString(
-                  data.posixResourceUsage.maximumResidentSetSize,
-                )}
-              </Descriptions.Item>
-              <Descriptions.Item label="Paging">
-                {`${data.posixResourceUsage.pageReclaims} reclaims, ${data.posixResourceUsage.pageFaults} faults, ${data.posixResourceUsage.swaps} swaps`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Block operations">
-                {`${data.posixResourceUsage.blockInputOperations} inputs, ${data.posixResourceUsage.blockOutputOperations} outputs`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Messages">
-                {`${data.posixResourceUsage.messagesSent} sent, ${data.posixResourceUsage.messagesReceived} received`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Signals">
-                {`${data.posixResourceUsage.signalsReceived} received`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Context switches">
-                {`${data.posixResourceUsage.voluntaryContextSwitches} voluntary, ${data.posixResourceUsage.involuntaryContextSwitches} involuntary`}
-              </Descriptions.Item>
-            </Descriptions>
-          </Space>
-        )
-      }
-
-      {
-        data.filePoolResourceUsage && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={3}>
-              File pool resource usage
-            </Typography.Title>
-
-            <Descriptions
-              column={1}
-              size="small"
-              bordered
-              styles={{ label: { width: "25%" }, content: { width: "75%" } }}
-            >
-              <Descriptions.Item label="Files created">
-                {data.filePoolResourceUsage.filesCreated}
-              </Descriptions.Item>
-              <Descriptions.Item label="Peak usage">
-                {`${data.filePoolResourceUsage.filesCountPeak
-                  } files, having a total size of ${readableFileSizeFromString(
-                    data.filePoolResourceUsage.filesSizeBytesPeak,
-                  )}`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Reads">
-                {`${data.filePoolResourceUsage.readsCount
-                  } operations, having a total size of ${readableFileSizeFromString(
-                    data.filePoolResourceUsage.readsSizeBytes,
-                  )}`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Writes">
-                {`${data.filePoolResourceUsage.writesCount
-                  } operations, having a total size of ${readableFileSizeFromString(
-                    data.filePoolResourceUsage.writesSizeBytes,
-                  )}`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Truncates">
-                {`${data.filePoolResourceUsage.truncatesCount} operations`}
-              </Descriptions.Item>
-            </Descriptions>
-          </Space>
-        )
-      }
-
-      {
-        data.inputRootResourceUsage && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={3}>
-              Input root resource usage
-            </Typography.Title>
-
-            <Descriptions
-              column={1}
-              size="small"
-              bordered
-              styles={{ label: { width: "25%" }, content: { width: "75%" } }}
-            >
-              <Descriptions.Item label="Directories">
-                {`${data.inputRootResourceUsage.directoriesResolved} resolved, ${data.inputRootResourceUsage.directoriesRead} read`}
-              </Descriptions.Item>
-              <Descriptions.Item label="Files">
-                {`${data.inputRootResourceUsage.filesRead} read`}
-              </Descriptions.Item>
-            </Descriptions>
-          </Space>
-        )
-      }
-
-      {
-        data.monetaryResourceUsage && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <Typography.Title level={3}>Monetary resource usage</Typography.Title>
-
-            <Descriptions column={1} bordered>
-              {Object.entries(data.monetaryResourceUsage.expenses).map(
-                ([key, value]) => (
-                  <Descriptions.Item key={key} label={key}>
-                    {`${value.currency} ${value.cost}`}
-                  </Descriptions.Item>
-                ),
-              )}
-            </Descriptions>
-          </Space>
-        )
-      }
-      {
-        data.previousExecutionStats &&
-        reducedActionDigest && (
-          <BrowserPreviousExecutionsDisplay
-            browserParams={browserPageParams}
-            previousExecutionStats={data.previousExecutionStats}
-            showTitle={true}
-            reducedActionDigest={reducedActionDigest}
-          />
-        )
-      }
-    </Space >
+              ),
+            )}
+          </Descriptions>
+        </Space>
+      )}
+      {data.previousExecutionStats && reducedActionDigest && (
+        <BrowserPreviousExecutionsDisplay
+          browserParams={browserPageParams}
+          previousExecutionStats={data.previousExecutionStats}
+          showTitle={true}
+          reducedActionDigest={reducedActionDigest}
+        />
+      )}
+    </Space>
   );
 };
 

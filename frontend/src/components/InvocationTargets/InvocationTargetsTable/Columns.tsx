@@ -1,6 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
+import { Link } from "@tanstack/react-router";
 import type { TableColumnsType } from "antd";
-import { Link } from '@tanstack/react-router';
 import { getInvocationTargetAbortReasonFilterOptions } from "@/components/InvocationTargetAbortReasonTag/filter";
 import NullBooleanTag from "@/components/NullableBooleanTag";
 import SearchWidget, { SearchFilterIcon } from "@/components/SearchWidgets";
@@ -45,10 +45,7 @@ export const columns: TableColumnsType<InvocationTargetsTableRowType> = [
     dataIndex: "label",
     filterSearch: true,
     render: (_, record) => (
-      <Link
-        to="/targets/$targetID"
-        params={{ targetID: record.target.id }}
-      >
+      <Link to="/targets/$targetID" params={{ targetID: record.target.id }}>
         {record.target.label}
       </Link>
     ),

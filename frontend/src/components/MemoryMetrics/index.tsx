@@ -1,11 +1,14 @@
-import type React from "react";
-import { Table, Row, Col, Statistic, Space } from "antd";
+import { HddOutlined, PieChartOutlined } from "@ant-design/icons";
+import { Col, Row, Space, Statistic, Table } from "antd";
 import type { TableColumnsType } from "antd/lib";
-import type { MemoryMetrics, GarbageMetrics } from "@/graphql/__generated__/graphql";
-import PortalCard from "../PortalCard";
-import { PieChartOutlined, HddOutlined } from "@ant-design/icons";
-import styles from "../../theme/theme.module.css";
+import type React from "react";
+import type {
+  GarbageMetrics,
+  MemoryMetrics,
+} from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
+import styles from "../../theme/theme.module.css";
+import PortalCard from "../PortalCard";
 import SummaryPieChart, { type SummaryChartItem } from "../SummaryPieChart";
 import { nullPercent } from "../Utilities/nullPercent";
 
@@ -75,11 +78,15 @@ const MemoryMetricsDisplay: React.FC<{
             />
             <Statistic
               title="Peak Post TC Tenured Space Heap Size"
-              value={readableFileSize(memoryMetrics?.peakPostGcTenuredSpaceHeapSize ?? 0)}
+              value={readableFileSize(
+                memoryMetrics?.peakPostGcTenuredSpaceHeapSize ?? 0,
+              )}
             />
             <Statistic
               title="Used Heap Size Post Build"
-              value={readableFileSize(memoryMetrics?.usedHeapSizePostBuild ?? 0)}
+              value={readableFileSize(
+                memoryMetrics?.usedHeapSizePostBuild ?? 0,
+              )}
             />
           </Space>
         </Row>

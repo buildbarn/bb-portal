@@ -30,10 +30,7 @@ const TestGrid: React.FC = () => {
   const { loading, data, error } = useQuery<GetTestsQuery>(GET_TESTS, {
     variables: {
       where: {
-        and: [
-          { hasTestTarget: true },
-          ...filterVariables,
-        ],
+        and: [{ hasTestTarget: true }, ...filterVariables],
       },
       ...paginationVariables,
     },

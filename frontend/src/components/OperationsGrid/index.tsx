@@ -3,11 +3,11 @@ import { Table } from "antd";
 import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { RequestMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import type { OperationsFilterParams } from "@/routes/operations.index";
 import themeStyles from "@/theme/theme.module.css";
 import OperationsInvocationFilter from "../OperationsInvocationFilter";
 import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
-import type { OperationsFilterParams } from "@/routes/operations.index";
 
 const PAGE_SIZE = 1000;
 
@@ -22,10 +22,14 @@ const OperationsTable: React.FC<Props> = ({ filter }) => {
     queryKey: ["operationsTable", filter],
     queryFn: buildQueueStateClient.listOperations.bind(window, {
       pageSize: PAGE_SIZE,
-      filterInvocationId: filter ?{
-        typeUrl: filter?.["@type"],
-        value: RequestMetadata.encode(RequestMetadata.fromPartial(filter)).finish(),
-      }: undefined
+      filterInvocationId: filter
+        ? {
+            typeUrl: filter?.["@type"],
+            value: RequestMetadata.encode(
+              RequestMetadata.fromPartial(filter),
+            ).finish(),
+          }
+        : undefined,
     }),
     staleTime: Number.POSITIVE_INFINITY,
     refetchOnMount: "always",

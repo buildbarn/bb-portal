@@ -1,7 +1,7 @@
-import type React from 'react';
-import { Space, Typography, Upload } from 'antd';
-import { FileAddTwoTone } from '@ant-design/icons';
+import { FileAddTwoTone } from "@ant-design/icons";
 import type { UploadProps } from "antd";
+import { Space, Typography, Upload } from "antd";
+import type React from "react";
 
 const { Dragger } = Upload;
 

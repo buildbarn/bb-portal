@@ -1,9 +1,16 @@
+import { Link, type LinkOptions } from "@tanstack/react-router";
 import { Space, theme } from "antd";
-import { Link, type LinkOptions } from '@tanstack/react-router';
-import { useState } from "react";
-import { Legend, type LegendPayload, Pie, PieChart, type PieSectorDataItem, type PieSectorShapeProps, Sector } from "recharts";
+import React, { useState } from "react";
+import {
+  Legend,
+  type LegendPayload,
+  Pie,
+  PieChart,
+  type PieSectorDataItem,
+  type PieSectorShapeProps,
+  Sector,
+} from "recharts";
 import { themeColor } from "./utils";
-import React from "react";
 
 // The `Legend` component uses `value`, `fill`,
 // and `type` by default to render the data.
@@ -37,49 +44,59 @@ const SummaryPieChart: React.FC<Props> = ({
     .sort((a, b) => b.count - a.count)
     .map((item, index) => ({
       ...item,
-      fill: item.fill ?? themeColor(token, index)
+      fill: item.fill ?? themeColor(token, index),
     }));
 
-  const [hoverIndex, setHoverIndex] = React.useState<number | undefined>(undefined);
-  const handleMouseEnter = (_payload: LegendPayload | PieSectorDataItem, index: number) => {
+  const [hoverIndex, setHoverIndex] = React.useState<number | undefined>(
+    undefined,
+  );
+  const handleMouseEnter = (
+    _payload: LegendPayload | PieSectorDataItem,
+    index: number,
+  ) => {
     setHoverIndex(index);
   };
   const handleMouseLeave = () => {
     setHoverIndex(undefined);
   };
 
-  const renderLegendText = (_value: string, entry: LegendPayload, index: number) => {
-    let item: SummaryChartItem | undefined
+  const renderLegendText = (
+    _value: string,
+    entry: LegendPayload,
+    index: number,
+  ) => {
+    let item: SummaryChartItem | undefined;
     if (entry.payload) {
-      item = entry.payload as SummaryChartItem
+      item = entry.payload as SummaryChartItem;
     }
 
-    let legendText = <>
-      <b>{item?.count ?? 0}</b>{" "}
-      {item?.link ? <Link {...item.link}>{item.value}</Link> : item?.value} (
-      {item?.percent})
-    </>
+    let legendText = (
+      <>
+        <b>{item?.count ?? 0}</b>{" "}
+        {item?.link ? <Link {...item.link}>{item.value}</Link> : item?.value} (
+        {item?.percent})
+      </>
+    );
 
     if (index === hoverIndex) {
-      legendText = <u>{legendText}</u>
+      legendText = <u>{legendText}</u>;
     }
 
-    return (
-      <span style={{ wordBreak: "break-word" }}>
-        {legendText}
-      </span>
-    );
+    return <span style={{ wordBreak: "break-word" }}>{legendText}</span>;
   };
 
-  const renderPieShape = ({
-    cx,
-    cy,
-    innerRadius,
-    outerRadius,
-    startAngle,
-    endAngle,
-    fill,
-  }: PieSectorShapeProps, index: number) => {
+  const renderPieShape = (
+    {
+      cx,
+      cy,
+      innerRadius,
+      outerRadius,
+      startAngle,
+      endAngle,
+      fill,
+    }: PieSectorShapeProps,
+    index: number,
+  ) => {
     return (
       <g>
         <Sector
@@ -92,7 +109,7 @@ const SummaryPieChart: React.FC<Props> = ({
           fill={fill}
           stroke="white"
         />
-        {index === hoverIndex &&
+        {index === hoverIndex && (
           <Sector
             cx={cx}
             cy={cy}
@@ -103,40 +120,41 @@ const SummaryPieChart: React.FC<Props> = ({
             fill={fill}
             stroke="white"
           />
-        }
+        )}
       </g>
     );
   };
 
-  return <Space direction="vertical" style={{ width: chartWidth }}>
-    <PieChart height={OUTER_RADIUS * 3} width={chartWidth}>
-      <Pie
-        dataKey="count"
-        data={coloredItems}
-        innerRadius={INNER_RADIUS}
-        outerRadius={OUTER_RADIUS}
-        shape={renderPieShape}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
-      <Legend
-        layout="vertical"
-        wrapperStyle={{
-          position: 'static',
-          columns: 2,
-        }}
-        portal={portalNode}
-        formatter={renderLegendText}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
-    </PieChart>
-    <div style={{ breakInside: "avoid-column" }}>
-
-      {/* Use a React Portal to move the legend to outside of the PieChart. This makes layout easier */}
-      <div ref={setPortalNode} />
-    </div>
-  </Space>
+  return (
+    <Space direction="vertical" style={{ width: chartWidth }}>
+      <PieChart height={OUTER_RADIUS * 3} width={chartWidth}>
+        <Pie
+          dataKey="count"
+          data={coloredItems}
+          innerRadius={INNER_RADIUS}
+          outerRadius={OUTER_RADIUS}
+          shape={renderPieShape}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+        <Legend
+          layout="vertical"
+          wrapperStyle={{
+            position: "static",
+            columns: 2,
+          }}
+          portal={portalNode}
+          formatter={renderLegendText}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      </PieChart>
+      <div style={{ breakInside: "avoid-column" }}>
+        {/* Use a React Portal to move the legend to outside of the PieChart. This makes layout easier */}
+        <div ref={setPortalNode} />
+      </div>
+    </Space>
+  );
 };
 
 export default SummaryPieChart;

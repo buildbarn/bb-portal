@@ -1,4 +1,3 @@
-
 import type { FileSystemAccessProfile } from "@/lib/grpc-client/buildbarn/fsac/fsac";
 
 export interface BloomFilterReader {

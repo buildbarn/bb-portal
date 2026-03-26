@@ -1,8 +1,7 @@
-
-import type React from 'react';
-import { BulbOutlined, GithubOutlined } from '@ant-design/icons';
-import AppBarButton from '@/components/AppBar/AppBarButton';
-import styles from '@/components/AppBar/index.module.css';
+import { BulbOutlined, GithubOutlined } from "@ant-design/icons";
+import type React from "react";
+import AppBarButton from "@/components/AppBar/AppBarButton";
+import styles from "@/components/AppBar/index.module.css";
 
 type Props = {
   toggleTheme: () => void;
@@ -12,10 +11,14 @@ type Props = {
 const AppBarButtons: React.FC<Props> = ({ toggleTheme, prefersDark }) => {
   return (
     <div className={styles.buttonContainer}>
-      <AppBarButton icon={<GithubOutlined />} title="Github" href="https://github.com/buildbarn/bb-portal" />
+      <AppBarButton
+        icon={<GithubOutlined />}
+        title="Github"
+        href="https://github.com/buildbarn/bb-portal"
+      />
       <AppBarButton
         icon={<BulbOutlined />}
-        title={`${prefersDark ? 'Light' : 'Dark'} Mode`}
+        title={`${prefersDark ? "Light" : "Dark"} Mode`}
         onMouseDown={toggleTheme}
       />
     </div>

@@ -1,12 +1,11 @@
+import { Space, Statistic } from "antd";
+import { Bar, BarChart, LabelList, Legend, YAxis } from "recharts";
 import type {
   ActionCacheStatistics,
   Maybe,
 } from "@/graphql/__generated__/graphql";
-import { Space, Statistic } from "antd";
 import { readableFileSize } from "@/utils/filesize";
 import { readableDurationFromMilliseconds } from "@/utils/time";
-import { Bar, BarChart, LabelList, Legend } from "recharts";
-import { YAxis } from "recharts";
 import { nullPercent } from "../Utilities/nullPercent";
 
 interface Props {

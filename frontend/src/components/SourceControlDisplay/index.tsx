@@ -1,10 +1,10 @@
+import { BranchesOutlined } from "@ant-design/icons";
+import { Descriptions, Row, Space } from "antd";
+import type React from "react";
 import {
   type SourceControl,
   SourceControlProvider,
 } from "@/graphql/__generated__/graphql";
-import { BranchesOutlined } from "@ant-design/icons";
-import { Descriptions, Row, Space } from "antd";
-import type React from "react";
 import PortalCard from "../PortalCard";
 
 const getRepoUrl = (
@@ -38,20 +38,24 @@ const getRefLabelAndUrl = (
   switch (sc?.provider) {
     case SourceControlProvider.Github:
       if (sc.refs.startsWith("refs/heads/")) {
-        return ["Branch", `${repoUrl}/tree/${sc.refs.substring("refs/heads/".length)}`];
+        return [
+          "Branch",
+          `${repoUrl}/tree/${sc.refs.substring("refs/heads/".length)}`,
+        ];
       }
       if (sc.refs.startsWith("refs/tags/")) {
-        return ["Tag",`${repoUrl}/tree/${sc.refs.substring("refs/tags/".length)}`];
+        return [
+          "Tag",
+          `${repoUrl}/tree/${sc.refs.substring("refs/tags/".length)}`,
+        ];
       }
       if (sc.refs.startsWith("refs/pull/")) {
-        const prNumber = sc.refs
-          .substring("refs/pull/".length)
-          .split("/")[0];
-        return ["Pull request",`${repoUrl}/pull/${prNumber}`];
+        const prNumber = sc.refs.substring("refs/pull/".length).split("/")[0];
+        return ["Pull request", `${repoUrl}/pull/${prNumber}`];
       }
-      return ["Ref",`${repoUrl}/tree/${sc.refs}`];
+      return ["Ref", `${repoUrl}/tree/${sc.refs}`];
     case SourceControlProvider.Gitlab:
-      return ["Branch",`${repoUrl}/-/tree/${sc.refs}`];
+      return ["Branch", `${repoUrl}/-/tree/${sc.refs}`];
     default:
       return [undefined, undefined];
   }
@@ -166,10 +170,16 @@ const SourceControlDisplay: React.FC<{
                 <RepoLink url={refUrl} text={sourceControlData?.refs || ""} />
               </Descriptions.Item>
               <Descriptions.Item label="Commit SHA">
-                <RepoLink url={commitUrl} text={sourceControlData?.commitSha || ""} />
+                <RepoLink
+                  url={commitUrl}
+                  text={sourceControlData?.commitSha || ""}
+                />
               </Descriptions.Item>
               <Descriptions.Item label="Actor">
-                <RepoLink url={actorUrl} text={sourceControlData?.actor || ""} />
+                <RepoLink
+                  url={actorUrl}
+                  text={sourceControlData?.actor || ""}
+                />
               </Descriptions.Item>
               <Descriptions.Item label="Event Name">
                 {sourceControlData?.eventName}

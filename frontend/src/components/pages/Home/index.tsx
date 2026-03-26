@@ -1,8 +1,7 @@
-
 import { Space, Typography } from "antd";
-import { env } from "@/utils/env";
 import Content from "@/components/Content";
 import Uploader from "@/components/Uploader";
+import { env } from "@/utils/env";
 import styles from "./index.module.css";
 
 const BuildInstructions: React.FC = () => {
@@ -20,7 +19,7 @@ const BuildInstructions: React.FC = () => {
       </Space>
     </Space>
   );
-}
+};
 
 const BepFileUploader: React.FC = () => {
   return (
@@ -34,24 +33,25 @@ const BepFileUploader: React.FC = () => {
               *.bep.ndjson
             </Typography.Text>{" "}
             file(s) produced with Bazel&apos;s{" "}
-            <Typography.Text code>
-              --build_event_json_file
-            </Typography.Text>{" "}
-            flag to analyze
+            <Typography.Text code>--build_event_json_file</Typography.Text> flag
+            to analyze
           </Typography.Text>
         }
         action={"/api/v1/bep/upload"}
       />
     </Space>
   );
-}
-
+};
 
 export function HomePage() {
-  return <Content content={
-    <Space direction="vertical" size="large" className={styles.container}>
-      {!!env.featureFlags?.home?.fileUpload && <BepFileUploader />}
-      {!!env.featureFlags?.home?.instructions && <BuildInstructions />}
-    </Space>
-  } />;
+  return (
+    <Content
+      content={
+        <Space direction="vertical" size="large" className={styles.container}>
+          {!!env.featureFlags?.home?.fileUpload && <BepFileUploader />}
+          {!!env.featureFlags?.home?.instructions && <BuildInstructions />}
+        </Space>
+      }
+    />
+  );
 }

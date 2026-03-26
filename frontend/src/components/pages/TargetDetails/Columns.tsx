@@ -1,6 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
+import { Link } from "@tanstack/react-router";
 import type { TableColumnsType } from "antd";
-import { Link } from '@tanstack/react-router';
 import { InvocationTargetAbortReasonTag } from "@/components/InvocationTargetAbortReasonTag";
 import { getInvocationTargetAbortReasonFilterOptions } from "@/components/InvocationTargetAbortReasonTag/filter";
 import { InvocationTargetTagList } from "@/components/InvocationTargets/InvocationTargetTagList";

@@ -1,11 +1,12 @@
+import type { ItemType } from "antd/es/menu/interface";
+import type React from "react";
+import type { Key, ReactNode } from "react";
+import { MenuItemLabel, type MenuItemTag } from "@/components/MenuItemLabel";
+import type { Empty } from "@/lib/grpc-client/google/protobuf/empty";
 
-import type React from 'react';
-import type { ReactNode, Key } from 'react';
-import type { ItemType } from 'antd/es/menu/interface';
-import { MenuItemLabel, type MenuItemTag } from '@/components/MenuItemLabel';
-import type { Empty } from '@/lib/grpc-client/google/protobuf/empty';
-
-export type UpdateSidebarMenuExpandedWidthFunction = (updatedSidebarMenuExpandedWidth: number) => void;
+export type UpdateSidebarMenuExpandedWidthFunction = (
+  updatedSidebarMenuExpandedWidth: number,
+) => void;
 
 interface ItemProps {
   depth: number;
@@ -64,10 +65,12 @@ export const getItem = ({
 // Recurse to build a flattened array of all children of a given menu tree
 const getFlattenedMenuItems = (array: ItemType[]): ItemType[] => {
   let flattenedMenuItems: ItemType[] = [];
-  array.forEach(item => {
+  array.forEach((item) => {
     flattenedMenuItems.push(item);
-    if (item && 'children' in item && item.children) {
-      flattenedMenuItems = flattenedMenuItems.concat(getFlattenedMenuItems(item.children));
+    if (item && "children" in item && item.children) {
+      flattenedMenuItems = flattenedMenuItems.concat(
+        getFlattenedMenuItems(item.children),
+      );
     }
   });
   return flattenedMenuItems;
@@ -82,7 +85,9 @@ export const getFlattedMenuKeys = (items: ItemType[]): Key[] => {
 
 // Return an array of all items marked with danger from a given menu tree
 const getFlattenedDangerMenuItems = (items: ItemType[]): ItemType[] => {
-  return getFlattenedMenuItems(items).filter(item => item && 'danger' in item && item.danger);
+  return getFlattenedMenuItems(items).filter(
+    (item) => item && "danger" in item && item.danger,
+  );
 };
 
 // Return an array of all keys of items marked with danger from a given mnu tree
@@ -103,7 +108,7 @@ export const getFlattedDangerMenuKeys = (items: ItemType[]): Key[] => {
 const getClosestItem = (key: Key, items: ItemType[]): ItemType | null => {
   return (
     items?.reduce((previousItem?: ItemType, item?: ItemType) => {
-      if (item && 'children' in item && item.children) {
+      if (item && "children" in item && item.children) {
         const closestChildItem = getClosestItem(key, item.children);
         if (closestChildItem) {
           return closestChildItem;
@@ -112,7 +117,10 @@ const getClosestItem = (key: Key, items: ItemType[]): ItemType | null => {
       if (previousItem) {
         return previousItem;
       }
-      if (item?.key?.toString() === key.toString().slice(0, item?.key?.toString().length)) {
+      if (
+        item?.key?.toString() ===
+        key.toString().slice(0, item?.key?.toString().length)
+      ) {
         return item;
       }
       return null;
@@ -135,9 +143,10 @@ export const getClosestKey = (key: string, items: ItemType[]): Key | null => {
 
 // Given a menu item key, return a list of menu item keys in the subtree leading up to the menu item
 export const getFlattenedParentKeys = (key: Key, items: ItemType[]): Key[] => {
-  return getFlattedMenuKeys(items).filter(potentialKey => {
+  return getFlattedMenuKeys(items).filter((potentialKey) => {
     return (
-      potentialKey.toString() === key.toString().slice(0, potentialKey.toString().length) &&
+      potentialKey.toString() ===
+        key.toString().slice(0, potentialKey.toString().length) &&
       key.toString().length > potentialKey.toString().length
     );
   });
@@ -146,9 +155,9 @@ export const getFlattenedParentKeys = (key: Key, items: ItemType[]): Key[] => {
 // Given a menu item key, return a list of menu item keys of any child menu items
 export const getFirstChildrenKeys = (key: Key, items: ItemType[]): Key[] => {
   const closestItem = getClosestItem(key, items);
-  if (closestItem && 'children' in closestItem && closestItem.children) {
+  if (closestItem && "children" in closestItem && closestItem.children) {
     return closestItem.children
-      .map(child => child?.key)
+      .map((child) => child?.key)
       .reduce<Key[]>((accumulator, key) => {
         if (key) {
           accumulator.push(key);
