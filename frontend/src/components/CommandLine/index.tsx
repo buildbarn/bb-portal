@@ -1,6 +1,6 @@
 import { CodeOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { Empty, List, Tooltip } from 'antd';
-import React from 'react';
+import type React from 'react';
 import PortalCard from '../PortalCard';
 
 // TODO: find a way to apply these interfaces automatically to the

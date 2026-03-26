@@ -32,7 +32,7 @@ import PropertyTagList from "../PropertyTagList";
 import type { PropertyTagListEntry } from "../PropertyTagList/types";
 import CopyBbClientdActionButton from "./CopyBbClientdActionButton";
 import { fetchBrowserActionGrid } from "./fetch";
-import { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 
 interface Params {
   browserPageParams: BrowserPageParams;

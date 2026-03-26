@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 import { Alert, Typography } from 'antd';
-import { AlertProps } from 'antd/lib/alert';
+import type { AlertProps } from 'antd/lib/alert';
 import styles from './index.module.css';
 
 type Props = AlertProps;

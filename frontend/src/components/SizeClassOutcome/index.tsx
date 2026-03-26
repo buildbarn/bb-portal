@@ -36,6 +36,12 @@ const SizeClassOutcome: React.FC<Props> = ({ sizeClassStats }) => {
               </SizeClassOutcomeTag>
             );
           }
+          return (
+            // biome-ignore lint/suspicious/noArrayIndexKey: We have nothing better to use
+            <SizeClassOutcomeTag color="warning" key={index}>
+              Unknown
+            </SizeClassOutcomeTag>
+          );
         })}
       </Space>
       <Typography.Title level={5}>

@@ -5,7 +5,6 @@ import { readableFileSizeFromString } from "@/utils/filesize";
 import { generateFileUrl } from "@/utils/urlGenerator";
 import { Descriptions, Space, Tag, Typography } from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
-import { Link } from '@tanstack/react-router';
 import type React from "react";
 import type { ActionConsoleOutput } from "../BrowserActionGrid/types";
 

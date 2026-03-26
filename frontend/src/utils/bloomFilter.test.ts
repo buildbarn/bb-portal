@@ -1,4 +1,4 @@
-import { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+
 import { FileSystemAccessProfile } from "@/lib/grpc-client/buildbarn/fsac/fsac";
 import { expect, test } from "vitest";
 import {

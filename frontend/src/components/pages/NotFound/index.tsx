@@ -1,5 +1,5 @@
 
-import React from 'react';
+import type React from 'react';
 import { Link } from '@tanstack/react-router';
 import { Space, Typography } from 'antd';
 import Content from '@/components/Content';

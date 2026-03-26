@@ -1,7 +1,8 @@
 
-import React, { Key } from 'react';
-import { FloatButton, Layout, MenuProps } from 'antd';
-import { ItemType } from 'antd/es/menu/interface';
+import type React from 'react';
+import type { Key } from 'react';
+import { FloatButton, Layout, type MenuProps } from 'antd';
+import type { ItemType } from 'antd/es/menu/interface';
 import styles from '@/components/Content/index.module.css';
 import SiderBar from '@/components/SiderBar';
 import { Breadcrumbs } from '@/components/Breadcrumbs';

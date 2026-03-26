@@ -4,7 +4,6 @@ import {
 } from "@/graphql/__generated__/graphql";
 import { BranchesOutlined } from "@ant-design/icons";
 import { Descriptions, Row, Space } from "antd";
-import { Link } from '@tanstack/react-router';
 import type React from "react";
 import PortalCard from "../PortalCard";
 
@@ -50,6 +49,7 @@ const getRefLabelAndUrl = (
           .split("/")[0];
         return ["Pull request",`${repoUrl}/pull/${prNumber}`];
       }
+      return ["Ref",`${repoUrl}/tree/${sc.refs}`];
     case SourceControlProvider.Gitlab:
       return ["Branch",`${repoUrl}/-/tree/${sc.refs}`];
     default:
@@ -125,7 +125,7 @@ type RepoLinkProps = {
 const RepoLink: React.FC<RepoLinkProps> = ({ text, url }) => {
   if (url) {
     return (
-      <a target="_blank" href={url}>
+      <a target="_blank" href={url} rel="noopener">
         {text}
       </a>
     );
@@ -136,7 +136,7 @@ const RepoLink: React.FC<RepoLinkProps> = ({ text, url }) => {
 const SourceControlDisplay: React.FC<{
   stepLabel: string | undefined | null;
   sourceControlData: SourceControl | undefined | null;
-}> = ({ sourceControlData, stepLabel }) => {
+}> = ({ sourceControlData }) => {
   const repoUrl = getRepoUrl(sourceControlData);
   const [refLabel, refUrl] = getRefLabelAndUrl(sourceControlData, repoUrl);
   const commitUrl = getCommitUrl(sourceControlData, repoUrl);
@@ -145,7 +145,7 @@ const SourceControlDisplay: React.FC<{
 
   let workflowLabel = sourceControlData?.workflow || "";
   const runNumber = sourceControlData?.runNumber || "";
-  if (workflowLabel != "" && runNumber != "") {
+  if (workflowLabel !== "" && runNumber !== "") {
     workflowLabel = `${workflowLabel} #${runNumber}`;
   }
 

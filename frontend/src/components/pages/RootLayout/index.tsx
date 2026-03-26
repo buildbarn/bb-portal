@@ -56,13 +56,13 @@ export const RootLayout = () => {
   useEffect(() => {
     const val = calculatePrefersDark();
     setPrefersDark(val);
-  }, [setPrefersDark]);
+  }, []);
 
   const toggleTheme = useCallback(() => {
     const opposite = !prefersDark;
     savePrefersDark(opposite);
     setPrefersDark(opposite);
-  }, [prefersDark, setPrefersDark]);
+  }, [prefersDark]);
 
   const queryClient = new QueryClient({
     defaultOptions: {

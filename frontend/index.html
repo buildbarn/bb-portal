@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- BB_PORTAL_CONFIGURATION_PLACEHOLDER -->
     <script>
-      (function() {
+      (() => {
         try {
-          var key = 'prefers-dark';
-          var isDark = localStorage.getItem(key) === 'true' || (!localStorage.getItem(key) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          const key = 'prefers-dark';
+          const isDark = localStorage.getItem(key) === 'true' || (!localStorage.getItem(key) && window.matchMedia('(prefers-color-scheme: dark)').matches);
           document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        } catch (e) {}
+        } catch (_e) {}
       })();
     </script>
   </head>

@@ -6,7 +6,7 @@ import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 import PortalCard from "@/components/PortalCard";
 import PortalDuration from "@/components/PortalDuration";
-import {
+import type {
   BazelInvocationInfoFragment,
   RunnerCount
 } from "@/graphql/__generated__/graphql";
@@ -26,7 +26,8 @@ import {
 } from "@ant-design/icons";
 import { Space, Tabs, Typography } from "antd";
 import type { TabsProps } from "antd/lib";
-import React, { useMemo, useState } from "react";
+import type React from "react";
+import { useMemo, useState } from "react";
 import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
 import styles from "../AppBar/index.module.css";
 import BuildLogsDisplay from "../BuildLogsDisplay";
@@ -65,17 +66,17 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     runnerMetrics.push(item)
   );
 
-  const hideActionStatisticsTab: boolean = metrics?.actionSummary == undefined || metrics?.actionSummary == null;
+  const hideActionStatisticsTab: boolean = metrics?.actionSummary === undefined || metrics?.actionSummary == null;
   const hideLogsTab: boolean = false;
-  const hideArtifactsTab: boolean = metrics?.artifactMetrics == undefined || metrics?.artifactMetrics == null;
-  const hideMemoryTab: boolean = metrics?.memoryMetrics == undefined || metrics?.memoryMetrics == null;
+  const hideArtifactsTab: boolean = metrics?.artifactMetrics === undefined || metrics?.artifactMetrics == null;
+  const hideMemoryTab: boolean = metrics?.memoryMetrics === undefined || metrics?.memoryMetrics == null;
   const hideSystemMetricsTab: boolean =
-    (metrics?.timingMetrics == undefined || metrics?.timingMetrics == null)
-    && (metrics?.networkMetrics == undefined || metrics?.networkMetrics == null);
-  const hideFailedActionsTab: boolean = actions == undefined || actions == null || actions.length == 0;
+    (metrics?.timingMetrics === undefined || metrics?.timingMetrics == null)
+    && (metrics?.networkMetrics === undefined || metrics?.networkMetrics == null);
+  const hideFailedActionsTab: boolean = actions === undefined || actions == null || actions.length === 0;
   const hideTargetsTab: boolean = !env.featureFlags?.bes?.pageTargets;
   const hideTestsTab: boolean = !env.featureFlags?.bes?.pageTests;
-  const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
+  const hideSourceControlTab: boolean = sourceControl === undefined || sourceControl == null;
 
   const command = commandLineDataToString(originalCommandLine)
 
@@ -242,7 +243,7 @@ const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
   } = invocationOverview;
 
   const titleBits: React.ReactNode[] = []
-  if (user?.LDAP && user?.LDAP != "") titleBits.push(
+  if (user?.LDAP && user?.LDAP !== "") titleBits.push(
     <span key="label">
       User:{" "}
       <Typography.Text type="secondary" className={styles.normalWeight}>
@@ -250,7 +251,7 @@ const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
       </Typography.Text>
     </span>
   );
-  if (invocationID && invocationID != "") titleBits.push(
+  if (invocationID && invocationID !== "") titleBits.push(
     <span key="label">
       Invocation ID:{" "}
       <Typography.Text type="secondary" className={styles.normalWeight} copyable={{ text: invocationID ?? "Copy" }}>
@@ -338,7 +339,7 @@ const BazelInvocation: React.FC<Props> = ({ invocationOverview }) => {
   );
 
   function checkIfNotHidden(key: string) {
-    const hidden = items?.findIndex((x) => x.key == key) == -1
+    const hidden = items?.findIndex((x) => x.key === key) === -1
     return hidden ? DEFAULT_TAB_KEY : key;
   }
 

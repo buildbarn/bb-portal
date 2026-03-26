@@ -1,7 +1,7 @@
 import { Space, theme } from "antd";
-import { Link, LinkOptions } from '@tanstack/react-router';
+import { Link, type LinkOptions } from '@tanstack/react-router';
 import { useState } from "react";
-import { Legend, LegendPayload, Pie, PieChart, PieSectorDataItem, PieSectorShapeProps, Sector } from "recharts";
+import { Legend, type LegendPayload, Pie, PieChart, type PieSectorDataItem, type PieSectorShapeProps, Sector } from "recharts";
 import { themeColor } from "./utils";
 import React from "react";
 
@@ -48,7 +48,7 @@ const SummaryPieChart: React.FC<Props> = ({
     setHoverIndex(undefined);
   };
 
-  const renderLegendText = (_value: any, entry: LegendPayload, index: number) => {
+  const renderLegendText = (_value: string, entry: LegendPayload, index: number) => {
     let item: SummaryChartItem | undefined
     if (entry.payload) {
       item = entry.payload as SummaryChartItem
@@ -92,7 +92,7 @@ const SummaryPieChart: React.FC<Props> = ({
           fill={fill}
           stroke="white"
         />
-        {index == hoverIndex &&
+        {index === hoverIndex &&
           <Sector
             cx={cx}
             cy={cy}

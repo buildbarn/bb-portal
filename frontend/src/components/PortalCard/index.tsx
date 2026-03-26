@@ -1,5 +1,6 @@
-import React, { forwardRef, useLayoutEffect, useRef, useState } from 'react';
-import { Button, Card, CardProps, List, Popover, Space, theme } from 'antd';
+import React from 'react';
+import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
+import { Button, Card, type CardProps, List, Popover, Space, theme } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import styles from './index.module.css';
 import themeStyles from '@/theme/theme.module.css';
@@ -13,14 +14,13 @@ interface HeaderProps {
 
 const Header = forwardRef<HTMLDivElement, HeaderProps>(({ headerBits, className }, ref) => {
   const actualClassName = [styles.header, className].join(' ');
-  const actualTitleBits = headerBits.filter(titleBit => titleBit);
   return (
     <Space ref={ref} size="middle" className={actualClassName}>
-      {actualTitleBits.map(
-        (titleBit, index) =>
-          titleBit && (
-            <div key={index} className={actualClassName}>
-              {titleBit}
+      {headerBits.map(
+        (headerBit, index) =>
+          headerBit && (
+            <div key={(React.isValidElement(headerBit) && headerBit.key) || index} className={actualClassName}>
+              {headerBit}
             </div>
           ),
       )}

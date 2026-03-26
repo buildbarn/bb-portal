@@ -1,4 +1,4 @@
-import { theme, ThemeConfig } from 'antd';
+import { theme, type ThemeConfig } from 'antd';
 import { blue, generate } from '@ant-design/colors';
 import shared, { HEADER_OPACITY_HEX } from '@/theme/shared';
 

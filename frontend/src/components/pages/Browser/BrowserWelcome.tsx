@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noTemplateCurlyInString: It's not supposed to be template strings
 
 import Content from "@/components/Content";
 import PortalCard from "@/components/PortalCard";
@@ -5,6 +6,7 @@ import { LayoutOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
 import type React from "react";
 import styles from "./browser.module.css";
+
 
 export const BrowserWelcomePage: React.FC = () => {
   return (

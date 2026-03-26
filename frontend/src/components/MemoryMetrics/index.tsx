@@ -1,12 +1,12 @@
-import React from "react";
+import type React from "react";
 import { Table, Row, Col, Statistic, Space } from "antd";
 import type { TableColumnsType } from "antd/lib";
-import { MemoryMetrics, GarbageMetrics } from "@/graphql/__generated__/graphql";
+import type { MemoryMetrics, GarbageMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { PieChartOutlined, HddOutlined } from "@ant-design/icons";
 import styles from "../../theme/theme.module.css";
 import { readableFileSize } from "@/utils/filesize";
-import SummaryPieChart, { SummaryChartItem } from "../SummaryPieChart";
+import SummaryPieChart, { type SummaryChartItem } from "../SummaryPieChart";
 import { nullPercent } from "../Utilities/nullPercent";
 
 interface GarbageMetricDetailDisplayType {
@@ -35,7 +35,7 @@ const MemoryMetricsDisplay: React.FC<{
   memoryMetrics: MemoryMetrics | undefined;
 }> = ({ memoryMetrics }) => {
   const garbage_data: GarbageMetricDetailDisplayType[] = [];
-  memoryMetrics?.garbageMetrics?.map((item: GarbageMetrics, index) => {
+  memoryMetrics?.garbageMetrics?.forEach((item: GarbageMetrics, index) => {
     var gm: GarbageMetricDetailDisplayType = {
       key: index,
       name: item.type ?? "",

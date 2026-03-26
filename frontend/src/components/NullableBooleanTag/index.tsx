@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { CheckCircleFilled, CloseCircleFilled, QuestionCircleFilled, } from '@ant-design/icons';
 import { Tag } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
@@ -37,16 +37,16 @@ const NullBooleanTag: React.FC<Props> = ({ status, hideText }) => {
         hideText = false
     }
     var status_string: NilBoolEnum = "null_tag";
-    if (status == true && hideText == false) {
+    if (status === true && hideText === false) {
         status_string = "true_tag"
     }
-    if (status == true && hideText == true) {
+    if (status === true && hideText === true) {
         status_string = "true_hide_tag"
     }
-    if (status == false && hideText == false) {
+    if (status === false && hideText === false) {
         status_string = "false_tag"
     }
-    if (status == false && hideText == true) {
+    if (status === false && hideText === true) {
         status_string = "false_hide_tag"
     }
     const resultTag = BOOL_TAGS[status_string] || BOOL_TAGS.null_tag;

@@ -115,5 +115,5 @@ export const readableDurationFromDates = (
 };
 
 export const protobufDurationToSeconds = (duration: ProtobufDuration) => {
-  return Number.parseInt(duration.seconds) + duration.nanos / 1e9;
+  return Number.parseInt(duration.seconds, 10) + duration.nanos / 1e9;
 };

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import type React from 'react';
 import { BulbOutlined, GithubOutlined } from '@ant-design/icons';
 import AppBarButton from '@/components/AppBar/AppBarButton';
 import styles from '@/components/AppBar/index.module.css';

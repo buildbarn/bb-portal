@@ -17,6 +17,7 @@ import {
 } from "./utils";
 import { generateBrowserSplat } from "@/utils/urlGenerator";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import type { OperationsFilterParams } from "@/routes/operations.index";
 
 interface Props {
   operation: OperationState;
@@ -56,7 +57,7 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
         <Descriptions.Item label="Invocation IDs">
           <ul>
             {invocationMetadata?.map((value) => {
-              let metadataObject = undefined
+              let metadataObject: OperationsFilterParams 
               try {
                 metadataObject = JSON.parse(value)
               } catch {
@@ -123,7 +124,7 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
         <Descriptions.Item label="Expected duration">
           {operation.expectedDuration &&
             readableDurationFromSeconds(
-              Number.parseInt(operation.expectedDuration.seconds),
+              Number.parseInt(operation.expectedDuration.seconds, 10),
               { precision: 1, smallestUnit: "s" },
             )}
         </Descriptions.Item>
@@ -142,7 +143,7 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
               color="default"
               className={themeStyles.tag}
             >
-              <>Status message: {operation.completed?.status?.message}</>
+              Status message: {operation.completed?.status?.message}
             </Tag>
           )}
         </Descriptions.Item>

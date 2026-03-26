@@ -20,11 +20,11 @@ export function parseGraphqlEdgeList<NodeType>(
   }, []);
 }
 
-export function parseGraphqlEdgeListWithFragment<TType>(
-  fragment_definition: DocumentTypeDecoration<TType, any>,
+export function parseGraphqlEdgeListWithFragment<TType, VarsType>(
+  fragment_definition: DocumentTypeDecoration<TType, VarsType>,
   data:
     | GraphqlEdgeList<
-        FragmentType<DocumentTypeDecoration<TType, any>> | null | undefined
+        FragmentType<DocumentTypeDecoration<TType, VarsType>> | null | undefined
       >
     | undefined
     | null,

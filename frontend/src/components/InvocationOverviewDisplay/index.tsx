@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from 'react';
 import { Descriptions, Space } from 'antd';
 import PortalDuration from '../PortalDuration';
 import { InvocationResultTag } from '../InvocationResultTag';
-import { Configuration as BazelConfiguration } from '@/graphql/__generated__/graphql';
+import type { Configuration as BazelConfiguration } from '@/graphql/__generated__/graphql';
 
 type Configuration = Pick<BazelConfiguration, 'cpu' | 'mnemonic'>;
 
@@ -48,7 +48,7 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
         )
         .sort()
         .join(", ");
-    let mnemonics = Array.from(
+    const mnemonics = Array.from(
             new Set(configurations
                 ?.map((config) => config.mnemonic)
                 ?.filter((mnemonic) => mnemonic && mnemonic !== "")

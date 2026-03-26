@@ -1,7 +1,7 @@
-import React from "react";
+import type React from "react";
 import { Table, Row, Col, Space } from 'antd';
 import type { TableColumnsType } from "antd/lib";
-import { ArtifactMetrics } from "@/graphql/__generated__/graphql";
+import type { ArtifactMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { RadiusUprightOutlined } from "@ant-design/icons";
 import styles from "../../theme/theme.module.css"

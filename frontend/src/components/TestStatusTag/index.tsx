@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import {
     CheckCircleFilled,
     CloseCircleFilled,
@@ -7,7 +7,7 @@ import {
     QuestionCircleFilled,
     StopOutlined,
 } from '@ant-design/icons';
-import { Button, Tag } from 'antd';
+import { Tag } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
 
 export const ALL_STATUS_VALUES = [

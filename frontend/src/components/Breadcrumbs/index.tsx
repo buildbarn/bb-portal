@@ -1,5 +1,6 @@
 
-import React, { useMemo } from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
 import { useLocation } from '@tanstack/react-router';
 import { Breadcrumb } from 'antd';
 import type { ItemType } from 'antd/es/breadcrumb/Breadcrumb';

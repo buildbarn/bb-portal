@@ -1,14 +1,14 @@
-import React from "react";
+import type React from "react";
 import {
   Button,
   Input,
   Space,
   Divider,
   DatePicker,
-  TimeRangePickerProps,
+  type TimeRangePickerProps,
   Tooltip,
 } from "antd";
-import { FilterDropdownProps } from "antd/es/table/interface";
+import type { FilterDropdownProps } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { blue } from "@ant-design/colors";
 import styles from "@/components/SearchWidgets/index.module.css";

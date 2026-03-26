@@ -31,7 +31,7 @@ const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
   const entries = Object.entries(prevStats.sizeClasses);
 
   for (let i = 0; i < entries.length; ++i) {
-    const sizeClass = Number.parseInt(entries[i][0]);
+    const sizeClass = Number.parseInt(entries[i][0], 10);
     sizeClasses.push(sizeClass);
     for (const prevExec of entries[i][1].previousExecutions) {
       // TODO: Make random scatter deterministic for each data point

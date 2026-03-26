@@ -45,6 +45,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
+// biome-ignore lint/style/noNonNullAssertion: This should never fail.
 const rootElement = document.getElementById('root')!;
 const root = createRoot(rootElement);
 root.render(

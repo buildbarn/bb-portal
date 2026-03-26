@@ -1,6 +1,5 @@
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
-import { Link } from '@tanstack/react-router';
 
 export interface FilesTableEntry {
   mode: string | undefined;

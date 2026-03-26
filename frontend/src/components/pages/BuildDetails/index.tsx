@@ -52,7 +52,7 @@ const getTitleBits = (build: BuildType | undefined): React.ReactNode[] => {
       <a
         href={build.buildURL}
         target="_blank"
-        className={styles.normalWeight}
+        className={styles.normalWeight} rel="noopener"
       >
         <Typography.Text type="secondary">{build.buildURL}</Typography.Text>
       </a>

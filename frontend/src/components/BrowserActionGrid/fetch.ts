@@ -169,7 +169,7 @@ export const getActionConsoleOutput = async (
   }
 
   const MAX_CONSOLE_OUTPUT_SIZE = 100000;
-  if (Number.parseInt(digest.sizeBytes) > MAX_CONSOLE_OUTPUT_SIZE) {
+  if (Number.parseInt(digest.sizeBytes, 10) > MAX_CONSOLE_OUTPUT_SIZE) {
     return {
       name,
       digest,
@@ -193,7 +193,7 @@ export const getActionConsoleOutput = async (
       notFound: false,
       content: new TextDecoder().decode(content),
     };
-  } catch (e) {
+  } catch (_e) {
     return {
       name,
       digest,
@@ -222,7 +222,7 @@ async function fetchPreviousExecutionStats(
         action.platform,
       ),
     });
-  } catch (error) {
+  } catch (_error) {
     console.log("No previous execution stats found");
   }
 }
@@ -269,12 +269,12 @@ function extractMetadataFromExecuteResponse(
   inputRootResourceUsage: InputRootResourceUsage | undefined;
   monetaryResourceUsage: MonetaryResourceUsage | undefined;
 } {
-  let authenticationMetadata: AuthenticationMetadata | undefined = undefined;
-  let requestMetadata: RequestMetadata | undefined = undefined;
-  let posixResourceUsage: POSIXResourceUsage | undefined = undefined;
-  let filePoolResourceUsage: FilePoolResourceUsage | undefined = undefined;
-  let inputRootResourceUsage: InputRootResourceUsage | undefined = undefined;
-  let monetaryResourceUsage: MonetaryResourceUsage | undefined = undefined;
+  let authenticationMetadata: AuthenticationMetadata | undefined ;
+  let requestMetadata: RequestMetadata | undefined ;
+  let posixResourceUsage: POSIXResourceUsage | undefined ;
+  let filePoolResourceUsage: FilePoolResourceUsage | undefined ;
+  let inputRootResourceUsage: InputRootResourceUsage | undefined ;
+  let monetaryResourceUsage: MonetaryResourceUsage | undefined ;
 
   if (!executeResponse?.result?.executionMetadata?.auxiliaryMetadata) {
     return {
@@ -399,7 +399,7 @@ async function fetchExecuteResponse(
         result: actionResult,
       }),
     };
-  } catch (error) {
+  } catch (_error) {
     console.log("No execute response was found");
   }
 
@@ -423,7 +423,7 @@ async function fetchFileSystemAccessProfile(
         action.platform,
       ),
     });
-  } catch (error) {
+  } catch (_error) {
     console.log("No file system access cache profile was found");
   }
 }

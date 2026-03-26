@@ -5,7 +5,7 @@ import BrowserDirectoryPage from "@/components/BrowserDirectoryPage";
 import BrowserPreviousExecutionsPage from "@/components/BrowserPreviousExecutionsPage";
 import Content from "@/components/Content";
 import PortalCard from "@/components/PortalCard";
-import { BrowserPageParams, BrowserPageType } from "@/types/BrowserPageType";
+import { type BrowserPageParams, BrowserPageType } from "@/types/BrowserPageType";
 import {
   CalculatorOutlined,
   CalendarFilled,
@@ -15,7 +15,7 @@ import {
 } from "@ant-design/icons";
 import { Typography } from "antd";
 import type React from "react";
-import { BrowserSearchParams } from "@/routes/browser.$";
+import type { BrowserSearchParams } from "@/routes/browser.$";
 
 interface Params {
   params: BrowserPageParams

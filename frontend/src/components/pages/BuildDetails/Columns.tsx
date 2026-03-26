@@ -11,7 +11,6 @@ import { invocationResultTagFilters } from "@/components/InvocationResultTag/fil
 import PortalDuration from "@/components/PortalDuration";
 import SearchWidget, { SearchFilterIcon } from "@/components/SearchWidgets";
 import buildDetailsStyles from "./index.module.css";
-import { Link } from "@tanstack/react-router";
 
 export const columns: TableColumnsType<GetBuildInvocationFragment> = [
   {
