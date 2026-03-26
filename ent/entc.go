@@ -12,8 +12,17 @@ import (
 	"github.com/hedwigz/entviz"
 )
 
+func getGqlTemplates() []*gen.Template {
+	customPaginationTemplate := gen.MustParse(gen.NewTemplate("./ent/template/pagination.tmpl").
+		Funcs(entgql.TemplateFuncs).
+		ParseFiles("./ent/template/pagination.tmpl"),
+	)
+	return append(entgql.AllTemplates, customPaginationTemplate)
+}
+
 func main() {
 	ex, err := entgql.NewExtension(
+		entgql.WithTemplates(getGqlTemplates()...),
 		entgql.WithSchemaGenerator(),
 		entgql.WithSchemaPath("./internal/graphql/schema/ent.graphql"),
 		entgql.WithWhereInputs(true),

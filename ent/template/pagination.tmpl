@@ -1,0 +1,77 @@
+{{- /*
+
+This template overrides the normal entgql pagination method to avoid
+unnessecary counts.
+
+Sometimes when calling paginate, ent needs to do a `SELECT COUNT("id")` on all
+rows in a table, but sometimes it does it even when it is not needed. When the
+request contains a `pageInfoField` and a `edgesField`, while not containing a
+`totalCountField`, we don't have to count all rows, since we can populate the
+`pageInfoField` from the returned data. This should be fixed when
+https://github.com/ent/contrib/pull/625 is merged.
+
+This template patches the paginate method with new logic for determining when
+to count all rows. This template is based on the original template in
+`entgo.io/contrib v0.6.0`. When updating the version of `entgo.io/contrib`,
+this template will probably need to be updated.
+
+*/ -}}
+{{ define "gql_pagination/helper/paginate" }}
+	{{- $node := $.Scope.Node }}
+	{{- $r := $.Scope.Query }}
+	{{- $names := nodePaginationNames $node }}
+	{{- $name := $names.Node }}
+	{{- $order := $names.Order }}
+	{{- $edge := $names.Edge }}
+	{{- $conn := $names.Connection }}
+	{{- $newPager := print "new" $name "Pager" -}}
+
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := {{ $newPager }}(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if {{ $r }}, err = pager.applyFilter({{ $r }}); err != nil {
+		return nil, err
+	}
+	{{- /* Ensure the "edges" field is marshaled as "[]" in case it is empty. */}}
+	conn := &{{ $conn }}{Edges: []*{{ $edge }}{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := {{ $r }}.Clone()
+		{{- /* Clear the selection fields before counting to avoid generating invalid queries. */}}
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
+		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if {{ $r }}, err = pager.applyCursors({{ $r }}, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		{{ $r }}.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := {{ $r }}.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	{{ $r }} = pager.applyOrder({{ $r }})
+	nodes, err := {{ $r }}.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+{{ end }}
