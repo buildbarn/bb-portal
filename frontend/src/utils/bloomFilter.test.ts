@@ -1,10 +1,9 @@
-
-import { FileSystemAccessProfile } from "@/lib/grpc-client/buildbarn/fsac/fsac";
 import { expect, test } from "vitest";
+import { FileSystemAccessProfile } from "@/lib/grpc-client/buildbarn/fsac/fsac";
 import {
+  containsPathHashes,
   PATH_HASH_BASE_HASH,
   PathHashes,
-  containsPathHashes,
   readBloomFilter,
 } from "./bloomFilter";
 

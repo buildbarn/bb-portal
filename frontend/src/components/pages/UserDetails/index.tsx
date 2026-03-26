@@ -1,4 +1,3 @@
-
 import { CalendarFilled } from "@ant-design/icons";
 import { useQuery } from "@apollo/client/react";
 import { Flex, Spin } from "antd";
@@ -18,7 +17,7 @@ import GET_AUTHENTICATED_USER_BY_UUID, {
 import styles from "./index.module.css";
 
 interface Params {
-    userUUID: string;
+  userUUID: string;
 }
 
 export const UserDetailsPage: React.FC<Params> = ({ userUUID }) => {

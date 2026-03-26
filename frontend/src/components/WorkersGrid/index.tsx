@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Row, Space } from "antd";
 import type React from "react";
+import PortalAlert from "@/components/PortalAlert";
+import WorkersInfo from "@/components/WorkersInfo";
+import WorkersTable from "@/components/WorkersTable";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import type {
   BuildQueueStateClient,
@@ -10,10 +13,10 @@ import type {
   SizeClassQueueName,
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import PortalAlert from "@/components/PortalAlert";
-import WorkersInfo from "@/components/WorkersInfo";
-import WorkersTable from "@/components/WorkersTable";
-import { WorkerListStatus, type WorkerSearchParams } from "@/routes/scheduler.worker";
+import {
+  WorkerListStatus,
+  type WorkerSearchParams,
+} from "@/routes/scheduler.worker";
 
 const LIST_WORKERS_PAGE_SIZE = 100;
 
@@ -51,19 +54,14 @@ const fetchWorkers = async (
 };
 
 const WorkersGrid: React.FC<WorkerSearchParams> = ({
-  workerStatusFilter, 
-  sizeClassQueueName, 
-  cursor
+  workerStatusFilter,
+  sizeClassQueueName,
+  cursor,
 }) => {
   const { buildQueueStateClient } = useGrpcClients();
 
   const { data, isError, isLoading, error } = useQuery<ListWorkersResponse>({
-    queryKey: [
-      "listWorkers",
-      workerStatusFilter,
-      sizeClassQueueName,
-      cursor,
-    ],
+    queryKey: ["listWorkers", workerStatusFilter, sizeClassQueueName, cursor],
     queryFn: () =>
       fetchWorkers(
         buildQueueStateClient,

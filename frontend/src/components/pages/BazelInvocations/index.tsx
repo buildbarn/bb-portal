@@ -1,9 +1,8 @@
-
-import type React from 'react';
-import Content from '@/components/Content';
-import PortalCard from '@/components/PortalCard';
-import { BuildFilled } from '@ant-design/icons';
+import { BuildFilled } from "@ant-design/icons";
+import type React from "react";
 import BazelInvocationsTable from "@/components/BazelInvocationsTable";
+import Content from "@/components/Content";
+import PortalCard from "@/components/PortalCard";
 
 export const BazelInvocationsPage: React.FC = () => {
   return (
@@ -18,4 +17,4 @@ export const BazelInvocationsPage: React.FC = () => {
       }
     />
   );
-}
+};

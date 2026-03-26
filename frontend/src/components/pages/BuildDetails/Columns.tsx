@@ -2,7 +2,6 @@ import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 import { Space, type TableColumnsType, Typography } from "antd";
 import { validate as uuidValidate } from "uuid";
 import appbarStyles from "@/components/AppBar/index.module.css";
-import type { GetBuildInvocationFragment } from "@/graphql/__generated__/graphql";
 import { CodeLink } from "@/components/CodeLink";
 import type { CommandLineData } from "@/components/CommandLine";
 import CommandLinePreview from "@/components/CommandLinePreview";
@@ -10,6 +9,7 @@ import { InvocationResultTag } from "@/components/InvocationResultTag";
 import { invocationResultTagFilters } from "@/components/InvocationResultTag/filters";
 import PortalDuration from "@/components/PortalDuration";
 import SearchWidget, { SearchFilterIcon } from "@/components/SearchWidgets";
+import type { GetBuildInvocationFragment } from "@/graphql/__generated__/graphql";
 import buildDetailsStyles from "./index.module.css";
 
 export const columns: TableColumnsType<GetBuildInvocationFragment> = [
@@ -84,13 +84,13 @@ export const columns: TableColumnsType<GetBuildInvocationFragment> = [
         <span className={appbarStyles.copyIcon}>
           <Typography.Text copyable={{ text: record.invocationID ?? "Copy" }} />
         </span>
-          <CodeLink
-            text={record.invocationID}
-            link={{
-              to: "/bazel-invocations/$invocationID",
-              params: { invocationID: record.invocationID },
-            }}
-          />
+        <CodeLink
+          text={record.invocationID}
+          link={{
+            to: "/bazel-invocations/$invocationID",
+            params: { invocationID: record.invocationID },
+          }}
+        />
       </Space>
     ),
   },

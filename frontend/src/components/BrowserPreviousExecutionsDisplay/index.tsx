@@ -1,11 +1,14 @@
+import { Link } from "@tanstack/react-router";
+import { Descriptions, Space, Typography } from "antd";
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { PreviousExecutionStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
-import { BrowserPageType, type BrowserPageParams } from "@/types/BrowserPageType";
-import { Descriptions, Space, Typography } from "antd";
-import { Link } from '@tanstack/react-router';
+import {
+  type BrowserPageParams,
+  BrowserPageType,
+} from "@/types/BrowserPageType";
+import { generateBrowserSplat } from "@/utils/urlGenerator";
 import PreviousExecutionsPlot from "../PreviousExecuteStatsPlot";
 import SizeClassOutcome from "../SizeClassOutcome";
-import { generateBrowserSplat } from "@/utils/urlGenerator";
 
 interface Props {
   browserParams: BrowserPageParams;
@@ -25,12 +28,14 @@ const BrowserPreviousExecutionsDisplay: React.FC<Props> = ({
       <Typography.Title level={2}>
         <Link
           to="/browser/$"
-          params={{_splat: generateBrowserSplat(
-            browserParams.instanceName,
-            browserParams.digestFunction,
-            reducedActionDigest,
-            BrowserPageType.PreviousExecutionStats,
-          )}}
+          params={{
+            _splat: generateBrowserSplat(
+              browserParams.instanceName,
+              browserParams.digestFunction,
+              reducedActionDigest,
+              BrowserPageType.PreviousExecutionStats,
+            ),
+          }}
           style={{ textDecoration: "underline" }}
         >
           Previous execution stats

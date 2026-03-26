@@ -1,7 +1,7 @@
-import type { PaginationInfo } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { BackwardFilled, CaretRightFilled } from "@ant-design/icons";
 import { Button, Space, Typography } from "antd";
 import type React from "react";
+import type { PaginationInfo } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 
 interface Props {
   paginationInfo: PaginationInfo;

@@ -1,10 +1,10 @@
-import { theme, type ThemeConfig } from 'antd';
-import { generate } from '@ant-design/colors';
-import shared, { HEADER_OPACITY_HEX } from '@/theme/shared';
+import { generate } from "@ant-design/colors";
+import { type ThemeConfig, theme } from "antd";
+import shared, { HEADER_OPACITY_HEX } from "@/theme/shared";
 
-const DARK_CANVAS_BASE_COLOR = '#001d66';
+const DARK_CANVAS_BASE_COLOR = "#001d66";
 
-const darkCanvasPalette = generate(DARK_CANVAS_BASE_COLOR, { theme: 'dark' });
+const darkCanvasPalette = generate(DARK_CANVAS_BASE_COLOR, { theme: "dark" });
 
 const dark: ThemeConfig = {
   algorithm: theme.darkAlgorithm,
@@ -16,7 +16,7 @@ const dark: ThemeConfig = {
       bodyBg: darkCanvasPalette[0],
       footerBg: darkCanvasPalette[0],
       headerBg: `${darkCanvasPalette[1]}${HEADER_OPACITY_HEX}`,
-      headerPadding: '0 32px',
+      headerPadding: "0 32px",
       siderBg: darkCanvasPalette[1],
     },
     Menu: {

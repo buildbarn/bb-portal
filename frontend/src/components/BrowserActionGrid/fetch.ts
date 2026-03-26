@@ -269,12 +269,12 @@ function extractMetadataFromExecuteResponse(
   inputRootResourceUsage: InputRootResourceUsage | undefined;
   monetaryResourceUsage: MonetaryResourceUsage | undefined;
 } {
-  let authenticationMetadata: AuthenticationMetadata | undefined ;
-  let requestMetadata: RequestMetadata | undefined ;
-  let posixResourceUsage: POSIXResourceUsage | undefined ;
-  let filePoolResourceUsage: FilePoolResourceUsage | undefined ;
-  let inputRootResourceUsage: InputRootResourceUsage | undefined ;
-  let monetaryResourceUsage: MonetaryResourceUsage | undefined ;
+  let authenticationMetadata: AuthenticationMetadata | undefined;
+  let requestMetadata: RequestMetadata | undefined;
+  let posixResourceUsage: POSIXResourceUsage | undefined;
+  let filePoolResourceUsage: FilePoolResourceUsage | undefined;
+  let inputRootResourceUsage: InputRootResourceUsage | undefined;
+  let monetaryResourceUsage: MonetaryResourceUsage | undefined;
 
   if (!executeResponse?.result?.executionMetadata?.auxiliaryMetadata) {
     return {

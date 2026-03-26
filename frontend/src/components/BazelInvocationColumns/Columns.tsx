@@ -1,112 +1,147 @@
-import type { ColumnType } from 'antd/lib/table';
-import { Typography } from 'antd';
-import {
-  ClockCircleFilled,
-  SearchOutlined,
-} from '@ant-design/icons';
-import { Link } from '@tanstack/react-router';
-import dayjs from 'dayjs';
-import styles from './Columns.module.css';
-import type { BazelInvocationNodeFragment, BazelInvocationWhereInput } from '@/graphql/__generated__/graphql';
-import { SearchFilterIcon, SearchWidget, TimeRangeSelector } from '@/components/SearchWidgets';
+import { ClockCircleFilled, SearchOutlined } from "@ant-design/icons";
+import { Link } from "@tanstack/react-router";
+import { Typography } from "antd";
+import type { FilterValue } from "antd/es/table/interface";
+import type { ColumnType } from "antd/lib/table";
+import dayjs from "dayjs";
 import PortalDuration from "@/components/PortalDuration";
-import UserStatusIndicator from '../UserStatusIndicator';
-import { InvocationResultTag } from '../InvocationResultTag';
-import type { FilterValue } from 'antd/es/table/interface';
-import { applyInvocationResultTagFilter, invocationResultTagFilters } from '../InvocationResultTag/filters';
+import {
+  SearchFilterIcon,
+  SearchWidget,
+  TimeRangeSelector,
+} from "@/components/SearchWidgets";
+import type {
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput,
+} from "@/graphql/__generated__/graphql";
+import { InvocationResultTag } from "../InvocationResultTag";
+import {
+  applyInvocationResultTagFilter,
+  invocationResultTagFilters,
+} from "../InvocationResultTag/filters";
+import UserStatusIndicator from "../UserStatusIndicator";
+import styles from "./Columns.module.css";
 
 type ColumnTypeWithFilter<T> = ColumnType<T> & {
   applyFilter?: (value: FilterValue) => BazelInvocationWhereInput[] | undefined;
 };
 
-export const invocationIdColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
-  key: 'invocationID',
-  width: 220,
-  title: 'Invocation',
-  render: (_, record) => (
-    <Link
-      to={`/bazel-invocations/$invocationID`}
-      params={{ invocationID: record.invocationID }}
-    >
-      {record.invocationID}
-    </Link>
-  ),
-  filterDropdown: filterProps => (
-    <SearchWidget placeholder="Provide a Bazel invocation ID..." {...filterProps} />
-  ),
-  filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
-  applyFilter: (value: FilterValue) => {
-    if (value.length === 0) {
-      return undefined
-    }
-    return [{ invocationID: value[0] as string }];
-  },
-};
+export const invocationIdColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
+  {
+    key: "invocationID",
+    width: 220,
+    title: "Invocation",
+    render: (_, record) => (
+      <Link
+        to={`/bazel-invocations/$invocationID`}
+        params={{ invocationID: record.invocationID }}
+      >
+        {record.invocationID}
+      </Link>
+    ),
+    filterDropdown: (filterProps) => (
+      <SearchWidget
+        placeholder="Provide a Bazel invocation ID..."
+        {...filterProps}
+      />
+    ),
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+    ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length === 0) {
+        return undefined;
+      }
+      return [{ invocationID: value[0] as string }];
+    },
+  };
 
-export const startedAtColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
-  key: 'startedAt',
-  width: 165,
-  title: 'Start Time',
-  render: (_, record) => (
-    <Typography.Text code ellipsis className={styles.startedAt}>
-      {dayjs(record.startedAt).format('YYYY-MM-DD hh:mm:ss A')}
-    </Typography.Text>
-  ),
-  filterDropdown: filterProps => <TimeRangeSelector {...filterProps} />,
-  filterIcon: filtered => <SearchFilterIcon icon={<ClockCircleFilled />} filtered={filtered} />,
-  applyFilter: (value: FilterValue) => {
-    if (value.length !== 2) {
-      return undefined;
-    }
-    const filter: BazelInvocationWhereInput[] = [];
-    if (value[0]) {
-      filter.push({ startedAtGTE: value[0] });
-    }
-    if (value[1]) {
-      filter.push({ startedAtLTE: value[1] });
-    }
-    return filter;
-  },
-};
+export const startedAtColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
+  {
+    key: "startedAt",
+    width: 165,
+    title: "Start Time",
+    render: (_, record) => (
+      <Typography.Text code ellipsis className={styles.startedAt}>
+        {dayjs(record.startedAt).format("YYYY-MM-DD hh:mm:ss A")}
+      </Typography.Text>
+    ),
+    filterDropdown: (filterProps) => <TimeRangeSelector {...filterProps} />,
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<ClockCircleFilled />} filtered={filtered} />
+    ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length !== 2) {
+        return undefined;
+      }
+      const filter: BazelInvocationWhereInput[] = [];
+      if (value[0]) {
+        filter.push({ startedAtGTE: value[0] });
+      }
+      if (value[1]) {
+        filter.push({ startedAtLTE: value[1] });
+      }
+      return filter;
+    },
+  };
 
-export const durationColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
-  key: 'duration',
-  width: 100,
-  title: 'Duration',
-  render: (_, record) => (
-    <PortalDuration
-      from={record.startedAt || undefined}
-      to={record.endedAt ? record.endedAt : record.connectionMetadata?.connectionLastOpenAt || undefined}
-      includePopover
-      formatConfig={{ smallestUnit: "s" }}
-    />
-  ),
-};
+export const durationColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
+  {
+    key: "duration",
+    width: 100,
+    title: "Duration",
+    render: (_, record) => (
+      <PortalDuration
+        from={record.startedAt || undefined}
+        to={
+          record.endedAt
+            ? record.endedAt
+            : record.connectionMetadata?.connectionLastOpenAt || undefined
+        }
+        includePopover
+        formatConfig={{ smallestUnit: "s" }}
+      />
+    ),
+  };
 
 export const statusColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
-  key: 'result',
+  key: "result",
   width: 120,
-  title: 'Result',
-  render: (_, record) => <InvocationResultTag exitCodeName={record.exitCodeName || undefined} timeSinceLastConnectionMillis={record.connectionMetadata?.timeSinceLastConnectionMillis || undefined} />,
-  filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
+  title: "Result",
+  render: (_, record) => (
+    <InvocationResultTag
+      exitCodeName={record.exitCodeName || undefined}
+      timeSinceLastConnectionMillis={
+        record.connectionMetadata?.timeSinceLastConnectionMillis || undefined
+      }
+    />
+  ),
+  filterIcon: (filtered) => (
+    <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+  ),
   filters: invocationResultTagFilters,
   applyFilter: applyInvocationResultTagFilter,
 };
 
 export const buildColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
-  key: 'build',
+  key: "build",
   width: 220,
-  title: 'Build',
-  render: (_, record) => record.build && (
-    <Link
-      to={`/builds/$buildUUID`}
-      params={{ buildUUID: record.build.buildUUID }}>
-      {record.build.buildUUID}
-    </Link>),
-  filterDropdown: filterProps => (
+  title: "Build",
+  render: (_, record) =>
+    record.build && (
+      <Link
+        to={`/builds/$buildUUID`}
+        params={{ buildUUID: record.build.buildUUID }}
+      >
+        {record.build.buildUUID}
+      </Link>
+    ),
+  filterDropdown: (filterProps) => (
     <SearchWidget placeholder="Provide a build UUID..." {...filterProps} />
   ),
-  filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
+  filterIcon: (filtered) => (
+    <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+  ),
   applyFilter: (value: FilterValue) => {
     if (value.length === 0) {
       return undefined;
@@ -116,19 +151,23 @@ export const buildColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
 };
 
 export const userColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
-  key: 'user',
+  key: "user",
   width: 120,
   title: "User",
   render: (_, record) => {
-    return <UserStatusIndicator
-      authenticatedUser={record.authenticatedUser}
-      user={record.user}
-    />
+    return (
+      <UserStatusIndicator
+        authenticatedUser={record.authenticatedUser}
+        user={record.user}
+      />
+    );
   },
-  filterDropdown: filterProps => (
+  filterDropdown: (filterProps) => (
     <SearchWidget placeholder="Provide a username..." {...filterProps} />
   ),
-  filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
+  filterIcon: (filtered) => (
+    <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+  ),
   applyFilter: (value: FilterValue) => {
     if (value.length === 0) {
       return undefined;

@@ -1,10 +1,10 @@
-import { generatePageTitle } from '@/utils/generatePageTitle';
-import { BrowserWelcomePage } from '@/components/pages/Browser/BrowserWelcome';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from "@tanstack/react-router";
+import { BrowserWelcomePage } from "@/components/pages/Browser/BrowserWelcome";
+import { generatePageTitle } from "@/utils/generatePageTitle";
 
-export const Route = createFileRoute('/browser/')({
+export const Route = createFileRoute("/browser/")({
   component: RouteComponent,
-  head: (_ctx) => ({meta: [{title: generatePageTitle(["Browser"])}]})
+  head: (_ctx) => ({ meta: [{ title: generatePageTitle(["Browser"]) }] }),
 });
 
 function RouteComponent() {

@@ -1,6 +1,6 @@
+import { Space, Typography } from "antd";
 import type { PerSizeClassStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
 import { readableDurationFromProtobufDuration } from "@/utils/time";
-import { Space, Typography } from "antd";
 import SizeClassOutcomeTag from "../SizeClassOutcomeTag";
 
 interface Props {

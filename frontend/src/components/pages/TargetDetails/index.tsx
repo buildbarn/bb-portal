@@ -15,6 +15,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Content from "@/components/Content";
 import {
   CursorTable,
   getNewPaginationVariables,
@@ -31,7 +32,6 @@ import PortalAlert from "../../PortalAlert";
 import PortalCard from "../../PortalCard";
 import { columns, type InvocationTargetRowType } from "./Columns";
 import { GET_TARGET_DETAILS } from "./graphql";
-import Content from "@/components/Content";
 
 interface Props {
   instanceName: string;

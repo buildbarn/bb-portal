@@ -1,6 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
+import { Link } from "@tanstack/react-router";
 import type { TableColumnsType } from "antd/lib";
-import { Link } from '@tanstack/react-router';
 import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import type { GetTargetsListQuery } from "@/graphql/__generated__/graphql";
 
@@ -36,7 +36,9 @@ export const columns: TableColumnsType<TargetGridRowType> = [
     dataIndex: "label",
     filterSearch: true,
     render: (_, record) => (
-      <Link to="/targets/$targetID" params={{ targetID: record.id }}>{record.label}</Link>
+      <Link to="/targets/$targetID" params={{ targetID: record.id }}>
+        {record.label}
+      </Link>
     ),
     filterDropdown: (filterProps) => (
       <SearchWidget placeholder="Target Pattern..." {...filterProps} />

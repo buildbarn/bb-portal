@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { theme } from "antd";
 import { useMemo } from "react";
 import {
@@ -20,7 +21,6 @@ import CommandLinePreview from "../CommandLinePreview";
 import PortalAlert from "../PortalAlert";
 import type { InvocationInfo, TickProps } from "./types";
 import { getInvocationResultTagColor } from "./utils";
-import { useNavigate } from "@tanstack/react-router";
 
 interface Props {
   invocations: GetBuildInvocationFragment[];
@@ -30,7 +30,7 @@ const BAR_HEIGHT = 20;
 const CHART_PADDING = 40;
 
 const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { token } = theme.useToken();
 
   const invocationsInfo: InvocationInfo[] = useMemo(
@@ -111,8 +111,8 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
           if (state.activeLabel !== undefined) {
             navigate({
               to: "/bazel-invocations/$invocationID",
-              params: { invocationID: `${state.activeLabel}` }
-            })
+              params: { invocationID: `${state.activeLabel}` },
+            });
           }
         }}
       >

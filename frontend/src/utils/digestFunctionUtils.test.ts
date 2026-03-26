@@ -1,5 +1,5 @@
-import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { expect, test } from "vitest";
+import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import {
   digestFunctionValueFromString,
   digestFunctionValueToString,

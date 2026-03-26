@@ -1,9 +1,16 @@
-import React from 'react';
-import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
-import { Button, Card, type CardProps, List, Popover, Space, theme } from 'antd';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import styles from './index.module.css';
-import themeStyles from '@/theme/theme.module.css';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  type CardProps,
+  List,
+  Popover,
+  Space,
+  theme,
+} from "antd";
+import React, { forwardRef, useLayoutEffect, useRef, useState } from "react";
+import themeStyles from "@/theme/theme.module.css";
+import styles from "./index.module.css";
 
 const { useToken } = theme;
 
@@ -12,22 +19,29 @@ interface HeaderProps {
   className?: string;
 }
 
-const Header = forwardRef<HTMLDivElement, HeaderProps>(({ headerBits, className }, ref) => {
-  const actualClassName = [styles.header, className].join(' ');
-  return (
-    <Space ref={ref} size="middle" className={actualClassName}>
-      {headerBits.map(
-        (headerBit, index) =>
-          headerBit && (
-            <div key={(React.isValidElement(headerBit) && headerBit.key) || index} className={actualClassName}>
-              {headerBit}
-            </div>
-          ),
-      )}
-    </Space>
-  );
-});
-Header.displayName = 'Header';
+const Header = forwardRef<HTMLDivElement, HeaderProps>(
+  ({ headerBits, className }, ref) => {
+    const actualClassName = [styles.header, className].join(" ");
+    return (
+      <Space ref={ref} size="middle" className={actualClassName}>
+        {headerBits.map(
+          (headerBit, index) =>
+            headerBit && (
+              <div
+                key={
+                  (React.isValidElement(headerBit) && headerBit.key) || index
+                }
+                className={actualClassName}
+              >
+                {headerBit}
+              </div>
+            ),
+        )}
+      </Space>
+    );
+  },
+);
+Header.displayName = "Header";
 
 interface ExtraMenuProps {
   extraBits: React.ReactNode[];
@@ -35,13 +49,19 @@ interface ExtraMenuProps {
   setIsExtraMenuOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ExtraMenu: React.FC<ExtraMenuProps> = ({ extraBits, isExtraMenuOpen, setIsExtraMenuOpened }) => {
+const ExtraMenu: React.FC<ExtraMenuProps> = ({
+  extraBits,
+  isExtraMenuOpen,
+  setIsExtraMenuOpened,
+}) => {
   return (
     <Popover
       content={
         <List
           dataSource={extraBits}
-          renderItem={item => <List.Item className={styles.item}>{item}</List.Item>}
+          renderItem={(item) => (
+            <List.Item className={styles.item}>{item}</List.Item>
+          )}
           size="small"
           className={styles.list}
         />
@@ -52,23 +72,34 @@ const ExtraMenu: React.FC<ExtraMenuProps> = ({ extraBits, isExtraMenuOpen, setIs
       placement="leftTop"
     >
       <Button className={styles.button}>
-        {isExtraMenuOpen ? <MenuFoldOutlined rotate={180} /> : <MenuUnfoldOutlined rotate={180} />}
+        {isExtraMenuOpen ? (
+          <MenuFoldOutlined rotate={180} />
+        ) : (
+          <MenuUnfoldOutlined rotate={180} />
+        )}
       </Button>
     </Popover>
   );
 };
 
-interface Props extends Omit<CardProps, 'title' | 'extra'> {
+interface Props extends Omit<CardProps, "title" | "extra"> {
   icon: React.ReactNode;
   titleBits: React.ReactNode[];
   extraBits?: React.ReactNode[];
   className?: string;
 }
 
-export const PortalCard: React.FC<Props> = ({ icon, titleBits, extraBits, className, ...cardProps }) => {
+export const PortalCard: React.FC<Props> = ({
+  icon,
+  titleBits,
+  extraBits,
+  className,
+  ...cardProps
+}) => {
   const { token } = useToken();
   const [isExtraMenuOpen, setIsExtraMenuOpened] = useState<boolean>(false);
-  const [isExtraMenuDisplayed, setIsExtraMenuDisplayed] = useState<boolean>(true);
+  const [isExtraMenuDisplayed, setIsExtraMenuDisplayed] =
+    useState<boolean>(true);
   const cardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const extraRef = useRef<HTMLDivElement>(null);
@@ -78,7 +109,9 @@ export const PortalCard: React.FC<Props> = ({ icon, titleBits, extraBits, classN
       if (cardRef.current && titleRef.current && extraRef.current) {
         return (
           cardRef.current.clientWidth <
-          titleRef.current.clientWidth + extraRef.current.clientWidth + minimumSpaceBetweenTitleAndExtra
+          titleRef.current.clientWidth +
+            extraRef.current.clientWidth +
+            minimumSpaceBetweenTitleAndExtra
         );
       }
       return true;
@@ -90,12 +123,18 @@ export const PortalCard: React.FC<Props> = ({ icon, titleBits, extraBits, classN
       }
     };
     handleResize();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [isExtraMenuDisplayed, minimumSpaceBetweenTitleAndExtra]);
-  const title = <Header ref={titleRef} headerBits={[icon, ...titleBits]} className={styles.title} />;
+  const title = (
+    <Header
+      ref={titleRef}
+      headerBits={[icon, ...titleBits]}
+      className={styles.title}
+    />
+  );
   const extra = extraBits?.length && (
     <div className={styles.extra}>
       <span className={isExtraMenuDisplayed ? styles.hidden : styles.visible}>
@@ -110,10 +149,24 @@ export const PortalCard: React.FC<Props> = ({ icon, titleBits, extraBits, classN
       </span>
     </div>
   );
-  const extendedClassName = cardProps.type === 'inner' ? className : [className, styles.outer].join(' ');
+  const extendedClassName =
+    cardProps.type === "inner"
+      ? className
+      : [className, styles.outer].join(" ");
   return (
-    <Card title={title} extra={extra} variant='outlined' className={extendedClassName} {...cardProps}>
-      <Space ref={cardRef} direction="vertical" size="middle" className={themeStyles.space}>
+    <Card
+      title={title}
+      extra={extra}
+      variant="outlined"
+      className={extendedClassName}
+      {...cardProps}
+    >
+      <Space
+        ref={cardRef}
+        direction="vertical"
+        size="middle"
+        className={themeStyles.space}
+      >
         {cardProps.children}
       </Space>
     </Card>

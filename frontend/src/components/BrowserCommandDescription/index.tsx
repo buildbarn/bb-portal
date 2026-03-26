@@ -1,14 +1,17 @@
+import { Link } from "@tanstack/react-router";
+import { Descriptions, Flex, Space, Typography } from "antd";
+import type React from "react";
 import type {
   Command,
   Digest,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { BrowserPageType, type BrowserPageParams } from "@/types/BrowserPageType";
-import { Descriptions, Flex, Space, Typography } from "antd";
-import { Link } from '@tanstack/react-router';
-import type React from "react";
+import {
+  type BrowserPageParams,
+  BrowserPageType,
+} from "@/types/BrowserPageType";
+import { generateBrowserSplat } from "@/utils/urlGenerator";
 import CopyBbClientdCommandButton from "./CopyBbClientdCommandButton";
 import DownloadAsShellScriptButton from "./DownloadAsShellScriptButton";
-import { generateBrowserSplat } from "@/utils/urlGenerator";
 
 interface Params {
   browserPageParams: BrowserPageParams;
@@ -30,12 +33,14 @@ const BrowserCommandDescription: React.FC<Params> = ({
           {commandDigest ? (
             <Link
               to="/browser/$"
-              params={{_splat: generateBrowserSplat(
-                browserPageParams.instanceName,
-                browserPageParams.digestFunction,
-                commandDigest,
-                BrowserPageType.Command
-              )}}
+              params={{
+                _splat: generateBrowserSplat(
+                  browserPageParams.instanceName,
+                  browserPageParams.digestFunction,
+                  commandDigest,
+                  BrowserPageType.Command,
+                ),
+              }}
               style={{ textDecoration: "underline" }}
             >
               Command

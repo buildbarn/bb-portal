@@ -1,12 +1,11 @@
 // biome-ignore-all lint/suspicious/noTemplateCurlyInString: It's not supposed to be template strings
 
-import Content from "@/components/Content";
-import PortalCard from "@/components/PortalCard";
 import { LayoutOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
 import type React from "react";
+import Content from "@/components/Content";
+import PortalCard from "@/components/PortalCard";
 import styles from "./browser.module.css";
-
 
 export const BrowserWelcomePage: React.FC = () => {
   return (
@@ -57,9 +56,7 @@ export const BrowserWelcomePage: React.FC = () => {
                       "/browser/${instance_name}/blobs/${digest_function}/command/${hash}-${size_bytes}"
                     }
                   </code>
-                  <p>
-                    Displays information about a Command stored in the CAS.
-                  </p>
+                  <p>Displays information about a Command stored in the CAS.</p>
                 </li>
                 <li>
                   <code>
@@ -77,9 +74,7 @@ export const BrowserWelcomePage: React.FC = () => {
                       "/api/v1/servefile/${instance_name}/blobs/${digest_function}/file/${hash}-${size_bytes}/${filename}"
                     }
                   </code>
-                  <p>
-                    Serves a file stored in the CAS.
-                  </p>
+                  <p>Serves a file stored in the CAS.</p>
                 </li>
                 <li>
                   <code>

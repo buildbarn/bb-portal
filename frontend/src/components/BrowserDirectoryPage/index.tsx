@@ -8,10 +8,15 @@ import PortalAlert from "../PortalAlert";
 
 interface Params {
   browserPageParams: BrowserPageParams;
-  fileSystemAccessProfileReference: FileSystemAccessProfileReference | undefined
+  fileSystemAccessProfileReference:
+    | FileSystemAccessProfileReference
+    | undefined;
 }
 
-const BrowserDirectoryPage: React.FC<Params> = ({ browserPageParams, fileSystemAccessProfileReference }) => {
+const BrowserDirectoryPage: React.FC<Params> = ({
+  browserPageParams,
+  fileSystemAccessProfileReference,
+}) => {
   const { fileSystemAccessCacheClient } = useGrpcClients();
 
   const { data, isError, error, isLoading } = useQuery({

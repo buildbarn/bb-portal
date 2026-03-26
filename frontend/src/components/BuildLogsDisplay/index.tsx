@@ -10,7 +10,7 @@ import LogViewer from "../LogViewer";
 
 interface Props {
   invocationId: string;
-  rawCommand: string|null;
+  rawCommand: string | null;
 }
 
 const fetchLog = async (id: string, start = 0, end = -1): Promise<string> => {
@@ -56,7 +56,6 @@ const BuildLogsDisplay: React.FC<Props> = ({ invocationId, rawCommand }) => {
         ),
       ]}
     >
-
       <LogViewer loading={isLoading} error={error} log={data} />
     </PortalCard>
   );

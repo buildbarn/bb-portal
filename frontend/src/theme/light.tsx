@@ -1,8 +1,8 @@
-import { theme, type ThemeConfig } from 'antd';
-import { blue, generate } from '@ant-design/colors';
-import shared, { HEADER_OPACITY_HEX } from '@/theme/shared';
+import { blue, generate } from "@ant-design/colors";
+import { type ThemeConfig, theme } from "antd";
+import shared, { HEADER_OPACITY_HEX } from "@/theme/shared";
 
-const LIGHT_CANVAS_BASE_COLOR = '#bdbdbd';
+const LIGHT_CANVAS_BASE_COLOR = "#bdbdbd";
 
 const lightCanvasPalette = generate(LIGHT_CANVAS_BASE_COLOR);
 
@@ -16,7 +16,7 @@ const light: ThemeConfig = {
       bodyBg: lightCanvasPalette[0],
       footerBg: lightCanvasPalette[0],
       headerBg: `${lightCanvasPalette[1]}${HEADER_OPACITY_HEX}`,
-      headerPadding: '0 32px',
+      headerPadding: "0 32px",
       siderBg: lightCanvasPalette[1],
     },
     Menu: {

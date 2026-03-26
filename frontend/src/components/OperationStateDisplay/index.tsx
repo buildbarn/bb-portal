@@ -1,23 +1,21 @@
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { Link } from "@tanstack/react-router";
+import { Descriptions, Space, Tag } from "antd";
 import { CodeLink } from "@/components/CodeLink";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import type { OperationsFilterParams } from "@/routes/operations.index";
 import themeStyles from "@/theme/theme.module.css";
+import { BrowserPageType } from "@/types/BrowserPageType";
 import { protobufToObjectWithTypeField } from "@/utils/protobufToObject";
 import {
   readableDurationFromDates,
   readableDurationFromSeconds,
 } from "@/utils/time";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Descriptions, Space, Tag } from "antd";
-import { Link } from '@tanstack/react-router';
+import { generateBrowserSplat } from "@/utils/urlGenerator";
 import OperationStatusTag from "../OperationStatusTag";
 import { operationsStateToBrowserSplat } from "../OperationsGrid/utils";
 import PropertyTagList from "../PropertyTagList";
-import {
-  historicalExecuteResponseDigestFromOperation,
-} from "./utils";
-import { generateBrowserSplat } from "@/utils/urlGenerator";
-import { BrowserPageType } from "@/types/BrowserPageType";
-import type { OperationsFilterParams } from "@/routes/operations.index";
+import { historicalExecuteResponseDigestFromOperation } from "./utils";
 
 interface Props {
   operation: OperationState;
@@ -57,11 +55,13 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
         <Descriptions.Item label="Invocation IDs">
           <ul>
             {invocationMetadata?.map((value) => {
-              let metadataObject: OperationsFilterParams 
+              let metadataObject: OperationsFilterParams;
               try {
-                metadataObject = JSON.parse(value)
+                metadataObject = JSON.parse(value);
               } catch {
-                console.error("Failed to deserialize invocation metadata object")
+                console.error(
+                  "Failed to deserialize invocation metadata object",
+                );
               }
               return (
                 <li key={value}>
@@ -74,7 +74,7 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
                     {value}
                   </Link>
                 </li>
-              )
+              );
             })}
           </ul>
         </Descriptions.Item>
@@ -98,12 +98,13 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
               link={{
                 to: "/browser/$",
                 params: {
-                  _splat:
-                    generateBrowserSplat(historicalExecuteResponseBrowserPageParams.instanceName,
-                      historicalExecuteResponseBrowserPageParams.digestFunction,
-                      historicalExecuteResponseBrowserPageParams.digest,
-                      BrowserPageType.HistoricalExecuteResponse),
-                }
+                  _splat: generateBrowserSplat(
+                    historicalExecuteResponseBrowserPageParams.instanceName,
+                    historicalExecuteResponseBrowserPageParams.digestFunction,
+                    historicalExecuteResponseBrowserPageParams.digest,
+                    BrowserPageType.HistoricalExecuteResponse,
+                  ),
+                },
               }}
             />
           </Descriptions.Item>

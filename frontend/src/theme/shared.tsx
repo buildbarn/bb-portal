@@ -1,5 +1,5 @@
 // The hexadecimal string to be used as the A of RGBA values in configuring Application Bar backgrounds
-export const HEADER_OPACITY_HEX = 'BB';
+export const HEADER_OPACITY_HEX = "BB";
 
 const shared = {
   components: {
@@ -23,7 +23,7 @@ const shared = {
     },
   },
   token: {
-    fontFamily: '-apple-system, system-ui, BlinkMacSystemFont;',
+    fontFamily: "-apple-system, system-ui, BlinkMacSystemFont;",
   },
 };
 

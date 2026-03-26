@@ -5,15 +5,22 @@ import { parseBrowserPageSlug } from "@/utils/parseBrowserPageSlug";
 export const historicalExecuteResponseDigestFromOperation = (
   operation: OperationState,
 ): BrowserPageParams | undefined => {
-  if (!operation.completed?.message.startsWith("Action details (uncached result):")) {
-    return undefined
+  if (
+    !operation.completed?.message.startsWith(
+      "Action details (uncached result):",
+    )
+  ) {
+    return undefined;
   }
   const url = operation.completed.message.substring(34);
-  const index = url.indexOf("/browser/")
+  const index = url.indexOf("/browser/");
 
   if (index === -1) {
-    return undefined
+    return undefined;
   }
-  const urlSegments = url.substring(index + 9).split("/").filter(segment => segment)
-  return parseBrowserPageSlug(urlSegments)
+  const urlSegments = url
+    .substring(index + 9)
+    .split("/")
+    .filter((segment) => segment);
+  return parseBrowserPageSlug(urlSegments);
 };

@@ -1,9 +1,8 @@
-
-import type { ExecutedActionMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { readableDurationFromDates } from "@/utils/time";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { Flex, Space, Typography } from "antd";
 import type React from "react";
+import type { ExecutedActionMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import { readableDurationFromDates } from "@/utils/time";
 
 interface Params {
   executionMetadata: ExecutedActionMetadata;

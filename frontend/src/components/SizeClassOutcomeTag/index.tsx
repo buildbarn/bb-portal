@@ -1,5 +1,5 @@
-import themeStyles from "@/theme/theme.module.css";
 import { Tag } from "antd";
+import themeStyles from "@/theme/theme.module.css";
 
 interface Props {
   color?: string;

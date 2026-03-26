@@ -1,19 +1,24 @@
-
-import styles from "@/components/FooterBar/index.module.css";
 import {
   DiscordOutlined,
   GithubOutlined,
-  SlackOutlined
+  SlackOutlined,
 } from "@ant-design/icons";
 import { Layout, Space } from "antd";
-import { env } from "@/utils/env";
 import type React from "react";
+import styles from "@/components/FooterBar/index.module.css";
 import type { PortalFrontendConfiguration_FooterElement } from "@/lib/grpc-client/portal/frontend/frontend";
+import { env } from "@/utils/env";
 
-const FooterLink: React.FC<PortalFrontendConfiguration_FooterElement> = ({ text, href, icon }) => {
-  let iconElement: React.ReactElement | undefined ;
+const FooterLink: React.FC<PortalFrontendConfiguration_FooterElement> = ({
+  text,
+  href,
+  icon,
+}) => {
+  let iconElement: React.ReactElement | undefined;
   if (icon?.url) {
-    iconElement = <img src={icon.url} width={20} height={20} alt="Footer icon" />
+    iconElement = (
+      <img src={icon.url} width={20} height={20} alt="Footer icon" />
+    );
   } else if (icon?.slack) {
     iconElement = <SlackOutlined />;
   } else if (icon?.github) {
@@ -49,10 +54,15 @@ const FooterBar: React.FC<Props> = ({ className }) => {
   return (
     <Layout.Footer className={`${className} ${styles.footerBar}`}>
       <Space size="large">
-        {env.footerContent.map((element: PortalFrontendConfiguration_FooterElement, index: number) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: This won't change
-          <FooterLink key={index} {...element} />
-        ))}
+        {env.footerContent.map(
+          (
+            element: PortalFrontendConfiguration_FooterElement,
+            index: number,
+          ) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: This won't change
+            <FooterLink key={index} {...element} />
+          ),
+        )}
       </Space>
     </Layout.Footer>
   );

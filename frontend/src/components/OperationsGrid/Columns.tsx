@@ -1,15 +1,13 @@
-import { CodeLink } from "@/components/CodeLink";
-import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import { readableDurationFromDates } from "@/utils/time";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
-import {
-  historicalExecuteResponseDigestFromOperation,
-} from "../OperationStateDisplay/utils";
+import { CodeLink } from "@/components/CodeLink";
+import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import { BrowserPageType } from "@/types/BrowserPageType";
+import { readableDurationFromDates } from "@/utils/time";
+import { generateBrowserSplat } from "@/utils/urlGenerator";
+import { historicalExecuteResponseDigestFromOperation } from "../OperationStateDisplay/utils";
 import OperationStatusTag from "../OperationStatusTag";
 import { operationsStateToBrowserSplat } from "./utils";
-import { generateBrowserSplat } from "@/utils/urlGenerator";
-import { BrowserPageType } from "@/types/BrowserPageType";
 
 const operationNameColumn: ColumnType<OperationState> = {
   key: "name",
@@ -32,9 +30,9 @@ const timeoutColumn: ColumnType<OperationState> = {
     <Typography.Text>
       {record.timeout
         ? readableDurationFromDates(new Date(), record.timeout, {
-          precision: 1,
-          smallestUnit: "s",
-        })
+            precision: 1,
+            smallestUnit: "s",
+          })
         : "∞"}
     </Typography.Text>
   ),
@@ -54,12 +52,13 @@ const actionDigestColumn: ColumnType<OperationState> = {
           link={{
             to: "/browser/$",
             params: {
-              _splat:
-                generateBrowserSplat(historicalExecuteResponseBrowserPageParams.instanceName,
-                  historicalExecuteResponseBrowserPageParams.digestFunction,
-                  historicalExecuteResponseBrowserPageParams.digest,
-                  BrowserPageType.HistoricalExecuteResponse),
-            }
+              _splat: generateBrowserSplat(
+                historicalExecuteResponseBrowserPageParams.instanceName,
+                historicalExecuteResponseBrowserPageParams.digestFunction,
+                historicalExecuteResponseBrowserPageParams.digest,
+                BrowserPageType.HistoricalExecuteResponse,
+              ),
+            },
           }}
         />
       );
@@ -70,7 +69,7 @@ const actionDigestColumn: ColumnType<OperationState> = {
         text={`${record.actionDigest?.hash}-${record.actionDigest?.sizeBytes}`}
         link={{
           to: "/browser/$",
-          params: { _splat: operationsStateToBrowserSplat(record) }
+          params: { _splat: operationsStateToBrowserSplat(record) },
         }}
       />
     );

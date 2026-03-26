@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from "@tanstack/react-router";
 import { HomePage } from "@/components/pages/Home";
-import { generatePageTitle } from '@/utils/generatePageTitle';
+import { generatePageTitle } from "@/utils/generatePageTitle";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomePage,
-  head: (_ctx) => ({meta: [{title: generatePageTitle(["Overview"])}]})
-})
+  head: (_ctx) => ({ meta: [{ title: generatePageTitle(["Overview"]) }] }),
+});

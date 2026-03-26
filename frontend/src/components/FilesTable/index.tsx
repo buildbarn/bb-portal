@@ -1,7 +1,7 @@
-import themeStyles from "@/theme/theme.module.css";
 import { BuildOutlined } from "@ant-design/icons";
 import { Space, Table, Typography } from "antd";
 import type React from "react";
+import themeStyles from "@/theme/theme.module.css";
 import getColumns, { type FilesTableEntry } from "./Columns";
 
 type Props = {

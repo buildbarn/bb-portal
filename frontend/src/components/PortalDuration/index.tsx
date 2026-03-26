@@ -3,7 +3,10 @@ import { Divider, Popover, Tag } from "antd";
 import type React from "react";
 import dayjs from "@/lib/dayjs";
 import themeStyles from "@/theme/theme.module.css";
-import { type ReadableFormatConfig, readableDurationFromDates } from "@/utils/time";
+import {
+  type ReadableFormatConfig,
+  readableDurationFromDates,
+} from "@/utils/time";
 import styles from "./index.module.css";
 
 interface Props {

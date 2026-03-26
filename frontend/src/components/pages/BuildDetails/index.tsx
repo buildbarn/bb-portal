@@ -1,6 +1,14 @@
-
+import { DeploymentUnitOutlined } from "@ant-design/icons";
+import { useQuery } from "@apollo/client/react";
+import { Space, Typography } from "antd";
+import type { FilterValue } from "antd/es/table/interface";
+import dayjs from "dayjs";
+import type React from "react";
+import { useState } from "react";
+import { validate as uuidValidate } from "uuid";
 import styles from "@/components/AppBar/index.module.css";
 import CollapsableInvocationTimeline from "@/components/CollapsableInvocationTimeline";
+import Content from "@/components/Content";
 import PortalCard from "@/components/PortalCard";
 import {
   BazelInvocationOrderField,
@@ -12,14 +20,6 @@ import {
 } from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
 import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
-import { DeploymentUnitOutlined } from "@ant-design/icons";
-import { useQuery } from "@apollo/client/react";
-import { Space, Typography } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
-import dayjs from "dayjs";
-import type React from "react";
-import { useState } from "react";
-import { validate as uuidValidate } from "uuid";
 import { CursorTable, getNewPaginationVariables } from "../../CursorTable";
 import type { PaginationVariables } from "../../CursorTable/types";
 import { applyInvocationResultTagFilter } from "../../InvocationResultTag/filters";
@@ -29,7 +29,6 @@ import {
   GET_BUILD_BY_UUID_QUERY,
   GET_BUILD_INVOCATION_FRAGMENT,
 } from "./graphql";
-import Content from "@/components/Content";
 
 type BuildType = NonNullable<FindBuildByUuidQuery["getBuild"]>;
 
@@ -52,7 +51,8 @@ const getTitleBits = (build: BuildType | undefined): React.ReactNode[] => {
       <a
         href={build.buildURL}
         target="_blank"
-        className={styles.normalWeight} rel="noopener"
+        className={styles.normalWeight}
+        rel="noopener"
       >
         <Typography.Text type="secondary">{build.buildURL}</Typography.Text>
       </a>
@@ -76,8 +76,8 @@ interface Props {
 }
 
 export const BuildDetailsPage: React.FC<Props> = (params) => {
-  return <Content content={<BuildDetails {...params} />} />
-}
+  return <Content content={<BuildDetails {...params} />} />;
+};
 
 const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
   const [paginationVariables, setPaginationVariables] =
@@ -203,7 +203,9 @@ const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
     >
       <Space direction="vertical" style={{ width: "100%" }}>
         {invocations.length > 1 && (
-          <CollapsableInvocationTimeline invocations={invocations.toReversed()} />
+          <CollapsableInvocationTimeline
+            invocations={invocations.toReversed()}
+          />
         )}
         <CursorTable<GetBuildInvocationFragment>
           columns={columns}

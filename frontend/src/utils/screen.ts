@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface Size {
   width: number;
@@ -18,9 +18,9 @@ const useScreenSize = () => {
     const updateScreenSize = () => {
       setScreenSize(getScreenSize());
     };
-    window.addEventListener('resize', updateScreenSize);
+    window.addEventListener("resize", updateScreenSize);
     return () => {
-      window.removeEventListener('resize', updateScreenSize);
+      window.removeEventListener("resize", updateScreenSize);
     };
   }, []);
   return screenSize;

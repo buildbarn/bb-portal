@@ -2,15 +2,15 @@ import {
   Action,
   Digest,
   DigestFunction_Value,
-  type Platform,
   digestFunction_ValueFromJSON,
   digestFunction_ValueToJSON,
+  type Platform,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 
 export async function sha256hex(data: BufferSource): Promise<string> {
-  const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 export const digestFunctionValueFromString = (

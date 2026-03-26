@@ -1,4 +1,5 @@
 import { SearchOutlined } from "@ant-design/icons";
+import { Link } from "@tanstack/react-router";
 import type { TableColumnsType } from "antd/lib";
 import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import {
@@ -11,7 +12,6 @@ import { readableDurationFromMilliseconds } from "@/utils/time";
 import styles from "../../theme/theme.module.css";
 import NullBooleanTag from "../NullableBooleanTag";
 import TestStatusTag, { type TestStatusEnum } from "../TestStatusTag";
-import { Link } from "@tanstack/react-router";
 
 export type TestTabRowType = NonNullable<
   NonNullable<
@@ -85,7 +85,7 @@ export const columns: TableColumnsType<TestTabRowType> = [
     render: (_, record) => (
       <Link
         to="/targets/$targetID/tests"
-        params={{targetID: record.invocationTarget.target.id}}
+        params={{ targetID: record.invocationTarget.target.id }}
       >
         {record.invocationTarget.target.label}
       </Link>

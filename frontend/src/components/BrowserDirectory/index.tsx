@@ -1,4 +1,8 @@
-
+import { DownOutlined, RightOutlined } from "@ant-design/icons";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { Button, Flex, Space, Spin, Typography } from "antd";
+import React, { useEffect } from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import {
   type Digest,
@@ -9,24 +13,19 @@ import type { FileSystemAccessProfile } from "@/lib/grpc-client/buildbarn/fsac/f
 import type { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
 import themeStyles from "@/theme/theme.module.css";
+import { BrowserPageType } from "@/types/BrowserPageType";
 import {
   type BloomFilterReader,
-  PathHashes,
   containsPathHashes,
+  PathHashes,
   readBloomFilter,
 } from "@/utils/bloomFilter";
 import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
 import { readableFileSizeFromString } from "@/utils/filesize";
 import { generateBrowserSplat, generateFileUrl } from "@/utils/urlGenerator";
-import { DownOutlined, RightOutlined } from "@ant-design/icons";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Flex, Space, Spin, Typography } from "antd";
-import { Link } from '@tanstack/react-router';
-import React, { useEffect } from "react";
 import PortalAlert from "../PortalAlert";
 import CopyBbClientdDirectoryButton from "./CopyBbClientdDirectoryButton";
 import DownloadAsTarballButton from "./DownloadAsTarballButton";
-import { BrowserPageType } from "@/types/BrowserPageType";
 
 const FETCH_STALE_TIME = 30000;
 
@@ -36,8 +35,8 @@ interface Params {
   inputRootDigest: Digest;
   fileSystemAccessProfile: FileSystemAccessProfile | undefined;
   fileSystemAccessProfileReference:
-  | FileSystemAccessProfileReference
-  | undefined;
+    | FileSystemAccessProfileReference
+    | undefined;
 }
 
 const BrowserDirectory: React.FC<Params> = ({
@@ -63,9 +62,10 @@ const BrowserDirectory: React.FC<Params> = ({
         pathHashes={
           bloomFilterReader
             ? new PathHashes(
-              fileSystemAccessProfileReference?.pathHashesBaseHash ?
-                BigInt(fileSystemAccessProfileReference?.pathHashesBaseHash) : undefined,
-            )
+                fileSystemAccessProfileReference?.pathHashesBaseHash
+                  ? BigInt(fileSystemAccessProfileReference?.pathHashesBaseHash)
+                  : undefined,
+              )
             : undefined
         }
         fileSystemAccessProfileRef={fileSystemAccessProfileReference}
@@ -126,7 +126,9 @@ interface RecursiveDirectoryNodeProps {
   bloomFilterReader?: BloomFilterReader;
   pathHashes?: PathHashes;
   willBePrefetched?: boolean;
-  fileSystemAccessProfileRef: Partial<FileSystemAccessProfileReference> | undefined;
+  fileSystemAccessProfileRef:
+    | Partial<FileSystemAccessProfileReference>
+    | undefined;
 }
 
 const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
@@ -230,13 +232,24 @@ const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
           linkWrapper={(children) => (
             <Link
               to="/browser/$"
-              params={{ _splat: generateBrowserSplat(instanceName, digestFunction, directoryDigest, BrowserPageType.Directory) }}
-              search={pathHashes ? {
-                fileSystemAccessProfile: {
-                  digest: fileSystemAccessProfileRef?.digest,
-                  pathHashesBaseHash: pathHashes?.toString()
-                }
-              } : undefined}
+              params={{
+                _splat: generateBrowserSplat(
+                  instanceName,
+                  digestFunction,
+                  directoryDigest,
+                  BrowserPageType.Directory,
+                ),
+              }}
+              search={
+                pathHashes
+                  ? {
+                      fileSystemAccessProfile: {
+                        digest: fileSystemAccessProfileRef?.digest,
+                        pathHashesBaseHash: pathHashes?.toString(),
+                      },
+                    }
+                  : undefined
+              }
             >
               {children}
             </Link>
@@ -275,22 +288,31 @@ const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
               <DirectoryNode
                 key={file.name}
                 name={file.name}
-                linkWrapper={digest ? (children) => (
-                  <a href={generateFileUrl(
-                    instanceName,
-                    digestFunction,
-                    digest,
-                    file.name,
-                  )}>{children}</a>
-                ) : undefined}
+                linkWrapper={
+                  digest
+                    ? (children) => (
+                        <a
+                          href={generateFileUrl(
+                            instanceName,
+                            digestFunction,
+                            digest,
+                            file.name,
+                          )}
+                        >
+                          {children}
+                        </a>
+                      )
+                    : undefined
+                }
                 sizeBytes={file.digest?.sizeBytes}
-                permissions={`-r-${file.isExecutable ? "x" : "-"}r-${file.isExecutable ? "x" : "-"
-                  }r-${file.isExecutable ? "x" : "-"}`}
+                permissions={`-r-${file.isExecutable ? "x" : "-"}r-${
+                  file.isExecutable ? "x" : "-"
+                }r-${file.isExecutable ? "x" : "-"}`}
                 willBePrefetched={calcWillBePrefetched(
                   pathHashes?.appendComponent(file.name),
                 )}
               />
-            )
+            );
           })}
           {data.symlinks.map((symlink) => (
             <DirectoryNode

@@ -1,3 +1,8 @@
+import { BuildOutlined } from "@ant-design/icons";
+import { useQuery } from "@apollo/client/react";
+import { Space, Typography } from "antd";
+import type { FilterValue } from "antd/lib/table/interface";
+import React from "react";
 import {
   buildColumn,
   durationColumn,
@@ -6,25 +11,21 @@ import {
   statusColumn,
   userColumn,
 } from "@/components/BazelInvocationColumns/Columns";
-import FIND_BAZEL_INVOCATIONS_QUERY, {
-  BAZEL_INVOCATION_NODE_FRAGMENT,
-} from './query.graphql';
 import {
   BazelInvocationOrderField,
-  type BazelInvocationWhereInput, OrderDirection
-} from '@/graphql/__generated__/graphql';
-import themeStyles from '@/theme/theme.module.css';
-import { BuildOutlined } from '@ant-design/icons';
-import { useQuery } from '@apollo/client/react';
-import { Space, Typography } from 'antd';
-import type { FilterValue } from 'antd/lib/table/interface';
-import React from 'react';
-import { CursorTable, getNewPaginationVariables } from '../CursorTable';
-import type { PaginationVariables } from '../CursorTable/types';
-import PortalAlert from "../PortalAlert";
+  type BazelInvocationWhereInput,
+  OrderDirection,
+} from "@/graphql/__generated__/graphql";
+import themeStyles from "@/theme/theme.module.css";
 import styles from "@/theme/theme.module.css";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
 import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
+import { CursorTable, getNewPaginationVariables } from "../CursorTable";
+import type { PaginationVariables } from "../CursorTable/types";
+import PortalAlert from "../PortalAlert";
+import FIND_BAZEL_INVOCATIONS_QUERY, {
+  BAZEL_INVOCATION_NODE_FRAGMENT,
+} from "./query.graphql";
 
 const BazelInvocationsTable: React.FC = () => {
   const [paginationVariables, setPaginationVariables] =
@@ -111,13 +112,13 @@ const BazelInvocationsTable: React.FC = () => {
     );
   }
 
-  const emptyText = 'No Bazel invocations match the specified search criteria';
+  const emptyText = "No Bazel invocations match the specified search criteria";
 
   return (
     <CursorTable
       columns={tableColumns}
       dataSource={invocations}
-      rowKey={item => item.id}
+      rowKey={(item) => item.id}
       loading={loading}
       size="small"
       locale={{

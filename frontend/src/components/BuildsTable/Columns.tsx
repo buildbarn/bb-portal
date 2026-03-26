@@ -1,7 +1,7 @@
 import { SearchOutlined } from "@ant-design/icons";
+import { Link } from "@tanstack/react-router";
 import { type TableColumnsType, Typography } from "antd";
 import dayjs from "dayjs";
-import { Link } from '@tanstack/react-router';
 import { validate as uuidValidate } from "uuid";
 import styles from "@/components/BazelInvocationColumns/Columns.module.css";
 import {
@@ -17,7 +17,9 @@ export const columns: TableColumnsType<BuildNodeFragment> = [
     width: 220,
     title: "Build ID",
     render: (_, record) => (
-      <Link to={`/builds/$buildUUID`} params={{buildUUID: record.buildUUID}}>{record.buildUUID}</Link>
+      <Link to={`/builds/$buildUUID`} params={{ buildUUID: record.buildUUID }}>
+        {record.buildUUID}
+      </Link>
     ),
     filterDropdown: (filterProps) => (
       <SearchWidget
@@ -35,9 +37,7 @@ export const columns: TableColumnsType<BuildNodeFragment> = [
     key: "buildURL",
     width: 220,
     title: "Build URL",
-    render: (_, record) => (
-      <Link to={record.buildURL}>{record.buildURL}</Link>
-    ),
+    render: (_, record) => <Link to={record.buildURL}>{record.buildURL}</Link>,
     filterDropdown: (filterProps) => (
       <SearchWidget
         placeholder="Provide a build URL prefix..."

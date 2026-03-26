@@ -1,6 +1,6 @@
-import type { SizeClassQueueName } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { Descriptions, Space } from "antd";
 import type React from "react";
+import type { SizeClassQueueName } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import PropertyTagList from "../PropertyTagList";
 
 interface Props {

@@ -1,3 +1,5 @@
+import { createChannel, createClient } from "nice-grpc-web";
+import type { ReactNode } from "react";
 import {
   type ActionCacheClient,
   ActionCacheDefinition,
@@ -18,8 +20,6 @@ import {
   type ByteStreamClient,
   ByteStreamDefinition,
 } from "@/lib/grpc-client/google/bytestream/bytestream";
-import { createChannel, createClient } from "nice-grpc-web";
-import type { ReactNode } from "react";
 import { GrpcClientsContext } from "./GrpcClientsContext";
 
 export interface GrpcClientsProviderProps {
@@ -27,9 +27,7 @@ export interface GrpcClientsProviderProps {
 }
 
 const GrpcClientsProvider = ({ children }: GrpcClientsProviderProps) => {
-  const grpcChannel = createChannel(
-    "/api/v1/grpcweb",
-  );
+  const grpcChannel = createChannel("/api/v1/grpcweb");
 
   const buildQueueStateClient: BuildQueueStateClient = createClient(
     BuildQueueStateDefinition,

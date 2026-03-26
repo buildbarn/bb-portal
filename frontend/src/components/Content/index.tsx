@@ -1,13 +1,12 @@
-
-import type React from 'react';
-import type { Key } from 'react';
-import { FloatButton, Layout, type MenuProps } from 'antd';
-import type { ItemType } from 'antd/es/menu/interface';
-import styles from '@/components/Content/index.module.css';
-import SiderBar from '@/components/SiderBar';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
-import FooterBar from '@/components/FooterBar';
-import useScreenSize from '@/utils/screen';
+import { FloatButton, Layout, type MenuProps } from "antd";
+import type { ItemType } from "antd/es/menu/interface";
+import type React from "react";
+import type { Key } from "react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import styles from "@/components/Content/index.module.css";
+import FooterBar from "@/components/FooterBar";
+import SiderBar from "@/components/SiderBar";
+import useScreenSize from "@/utils/screen";
 
 export const SIDER_BAR_MINIMUM_SCREEN_WIDTH = 932;
 
@@ -17,7 +16,7 @@ interface Props {
   sidebarMenuDefaultSelectedKeys?: Key[];
   sidebarMenuDefaultOpenKeys?: Key[];
   sidebarMenuOpenKeys?: Key[];
-  sidebarMenuOnOpenChange?: MenuProps['onOpenChange'];
+  sidebarMenuOnOpenChange?: MenuProps["onOpenChange"];
   sidebarMenuExpandedWidth?: number;
   content: React.ReactNode;
 }
@@ -33,7 +32,9 @@ const Content: React.FC<Props> = ({
   content,
 }) => {
   const screenSize = useScreenSize();
-  const showSiderBar = sidebarMenuItems?.length && screenSize.width > SIDER_BAR_MINIMUM_SCREEN_WIDTH;
+  const showSiderBar =
+    sidebarMenuItems?.length &&
+    screenSize.width > SIDER_BAR_MINIMUM_SCREEN_WIDTH;
   return (
     <Layout>
       {showSiderBar ? (

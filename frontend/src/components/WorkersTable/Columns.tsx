@@ -1,11 +1,11 @@
+import { type TableColumnsType, Typography } from "antd";
+import type { ColumnType } from "antd/lib/table";
 import { CodeLink } from "@/components/CodeLink";
 import { operationsStateToBrowserSplat } from "@/components/OperationsGrid/utils";
 import type { WorkerState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import { readableDurationFromDates } from "@/utils/time";
-import { type TableColumnsType, Typography } from "antd";
-import type { ColumnType } from "antd/lib/table";
-import PropertyTagList from "../PropertyTagList";
 import { env } from "@/utils/env";
+import { readableDurationFromDates } from "@/utils/time";
+import PropertyTagList from "../PropertyTagList";
 
 const workerIdColumn: ColumnType<WorkerState> = {
   key: "workerId",
@@ -45,12 +45,12 @@ const operationTimeoutColumn: ColumnType<WorkerState> = {
     <Typography.Text>
       {record.currentOperation
         ? (record.currentOperation?.timeout &&
-          readableDurationFromDates(
-            new Date(),
-            record.currentOperation.timeout,
-            { precision: 1, smallestUnit: "s" },
-          )) ||
-        "∞"
+            readableDurationFromDates(
+              new Date(),
+              record.currentOperation.timeout,
+              { precision: 1, smallestUnit: "s" },
+            )) ||
+          "∞"
         : "Idle"}
     </Typography.Text>
   ),
@@ -61,7 +61,7 @@ const operationNameColumn: ColumnType<WorkerState> = {
   title: "Operation name",
   onCell: (value, _) => ({ colSpan: value.currentOperation ? 1 : 0 }),
   render: (_, record) => {
-    const operationID = record.currentOperation?.name
+    const operationID = record.currentOperation?.name;
     if (operationID) {
       return (
         <CodeLink
@@ -73,7 +73,7 @@ const operationNameColumn: ColumnType<WorkerState> = {
         />
       );
     } else {
-      return <>-</>
+      return <>-</>;
     }
   },
 };
@@ -89,14 +89,16 @@ const actionDigestColumn: ColumnType<WorkerState> = {
           text={`${record.currentOperation.actionDigest.hash}-${record.currentOperation.actionDigest.sizeBytes}`}
           link={{
             to: "/browser/$",
-            params: { _splat: operationsStateToBrowserSplat(record.currentOperation) },
+            params: {
+              _splat: operationsStateToBrowserSplat(record.currentOperation),
+            },
           }}
         />
-      )
+      );
     } else {
-      return <>-</>
+      return <>-</>;
     }
-  }
+  },
 };
 
 const targetIdColumn: ColumnType<WorkerState> = {

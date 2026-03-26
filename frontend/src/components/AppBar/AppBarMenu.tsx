@@ -1,11 +1,10 @@
-
-import { getClosestKey } from "@/components/Utilities/navigation";
+import { useLocation } from "@tanstack/react-router";
 import { Menu } from "antd";
 import type { ItemType } from "antd/lib/menu/interface";
 import type { MenuMode } from "rc-menu/es/interface";
 import type React from "react";
+import { getClosestKey } from "@/components/Utilities/navigation";
 import styles from "./index.module.css";
-import { useLocation } from "@tanstack/react-router";
 
 type Props = {
   mode: MenuMode;

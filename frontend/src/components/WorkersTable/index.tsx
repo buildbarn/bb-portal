@@ -4,11 +4,11 @@ import type {
   PaginationInfo,
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import { Route, type WorkerListStatus } from "@/routes/scheduler.worker";
 import themeStyles from "@/theme/theme.module.css";
 import WorkersTablePageSelector from "../WorkersTablePageSelector";
 import WorkersTableTypeSelector from "../WorkersTableTypeSelector";
 import getColumns from "./Columns";
-import { Route, type WorkerListStatus } from "@/routes/scheduler.worker";
 
 type Props = {
   workerStatusFilter: WorkerListStatus;
@@ -25,16 +25,16 @@ const WorkersTable: React.FC<Props> = ({
   isLoading,
   pageSize,
 }) => {
-  const navigate = Route.useNavigate()
+  const navigate = Route.useNavigate();
 
   const handleFilterChange = (value: WorkerListStatus) => {
     navigate({
       search: (prev) => ({
         ...prev,
         workerStatusFilter: value,
-        cursor: undefined
-      })
-    })
+        cursor: undefined,
+      }),
+    });
   };
 
   const goToNextPage = () => {
@@ -44,16 +44,16 @@ const WorkersTable: React.FC<Props> = ({
     navigate({
       search: (prev) => ({
         ...prev,
-        cursor: lastId, 
+        cursor: lastId,
       }),
-    })
+    });
   };
 
   const goToFirstPage = () => {
     navigate({
       search: (prev) => ({
         ...prev,
-        cursor: undefined, 
+        cursor: undefined,
       }),
     });
   };

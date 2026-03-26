@@ -1,11 +1,3 @@
-
-import BrowserActionGrid from "@/components/BrowserActionGrid";
-import BrowserCommandGrid from "@/components/BrowserCommandGrid";
-import BrowserDirectoryPage from "@/components/BrowserDirectoryPage";
-import BrowserPreviousExecutionsPage from "@/components/BrowserPreviousExecutionsPage";
-import Content from "@/components/Content";
-import PortalCard from "@/components/PortalCard";
-import { type BrowserPageParams, BrowserPageType } from "@/types/BrowserPageType";
 import {
   CalculatorOutlined,
   CalendarFilled,
@@ -15,11 +7,21 @@ import {
 } from "@ant-design/icons";
 import { Typography } from "antd";
 import type React from "react";
+import BrowserActionGrid from "@/components/BrowserActionGrid";
+import BrowserCommandGrid from "@/components/BrowserCommandGrid";
+import BrowserDirectoryPage from "@/components/BrowserDirectoryPage";
+import BrowserPreviousExecutionsPage from "@/components/BrowserPreviousExecutionsPage";
+import Content from "@/components/Content";
+import PortalCard from "@/components/PortalCard";
 import type { BrowserSearchParams } from "@/routes/browser.$";
+import {
+  type BrowserPageParams,
+  BrowserPageType,
+} from "@/types/BrowserPageType";
 
 interface Params {
-  params: BrowserPageParams
-  search: BrowserSearchParams
+  params: BrowserPageParams;
+  search: BrowserSearchParams;
 }
 
 export const BrowserPage: React.FC<Params> = ({ params, search }) => {
@@ -52,7 +54,10 @@ export const BrowserPage: React.FC<Params> = ({ params, search }) => {
             titleBits={[<span key="title">Directory</span>]}
           >
             <Typography.Title level={2}>Directory contents</Typography.Title>
-            <BrowserDirectoryPage browserPageParams={params} fileSystemAccessProfileReference={search.fileSystemAccessProfile} />
+            <BrowserDirectoryPage
+              browserPageParams={params}
+              fileSystemAccessProfileReference={search.fileSystemAccessProfile}
+            />
           </PortalCard>
         );
 
@@ -64,8 +69,8 @@ export const BrowserPage: React.FC<Params> = ({ params, search }) => {
           >
             <div>
               Tree objects are not supported. Please set{" "}
-              <code>forceUploadTreesAndDirectories: true</code>{" "}
-              in your <code>bb_worker.jsonnet</code>.
+              <code>forceUploadTreesAndDirectories: true</code> in your{" "}
+              <code>bb_worker.jsonnet</code>.
             </div>
           </PortalCard>
         );
@@ -79,10 +84,7 @@ export const BrowserPage: React.FC<Params> = ({ params, search }) => {
             <Typography.Title level={2}>
               Historical Execute Response
             </Typography.Title>
-            <BrowserActionGrid
-              browserPageParams={params}
-              showTitle
-            />
+            <BrowserActionGrid browserPageParams={params} showTitle />
           </PortalCard>
         );
 
@@ -92,9 +94,7 @@ export const BrowserPage: React.FC<Params> = ({ params, search }) => {
             icon={<HistoryOutlined />}
             titleBits={[<span key="title">Previous executions stats</span>]}
           >
-            <BrowserPreviousExecutionsPage
-              browserPageParams={params}
-            />
+            <BrowserPreviousExecutionsPage browserPageParams={params} />
           </PortalCard>
         );
       default:

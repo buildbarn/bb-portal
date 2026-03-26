@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client/react";
-import { Link } from '@tanstack/react-router';
+import { Link } from "@tanstack/react-router";
 import { CHECK_IF_INVOCATION_EXISTS } from "./graphql";
 
 interface Props {
