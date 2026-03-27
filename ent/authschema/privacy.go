@@ -30,7 +30,9 @@ func privacyFilterFunc(ctx context.Context, f privacy.Filter, filterFunc func(pr
 	authorizedInstanceNames := dbAuthService.GetAuthorizedInstanceNames(ctx)
 	// If no instance names are authorized, add a nil value to the list to
 	// avoid a syntax error in the generated SQL, e.g., "IN ()".
-	authorizedInstanceNames = append(authorizedInstanceNames, nil)
+	if len(authorizedInstanceNames) == 0 {
+		authorizedInstanceNames = append(authorizedInstanceNames, nil)
+	}
 
 	f.Where(
 		filterFunc(f, authorizedInstanceNames),
