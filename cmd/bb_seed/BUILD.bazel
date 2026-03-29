@@ -1,0 +1,33 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "bb_seed_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/buildbarn/bb-portal/cmd/bb_seed",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/migrate",
+        "//ent/gen/ent/runtime",
+        "//internal/database",
+        "//internal/database/common",
+        "//internal/database/dbauthservice",
+        "//pkg/proto/configuration/bb_seed",
+        "@com_github_buildbarn_bb_storage//pkg/global",
+        "@com_github_buildbarn_bb_storage//pkg/program",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_jackc_pgx_v5//stdlib",
+        "@io_opentelemetry_go_otel//:otel",
+        "@io_opentelemetry_go_otel_trace//:trace",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+        "@org_golang_x_sync//errgroup",
+    ],
+)
+
+go_binary(
+    name = "bb_seed",
+    embed = [":bb_seed_lib"],
+    visibility = ["//visibility:public"],
+)

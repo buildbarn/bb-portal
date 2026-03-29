@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package buildbarn.configuration.bb_seed;
+
+import "google/protobuf/duration.proto";
+import "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal/bb_portal.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto";
+
+option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_seed";
+
+message ApplicationConfiguration {
+  // Database connection to use when seeding.
+  buildbarn.configuration.bb_portal.Database database = 1;
+
+  // Common configuration options that apply to all Buildbarn binaries.
+  buildbarn.configuration.global.Configuration global = 2;
+
+  // Number of instance names to create.
+  int32 instances = 3;
+
+  // Number of authenticated users to create per instance. If greater
+  // than 0 invocations will belong to one of these users.
+  int32 users = 4;
+
+  // Number of Bazel invocations to create per instance.
+  int32 invocations_per_instance = 5;
+
+  // Number of unique targets to create per invocation.
+  int32 targets_per_invocation = 6;
+
+  // Spread seeded data over this duration ending at the current time.
+  google.protobuf.Duration time_span = 7;
+}
