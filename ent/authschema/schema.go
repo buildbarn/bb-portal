@@ -61,6 +61,8 @@ type (
 	TargetKindMapping struct{ schema.TargetKindMapping }
 	// TargetMetrics reexport with auth policy added
 	TargetMetrics struct{ schema.TargetMetrics }
+	// TestTarget reexport with auth policy added
+	TestTarget struct{ schema.TestTarget }
 	// TestResult reexport with auth policy added
 	TestResult struct{ schema.TestResult }
 	// TestSummary reexport with auth policy added

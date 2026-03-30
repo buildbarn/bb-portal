@@ -72,7 +72,7 @@ func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 		return util.StatusWrap(err, "Failed to bulk insert invocation targets")
 	}
 
-	if err := r.createTestSummariesFromTargetCompletedChildren(ctx, tx, batch); err != nil {
+	if err := r.createTestSummariesFromTargetCompletedChildren(ctx, tx, batch, targetInfoMap); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert test summaries")
 	}
 
@@ -155,13 +155,15 @@ func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocatio
 	return nil
 }
 
-func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) error {
+func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo, targetInfoMap map[invocationTargetKey]completedTargetInfo) error {
 	params := sqlc.CreateTestSummariesBulkParams{
 		BazelInvocationID: int64(r.InvocationDbID),
 		InstanceNameID:    int64(r.InstanceNameDbID),
 		Labels:            make([]string, 0, len(batch)),
 		ConfigIds:         make([]string, 0, len(batch)),
 	}
+
+	var testTargetIDs []int64
 
 	for _, x := range batch {
 		be := x.Event
@@ -172,6 +174,14 @@ func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx 
 				params.BazelInvocationID = int64(r.InvocationDbID)
 				params.Labels = append(params.Labels, targetCompletedID.Label)
 				params.ConfigIds = append(params.ConfigIds, targetCompletedID.GetConfiguration().GetId())
+
+				key := invocationTargetKey{
+					label:  targetCompletedID.Label,
+					aspect: stripParams(targetCompletedID.Aspect),
+				}
+				if targetInfo, ok := targetInfoMap[key]; ok {
+					testTargetIDs = append(testTargetIDs, int64(targetInfo.targetID))
+				}
 
 				if targetCompletedID.Aspect != "" {
 					slog.Warn(
@@ -187,6 +197,12 @@ func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx 
 
 	if len(params.Labels) == 0 {
 		return nil
+	}
+
+	if len(testTargetIDs) > 0 {
+		if err := tx.Sqlc().CreateTestTargetsBulk(ctx, testTargetIDs); err != nil {
+			return util.StatusWrap(err, "Failed to bulk insert test targets")
+		}
 	}
 
 	affectedRows, err := tx.Sqlc().CreateTestSummariesBulk(ctx, params)

@@ -532,6 +532,14 @@ func (t *Target) InvocationTargets(
 	return t.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (t *Target) TestTarget(ctx context.Context) (*TestTarget, error) {
+	result, err := t.Edges.TestTargetOrErr()
+	if IsNotLoaded(err) {
+		result, err = t.QueryTestTarget().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (tm *TargetMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := tm.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
@@ -564,6 +572,14 @@ func (ts *TestSummary) TestResults(ctx context.Context) (result []*TestResult, e
 	}
 	if IsNotLoaded(err) {
 		result, err = ts.QueryTestResults().All(ctx)
+	}
+	return result, err
+}
+
+func (tt *TestTarget) Target(ctx context.Context) (*Target, error) {
+	result, err := tt.Edges.TargetOrErr()
+	if IsNotLoaded(err) {
+		result, err = tt.QueryTarget().Only(ctx)
 	}
 	return result, err
 }

@@ -42,6 +42,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
 
@@ -133,6 +134,7 @@ func checkColumn(table, column string) error {
 			targetmetrics.Table:         targetmetrics.ValidColumn,
 			testresult.Table:            testresult.ValidColumn,
 			testsummary.Table:           testsummary.ValidColumn,
+			testtarget.Table:            testtarget.ValidColumn,
 			timingmetrics.Table:         timingmetrics.ValidColumn,
 		})
 	})

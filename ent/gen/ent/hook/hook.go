@@ -369,6 +369,18 @@ func (f TestSummaryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TestSummaryMutation", m)
 }
 
+// The TestTargetFunc type is an adapter to allow the use of ordinary
+// function as TestTarget mutator.
+type TestTargetFunc func(context.Context, *ent.TestTargetMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TestTargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TestTargetMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TestTargetMutation", m)
+}
+
 // The TimingMetricsFunc type is an adapter to allow the use of ordinary
 // function as TimingMetrics mutator.
 type TimingMetricsFunc func(context.Context, *ent.TimingMetricsMutation) (ent.Value, error)

@@ -41,8 +41,10 @@ type Querier interface {
 	CreateTestResultsBulk(ctx context.Context, arg CreateTestResultsBulkParams) (int64, error)
 	// STAGE 2: Join the rest using the specific Target IDs we found
 	CreateTestSummariesBulk(ctx context.Context, arg CreateTestSummariesBulkParams) (int64, error)
+	CreateTestTargetsBulk(ctx context.Context, targetIds []int64) error
 	DeleteIncompleteLogsFromPages(ctx context.Context, arg DeleteIncompleteLogsFromPagesParams) (int64, error)
 	DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error)
+	DeleteOrphanedTestTargetsFromPages(ctx context.Context, arg DeleteOrphanedTestTargetsFromPagesParams) (int64, error)
 	DeleteTargetKindMappingsFromPages(ctx context.Context, arg DeleteTargetKindMappingsFromPagesParams) (int64, error)
 	DeleteUnusedTargetsFromPages(ctx context.Context, arg DeleteUnusedTargetsFromPagesParams) (int64, error)
 	FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error)

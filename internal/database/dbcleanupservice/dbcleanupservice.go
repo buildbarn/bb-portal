@@ -113,6 +113,9 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				if err := dc.RemoveUnusedTargets(ctx); err != nil {
 					slog.Warn("Failed to remove unused targets", "err", err)
 				}
+				if err := dc.RemoveOrphanedTestTargets(ctx); err != nil {
+					slog.Warn("Failed to remove orphaned test targets", "err", err)
+				}
 			}
 		}
 	})

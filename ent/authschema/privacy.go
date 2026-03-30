@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/privacy"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 )
 
@@ -103,6 +104,21 @@ func (TestSummary) Policy() ent.Policy {
 						target.EdgeInstanceName,
 						entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
 					),
+				),
+			)
+		})
+	})
+}
+
+// Policy for TestTarget.
+func (TestTarget) Policy() ent.Policy {
+	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				testtarget.EdgeTarget,
+				entql.HasEdgeWith(
+					target.EdgeInstanceName,
+					entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
 				),
 			)
 		})

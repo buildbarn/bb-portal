@@ -33,6 +33,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 	"github.com/google/uuid"
 )
@@ -9320,6 +9321,10 @@ type TargetWhereInput struct {
 	// "invocation_targets" edge predicates.
 	HasInvocationTargets     *bool                         `json:"hasInvocationTargets,omitempty"`
 	HasInvocationTargetsWith []*InvocationTargetWhereInput `json:"hasInvocationTargetsWith,omitempty"`
+
+	// "test_target" edge predicates.
+	HasTestTarget     *bool                   `json:"hasTestTarget,omitempty"`
+	HasTestTargetWith []*TestTargetWhereInput `json:"hasTestTargetWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -9570,6 +9575,24 @@ func (i *TargetWhereInput) P() (predicate.Target, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, target.HasInvocationTargetsWith(with...))
+	}
+	if i.HasTestTarget != nil {
+		p := target.HasTestTarget()
+		if !*i.HasTestTarget {
+			p = target.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTestTargetWith) > 0 {
+		with := make([]predicate.TestTarget, 0, len(i.HasTestTargetWith))
+		for _, w := range i.HasTestTargetWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTestTargetWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, target.HasTestTargetWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -11074,6 +11097,170 @@ func (i *TestSummaryWhereInput) P() (predicate.TestSummary, error) {
 		return predicates[0], nil
 	default:
 		return testsummary.And(predicates...), nil
+	}
+}
+
+// TestTargetWhereInput represents a where input for filtering TestTarget queries.
+type TestTargetWhereInput struct {
+	Predicates []predicate.TestTarget  `json:"-"`
+	Not        *TestTargetWhereInput   `json:"not,omitempty"`
+	Or         []*TestTargetWhereInput `json:"or,omitempty"`
+	And        []*TestTargetWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "target_id" field predicates.
+	TargetID      *int64  `json:"targetID,omitempty"`
+	TargetIDNEQ   *int64  `json:"targetIDNEQ,omitempty"`
+	TargetIDIn    []int64 `json:"targetIDIn,omitempty"`
+	TargetIDNotIn []int64 `json:"targetIDNotIn,omitempty"`
+
+	// "target" edge predicates.
+	HasTarget     *bool               `json:"hasTarget,omitempty"`
+	HasTargetWith []*TargetWhereInput `json:"hasTargetWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *TestTargetWhereInput) AddPredicates(predicates ...predicate.TestTarget) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the TestTargetWhereInput filter on the TestTargetQuery builder.
+func (i *TestTargetWhereInput) Filter(q *TestTargetQuery) (*TestTargetQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyTestTargetWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyTestTargetWhereInput is returned in case the TestTargetWhereInput is empty.
+var ErrEmptyTestTargetWhereInput = errors.New("ent: empty predicate TestTargetWhereInput")
+
+// P returns a predicate for filtering testtargets.
+// An error is returned if the input is empty or invalid.
+func (i *TestTargetWhereInput) P() (predicate.TestTarget, error) {
+	var predicates []predicate.TestTarget
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, testtarget.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.TestTarget, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, testtarget.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.TestTarget, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, testtarget.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, testtarget.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, testtarget.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, testtarget.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, testtarget.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, testtarget.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, testtarget.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, testtarget.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, testtarget.IDLTE(*i.IDLTE))
+	}
+	if i.TargetID != nil {
+		predicates = append(predicates, testtarget.TargetIDEQ(*i.TargetID))
+	}
+	if i.TargetIDNEQ != nil {
+		predicates = append(predicates, testtarget.TargetIDNEQ(*i.TargetIDNEQ))
+	}
+	if len(i.TargetIDIn) > 0 {
+		predicates = append(predicates, testtarget.TargetIDIn(i.TargetIDIn...))
+	}
+	if len(i.TargetIDNotIn) > 0 {
+		predicates = append(predicates, testtarget.TargetIDNotIn(i.TargetIDNotIn...))
+	}
+
+	if i.HasTarget != nil {
+		p := testtarget.HasTarget()
+		if !*i.HasTarget {
+			p = testtarget.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTargetWith) > 0 {
+		with := make([]predicate.Target, 0, len(i.HasTargetWith))
+		for _, w := range i.HasTargetWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTargetWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, testtarget.HasTargetWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyTestTargetWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return testtarget.And(predicates...), nil
 	}
 }
 

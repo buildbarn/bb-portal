@@ -831,6 +831,30 @@ func (f TestSummaryMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mut
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TestSummaryMutation", m)
 }
 
+// The TestTargetQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type TestTargetQueryRuleFunc func(context.Context, *ent.TestTargetQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f TestTargetQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TestTargetQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TestTargetQuery", q)
+}
+
+// The TestTargetMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type TestTargetMutationRuleFunc func(context.Context, *ent.TestTargetMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f TestTargetMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.TestTargetMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TestTargetMutation", m)
+}
+
 // The TimingMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type TimingMetricsQueryRuleFunc func(context.Context, *ent.TimingMetricsQuery) error
@@ -950,6 +974,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.TestSummaryQuery:
 		return q.Filter(), nil
+	case *ent.TestTargetQuery:
+		return q.Filter(), nil
 	case *ent.TimingMetricsQuery:
 		return q.Filter(), nil
 	default:
@@ -1018,6 +1044,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.TestResultMutation:
 		return m.Filter(), nil
 	case *ent.TestSummaryMutation:
+		return m.Filter(), nil
+	case *ent.TestTargetMutation:
 		return m.Filter(), nil
 	case *ent.TimingMetricsMutation:
 		return m.Filter(), nil

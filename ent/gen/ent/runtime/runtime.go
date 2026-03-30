@@ -12,6 +12,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 
 	"entgo.io/ent"
 	"entgo.io/ent/privacy"
@@ -89,6 +90,15 @@ func init() {
 	testsummary.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 			if err := testsummary.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	testtarget.Policy = privacy.NewPolicies(authschema.TestTarget{})
+	testtarget.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := testtarget.Policy.EvalMutation(ctx, m); err != nil {
 				return nil, err
 			}
 			return next.Mutate(ctx, m)

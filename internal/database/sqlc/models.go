@@ -374,6 +374,11 @@ type TestSummary struct {
 	InvocationTargetTestSummary int64
 }
 
+type TestTarget struct {
+	ID       int64
+	TargetID int64
+}
+
 type TimingMetric struct {
 	ID                        int64
 	CpuTimeInMs               sql.NullInt64

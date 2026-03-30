@@ -241,6 +241,16 @@ func (r *testSummaryResolver) ID(ctx context.Context, obj *ent.TestSummary) (str
 }
 
 // ID is the resolver for the id field.
+func (r *testTargetResolver) ID(ctx context.Context, obj *ent.TestTarget) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("TestTarget", obj.ID), nil
+}
+
+// TargetID is the resolver for the targetID field.
+func (r *testTargetResolver) TargetID(ctx context.Context, obj *ent.TestTarget) (string, error) {
+	panic(fmt.Errorf("not implemented: TargetID - targetID"))
+}
+
+// ID is the resolver for the id field.
 func (r *timingMetricsResolver) ID(ctx context.Context, obj *ent.TimingMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TimingMetrics", obj.ID), nil
 }
@@ -1253,6 +1263,66 @@ func (r *testSummaryWhereInputResolver) IDLte(ctx context.Context, obj *ent.Test
 }
 
 // ID is the resolver for the id field.
+func (r *testTargetWhereInputResolver) ID(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *testTargetWhereInputResolver) IDNeq(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *testTargetWhereInputResolver) IDIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *testTargetWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *testTargetWhereInputResolver) IDGt(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *testTargetWhereInputResolver) IDGte(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *testTargetWhereInputResolver) IDLt(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *testTargetWhereInputResolver) IDLte(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// TargetID is the resolver for the targetID field.
+func (r *testTargetWhereInputResolver) TargetID(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetID - targetID"))
+}
+
+// TargetIdneq is the resolver for the targetIDNEQ field.
+func (r *testTargetWhereInputResolver) TargetIdneq(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetIdneq - targetIDNEQ"))
+}
+
+// TargetIDIn is the resolver for the targetIDIn field.
+func (r *testTargetWhereInputResolver) TargetIDIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetIDIn - targetIDIn"))
+}
+
+// TargetIDNotIn is the resolver for the targetIDNotIn field.
+func (r *testTargetWhereInputResolver) TargetIDNotIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetIDNotIn - targetIDNotIn"))
+}
+
+// ID is the resolver for the id field.
 func (r *timingMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.TimingMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -1380,6 +1450,9 @@ func (r *Resolver) TestResult() TestResultResolver { return &testResultResolver{
 // TestSummary returns TestSummaryResolver implementation.
 func (r *Resolver) TestSummary() TestSummaryResolver { return &testSummaryResolver{r} }
 
+// TestTarget returns TestTargetResolver implementation.
+func (r *Resolver) TestTarget() TestTargetResolver { return &testTargetResolver{r} }
+
 // TimingMetrics returns TimingMetricsResolver implementation.
 func (r *Resolver) TimingMetrics() TimingMetricsResolver { return &timingMetricsResolver{r} }
 
@@ -1502,6 +1575,11 @@ func (r *Resolver) TestSummaryWhereInput() TestSummaryWhereInputResolver {
 	return &testSummaryWhereInputResolver{r}
 }
 
+// TestTargetWhereInput returns TestTargetWhereInputResolver implementation.
+func (r *Resolver) TestTargetWhereInput() TestTargetWhereInputResolver {
+	return &testTargetWhereInputResolver{r}
+}
+
 // TimingMetricsWhereInput returns TimingMetricsWhereInputResolver implementation.
 func (r *Resolver) TimingMetricsWhereInput() TimingMetricsWhereInputResolver {
 	return &timingMetricsWhereInputResolver{r}
@@ -1534,6 +1612,7 @@ type (
 	targetMetricsResolver                   struct{ *Resolver }
 	testResultResolver                      struct{ *Resolver }
 	testSummaryResolver                     struct{ *Resolver }
+	testTargetResolver                      struct{ *Resolver }
 	timingMetricsResolver                   struct{ *Resolver }
 	actionCacheStatisticsWhereInputResolver struct{ *Resolver }
 	actionDataWhereInputResolver            struct{ *Resolver }
@@ -1560,5 +1639,6 @@ type (
 	targetWhereInputResolver                struct{ *Resolver }
 	testResultWhereInputResolver            struct{ *Resolver }
 	testSummaryWhereInputResolver           struct{ *Resolver }
+	testTargetWhereInputResolver            struct{ *Resolver }
 	timingMetricsWhereInputResolver         struct{ *Resolver }
 )

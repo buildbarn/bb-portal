@@ -31,7 +31,7 @@ const TestGrid: React.FC = () => {
     variables: {
       where: {
         and: [
-          { hasInvocationTargetsWith: { hasTestSummary: true } },
+          { hasTestTarget: true },
           ...filterVariables,
         ],
       },

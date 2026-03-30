@@ -34,6 +34,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 
 	"entgo.io/ent/dialect/sql"
@@ -44,7 +45,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 31)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 32)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   action.Table,
@@ -613,6 +614,20 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 	}
 	graph.Nodes[30] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   testtarget.Table,
+			Columns: testtarget.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: testtarget.FieldID,
+			},
+		},
+		Type: "TestTarget",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			testtarget.FieldTargetID: {Type: field.TypeInt64, Column: testtarget.FieldTargetID},
+		},
+	}
+	graph.Nodes[31] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   timingmetrics.Table,
 			Columns: timingmetrics.Columns,
@@ -1387,6 +1402,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"TargetKindMapping",
 	)
 	graph.MustAddE(
+		"test_target",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   target.TestTargetTable,
+			Columns: []string{target.TestTargetColumn},
+			Bidi:    false,
+		},
+		"Target",
+		"TestTarget",
+	)
+	graph.MustAddE(
 		"bazel_invocation",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -1457,6 +1484,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"TestSummary",
 		"TestResult",
+	)
+	graph.MustAddE(
+		"target",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   testtarget.TargetTable,
+			Columns: []string{testtarget.TargetColumn},
+			Bidi:    false,
+		},
+		"TestTarget",
+		"Target",
 	)
 	graph.MustAddE(
 		"metrics",
@@ -4151,6 +4190,20 @@ func (f *TargetFilter) WhereHasTargetKindMappingsWith(preds ...predicate.TargetK
 	})))
 }
 
+// WhereHasTestTarget applies a predicate to check if query has an edge test_target.
+func (f *TargetFilter) WhereHasTestTarget() {
+	f.Where(entql.HasEdge("test_target"))
+}
+
+// WhereHasTestTargetWith applies a predicate to check if query has an edge test_target with a given conditions (other predicates).
+func (f *TargetFilter) WhereHasTestTargetWith(preds ...predicate.TestTarget) {
+	f.Where(entql.HasEdgeWith("test_target", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
 // addPredicate implements the predicateAdder interface.
 func (tkmq *TargetKindMappingQuery) addPredicate(pred func(s *sql.Selector)) {
 	tkmq.predicates = append(tkmq.predicates, pred)
@@ -4541,6 +4594,65 @@ func (f *TestSummaryFilter) WhereHasTestResultsWith(preds ...predicate.TestResul
 }
 
 // addPredicate implements the predicateAdder interface.
+func (ttq *TestTargetQuery) addPredicate(pred func(s *sql.Selector)) {
+	ttq.predicates = append(ttq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the TestTargetQuery builder.
+func (ttq *TestTargetQuery) Filter() *TestTargetFilter {
+	return &TestTargetFilter{config: ttq.config, predicateAdder: ttq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *TestTargetMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the TestTargetMutation builder.
+func (m *TestTargetMutation) Filter() *TestTargetFilter {
+	return &TestTargetFilter{config: m.config, predicateAdder: m}
+}
+
+// TestTargetFilter provides a generic filtering capability at runtime for TestTargetQuery.
+type TestTargetFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *TestTargetFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[30].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TestTargetFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(testtarget.FieldID))
+}
+
+// WhereTargetID applies the entql int64 predicate on the target_id field.
+func (f *TestTargetFilter) WhereTargetID(p entql.Int64P) {
+	f.Where(p.Field(testtarget.FieldTargetID))
+}
+
+// WhereHasTarget applies a predicate to check if query has an edge target.
+func (f *TestTargetFilter) WhereHasTarget() {
+	f.Where(entql.HasEdge("target"))
+}
+
+// WhereHasTargetWith applies a predicate to check if query has an edge target with a given conditions (other predicates).
+func (f *TestTargetFilter) WhereHasTargetWith(preds ...predicate.Target) {
+	f.Where(entql.HasEdgeWith("target", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (tmq *TimingMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
 	tmq.predicates = append(tmq.predicates, pred)
 }
@@ -4569,7 +4681,7 @@ type TimingMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TimingMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[30].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[31].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

@@ -50,6 +50,9 @@ func (Target) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+
+		edge.To("test_target", TestTarget.Type).
+			Unique(),
 	}
 }
 

@@ -327,6 +327,29 @@ func HasTargetKindMappingsWith(preds ...predicate.TargetKindMapping) predicate.T
 	})
 }
 
+// HasTestTarget applies the HasEdge predicate on the "test_target" edge.
+func HasTestTarget() predicate.Target {
+	return predicate.Target(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, TestTargetTable, TestTargetColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTestTargetWith applies the HasEdge predicate on the "test_target" edge with a given conditions (other predicates).
+func HasTestTargetWith(preds ...predicate.TestTarget) predicate.Target {
+	return predicate.Target(func(s *sql.Selector) {
+		step := newTestTargetStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Target) predicate.Target {
 	return predicate.Target(sql.AndPredicates(predicates...))

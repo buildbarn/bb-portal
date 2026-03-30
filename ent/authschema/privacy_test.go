@@ -48,7 +48,7 @@ func TestPrivacy(t *testing.T) {
 	ctx = dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService)
 
 	t.Run("EmptyDatabase", func(t *testing.T) {
-		clock.EXPECT().Now().Return(time.Unix(10000000, 0)).Times(5)
+		clock.EXPECT().Now().Return(time.Unix(10000000, 0)).Times(6)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)
@@ -66,12 +66,16 @@ func TestPrivacy(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 0, len(targets))
 
+		testTargets, err := db.TestTarget.Query().IDs(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 0, len(testTargets))
+
 		testSummaries, err := db.TestSummary.Query().IDs(ctx)
 		require.NoError(t, err)
 		require.Equal(t, 0, len(testSummaries))
 	})
 
-	clock.EXPECT().Now().Return(time.Unix(20000000, 0)).Times(5)
+	clock.EXPECT().Now().Return(time.Unix(20000000, 0)).Times(6)
 
 	deniedInstance := testutils.CreateInstanceName(ctx, t, db, "denied")
 	deniedInvocation, err := testutils.StartCreateInvocation(db, deniedInstance).Save(ctx)
@@ -82,6 +86,8 @@ func TestPrivacy(t *testing.T) {
 	require.NoError(t, err)
 	deniedTarget, err := db.Target.Create().SetInstanceName(deniedInstance).SetLabel("denied").SetAspect("aspect").SetTargetKind("targetKind").Save(ctx)
 	require.NoError(t, err)
+	_, err = db.TestTarget.Create().SetTarget(deniedTarget).Save(ctx)
+	require.NoError(t, err)
 	deniedInvocationTarget, err := db.InvocationTarget.Create().SetBazelInvocation(deniedInvocation).SetTarget(deniedTarget).SetAbortReason(invocationtarget.AbortReasonNONE).Save(ctx)
 	require.NoError(t, err)
 
@@ -89,7 +95,7 @@ func TestPrivacy(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("PopulatedDatabaseWithDeniedInstance", func(t *testing.T) {
-		clock.EXPECT().Now().Return(time.Unix(30000000, 0)).Times(5)
+		clock.EXPECT().Now().Return(time.Unix(30000000, 0)).Times(6)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)
@@ -107,12 +113,16 @@ func TestPrivacy(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 0, len(targets))
 
+		testTargets, err := db.TestTarget.Query().IDs(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 0, len(testTargets))
+
 		testSummaries, err := db.TestSummary.Query().IDs(ctx)
 		require.NoError(t, err)
 		require.Equal(t, 0, len(testSummaries))
 	})
 
-	clock.EXPECT().Now().Return(time.Unix(40000000, 0)).Times(5)
+	clock.EXPECT().Now().Return(time.Unix(40000000, 0)).Times(6)
 
 	allowed1Instance := testutils.CreateInstanceName(ctx, t, db, "allowed1")
 	allowed1Invocation, err := testutils.StartCreateInvocation(db, allowed1Instance).Save(ctx)
@@ -123,13 +133,15 @@ func TestPrivacy(t *testing.T) {
 	require.NoError(t, err)
 	allowed1Target, err := db.Target.Create().SetInstanceName(allowed1Instance).SetLabel("allowed1").SetAspect("aspect").SetTargetKind("targetKind").Save(ctx)
 	require.NoError(t, err)
+	allowed1TestTarget, err := db.TestTarget.Create().SetTarget(allowed1Target).Save(ctx)
+	require.NoError(t, err)
 	allowed1InvocationTarget, err := db.InvocationTarget.Create().SetBazelInvocation(allowed1Invocation).SetTarget(allowed1Target).SetAbortReason(invocationtarget.AbortReasonNONE).Save(ctx)
 	require.NoError(t, err)
 	allowed1TestSummary, err := db.TestSummary.Create().SetInvocationTarget(allowed1InvocationTarget).Save(ctx)
 	require.NoError(t, err)
 
 	t.Run("PopulatedDatabase", func(t *testing.T) {
-		clock.EXPECT().Now().Return(time.Unix(50000000, 0)).Times(5)
+		clock.EXPECT().Now().Return(time.Unix(50000000, 0)).Times(6)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)
@@ -151,13 +163,18 @@ func TestPrivacy(t *testing.T) {
 		require.Equal(t, 1, len(targets))
 		require.Contains(t, targets, allowed1Target.ID)
 
+		testTargets, err := db.TestTarget.Query().IDs(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 1, len(testTargets))
+		require.Contains(t, testTargets, allowed1TestTarget.ID)
+
 		testSummaries, err := db.TestSummary.Query().IDs(ctx)
 		require.NoError(t, err)
 		require.Equal(t, 1, len(testSummaries))
 		require.Contains(t, testSummaries, allowed1TestSummary.ID)
 	})
 
-	clock.EXPECT().Now().Return(time.Unix(50000000, 0)).Times(5)
+	clock.EXPECT().Now().Return(time.Unix(50000000, 0)).Times(6)
 
 	allowed2Instance := testutils.CreateInstanceName(ctx, t, db, "allowed2")
 	allowed2Invocation, err := testutils.StartCreateInvocation(db, allowed2Instance).Save(ctx)
@@ -168,13 +185,15 @@ func TestPrivacy(t *testing.T) {
 	require.NoError(t, err)
 	allowed2Target, err := db.Target.Create().SetInstanceName(allowed2Instance).SetLabel("allowed2").SetAspect("aspect").SetTargetKind("targetKind").Save(ctx)
 	require.NoError(t, err)
+	allowed2TestTarget, err := db.TestTarget.Create().SetTarget(allowed2Target).Save(ctx)
+	require.NoError(t, err)
 	allowed2InvocationTarget, err := db.InvocationTarget.Create().SetBazelInvocation(allowed2Invocation).SetTarget(allowed2Target).SetAbortReason(invocationtarget.AbortReasonNONE).Save(ctx)
 	require.NoError(t, err)
 	allowed2TestSummary, err := db.TestSummary.Create().SetInvocationTarget(allowed2InvocationTarget).Save(ctx)
 	require.NoError(t, err)
 
 	t.Run("PopulatedDatabase2", func(t *testing.T) {
-		clock.EXPECT().Now().Return(time.Unix(60000000, 0)).Times(5)
+		clock.EXPECT().Now().Return(time.Unix(60000000, 0)).Times(6)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)
@@ -199,6 +218,12 @@ func TestPrivacy(t *testing.T) {
 		require.Equal(t, 2, len(targets))
 		require.Contains(t, targets, allowed1Target.ID)
 		require.Contains(t, targets, allowed2Target.ID)
+
+		testTargets, err := db.TestTarget.Query().IDs(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 2, len(testTargets))
+		require.Contains(t, testTargets, allowed1TestTarget.ID)
+		require.Contains(t, testTargets, allowed2TestTarget.ID)
 
 		testSummaries, err := db.TestSummary.Query().IDs(ctx)
 		require.NoError(t, err)
