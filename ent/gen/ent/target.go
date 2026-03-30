@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 )
 
 // Target is the model entity for the Target schema.
@@ -38,11 +39,13 @@ type TargetEdges struct {
 	InvocationTargets []*InvocationTarget `json:"invocation_targets,omitempty"`
 	// TargetKindMappings holds the value of the target_kind_mappings edge.
 	TargetKindMappings []*TargetKindMapping `json:"target_kind_mappings,omitempty"`
+	// TestTarget holds the value of the test_target edge.
+	TestTarget *TestTarget `json:"test_target,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 
 	namedInvocationTargets  map[string][]*InvocationTarget
 	namedTargetKindMappings map[string][]*TargetKindMapping
@@ -75,6 +78,17 @@ func (e TargetEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
 		return e.TargetKindMappings, nil
 	}
 	return nil, &NotLoadedError{edge: "target_kind_mappings"}
+}
+
+// TestTargetOrErr returns the TestTarget value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TargetEdges) TestTargetOrErr() (*TestTarget, error) {
+	if e.TestTarget != nil {
+		return e.TestTarget, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: testtarget.Label}
+	}
+	return nil, &NotLoadedError{edge: "test_target"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -160,6 +174,11 @@ func (t *Target) QueryInvocationTargets() *InvocationTargetQuery {
 // QueryTargetKindMappings queries the "target_kind_mappings" edge of the Target entity.
 func (t *Target) QueryTargetKindMappings() *TargetKindMappingQuery {
 	return NewTargetClient(t.config).QueryTargetKindMappings(t)
+}
+
+// QueryTestTarget queries the "test_target" edge of the Target entity.
+func (t *Target) QueryTestTarget() *TestTargetQuery {
+	return NewTargetClient(t.config).QueryTestTarget(t)
 }
 
 // Update returns a builder for updating this Target.

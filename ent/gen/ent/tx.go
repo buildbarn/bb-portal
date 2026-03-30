@@ -74,6 +74,8 @@ type Tx struct {
 	TestResult *TestResultClient
 	// TestSummary is the client for interacting with the TestSummary builders.
 	TestSummary *TestSummaryClient
+	// TestTarget is the client for interacting with the TestTarget builders.
+	TestTarget *TestTargetClient
 	// TimingMetrics is the client for interacting with the TimingMetrics builders.
 	TimingMetrics *TimingMetricsClient
 
@@ -237,6 +239,7 @@ func (tx *Tx) init() {
 	tx.TargetMetrics = NewTargetMetricsClient(tx.config)
 	tx.TestResult = NewTestResultClient(tx.config)
 	tx.TestSummary = NewTestSummaryClient(tx.config)
+	tx.TestTarget = NewTestTargetClient(tx.config)
 	tx.TimingMetrics = NewTimingMetricsClient(tx.config)
 }
 

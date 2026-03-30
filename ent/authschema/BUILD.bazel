@@ -18,6 +18,7 @@ go_library(
         "//ent/gen/ent/privacy",
         "//ent/gen/ent/target",
         "//ent/gen/ent/testsummary",
+        "//ent/gen/ent/testtarget",
         "//ent/schema",
         "//internal/database/dbauthservice",
         "@io_entgo_ent//entql",

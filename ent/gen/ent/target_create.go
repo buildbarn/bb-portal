@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 )
 
 // TargetCreate is the builder for creating a Target entity.
@@ -87,6 +88,25 @@ func (tc *TargetCreate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetCr
 		ids[i] = t[i].ID
 	}
 	return tc.AddTargetKindMappingIDs(ids...)
+}
+
+// SetTestTargetID sets the "test_target" edge to the TestTarget entity by ID.
+func (tc *TargetCreate) SetTestTargetID(id int64) *TargetCreate {
+	tc.mutation.SetTestTargetID(id)
+	return tc
+}
+
+// SetNillableTestTargetID sets the "test_target" edge to the TestTarget entity by ID if the given value is not nil.
+func (tc *TargetCreate) SetNillableTestTargetID(id *int64) *TargetCreate {
+	if id != nil {
+		tc = tc.SetTestTargetID(*id)
+	}
+	return tc
+}
+
+// SetTestTarget sets the "test_target" edge to the TestTarget entity.
+func (tc *TargetCreate) SetTestTarget(t *TestTarget) *TargetCreate {
+	return tc.SetTestTargetID(t.ID)
 }
 
 // Mutation returns the TargetMutation object of the builder.
@@ -222,6 +242,22 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.TestTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   target.TestTargetTable,
+			Columns: []string{target.TestTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

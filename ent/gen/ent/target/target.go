@@ -25,6 +25,8 @@ const (
 	EdgeInvocationTargets = "invocation_targets"
 	// EdgeTargetKindMappings holds the string denoting the target_kind_mappings edge name in mutations.
 	EdgeTargetKindMappings = "target_kind_mappings"
+	// EdgeTestTarget holds the string denoting the test_target edge name in mutations.
+	EdgeTestTarget = "test_target"
 	// Table holds the table name of the target in the database.
 	Table = "targets"
 	// InstanceNameTable is the table that holds the instance_name relation/edge.
@@ -48,6 +50,13 @@ const (
 	TargetKindMappingsInverseTable = "target_kind_mappings"
 	// TargetKindMappingsColumn is the table column denoting the target_kind_mappings relation/edge.
 	TargetKindMappingsColumn = "target_id"
+	// TestTargetTable is the table that holds the test_target relation/edge.
+	TestTargetTable = "test_targets"
+	// TestTargetInverseTable is the table name for the TestTarget entity.
+	// It exists in this package in order to avoid circular dependency with the "testtarget" package.
+	TestTargetInverseTable = "test_targets"
+	// TestTargetColumn is the table column denoting the test_target relation/edge.
+	TestTargetColumn = "target_id"
 )
 
 // Columns holds all SQL columns for target fields.
@@ -146,6 +155,13 @@ func ByTargetKindMappings(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOptio
 		sqlgraph.OrderByNeighborTerms(s, newTargetKindMappingsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByTestTargetField orders the results by test_target field.
+func ByTestTargetField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTestTargetStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newInstanceNameStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -165,5 +181,12 @@ func newTargetKindMappingsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetKindMappingsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, TargetKindMappingsTable, TargetKindMappingsColumn),
+	)
+}
+func newTestTargetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TestTargetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, TestTargetTable, TestTargetColumn),
 	)
 }

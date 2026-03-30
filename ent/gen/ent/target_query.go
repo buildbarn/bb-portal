@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 )
 
 // TargetQuery is the builder for querying Target entities.
@@ -30,6 +31,7 @@ type TargetQuery struct {
 	withInstanceName            *InstanceNameQuery
 	withInvocationTargets       *InvocationTargetQuery
 	withTargetKindMappings      *TargetKindMappingQuery
+	withTestTarget              *TestTargetQuery
 	withFKs                     bool
 	loadTotal                   []func(context.Context, []*Target) error
 	modifiers                   []func(*sql.Selector)
@@ -130,6 +132,28 @@ func (tq *TargetQuery) QueryTargetKindMappings() *TargetKindMappingQuery {
 			sqlgraph.From(target.Table, target.FieldID, selector),
 			sqlgraph.To(targetkindmapping.Table, targetkindmapping.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, target.TargetKindMappingsTable, target.TargetKindMappingsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTestTarget chains the current query on the "test_target" edge.
+func (tq *TargetQuery) QueryTestTarget() *TestTargetQuery {
+	query := (&TestTargetClient{config: tq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(target.Table, target.FieldID, selector),
+			sqlgraph.To(testtarget.Table, testtarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, target.TestTargetTable, target.TestTargetColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -332,6 +356,7 @@ func (tq *TargetQuery) Clone() *TargetQuery {
 		withInstanceName:       tq.withInstanceName.Clone(),
 		withInvocationTargets:  tq.withInvocationTargets.Clone(),
 		withTargetKindMappings: tq.withTargetKindMappings.Clone(),
+		withTestTarget:         tq.withTestTarget.Clone(),
 		// clone intermediate query.
 		sql:       tq.sql.Clone(),
 		path:      tq.path,
@@ -369,6 +394,17 @@ func (tq *TargetQuery) WithTargetKindMappings(opts ...func(*TargetKindMappingQue
 		opt(query)
 	}
 	tq.withTargetKindMappings = query
+	return tq
+}
+
+// WithTestTarget tells the query-builder to eager-load the nodes that are connected to
+// the "test_target" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TargetQuery) WithTestTarget(opts ...func(*TestTargetQuery)) *TargetQuery {
+	query := (&TestTargetClient{config: tq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withTestTarget = query
 	return tq
 }
 
@@ -457,10 +493,11 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 		nodes       = []*Target{}
 		withFKs     = tq.withFKs
 		_spec       = tq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			tq.withInstanceName != nil,
 			tq.withInvocationTargets != nil,
 			tq.withTargetKindMappings != nil,
+			tq.withTestTarget != nil,
 		}
 	)
 	if tq.withInstanceName != nil {
@@ -509,6 +546,12 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 			func(n *Target, e *TargetKindMapping) {
 				n.Edges.TargetKindMappings = append(n.Edges.TargetKindMappings, e)
 			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := tq.withTestTarget; query != nil {
+		if err := tq.loadTestTarget(ctx, query, nodes, nil,
+			func(n *Target, e *TestTarget) { n.Edges.TestTarget = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -612,6 +655,33 @@ func (tq *TargetQuery) loadTargetKindMappings(ctx context.Context, query *Target
 	}
 	query.Where(predicate.TargetKindMapping(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(target.TargetKindMappingsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TargetID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "target_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (tq *TargetQuery) loadTestTarget(ctx context.Context, query *TestTargetQuery, nodes []*Target, init func(*Target), assign func(*Target, *TestTarget)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Target)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(testtarget.FieldTargetID)
+	}
+	query.Where(predicate.TestTarget(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(target.TestTargetColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

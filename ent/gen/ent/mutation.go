@@ -42,6 +42,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
@@ -86,6 +87,7 @@ const (
 	TypeTargetMetrics         = "TargetMetrics"
 	TypeTestResult            = "TestResult"
 	TypeTestSummary           = "TestSummary"
+	TypeTestTarget            = "TestTarget"
 	TypeTimingMetrics         = "TimingMetrics"
 )
 
@@ -23517,6 +23519,8 @@ type TargetMutation struct {
 	target_kind_mappings        map[int64]struct{}
 	removedtarget_kind_mappings map[int64]struct{}
 	clearedtarget_kind_mappings bool
+	test_target                 *int64
+	clearedtest_target          bool
 	done                        bool
 	oldValue                    func(context.Context) (*Target, error)
 	predicates                  []predicate.Target
@@ -23881,6 +23885,45 @@ func (m *TargetMutation) ResetTargetKindMappings() {
 	m.removedtarget_kind_mappings = nil
 }
 
+// SetTestTargetID sets the "test_target" edge to the TestTarget entity by id.
+func (m *TargetMutation) SetTestTargetID(id int64) {
+	m.test_target = &id
+}
+
+// ClearTestTarget clears the "test_target" edge to the TestTarget entity.
+func (m *TargetMutation) ClearTestTarget() {
+	m.clearedtest_target = true
+}
+
+// TestTargetCleared reports if the "test_target" edge to the TestTarget entity was cleared.
+func (m *TargetMutation) TestTargetCleared() bool {
+	return m.clearedtest_target
+}
+
+// TestTargetID returns the "test_target" edge ID in the mutation.
+func (m *TargetMutation) TestTargetID() (id int64, exists bool) {
+	if m.test_target != nil {
+		return *m.test_target, true
+	}
+	return
+}
+
+// TestTargetIDs returns the "test_target" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TestTargetID instead. It exists only for internal usage by the builders.
+func (m *TargetMutation) TestTargetIDs() (ids []int64) {
+	if id := m.test_target; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTestTarget resets all changes to the "test_target" edge.
+func (m *TargetMutation) ResetTestTarget() {
+	m.test_target = nil
+	m.clearedtest_target = false
+}
+
 // Where appends a list predicates to the TargetMutation builder.
 func (m *TargetMutation) Where(ps ...predicate.Target) {
 	m.predicates = append(m.predicates, ps...)
@@ -24048,7 +24091,7 @@ func (m *TargetMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *TargetMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.instance_name != nil {
 		edges = append(edges, target.EdgeInstanceName)
 	}
@@ -24057,6 +24100,9 @@ func (m *TargetMutation) AddedEdges() []string {
 	}
 	if m.target_kind_mappings != nil {
 		edges = append(edges, target.EdgeTargetKindMappings)
+	}
+	if m.test_target != nil {
+		edges = append(edges, target.EdgeTestTarget)
 	}
 	return edges
 }
@@ -24081,13 +24127,17 @@ func (m *TargetMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case target.EdgeTestTarget:
+		if id := m.test_target; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TargetMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedinvocation_targets != nil {
 		edges = append(edges, target.EdgeInvocationTargets)
 	}
@@ -24119,7 +24169,7 @@ func (m *TargetMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *TargetMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedinstance_name {
 		edges = append(edges, target.EdgeInstanceName)
 	}
@@ -24128,6 +24178,9 @@ func (m *TargetMutation) ClearedEdges() []string {
 	}
 	if m.clearedtarget_kind_mappings {
 		edges = append(edges, target.EdgeTargetKindMappings)
+	}
+	if m.clearedtest_target {
+		edges = append(edges, target.EdgeTestTarget)
 	}
 	return edges
 }
@@ -24142,6 +24195,8 @@ func (m *TargetMutation) EdgeCleared(name string) bool {
 		return m.clearedinvocation_targets
 	case target.EdgeTargetKindMappings:
 		return m.clearedtarget_kind_mappings
+	case target.EdgeTestTarget:
+		return m.clearedtest_target
 	}
 	return false
 }
@@ -24152,6 +24207,9 @@ func (m *TargetMutation) ClearEdge(name string) error {
 	switch name {
 	case target.EdgeInstanceName:
 		m.ClearInstanceName()
+		return nil
+	case target.EdgeTestTarget:
+		m.ClearTestTarget()
 		return nil
 	}
 	return fmt.Errorf("unknown Target unique edge %s", name)
@@ -24169,6 +24227,9 @@ func (m *TargetMutation) ResetEdge(name string) error {
 		return nil
 	case target.EdgeTargetKindMappings:
 		m.ResetTargetKindMappings()
+		return nil
+	case target.EdgeTestTarget:
+		m.ResetTestTarget()
 		return nil
 	}
 	return fmt.Errorf("unknown Target edge %s", name)
@@ -28240,6 +28301,395 @@ func (m *TestSummaryMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown TestSummary edge %s", name)
+}
+
+// TestTargetMutation represents an operation that mutates the TestTarget nodes in the graph.
+type TestTargetMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int64
+	clearedFields map[string]struct{}
+	target        *int64
+	clearedtarget bool
+	done          bool
+	oldValue      func(context.Context) (*TestTarget, error)
+	predicates    []predicate.TestTarget
+}
+
+var _ ent.Mutation = (*TestTargetMutation)(nil)
+
+// testtargetOption allows management of the mutation configuration using functional options.
+type testtargetOption func(*TestTargetMutation)
+
+// newTestTargetMutation creates new mutation for the TestTarget entity.
+func newTestTargetMutation(c config, op Op, opts ...testtargetOption) *TestTargetMutation {
+	m := &TestTargetMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTestTarget,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTestTargetID sets the ID field of the mutation.
+func withTestTargetID(id int64) testtargetOption {
+	return func(m *TestTargetMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *TestTarget
+		)
+		m.oldValue = func(ctx context.Context) (*TestTarget, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().TestTarget.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTestTarget sets the old TestTarget of the mutation.
+func withTestTarget(node *TestTarget) testtargetOption {
+	return func(m *TestTargetMutation) {
+		m.oldValue = func(context.Context) (*TestTarget, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TestTargetMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TestTargetMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TestTarget entities.
+func (m *TestTargetMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TestTargetMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TestTargetMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().TestTarget.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetTargetID sets the "target_id" field.
+func (m *TestTargetMutation) SetTargetID(i int64) {
+	m.target = &i
+}
+
+// TargetID returns the value of the "target_id" field in the mutation.
+func (m *TestTargetMutation) TargetID() (r int64, exists bool) {
+	v := m.target
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTargetID returns the old "target_id" field's value of the TestTarget entity.
+// If the TestTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestTargetMutation) OldTargetID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTargetID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTargetID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTargetID: %w", err)
+	}
+	return oldValue.TargetID, nil
+}
+
+// ResetTargetID resets all changes to the "target_id" field.
+func (m *TestTargetMutation) ResetTargetID() {
+	m.target = nil
+}
+
+// ClearTarget clears the "target" edge to the Target entity.
+func (m *TestTargetMutation) ClearTarget() {
+	m.clearedtarget = true
+	m.clearedFields[testtarget.FieldTargetID] = struct{}{}
+}
+
+// TargetCleared reports if the "target" edge to the Target entity was cleared.
+func (m *TestTargetMutation) TargetCleared() bool {
+	return m.clearedtarget
+}
+
+// TargetIDs returns the "target" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TargetID instead. It exists only for internal usage by the builders.
+func (m *TestTargetMutation) TargetIDs() (ids []int64) {
+	if id := m.target; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTarget resets all changes to the "target" edge.
+func (m *TestTargetMutation) ResetTarget() {
+	m.target = nil
+	m.clearedtarget = false
+}
+
+// Where appends a list predicates to the TestTargetMutation builder.
+func (m *TestTargetMutation) Where(ps ...predicate.TestTarget) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TestTargetMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TestTargetMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.TestTarget, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TestTargetMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TestTargetMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (TestTarget).
+func (m *TestTargetMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TestTargetMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.target != nil {
+		fields = append(fields, testtarget.FieldTargetID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TestTargetMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case testtarget.FieldTargetID:
+		return m.TargetID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TestTargetMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case testtarget.FieldTargetID:
+		return m.OldTargetID(ctx)
+	}
+	return nil, fmt.Errorf("unknown TestTarget field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TestTargetMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case testtarget.FieldTargetID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTargetID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TestTarget field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TestTargetMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TestTargetMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TestTargetMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown TestTarget numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TestTargetMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TestTargetMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TestTargetMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown TestTarget nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TestTargetMutation) ResetField(name string) error {
+	switch name {
+	case testtarget.FieldTargetID:
+		m.ResetTargetID()
+		return nil
+	}
+	return fmt.Errorf("unknown TestTarget field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TestTargetMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.target != nil {
+		edges = append(edges, testtarget.EdgeTarget)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TestTargetMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case testtarget.EdgeTarget:
+		if id := m.target; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TestTargetMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TestTargetMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TestTargetMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedtarget {
+		edges = append(edges, testtarget.EdgeTarget)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TestTargetMutation) EdgeCleared(name string) bool {
+	switch name {
+	case testtarget.EdgeTarget:
+		return m.clearedtarget
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TestTargetMutation) ClearEdge(name string) error {
+	switch name {
+	case testtarget.EdgeTarget:
+		m.ClearTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown TestTarget unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TestTargetMutation) ResetEdge(name string) error {
+	switch name {
+	case testtarget.EdgeTarget:
+		m.ResetTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown TestTarget edge %s", name)
 }
 
 // TimingMetricsMutation represents an operation that mutates the TimingMetrics nodes in the graph.

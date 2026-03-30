@@ -34,6 +34,7 @@ go_library(
         "targetmetrics.go",
         "testresult.go",
         "testsummary.go",
+        "testtarget.go",
         "timingmetrics.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/ent/schema",

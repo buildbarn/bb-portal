@@ -38,6 +38,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 	"github.com/hashicorp/go-multierror"
 	"golang.org/x/sync/semaphore"
@@ -172,6 +173,11 @@ var testsummaryImplementors = []string{"TestSummary", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*TestSummary) IsNode() {}
+
+var testtargetImplementors = []string{"TestTarget", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*TestTarget) IsNode() {}
 
 var timingmetricsImplementors = []string{"TimingMetrics", "Node"}
 
@@ -457,6 +463,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(testsummary.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, testsummaryImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case testtarget.Table:
+		query := c.TestTarget.Query().
+			Where(testtarget.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, testtargetImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -931,6 +946,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.TestSummary.Query().
 			Where(testsummary.IDIn(ids...))
 		query, err := query.CollectFields(ctx, testsummaryImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case testtarget.Table:
+		query := c.TestTarget.Query().
+			Where(testtarget.IDIn(ids...))
+		query, err := query.CollectFields(ctx, testtargetImplementors...)
 		if err != nil {
 			return nil, err
 		}

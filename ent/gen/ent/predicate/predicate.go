@@ -96,5 +96,8 @@ type TestResult func(*sql.Selector)
 // TestSummary is the predicate function for testsummary builders.
 type TestSummary func(*sql.Selector)
 
+// TestTarget is the predicate function for testtarget builders.
+type TestTarget func(*sql.Selector)
+
 // TimingMetrics is the predicate function for timingmetrics builders.
 type TimingMetrics func(*sql.Selector)

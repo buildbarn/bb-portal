@@ -17,6 +17,7 @@ go_library(
         "targets.sql.go",
         "test_result.sql.go",
         "test_summary.sql.go",
+        "test_targets.sql.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/database/sqlc",
     visibility = ["//:__subpackages__"],

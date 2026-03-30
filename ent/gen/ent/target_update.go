@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 )
 
 // TargetUpdate is the builder for updating Target entities.
@@ -114,6 +115,25 @@ func (tu *TargetUpdate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetUp
 	return tu.AddTargetKindMappingIDs(ids...)
 }
 
+// SetTestTargetID sets the "test_target" edge to the TestTarget entity by ID.
+func (tu *TargetUpdate) SetTestTargetID(id int64) *TargetUpdate {
+	tu.mutation.SetTestTargetID(id)
+	return tu
+}
+
+// SetNillableTestTargetID sets the "test_target" edge to the TestTarget entity by ID if the given value is not nil.
+func (tu *TargetUpdate) SetNillableTestTargetID(id *int64) *TargetUpdate {
+	if id != nil {
+		tu = tu.SetTestTargetID(*id)
+	}
+	return tu
+}
+
+// SetTestTarget sets the "test_target" edge to the TestTarget entity.
+func (tu *TargetUpdate) SetTestTarget(t *TestTarget) *TargetUpdate {
+	return tu.SetTestTargetID(t.ID)
+}
+
 // Mutation returns the TargetMutation object of the builder.
 func (tu *TargetUpdate) Mutation() *TargetMutation {
 	return tu.mutation
@@ -165,6 +185,12 @@ func (tu *TargetUpdate) RemoveTargetKindMappings(t ...*TargetKindMapping) *Targe
 		ids[i] = t[i].ID
 	}
 	return tu.RemoveTargetKindMappingIDs(ids...)
+}
+
+// ClearTestTarget clears the "test_target" edge to the TestTarget entity.
+func (tu *TargetUpdate) ClearTestTarget() *TargetUpdate {
+	tu.mutation.ClearTestTarget()
+	return tu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -348,6 +374,35 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if tu.mutation.TestTargetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   target.TestTargetTable,
+			Columns: []string{target.TestTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.TestTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   target.TestTargetTable,
+			Columns: []string{target.TestTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	_spec.AddModifiers(tu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -453,6 +508,25 @@ func (tuo *TargetUpdateOne) AddTargetKindMappings(t ...*TargetKindMapping) *Targ
 	return tuo.AddTargetKindMappingIDs(ids...)
 }
 
+// SetTestTargetID sets the "test_target" edge to the TestTarget entity by ID.
+func (tuo *TargetUpdateOne) SetTestTargetID(id int64) *TargetUpdateOne {
+	tuo.mutation.SetTestTargetID(id)
+	return tuo
+}
+
+// SetNillableTestTargetID sets the "test_target" edge to the TestTarget entity by ID if the given value is not nil.
+func (tuo *TargetUpdateOne) SetNillableTestTargetID(id *int64) *TargetUpdateOne {
+	if id != nil {
+		tuo = tuo.SetTestTargetID(*id)
+	}
+	return tuo
+}
+
+// SetTestTarget sets the "test_target" edge to the TestTarget entity.
+func (tuo *TargetUpdateOne) SetTestTarget(t *TestTarget) *TargetUpdateOne {
+	return tuo.SetTestTargetID(t.ID)
+}
+
 // Mutation returns the TargetMutation object of the builder.
 func (tuo *TargetUpdateOne) Mutation() *TargetMutation {
 	return tuo.mutation
@@ -504,6 +578,12 @@ func (tuo *TargetUpdateOne) RemoveTargetKindMappings(t ...*TargetKindMapping) *T
 		ids[i] = t[i].ID
 	}
 	return tuo.RemoveTargetKindMappingIDs(ids...)
+}
+
+// ClearTestTarget clears the "test_target" edge to the TestTarget entity.
+func (tuo *TargetUpdateOne) ClearTestTarget() *TargetUpdateOne {
+	tuo.mutation.ClearTestTarget()
+	return tuo
 }
 
 // Where appends a list predicates to the TargetUpdate builder.
@@ -710,6 +790,35 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tuo.mutation.TestTargetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   target.TestTargetTable,
+			Columns: []string{target.TestTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.TestTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   target.TestTargetTable,
+			Columns: []string{target.TestTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

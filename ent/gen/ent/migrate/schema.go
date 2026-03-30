@@ -1097,6 +1097,25 @@ var (
 			},
 		},
 	}
+	// TestTargetsColumns holds the columns for the "test_targets" table.
+	TestTargetsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "target_id", Type: field.TypeInt64, Unique: true},
+	}
+	// TestTargetsTable holds the schema information for the "test_targets" table.
+	TestTargetsTable = &schema.Table{
+		Name:       "test_targets",
+		Columns:    TestTargetsColumns,
+		PrimaryKey: []*schema.Column{TestTargetsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "test_targets_targets_test_target",
+				Columns:    []*schema.Column{TestTargetsColumns[1]},
+				RefColumns: []*schema.Column{TargetsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// TimingMetricsColumns holds the columns for the "timing_metrics" table.
 	TimingMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -1160,6 +1179,7 @@ var (
 		TargetMetricsTable,
 		TestResultsTable,
 		TestSummariesTable,
+		TestTargetsTable,
 		TimingMetricsTable,
 	}
 )
@@ -1199,5 +1219,6 @@ func init() {
 	TargetMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	TestResultsTable.ForeignKeys[0].RefTable = TestSummariesTable
 	TestSummariesTable.ForeignKeys[0].RefTable = InvocationTargetsTable
+	TestTargetsTable.ForeignKeys[0].RefTable = TargetsTable
 	TimingMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 }

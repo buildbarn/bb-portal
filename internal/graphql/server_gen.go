@@ -72,6 +72,7 @@ type ResolverRoot interface {
 	TargetMetrics() TargetMetricsResolver
 	TestResult() TestResultResolver
 	TestSummary() TestSummaryResolver
+	TestTarget() TestTargetResolver
 	TimingMetrics() TimingMetricsResolver
 	ActionCacheStatisticsWhereInput() ActionCacheStatisticsWhereInputResolver
 	ActionDataWhereInput() ActionDataWhereInputResolver
@@ -98,6 +99,7 @@ type ResolverRoot interface {
 	TargetWhereInput() TargetWhereInputResolver
 	TestResultWhereInput() TestResultWhereInputResolver
 	TestSummaryWhereInput() TestSummaryWhereInputResolver
+	TestTargetWhereInput() TestTargetWhereInputResolver
 	TimingMetricsWhereInput() TimingMetricsWhereInputResolver
 }
 
@@ -434,6 +436,7 @@ type ComplexityRoot struct {
 		InvocationTargetsTotalDurationMillis func(childComplexity int) int
 		Label                                func(childComplexity int) int
 		TargetKind                           func(childComplexity int) int
+		TestTarget                           func(childComplexity int) int
 	}
 
 	TargetConnection struct {
@@ -498,6 +501,12 @@ type ComplexityRoot struct {
 	TestSummaryEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
+	}
+
+	TestTarget struct {
+		ID       func(childComplexity int) int
+		Target   func(childComplexity int) int
+		TargetID func(childComplexity int) int
 	}
 
 	TimingMetrics struct {
@@ -616,6 +625,10 @@ type TestResultResolver interface {
 }
 type TestSummaryResolver interface {
 	ID(ctx context.Context, obj *ent.TestSummary) (string, error)
+}
+type TestTargetResolver interface {
+	ID(ctx context.Context, obj *ent.TestTarget) (string, error)
+	TargetID(ctx context.Context, obj *ent.TestTarget) (string, error)
 }
 type TimingMetricsResolver interface {
 	ID(ctx context.Context, obj *ent.TimingMetrics) (string, error)
@@ -870,6 +883,20 @@ type TestSummaryWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.TestSummaryWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.TestSummaryWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.TestSummaryWhereInput, data *string) error
+}
+type TestTargetWhereInputResolver interface {
+	ID(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	IDNeq(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	IDIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error
+	IDNotIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error
+	IDGt(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	IDGte(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	IDLt(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	IDLte(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	TargetID(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	TargetIdneq(ctx context.Context, obj *ent.TestTargetWhereInput, data *string) error
+	TargetIDIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error
+	TargetIDNotIn(ctx context.Context, obj *ent.TestTargetWhereInput, data []string) error
 }
 type TimingMetricsWhereInputResolver interface {
 	ID(ctx context.Context, obj *ent.TimingMetricsWhereInput, data *string) error
@@ -2637,6 +2664,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Target.TargetKind(childComplexity), true
 
+	case "Target.testTarget":
+		if e.complexity.Target.TestTarget == nil {
+			break
+		}
+
+		return e.complexity.Target.TestTarget(childComplexity), true
+
 	case "TargetConnection.edges":
 		if e.complexity.TargetConnection.Edges == nil {
 			break
@@ -2938,6 +2972,27 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.TestSummaryEdge.Node(childComplexity), true
 
+	case "TestTarget.id":
+		if e.complexity.TestTarget.ID == nil {
+			break
+		}
+
+		return e.complexity.TestTarget.ID(childComplexity), true
+
+	case "TestTarget.target":
+		if e.complexity.TestTarget.Target == nil {
+			break
+		}
+
+		return e.complexity.TestTarget.Target(childComplexity), true
+
+	case "TestTarget.targetID":
+		if e.complexity.TestTarget.TargetID == nil {
+			break
+		}
+
+		return e.complexity.TestTarget.TargetID(childComplexity), true
+
 	case "TimingMetrics.actionsExecutionStartInMs":
 		if e.complexity.TimingMetrics.ActionsExecutionStartInMs == nil {
 			break
@@ -3045,6 +3100,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputTestResultWhereInput,
 		ec.unmarshalInputTestSummaryOrder,
 		ec.unmarshalInputTestSummaryWhereInput,
+		ec.unmarshalInputTestTargetWhereInput,
 		ec.unmarshalInputTimingMetricsWhereInput,
 	)
 	first := true
@@ -11409,6 +11465,8 @@ func (ec *executionContext) fieldContext_InstanceName_targets(_ context.Context,
 				return ec.fieldContext_Target_instanceName(ctx, field)
 			case "invocationTargets":
 				return ec.fieldContext_Target_invocationTargets(ctx, field)
+			case "testTarget":
+				return ec.fieldContext_Target_testTarget(ctx, field)
 			case "invocationTargetsTotalDurationMillis":
 				return ec.fieldContext_Target_invocationTargetsTotalDurationMillis(ctx, field)
 			}
@@ -11912,6 +11970,8 @@ func (ec *executionContext) fieldContext_InvocationTarget_target(_ context.Conte
 				return ec.fieldContext_Target_instanceName(ctx, field)
 			case "invocationTargets":
 				return ec.fieldContext_Target_invocationTargets(ctx, field)
+			case "testTarget":
+				return ec.fieldContext_Target_testTarget(ctx, field)
 			case "invocationTargetsTotalDurationMillis":
 				return ec.fieldContext_Target_invocationTargetsTotalDurationMillis(ctx, field)
 			}
@@ -14535,6 +14595,8 @@ func (ec *executionContext) fieldContext_Query_getTarget(ctx context.Context, fi
 				return ec.fieldContext_Target_instanceName(ctx, field)
 			case "invocationTargets":
 				return ec.fieldContext_Target_invocationTargets(ctx, field)
+			case "testTarget":
+				return ec.fieldContext_Target_testTarget(ctx, field)
 			case "invocationTargetsTotalDurationMillis":
 				return ec.fieldContext_Target_invocationTargetsTotalDurationMillis(ctx, field)
 			}
@@ -16433,6 +16495,55 @@ func (ec *executionContext) fieldContext_Target_invocationTargets(ctx context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Target_testTarget(ctx context.Context, field graphql.CollectedField, obj *ent.Target) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Target_testTarget(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TestTarget(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.TestTarget)
+	fc.Result = res
+	return ec.marshalOTestTarget2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTarget(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Target_testTarget(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Target",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_TestTarget_id(ctx, field)
+			case "targetID":
+				return ec.fieldContext_TestTarget_targetID(ctx, field)
+			case "target":
+				return ec.fieldContext_TestTarget_target(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TestTarget", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Target_invocationTargetsTotalDurationMillis(ctx context.Context, field graphql.CollectedField, obj *ent.Target) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Target_invocationTargetsTotalDurationMillis(ctx, field)
 	if err != nil {
@@ -16670,6 +16781,8 @@ func (ec *executionContext) fieldContext_TargetEdge_node(_ context.Context, fiel
 				return ec.fieldContext_Target_instanceName(ctx, field)
 			case "invocationTargets":
 				return ec.fieldContext_Target_invocationTargets(ctx, field)
+			case "testTarget":
+				return ec.fieldContext_Target_testTarget(ctx, field)
 			case "invocationTargetsTotalDurationMillis":
 				return ec.fieldContext_Target_invocationTargetsTotalDurationMillis(ctx, field)
 			}
@@ -18457,6 +18570,156 @@ func (ec *executionContext) fieldContext_TestSummaryEdge_cursor(_ context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TestTarget_id(ctx context.Context, field graphql.CollectedField, obj *ent.TestTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TestTarget_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.TestTarget().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TestTarget_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TestTarget",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TestTarget_targetID(ctx context.Context, field graphql.CollectedField, obj *ent.TestTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TestTarget_targetID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.TestTarget().TargetID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TestTarget_targetID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TestTarget",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TestTarget_target(ctx context.Context, field graphql.CollectedField, obj *ent.TestTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TestTarget_target(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Target(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Target)
+	fc.Result = res
+	return ec.marshalNTarget2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTarget(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TestTarget_target(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TestTarget",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Target_id(ctx, field)
+			case "label":
+				return ec.fieldContext_Target_label(ctx, field)
+			case "aspect":
+				return ec.fieldContext_Target_aspect(ctx, field)
+			case "targetKind":
+				return ec.fieldContext_Target_targetKind(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_Target_instanceName(ctx, field)
+			case "invocationTargets":
+				return ec.fieldContext_Target_invocationTargets(ctx, field)
+			case "testTarget":
+				return ec.fieldContext_Target_testTarget(ctx, field)
+			case "invocationTargetsTotalDurationMillis":
+				return ec.fieldContext_Target_invocationTargetsTotalDurationMillis(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Target", field.Name)
 		},
 	}
 	return fc, nil
@@ -33598,7 +33861,7 @@ func (ec *executionContext) unmarshalInputTargetWhereInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "label", "labelNEQ", "labelIn", "labelNotIn", "labelGT", "labelGTE", "labelLT", "labelLTE", "labelContains", "labelHasPrefix", "labelHasSuffix", "labelEqualFold", "labelContainsFold", "aspect", "aspectNEQ", "aspectIn", "aspectNotIn", "aspectGT", "aspectGTE", "aspectLT", "aspectLTE", "aspectContains", "aspectHasPrefix", "aspectHasSuffix", "aspectEqualFold", "aspectContainsFold", "targetKind", "targetKindNEQ", "targetKindIn", "targetKindNotIn", "targetKindGT", "targetKindGTE", "targetKindLT", "targetKindLTE", "targetKindContains", "targetKindHasPrefix", "targetKindHasSuffix", "targetKindEqualFold", "targetKindContainsFold", "hasInstanceName", "hasInstanceNameWith", "hasInvocationTargets", "hasInvocationTargetsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "label", "labelNEQ", "labelIn", "labelNotIn", "labelGT", "labelGTE", "labelLT", "labelLTE", "labelContains", "labelHasPrefix", "labelHasSuffix", "labelEqualFold", "labelContainsFold", "aspect", "aspectNEQ", "aspectIn", "aspectNotIn", "aspectGT", "aspectGTE", "aspectLT", "aspectLTE", "aspectContains", "aspectHasPrefix", "aspectHasSuffix", "aspectEqualFold", "aspectContainsFold", "targetKind", "targetKindNEQ", "targetKindIn", "targetKindNotIn", "targetKindGT", "targetKindGTE", "targetKindLT", "targetKindLTE", "targetKindContains", "targetKindHasPrefix", "targetKindHasSuffix", "targetKindEqualFold", "targetKindContainsFold", "hasInstanceName", "hasInstanceNameWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasTestTarget", "hasTestTargetWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -33999,6 +34262,20 @@ func (ec *executionContext) unmarshalInputTargetWhereInput(ctx context.Context, 
 				return it, err
 			}
 			it.HasInvocationTargetsWith = data
+		case "hasTestTarget":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTestTarget"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTestTarget = data
+		case "hasTestTargetWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTestTargetWith"))
+			data, err := ec.unmarshalOTestTargetWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTestTargetWith = data
 		}
 	}
 
@@ -35830,6 +36107,169 @@ func (ec *executionContext) unmarshalInputTestSummaryWhereInput(ctx context.Cont
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputTestTargetWhereInput(ctx context.Context, obj any) (ent.TestTargetWhereInput, error) {
+	var it ent.TestTargetWhereInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "targetID", "targetIDNEQ", "targetIDIn", "targetIDNotIn", "hasTarget", "hasTargetWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOTestTargetWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOTestTargetWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOTestTargetWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().ID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().IDNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().IDIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().IDNotIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().IDGt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().IDGte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().IDLt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "targetID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetID"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().TargetID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "targetIDNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetIDNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().TargetIdneq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "targetIDIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetIDIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().TargetIDIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "targetIDNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetIDNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.TestTargetWhereInput().TargetIDNotIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "hasTarget":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTarget"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTarget = data
+		case "hasTargetWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTargetWith"))
+			data, err := ec.unmarshalOTargetWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTargetWith = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputTimingMetricsWhereInput(ctx context.Context, obj any) (ent.TimingMetricsWhereInput, error) {
 	var it ent.TimingMetricsWhereInput
 	asMap := map[string]any{}
@@ -36320,6 +36760,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._TimingMetrics(ctx, sel, obj)
+	case *ent.TestTarget:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TestTarget(ctx, sel, obj)
 	case *ent.TestSummary:
 		if obj == nil {
 			return graphql.Null
@@ -40909,6 +41354,39 @@ func (ec *executionContext) _Target(ctx context.Context, sel ast.SelectionSet, o
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "testTarget":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Target_testTarget(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "invocationTargetsTotalDurationMillis":
 			field := field
 
@@ -41528,6 +42006,148 @@ func (ec *executionContext) _TestSummaryEdge(ctx context.Context, sel ast.Select
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var testTargetImplementors = []string{"TestTarget", "Node"}
+
+func (ec *executionContext) _TestTarget(ctx context.Context, sel ast.SelectionSet, obj *ent.TestTarget) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, testTargetImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TestTarget")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TestTarget_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "targetID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TestTarget_targetID(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "target":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TestTarget_target(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -42654,6 +43274,11 @@ func (ec *executionContext) marshalNTestSummaryOrderField2ᚖgithubᚗcomᚋbuil
 
 func (ec *executionContext) unmarshalNTestSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummaryWhereInput(ctx context.Context, v any) (*ent.TestSummaryWhereInput, error) {
 	res, err := ec.unmarshalInputTestSummaryWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNTestTargetWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInput(ctx context.Context, v any) (*ent.TestTargetWhereInput, error) {
+	res, err := ec.unmarshalInputTestTargetWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -45190,6 +45815,39 @@ func (ec *executionContext) unmarshalOTestSummaryWhereInput2ᚖgithubᚗcomᚋbu
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputTestSummaryWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOTestTarget2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTarget(ctx context.Context, sel ast.SelectionSet, v *ent.TestTarget) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TestTarget(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOTestTargetWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInputᚄ(ctx context.Context, v any) ([]*ent.TestTargetWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*ent.TestTargetWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNTestTargetWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOTestTargetWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestTargetWhereInput(ctx context.Context, v any) (*ent.TestTargetWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTestTargetWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

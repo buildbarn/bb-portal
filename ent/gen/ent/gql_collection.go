@@ -33,6 +33,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
 
@@ -2942,6 +2943,17 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			t.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
 				*wq = *query
 			})
+
+		case "testTarget":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestTargetClient{config: t.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testtargetImplementors)...); err != nil {
+				return err
+			}
+			t.withTestTarget = query
 		case "label":
 			if _, ok := fieldSeen[target.FieldLabel]; !ok {
 				selectedFields = append(selectedFields, target.FieldLabel)
@@ -3378,6 +3390,88 @@ func newTestSummaryPaginateArgs(rv map[string]any) *testsummaryPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*TestSummaryWhereInput); ok {
 		args.opts = append(args.opts, WithTestSummaryFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tt *TestTargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestTargetQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tt, nil
+	}
+	if err := tt.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tt, nil
+}
+
+func (tt *TestTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(testtarget.Columns))
+		selectedFields = []string{testtarget.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "target":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetClient{config: tt.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetImplementors)...); err != nil {
+				return err
+			}
+			tt.withTarget = query
+			if _, ok := fieldSeen[testtarget.FieldTargetID]; !ok {
+				selectedFields = append(selectedFields, testtarget.FieldTargetID)
+				fieldSeen[testtarget.FieldTargetID] = struct{}{}
+			}
+		case "targetID":
+			if _, ok := fieldSeen[testtarget.FieldTargetID]; !ok {
+				selectedFields = append(selectedFields, testtarget.FieldTargetID)
+				fieldSeen[testtarget.FieldTargetID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tt.Select(selectedFields...)
+	}
+	return nil
+}
+
+type testtargetPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TestTargetPaginateOption
+}
+
+func newTestTargetPaginateArgs(rv map[string]any) *testtargetPaginateArgs {
+	args := &testtargetPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TestTargetWhereInput); ok {
+		args.opts = append(args.opts, WithTestTargetFilter(v.Filter))
 	}
 	return args
 }
