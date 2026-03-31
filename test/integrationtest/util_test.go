@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	gqlgen "github.com/99designs/gqlgen/graphql"
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
@@ -50,8 +49,8 @@ func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *
 	return bepUploader
 }
 
-func startGraphqlHTTPServer(t *testing.T, client *ent.Client) *httptest.Server {
-	srv := graphql.NewGraphqlHandler(client, trace.NewNoopTracerProvider())
+func startGraphqlHTTPServer(t *testing.T, db database.Client) *httptest.Server {
+	srv := graphql.NewGraphqlHandler(db, trace.NewNoopTracerProvider())
 
 	// Bypass DB auth service for integration tests.
 	srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {

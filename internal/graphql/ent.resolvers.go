@@ -184,25 +184,25 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 // FindBazelInvocations is the resolver for the findBazelInvocations field.
 func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
-	return r.client.BazelInvocation.Query().Paginate(ctx, after, first, before, last, ent.WithBazelInvocationFilter(where.Filter), ent.WithBazelInvocationOrder(orderBy))
+	return r.db.Ent().BazelInvocation.Query().Paginate(ctx, after, first, before, last, ent.WithBazelInvocationFilter(where.Filter), ent.WithBazelInvocationOrder(orderBy))
 }
 
 // FindBuilds is the resolver for the findBuilds field.
 func (r *queryResolver) FindBuilds(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
-	return r.client.Build.Query().Paginate(ctx, after, first, before, last, ent.WithBuildFilter(where.Filter), ent.WithBuildOrder(orderBy))
+	return r.db.Ent().Build.Query().Paginate(ctx, after, first, before, last, ent.WithBuildFilter(where.Filter), ent.WithBuildOrder(orderBy))
 }
 
 // FindTargets is the resolver for the findTargets field.
 func (r *queryResolver) FindTargets(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
-	return r.client.Target.Query().Paginate(ctx, after, first, before, last, ent.WithTargetFilter(where.Filter))
+	return r.db.Ent().Target.Query().Paginate(ctx, after, first, before, last, ent.WithTargetFilter(where.Filter))
 }
 
 // FindTestSummaries is the resolver for the findTestSummaries field.
 func (r *queryResolver) FindTestSummaries(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.TestSummaryOrder, where *ent.TestSummaryWhereInput) (*ent.TestSummaryConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
-	return r.client.TestSummary.Query().Paginate(ctx, after, first, before, last, ent.WithTestSummaryFilter(where.Filter), ent.WithTestSummaryOrder(orderBy))
+	return r.db.Ent().TestSummary.Query().Paginate(ctx, after, first, before, last, ent.WithTestSummaryFilter(where.Filter), ent.WithTestSummaryOrder(orderBy))
 }
 
 // ID is the resolver for the id field.

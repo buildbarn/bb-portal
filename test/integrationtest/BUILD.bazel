@@ -9,7 +9,6 @@ go_test(
     ],
     data = glob(["testdata/**"]) + ["//frontend/src/graphql:__generated__"],
     deps = [
-        "//ent/gen/ent",
         "//ent/gen/ent/runtime",
         "//internal/api/http/bepuploader",
         "//internal/database",

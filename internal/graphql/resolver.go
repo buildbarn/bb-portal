@@ -2,8 +2,7 @@ package graphql
 
 import (
 	"github.com/99designs/gqlgen/graphql"
-
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/internal/database"
 )
 
 // This file will not be regenerated automatically.
@@ -12,12 +11,12 @@ import (
 
 // The Resolver Type for DI
 type Resolver struct {
-	client *ent.Client
+	db database.Client
 }
 
 // NewSchema creates a graphql executable schema.
-func NewSchema(client *ent.Client) graphql.ExecutableSchema {
+func NewSchema(db database.Client) graphql.ExecutableSchema {
 	return NewExecutableSchema(Config{
-		Resolvers: &Resolver{client: client},
+		Resolvers: &Resolver{db: db},
 	})
 }
