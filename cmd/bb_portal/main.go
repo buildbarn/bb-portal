@@ -48,7 +48,6 @@ import (
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	http_server "github.com/buildbarn/bb-storage/pkg/http/server"
 	"github.com/buildbarn/bb-storage/pkg/program"
-	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -217,18 +216,9 @@ func addGraphqlHandler(
 		return status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
 
-	switch configuration.InstanceNameAuthorizer.Policy.(type) {
-	case *auth_pb.AuthorizerConfiguration_Allow:
-		// If the policy is "Allow", we add a auth bypass. Using the
-		// DbAuthService would just slow us down.
-		srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
-			return next(dbauthservice.NewContextWithDbAuthServiceBypass(ctx))
-		})
-	default:
-		srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
-			return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService))
-		})
-	}
+	srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
+		return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService))
+	})
 
 	router.PathPrefix("/graphql").Handler(srv)
 	if besConfiguration.EnableGraphqlPlayground {
