@@ -30,7 +30,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
@@ -164,7 +163,7 @@ func newBuildEventStreamService(
 	}
 	dbAuthService := dbauthservice.NewDbAuthService(dbClient.Ent(), clock.SystemClock, instanceNameAuthorizer, time.Second*5)
 
-	err = addGraphqlHandler(configuration, besConfiguration, dbAuthService, dependenciesGroup, grpcClientFactory, router, dbClient.Ent(), tracerProvider)
+	err = addGraphqlHandler(configuration, besConfiguration, dbAuthService, dependenciesGroup, grpcClientFactory, router, dbClient, tracerProvider)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to add GraphQL handler for BuildEventStreamService")
 	}
@@ -207,7 +206,7 @@ func addGraphqlHandler(
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	router *mux.Router,
-	dbClient *ent.Client,
+	dbClient database.Client,
 	tracerProvider trace.TracerProvider,
 ) error {
 	srv := graphql.NewGraphqlHandler(dbClient, tracerProvider)

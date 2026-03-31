@@ -56,7 +56,7 @@ func (r *connectionMetadataResolver) TimeSinceLastConnectionMillis(ctx context.C
 func (r *queryResolver) GetAuthenticatedUser(ctx context.Context, userUUID uuid.UUID) (*ent.AuthenticatedUser, error) {
 	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
 	// need it, but somehow it does.
-	query, err := r.client.AuthenticatedUser.Query().Where(authenticateduser.UserUUID(userUUID)).CollectFields(ctx)
+	query, err := r.db.Ent().AuthenticatedUser.Query().Where(authenticateduser.UserUUID(userUUID)).CollectFields(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (r *queryResolver) GetAuthenticatedUser(ctx context.Context, userUUID uuid.
 func (r *queryResolver) GetBazelInvocation(ctx context.Context, invocationID uuid.UUID) (*ent.BazelInvocation, error) {
 	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
 	// need it, but somehow it does.
-	query, err := r.client.BazelInvocation.Query().Where(bazelinvocation.InvocationID(invocationID)).CollectFields(ctx)
+	query, err := r.db.Ent().BazelInvocation.Query().Where(bazelinvocation.InvocationID(invocationID)).CollectFields(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (r *queryResolver) GetBazelInvocation(ctx context.Context, invocationID uui
 func (r *queryResolver) GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent.Build, error) {
 	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
 	// need it, but somehow it does.
-	query, err := r.client.Build.Query().Where(build.BuildUUID(buildUUID)).CollectFields(ctx)
+	query, err := r.db.Ent().Build.Query().Where(build.BuildUUID(buildUUID)).CollectFields(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent
 func (r *queryResolver) GetTarget(ctx context.Context, instanceName, label, aspect, targetKind string) (*ent.Target, error) {
 	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
 	// need it, but somehow it does.
-	query, err := r.client.Target.Query().Where(
+	query, err := r.db.Ent().Target.Query().Where(
 		target.LabelEQ(label),
 		target.Aspect(aspect),
 		target.TargetKind(targetKind),

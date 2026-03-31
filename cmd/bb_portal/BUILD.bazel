@@ -10,7 +10,6 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/cmd/bb_portal",
     visibility = ["//visibility:private"],
     deps = [
-        "//ent/gen/ent",
         "//ent/gen/ent/migrate",
         "//ent/gen/ent/runtime",
         "//internal/api/grpc/bes",

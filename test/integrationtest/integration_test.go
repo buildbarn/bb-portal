@@ -337,7 +337,7 @@ func runTestCase(t *testing.T, queryRegistry *testkit.QueryRegistry, testCase te
 		})
 	}
 
-	graphqlServer := startGraphqlHTTPServer(t, db.Ent())
+	graphqlServer := startGraphqlHTTPServer(t, db)
 
 	runGraphqlTestCases(ctx, t, graphqlServer.URL, queryRegistry, testCase)
 }
