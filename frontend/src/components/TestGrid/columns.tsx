@@ -15,6 +15,9 @@ export const columns: TableColumnsType<TestGridRowDataType> = [
   {
     key: "repo",
     title: "Repository",
+    render: (_, record) =>
+      record.firstInvocation?.edges?.[0]?.node?.bazelInvocation?.sourceControl
+        ?.repo,
     filterDropdown: (filterProps) => (
       <SearchWidget placeholder="Repository..." {...filterProps} />
     ),
