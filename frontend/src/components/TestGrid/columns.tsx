@@ -13,6 +13,16 @@ export type TestGridRowDataType = NonNullable<
 
 export const columns: TableColumnsType<TestGridRowDataType> = [
   {
+    key: "repo",
+    title: "Repository",
+    filterDropdown: (filterProps) => (
+      <SearchWidget placeholder="Repository..." {...filterProps} />
+    ),
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+    ),
+  },
+  {
     title: "Target",
     dataIndex: "target",
     render: (_, record) => (
