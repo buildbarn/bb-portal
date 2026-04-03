@@ -31,5 +31,14 @@ export const BUILD_NODE_FRAGMENT = gql(/* GraphQL */ `
     buildUUID
     buildURL
     timestamp
+    firstInvocation: invocations(first: 1, orderBy: { field: STARTED_AT, direction: DESC }) {
+      edges {
+        node {
+          sourceControl {
+            repo
+          }
+        }
+      }
+    }
   }
 `);

@@ -49,6 +49,17 @@ const BuildsTable: React.FC = () => {
           case "buildURL":
             newFilters.push({ buildURLContainsFold: value[0] as string });
             break;
+          case "repo":
+            newFilters.push({
+              hasInvocationsWith: [
+                {
+                  hasSourceControlWith: [
+                    { repoContainsFold: value[0] as string },
+                  ],
+                },
+              ],
+            });
+            break;
           case "buildDate":
             if (value.length === 2) {
               if (value[0]) {

@@ -13,6 +13,19 @@ import type { BuildNodeFragment } from "@/graphql/__generated__/graphql";
 
 export const columns: TableColumnsType<BuildNodeFragment> = [
   {
+    key: "repo",
+    width: 200,
+    title: "Repository",
+    render: (_, record) =>
+      record.firstInvocation?.edges?.[0]?.node?.sourceControl?.repo,
+    filterDropdown: (filterProps) => (
+      <SearchWidget placeholder="Repository..." {...filterProps} />
+    ),
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+    ),
+  },
+  {
     key: "buildUUID",
     width: 220,
     title: "Build ID",
