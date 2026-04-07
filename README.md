@@ -54,6 +54,13 @@ bazel run //cmd/bb_portal -- $PWD/config/portal.jsonnet
 
 The backend runs a reverse proxy for the frontend.
 
+To run the cleanup loop in a dedicated worker process instead of the serving
+process, start the same binary in cleanup-worker mode:
+
+```
+bazel run //cmd/bb_portal -- $PWD/config/portal.jsonnet --cleanup-worker-only
+```
+
 ### Running the Frontend
 
 From `./frontend`, run:
