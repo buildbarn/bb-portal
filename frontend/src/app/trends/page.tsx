@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import Content from '@/components/Content';
 import PortalCard from '@/components/PortalCard';
-import { Space, Statistic, Row } from 'antd';
+import { Input, Space, Statistic, Row } from 'antd';
 import { ClockCircleFilled, LineChartOutlined } from '@ant-design/icons';
-import { FindBuildTimesQueryVariables, BazelInvocationNodeFragment } from '@/graphql/__generated__/graphql';
+import { FindBuildTimesQueryVariables, BazelInvocationNodeFragment, BazelInvocationWhereInput } from '@/graphql/__generated__/graphql';
 import { useQuery } from '@apollo/client';
 import FIND_BUILD_DURATIONS from './index.graphql';
 import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area } from 'recharts';
@@ -22,12 +22,18 @@ const Page: React.FC = () => {
 
 const PageContent: React.FC = () => {
 
+    const [repoFilter, setRepoFilter] = useState<string>('');
+
+    const where: BazelInvocationWhereInput | undefined = repoFilter
+        ? { hasSourceControlWith: [{ repoContainsFold: repoFilter }] }
+        : undefined;
+
     const [variables, setVariables] = useState<FindBuildTimesQueryVariables>({
         first: 1000,
     });
 
     const { loading, data, previousData, error } = useQuery(FIND_BUILD_DURATIONS, {
-        variables,
+        variables: { ...variables, where },
         pollInterval: 120000,
         fetchPolicy: 'cache-and-network',
     });
@@ -88,7 +94,16 @@ const PageContent: React.FC = () => {
                 <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
                     <PortalCard
                         icon={<LineChartOutlined />}
-                        titleBits={[<span key="title">Trends</span>]}>
+                        titleBits={[<span key="title">Trends</span>]}
+                        extraBits={[
+                            <Input.Search
+                                key="repo-filter"
+                                placeholder="Filter by repository..."
+                                allowClear
+                                onSearch={(value) => setRepoFilter(value)}
+                                style={{ width: 300 }}
+                            />
+                        ]}>
                         <PortalCard
                             type='inner'
                             icon={<ClockCircleFilled />}

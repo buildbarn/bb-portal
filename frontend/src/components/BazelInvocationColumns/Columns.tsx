@@ -103,6 +103,23 @@ export const buildColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
   },
 };
 
+export const repoColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
+  key: 'repo',
+  width: 200,
+  title: 'Repository',
+  render: (_, record) => record.sourceControl?.repo,
+  filterDropdown: filterProps => (
+    <SearchWidget placeholder="Repository..." {...filterProps} />
+  ),
+  filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
+  applyFilter: (value: FilterValue) => {
+    if (value.length === 0) {
+      return undefined;
+    }
+    return [{ hasSourceControlWith: [{ repoContainsFold: value[0] as string }] }];
+  },
+};
+
 export const userColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
   key: 'user',
   width: 120,

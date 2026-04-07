@@ -41,6 +41,9 @@ export const BAZEL_INVOCATION_NODE_FRAGMENT = gql(/* GraphQL */ `
     endedAt
     exitCodeName
     bepCompleted
+    sourceControl {
+      repo
+    }
     build {
       buildUUID
     }

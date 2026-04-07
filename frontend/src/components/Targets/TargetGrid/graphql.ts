@@ -24,6 +24,17 @@ export const GET_TARGETS_LIST = gql(/* GraphQl */ `
           instanceName {
             name
           }
+          firstInvocation: invocationTargets(first: 1, orderBy: { field: STARTED_AT, direction: DESC }) {
+            edges {
+              node {
+                bazelInvocation {
+                  sourceControl {
+                    repo
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

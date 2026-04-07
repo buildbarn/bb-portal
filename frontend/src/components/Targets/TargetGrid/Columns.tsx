@@ -24,6 +24,19 @@ const getTargetPageLink = (record: TargetGridRowType) => {
 
 export const columns: TableColumnsType<TargetGridRowType> = [
   {
+    key: "repo",
+    title: "Repository",
+    render: (_, record) =>
+      record.firstInvocation?.edges?.[0]?.node?.bazelInvocation?.sourceControl
+        ?.repo,
+    filterDropdown: (filterProps) => (
+      <SearchWidget placeholder="Repository..." {...filterProps} />
+    ),
+    filterIcon: (filtered) => (
+      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+    ),
+  },
+  {
     title: "Target kind",
     dataIndex: "target-kind",
     filterSearch: true,

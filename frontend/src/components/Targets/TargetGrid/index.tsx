@@ -32,6 +32,21 @@ const TargetGrid: React.FC = () => {
     Object.entries(filters).forEach(([key, value]) => {
       if (value && value.length > 0) {
         switch (key) {
+          case "repo":
+            newFilters.push({
+              hasInvocationTargetsWith: [
+                {
+                  hasBazelInvocationWith: [
+                    {
+                      hasSourceControlWith: [
+                        { repoContainsFold: value[0] as string },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            });
+            break;
           case "target-kind":
             newFilters.push({ targetKindContainsFold: value[0] as string });
             break;
