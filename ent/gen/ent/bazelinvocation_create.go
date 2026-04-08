@@ -477,19 +477,23 @@ func (bic *BazelInvocationCreate) SetEventMetadata(e *EventMetadata) *BazelInvoc
 	return bic.SetEventMetadataID(e.ID)
 }
 
-// AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
-func (bic *BazelInvocationCreate) AddConnectionMetadatumIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddConnectionMetadatumIDs(ids...)
+// SetConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID.
+func (bic *BazelInvocationCreate) SetConnectionMetadataID(id int64) *BazelInvocationCreate {
+	bic.mutation.SetConnectionMetadataID(id)
 	return bic
 }
 
-// AddConnectionMetadata adds the "connection_metadata" edges to the ConnectionMetadata entity.
-func (bic *BazelInvocationCreate) AddConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationCreate {
-	ids := make([]int64, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// SetNillableConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableConnectionMetadataID(id *int64) *BazelInvocationCreate {
+	if id != nil {
+		bic = bic.SetConnectionMetadataID(*id)
 	}
-	return bic.AddConnectionMetadatumIDs(ids...)
+	return bic
+}
+
+// SetConnectionMetadata sets the "connection_metadata" edge to the ConnectionMetadata entity.
+func (bic *BazelInvocationCreate) SetConnectionMetadata(c *ConnectionMetadata) *BazelInvocationCreate {
+	return bic.SetConnectionMetadataID(c.ID)
 }
 
 // AddConfigurationIDs adds the "configurations" edge to the Configuration entity by IDs.
@@ -950,7 +954,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	}
 	if nodes := bic.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.ConnectionMetadataTable,
 			Columns: []string{bazelinvocation.ConnectionMetadataColumn},

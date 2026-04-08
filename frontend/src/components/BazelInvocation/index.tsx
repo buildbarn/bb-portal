@@ -103,7 +103,14 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
             isCiWorker={isCiWorker ?? false}
             stepLabel={stepLabel ?? ""}
             exitCodeName={invocationOverview.exitCodeName || undefined}
-            bepCompleted={invocationOverview.bepCompleted}
+            connectionLastOpenAt={
+              invocationOverview.connectionMetadata?.connectionLastOpenAt ||
+              undefined
+            }
+            timeSinceLastConnectionMillis={
+              invocationOverview.connectionMetadata
+                ?.timeSinceLastConnectionMillis || undefined
+            }
             bazelVersion={bazelVersion ?? ""}
           />
         </PortalCard>
@@ -255,7 +262,7 @@ const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
     <InvocationResultTag
       key="result"
       exitCodeName={invocationOverview.exitCodeName || undefined}
-      bepCompleted={invocationOverview.bepCompleted}
+      timeSinceLastConnectionMillis={invocationOverview.connectionMetadata?.timeSinceLastConnectionMillis || undefined}
     />
   );
   return titleBits;
@@ -273,8 +280,8 @@ const getExtraBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
   extraBits.push(
     <PortalDuration
       key="duration"
-      from={invocationOverview.startedAt}
-      to={invocationOverview.endedAt}
+      from={invocationOverview.startedAt || undefined}
+      to={invocationOverview.endedAt ? invocationOverview.endedAt : invocationOverview.connectionMetadata?.connectionLastOpenAt }
       includeIcon
       includePopover
       formatConfig={{smallestUnit: "s"}}

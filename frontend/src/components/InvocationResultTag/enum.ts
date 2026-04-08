@@ -1,4 +1,5 @@
-export enum InvocationResultTagEnum {
+export enum InvocationResult {
+  // ExitCodes from the Build Event Stream
   SUCCESS = "SUCCESS",
   UNSTABLE = "UNSTABLE",
   PARSING_FAILURE = "PARSING_FAILURE",
@@ -8,36 +9,43 @@ export enum InvocationResultTagEnum {
   NOT_BUILT = "NOT_BUILT",
   ABORTED = "ABORTED",
   INTERRUPTED = "INTERRUPTED",
-  UNKNOWN = "UNKNOWN",
+  // Custom statuses
+  UNKNOWN_EXIT_CODE = "UNKNOWN_EXIT_CODE",
   IN_PROGRESS = "IN_PROGRESS",
-  BEP_UPLOAD_ABORTED = "BEP_UPLOAD_ABORTED",
+  DISCONNECTED = "DISCONNECTED",
 }
 
 export const InvocationExitCodes = [
-  InvocationResultTagEnum.SUCCESS.toString(),
-  InvocationResultTagEnum.UNSTABLE.toString(),
-  InvocationResultTagEnum.PARSING_FAILURE.toString(),
-  InvocationResultTagEnum.BUILD_FAILURE.toString(),
-  InvocationResultTagEnum.TESTS_FAILED.toString(),
-  InvocationResultTagEnum.REMOTE_ERROR.toString(),
-  InvocationResultTagEnum.NOT_BUILT.toString(),
-  InvocationResultTagEnum.ABORTED.toString(),
-  InvocationResultTagEnum.INTERRUPTED.toString(),
+  InvocationResult.SUCCESS.toString(),
+  InvocationResult.UNSTABLE.toString(),
+  InvocationResult.PARSING_FAILURE.toString(),
+  InvocationResult.BUILD_FAILURE.toString(),
+  InvocationResult.TESTS_FAILED.toString(),
+  InvocationResult.REMOTE_ERROR.toString(),
+  InvocationResult.NOT_BUILT.toString(),
+  InvocationResult.ABORTED.toString(),
+  InvocationResult.INTERRUPTED.toString(),
 ];
+
+export const INVOCATION_IN_PROGRESS_TIMEOUT = 12 * 1000;
 
 export const getInvocationResultTagEnum = (
   exitCodeName: string | undefined,
-  bepCompleted: boolean,
-): InvocationResultTagEnum => {
-  if (exitCodeName === undefined || exitCodeName === "") {
-    if (!bepCompleted) {
-      return InvocationResultTagEnum.IN_PROGRESS;
-    } else {
-      return InvocationResultTagEnum.BEP_UPLOAD_ABORTED;
+  timeSinceLastConnectionMillis: number | undefined,
+): InvocationResult => {
+  if (exitCodeName) {
+    if (InvocationExitCodes.includes(exitCodeName)) {
+      return exitCodeName as InvocationResult;
     }
+    return InvocationResult.UNKNOWN_EXIT_CODE;
   }
-  if (InvocationExitCodes.includes(exitCodeName)) {
-    return exitCodeName as InvocationResultTagEnum;
+
+  if (!timeSinceLastConnectionMillis) {
+    return InvocationResult.DISCONNECTED;
   }
-  return InvocationResultTagEnum.UNKNOWN;
+
+  if (timeSinceLastConnectionMillis <= INVOCATION_IN_PROGRESS_TIMEOUT) {
+    return InvocationResult.IN_PROGRESS;
+  }
+  return InvocationResult.DISCONNECTED;
 };

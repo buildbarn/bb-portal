@@ -3,9 +3,9 @@ import { getInvocationResultTagEnum } from "../InvocationResultTag/enum";
 
 export const getInvocationResultTagColor = (
   exitCodeName: string | undefined,
-  bepCompleted: boolean,
+  timeSinceLastConnectionMillis: number | undefined,
 ): string => {
   return INVOCATION_RESULT_TAGS[
-    getInvocationResultTagEnum(exitCodeName, bepCompleted)
+    getInvocationResultTagEnum(exitCodeName, timeSinceLastConnectionMillis)
   ].color;
 };

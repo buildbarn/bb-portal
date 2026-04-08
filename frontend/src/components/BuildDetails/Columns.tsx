@@ -80,8 +80,12 @@ export const columns: TableColumnsType<GetBuildInvocationFragment> = [
     render: (_, record) => (
       <PortalDuration
         key="duration"
-        from={record.startedAt}
-        to={record.endedAt}
+        from={record.startedAt || undefined}
+        to={
+          record.endedAt
+            ? record.endedAt
+            : record.connectionMetadata?.connectionLastOpenAt || undefined
+        }
         includeIcon
         includePopover
         formatConfig={{ smallestUnit: "s" }}
@@ -97,7 +101,9 @@ export const columns: TableColumnsType<GetBuildInvocationFragment> = [
       <InvocationResultTag
         key="result"
         exitCodeName={record.exitCodeName || undefined}
-        bepCompleted={record.bepCompleted}
+        timeSinceLastConnectionMillis={
+          record.connectionMetadata?.timeSinceLastConnectionMillis || undefined
+        }
       />
     ),
     filters: invocationResultTagFilters,

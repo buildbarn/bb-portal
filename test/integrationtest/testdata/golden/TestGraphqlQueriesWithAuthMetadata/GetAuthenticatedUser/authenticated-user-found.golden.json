@@ -4,8 +4,8 @@
       "edges": [
         {
           "node": {
-            "bepCompleted": false,
             "build": null,
+            "connectionMetadata": null,
             "endedAt": "2024-05-03T00:24:29.605Z",
             "exitCodeName": "SUCCESS",
             "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9",

@@ -1,19 +1,17 @@
 import { ClockCircleFilled } from "@ant-design/icons";
 import { Divider, Popover, Tag } from "antd";
 import type React from "react";
-import { useEffect, useState } from "react";
 import dayjs from "@/lib/dayjs";
 import themeStyles from "@/theme/theme.module.css";
-import { readableDurationFromDates } from "@/utils/time";
+import { type ReadableFormatConfig, readableDurationFromDates } from "@/utils/time";
 import styles from "./index.module.css";
-import { ReadableFormatConfig } from '@/utils/time';
 
 interface Props {
-  from?: string | null;
-  to?: string | null;
+  from: string | undefined;
+  to: string | undefined;
   includeIcon?: boolean;
   includePopover?: boolean;
-  formatConfig?: ReadableFormatConfig
+  formatConfig?: ReadableFormatConfig;
 }
 
 const PortalDuration: React.FC<Props> = ({
@@ -23,21 +21,6 @@ const PortalDuration: React.FC<Props> = ({
   includePopover,
   formatConfig,
 }) => {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    if (!to) {
-      const intervalID = setInterval(() => {
-        setNow(new Date());
-      }, 500);
-      return () => clearInterval(intervalID);
-    }
-  }, [to]);
-
-  if (!from) return "Unknown";
-
-  const actualFrom = new Date(from);
-  const actualTo = !to ? now : new Date(to);
   const content = (
     <Tag
       icon={includeIcon && <ClockCircleFilled />}
@@ -45,7 +28,13 @@ const PortalDuration: React.FC<Props> = ({
       className={themeStyles.tagClickable}
     >
       <div className={styles.duration}>
-        {readableDurationFromDates(actualFrom, actualTo, formatConfig)}
+        {from && to
+          ? readableDurationFromDates(
+              new Date(from),
+              new Date(to),
+              formatConfig,
+            )
+          : "Unknown"}
       </div>
     </Tag>
   );
@@ -55,11 +44,13 @@ const PortalDuration: React.FC<Props> = ({
       trigger="click"
       content={
         <div className={styles.popover}>
-          {dayjs(actualFrom).format("dddd, MMMM Do, YYYY, [at] h:mm:ss A z")}
+          {from
+            ? dayjs(from).format("dddd, MMMM Do, YYYY, [at] h:mm:ss A z")
+            : "Unknown"}
           <Divider className={styles.divider}>&darr;</Divider>
           {to
-            ? dayjs(actualTo).format("dddd, MMMM Do, YYYY, [at] h:mm:ss A z")
-            : "Present"}
+            ? dayjs(to).format("dddd, MMMM Do, YYYY, [at] h:mm:ss A z")
+            : "Unknown"}
         </div>
       }
     >

@@ -124,7 +124,7 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if cmu.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   connectionmetadata.BazelInvocationTable,
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
@@ -137,7 +137,7 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if nodes := cmu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   connectionmetadata.BazelInvocationTable,
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
@@ -297,7 +297,7 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 	}
 	if cmuo.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   connectionmetadata.BazelInvocationTable,
 			Columns: []string{connectionmetadata.BazelInvocationColumn},
@@ -310,7 +310,7 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 	}
 	if nodes := cmuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   connectionmetadata.BazelInvocationTable,
 			Columns: []string{connectionmetadata.BazelInvocationColumn},

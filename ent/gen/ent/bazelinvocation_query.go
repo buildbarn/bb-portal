@@ -55,7 +55,6 @@ type BazelInvocationQuery struct {
 	withFKs                      bool
 	loadTotal                    []func(context.Context, []*BazelInvocation) error
 	modifiers                    []func(*sql.Selector)
-	withNamedConnectionMetadata  map[string]*ConnectionMetadataQuery
 	withNamedConfigurations      map[string]*ConfigurationQuery
 	withNamedActions             map[string]*ActionQuery
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
@@ -201,7 +200,7 @@ func (biq *BazelInvocationQuery) QueryConnectionMetadata() *ConnectionMetadataQu
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(connectionmetadata.Table, connectionmetadata.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConnectionMetadataTable, bazelinvocation.ConnectionMetadataColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.ConnectionMetadataTable, bazelinvocation.ConnectionMetadataColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -928,11 +927,8 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		}
 	}
 	if query := biq.withConnectionMetadata; query != nil {
-		if err := biq.loadConnectionMetadata(ctx, query, nodes,
-			func(n *BazelInvocation) { n.Edges.ConnectionMetadata = []*ConnectionMetadata{} },
-			func(n *BazelInvocation, e *ConnectionMetadata) {
-				n.Edges.ConnectionMetadata = append(n.Edges.ConnectionMetadata, e)
-			}); err != nil {
+		if err := biq.loadConnectionMetadata(ctx, query, nodes, nil,
+			func(n *BazelInvocation, e *ConnectionMetadata) { n.Edges.ConnectionMetadata = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -1002,13 +998,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if query := biq.withSourceControl; query != nil {
 		if err := biq.loadSourceControl(ctx, query, nodes, nil,
 			func(n *BazelInvocation, e *SourceControl) { n.Edges.SourceControl = e }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range biq.withNamedConnectionMetadata {
-		if err := biq.loadConnectionMetadata(ctx, query, nodes,
-			func(n *BazelInvocation) { n.appendNamedConnectionMetadata(name) },
-			func(n *BazelInvocation, e *ConnectionMetadata) { n.appendNamedConnectionMetadata(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1198,9 +1187,6 @@ func (biq *BazelInvocationQuery) loadConnectionMetadata(ctx context.Context, que
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
 	}
 	query.withFKs = true
 	query.Where(predicate.ConnectionMetadata(func(s *sql.Selector) {
@@ -1584,20 +1570,6 @@ func (biq *BazelInvocationQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (biq *BazelInvocationQuery) Modify(modifiers ...func(s *sql.Selector)) *BazelInvocationSelect {
 	biq.modifiers = append(biq.modifiers, modifiers...)
 	return biq.Select()
-}
-
-// WithNamedConnectionMetadata tells the query-builder to eager-load the nodes that are connected to the "connection_metadata"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithNamedConnectionMetadata(name string, opts ...func(*ConnectionMetadataQuery)) *BazelInvocationQuery {
-	query := (&ConnectionMetadataClient{config: biq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if biq.withNamedConnectionMetadata == nil {
-		biq.withNamedConnectionMetadata = make(map[string]*ConnectionMetadataQuery)
-	}
-	biq.withNamedConnectionMetadata[name] = query
-	return biq
 }
 
 // WithNamedConfigurations tells the query-builder to eager-load the nodes that are connected to the "configurations"

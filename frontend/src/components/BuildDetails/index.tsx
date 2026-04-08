@@ -21,6 +21,7 @@ import {
   type SourceControlWhereInput,
 } from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
+import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
 import { CursorTable, getNewPaginationVariables } from "../CursorTable";
 import type { PaginationVariables } from "../CursorTable/types";
 import { applyInvocationResultTagFilter } from "../InvocationResultTag/filters";
@@ -92,6 +93,29 @@ export const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
       },
       buildUUID: buildUUID,
     },
+  });
+
+  const build = data?.getBuild ?? undefined;
+  const invocations = parseGraphqlEdgeListWithFragment(
+    GET_BUILD_INVOCATION_FRAGMENT,
+    data?.getBuild?.invocations,
+  );
+  const inProgressInvocations = invocations
+    .filter((inv) => shouldPollInvocation(inv))
+    .map((inv) => inv.id);
+
+  // Refetch any ongoing invocations periodically. The result of the query is
+  // unused, but in the background Apollo updates the result of the original
+  // query based on the IDs of the response.
+  useQuery(GET_BUILD_BY_UUID_QUERY, {
+    variables: {
+      where: {
+        idIn: inProgressInvocations,
+      },
+      buildUUID: buildUUID,
+    },
+    skip: inProgressInvocations.length === 0,
+    pollInterval: 5000,
   });
 
   const onFilterChange = (filters: Record<string, FilterValue | null>) => {
@@ -166,12 +190,6 @@ export const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
       </PortalCard>
     );
   }
-
-  const build = data?.getBuild ?? undefined;
-  const invocations = parseGraphqlEdgeListWithFragment(
-    GET_BUILD_INVOCATION_FRAGMENT,
-    data?.getBuild?.invocations,
-  );
 
   return (
     <PortalCard

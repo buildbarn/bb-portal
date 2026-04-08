@@ -11,6 +11,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
+	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
 // ID is the resolver for the id field.
@@ -73,6 +74,11 @@ func (r *configurationResolver) MakeVariables(ctx context.Context, obj *ent.Conf
 		res[k] = v
 	}
 	return res, nil
+}
+
+// ID is the resolver for the id field.
+func (r *connectionMetadataResolver) ID(ctx context.Context, obj *ent.ConnectionMetadata) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("ConnectionMetadata", obj.ID), nil
 }
 
 // ID is the resolver for the id field.
@@ -442,7 +448,14 @@ func (r *bazelInvocationWhereInputResolver) IDNeq(ctx context.Context, obj *ent.
 
 // IDIn is the resolver for the idIn field.
 func (r *bazelInvocationWhereInputResolver) IDIn(ctx context.Context, obj *ent.BazelInvocationWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+	for _, ID := range data {
+		_, dbID, err := helpers.GraphQLTypeAndIntIDFromID(ID)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to parse arguments to IDIn resolver")
+		}
+		obj.IDIn = append(obj.IDIn, dbID)
+	}
+	return nil
 }
 
 // IDNotIn is the resolver for the idNotIn field.
@@ -587,6 +600,46 @@ func (r *configurationWhereInputResolver) IDLt(ctx context.Context, obj *ent.Con
 
 // IDLte is the resolver for the idLTE field.
 func (r *configurationWhereInputResolver) IDLte(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *connectionMetadataWhereInputResolver) ID(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *connectionMetadataWhereInputResolver) IDNeq(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *connectionMetadataWhereInputResolver) IDIn(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *connectionMetadataWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *connectionMetadataWhereInputResolver) IDGt(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *connectionMetadataWhereInputResolver) IDGte(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *connectionMetadataWhereInputResolver) IDLt(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *connectionMetadataWhereInputResolver) IDLte(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1226,6 +1279,11 @@ func (r *Resolver) BuildGraphMetrics() BuildGraphMetricsResolver {
 // Configuration returns ConfigurationResolver implementation.
 func (r *Resolver) Configuration() ConfigurationResolver { return &configurationResolver{r} }
 
+// ConnectionMetadata returns ConnectionMetadataResolver implementation.
+func (r *Resolver) ConnectionMetadata() ConnectionMetadataResolver {
+	return &connectionMetadataResolver{r}
+}
+
 // GarbageMetrics returns GarbageMetricsResolver implementation.
 func (r *Resolver) GarbageMetrics() GarbageMetricsResolver { return &garbageMetricsResolver{r} }
 
@@ -1322,6 +1380,11 @@ func (r *Resolver) ConfigurationWhereInput() ConfigurationWhereInputResolver {
 	return &configurationWhereInputResolver{r}
 }
 
+// ConnectionMetadataWhereInput returns ConnectionMetadataWhereInputResolver implementation.
+func (r *Resolver) ConnectionMetadataWhereInput() ConnectionMetadataWhereInputResolver {
+	return &connectionMetadataWhereInputResolver{r}
+}
+
 // GarbageMetricsWhereInput returns GarbageMetricsWhereInputResolver implementation.
 func (r *Resolver) GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver {
 	return &garbageMetricsWhereInputResolver{r}
@@ -1406,6 +1469,7 @@ type (
 	buildResolver                           struct{ *Resolver }
 	buildGraphMetricsResolver               struct{ *Resolver }
 	configurationResolver                   struct{ *Resolver }
+	connectionMetadataResolver              struct{ *Resolver }
 	garbageMetricsResolver                  struct{ *Resolver }
 	instanceNameResolver                    struct{ *Resolver }
 	invocationTargetResolver                struct{ *Resolver }
@@ -1432,6 +1496,7 @@ type (
 	buildGraphMetricsWhereInputResolver     struct{ *Resolver }
 	buildWhereInputResolver                 struct{ *Resolver }
 	configurationWhereInputResolver         struct{ *Resolver }
+	connectionMetadataWhereInputResolver    struct{ *Resolver }
 	garbageMetricsWhereInputResolver        struct{ *Resolver }
 	instanceNameWhereInputResolver          struct{ *Resolver }
 	invocationTargetWhereInputResolver      struct{ *Resolver }

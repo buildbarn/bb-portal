@@ -40,12 +40,15 @@ export const GET_BUILD_INVOCATION_FRAGMENT = gql(/* GraphQL */ `
     endedAt
     startedAt
     exitCodeName
-    bepCompleted
     sourceControl{
       job
       action
       workflow
       runnerName
+    }
+    connectionMetadata {
+      connectionLastOpenAt
+      timeSinceLastConnectionMillis
     }
   }
 `);

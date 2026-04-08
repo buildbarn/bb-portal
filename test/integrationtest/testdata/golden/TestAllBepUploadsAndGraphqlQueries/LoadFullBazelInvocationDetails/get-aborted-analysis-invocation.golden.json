@@ -29,9 +29,9 @@
       ]
     },
     "bazelVersion": "8.1.1",
-    "bepCompleted": false,
     "build": null,
     "configurations": [],
+    "connectionMetadata": null,
     "endedAt": "2026-02-04T08:41:31.302Z",
     "exitCodeName": "SUCCESS",
     "hostname": "3280a8b94607",

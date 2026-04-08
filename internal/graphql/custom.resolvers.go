@@ -7,6 +7,7 @@ package graphql
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
@@ -60,6 +61,11 @@ func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInv
 		SizeInBytes:    int(profile.SizeBytes),
 		DigestFunction: profile.DigestFunction,
 	}, nil
+}
+
+// TimeSinceLastConnectionMillis is the resolver for the timeSinceLastConnectionMillis field.
+func (r *connectionMetadataResolver) TimeSinceLastConnectionMillis(ctx context.Context, obj *ent.ConnectionMetadata) (int, error) {
+	return int(time.Since(obj.ConnectionLastOpenAt).Milliseconds()), nil
 }
 
 // GetAuthenticatedUser is the resolver for the getAuthenticatedUser field.

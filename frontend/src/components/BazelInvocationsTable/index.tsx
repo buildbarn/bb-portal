@@ -7,11 +7,9 @@ import {
   userColumn,
 } from "@/components/BazelInvocationColumns/Columns";
 import FIND_BAZEL_INVOCATIONS_QUERY, {
-  BAZEL_INVOCATION_NODE_FRAGMENT
-} from '@/components/BazelInvocationsTable/query.graphql';
-import { getFragmentData } from '@/graphql/__generated__';
+  BAZEL_INVOCATION_NODE_FRAGMENT,
+} from './query.graphql';
 import {
-  BazelInvocationNodeFragment,
   BazelInvocationOrderField,
   BazelInvocationWhereInput, OrderDirection
 } from '@/graphql/__generated__/graphql';
@@ -25,8 +23,8 @@ import { CursorTable, getNewPaginationVariables } from '../CursorTable';
 import { PaginationVariables } from '../CursorTable/types';
 import PortalAlert from "../PortalAlert";
 import styles from "@/theme/theme.module.css";
-import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
-
+import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
+import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
 
 const BazelInvocationsTable: React.FC = () => {
   const [paginationVariables, setPaginationVariables] =
@@ -47,6 +45,27 @@ const BazelInvocationsTable: React.FC = () => {
       ...paginationVariables,
     },
     fetchPolicy: "network-only",
+  });
+
+  const invocations = parseGraphqlEdgeListWithFragment(
+    BAZEL_INVOCATION_NODE_FRAGMENT,
+    data?.findBazelInvocations,
+  );
+  const inProgressInvocations = invocations
+    .filter((inv) => shouldPollInvocation(inv))
+    .map((inv) => inv.id);
+
+  // Refetch any ongoing invocations periodically. The result of the query is
+  // unused, but in the background Apollo updates the result of the original
+  // query based on the IDs of the response.
+  useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
+    variables: {
+      where: {
+        idIn: inProgressInvocations,
+      },
+    },
+    skip: inProgressInvocations.length === 0,
+    pollInterval: 5000,
   });
 
   const tableColumns = [
@@ -94,15 +113,10 @@ const BazelInvocationsTable: React.FC = () => {
 
   let emptyText = 'No Bazel invocations match the specified search criteria';
 
-  let dataSource: BazelInvocationNodeFragment[] = [];
-  const bazelInvocationNodes = parseGraphqlEdgeList(data?.findBazelInvocations)
-  const bazelInvocationNodeFragments = bazelInvocationNodes.map(node => getFragmentData(BAZEL_INVOCATION_NODE_FRAGMENT, node));
-  dataSource = bazelInvocationNodeFragments.filter((nodeFragment): nodeFragment is BazelInvocationNodeFragment => !!nodeFragment);
-
   return (
     <CursorTable
       columns={tableColumns}
-      dataSource={dataSource}
+      dataSource={invocations}
       rowKey={item => item.id}
       loading={loading}
       size="small"

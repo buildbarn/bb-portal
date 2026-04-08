@@ -56,6 +56,7 @@ type ResolverRoot interface {
 	Build() BuildResolver
 	BuildGraphMetrics() BuildGraphMetricsResolver
 	Configuration() ConfigurationResolver
+	ConnectionMetadata() ConnectionMetadataResolver
 	GarbageMetrics() GarbageMetricsResolver
 	InstanceName() InstanceNameResolver
 	InvocationTarget() InvocationTargetResolver
@@ -82,6 +83,7 @@ type ResolverRoot interface {
 	BuildGraphMetricsWhereInput() BuildGraphMetricsWhereInputResolver
 	BuildWhereInput() BuildWhereInputResolver
 	ConfigurationWhereInput() ConfigurationWhereInputResolver
+	ConnectionMetadataWhereInput() ConnectionMetadataWhereInputResolver
 	GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver
 	InstanceNameWhereInput() InstanceNameWhereInputResolver
 	InvocationTargetWhereInput() InvocationTargetWhereInputResolver
@@ -193,33 +195,34 @@ type ComplexityRoot struct {
 	}
 
 	BazelInvocation struct {
-		Actions           func(childComplexity int) int
-		AuthenticatedUser func(childComplexity int) int
-		BazelCommand      func(childComplexity int) int
-		BazelVersion      func(childComplexity int) int
-		BepCompleted      func(childComplexity int) int
-		Build             func(childComplexity int) int
-		ChangeNumber      func(childComplexity int) int
-		Configurations    func(childComplexity int) int
-		EndedAt           func(childComplexity int) int
-		ExitCodeCode      func(childComplexity int) int
-		ExitCodeName      func(childComplexity int) int
-		Hostname          func(childComplexity int) int
-		ID                func(childComplexity int) int
-		InstanceName      func(childComplexity int) int
-		InvocationID      func(childComplexity int) int
-		InvocationTargets func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.InvocationTargetOrder, where *ent.InvocationTargetWhereInput) int
-		IsCiWorker        func(childComplexity int) int
-		Metrics           func(childComplexity int) int
-		NumFetches        func(childComplexity int) int
-		PatchsetNumber    func(childComplexity int) int
-		Profile           func(childComplexity int) int
-		SourceControl     func(childComplexity int) int
-		StartedAt         func(childComplexity int) int
-		StepLabel         func(childComplexity int) int
-		User              func(childComplexity int) int
-		UserEmail         func(childComplexity int) int
-		UserLdap          func(childComplexity int) int
+		Actions            func(childComplexity int) int
+		AuthenticatedUser  func(childComplexity int) int
+		BazelCommand       func(childComplexity int) int
+		BazelVersion       func(childComplexity int) int
+		BepCompleted       func(childComplexity int) int
+		Build              func(childComplexity int) int
+		ChangeNumber       func(childComplexity int) int
+		Configurations     func(childComplexity int) int
+		ConnectionMetadata func(childComplexity int) int
+		EndedAt            func(childComplexity int) int
+		ExitCodeCode       func(childComplexity int) int
+		ExitCodeName       func(childComplexity int) int
+		Hostname           func(childComplexity int) int
+		ID                 func(childComplexity int) int
+		InstanceName       func(childComplexity int) int
+		InvocationID       func(childComplexity int) int
+		InvocationTargets  func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.InvocationTargetOrder, where *ent.InvocationTargetWhereInput) int
+		IsCiWorker         func(childComplexity int) int
+		Metrics            func(childComplexity int) int
+		NumFetches         func(childComplexity int) int
+		PatchsetNumber     func(childComplexity int) int
+		Profile            func(childComplexity int) int
+		SourceControl      func(childComplexity int) int
+		StartedAt          func(childComplexity int) int
+		StepLabel          func(childComplexity int) int
+		User               func(childComplexity int) int
+		UserEmail          func(childComplexity int) int
+		UserLdap           func(childComplexity int) int
 	}
 
 	BazelInvocationConnection struct {
@@ -278,6 +281,13 @@ type ComplexityRoot struct {
 		MakeVariables     func(childComplexity int) int
 		Mnemonic          func(childComplexity int) int
 		PlatformName      func(childComplexity int) int
+	}
+
+	ConnectionMetadata struct {
+		BazelInvocation               func(childComplexity int) int
+		ConnectionLastOpenAt          func(childComplexity int) int
+		ID                            func(childComplexity int) int
+		TimeSinceLastConnectionMillis func(childComplexity int) int
 	}
 
 	GarbageMetrics struct {
@@ -552,6 +562,11 @@ type ConfigurationResolver interface {
 
 	MakeVariables(ctx context.Context, obj *ent.Configuration) (map[string]any, error)
 }
+type ConnectionMetadataResolver interface {
+	ID(ctx context.Context, obj *ent.ConnectionMetadata) (string, error)
+
+	TimeSinceLastConnectionMillis(ctx context.Context, obj *ent.ConnectionMetadata) (int, error)
+}
 type GarbageMetricsResolver interface {
 	ID(ctx context.Context, obj *ent.GarbageMetrics) (string, error)
 }
@@ -711,6 +726,16 @@ type ConfigurationWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error
+}
+type ConnectionMetadataWhereInputResolver interface {
+	ID(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error
+	IDNeq(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error
+	IDIn(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data []string) error
+	IDNotIn(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data []string) error
+	IDGt(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error
+	IDGte(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error
+	IDLt(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error
+	IDLte(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error
 }
 type GarbageMetricsWhereInputResolver interface {
 	ID(ctx context.Context, obj *ent.GarbageMetricsWhereInput, data *string) error
@@ -1419,6 +1444,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.BazelInvocation.Configurations(childComplexity), true
 
+	case "BazelInvocation.connectionMetadata":
+		if e.complexity.BazelInvocation.ConnectionMetadata == nil {
+			break
+		}
+
+		return e.complexity.BazelInvocation.ConnectionMetadata(childComplexity), true
+
 	case "BazelInvocation.endedAt":
 		if e.complexity.BazelInvocation.EndedAt == nil {
 			break
@@ -1820,6 +1852,34 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Configuration.PlatformName(childComplexity), true
+
+	case "ConnectionMetadata.bazelInvocation":
+		if e.complexity.ConnectionMetadata.BazelInvocation == nil {
+			break
+		}
+
+		return e.complexity.ConnectionMetadata.BazelInvocation(childComplexity), true
+
+	case "ConnectionMetadata.connectionLastOpenAt":
+		if e.complexity.ConnectionMetadata.ConnectionLastOpenAt == nil {
+			break
+		}
+
+		return e.complexity.ConnectionMetadata.ConnectionLastOpenAt(childComplexity), true
+
+	case "ConnectionMetadata.id":
+		if e.complexity.ConnectionMetadata.ID == nil {
+			break
+		}
+
+		return e.complexity.ConnectionMetadata.ID(childComplexity), true
+
+	case "ConnectionMetadata.timeSinceLastConnectionMillis":
+		if e.complexity.ConnectionMetadata.TimeSinceLastConnectionMillis == nil {
+			break
+		}
+
+		return e.complexity.ConnectionMetadata.TimeSinceLastConnectionMillis(childComplexity), true
 
 	case "GarbageMetrics.garbageCollected":
 		if e.complexity.GarbageMetrics.GarbageCollected == nil {
@@ -3016,6 +3076,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputBuildOrder,
 		ec.unmarshalInputBuildWhereInput,
 		ec.unmarshalInputConfigurationWhereInput,
+		ec.unmarshalInputConnectionMetadataWhereInput,
 		ec.unmarshalInputGarbageMetricsWhereInput,
 		ec.unmarshalInputInstanceNameWhereInput,
 		ec.unmarshalInputInvocationTargetOrder,
@@ -5381,6 +5442,8 @@ func (ec *executionContext) fieldContext_Action_bazelInvocation(_ context.Contex
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -8549,6 +8612,57 @@ func (ec *executionContext) fieldContext_BazelInvocation_authenticatedUser(_ con
 	return fc, nil
 }
 
+func (ec *executionContext) _BazelInvocation_connectionMetadata(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ConnectionMetadata(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.ConnectionMetadata)
+	fc.Result = res
+	return ec.marshalOConnectionMetadata2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadata(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BazelInvocation_connectionMetadata(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BazelInvocation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ConnectionMetadata_id(ctx, field)
+			case "connectionLastOpenAt":
+				return ec.fieldContext_ConnectionMetadata_connectionLastOpenAt(ctx, field)
+			case "bazelInvocation":
+				return ec.fieldContext_ConnectionMetadata_bazelInvocation(ctx, field)
+			case "timeSinceLastConnectionMillis":
+				return ec.fieldContext_ConnectionMetadata_timeSinceLastConnectionMillis(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ConnectionMetadata", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _BazelInvocation_configurations(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocation_configurations(ctx, field)
 	if err != nil {
@@ -9277,6 +9391,8 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -10727,6 +10843,8 @@ func (ec *executionContext) fieldContext_Configuration_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -10891,6 +11009,240 @@ func (ec *executionContext) fieldContext_Configuration_actions(_ context.Context
 				return ec.fieldContext_Action_configuration(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Action", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ConnectionMetadata_id(ctx context.Context, field graphql.CollectedField, obj *ent.ConnectionMetadata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ConnectionMetadata_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.ConnectionMetadata().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ConnectionMetadata_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ConnectionMetadata",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ConnectionMetadata_connectionLastOpenAt(ctx context.Context, field graphql.CollectedField, obj *ent.ConnectionMetadata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ConnectionMetadata_connectionLastOpenAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ConnectionLastOpenAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ConnectionMetadata_connectionLastOpenAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ConnectionMetadata",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ConnectionMetadata_bazelInvocation(ctx context.Context, field graphql.CollectedField, obj *ent.ConnectionMetadata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ConnectionMetadata_bazelInvocation(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BazelInvocation(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.BazelInvocation)
+	fc.Result = res
+	return ec.marshalNBazelInvocation2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ConnectionMetadata_bazelInvocation(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ConnectionMetadata",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_BazelInvocation_id(ctx, field)
+			case "invocationID":
+				return ec.fieldContext_BazelInvocation_invocationID(ctx, field)
+			case "startedAt":
+				return ec.fieldContext_BazelInvocation_startedAt(ctx, field)
+			case "endedAt":
+				return ec.fieldContext_BazelInvocation_endedAt(ctx, field)
+			case "changeNumber":
+				return ec.fieldContext_BazelInvocation_changeNumber(ctx, field)
+			case "patchsetNumber":
+				return ec.fieldContext_BazelInvocation_patchsetNumber(ctx, field)
+			case "bepCompleted":
+				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
+			case "stepLabel":
+				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
+			case "userEmail":
+				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
+			case "userLdap":
+				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "hostname":
+				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
+			case "isCiWorker":
+				return ec.fieldContext_BazelInvocation_isCiWorker(ctx, field)
+			case "numFetches":
+				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
+			case "bazelVersion":
+				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
+			case "exitCodeName":
+				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
+			case "exitCodeCode":
+				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
+			case "build":
+				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
+			case "configurations":
+				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
+			case "actions":
+				return ec.fieldContext_BazelInvocation_actions(ctx, field)
+			case "metrics":
+				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
+			case "invocationTargets":
+				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
+			case "sourceControl":
+				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
+			case "bazelCommand":
+				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
+			case "user":
+				return ec.fieldContext_BazelInvocation_user(ctx, field)
+			case "profile":
+				return ec.fieldContext_BazelInvocation_profile(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ConnectionMetadata_timeSinceLastConnectionMillis(ctx context.Context, field graphql.CollectedField, obj *ent.ConnectionMetadata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ConnectionMetadata_timeSinceLastConnectionMillis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.ConnectionMetadata().TimeSinceLastConnectionMillis(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ConnectionMetadata_timeSinceLastConnectionMillis(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ConnectionMetadata",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11239,6 +11591,8 @@ func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -11788,6 +12142,8 @@ func (ec *executionContext) fieldContext_InvocationTarget_bazelInvocation(_ cont
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -12654,6 +13010,8 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -14325,6 +14683,8 @@ func (ec *executionContext) fieldContext_Query_getBazelInvocation(ctx context.Co
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -15626,6 +15986,8 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "authenticatedUser":
 				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+			case "connectionMetadata":
+				return ec.fieldContext_BazelInvocation_connectionMetadata(ctx, field)
 			case "configurations":
 				return ec.fieldContext_BazelInvocation_configurations(ctx, field)
 			case "actions":
@@ -24835,7 +25197,7 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasAuthenticatedUser", "hasAuthenticatedUserWith", "hasConfigurations", "hasConfigurationsWith", "hasActions", "hasActionsWith", "hasMetrics", "hasMetricsWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasAuthenticatedUser", "hasAuthenticatedUserWith", "hasConnectionMetadata", "hasConnectionMetadataWith", "hasConfigurations", "hasConfigurationsWith", "hasActions", "hasActionsWith", "hasMetrics", "hasMetricsWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -26230,6 +26592,20 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 				return it, err
 			}
 			it.HasAuthenticatedUserWith = data
+		case "hasConnectionMetadata":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasConnectionMetadata"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasConnectionMetadata = data
+		case "hasConnectionMetadataWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasConnectionMetadataWith"))
+			data, err := ec.unmarshalOConnectionMetadataWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasConnectionMetadataWith = data
 		case "hasConfigurations":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasConfigurations"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -28028,6 +28404,189 @@ func (ec *executionContext) unmarshalInputConfigurationWhereInput(ctx context.Co
 				return it, err
 			}
 			it.HasActionsWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputConnectionMetadataWhereInput(ctx context.Context, obj any) (ent.ConnectionMetadataWhereInput, error) {
+	var it ent.ConnectionMetadataWhereInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "connectionLastOpenAt", "connectionLastOpenAtNEQ", "connectionLastOpenAtIn", "connectionLastOpenAtNotIn", "connectionLastOpenAtGT", "connectionLastOpenAtGTE", "connectionLastOpenAtLT", "connectionLastOpenAtLTE", "hasBazelInvocation", "hasBazelInvocationWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOConnectionMetadataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOConnectionMetadataWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOConnectionMetadataWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().ID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().IDNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().IDIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().IDNotIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().IDGt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().IDGte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().IDLt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.ConnectionMetadataWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "connectionLastOpenAt":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAt = data
+		case "connectionLastOpenAtNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAtNEQ = data
+		case "connectionLastOpenAtIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAtIn = data
+		case "connectionLastOpenAtNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAtNotIn = data
+		case "connectionLastOpenAtGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAtGT = data
+		case "connectionLastOpenAtGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAtGTE = data
+		case "connectionLastOpenAtLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAtLT = data
+		case "connectionLastOpenAtLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("connectionLastOpenAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ConnectionLastOpenAtLTE = data
+		case "hasBazelInvocation":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBazelInvocation"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBazelInvocation = data
+		case "hasBazelInvocationWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBazelInvocationWith"))
+			data, err := ec.unmarshalOBazelInvocationWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBazelInvocationWith = data
 		}
 	}
 
@@ -36125,6 +36684,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._GarbageMetrics(ctx, sel, obj)
+	case *ent.ConnectionMetadata:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ConnectionMetadata(ctx, sel, obj)
 	case *ent.Configuration:
 		if obj == nil {
 			return graphql.Null
@@ -37321,6 +37885,39 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "connectionMetadata":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BazelInvocation_connectionMetadata(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "configurations":
 			field := field
 
@@ -38238,6 +38835,153 @@ func (ec *executionContext) _Configuration(ctx context.Context, sel ast.Selectio
 					}
 				}()
 				res = ec._Configuration_actions(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var connectionMetadataImplementors = []string{"ConnectionMetadata", "Node"}
+
+func (ec *executionContext) _ConnectionMetadata(ctx context.Context, sel ast.SelectionSet, obj *ent.ConnectionMetadata) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, connectionMetadataImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConnectionMetadata")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ConnectionMetadata_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "connectionLastOpenAt":
+			out.Values[i] = ec._ConnectionMetadata_connectionLastOpenAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "bazelInvocation":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ConnectionMetadata_bazelInvocation(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "timeSinceLastConnectionMillis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ConnectionMetadata_timeSinceLastConnectionMillis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -41790,6 +42534,11 @@ func (ec *executionContext) unmarshalNConfigurationWhereInput2ᚖgithubᚗcomᚋ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNConnectionMetadataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInput(ctx context.Context, v any) (*ent.ConnectionMetadataWhereInput, error) {
+	res, err := ec.unmarshalInputConnectionMetadataWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v any) (entgql.Cursor[int64], error) {
 	var res entgql.Cursor[int64]
 	err := res.UnmarshalGQL(v)
@@ -43198,6 +43947,39 @@ func (ec *executionContext) unmarshalOConfigurationWhereInput2ᚖgithubᚗcomᚋ
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputConfigurationWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOConnectionMetadata2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadata(ctx context.Context, sel ast.SelectionSet, v *ent.ConnectionMetadata) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ConnectionMetadata(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOConnectionMetadataWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInputᚄ(ctx context.Context, v any) ([]*ent.ConnectionMetadataWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*ent.ConnectionMetadataWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNConnectionMetadataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOConnectionMetadataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐConnectionMetadataWhereInput(ctx context.Context, v any) (*ent.ConnectionMetadataWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputConnectionMetadataWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

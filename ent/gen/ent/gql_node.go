@@ -23,6 +23,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -96,6 +97,11 @@ var configurationImplementors = []string{"Configuration", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*Configuration) IsNode() {}
+
+var connectionmetadataImplementors = []string{"ConnectionMetadata", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*ConnectionMetadata) IsNode() {}
 
 var garbagemetricsImplementors = []string{"GarbageMetrics", "Node"}
 
@@ -316,6 +322,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(configuration.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, configurationImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case connectionmetadata.Table:
+		query := c.ConnectionMetadata.Query().
+			Where(connectionmetadata.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, connectionmetadataImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -676,6 +691,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.Configuration.Query().
 			Where(configuration.IDIn(ids...))
 		query, err := query.CollectFields(ctx, configurationImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case connectionmetadata.Table:
+		query := c.ConnectionMetadata.Query().
+			Where(connectionmetadata.IDIn(ids...))
+		query, err := query.CollectFields(ctx, connectionmetadataImplementors...)
 		if err != nil {
 			return nil, err
 		}

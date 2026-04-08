@@ -9,7 +9,8 @@ type Configuration = Pick<BazelConfiguration, 'cpu' | 'mnemonic'>;
 interface Props {
     command: string,
     exitCodeName: string | undefined,
-    bepCompleted: boolean,
+    connectionLastOpenAt: string | undefined
+    timeSinceLastConnectionMillis: number | undefined,
     invocationId: string,
     instanceName: string | undefined,
     configurations: Configuration[] | undefined,
@@ -25,7 +26,8 @@ interface Props {
 export const InvocationOverviewDisplay: React.FC<Props> = ({
     command,
     exitCodeName,
-    bepCompleted,
+    connectionLastOpenAt,
+    timeSinceLastConnectionMillis,
     invocationId,
     instanceName,
     configurations,
@@ -59,7 +61,7 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
         <Space>
             <Descriptions column={1} bordered >
                 <Descriptions.Item label="Status">
-                    <InvocationResultTag key="result" exitCodeName={exitCodeName} bepCompleted={bepCompleted} />
+                    <InvocationResultTag key="result" exitCodeName={exitCodeName} timeSinceLastConnectionMillis={timeSinceLastConnectionMillis} />
                 </Descriptions.Item>
                 <Descriptions.Item label="Invocation Id">
                     {invocationId}
@@ -70,7 +72,14 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
                     </Descriptions.Item>
                 }
                 <Descriptions.Item label="Duration">
-                    <PortalDuration key="duration" from={startedAt} to={endedAt} includeIcon includePopover formatConfig={{smallestUnit: "s"}}/>
+                    <PortalDuration
+                        key="duration"
+                        from={startedAt || undefined}
+                        to={endedAt ? endedAt : connectionLastOpenAt || undefined}
+                        includeIcon
+                        includePopover
+                        formatConfig={{smallestUnit: "s"}}
+                    />
                 </Descriptions.Item>
                 {command !== "" &&
                     <Descriptions.Item label="Command">
