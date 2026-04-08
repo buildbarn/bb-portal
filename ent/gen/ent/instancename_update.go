@@ -20,9 +20,8 @@ import (
 // InstanceNameUpdate is the builder for updating InstanceName entities.
 type InstanceNameUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *InstanceNameMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *InstanceNameMutation
 }
 
 // Where appends a list predicates to the InstanceNameUpdate builder.
@@ -171,12 +170,6 @@ func (inu *InstanceNameUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (inu *InstanceNameUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InstanceNameUpdate {
-	inu.modifiers = append(inu.modifiers, modifiers...)
-	return inu
-}
-
 func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(instancename.Table, instancename.Columns, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
 	if ps := inu.mutation.predicates; len(ps) > 0 {
@@ -321,7 +314,6 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(inu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, inu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{instancename.Label}
@@ -337,10 +329,9 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // InstanceNameUpdateOne is the builder for updating a single InstanceName entity.
 type InstanceNameUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *InstanceNameMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *InstanceNameMutation
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
@@ -494,12 +485,6 @@ func (inuo *InstanceNameUpdateOne) ExecX(ctx context.Context) {
 	if err := inuo.Exec(ctx); err != nil {
 		panic(err)
 	}
-}
-
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (inuo *InstanceNameUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InstanceNameUpdateOne {
-	inuo.modifiers = append(inuo.modifiers, modifiers...)
-	return inuo
 }
 
 func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *InstanceName, err error) {
@@ -663,7 +648,6 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(inuo.modifiers...)
 	_node = &InstanceName{config: inuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

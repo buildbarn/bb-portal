@@ -19,9 +19,8 @@ import (
 // NetworkMetricsUpdate is the builder for updating NetworkMetrics entities.
 type NetworkMetricsUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *NetworkMetricsMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *NetworkMetricsMutation
 }
 
 // Where appends a list predicates to the NetworkMetricsUpdate builder.
@@ -112,12 +111,6 @@ func (nmu *NetworkMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (nmu *NetworkMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *NetworkMetricsUpdate {
-	nmu.modifiers = append(nmu.modifiers, modifiers...)
-	return nmu
-}
-
 func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	if ps := nmu.mutation.predicates; len(ps) > 0 {
@@ -185,7 +178,6 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(nmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, nmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{networkmetrics.Label}
@@ -201,10 +193,9 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 // NetworkMetricsUpdateOne is the builder for updating a single NetworkMetrics entity.
 type NetworkMetricsUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *NetworkMetricsMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *NetworkMetricsMutation
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -302,12 +293,6 @@ func (nmuo *NetworkMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (nmuo *NetworkMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *NetworkMetricsUpdateOne {
-	nmuo.modifiers = append(nmuo.modifiers, modifiers...)
-	return nmuo
-}
-
 func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *NetworkMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	id, ok := nmuo.mutation.ID()
@@ -392,7 +377,6 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(nmuo.modifiers...)
 	_node = &NetworkMetrics{config: nmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

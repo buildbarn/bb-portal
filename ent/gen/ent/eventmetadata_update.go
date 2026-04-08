@@ -18,9 +18,8 @@ import (
 // EventMetadataUpdate is the builder for updating EventMetadata entities.
 type EventMetadataUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *EventMetadataMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *EventMetadataMutation
 }
 
 // Where appends a list predicates to the EventMetadataUpdate builder.
@@ -110,12 +109,6 @@ func (emu *EventMetadataUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (emu *EventMetadataUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *EventMetadataUpdate {
-	emu.modifiers = append(emu.modifiers, modifiers...)
-	return emu
-}
-
 func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := emu.check(); err != nil {
 		return n, err
@@ -140,7 +133,6 @@ func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	if value, ok := emu.mutation.AddedVersion(); ok {
 		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
-	_spec.AddModifiers(emu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, emu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{eventmetadata.Label}
@@ -156,10 +148,9 @@ func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // EventMetadataUpdateOne is the builder for updating a single EventMetadata entity.
 type EventMetadataUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *EventMetadataMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *EventMetadataMutation
 }
 
 // SetHandled sets the "handled" field.
@@ -256,12 +247,6 @@ func (emuo *EventMetadataUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (emuo *EventMetadataUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *EventMetadataUpdateOne {
-	emuo.modifiers = append(emuo.modifiers, modifiers...)
-	return emuo
-}
-
 func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMetadata, err error) {
 	if err := emuo.check(); err != nil {
 		return _node, err
@@ -303,7 +288,6 @@ func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMe
 	if value, ok := emuo.mutation.AddedVersion(); ok {
 		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
-	_spec.AddModifiers(emuo.modifiers...)
 	_node = &EventMetadata{config: emuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

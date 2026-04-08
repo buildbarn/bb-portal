@@ -26,8 +26,8 @@ type AuthenticatedUserQuery struct {
 	inters                    []Interceptor
 	predicates                []predicate.AuthenticatedUser
 	withBazelInvocations      *BazelInvocationQuery
-	loadTotal                 []func(context.Context, []*AuthenticatedUser) error
 	modifiers                 []func(*sql.Selector)
+	loadTotal                 []func(context.Context, []*AuthenticatedUser) error
 	withNamedBazelInvocations map[string]*BazelInvocationQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -281,9 +281,8 @@ func (auq *AuthenticatedUserQuery) Clone() *AuthenticatedUserQuery {
 		predicates:           append([]predicate.AuthenticatedUser{}, auq.predicates...),
 		withBazelInvocations: auq.withBazelInvocations.Clone(),
 		// clone intermediate query.
-		sql:       auq.sql.Clone(),
-		path:      auq.path,
-		modifiers: append([]func(*sql.Selector){}, auq.modifiers...),
+		sql:  auq.sql.Clone(),
+		path: auq.path,
 	}
 }
 
@@ -530,9 +529,6 @@ func (auq *AuthenticatedUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if auq.ctx.Unique != nil && *auq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range auq.modifiers {
-		m(selector)
-	}
 	for _, p := range auq.predicates {
 		p(selector)
 	}
@@ -548,12 +544,6 @@ func (auq *AuthenticatedUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (auq *AuthenticatedUserQuery) Modify(modifiers ...func(s *sql.Selector)) *AuthenticatedUserSelect {
-	auq.modifiers = append(auq.modifiers, modifiers...)
-	return auq.Select()
 }
 
 // WithNamedBazelInvocations tells the query-builder to eager-load the nodes that are connected to the "bazel_invocations"
@@ -658,10 +648,4 @@ func (aus *AuthenticatedUserSelect) sqlScan(ctx context.Context, root *Authentic
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (aus *AuthenticatedUserSelect) Modify(modifiers ...func(s *sql.Selector)) *AuthenticatedUserSelect {
-	aus.modifiers = append(aus.modifiers, modifiers...)
-	return aus
 }

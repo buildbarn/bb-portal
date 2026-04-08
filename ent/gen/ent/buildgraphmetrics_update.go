@@ -18,9 +18,8 @@ import (
 // BuildGraphMetricsUpdate is the builder for updating BuildGraphMetrics entities.
 type BuildGraphMetricsUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *BuildGraphMetricsMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *BuildGraphMetricsMutation
 }
 
 // Where appends a list predicates to the BuildGraphMetricsUpdate builder.
@@ -329,12 +328,6 @@ func (bgmu *BuildGraphMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (bgmu *BuildGraphMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphMetricsUpdate {
-	bgmu.modifiers = append(bgmu.modifiers, modifiers...)
-	return bgmu
-}
-
 func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	if ps := bgmu.mutation.predicates; len(ps) > 0 {
@@ -454,7 +447,6 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(bgmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, bgmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildgraphmetrics.Label}
@@ -470,10 +462,9 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 // BuildGraphMetricsUpdateOne is the builder for updating a single BuildGraphMetrics entity.
 type BuildGraphMetricsUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *BuildGraphMetricsMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *BuildGraphMetricsMutation
 }
 
 // SetActionLookupValueCount sets the "action_lookup_value_count" field.
@@ -789,12 +780,6 @@ func (bgmuo *BuildGraphMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (bgmuo *BuildGraphMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphMetricsUpdateOne {
-	bgmuo.modifiers = append(bgmuo.modifiers, modifiers...)
-	return bgmuo
-}
-
 func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *BuildGraphMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	id, ok := bgmuo.mutation.ID()
@@ -931,7 +916,6 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(bgmuo.modifiers...)
 	_node = &BuildGraphMetrics{config: bgmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

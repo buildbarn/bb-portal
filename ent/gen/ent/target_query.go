@@ -33,8 +33,8 @@ type TargetQuery struct {
 	withTargetKindMappings      *TargetKindMappingQuery
 	withTestTarget              *TestTargetQuery
 	withFKs                     bool
-	loadTotal                   []func(context.Context, []*Target) error
 	modifiers                   []func(*sql.Selector)
+	loadTotal                   []func(context.Context, []*Target) error
 	withNamedInvocationTargets  map[string]*InvocationTargetQuery
 	withNamedTargetKindMappings map[string]*TargetKindMappingQuery
 	// intermediate query (i.e. traversal path).
@@ -358,9 +358,8 @@ func (tq *TargetQuery) Clone() *TargetQuery {
 		withTargetKindMappings: tq.withTargetKindMappings.Clone(),
 		withTestTarget:         tq.withTestTarget.Clone(),
 		// clone intermediate query.
-		sql:       tq.sql.Clone(),
-		path:      tq.path,
-		modifiers: append([]func(*sql.Selector){}, tq.modifiers...),
+		sql:  tq.sql.Clone(),
+		path: tq.path,
 	}
 }
 
@@ -765,9 +764,6 @@ func (tq *TargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if tq.ctx.Unique != nil && *tq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range tq.modifiers {
-		m(selector)
-	}
 	for _, p := range tq.predicates {
 		p(selector)
 	}
@@ -783,12 +779,6 @@ func (tq *TargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (tq *TargetQuery) Modify(modifiers ...func(s *sql.Selector)) *TargetSelect {
-	tq.modifiers = append(tq.modifiers, modifiers...)
-	return tq.Select()
 }
 
 // WithNamedInvocationTargets tells the query-builder to eager-load the nodes that are connected to the "invocation_targets"
@@ -907,10 +897,4 @@ func (ts *TargetSelect) sqlScan(ctx context.Context, root *TargetQuery, v any) e
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (ts *TargetSelect) Modify(modifiers ...func(s *sql.Selector)) *TargetSelect {
-	ts.modifiers = append(ts.modifiers, modifiers...)
-	return ts
 }

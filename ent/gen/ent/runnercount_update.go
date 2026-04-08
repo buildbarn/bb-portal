@@ -18,9 +18,8 @@ import (
 // RunnerCountUpdate is the builder for updating RunnerCount entities.
 type RunnerCountUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *RunnerCountMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *RunnerCountMutation
 }
 
 // Where appends a list predicates to the RunnerCountUpdate builder.
@@ -153,12 +152,6 @@ func (rcu *RunnerCountUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (rcu *RunnerCountUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *RunnerCountUpdate {
-	rcu.modifiers = append(rcu.modifiers, modifiers...)
-	return rcu
-}
-
 func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	if ps := rcu.mutation.predicates; len(ps) > 0 {
@@ -218,7 +211,6 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(rcu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, rcu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{runnercount.Label}
@@ -234,10 +226,9 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // RunnerCountUpdateOne is the builder for updating a single RunnerCount entity.
 type RunnerCountUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *RunnerCountMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *RunnerCountMutation
 }
 
 // SetName sets the "name" field.
@@ -377,12 +368,6 @@ func (rcuo *RunnerCountUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (rcuo *RunnerCountUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *RunnerCountUpdateOne {
-	rcuo.modifiers = append(rcuo.modifiers, modifiers...)
-	return rcuo
-}
-
 func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCount, err error) {
 	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	id, ok := rcuo.mutation.ID()
@@ -459,7 +444,6 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(rcuo.modifiers...)
 	_node = &RunnerCount{config: rcuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

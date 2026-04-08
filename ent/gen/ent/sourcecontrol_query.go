@@ -25,8 +25,8 @@ type SourceControlQuery struct {
 	predicates          []predicate.SourceControl
 	withBazelInvocation *BazelInvocationQuery
 	withFKs             bool
-	loadTotal           []func(context.Context, []*SourceControl) error
 	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*SourceControl) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,9 +279,8 @@ func (scq *SourceControlQuery) Clone() *SourceControlQuery {
 		predicates:          append([]predicate.SourceControl{}, scq.predicates...),
 		withBazelInvocation: scq.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:       scq.sql.Clone(),
-		path:      scq.path,
-		modifiers: append([]func(*sql.Selector){}, scq.modifiers...),
+		sql:  scq.sql.Clone(),
+		path: scq.path,
 	}
 }
 
@@ -520,9 +519,6 @@ func (scq *SourceControlQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if scq.ctx.Unique != nil && *scq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range scq.modifiers {
-		m(selector)
-	}
 	for _, p := range scq.predicates {
 		p(selector)
 	}
@@ -538,12 +534,6 @@ func (scq *SourceControlQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (scq *SourceControlQuery) Modify(modifiers ...func(s *sql.Selector)) *SourceControlSelect {
-	scq.modifiers = append(scq.modifiers, modifiers...)
-	return scq.Select()
 }
 
 // SourceControlGroupBy is the group-by builder for SourceControl entities.
@@ -634,10 +624,4 @@ func (scs *SourceControlSelect) sqlScan(ctx context.Context, root *SourceControl
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (scs *SourceControlSelect) Modify(modifiers ...func(s *sql.Selector)) *SourceControlSelect {
-	scs.modifiers = append(scs.modifiers, modifiers...)
-	return scs
 }

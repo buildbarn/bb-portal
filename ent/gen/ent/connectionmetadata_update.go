@@ -19,9 +19,8 @@ import (
 // ConnectionMetadataUpdate is the builder for updating ConnectionMetadata entities.
 type ConnectionMetadataUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *ConnectionMetadataMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *ConnectionMetadataMutation
 }
 
 // Where appends a list predicates to the ConnectionMetadataUpdate builder.
@@ -101,12 +100,6 @@ func (cmu *ConnectionMetadataUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (cmu *ConnectionMetadataUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ConnectionMetadataUpdate {
-	cmu.modifiers = append(cmu.modifiers, modifiers...)
-	return cmu
-}
-
 func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := cmu.check(); err != nil {
 		return n, err
@@ -151,7 +144,6 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(cmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, cmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{connectionmetadata.Label}
@@ -167,10 +159,9 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 // ConnectionMetadataUpdateOne is the builder for updating a single ConnectionMetadata entity.
 type ConnectionMetadataUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *ConnectionMetadataMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *ConnectionMetadataMutation
 }
 
 // SetConnectionLastOpenAt sets the "connection_last_open_at" field.
@@ -257,12 +248,6 @@ func (cmuo *ConnectionMetadataUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (cmuo *ConnectionMetadataUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ConnectionMetadataUpdateOne {
-	cmuo.modifiers = append(cmuo.modifiers, modifiers...)
-	return cmuo
-}
-
 func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *ConnectionMetadata, err error) {
 	if err := cmuo.check(); err != nil {
 		return _node, err
@@ -324,7 +309,6 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(cmuo.modifiers...)
 	_node = &ConnectionMetadata{config: cmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

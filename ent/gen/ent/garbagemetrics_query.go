@@ -25,8 +25,8 @@ type GarbageMetricsQuery struct {
 	predicates        []predicate.GarbageMetrics
 	withMemoryMetrics *MemoryMetricsQuery
 	withFKs           bool
-	loadTotal         []func(context.Context, []*GarbageMetrics) error
 	modifiers         []func(*sql.Selector)
+	loadTotal         []func(context.Context, []*GarbageMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,9 +279,8 @@ func (gmq *GarbageMetricsQuery) Clone() *GarbageMetricsQuery {
 		predicates:        append([]predicate.GarbageMetrics{}, gmq.predicates...),
 		withMemoryMetrics: gmq.withMemoryMetrics.Clone(),
 		// clone intermediate query.
-		sql:       gmq.sql.Clone(),
-		path:      gmq.path,
-		modifiers: append([]func(*sql.Selector){}, gmq.modifiers...),
+		sql:  gmq.sql.Clone(),
+		path: gmq.path,
 	}
 }
 
@@ -520,9 +519,6 @@ func (gmq *GarbageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if gmq.ctx.Unique != nil && *gmq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range gmq.modifiers {
-		m(selector)
-	}
 	for _, p := range gmq.predicates {
 		p(selector)
 	}
@@ -538,12 +534,6 @@ func (gmq *GarbageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (gmq *GarbageMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *GarbageMetricsSelect {
-	gmq.modifiers = append(gmq.modifiers, modifiers...)
-	return gmq.Select()
 }
 
 // GarbageMetricsGroupBy is the group-by builder for GarbageMetrics entities.
@@ -634,10 +624,4 @@ func (gms *GarbageMetricsSelect) sqlScan(ctx context.Context, root *GarbageMetri
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (gms *GarbageMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *GarbageMetricsSelect {
-	gms.modifiers = append(gms.modifiers, modifiers...)
-	return gms
 }

@@ -18,9 +18,8 @@ import (
 // SourceControlUpdate is the builder for updating SourceControl entities.
 type SourceControlUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *SourceControlMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *SourceControlMutation
 }
 
 // Where appends a list predicates to the SourceControlUpdate builder.
@@ -206,12 +205,6 @@ func (scu *SourceControlUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (scu *SourceControlUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SourceControlUpdate {
-	scu.modifiers = append(scu.modifiers, modifiers...)
-	return scu
-}
-
 func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	if ps := scu.mutation.predicates; len(ps) > 0 {
@@ -286,7 +279,6 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(scu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, scu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sourcecontrol.Label}
@@ -302,10 +294,9 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // SourceControlUpdateOne is the builder for updating a single SourceControl entity.
 type SourceControlUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *SourceControlMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *SourceControlMutation
 }
 
 // SetRepo sets the "repo" field.
@@ -498,12 +489,6 @@ func (scuo *SourceControlUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (scuo *SourceControlUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SourceControlUpdateOne {
-	scuo.modifiers = append(scuo.modifiers, modifiers...)
-	return scuo
-}
-
 func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceControl, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	id, ok := scuo.mutation.ID()
@@ -595,7 +580,6 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(scuo.modifiers...)
 	_node = &SourceControl{config: scuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

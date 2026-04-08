@@ -32,8 +32,8 @@ type InvocationTargetQuery struct {
 	withConfiguration    *ConfigurationQuery
 	withTestSummary      *TestSummaryQuery
 	withFKs              bool
-	loadTotal            []func(context.Context, []*InvocationTarget) error
 	modifiers            []func(*sql.Selector)
+	loadTotal            []func(context.Context, []*InvocationTarget) error
 	withNamedTestSummary map[string]*TestSummaryQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -356,9 +356,8 @@ func (itq *InvocationTargetQuery) Clone() *InvocationTargetQuery {
 		withConfiguration:   itq.withConfiguration.Clone(),
 		withTestSummary:     itq.withTestSummary.Clone(),
 		// clone intermediate query.
-		sql:       itq.sql.Clone(),
-		path:      itq.path,
-		modifiers: append([]func(*sql.Selector){}, itq.modifiers...),
+		sql:  itq.sql.Clone(),
+		path: itq.path,
 	}
 }
 
@@ -754,9 +753,6 @@ func (itq *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if itq.ctx.Unique != nil && *itq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range itq.modifiers {
-		m(selector)
-	}
 	for _, p := range itq.predicates {
 		p(selector)
 	}
@@ -772,12 +768,6 @@ func (itq *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (itq *InvocationTargetQuery) Modify(modifiers ...func(s *sql.Selector)) *InvocationTargetSelect {
-	itq.modifiers = append(itq.modifiers, modifiers...)
-	return itq.Select()
 }
 
 // WithNamedTestSummary tells the query-builder to eager-load the nodes that are connected to the "test_summary"
@@ -882,10 +872,4 @@ func (its *InvocationTargetSelect) sqlScan(ctx context.Context, root *Invocation
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (its *InvocationTargetSelect) Modify(modifiers ...func(s *sql.Selector)) *InvocationTargetSelect {
-	its.modifiers = append(its.modifiers, modifiers...)
-	return its
 }

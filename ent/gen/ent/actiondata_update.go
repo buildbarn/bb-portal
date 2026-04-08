@@ -18,9 +18,8 @@ import (
 // ActionDataUpdate is the builder for updating ActionData entities.
 type ActionDataUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *ActionDataMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *ActionDataMutation
 }
 
 // Where appends a list predicates to the ActionDataUpdate builder.
@@ -268,12 +267,6 @@ func (adu *ActionDataUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (adu *ActionDataUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionDataUpdate {
-	adu.modifiers = append(adu.modifiers, modifiers...)
-	return adu
-}
-
 func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
 	if ps := adu.mutation.predicates; len(ps) > 0 {
@@ -372,7 +365,6 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(adu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, adu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actiondata.Label}
@@ -388,10 +380,9 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // ActionDataUpdateOne is the builder for updating a single ActionData entity.
 type ActionDataUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *ActionDataMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *ActionDataMutation
 }
 
 // SetMnemonic sets the "mnemonic" field.
@@ -646,12 +637,6 @@ func (aduo *ActionDataUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (aduo *ActionDataUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionDataUpdateOne {
-	aduo.modifiers = append(aduo.modifiers, modifiers...)
-	return aduo
-}
-
 func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
 	id, ok := aduo.mutation.ID()
@@ -767,7 +752,6 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(aduo.modifiers...)
 	_node = &ActionData{config: aduo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -22,9 +22,8 @@ import (
 // InvocationTargetUpdate is the builder for updating InvocationTarget entities.
 type InvocationTargetUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *InvocationTargetMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *InvocationTargetMutation
 }
 
 // Where appends a list predicates to the InvocationTargetUpdate builder.
@@ -323,12 +322,6 @@ func (itu *InvocationTargetUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (itu *InvocationTargetUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTargetUpdate {
-	itu.modifiers = append(itu.modifiers, modifiers...)
-	return itu
-}
-
 func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := itu.check(); err != nil {
 		return n, err
@@ -523,7 +516,6 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(itu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, itu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtarget.Label}
@@ -539,10 +531,9 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 // InvocationTargetUpdateOne is the builder for updating a single InvocationTarget entity.
 type InvocationTargetUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *InvocationTargetMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *InvocationTargetMutation
 }
 
 // SetSuccess sets the "success" field.
@@ -848,12 +839,6 @@ func (ituo *InvocationTargetUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (ituo *InvocationTargetUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTargetUpdateOne {
-	ituo.modifiers = append(ituo.modifiers, modifiers...)
-	return ituo
-}
-
 func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTarget, err error) {
 	if err := ituo.check(); err != nil {
 		return _node, err
@@ -1065,7 +1050,6 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(ituo.modifiers...)
 	_node = &InvocationTarget{config: ituo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

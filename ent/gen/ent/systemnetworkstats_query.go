@@ -25,8 +25,8 @@ type SystemNetworkStatsQuery struct {
 	predicates         []predicate.SystemNetworkStats
 	withNetworkMetrics *NetworkMetricsQuery
 	withFKs            bool
-	loadTotal          []func(context.Context, []*SystemNetworkStats) error
 	modifiers          []func(*sql.Selector)
+	loadTotal          []func(context.Context, []*SystemNetworkStats) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,9 +279,8 @@ func (snsq *SystemNetworkStatsQuery) Clone() *SystemNetworkStatsQuery {
 		predicates:         append([]predicate.SystemNetworkStats{}, snsq.predicates...),
 		withNetworkMetrics: snsq.withNetworkMetrics.Clone(),
 		// clone intermediate query.
-		sql:       snsq.sql.Clone(),
-		path:      snsq.path,
-		modifiers: append([]func(*sql.Selector){}, snsq.modifiers...),
+		sql:  snsq.sql.Clone(),
+		path: snsq.path,
 	}
 }
 
@@ -520,9 +519,6 @@ func (snsq *SystemNetworkStatsQuery) sqlQuery(ctx context.Context) *sql.Selector
 	if snsq.ctx.Unique != nil && *snsq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range snsq.modifiers {
-		m(selector)
-	}
 	for _, p := range snsq.predicates {
 		p(selector)
 	}
@@ -538,12 +534,6 @@ func (snsq *SystemNetworkStatsQuery) sqlQuery(ctx context.Context) *sql.Selector
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (snsq *SystemNetworkStatsQuery) Modify(modifiers ...func(s *sql.Selector)) *SystemNetworkStatsSelect {
-	snsq.modifiers = append(snsq.modifiers, modifiers...)
-	return snsq.Select()
 }
 
 // SystemNetworkStatsGroupBy is the group-by builder for SystemNetworkStats entities.
@@ -634,10 +624,4 @@ func (snss *SystemNetworkStatsSelect) sqlScan(ctx context.Context, root *SystemN
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (snss *SystemNetworkStatsSelect) Modify(modifiers ...func(s *sql.Selector)) *SystemNetworkStatsSelect {
-	snss.modifiers = append(snss.modifiers, modifiers...)
-	return snss
 }

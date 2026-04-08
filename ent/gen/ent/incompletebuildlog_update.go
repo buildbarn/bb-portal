@@ -17,9 +17,8 @@ import (
 // IncompleteBuildLogUpdate is the builder for updating IncompleteBuildLog entities.
 type IncompleteBuildLogUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *IncompleteBuildLogMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *IncompleteBuildLogMutation
 }
 
 // Where appends a list predicates to the IncompleteBuildLogUpdate builder.
@@ -68,12 +67,6 @@ func (iblu *IncompleteBuildLogUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (iblu *IncompleteBuildLogUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdate {
-	iblu.modifiers = append(iblu.modifiers, modifiers...)
-	return iblu
-}
-
 func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := iblu.check(); err != nil {
 		return n, err
@@ -86,7 +79,6 @@ func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err e
 			}
 		}
 	}
-	_spec.AddModifiers(iblu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, iblu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{incompletebuildlog.Label}
@@ -102,10 +94,9 @@ func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err e
 // IncompleteBuildLogUpdateOne is the builder for updating a single IncompleteBuildLog entity.
 type IncompleteBuildLogUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *IncompleteBuildLogMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *IncompleteBuildLogMutation
 }
 
 // Mutation returns the IncompleteBuildLogMutation object of the builder.
@@ -161,12 +152,6 @@ func (ibluo *IncompleteBuildLogUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (ibluo *IncompleteBuildLogUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdateOne {
-	ibluo.modifiers = append(ibluo.modifiers, modifiers...)
-	return ibluo
-}
-
 func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *IncompleteBuildLog, err error) {
 	if err := ibluo.check(); err != nil {
 		return _node, err
@@ -196,7 +181,6 @@ func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *I
 			}
 		}
 	}
-	_spec.AddModifiers(ibluo.modifiers...)
 	_node = &IncompleteBuildLog{config: ibluo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

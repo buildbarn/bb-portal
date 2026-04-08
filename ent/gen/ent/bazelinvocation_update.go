@@ -34,9 +34,8 @@ import (
 // BazelInvocationUpdate is the builder for updating BazelInvocation entities.
 type BazelInvocationUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *BazelInvocationMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *BazelInvocationMutation
 }
 
 // Where appends a list predicates to the BazelInvocationUpdate builder.
@@ -851,12 +850,6 @@ func (biu *BazelInvocationUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (biu *BazelInvocationUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BazelInvocationUpdate {
-	biu.modifiers = append(biu.modifiers, modifiers...)
-	return biu
-}
-
 func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := biu.check(); err != nil {
 		return n, err
@@ -1541,7 +1534,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(biu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, biu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{bazelinvocation.Label}
@@ -1557,10 +1549,9 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 // BazelInvocationUpdateOne is the builder for updating a single BazelInvocation entity.
 type BazelInvocationUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *BazelInvocationMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *BazelInvocationMutation
 }
 
 // SetStartedAt sets the "started_at" field.
@@ -2382,12 +2373,6 @@ func (biuo *BazelInvocationUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (biuo *BazelInvocationUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BazelInvocationUpdateOne {
-	biuo.modifiers = append(biuo.modifiers, modifiers...)
-	return biuo
-}
-
 func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelInvocation, err error) {
 	if err := biuo.check(); err != nil {
 		return _node, err
@@ -3089,7 +3074,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(biuo.modifiers...)
 	_node = &BazelInvocation{config: biuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

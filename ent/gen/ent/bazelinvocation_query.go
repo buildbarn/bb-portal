@@ -55,8 +55,8 @@ type BazelInvocationQuery struct {
 	withTargetKindMappings       *TargetKindMappingQuery
 	withSourceControl            *SourceControlQuery
 	withFKs                      bool
-	loadTotal                    []func(context.Context, []*BazelInvocation) error
 	modifiers                    []func(*sql.Selector)
+	loadTotal                    []func(context.Context, []*BazelInvocation) error
 	withNamedTags                map[string]*InvocationTagQuery
 	withNamedConfigurations      map[string]*ConfigurationQuery
 	withNamedActions             map[string]*ActionQuery
@@ -640,9 +640,8 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withTargetKindMappings:  biq.withTargetKindMappings.Clone(),
 		withSourceControl:       biq.withSourceControl.Clone(),
 		// clone intermediate query.
-		sql:       biq.sql.Clone(),
-		path:      biq.path,
-		modifiers: append([]func(*sql.Selector){}, biq.modifiers...),
+		sql:  biq.sql.Clone(),
+		path: biq.path,
 	}
 }
 
@@ -1640,9 +1639,6 @@ func (biq *BazelInvocationQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if biq.ctx.Unique != nil && *biq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range biq.modifiers {
-		m(selector)
-	}
 	for _, p := range biq.predicates {
 		p(selector)
 	}
@@ -1658,12 +1654,6 @@ func (biq *BazelInvocationQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (biq *BazelInvocationQuery) Modify(modifiers ...func(s *sql.Selector)) *BazelInvocationSelect {
-	biq.modifiers = append(biq.modifiers, modifiers...)
-	return biq.Select()
 }
 
 // WithNamedTags tells the query-builder to eager-load the nodes that are connected to the "tags"
@@ -1880,10 +1870,4 @@ func (bis *BazelInvocationSelect) sqlScan(ctx context.Context, root *BazelInvoca
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (bis *BazelInvocationSelect) Modify(modifiers ...func(s *sql.Selector)) *BazelInvocationSelect {
-	bis.modifiers = append(bis.modifiers, modifiers...)
-	return bis
 }

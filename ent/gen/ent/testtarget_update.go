@@ -17,9 +17,8 @@ import (
 // TestTargetUpdate is the builder for updating TestTarget entities.
 type TestTargetUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *TestTargetMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *TestTargetMutation
 }
 
 // Where appends a list predicates to the TestTargetUpdate builder.
@@ -68,12 +67,6 @@ func (ttu *TestTargetUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (ttu *TestTargetUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestTargetUpdate {
-	ttu.modifiers = append(ttu.modifiers, modifiers...)
-	return ttu
-}
-
 func (ttu *TestTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := ttu.check(); err != nil {
 		return n, err
@@ -86,7 +79,6 @@ func (ttu *TestTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	_spec.AddModifiers(ttu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, ttu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testtarget.Label}
@@ -102,10 +94,9 @@ func (ttu *TestTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // TestTargetUpdateOne is the builder for updating a single TestTarget entity.
 type TestTargetUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *TestTargetMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *TestTargetMutation
 }
 
 // Mutation returns the TestTargetMutation object of the builder.
@@ -161,12 +152,6 @@ func (ttuo *TestTargetUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (ttuo *TestTargetUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestTargetUpdateOne {
-	ttuo.modifiers = append(ttuo.modifiers, modifiers...)
-	return ttuo
-}
-
 func (ttuo *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget, err error) {
 	if err := ttuo.check(); err != nil {
 		return _node, err
@@ -196,7 +181,6 @@ func (ttuo *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget
 			}
 		}
 	}
-	_spec.AddModifiers(ttuo.modifiers...)
 	_node = &TestTarget{config: ttuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

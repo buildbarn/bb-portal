@@ -24,8 +24,8 @@ type BuildTagQuery struct {
 	inters     []Interceptor
 	predicates []predicate.BuildTag
 	withBuild  *BuildQuery
-	loadTotal  []func(context.Context, []*BuildTag) error
 	modifiers  []func(*sql.Selector)
+	loadTotal  []func(context.Context, []*BuildTag) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -278,9 +278,8 @@ func (btq *BuildTagQuery) Clone() *BuildTagQuery {
 		predicates: append([]predicate.BuildTag{}, btq.predicates...),
 		withBuild:  btq.withBuild.Clone(),
 		// clone intermediate query.
-		sql:       btq.sql.Clone(),
-		path:      btq.path,
-		modifiers: append([]func(*sql.Selector){}, btq.modifiers...),
+		sql:  btq.sql.Clone(),
+		path: btq.path,
 	}
 }
 
@@ -512,9 +511,6 @@ func (btq *BuildTagQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if btq.ctx.Unique != nil && *btq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range btq.modifiers {
-		m(selector)
-	}
 	for _, p := range btq.predicates {
 		p(selector)
 	}
@@ -530,12 +526,6 @@ func (btq *BuildTagQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (btq *BuildTagQuery) Modify(modifiers ...func(s *sql.Selector)) *BuildTagSelect {
-	btq.modifiers = append(btq.modifiers, modifiers...)
-	return btq.Select()
 }
 
 // BuildTagGroupBy is the group-by builder for BuildTag entities.
@@ -626,10 +616,4 @@ func (bts *BuildTagSelect) sqlScan(ctx context.Context, root *BuildTagQuery, v a
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (bts *BuildTagSelect) Modify(modifiers ...func(s *sql.Selector)) *BuildTagSelect {
-	bts.modifiers = append(bts.modifiers, modifiers...)
-	return bts
 }

@@ -25,8 +25,8 @@ type TargetMetricsQuery struct {
 	predicates  []predicate.TargetMetrics
 	withMetrics *MetricsQuery
 	withFKs     bool
-	loadTotal   []func(context.Context, []*TargetMetrics) error
 	modifiers   []func(*sql.Selector)
+	loadTotal   []func(context.Context, []*TargetMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,9 +279,8 @@ func (tmq *TargetMetricsQuery) Clone() *TargetMetricsQuery {
 		predicates:  append([]predicate.TargetMetrics{}, tmq.predicates...),
 		withMetrics: tmq.withMetrics.Clone(),
 		// clone intermediate query.
-		sql:       tmq.sql.Clone(),
-		path:      tmq.path,
-		modifiers: append([]func(*sql.Selector){}, tmq.modifiers...),
+		sql:  tmq.sql.Clone(),
+		path: tmq.path,
 	}
 }
 
@@ -520,9 +519,6 @@ func (tmq *TargetMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if tmq.ctx.Unique != nil && *tmq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range tmq.modifiers {
-		m(selector)
-	}
 	for _, p := range tmq.predicates {
 		p(selector)
 	}
@@ -538,12 +534,6 @@ func (tmq *TargetMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (tmq *TargetMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *TargetMetricsSelect {
-	tmq.modifiers = append(tmq.modifiers, modifiers...)
-	return tmq.Select()
 }
 
 // TargetMetricsGroupBy is the group-by builder for TargetMetrics entities.
@@ -634,10 +624,4 @@ func (tms *TargetMetricsSelect) sqlScan(ctx context.Context, root *TargetMetrics
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (tms *TargetMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *TargetMetricsSelect {
-	tms.modifiers = append(tms.modifiers, modifiers...)
-	return tms
 }
