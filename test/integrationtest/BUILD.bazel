@@ -17,7 +17,7 @@ go_test(
         "//internal/database/dbauthservice",
         "//internal/database/embedded",
         "//internal/graphql",
-        "//internal/mock",
+        "//pkg/authmetadataextraction",
         "//pkg/proto/configuration/bb_portal",
         "//pkg/testkit",
         "//test/testutils",
@@ -33,6 +33,5 @@ go_test(
         "@io_opentelemetry_go_otel_trace//:trace",
         "@io_opentelemetry_go_otel_trace//noop",
         "@org_golang_google_protobuf//types/known/emptypb",
-        "@org_uber_go_mock//gomock",
     ],
 )

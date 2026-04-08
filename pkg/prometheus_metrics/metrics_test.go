@@ -40,7 +40,6 @@ func TestMetrics(t *testing.T) {
 			ctx,
 			db,
 			nil,
-			uuid.NewRandom,
 			newAuthenticatedUsersGauge,
 		)
 		require.NoError(t, err)
@@ -56,7 +55,6 @@ func TestMetrics(t *testing.T) {
 			authMetadataCtx,
 			db,
 			authmetadataextraction.ExampleAuthMetadataExtractors(),
-			uuid.NewRandom,
 			newAuthenticatedUsersGauge,
 		)
 		require.NoError(t, err)
@@ -93,7 +91,6 @@ func TestMetrics(t *testing.T) {
 			authMetadataCtx,
 			db,
 			authmetadataextraction.ExampleAuthMetadataExtractors(),
-			uuid.NewRandom,
 			authenticatedUsersGauge,
 		)
 		require.NoError(t, err)
@@ -123,7 +120,6 @@ func TestMetrics(t *testing.T) {
 			authMetadataCtx,
 			db,
 			authmetadataextraction.ExampleAuthMetadataExtractors(),
-			uuid.NewRandom,
 			authenticatedUsersGauge,
 		)
 		require.NoError(t, err)

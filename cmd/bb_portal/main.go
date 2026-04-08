@@ -18,7 +18,6 @@ import (
 
 	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
@@ -177,7 +176,7 @@ func newBuildEventStreamService(
 
 	// Handle BEP file uploads over HTTP.
 	if besConfiguration.EnableBepFileUpload {
-		bepUploader, err := bepuploader.NewBepUploader(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
+		bepUploader, err := bepuploader.NewBepUploader(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BEP file upload handler")
 		}
@@ -185,7 +184,7 @@ func newBuildEventStreamService(
 	}
 
 	// Handle the build event stream gRPC strem.
-	buildEventServer, err := bes.NewBuildEventServer(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
+	buildEventServer, err := bes.NewBuildEventServer(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create BuildEventServer")
 	}
