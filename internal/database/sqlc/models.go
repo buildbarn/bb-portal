@@ -88,6 +88,7 @@ type AuthenticatedUser struct {
 type BazelInvocation struct {
 	ID                                  int64
 	InvocationID                        uuid.UUID
+	CreatedTimestamp                    time.Time
 	StartedAt                           sql.NullTime
 	EndedAt                             sql.NullTime
 	ChangeNumber                        sql.NullInt64

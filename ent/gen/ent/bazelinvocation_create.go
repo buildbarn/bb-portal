@@ -43,6 +43,12 @@ func (bic *BazelInvocationCreate) SetInvocationID(u uuid.UUID) *BazelInvocationC
 	return bic
 }
 
+// SetCreatedTimestamp sets the "created_timestamp" field.
+func (bic *BazelInvocationCreate) SetCreatedTimestamp(t time.Time) *BazelInvocationCreate {
+	bic.mutation.SetCreatedTimestamp(t)
+	return bic
+}
+
 // SetStartedAt sets the "started_at" field.
 func (bic *BazelInvocationCreate) SetStartedAt(t time.Time) *BazelInvocationCreate {
 	bic.mutation.SetStartedAt(t)
@@ -708,6 +714,9 @@ func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.InvocationID(); !ok {
 		return &ValidationError{Name: "invocation_id", err: errors.New(`ent: missing required field "BazelInvocation.invocation_id"`)}
 	}
+	if _, ok := bic.mutation.CreatedTimestamp(); !ok {
+		return &ValidationError{Name: "created_timestamp", err: errors.New(`ent: missing required field "BazelInvocation.created_timestamp"`)}
+	}
 	if _, ok := bic.mutation.BepCompleted(); !ok {
 		return &ValidationError{Name: "bep_completed", err: errors.New(`ent: missing required field "BazelInvocation.bep_completed"`)}
 	}
@@ -768,6 +777,10 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.InvocationID(); ok {
 		_spec.SetField(bazelinvocation.FieldInvocationID, field.TypeUUID, value)
 		_node.InvocationID = value
+	}
+	if value, ok := bic.mutation.CreatedTimestamp(); ok {
+		_spec.SetField(bazelinvocation.FieldCreatedTimestamp, field.TypeTime, value)
+		_node.CreatedTimestamp = value
 	}
 	if value, ok := bic.mutation.StartedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldStartedAt, field.TypeTime, value)
@@ -1666,6 +1679,9 @@ func (u *BazelInvocationUpsertOne) UpdateNewValues() *BazelInvocationUpsertOne {
 		if _, exists := u.create.mutation.InvocationID(); exists {
 			s.SetIgnore(bazelinvocation.FieldInvocationID)
 		}
+		if _, exists := u.create.mutation.CreatedTimestamp(); exists {
+			s.SetIgnore(bazelinvocation.FieldCreatedTimestamp)
+		}
 	}))
 	return u
 }
@@ -2448,6 +2464,9 @@ func (u *BazelInvocationUpsertBulk) UpdateNewValues() *BazelInvocationUpsertBulk
 			}
 			if _, exists := b.mutation.InvocationID(); exists {
 				s.SetIgnore(bazelinvocation.FieldInvocationID)
+			}
+			if _, exists := b.mutation.CreatedTimestamp(); exists {
+				s.SetIgnore(bazelinvocation.FieldCreatedTimestamp)
 			}
 		}
 	}))

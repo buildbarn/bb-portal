@@ -67,13 +67,14 @@ func TestMetrics(t *testing.T) {
 
 	t.Run("UnathenticatedInvocation", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
+		instanceNameDbID, err := buildeventrecorder.FindOrCreateInstanceName(ctx, db, instanceName)
+		require.NoError(t, err)
 		invocationsGaugeVec := newInvocationsGaugeVec()
-		_, _, err := buildeventrecorder.FindOrCreateInvocation(
+		_, err = buildeventrecorder.FindOrCreateInvocation(
 			ctx,
 			db,
-			uuid.NewString(),
-			instanceName,
-			nil,
+			uuid.New(),
+			instanceNameDbID,
 			nil,
 			invocationsGaugeVec,
 		)
@@ -87,6 +88,8 @@ func TestMetrics(t *testing.T) {
 
 	t.Run("AuthenticatedInvocation", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
+		instanceNameDbID, err := buildeventrecorder.FindOrCreateInstanceName(ctx, db, instanceName)
+		require.NoError(t, err)
 		invocationsGaugeVec := newInvocationsGaugeVec()
 		authenticatedUsersGauge := newAuthenticatedUsersGauge()
 		userDbID, err := buildeventrecorder.FindOrCreateAuthenticatedUser(
@@ -98,12 +101,11 @@ func TestMetrics(t *testing.T) {
 		)
 		require.NoError(t, err)
 
-		_, _, err = buildeventrecorder.FindOrCreateInvocation(
+		_, err = buildeventrecorder.FindOrCreateInvocation(
 			authMetadataCtx,
 			db,
-			uuid.NewString(),
-			instanceName,
-			nil,
+			uuid.New(),
+			instanceNameDbID,
 			userDbID,
 			invocationsGaugeVec,
 		)
@@ -117,6 +119,8 @@ func TestMetrics(t *testing.T) {
 
 	t.Run("AuthenticatedAndUnauthenticatedInvocations", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
+		instanceNameDbID, err := buildeventrecorder.FindOrCreateInstanceName(ctx, db, instanceName)
+		require.NoError(t, err)
 		invocationsGaugeVec := newInvocationsGaugeVec()
 		authenticatedUsersGauge := newAuthenticatedUsersGauge()
 		userDbID, err := buildeventrecorder.FindOrCreateAuthenticatedUser(
@@ -129,24 +133,22 @@ func TestMetrics(t *testing.T) {
 		require.NoError(t, err)
 
 		// Authenticated invocation
-		_, _, err = buildeventrecorder.FindOrCreateInvocation(
+		_, err = buildeventrecorder.FindOrCreateInvocation(
 			authMetadataCtx,
 			db,
-			uuid.NewString(),
-			instanceName,
-			nil,
+			uuid.New(),
+			instanceNameDbID,
 			userDbID,
 			invocationsGaugeVec,
 		)
 		require.NoError(t, err)
 
 		// Unauthenticated invocation
-		_, _, err = buildeventrecorder.FindOrCreateInvocation(
+		_, err = buildeventrecorder.FindOrCreateInvocation(
 			ctx,
 			db,
-			uuid.NewString(),
-			instanceName,
-			nil,
+			uuid.New(),
+			instanceNameDbID,
 			nil,
 			invocationsGaugeVec,
 		)

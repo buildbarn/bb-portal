@@ -6660,6 +6660,7 @@ type BazelInvocationMutation struct {
 	typ                                     string
 	id                                      *int64
 	invocation_id                           *uuid.UUID
+	created_timestamp                       *time.Time
 	started_at                              *time.Time
 	ended_at                                *time.Time
 	change_number                           *int
@@ -6876,6 +6877,42 @@ func (m *BazelInvocationMutation) OldInvocationID(ctx context.Context) (v uuid.U
 // ResetInvocationID resets all changes to the "invocation_id" field.
 func (m *BazelInvocationMutation) ResetInvocationID() {
 	m.invocation_id = nil
+}
+
+// SetCreatedTimestamp sets the "created_timestamp" field.
+func (m *BazelInvocationMutation) SetCreatedTimestamp(t time.Time) {
+	m.created_timestamp = &t
+}
+
+// CreatedTimestamp returns the value of the "created_timestamp" field in the mutation.
+func (m *BazelInvocationMutation) CreatedTimestamp() (r time.Time, exists bool) {
+	v := m.created_timestamp
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedTimestamp returns the old "created_timestamp" field's value of the BazelInvocation entity.
+// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BazelInvocationMutation) OldCreatedTimestamp(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedTimestamp is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedTimestamp requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedTimestamp: %w", err)
+	}
+	return oldValue.CreatedTimestamp, nil
+}
+
+// ResetCreatedTimestamp resets all changes to the "created_timestamp" field.
+func (m *BazelInvocationMutation) ResetCreatedTimestamp() {
+	m.created_timestamp = nil
 }
 
 // SetStartedAt sets the "started_at" field.
@@ -9007,9 +9044,12 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 29)
+	fields := make([]string, 0, 30)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
+	}
+	if m.created_timestamp != nil {
+		fields = append(fields, bazelinvocation.FieldCreatedTimestamp)
 	}
 	if m.started_at != nil {
 		fields = append(fields, bazelinvocation.FieldStartedAt)
@@ -9105,6 +9145,8 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case bazelinvocation.FieldInvocationID:
 		return m.InvocationID()
+	case bazelinvocation.FieldCreatedTimestamp:
+		return m.CreatedTimestamp()
 	case bazelinvocation.FieldStartedAt:
 		return m.StartedAt()
 	case bazelinvocation.FieldEndedAt:
@@ -9172,6 +9214,8 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 	switch name {
 	case bazelinvocation.FieldInvocationID:
 		return m.OldInvocationID(ctx)
+	case bazelinvocation.FieldCreatedTimestamp:
+		return m.OldCreatedTimestamp(ctx)
 	case bazelinvocation.FieldStartedAt:
 		return m.OldStartedAt(ctx)
 	case bazelinvocation.FieldEndedAt:
@@ -9243,6 +9287,13 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetInvocationID(v)
+		return nil
+	case bazelinvocation.FieldCreatedTimestamp:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedTimestamp(v)
 		return nil
 	case bazelinvocation.FieldStartedAt:
 		v, ok := value.(time.Time)
@@ -9671,6 +9722,9 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 	switch name {
 	case bazelinvocation.FieldInvocationID:
 		m.ResetInvocationID()
+		return nil
+	case bazelinvocation.FieldCreatedTimestamp:
+		m.ResetCreatedTimestamp()
 		return nil
 	case bazelinvocation.FieldStartedAt:
 		m.ResetStartedAt()

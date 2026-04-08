@@ -11,7 +11,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/google/uuid"
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
@@ -50,10 +49,7 @@ func BenchmarkDbAuthService_GetAuthorizedInstanceNames(b *testing.B) {
 					SetName(fmt.Sprintf("InstanceName-%d", i)).
 					Save(adminCtx)
 				require.NoError(b, err)
-				err = db.BazelInvocation.Create().
-					SetInstanceNameID(instanceName.ID).
-					SetInvocationID(uuid.New()).
-					Exec(adminCtx)
+				err = testutils.StartCreateInvocation(db, instanceName).Exec(adminCtx)
 				require.NoError(b, err)
 			}
 

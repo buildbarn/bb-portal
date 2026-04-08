@@ -21,6 +21,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sqlc-dev/pqtype"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -84,23 +85,50 @@ func NewBuildEventRecorder(
 	extractors *authmetadataextraction.AuthMetadataExtractors,
 	uuidGenerator util.UUIDGenerator,
 ) (BuildEventRecorder, error) {
+	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
+	ctx, span := tracer.Start(
+		ctx,
+		"BuildEventRecorder.NewBuildEventRecorder",
+		trace.WithAttributes(
+			attribute.String("invocation.id", invocationID),
+			attribute.String("invocation.instance_name", instanceName),
+		),
+	)
+	defer span.End()
+
 	if invocationID == "" {
 		return nil, status.Error(codes.InvalidArgument, "Invocation ID is required")
+	}
+	invocationUUID, err := uuid.Parse(invocationID)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to parse invocation ID, it is not a valid UUID")
 	}
 	if !apicommon.IsInstanceNameAllowed(ctx, instanceNameAuthorizer, instanceName) {
 		return nil, status.Error(codes.PermissionDenied, fmt.Sprintf("Instance name %q is not allowed", instanceName))
 	}
 
-	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
+	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to create transaction")
+	}
+	defer tx.Rollback()
 
-	userDb, err := FindOrCreateAuthenticatedUser(ctx, db, extractors, uuidGenerator, prometheusmetrics.AuthenticatedUsersCount)
+	userDbID, err := FindOrCreateAuthenticatedUser(ctx, tx, extractors, uuidGenerator, prometheusmetrics.AuthenticatedUsersCount)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create authenticated user")
 	}
-
-	instanceNameDbID, invocationDbID, err := FindOrCreateInvocation(ctx, db, invocationID, instanceName, tracer, userDb, prometheusmetrics.Invocations)
+	instanceNameDbID, err := FindOrCreateInstanceName(ctx, tx, instanceName)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to find or create instance name")
+	}
+	invocationDbID, err := FindOrCreateInvocation(ctx, tx, invocationUUID, instanceNameDbID, userDbID, prometheusmetrics.Invocations)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create bazel invocation")
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to commit transaction")
 	}
 
 	return &buildEventRecorder{
@@ -120,7 +148,7 @@ func NewBuildEventRecorder(
 // returns its ID if it already exists.
 func FindOrCreateAuthenticatedUser(
 	ctx context.Context,
-	db database.Client,
+	db database.Handle,
 	extractors *authmetadataextraction.AuthMetadataExtractors,
 	uuidGenerator util.UUIDGenerator,
 	authenticatedUsersGauge prometheus.Gauge,
@@ -168,48 +196,49 @@ func FindOrCreateAuthenticatedUser(
 	return &authenticatedUserDb.ID, nil
 }
 
-// FindOrCreateInvocation creates an invocation or
-// returns its ID and associated instance name ID
-// if it already exists.
+// FindOrCreateInstanceName creates an instance name or returns its ID if it
+// already exists.
+func FindOrCreateInstanceName(
+	ctx context.Context,
+	db database.Handle,
+	instanceName string,
+) (int64, error) {
+	instanceNameDbID, err := db.Sqlc().CreateInstanceName(ctx, instanceName)
+	if err != nil {
+		return 0, util.StatusWrap(err, "Failed to create instance name")
+	}
+	return instanceNameDbID, nil
+}
+
+// FindOrCreateInvocation creates an invocation or returns its ID if it already
+// exists.
 func FindOrCreateInvocation(
 	ctx context.Context,
-	db database.Client,
-	invocationID string,
-	instanceName string,
-	tracer trace.Tracer,
+	db database.Handle,
+	invocationUUID uuid.UUID,
+	instanceNameDbID int64,
 	authenticatedUserDbID *int64,
 	invocationsGaugeVec *prometheus.GaugeVec,
-) (int64, int64, error) {
-	invocationUUID, err := uuid.Parse(invocationID)
-	if err != nil {
-		return 0, 0, util.StatusWrap(err, "Failed to parse invocation ID")
-	}
-
+) (int64, error) {
 	var userID sql.NullInt64
 	if authenticatedUserDbID != nil {
 		userID = sql.NullInt64{Int64: int64(*authenticatedUserDbID), Valid: true}
 	}
 
-	instanceNameDbID, err := db.Sqlc().CreateInstanceName(ctx, instanceName)
-	if err != nil {
-		return 0, 0, util.StatusWrap(err, "Failed to create instance name")
-	}
-	// There is a race condition here where the just selected instance
-	// name becomes deleted between the select and the insert. This is
-	// fine as the client will retry.
 	invocationDb, err := db.Sqlc().CreateBazelInvocation(ctx, sqlc.CreateBazelInvocationParams{
 		InvocationID:        invocationUUID,
 		InstanceNameID:      instanceNameDbID,
 		AuthenticatedUserID: userID,
+		CreatedTimestamp:    time.Now(),
 	})
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return 0, 0, status.Errorf(codes.FailedPrecondition,
+			return 0, status.Errorf(codes.FailedPrecondition,
 				"Failed to create invocation with id %s. The id may refer to a invocation that is locked for writing",
-				invocationID,
+				invocationUUID,
 			)
 		}
-		return 0, 0, util.StatusWrap(err, "Failed to create bazel invocation")
+		return 0, util.StatusWrap(err, "Failed to create bazel invocation")
 	}
 	if invocationDb.Created {
 		if authenticatedUserDbID != nil {
@@ -219,7 +248,7 @@ func FindOrCreateInvocation(
 		}
 	}
 
-	return instanceNameDbID, invocationDb.ID, nil
+	return invocationDb.ID, nil
 }
 
 // StartLoggingConnectionMetadata starts a goroutine that periodically

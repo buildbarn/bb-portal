@@ -8,7 +8,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/test/testutils"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/mock/gomock"
@@ -39,11 +38,9 @@ func TestRemoveOldInvocations(t *testing.T) {
 	t.Run("InvocationNotCompleted", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		_, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		_, err := testutils.StartCreateInvocation(client, instanceName).
+			SetCreatedTimestamp(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -61,12 +58,10 @@ func TestRemoveOldInvocations(t *testing.T) {
 	t.Run("InvocationCompletedButNotOld", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		_, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		_, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-15 * time.Minute)).
+			SetCreatedTimestamp(cleanupTime.Add(-15 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -84,12 +79,10 @@ func TestRemoveOldInvocations(t *testing.T) {
 	t.Run("InvocationCompletedAndOld", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		_, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		_, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
+			SetCreatedTimestamp(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -108,35 +101,27 @@ func TestRemoveOldInvocations(t *testing.T) {
 	t.Run("MultipleInvocationsMixed", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 		// Old and completed
-		_, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		_, err := testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
+			SetCreatedTimestamp(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 		// Not completed
-		_, err = client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
+		_, err = testutils.StartCreateInvocation(client, instanceName).
+			SetCreatedTimestamp(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 		// Completed but not old
-		_, err = client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
+		_, err = testutils.StartCreateInvocation(client, instanceName).
 			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-15 * time.Minute)).
+			SetCreatedTimestamp(cleanupTime.Add(-15 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 		// Not completed and not old
-		_, err = client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetEndedAt(cleanupTime.Add(-15 * time.Minute)).
+		_, err = testutils.StartCreateInvocation(client, instanceName).
+			SetCreatedTimestamp(cleanupTime.Add(-15 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 
