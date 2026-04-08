@@ -26,8 +26,8 @@ type ActionQuery struct {
 	predicates          []predicate.Action
 	withBazelInvocation *BazelInvocationQuery
 	withConfiguration   *ConfigurationQuery
-	loadTotal           []func(context.Context, []*Action) error
 	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*Action) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -303,9 +303,8 @@ func (aq *ActionQuery) Clone() *ActionQuery {
 		withBazelInvocation: aq.withBazelInvocation.Clone(),
 		withConfiguration:   aq.withConfiguration.Clone(),
 		// clone intermediate query.
-		sql:       aq.sql.Clone(),
-		path:      aq.path,
-		modifiers: append([]func(*sql.Selector){}, aq.modifiers...),
+		sql:  aq.sql.Clone(),
+		path: aq.path,
 	}
 }
 
@@ -587,9 +586,6 @@ func (aq *ActionQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if aq.ctx.Unique != nil && *aq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range aq.modifiers {
-		m(selector)
-	}
 	for _, p := range aq.predicates {
 		p(selector)
 	}
@@ -605,12 +601,6 @@ func (aq *ActionQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (aq *ActionQuery) Modify(modifiers ...func(s *sql.Selector)) *ActionSelect {
-	aq.modifiers = append(aq.modifiers, modifiers...)
-	return aq.Select()
 }
 
 // ActionGroupBy is the group-by builder for Action entities.
@@ -701,10 +691,4 @@ func (as *ActionSelect) sqlScan(ctx context.Context, root *ActionQuery, v any) e
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (as *ActionSelect) Modify(modifiers ...func(s *sql.Selector)) *ActionSelect {
-	as.modifiers = append(as.modifiers, modifiers...)
-	return as
 }

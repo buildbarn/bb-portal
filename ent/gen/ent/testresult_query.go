@@ -25,8 +25,8 @@ type TestResultQuery struct {
 	predicates      []predicate.TestResult
 	withTestSummary *TestSummaryQuery
 	withFKs         bool
-	loadTotal       []func(context.Context, []*TestResult) error
 	modifiers       []func(*sql.Selector)
+	loadTotal       []func(context.Context, []*TestResult) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,9 +279,8 @@ func (trq *TestResultQuery) Clone() *TestResultQuery {
 		predicates:      append([]predicate.TestResult{}, trq.predicates...),
 		withTestSummary: trq.withTestSummary.Clone(),
 		// clone intermediate query.
-		sql:       trq.sql.Clone(),
-		path:      trq.path,
-		modifiers: append([]func(*sql.Selector){}, trq.modifiers...),
+		sql:  trq.sql.Clone(),
+		path: trq.path,
 	}
 }
 
@@ -520,9 +519,6 @@ func (trq *TestResultQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if trq.ctx.Unique != nil && *trq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range trq.modifiers {
-		m(selector)
-	}
 	for _, p := range trq.predicates {
 		p(selector)
 	}
@@ -538,12 +534,6 @@ func (trq *TestResultQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (trq *TestResultQuery) Modify(modifiers ...func(s *sql.Selector)) *TestResultSelect {
-	trq.modifiers = append(trq.modifiers, modifiers...)
-	return trq.Select()
 }
 
 // TestResultGroupBy is the group-by builder for TestResult entities.
@@ -634,10 +624,4 @@ func (trs *TestResultSelect) sqlScan(ctx context.Context, root *TestResultQuery,
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (trs *TestResultSelect) Modify(modifiers ...func(s *sql.Selector)) *TestResultSelect {
-	trs.modifiers = append(trs.modifiers, modifiers...)
-	return trs
 }

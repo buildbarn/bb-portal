@@ -21,9 +21,8 @@ import (
 // BuildUpdate is the builder for updating Build entities.
 type BuildUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *BuildMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *BuildMutation
 }
 
 // Where appends a list predicates to the BuildUpdate builder.
@@ -175,12 +174,6 @@ func (bu *BuildUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (bu *BuildUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildUpdate {
-	bu.modifiers = append(bu.modifiers, modifiers...)
-	return bu
-}
-
 func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := bu.check(); err != nil {
 		return n, err
@@ -315,7 +308,6 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(bu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, bu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{build.Label}
@@ -331,10 +323,9 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // BuildUpdateOne is the builder for updating a single Build entity.
 type BuildUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *BuildMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *BuildMutation
 }
 
 // SetTimestamp sets the "timestamp" field.
@@ -493,12 +484,6 @@ func (buo *BuildUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (buo *BuildUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildUpdateOne {
-	buo.modifiers = append(buo.modifiers, modifiers...)
-	return buo
-}
-
 func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error) {
 	if err := buo.check(); err != nil {
 		return _node, err
@@ -650,7 +635,6 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(buo.modifiers...)
 	_node = &Build{config: buo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

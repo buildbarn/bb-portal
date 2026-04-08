@@ -18,9 +18,8 @@ import (
 // InvocationFilesUpdate is the builder for updating InvocationFiles entities.
 type InvocationFilesUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *InvocationFilesMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *InvocationFilesMutation
 }
 
 // Where appends a list predicates to the InvocationFilesUpdate builder.
@@ -187,12 +186,6 @@ func (ifu *InvocationFilesUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (ifu *InvocationFilesUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationFilesUpdate {
-	ifu.modifiers = append(ifu.modifiers, modifiers...)
-	return ifu
-}
-
 func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	if ps := ifu.mutation.predicates; len(ps) > 0 {
@@ -261,7 +254,6 @@ func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(ifu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, ifu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationfiles.Label}
@@ -277,10 +269,9 @@ func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error
 // InvocationFilesUpdateOne is the builder for updating a single InvocationFiles entity.
 type InvocationFilesUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *InvocationFilesMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *InvocationFilesMutation
 }
 
 // SetName sets the "name" field.
@@ -454,12 +445,6 @@ func (ifuo *InvocationFilesUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (ifuo *InvocationFilesUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationFilesUpdateOne {
-	ifuo.modifiers = append(ifuo.modifiers, modifiers...)
-	return ifuo
-}
-
 func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *InvocationFiles, err error) {
 	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	id, ok := ifuo.mutation.ID()
@@ -545,7 +530,6 @@ func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *Invoc
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(ifuo.modifiers...)
 	_node = &InvocationFiles{config: ifuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

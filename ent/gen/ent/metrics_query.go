@@ -40,8 +40,8 @@ type MetricsQuery struct {
 	withNetworkMetrics    *NetworkMetricsQuery
 	withBuildGraphMetrics *BuildGraphMetricsQuery
 	withFKs               bool
-	loadTotal             []func(context.Context, []*Metrics) error
 	modifiers             []func(*sql.Selector)
+	loadTotal             []func(context.Context, []*Metrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -455,9 +455,8 @@ func (mq *MetricsQuery) Clone() *MetricsQuery {
 		withNetworkMetrics:    mq.withNetworkMetrics.Clone(),
 		withBuildGraphMetrics: mq.withBuildGraphMetrics.Clone(),
 		// clone intermediate query.
-		sql:       mq.sql.Clone(),
-		path:      mq.path,
-		modifiers: append([]func(*sql.Selector){}, mq.modifiers...),
+		sql:  mq.sql.Clone(),
+		path: mq.path,
 	}
 }
 
@@ -996,9 +995,6 @@ func (mq *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if mq.ctx.Unique != nil && *mq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range mq.modifiers {
-		m(selector)
-	}
 	for _, p := range mq.predicates {
 		p(selector)
 	}
@@ -1014,12 +1010,6 @@ func (mq *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (mq *MetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *MetricsSelect {
-	mq.modifiers = append(mq.modifiers, modifiers...)
-	return mq.Select()
 }
 
 // MetricsGroupBy is the group-by builder for Metrics entities.
@@ -1110,10 +1100,4 @@ func (ms *MetricsSelect) sqlScan(ctx context.Context, root *MetricsQuery, v any)
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (ms *MetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *MetricsSelect {
-	ms.modifiers = append(ms.modifiers, modifiers...)
-	return ms
 }

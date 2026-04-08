@@ -17,9 +17,8 @@ import (
 // TargetKindMappingUpdate is the builder for updating TargetKindMapping entities.
 type TargetKindMappingUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *TargetKindMappingMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *TargetKindMappingMutation
 }
 
 // Where appends a list predicates to the TargetKindMappingUpdate builder.
@@ -98,12 +97,6 @@ func (tkmu *TargetKindMappingUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (tkmu *TargetKindMappingUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetKindMappingUpdate {
-	tkmu.modifiers = append(tkmu.modifiers, modifiers...)
-	return tkmu
-}
-
 func (tkmu *TargetKindMappingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := tkmu.check(); err != nil {
 		return n, err
@@ -125,7 +118,6 @@ func (tkmu *TargetKindMappingUpdate) sqlSave(ctx context.Context) (n int, err er
 	if tkmu.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
 	}
-	_spec.AddModifiers(tkmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tkmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetkindmapping.Label}
@@ -141,10 +133,9 @@ func (tkmu *TargetKindMappingUpdate) sqlSave(ctx context.Context) (n int, err er
 // TargetKindMappingUpdateOne is the builder for updating a single TargetKindMapping entity.
 type TargetKindMappingUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *TargetKindMappingMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *TargetKindMappingMutation
 }
 
 // SetStartTimeInMs sets the "start_time_in_ms" field.
@@ -230,12 +221,6 @@ func (tkmuo *TargetKindMappingUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (tkmuo *TargetKindMappingUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetKindMappingUpdateOne {
-	tkmuo.modifiers = append(tkmuo.modifiers, modifiers...)
-	return tkmuo
-}
-
 func (tkmuo *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *TargetKindMapping, err error) {
 	if err := tkmuo.check(); err != nil {
 		return _node, err
@@ -274,7 +259,6 @@ func (tkmuo *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *Ta
 	if tkmuo.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
 	}
-	_spec.AddModifiers(tkmuo.modifiers...)
 	_node = &TargetKindMapping{config: tkmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

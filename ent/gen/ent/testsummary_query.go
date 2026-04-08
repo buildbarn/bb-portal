@@ -29,8 +29,8 @@ type TestSummaryQuery struct {
 	withInvocationTarget *InvocationTargetQuery
 	withTestResults      *TestResultQuery
 	withFKs              bool
-	loadTotal            []func(context.Context, []*TestSummary) error
 	modifiers            []func(*sql.Selector)
+	loadTotal            []func(context.Context, []*TestSummary) error
 	withNamedTestResults map[string]*TestResultQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -307,9 +307,8 @@ func (tsq *TestSummaryQuery) Clone() *TestSummaryQuery {
 		withInvocationTarget: tsq.withInvocationTarget.Clone(),
 		withTestResults:      tsq.withTestResults.Clone(),
 		// clone intermediate query.
-		sql:       tsq.sql.Clone(),
-		path:      tsq.path,
-		modifiers: append([]func(*sql.Selector){}, tsq.modifiers...),
+		sql:  tsq.sql.Clone(),
+		path: tsq.path,
 	}
 }
 
@@ -611,9 +610,6 @@ func (tsq *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if tsq.ctx.Unique != nil && *tsq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range tsq.modifiers {
-		m(selector)
-	}
 	for _, p := range tsq.predicates {
 		p(selector)
 	}
@@ -629,12 +625,6 @@ func (tsq *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (tsq *TestSummaryQuery) Modify(modifiers ...func(s *sql.Selector)) *TestSummarySelect {
-	tsq.modifiers = append(tsq.modifiers, modifiers...)
-	return tsq.Select()
 }
 
 // WithNamedTestResults tells the query-builder to eager-load the nodes that are connected to the "test_results"
@@ -739,10 +729,4 @@ func (tss *TestSummarySelect) sqlScan(ctx context.Context, root *TestSummaryQuer
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (tss *TestSummarySelect) Modify(modifiers ...func(s *sql.Selector)) *TestSummarySelect {
-	tss.modifiers = append(tss.modifiers, modifiers...)
-	return tss
 }

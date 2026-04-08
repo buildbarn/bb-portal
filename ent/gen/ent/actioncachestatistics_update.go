@@ -19,9 +19,8 @@ import (
 // ActionCacheStatisticsUpdate is the builder for updating ActionCacheStatistics entities.
 type ActionCacheStatisticsUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *ActionCacheStatisticsMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *ActionCacheStatisticsMutation
 }
 
 // Where appends a list predicates to the ActionCacheStatisticsUpdate builder.
@@ -258,12 +257,6 @@ func (acsu *ActionCacheStatisticsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (acsu *ActionCacheStatisticsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionCacheStatisticsUpdate {
-	acsu.modifiers = append(acsu.modifiers, modifiers...)
-	return acsu
-}
-
 func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
 	if ps := acsu.mutation.predicates; len(ps) > 0 {
@@ -392,7 +385,6 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(acsu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, acsu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actioncachestatistics.Label}
@@ -408,10 +400,9 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 // ActionCacheStatisticsUpdateOne is the builder for updating a single ActionCacheStatistics entity.
 type ActionCacheStatisticsUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *ActionCacheStatisticsMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *ActionCacheStatisticsMutation
 }
 
 // SetSizeInBytes sets the "size_in_bytes" field.
@@ -655,12 +646,6 @@ func (acsuo *ActionCacheStatisticsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (acsuo *ActionCacheStatisticsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionCacheStatisticsUpdateOne {
-	acsuo.modifiers = append(acsuo.modifiers, modifiers...)
-	return acsuo
-}
-
 func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node *ActionCacheStatistics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
 	id, ok := acsuo.mutation.ID()
@@ -806,7 +791,6 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(acsuo.modifiers...)
 	_node = &ActionCacheStatistics{config: acsuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

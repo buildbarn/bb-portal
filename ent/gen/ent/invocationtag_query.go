@@ -24,8 +24,8 @@ type InvocationTagQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.InvocationTag
 	withBazelInvocation *BazelInvocationQuery
-	loadTotal           []func(context.Context, []*InvocationTag) error
 	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*InvocationTag) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -278,9 +278,8 @@ func (itq *InvocationTagQuery) Clone() *InvocationTagQuery {
 		predicates:          append([]predicate.InvocationTag{}, itq.predicates...),
 		withBazelInvocation: itq.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:       itq.sql.Clone(),
-		path:      itq.path,
-		modifiers: append([]func(*sql.Selector){}, itq.modifiers...),
+		sql:  itq.sql.Clone(),
+		path: itq.path,
 	}
 }
 
@@ -512,9 +511,6 @@ func (itq *InvocationTagQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if itq.ctx.Unique != nil && *itq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range itq.modifiers {
-		m(selector)
-	}
 	for _, p := range itq.predicates {
 		p(selector)
 	}
@@ -530,12 +526,6 @@ func (itq *InvocationTagQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (itq *InvocationTagQuery) Modify(modifiers ...func(s *sql.Selector)) *InvocationTagSelect {
-	itq.modifiers = append(itq.modifiers, modifiers...)
-	return itq.Select()
 }
 
 // InvocationTagGroupBy is the group-by builder for InvocationTag entities.
@@ -626,10 +616,4 @@ func (its *InvocationTagSelect) sqlScan(ctx context.Context, root *InvocationTag
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (its *InvocationTagSelect) Modify(modifiers ...func(s *sql.Selector)) *InvocationTagSelect {
-	its.modifiers = append(its.modifiers, modifiers...)
-	return its
 }

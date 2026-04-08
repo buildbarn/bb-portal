@@ -26,8 +26,8 @@ type TargetKindMappingQuery struct {
 	predicates          []predicate.TargetKindMapping
 	withBazelInvocation *BazelInvocationQuery
 	withTarget          *TargetQuery
-	loadTotal           []func(context.Context, []*TargetKindMapping) error
 	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*TargetKindMapping) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -303,9 +303,8 @@ func (tkmq *TargetKindMappingQuery) Clone() *TargetKindMappingQuery {
 		withBazelInvocation: tkmq.withBazelInvocation.Clone(),
 		withTarget:          tkmq.withTarget.Clone(),
 		// clone intermediate query.
-		sql:       tkmq.sql.Clone(),
-		path:      tkmq.path,
-		modifiers: append([]func(*sql.Selector){}, tkmq.modifiers...),
+		sql:  tkmq.sql.Clone(),
+		path: tkmq.path,
 	}
 }
 
@@ -587,9 +586,6 @@ func (tkmq *TargetKindMappingQuery) sqlQuery(ctx context.Context) *sql.Selector 
 	if tkmq.ctx.Unique != nil && *tkmq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range tkmq.modifiers {
-		m(selector)
-	}
 	for _, p := range tkmq.predicates {
 		p(selector)
 	}
@@ -605,12 +601,6 @@ func (tkmq *TargetKindMappingQuery) sqlQuery(ctx context.Context) *sql.Selector 
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (tkmq *TargetKindMappingQuery) Modify(modifiers ...func(s *sql.Selector)) *TargetKindMappingSelect {
-	tkmq.modifiers = append(tkmq.modifiers, modifiers...)
-	return tkmq.Select()
 }
 
 // TargetKindMappingGroupBy is the group-by builder for TargetKindMapping entities.
@@ -701,10 +691,4 @@ func (tkms *TargetKindMappingSelect) sqlScan(ctx context.Context, root *TargetKi
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (tkms *TargetKindMappingSelect) Modify(modifiers ...func(s *sql.Selector)) *TargetKindMappingSelect {
-	tkms.modifiers = append(tkms.modifiers, modifiers...)
-	return tkms
 }

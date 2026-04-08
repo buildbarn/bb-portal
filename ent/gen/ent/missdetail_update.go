@@ -18,9 +18,8 @@ import (
 // MissDetailUpdate is the builder for updating MissDetail entities.
 type MissDetailUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *MissDetailMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *MissDetailMutation
 }
 
 // Where appends a list predicates to the MissDetailUpdate builder.
@@ -127,12 +126,6 @@ func (mdu *MissDetailUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (mdu *MissDetailUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdate {
-	mdu.modifiers = append(mdu.modifiers, modifiers...)
-	return mdu
-}
-
 func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	if ps := mdu.mutation.predicates; len(ps) > 0 {
@@ -183,7 +176,6 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(mdu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, mdu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{missdetail.Label}
@@ -199,10 +191,9 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // MissDetailUpdateOne is the builder for updating a single MissDetail entity.
 type MissDetailUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *MissDetailMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *MissDetailMutation
 }
 
 // SetReason sets the "reason" field.
@@ -316,12 +307,6 @@ func (mduo *MissDetailUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (mduo *MissDetailUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdateOne {
-	mduo.modifiers = append(mduo.modifiers, modifiers...)
-	return mduo
-}
-
 func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, err error) {
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	id, ok := mduo.mutation.ID()
@@ -389,7 +374,6 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_spec.AddModifiers(mduo.modifiers...)
 	_node = &MissDetail{config: mduo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -17,9 +17,8 @@ import (
 // BuildTagUpdate is the builder for updating BuildTag entities.
 type BuildTagUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *BuildTagMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *BuildTagMutation
 }
 
 // Where appends a list predicates to the BuildTagUpdate builder.
@@ -68,12 +67,6 @@ func (btu *BuildTagUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (btu *BuildTagUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildTagUpdate {
-	btu.modifiers = append(btu.modifiers, modifiers...)
-	return btu
-}
-
 func (btu *BuildTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := btu.check(); err != nil {
 		return n, err
@@ -86,7 +79,6 @@ func (btu *BuildTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	_spec.AddModifiers(btu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, btu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildtag.Label}
@@ -102,10 +94,9 @@ func (btu *BuildTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // BuildTagUpdateOne is the builder for updating a single BuildTag entity.
 type BuildTagUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *BuildTagMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *BuildTagMutation
 }
 
 // Mutation returns the BuildTagMutation object of the builder.
@@ -161,12 +152,6 @@ func (btuo *BuildTagUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (btuo *BuildTagUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildTagUpdateOne {
-	btuo.modifiers = append(btuo.modifiers, modifiers...)
-	return btuo
-}
-
 func (btuo *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, err error) {
 	if err := btuo.check(); err != nil {
 		return _node, err
@@ -196,7 +181,6 @@ func (btuo *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, er
 			}
 		}
 	}
-	_spec.AddModifiers(btuo.modifiers...)
 	_node = &BuildTag{config: btuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

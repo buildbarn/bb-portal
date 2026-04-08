@@ -17,9 +17,8 @@ import (
 // InvocationTagUpdate is the builder for updating InvocationTag entities.
 type InvocationTagUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *InvocationTagMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *InvocationTagMutation
 }
 
 // Where appends a list predicates to the InvocationTagUpdate builder.
@@ -68,12 +67,6 @@ func (itu *InvocationTagUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (itu *InvocationTagUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTagUpdate {
-	itu.modifiers = append(itu.modifiers, modifiers...)
-	return itu
-}
-
 func (itu *InvocationTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := itu.check(); err != nil {
 		return n, err
@@ -86,7 +79,6 @@ func (itu *InvocationTagUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			}
 		}
 	}
-	_spec.AddModifiers(itu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, itu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtag.Label}
@@ -102,10 +94,9 @@ func (itu *InvocationTagUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // InvocationTagUpdateOne is the builder for updating a single InvocationTag entity.
 type InvocationTagUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *InvocationTagMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *InvocationTagMutation
 }
 
 // Mutation returns the InvocationTagMutation object of the builder.
@@ -161,12 +152,6 @@ func (ituo *InvocationTagUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (ituo *InvocationTagUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTagUpdateOne {
-	ituo.modifiers = append(ituo.modifiers, modifiers...)
-	return ituo
-}
-
 func (ituo *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTag, err error) {
 	if err := ituo.check(); err != nil {
 		return _node, err
@@ -196,7 +181,6 @@ func (ituo *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *Invocat
 			}
 		}
 	}
-	_spec.AddModifiers(ituo.modifiers...)
 	_node = &InvocationTag{config: ituo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

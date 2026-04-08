@@ -29,8 +29,8 @@ type InstanceNameQuery struct {
 	withBazelInvocations      *BazelInvocationQuery
 	withBuilds                *BuildQuery
 	withTargets               *TargetQuery
-	loadTotal                 []func(context.Context, []*InstanceName) error
 	modifiers                 []func(*sql.Selector)
+	loadTotal                 []func(context.Context, []*InstanceName) error
 	withNamedBazelInvocations map[string]*BazelInvocationQuery
 	withNamedBuilds           map[string]*BuildQuery
 	withNamedTargets          map[string]*TargetQuery
@@ -332,9 +332,8 @@ func (inq *InstanceNameQuery) Clone() *InstanceNameQuery {
 		withBuilds:           inq.withBuilds.Clone(),
 		withTargets:          inq.withTargets.Clone(),
 		// clone intermediate query.
-		sql:       inq.sql.Clone(),
-		path:      inq.path,
-		modifiers: append([]func(*sql.Selector){}, inq.modifiers...),
+		sql:  inq.sql.Clone(),
+		path: inq.path,
 	}
 }
 
@@ -689,9 +688,6 @@ func (inq *InstanceNameQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if inq.ctx.Unique != nil && *inq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range inq.modifiers {
-		m(selector)
-	}
 	for _, p := range inq.predicates {
 		p(selector)
 	}
@@ -707,12 +703,6 @@ func (inq *InstanceNameQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (inq *InstanceNameQuery) Modify(modifiers ...func(s *sql.Selector)) *InstanceNameSelect {
-	inq.modifiers = append(inq.modifiers, modifiers...)
-	return inq.Select()
 }
 
 // WithNamedBazelInvocations tells the query-builder to eager-load the nodes that are connected to the "bazel_invocations"
@@ -845,10 +835,4 @@ func (ins *InstanceNameSelect) sqlScan(ctx context.Context, root *InstanceNameQu
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (ins *InstanceNameSelect) Modify(modifiers ...func(s *sql.Selector)) *InstanceNameSelect {
-	ins.modifiers = append(ins.modifiers, modifiers...)
-	return ins
 }

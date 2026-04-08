@@ -19,9 +19,8 @@ import (
 // ActionUpdate is the builder for updating Action entities.
 type ActionUpdate struct {
 	config
-	hooks     []Hook
-	mutation  *ActionMutation
-	modifiers []func(*sql.UpdateBuilder)
+	hooks    []Hook
+	mutation *ActionMutation
 }
 
 // Where appends a list predicates to the ActionUpdate builder.
@@ -386,12 +385,6 @@ func (au *ActionUpdate) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (au *ActionUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionUpdate {
-	au.modifiers = append(au.modifiers, modifiers...)
-	return au
-}
-
 func (au *ActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := au.check(); err != nil {
 		return n, err
@@ -505,7 +498,6 @@ func (au *ActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if au.mutation.StderrHashFunctionCleared() {
 		_spec.ClearField(action.FieldStderrHashFunction, field.TypeString)
 	}
-	_spec.AddModifiers(au.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{action.Label}
@@ -521,10 +513,9 @@ func (au *ActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // ActionUpdateOne is the builder for updating a single Action entity.
 type ActionUpdateOne struct {
 	config
-	fields    []string
-	hooks     []Hook
-	mutation  *ActionMutation
-	modifiers []func(*sql.UpdateBuilder)
+	fields   []string
+	hooks    []Hook
+	mutation *ActionMutation
 }
 
 // SetLabel sets the "label" field.
@@ -896,12 +887,6 @@ func (auo *ActionUpdateOne) check() error {
 	return nil
 }
 
-// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
-func (auo *ActionUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionUpdateOne {
-	auo.modifiers = append(auo.modifiers, modifiers...)
-	return auo
-}
-
 func (auo *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err error) {
 	if err := auo.check(); err != nil {
 		return _node, err
@@ -1032,7 +1017,6 @@ func (auo *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err err
 	if auo.mutation.StderrHashFunctionCleared() {
 		_spec.ClearField(action.FieldStderrHashFunction, field.TypeString)
 	}
-	_spec.AddModifiers(auo.modifiers...)
 	_node = &Action{config: auo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

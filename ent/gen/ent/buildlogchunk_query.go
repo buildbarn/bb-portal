@@ -25,8 +25,8 @@ type BuildLogChunkQuery struct {
 	predicates          []predicate.BuildLogChunk
 	withBazelInvocation *BazelInvocationQuery
 	withFKs             bool
-	loadTotal           []func(context.Context, []*BuildLogChunk) error
 	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*BuildLogChunk) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,9 +279,8 @@ func (blcq *BuildLogChunkQuery) Clone() *BuildLogChunkQuery {
 		predicates:          append([]predicate.BuildLogChunk{}, blcq.predicates...),
 		withBazelInvocation: blcq.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:       blcq.sql.Clone(),
-		path:      blcq.path,
-		modifiers: append([]func(*sql.Selector){}, blcq.modifiers...),
+		sql:  blcq.sql.Clone(),
+		path: blcq.path,
 	}
 }
 
@@ -520,9 +519,6 @@ func (blcq *BuildLogChunkQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if blcq.ctx.Unique != nil && *blcq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range blcq.modifiers {
-		m(selector)
-	}
 	for _, p := range blcq.predicates {
 		p(selector)
 	}
@@ -538,12 +534,6 @@ func (blcq *BuildLogChunkQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (blcq *BuildLogChunkQuery) Modify(modifiers ...func(s *sql.Selector)) *BuildLogChunkSelect {
-	blcq.modifiers = append(blcq.modifiers, modifiers...)
-	return blcq.Select()
 }
 
 // BuildLogChunkGroupBy is the group-by builder for BuildLogChunk entities.
@@ -634,10 +624,4 @@ func (blcs *BuildLogChunkSelect) sqlScan(ctx context.Context, root *BuildLogChun
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (blcs *BuildLogChunkSelect) Modify(modifiers ...func(s *sql.Selector)) *BuildLogChunkSelect {
-	blcs.modifiers = append(blcs.modifiers, modifiers...)
-	return blcs
 }

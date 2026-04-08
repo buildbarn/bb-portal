@@ -44,7 +44,6 @@ func main() {
 		),
 		entc.FeatureNames("sql/execquery"),
 		entc.FeatureNames("sql/upsert"),
-		entc.FeatureNames("sql/modifier"),
 		entc.FeatureNames("privacy"),
 		entc.FeatureNames("entql"),
 	}

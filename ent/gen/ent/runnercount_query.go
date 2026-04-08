@@ -25,8 +25,8 @@ type RunnerCountQuery struct {
 	predicates        []predicate.RunnerCount
 	withActionSummary *ActionSummaryQuery
 	withFKs           bool
-	loadTotal         []func(context.Context, []*RunnerCount) error
 	modifiers         []func(*sql.Selector)
+	loadTotal         []func(context.Context, []*RunnerCount) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,9 +279,8 @@ func (rcq *RunnerCountQuery) Clone() *RunnerCountQuery {
 		predicates:        append([]predicate.RunnerCount{}, rcq.predicates...),
 		withActionSummary: rcq.withActionSummary.Clone(),
 		// clone intermediate query.
-		sql:       rcq.sql.Clone(),
-		path:      rcq.path,
-		modifiers: append([]func(*sql.Selector){}, rcq.modifiers...),
+		sql:  rcq.sql.Clone(),
+		path: rcq.path,
 	}
 }
 
@@ -520,9 +519,6 @@ func (rcq *RunnerCountQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if rcq.ctx.Unique != nil && *rcq.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, m := range rcq.modifiers {
-		m(selector)
-	}
 	for _, p := range rcq.predicates {
 		p(selector)
 	}
@@ -538,12 +534,6 @@ func (rcq *RunnerCountQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (rcq *RunnerCountQuery) Modify(modifiers ...func(s *sql.Selector)) *RunnerCountSelect {
-	rcq.modifiers = append(rcq.modifiers, modifiers...)
-	return rcq.Select()
 }
 
 // RunnerCountGroupBy is the group-by builder for RunnerCount entities.
@@ -634,10 +624,4 @@ func (rcs *RunnerCountSelect) sqlScan(ctx context.Context, root *RunnerCountQuer
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
-}
-
-// Modify adds a query modifier for attaching custom logic to queries.
-func (rcs *RunnerCountSelect) Modify(modifiers ...func(s *sql.Selector)) *RunnerCountSelect {
-	rcs.modifiers = append(rcs.modifiers, modifiers...)
-	return rcs
 }
