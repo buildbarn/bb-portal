@@ -112,8 +112,8 @@ func (BazelInvocation) Edges() []ent.Edge {
 
 		// Info about the grpc connection that this event was sent over.
 		edge.To("connection_metadata", ConnectionMetadata.Type).
+			Unique().
 			Annotations(
-				entgql.Skip(entgql.SkipType),
 				entsql.OnDelete(entsql.Cascade),
 			),
 

@@ -105,7 +105,7 @@ func HasBazelInvocation() predicate.ConnectionMetadata {
 	return predicate.ConnectionMetadata(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, BazelInvocationTable, BazelInvocationColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

@@ -40,7 +40,10 @@ export const BAZEL_INVOCATION_NODE_FRAGMENT = gql(/* GraphQL */ `
     }
     endedAt
     exitCodeName
-    bepCompleted
+    connectionMetadata {
+      connectionLastOpenAt
+      timeSinceLastConnectionMillis
+    }
     build {
       buildUUID
     }

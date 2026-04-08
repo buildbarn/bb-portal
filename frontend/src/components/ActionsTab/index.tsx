@@ -13,8 +13,8 @@ const items = (
       label: action.label,
       extra: action.startTime && action.endTime && (
         <PortalDuration
-          from={action.startTime}
-          to={action.endTime}
+          from={action.startTime || undefined}
+          to={action.endTime || undefined}
           includePopover
           formatConfig={{ smallestUnit: "ms" }}
         />

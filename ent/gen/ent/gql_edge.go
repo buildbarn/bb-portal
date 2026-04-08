@@ -145,6 +145,14 @@ func (bi *BazelInvocation) AuthenticatedUser(ctx context.Context) (*Authenticate
 	return result, MaskNotFound(err)
 }
 
+func (bi *BazelInvocation) ConnectionMetadata(ctx context.Context) (*ConnectionMetadata, error) {
+	result, err := bi.Edges.ConnectionMetadataOrErr()
+	if IsNotLoaded(err) {
+		result, err = bi.QueryConnectionMetadata().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (bi *BazelInvocation) Configurations(ctx context.Context) (result []*Configuration, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = bi.NamedConfigurations(graphql.GetFieldContext(ctx).Field.Alias)
@@ -185,7 +193,7 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[6][alias]
+	totalCount, hasTotalCount := bi.Edges.totalCount[7][alias]
 	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
@@ -271,6 +279,14 @@ func (c *Configuration) Actions(ctx context.Context) (result []*Action, err erro
 	}
 	if IsNotLoaded(err) {
 		result, err = c.QueryActions().All(ctx)
+	}
+	return result, err
+}
+
+func (cm *ConnectionMetadata) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := cm.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = cm.QueryBazelInvocation().Only(ctx)
 	}
 	return result, err
 }

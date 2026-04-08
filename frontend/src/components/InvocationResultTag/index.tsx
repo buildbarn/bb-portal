@@ -10,7 +10,7 @@ import {
 import { Tag } from "antd";
 import type React from "react";
 import themeStyles from "@/theme/theme.module.css";
-import { getInvocationResultTagEnum, type InvocationResultTagEnum } from "./enum";
+import { getInvocationResultTagEnum, type InvocationResult } from "./enum";
 
 type TagVariables = {
   icon: React.ReactNode;
@@ -19,7 +19,7 @@ type TagVariables = {
 };
 
 export const INVOCATION_RESULT_TAGS: {
-  [key in InvocationResultTagEnum]: TagVariables;
+  [key in InvocationResult]: TagVariables;
 } = {
   SUCCESS: {
     icon: <CheckCircleFilled />,
@@ -66,7 +66,8 @@ export const INVOCATION_RESULT_TAGS: {
     color: "cyan",
     text: "Interrupted",
   },
-  UNKNOWN: {
+  // TODO: Make this show the code
+  UNKNOWN_EXIT_CODE: {
     icon: <QuestionCircleFilled />,
     color: "default",
     text: "Status Unknown",
@@ -76,23 +77,26 @@ export const INVOCATION_RESULT_TAGS: {
     color: "blue",
     text: "In Progress",
   },
-  BEP_UPLOAD_ABORTED: {
+  DISCONNECTED: {
     icon: <ExclamationCircleFilled />,
     color: "cyan",
-    text: "BEP Upload Aborted",
+    text: "Disconnected",
   },
 };
 
 interface Props {
   exitCodeName: string | undefined;
-  bepCompleted: boolean;
+  timeSinceLastConnectionMillis: number | undefined;
 }
 
 export const InvocationResultTag: React.FC<Props> = ({
   exitCodeName,
-  bepCompleted,
+  timeSinceLastConnectionMillis,
 }) => {
-  const tagEnum = getInvocationResultTagEnum(exitCodeName, bepCompleted);
+  const tagEnum = getInvocationResultTagEnum(
+    exitCodeName,
+    timeSinceLastConnectionMillis,
+  );
   const tagVars = INVOCATION_RESULT_TAGS[tagEnum];
   return (
     <Tag icon={tagVars.icon} color={tagVars.color} className={themeStyles.tag}>

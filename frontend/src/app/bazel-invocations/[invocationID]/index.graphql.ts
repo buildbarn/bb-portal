@@ -163,7 +163,10 @@ fragment BazelInvocationInfo on BazelInvocation {
   startedAt
   endedAt
   exitCodeName
-  bepCompleted
+  connectionMetadata {
+    connectionLastOpenAt
+    timeSinceLastConnectionMillis
+  }
   configurations {
     id
     cpu

@@ -29,7 +29,6 @@
       ]
     },
     "bazelVersion": "8.1.1",
-    "bepCompleted": false,
     "build": null,
     "configurations": [
       {
@@ -43,6 +42,7 @@
         "mnemonic": "k8-fastbuild"
       }
     ],
+    "connectionMetadata": null,
     "endedAt": "2026-02-04T08:42:52.138Z",
     "exitCodeName": "SUCCESS",
     "hostname": "3280a8b94607",

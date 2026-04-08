@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -3156,6 +3157,10 @@ type BazelInvocationWhereInput struct {
 	HasAuthenticatedUser     *bool                          `json:"hasAuthenticatedUser,omitempty"`
 	HasAuthenticatedUserWith []*AuthenticatedUserWhereInput `json:"hasAuthenticatedUserWith,omitempty"`
 
+	// "connection_metadata" edge predicates.
+	HasConnectionMetadata     *bool                           `json:"hasConnectionMetadata,omitempty"`
+	HasConnectionMetadataWith []*ConnectionMetadataWhereInput `json:"hasConnectionMetadataWith,omitempty"`
+
 	// "configurations" edge predicates.
 	HasConfigurations     *bool                      `json:"hasConfigurations,omitempty"`
 	HasConfigurationsWith []*ConfigurationWhereInput `json:"hasConfigurationsWith,omitempty"`
@@ -3863,6 +3868,24 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, bazelinvocation.HasAuthenticatedUserWith(with...))
+	}
+	if i.HasConnectionMetadata != nil {
+		p := bazelinvocation.HasConnectionMetadata()
+		if !*i.HasConnectionMetadata {
+			p = bazelinvocation.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasConnectionMetadataWith) > 0 {
+		with := make([]predicate.ConnectionMetadata, 0, len(i.HasConnectionMetadataWith))
+		for _, w := range i.HasConnectionMetadataWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasConnectionMetadataWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, bazelinvocation.HasConnectionMetadataWith(with...))
 	}
 	if i.HasConfigurations != nil {
 		p := bazelinvocation.HasConfigurations()
@@ -5223,6 +5246,186 @@ func (i *ConfigurationWhereInput) P() (predicate.Configuration, error) {
 		return predicates[0], nil
 	default:
 		return configuration.And(predicates...), nil
+	}
+}
+
+// ConnectionMetadataWhereInput represents a where input for filtering ConnectionMetadata queries.
+type ConnectionMetadataWhereInput struct {
+	Predicates []predicate.ConnectionMetadata  `json:"-"`
+	Not        *ConnectionMetadataWhereInput   `json:"not,omitempty"`
+	Or         []*ConnectionMetadataWhereInput `json:"or,omitempty"`
+	And        []*ConnectionMetadataWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "connection_last_open_at" field predicates.
+	ConnectionLastOpenAt      *time.Time  `json:"connectionLastOpenAt,omitempty"`
+	ConnectionLastOpenAtNEQ   *time.Time  `json:"connectionLastOpenAtNEQ,omitempty"`
+	ConnectionLastOpenAtIn    []time.Time `json:"connectionLastOpenAtIn,omitempty"`
+	ConnectionLastOpenAtNotIn []time.Time `json:"connectionLastOpenAtNotIn,omitempty"`
+	ConnectionLastOpenAtGT    *time.Time  `json:"connectionLastOpenAtGT,omitempty"`
+	ConnectionLastOpenAtGTE   *time.Time  `json:"connectionLastOpenAtGTE,omitempty"`
+	ConnectionLastOpenAtLT    *time.Time  `json:"connectionLastOpenAtLT,omitempty"`
+	ConnectionLastOpenAtLTE   *time.Time  `json:"connectionLastOpenAtLTE,omitempty"`
+
+	// "bazel_invocation" edge predicates.
+	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
+	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ConnectionMetadataWhereInput) AddPredicates(predicates ...predicate.ConnectionMetadata) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ConnectionMetadataWhereInput filter on the ConnectionMetadataQuery builder.
+func (i *ConnectionMetadataWhereInput) Filter(q *ConnectionMetadataQuery) (*ConnectionMetadataQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyConnectionMetadataWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyConnectionMetadataWhereInput is returned in case the ConnectionMetadataWhereInput is empty.
+var ErrEmptyConnectionMetadataWhereInput = errors.New("ent: empty predicate ConnectionMetadataWhereInput")
+
+// P returns a predicate for filtering connectionmetadataslice.
+// An error is returned if the input is empty or invalid.
+func (i *ConnectionMetadataWhereInput) P() (predicate.ConnectionMetadata, error) {
+	var predicates []predicate.ConnectionMetadata
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, connectionmetadata.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ConnectionMetadata, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, connectionmetadata.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ConnectionMetadata, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, connectionmetadata.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, connectionmetadata.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, connectionmetadata.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, connectionmetadata.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, connectionmetadata.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, connectionmetadata.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, connectionmetadata.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, connectionmetadata.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, connectionmetadata.IDLTE(*i.IDLTE))
+	}
+	if i.ConnectionLastOpenAt != nil {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtEQ(*i.ConnectionLastOpenAt))
+	}
+	if i.ConnectionLastOpenAtNEQ != nil {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtNEQ(*i.ConnectionLastOpenAtNEQ))
+	}
+	if len(i.ConnectionLastOpenAtIn) > 0 {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtIn(i.ConnectionLastOpenAtIn...))
+	}
+	if len(i.ConnectionLastOpenAtNotIn) > 0 {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtNotIn(i.ConnectionLastOpenAtNotIn...))
+	}
+	if i.ConnectionLastOpenAtGT != nil {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtGT(*i.ConnectionLastOpenAtGT))
+	}
+	if i.ConnectionLastOpenAtGTE != nil {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtGTE(*i.ConnectionLastOpenAtGTE))
+	}
+	if i.ConnectionLastOpenAtLT != nil {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtLT(*i.ConnectionLastOpenAtLT))
+	}
+	if i.ConnectionLastOpenAtLTE != nil {
+		predicates = append(predicates, connectionmetadata.ConnectionLastOpenAtLTE(*i.ConnectionLastOpenAtLTE))
+	}
+
+	if i.HasBazelInvocation != nil {
+		p := connectionmetadata.HasBazelInvocation()
+		if !*i.HasBazelInvocation {
+			p = connectionmetadata.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBazelInvocationWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasBazelInvocationWith))
+		for _, w := range i.HasBazelInvocationWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBazelInvocationWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, connectionmetadata.HasBazelInvocationWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyConnectionMetadataWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return connectionmetadata.And(predicates...), nil
 	}
 }
 

@@ -77,7 +77,7 @@ func (cmq *ConnectionMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery
 		step := sqlgraph.NewStep(
 			sqlgraph.From(connectionmetadata.Table, connectionmetadata.FieldID, selector),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, connectionmetadata.BazelInvocationTable, connectionmetadata.BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, connectionmetadata.BazelInvocationTable, connectionmetadata.BazelInvocationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cmq.driver.Dialect(), step)
 		return fromU, nil

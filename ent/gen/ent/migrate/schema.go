@@ -474,7 +474,7 @@ var (
 	ConnectionMetadataColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "connection_last_open_at", Type: field.TypeTime},
-		{Name: "bazel_invocation_connection_metadata", Type: field.TypeInt64},
+		{Name: "bazel_invocation_connection_metadata", Type: field.TypeInt64, Unique: true},
 	}
 	// ConnectionMetadataTable holds the schema information for the "connection_metadata" table.
 	ConnectionMetadataTable = &schema.Table{

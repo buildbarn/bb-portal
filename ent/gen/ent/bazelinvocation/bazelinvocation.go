@@ -443,17 +443,10 @@ func ByEventMetadataField(field string, opts ...sql.OrderTermOption) OrderOption
 	}
 }
 
-// ByConnectionMetadataCount orders the results by connection_metadata count.
-func ByConnectionMetadataCount(opts ...sql.OrderTermOption) OrderOption {
+// ByConnectionMetadataField orders the results by connection_metadata field.
+func ByConnectionMetadataField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newConnectionMetadataStep(), opts...)
-	}
-}
-
-// ByConnectionMetadata orders the results by connection_metadata terms.
-func ByConnectionMetadata(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newConnectionMetadataStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newConnectionMetadataStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -600,7 +593,7 @@ func newConnectionMetadataStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ConnectionMetadataInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ConnectionMetadataTable, ConnectionMetadataColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, ConnectionMetadataTable, ConnectionMetadataColumn),
 	)
 }
 func newConfigurationsStep() *sqlgraph.Step {

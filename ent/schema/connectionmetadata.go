@@ -1,9 +1,7 @@
 package schema
 
 import (
-	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
-	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
@@ -38,13 +36,6 @@ func (ConnectionMetadata) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Edges("bazel_invocation").
 			Unique(),
-	}
-}
-
-// Annotations for basel invocation.
-func (ConnectionMetadata) Annotations() []schema.Annotation {
-	return []schema.Annotation{
-		entgql.Skip(),
 	}
 }
 

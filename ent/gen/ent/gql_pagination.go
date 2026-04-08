@@ -24,6 +24,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -2721,6 +2722,255 @@ func (c *Configuration) ToEdge(order *ConfigurationOrder) *ConfigurationEdge {
 	return &ConfigurationEdge{
 		Node:   c,
 		Cursor: order.Field.toCursor(c),
+	}
+}
+
+// ConnectionMetadataEdge is the edge representation of ConnectionMetadata.
+type ConnectionMetadataEdge struct {
+	Node   *ConnectionMetadata `json:"node"`
+	Cursor Cursor              `json:"cursor"`
+}
+
+// ConnectionMetadataConnection is the connection containing edges to ConnectionMetadata.
+type ConnectionMetadataConnection struct {
+	Edges      []*ConnectionMetadataEdge `json:"edges"`
+	PageInfo   PageInfo                  `json:"pageInfo"`
+	TotalCount int                       `json:"totalCount"`
+}
+
+func (c *ConnectionMetadataConnection) build(nodes []*ConnectionMetadata, pager *connectionmetadataPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ConnectionMetadata
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ConnectionMetadata {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ConnectionMetadata {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ConnectionMetadataEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ConnectionMetadataEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ConnectionMetadataPaginateOption enables pagination customization.
+type ConnectionMetadataPaginateOption func(*connectionmetadataPager) error
+
+// WithConnectionMetadataOrder configures pagination ordering.
+func WithConnectionMetadataOrder(order *ConnectionMetadataOrder) ConnectionMetadataPaginateOption {
+	if order == nil {
+		order = DefaultConnectionMetadataOrder
+	}
+	o := *order
+	return func(pager *connectionmetadataPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultConnectionMetadataOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithConnectionMetadataFilter configures pagination filter.
+func WithConnectionMetadataFilter(filter func(*ConnectionMetadataQuery) (*ConnectionMetadataQuery, error)) ConnectionMetadataPaginateOption {
+	return func(pager *connectionmetadataPager) error {
+		if filter == nil {
+			return errors.New("ConnectionMetadataQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type connectionmetadataPager struct {
+	reverse bool
+	order   *ConnectionMetadataOrder
+	filter  func(*ConnectionMetadataQuery) (*ConnectionMetadataQuery, error)
+}
+
+func newConnectionMetadataPager(opts []ConnectionMetadataPaginateOption, reverse bool) (*connectionmetadataPager, error) {
+	pager := &connectionmetadataPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultConnectionMetadataOrder
+	}
+	return pager, nil
+}
+
+func (p *connectionmetadataPager) applyFilter(query *ConnectionMetadataQuery) (*ConnectionMetadataQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *connectionmetadataPager) toCursor(cm *ConnectionMetadata) Cursor {
+	return p.order.Field.toCursor(cm)
+}
+
+func (p *connectionmetadataPager) applyCursors(query *ConnectionMetadataQuery, after, before *Cursor) (*ConnectionMetadataQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultConnectionMetadataOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *connectionmetadataPager) applyOrder(query *ConnectionMetadataQuery) *ConnectionMetadataQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultConnectionMetadataOrder.Field {
+		query = query.Order(DefaultConnectionMetadataOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *connectionmetadataPager) orderExpr(query *ConnectionMetadataQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultConnectionMetadataOrder.Field {
+			b.Comma().Ident(DefaultConnectionMetadataOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ConnectionMetadata.
+func (cm *ConnectionMetadataQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ConnectionMetadataPaginateOption,
+) (*ConnectionMetadataConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newConnectionMetadataPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if cm, err = pager.applyFilter(cm); err != nil {
+		return nil, err
+	}
+	conn := &ConnectionMetadataConnection{Edges: []*ConnectionMetadataEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := cm.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if cm, err = pager.applyCursors(cm, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		cm.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := cm.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	cm = pager.applyOrder(cm)
+	nodes, err := cm.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// ConnectionMetadataOrderField defines the ordering field of ConnectionMetadata.
+type ConnectionMetadataOrderField struct {
+	// Value extracts the ordering value from the given ConnectionMetadata.
+	Value    func(*ConnectionMetadata) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) connectionmetadata.OrderOption
+	toCursor func(*ConnectionMetadata) Cursor
+}
+
+// ConnectionMetadataOrder defines the ordering of ConnectionMetadata.
+type ConnectionMetadataOrder struct {
+	Direction OrderDirection                `json:"direction"`
+	Field     *ConnectionMetadataOrderField `json:"field"`
+}
+
+// DefaultConnectionMetadataOrder is the default ordering of ConnectionMetadata.
+var DefaultConnectionMetadataOrder = &ConnectionMetadataOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ConnectionMetadataOrderField{
+		Value: func(cm *ConnectionMetadata) (ent.Value, error) {
+			return cm.ID, nil
+		},
+		column: connectionmetadata.FieldID,
+		toTerm: connectionmetadata.ByID,
+		toCursor: func(cm *ConnectionMetadata) Cursor {
+			return Cursor{ID: cm.ID}
+		},
+	},
+}
+
+// ToEdge converts ConnectionMetadata into ConnectionMetadataEdge.
+func (cm *ConnectionMetadata) ToEdge(order *ConnectionMetadataOrder) *ConnectionMetadataEdge {
+	if order == nil {
+		order = DefaultConnectionMetadataOrder
+	}
+	return &ConnectionMetadataEdge{
+		Node:   cm,
+		Cursor: order.Field.toCursor(cm),
 	}
 }
 

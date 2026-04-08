@@ -1618,7 +1618,7 @@ func (c *BazelInvocationClient) QueryConnectionMetadata(bi *BazelInvocation) *Co
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(connectionmetadata.Table, connectionmetadata.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConnectionMetadataTable, bazelinvocation.ConnectionMetadataColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.ConnectionMetadataTable, bazelinvocation.ConnectionMetadataColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -2557,7 +2557,7 @@ func (c *ConnectionMetadataClient) QueryBazelInvocation(cm *ConnectionMetadata) 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(connectionmetadata.Table, connectionmetadata.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, connectionmetadata.BazelInvocationTable, connectionmetadata.BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, connectionmetadata.BazelInvocationTable, connectionmetadata.BazelInvocationColumn),
 		)
 		fromV = sqlgraph.Neighbors(cm.driver.Dialect(), step)
 		return fromV, nil

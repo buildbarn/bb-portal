@@ -21,19 +21,10 @@ type BazelCommand {
   explicitStartupOptions: [String]
 }
 
-extend type BazelInvocation {
-  bazelCommand: BazelCommand!
-}
-
-
 type User {
   id: ID!
   Email: String!
   LDAP: String!
-}
-
-extend type BazelInvocation {
-  user: User
 }
 
 type Profile {
@@ -45,7 +36,13 @@ type Profile {
 }
 
 extend type BazelInvocation {
+  bazelCommand: BazelCommand!
+  user: User
   profile: Profile
+}
+
+extend type ConnectionMetadata {
+  timeSinceLastConnectionMillis: Int! @goField(forceResolver: true)
 }
 
 extend type Target {
