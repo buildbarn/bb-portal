@@ -1,6 +1,6 @@
 module github.com/buildbarn/bb-portal
 
-go 1.25.8
+go 1.25.9
 
 // Existing patches don't apply against newer go-fuse.
 replace github.com/hanwen/go-fuse/v2 => github.com/hanwen/go-fuse/v2 v2.5.1
