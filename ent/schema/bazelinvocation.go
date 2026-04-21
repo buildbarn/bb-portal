@@ -45,11 +45,8 @@ func (BazelInvocation) Fields() []ent.Field {
 		// A step label pulled from the metada
 		field.String("step_label").Optional(),
 
-		// Email address of the user who launched the invocation if provided.
-		field.String("user_email").Optional(),
-
-		// Ldap (username) of the user who launched the invocation if provided.
-		field.String("user_ldap").Optional().Annotations(entgql.OrderField("USER_LDAP")),
+		// Username of the user who launched the invocation if provided.
+		field.String("username").Optional().Annotations(entgql.OrderField("USERNAME")),
 
 		// The host name from the system where the invocation was launched
 		field.String("hostname").Optional(),

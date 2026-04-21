@@ -158,7 +158,7 @@ export const userColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
     return (
       <UserStatusIndicator
         authenticatedUser={record.authenticatedUser}
-        user={record.user}
+        username={record.username || undefined}
       />
     );
   },
@@ -172,13 +172,16 @@ export const userColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
     if (value.length === 0) {
       return undefined;
     }
-    const user = value[0] as string;
+    const username = value[0] as string;
     return [
       {
         or: [
-          { hasAuthenticatedUserWith: [{ displayNameContains: user }] },
+          { hasAuthenticatedUserWith: [{ displayNameContainsFold: username }] },
           {
-            and: [{ userLdapContains: user }, { hasAuthenticatedUser: false }],
+            and: [
+              { usernameContainsFold: username },
+              { hasAuthenticatedUser: false },
+            ],
           },
         ],
       },

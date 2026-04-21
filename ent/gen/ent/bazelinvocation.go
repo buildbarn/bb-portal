@@ -43,10 +43,8 @@ type BazelInvocation struct {
 	BepCompleted bool `json:"bep_completed,omitempty"`
 	// StepLabel holds the value of the "step_label" field.
 	StepLabel string `json:"step_label,omitempty"`
-	// UserEmail holds the value of the "user_email" field.
-	UserEmail string `json:"user_email,omitempty"`
-	// UserLdap holds the value of the "user_ldap" field.
-	UserLdap string `json:"user_ldap,omitempty"`
+	// Username holds the value of the "username" field.
+	Username string `json:"username,omitempty"`
 	// Hostname holds the value of the "hostname" field.
 	Hostname string `json:"hostname,omitempty"`
 	// IsCiWorker holds the value of the "is_ci_worker" field.
@@ -280,7 +278,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches, bazelinvocation.FieldExitCodeCode:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldHostname, bazelinvocation.FieldProfileName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUsername, bazelinvocation.FieldHostname, bazelinvocation.FieldProfileName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldCreatedTimestamp, bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -362,17 +360,11 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.StepLabel = value.String
 			}
-		case bazelinvocation.FieldUserEmail:
+		case bazelinvocation.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_email", values[i])
+				return fmt.Errorf("unexpected type %T for field username", values[i])
 			} else if value.Valid {
-				bi.UserEmail = value.String
-			}
-		case bazelinvocation.FieldUserLdap:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_ldap", values[i])
-			} else if value.Valid {
-				bi.UserLdap = value.String
+				bi.Username = value.String
 			}
 		case bazelinvocation.FieldHostname:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -617,11 +609,8 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString("step_label=")
 	builder.WriteString(bi.StepLabel)
 	builder.WriteString(", ")
-	builder.WriteString("user_email=")
-	builder.WriteString(bi.UserEmail)
-	builder.WriteString(", ")
-	builder.WriteString("user_ldap=")
-	builder.WriteString(bi.UserLdap)
+	builder.WriteString("username=")
+	builder.WriteString(bi.Username)
 	builder.WriteString(", ")
 	builder.WriteString("hostname=")
 	builder.WriteString(bi.Hostname)

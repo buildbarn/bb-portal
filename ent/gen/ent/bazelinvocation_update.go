@@ -172,43 +172,23 @@ func (biu *BazelInvocationUpdate) ClearStepLabel() *BazelInvocationUpdate {
 	return biu
 }
 
-// SetUserEmail sets the "user_email" field.
-func (biu *BazelInvocationUpdate) SetUserEmail(s string) *BazelInvocationUpdate {
-	biu.mutation.SetUserEmail(s)
+// SetUsername sets the "username" field.
+func (biu *BazelInvocationUpdate) SetUsername(s string) *BazelInvocationUpdate {
+	biu.mutation.SetUsername(s)
 	return biu
 }
 
-// SetNillableUserEmail sets the "user_email" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableUserEmail(s *string) *BazelInvocationUpdate {
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableUsername(s *string) *BazelInvocationUpdate {
 	if s != nil {
-		biu.SetUserEmail(*s)
+		biu.SetUsername(*s)
 	}
 	return biu
 }
 
-// ClearUserEmail clears the value of the "user_email" field.
-func (biu *BazelInvocationUpdate) ClearUserEmail() *BazelInvocationUpdate {
-	biu.mutation.ClearUserEmail()
-	return biu
-}
-
-// SetUserLdap sets the "user_ldap" field.
-func (biu *BazelInvocationUpdate) SetUserLdap(s string) *BazelInvocationUpdate {
-	biu.mutation.SetUserLdap(s)
-	return biu
-}
-
-// SetNillableUserLdap sets the "user_ldap" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableUserLdap(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetUserLdap(*s)
-	}
-	return biu
-}
-
-// ClearUserLdap clears the value of the "user_ldap" field.
-func (biu *BazelInvocationUpdate) ClearUserLdap() *BazelInvocationUpdate {
-	biu.mutation.ClearUserLdap()
+// ClearUsername clears the value of the "username" field.
+func (biu *BazelInvocationUpdate) ClearUsername() *BazelInvocationUpdate {
+	biu.mutation.ClearUsername()
 	return biu
 }
 
@@ -974,17 +954,11 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if biu.mutation.StepLabelCleared() {
 		_spec.ClearField(bazelinvocation.FieldStepLabel, field.TypeString)
 	}
-	if value, ok := biu.mutation.UserEmail(); ok {
-		_spec.SetField(bazelinvocation.FieldUserEmail, field.TypeString, value)
+	if value, ok := biu.mutation.Username(); ok {
+		_spec.SetField(bazelinvocation.FieldUsername, field.TypeString, value)
 	}
-	if biu.mutation.UserEmailCleared() {
-		_spec.ClearField(bazelinvocation.FieldUserEmail, field.TypeString)
-	}
-	if value, ok := biu.mutation.UserLdap(); ok {
-		_spec.SetField(bazelinvocation.FieldUserLdap, field.TypeString, value)
-	}
-	if biu.mutation.UserLdapCleared() {
-		_spec.ClearField(bazelinvocation.FieldUserLdap, field.TypeString)
+	if biu.mutation.UsernameCleared() {
+		_spec.ClearField(bazelinvocation.FieldUsername, field.TypeString)
 	}
 	if value, ok := biu.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
@@ -1732,43 +1706,23 @@ func (biuo *BazelInvocationUpdateOne) ClearStepLabel() *BazelInvocationUpdateOne
 	return biuo
 }
 
-// SetUserEmail sets the "user_email" field.
-func (biuo *BazelInvocationUpdateOne) SetUserEmail(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetUserEmail(s)
+// SetUsername sets the "username" field.
+func (biuo *BazelInvocationUpdateOne) SetUsername(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetUsername(s)
 	return biuo
 }
 
-// SetNillableUserEmail sets the "user_email" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableUserEmail(s *string) *BazelInvocationUpdateOne {
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableUsername(s *string) *BazelInvocationUpdateOne {
 	if s != nil {
-		biuo.SetUserEmail(*s)
+		biuo.SetUsername(*s)
 	}
 	return biuo
 }
 
-// ClearUserEmail clears the value of the "user_email" field.
-func (biuo *BazelInvocationUpdateOne) ClearUserEmail() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearUserEmail()
-	return biuo
-}
-
-// SetUserLdap sets the "user_ldap" field.
-func (biuo *BazelInvocationUpdateOne) SetUserLdap(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetUserLdap(s)
-	return biuo
-}
-
-// SetNillableUserLdap sets the "user_ldap" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableUserLdap(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetUserLdap(*s)
-	}
-	return biuo
-}
-
-// ClearUserLdap clears the value of the "user_ldap" field.
-func (biuo *BazelInvocationUpdateOne) ClearUserLdap() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearUserLdap()
+// ClearUsername clears the value of the "username" field.
+func (biuo *BazelInvocationUpdateOne) ClearUsername() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearUsername()
 	return biuo
 }
 
@@ -2564,17 +2518,11 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if biuo.mutation.StepLabelCleared() {
 		_spec.ClearField(bazelinvocation.FieldStepLabel, field.TypeString)
 	}
-	if value, ok := biuo.mutation.UserEmail(); ok {
-		_spec.SetField(bazelinvocation.FieldUserEmail, field.TypeString, value)
+	if value, ok := biuo.mutation.Username(); ok {
+		_spec.SetField(bazelinvocation.FieldUsername, field.TypeString, value)
 	}
-	if biuo.mutation.UserEmailCleared() {
-		_spec.ClearField(bazelinvocation.FieldUserEmail, field.TypeString)
-	}
-	if value, ok := biuo.mutation.UserLdap(); ok {
-		_spec.SetField(bazelinvocation.FieldUserLdap, field.TypeString, value)
-	}
-	if biuo.mutation.UserLdapCleared() {
-		_spec.ClearField(bazelinvocation.FieldUserLdap, field.TypeString)
+	if biuo.mutation.UsernameCleared() {
+		_spec.ClearField(bazelinvocation.FieldUsername, field.TypeString)
 	}
 	if value, ok := biuo.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)

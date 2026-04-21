@@ -9,9 +9,3 @@ type Profile struct {
 	SizeInBytes    int    `json:"sizeInBytes"`
 	DigestFunction string `json:"digestFunction"`
 }
-
-type User struct {
-	ID    string `json:"id"`
-	Email string `json:"Email"`
-	Ldap  string `json:"LDAP"`
-}

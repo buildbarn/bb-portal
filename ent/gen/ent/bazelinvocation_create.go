@@ -134,30 +134,16 @@ func (bic *BazelInvocationCreate) SetNillableStepLabel(s *string) *BazelInvocati
 	return bic
 }
 
-// SetUserEmail sets the "user_email" field.
-func (bic *BazelInvocationCreate) SetUserEmail(s string) *BazelInvocationCreate {
-	bic.mutation.SetUserEmail(s)
+// SetUsername sets the "username" field.
+func (bic *BazelInvocationCreate) SetUsername(s string) *BazelInvocationCreate {
+	bic.mutation.SetUsername(s)
 	return bic
 }
 
-// SetNillableUserEmail sets the "user_email" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableUserEmail(s *string) *BazelInvocationCreate {
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableUsername(s *string) *BazelInvocationCreate {
 	if s != nil {
-		bic.SetUserEmail(*s)
-	}
-	return bic
-}
-
-// SetUserLdap sets the "user_ldap" field.
-func (bic *BazelInvocationCreate) SetUserLdap(s string) *BazelInvocationCreate {
-	bic.mutation.SetUserLdap(s)
-	return bic
-}
-
-// SetNillableUserLdap sets the "user_ldap" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableUserLdap(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetUserLdap(*s)
+		bic.SetUsername(*s)
 	}
 	return bic
 }
@@ -721,13 +707,9 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldStepLabel, field.TypeString, value)
 		_node.StepLabel = value
 	}
-	if value, ok := bic.mutation.UserEmail(); ok {
-		_spec.SetField(bazelinvocation.FieldUserEmail, field.TypeString, value)
-		_node.UserEmail = value
-	}
-	if value, ok := bic.mutation.UserLdap(); ok {
-		_spec.SetField(bazelinvocation.FieldUserLdap, field.TypeString, value)
-		_node.UserLdap = value
+	if value, ok := bic.mutation.Username(); ok {
+		_spec.SetField(bazelinvocation.FieldUsername, field.TypeString, value)
+		_node.Username = value
 	}
 	if value, ok := bic.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
@@ -1178,39 +1160,21 @@ func (u *BazelInvocationUpsert) ClearStepLabel() *BazelInvocationUpsert {
 	return u
 }
 
-// SetUserEmail sets the "user_email" field.
-func (u *BazelInvocationUpsert) SetUserEmail(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldUserEmail, v)
+// SetUsername sets the "username" field.
+func (u *BazelInvocationUpsert) SetUsername(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldUsername, v)
 	return u
 }
 
-// UpdateUserEmail sets the "user_email" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateUserEmail() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldUserEmail)
+// UpdateUsername sets the "username" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateUsername() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldUsername)
 	return u
 }
 
-// ClearUserEmail clears the value of the "user_email" field.
-func (u *BazelInvocationUpsert) ClearUserEmail() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldUserEmail)
-	return u
-}
-
-// SetUserLdap sets the "user_ldap" field.
-func (u *BazelInvocationUpsert) SetUserLdap(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldUserLdap, v)
-	return u
-}
-
-// UpdateUserLdap sets the "user_ldap" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateUserLdap() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldUserLdap)
-	return u
-}
-
-// ClearUserLdap clears the value of the "user_ldap" field.
-func (u *BazelInvocationUpsert) ClearUserLdap() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldUserLdap)
+// ClearUsername clears the value of the "username" field.
+func (u *BazelInvocationUpsert) ClearUsername() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldUsername)
 	return u
 }
 
@@ -1641,45 +1605,24 @@ func (u *BazelInvocationUpsertOne) ClearStepLabel() *BazelInvocationUpsertOne {
 	})
 }
 
-// SetUserEmail sets the "user_email" field.
-func (u *BazelInvocationUpsertOne) SetUserEmail(v string) *BazelInvocationUpsertOne {
+// SetUsername sets the "username" field.
+func (u *BazelInvocationUpsertOne) SetUsername(v string) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetUserEmail(v)
+		s.SetUsername(v)
 	})
 }
 
-// UpdateUserEmail sets the "user_email" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateUserEmail() *BazelInvocationUpsertOne {
+// UpdateUsername sets the "username" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateUsername() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateUserEmail()
+		s.UpdateUsername()
 	})
 }
 
-// ClearUserEmail clears the value of the "user_email" field.
-func (u *BazelInvocationUpsertOne) ClearUserEmail() *BazelInvocationUpsertOne {
+// ClearUsername clears the value of the "username" field.
+func (u *BazelInvocationUpsertOne) ClearUsername() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearUserEmail()
-	})
-}
-
-// SetUserLdap sets the "user_ldap" field.
-func (u *BazelInvocationUpsertOne) SetUserLdap(v string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetUserLdap(v)
-	})
-}
-
-// UpdateUserLdap sets the "user_ldap" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateUserLdap() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateUserLdap()
-	})
-}
-
-// ClearUserLdap clears the value of the "user_ldap" field.
-func (u *BazelInvocationUpsertOne) ClearUserLdap() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearUserLdap()
+		s.ClearUsername()
 	})
 }
 
@@ -2316,45 +2259,24 @@ func (u *BazelInvocationUpsertBulk) ClearStepLabel() *BazelInvocationUpsertBulk 
 	})
 }
 
-// SetUserEmail sets the "user_email" field.
-func (u *BazelInvocationUpsertBulk) SetUserEmail(v string) *BazelInvocationUpsertBulk {
+// SetUsername sets the "username" field.
+func (u *BazelInvocationUpsertBulk) SetUsername(v string) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetUserEmail(v)
+		s.SetUsername(v)
 	})
 }
 
-// UpdateUserEmail sets the "user_email" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateUserEmail() *BazelInvocationUpsertBulk {
+// UpdateUsername sets the "username" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateUsername() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateUserEmail()
+		s.UpdateUsername()
 	})
 }
 
-// ClearUserEmail clears the value of the "user_email" field.
-func (u *BazelInvocationUpsertBulk) ClearUserEmail() *BazelInvocationUpsertBulk {
+// ClearUsername clears the value of the "username" field.
+func (u *BazelInvocationUpsertBulk) ClearUsername() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearUserEmail()
-	})
-}
-
-// SetUserLdap sets the "user_ldap" field.
-func (u *BazelInvocationUpsertBulk) SetUserLdap(v string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetUserLdap(v)
-	})
-}
-
-// UpdateUserLdap sets the "user_ldap" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateUserLdap() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateUserLdap()
-	})
-}
-
-// ClearUserLdap clears the value of the "user_ldap" field.
-func (u *BazelInvocationUpsertBulk) ClearUserLdap() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearUserLdap()
+		s.ClearUsername()
 	})
 }
 

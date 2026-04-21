@@ -10,12 +10,6 @@ extend type Query {
   ): Target
 }
 
-type User {
-  id: ID!
-  Email: String!
-  LDAP: String!
-}
-
 type Profile {
   id: ID!
   name: String!
@@ -25,7 +19,6 @@ type Profile {
 }
 
 extend type BazelInvocation {
-  user: User
   profile: Profile
 }
 

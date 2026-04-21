@@ -1841,17 +1841,17 @@ var (
 			}
 		},
 	}
-	// BazelInvocationOrderFieldUserLdap orders BazelInvocation by user_ldap.
-	BazelInvocationOrderFieldUserLdap = &BazelInvocationOrderField{
+	// BazelInvocationOrderFieldUsername orders BazelInvocation by username.
+	BazelInvocationOrderFieldUsername = &BazelInvocationOrderField{
 		Value: func(bi *BazelInvocation) (ent.Value, error) {
-			return bi.UserLdap, nil
+			return bi.Username, nil
 		},
-		column: bazelinvocation.FieldUserLdap,
-		toTerm: bazelinvocation.ByUserLdap,
+		column: bazelinvocation.FieldUsername,
+		toTerm: bazelinvocation.ByUsername,
 		toCursor: func(bi *BazelInvocation) Cursor {
 			return Cursor{
 				ID:    bi.ID,
-				Value: bi.UserLdap,
+				Value: bi.Username,
 			}
 		},
 	}
@@ -1863,8 +1863,8 @@ func (f BazelInvocationOrderField) String() string {
 	switch f.column {
 	case BazelInvocationOrderFieldStartedAt.column:
 		str = "STARTED_AT"
-	case BazelInvocationOrderFieldUserLdap.column:
-		str = "USER_LDAP"
+	case BazelInvocationOrderFieldUsername.column:
+		str = "USERNAME"
 	}
 	return str
 }
@@ -1883,8 +1883,8 @@ func (f *BazelInvocationOrderField) UnmarshalGQL(v interface{}) error {
 	switch str {
 	case "STARTED_AT":
 		*f = *BazelInvocationOrderFieldStartedAt
-	case "USER_LDAP":
-		*f = *BazelInvocationOrderFieldUserLdap
+	case "USERNAME":
+		*f = *BazelInvocationOrderFieldUsername
 	default:
 		return fmt.Errorf("%s is not a valid BazelInvocationOrderField", str)
 	}

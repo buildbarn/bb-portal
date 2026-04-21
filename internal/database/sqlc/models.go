@@ -95,8 +95,7 @@ type BazelInvocation struct {
 	PatchsetNumber                    sql.NullInt64
 	BepCompleted                      bool
 	StepLabel                         sql.NullString
-	UserEmail                         sql.NullString
-	UserLdap                          sql.NullString
+	Username                          sql.NullString
 	Hostname                          sql.NullString
 	IsCiWorker                        sql.NullBool
 	NumFetches                        sql.NullInt64

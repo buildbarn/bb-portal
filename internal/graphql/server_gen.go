@@ -213,9 +213,7 @@ type ComplexityRoot struct {
 		SourceControl        func(childComplexity int) int
 		StartedAt            func(childComplexity int) int
 		StepLabel            func(childComplexity int) int
-		User                 func(childComplexity int) int
-		UserEmail            func(childComplexity int) int
-		UserLdap             func(childComplexity int) int
+		Username             func(childComplexity int) int
 	}
 
 	BazelInvocationConnection struct {
@@ -518,12 +516,6 @@ type ComplexityRoot struct {
 		Metrics                   func(childComplexity int) int
 		WallTimeInMs              func(childComplexity int) int
 	}
-
-	User struct {
-		Email func(childComplexity int) int
-		ID    func(childComplexity int) int
-		Ldap  func(childComplexity int) int
-	}
 }
 
 type ActionResolver interface {
@@ -551,7 +543,6 @@ type BazelInvocationResolver interface {
 	OriginalCommandLine(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 	OptionsParsed(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 
-	User(ctx context.Context, obj *ent.BazelInvocation) (*model.User, error)
 	Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error)
 }
 type BuildResolver interface {
@@ -1547,26 +1538,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.BazelInvocation.StepLabel(childComplexity), true
 
-	case "BazelInvocation.user":
-		if e.complexity.BazelInvocation.User == nil {
+	case "BazelInvocation.username":
+		if e.complexity.BazelInvocation.Username == nil {
 			break
 		}
 
-		return e.complexity.BazelInvocation.User(childComplexity), true
-
-	case "BazelInvocation.userEmail":
-		if e.complexity.BazelInvocation.UserEmail == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocation.UserEmail(childComplexity), true
-
-	case "BazelInvocation.userLdap":
-		if e.complexity.BazelInvocation.UserLdap == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocation.UserLdap(childComplexity), true
+		return e.complexity.BazelInvocation.Username(childComplexity), true
 
 	case "BazelInvocationConnection.edges":
 		if e.complexity.BazelInvocationConnection.Edges == nil {
@@ -3041,27 +3018,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.TimingMetrics.WallTimeInMs(childComplexity), true
-
-	case "User.Email":
-		if e.complexity.User.Email == nil {
-			break
-		}
-
-		return e.complexity.User.Email(childComplexity), true
-
-	case "User.id":
-		if e.complexity.User.ID == nil {
-			break
-		}
-
-		return e.complexity.User.ID(childComplexity), true
-
-	case "User.LDAP":
-		if e.complexity.User.Ldap == nil {
-			break
-		}
-
-		return e.complexity.User.Ldap(childComplexity), true
 
 	}
 	return 0, false
@@ -5428,10 +5384,8 @@ func (ec *executionContext) fieldContext_Action_bazelInvocation(_ context.Contex
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -5468,8 +5422,6 @@ func (ec *executionContext) fieldContext_Action_bazelInvocation(_ context.Contex
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -7787,8 +7739,8 @@ func (ec *executionContext) fieldContext_BazelInvocation_stepLabel(_ context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _BazelInvocation_userEmail(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocation_userEmail(ctx, field)
+func (ec *executionContext) _BazelInvocation_username(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BazelInvocation_username(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7801,7 +7753,7 @@ func (ec *executionContext) _BazelInvocation_userEmail(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserEmail, nil
+		return obj.Username, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7815,48 +7767,7 @@ func (ec *executionContext) _BazelInvocation_userEmail(ctx context.Context, fiel
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_BazelInvocation_userEmail(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocation",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _BazelInvocation_userLdap(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocation_userLdap(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UserLdap, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocation_userLdap(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_BazelInvocation_username(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "BazelInvocation",
 		Field:      field,
@@ -8800,55 +8711,6 @@ func (ec *executionContext) fieldContext_BazelInvocation_sourceControl(_ context
 	return fc, nil
 }
 
-func (ec *executionContext) _BazelInvocation_user(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocation_user(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.BazelInvocation().User(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.User)
-	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐUser(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocation_user(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_User_id(ctx, field)
-			case "Email":
-				return ec.fieldContext_User_Email(ctx, field)
-			case "LDAP":
-				return ec.fieldContext_User_LDAP(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _BazelInvocation_profile(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocation_profile(ctx, field)
 	if err != nil {
@@ -9099,10 +8961,8 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -9139,8 +8999,6 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -10555,10 +10413,8 @@ func (ec *executionContext) fieldContext_Configuration_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -10595,8 +10451,6 @@ func (ec *executionContext) fieldContext_Configuration_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -10895,10 +10749,8 @@ func (ec *executionContext) fieldContext_ConnectionMetadata_bazelInvocation(_ co
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -10935,8 +10787,6 @@ func (ec *executionContext) fieldContext_ConnectionMetadata_bazelInvocation(_ co
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -11311,10 +11161,8 @@ func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -11351,8 +11199,6 @@ func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -11868,10 +11714,8 @@ func (ec *executionContext) fieldContext_InvocationTarget_bazelInvocation(_ cont
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -11908,8 +11752,6 @@ func (ec *executionContext) fieldContext_InvocationTarget_bazelInvocation(_ cont
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -12742,10 +12584,8 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -12782,8 +12622,6 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -14419,10 +14257,8 @@ func (ec *executionContext) fieldContext_Query_getBazelInvocation(ctx context.Co
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -14459,8 +14295,6 @@ func (ec *executionContext) fieldContext_Query_getBazelInvocation(ctx context.Co
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -15728,10 +15562,8 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
 			case "stepLabel":
 				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
-			case "userLdap":
-				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "username":
+				return ec.fieldContext_BazelInvocation_username(ctx, field)
 			case "hostname":
 				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
 			case "isCiWorker":
@@ -15768,8 +15600,6 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 			case "sourceControl":
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
-			case "user":
-				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
 			}
@@ -19030,138 +18860,6 @@ func (ec *executionContext) fieldContext_TimingMetrics_metrics(_ context.Context
 				return ec.fieldContext_Metrics_buildGraphMetrics(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Metrics", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_User_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _User_Email(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_Email(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Email, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_User_Email(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _User_LDAP(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_LDAP(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Ldap, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_User_LDAP(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -25166,7 +24864,7 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasAuthenticatedUser", "hasAuthenticatedUserWith", "hasConnectionMetadata", "hasConnectionMetadataWith", "hasConfigurations", "hasConfigurationsWith", "hasActions", "hasActionsWith", "hasMetrics", "hasMetricsWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "username", "usernameNEQ", "usernameIn", "usernameNotIn", "usernameGT", "usernameGTE", "usernameLT", "usernameLTE", "usernameContains", "usernameHasPrefix", "usernameHasSuffix", "usernameIsNil", "usernameNotNil", "usernameEqualFold", "usernameContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasAuthenticatedUser", "hasAuthenticatedUserWith", "hasConnectionMetadata", "hasConnectionMetadataWith", "hasConfigurations", "hasConfigurationsWith", "hasActions", "hasActionsWith", "hasMetrics", "hasMetricsWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -25721,216 +25419,111 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 				return it, err
 			}
 			it.StepLabelContainsFold = data
-		case "userEmail":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmail"))
+		case "username":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("username"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmail = data
-		case "userEmailNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailNEQ"))
+			it.Username = data
+		case "usernameNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameNEQ"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailNEQ = data
-		case "userEmailIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailIn"))
+			it.UsernameNEQ = data
+		case "usernameIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailIn = data
-		case "userEmailNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailNotIn"))
+			it.UsernameIn = data
+		case "usernameNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameNotIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailNotIn = data
-		case "userEmailGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailGT"))
+			it.UsernameNotIn = data
+		case "usernameGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameGT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailGT = data
-		case "userEmailGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailGTE"))
+			it.UsernameGT = data
+		case "usernameGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameGTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailGTE = data
-		case "userEmailLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailLT"))
+			it.UsernameGTE = data
+		case "usernameLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameLT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailLT = data
-		case "userEmailLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailLTE"))
+			it.UsernameLT = data
+		case "usernameLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameLTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailLTE = data
-		case "userEmailContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailContains"))
+			it.UsernameLTE = data
+		case "usernameContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameContains"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailContains = data
-		case "userEmailHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailHasPrefix"))
+			it.UsernameContains = data
+		case "usernameHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameHasPrefix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailHasPrefix = data
-		case "userEmailHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailHasSuffix"))
+			it.UsernameHasPrefix = data
+		case "usernameHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameHasSuffix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailHasSuffix = data
-		case "userEmailIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailIsNil"))
+			it.UsernameHasSuffix = data
+		case "usernameIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameIsNil"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailIsNil = data
-		case "userEmailNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailNotNil"))
+			it.UsernameIsNil = data
+		case "usernameNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameNotNil"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailNotNil = data
-		case "userEmailEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailEqualFold"))
+			it.UsernameNotNil = data
+		case "usernameEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameEqualFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailEqualFold = data
-		case "userEmailContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmailContainsFold"))
+			it.UsernameEqualFold = data
+		case "usernameContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usernameContainsFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserEmailContainsFold = data
-		case "userLdap":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdap"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdap = data
-		case "userLdapNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapNEQ = data
-		case "userLdapIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapIn = data
-		case "userLdapNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapNotIn = data
-		case "userLdapGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapGT = data
-		case "userLdapGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapGTE = data
-		case "userLdapLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapLT = data
-		case "userLdapLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapLTE = data
-		case "userLdapContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapContains = data
-		case "userLdapHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapHasPrefix = data
-		case "userLdapHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapHasSuffix = data
-		case "userLdapIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapIsNil = data
-		case "userLdapNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapNotNil = data
-		case "userLdapEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapEqualFold = data
-		case "userLdapContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userLdapContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserLdapContainsFold = data
+			it.UsernameContainsFold = data
 		case "hostname":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hostname"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -37853,10 +37446,8 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 			}
 		case "stepLabel":
 			out.Values[i] = ec._BazelInvocation_stepLabel(ctx, field, obj)
-		case "userEmail":
-			out.Values[i] = ec._BazelInvocation_userEmail(ctx, field, obj)
-		case "userLdap":
-			out.Values[i] = ec._BazelInvocation_userLdap(ctx, field, obj)
+		case "username":
+			out.Values[i] = ec._BazelInvocation_username(ctx, field, obj)
 		case "hostname":
 			out.Values[i] = ec._BazelInvocation_hostname(ctx, field, obj)
 		case "isCiWorker":
@@ -38248,39 +37839,6 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 					}
 				}()
 				res = ec._BazelInvocation_sourceControl(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "user":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._BazelInvocation_user(ctx, field, obj)
 				return res
 			}
 
@@ -42284,55 +41842,6 @@ func (ec *executionContext) _TimingMetrics(ctx context.Context, sel ast.Selectio
 	return out
 }
 
-var userImplementors = []string{"User"}
-
-func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *model.User) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, userImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("User")
-		case "id":
-			out.Values[i] = ec._User_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "Email":
-			out.Values[i] = ec._User_Email(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "LDAP":
-			out.Values[i] = ec._User_LDAP(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 var __DirectiveImplementors = []string{"__Directive"}
 
 func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionSet, obj *introspection.Directive) graphql.Marshaler {
@@ -46002,13 +45511,6 @@ func (ec *executionContext) marshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(
 	_ = ctx
 	res := uuidgql.MarshalUUID(*v)
 	return res
-}
-
-func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._User(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

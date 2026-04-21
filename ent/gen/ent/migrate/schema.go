@@ -226,8 +226,7 @@ var (
 		{Name: "patchset_number", Type: field.TypeInt, Nullable: true},
 		{Name: "bep_completed", Type: field.TypeBool, Default: false},
 		{Name: "step_label", Type: field.TypeString, Nullable: true},
-		{Name: "user_email", Type: field.TypeString, Nullable: true},
-		{Name: "user_ldap", Type: field.TypeString, Nullable: true},
+		{Name: "username", Type: field.TypeString, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
 		{Name: "is_ci_worker", Type: field.TypeBool, Nullable: true},
 		{Name: "num_fetches", Type: field.TypeInt64, Nullable: true},
@@ -254,19 +253,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "bazel_invocations_authenticated_users_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[25]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[24]},
 				RefColumns: []*schema.Column{AuthenticatedUsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "bazel_invocations_builds_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[26]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[25]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "bazel_invocations_instance_names_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[27]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[26]},
 				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -290,17 +289,17 @@ var (
 			{
 				Name:    "bazelinvocation_build_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[26]},
+				Columns: []*schema.Column{BazelInvocationsColumns[25]},
 			},
 			{
 				Name:    "bazelinvocation_instance_name_bazel_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[27]},
+				Columns: []*schema.Column{BazelInvocationsColumns[26]},
 			},
 			{
 				Name:    "bazelinvocation_authenticated_user_bazel_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[25]},
+				Columns: []*schema.Column{BazelInvocationsColumns[24]},
 			},
 		},
 	}

@@ -264,17 +264,17 @@ const getTabItems = (
 const getTitleBits = (
   invocationOverview: BazelInvocationInfoFragment,
 ): React.ReactNode[] => {
-  const { invocationID, authenticatedUser, user } = invocationOverview;
+  const { invocationID, authenticatedUser, username } = invocationOverview;
 
   const titleBits: React.ReactNode[] = [];
-  if (user?.LDAP && user?.LDAP !== "")
+  if (username && username !== "")
     titleBits.push(
       <span key="label">
         User:{" "}
         <Typography.Text type="secondary" className={styles.normalWeight}>
           <UserStatusIndicator
             authenticatedUser={authenticatedUser}
-            user={user}
+            username={username}
           />
         </Typography.Text>
       </span>,
