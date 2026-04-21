@@ -1,19 +1,23 @@
 import { Button } from "antd";
 import type React from "react";
 import { useBbPortalMessage } from "@/context/MessageContext";
-import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import type { BrowserPageParams } from "@/types/BrowserPageType";
+import type {
+  Digest,
+  DigestFunction_Value,
+} from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { getBBClientdPath } from "@/utils/getBbClientdPath";
 
 interface Params {
-  browserPageParams: BrowserPageParams;
+  instanceName: string;
+  digestFunction: DigestFunction_Value;
   actionDigest: Digest;
   commandDigest: Digest;
   inputRootDigest: Digest;
 }
 
 const CopyBbClientdActionButton: React.FC<Params> = ({
-  browserPageParams,
+  instanceName,
+  digestFunction,
   actionDigest,
   commandDigest,
   inputRootDigest,
@@ -21,15 +25,15 @@ const CopyBbClientdActionButton: React.FC<Params> = ({
   const { copyToClipboard } = useBbPortalMessage();
 
   const commandBbClientdPath = getBBClientdPath(
-    browserPageParams.instanceName,
-    browserPageParams.digestFunction,
+    instanceName,
+    digestFunction,
     commandDigest,
     "command",
   );
 
   const inputRootBbClientdPath = getBBClientdPath(
-    browserPageParams.instanceName,
-    browserPageParams.digestFunction,
+    instanceName,
+    digestFunction,
     inputRootDigest,
     "directory",
   );

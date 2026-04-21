@@ -13,7 +13,10 @@ const PropertyTagList: React.FC<Props> = ({ propertyList }) => {
         <Tag
           color="blue"
           key={`${entry.name}:${entry.value}`}
-          style={{ fontWeight: "bold" }}
+          style={{
+            fontWeight: "bold",
+            ...entry.style,
+          }}
         >
           {entry.name}: {entry.value}
         </Tag>
