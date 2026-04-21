@@ -351,6 +351,30 @@ func (f BuildLogChunkMutationRuleFunc) EvalMutation(ctx context.Context, m ent.M
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildLogChunkMutation", m)
 }
 
+// The BuildTagQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type BuildTagQueryRuleFunc func(context.Context, *ent.BuildTagQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f BuildTagQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.BuildTagQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.BuildTagQuery", q)
+}
+
+// The BuildTagMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type BuildTagMutationRuleFunc func(context.Context, *ent.BuildTagMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f BuildTagMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.BuildTagMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildTagMutation", m)
+}
+
 // The ConfigurationQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type ConfigurationQueryRuleFunc func(context.Context, *ent.ConfigurationQuery) error
@@ -517,6 +541,30 @@ func (f InvocationFilesMutationRuleFunc) EvalMutation(ctx context.Context, m ent
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.InvocationFilesMutation", m)
+}
+
+// The InvocationTagQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type InvocationTagQueryRuleFunc func(context.Context, *ent.InvocationTagQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f InvocationTagQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.InvocationTagQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.InvocationTagQuery", q)
+}
+
+// The InvocationTagMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type InvocationTagMutationRuleFunc func(context.Context, *ent.InvocationTagMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f InvocationTagMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.InvocationTagMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.InvocationTagMutation", m)
 }
 
 // The InvocationTargetQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -934,6 +982,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.BuildLogChunkQuery:
 		return q.Filter(), nil
+	case *ent.BuildTagQuery:
+		return q.Filter(), nil
 	case *ent.ConfigurationQuery:
 		return q.Filter(), nil
 	case *ent.ConnectionMetadataQuery:
@@ -947,6 +997,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 	case *ent.InstanceNameQuery:
 		return q.Filter(), nil
 	case *ent.InvocationFilesQuery:
+		return q.Filter(), nil
+	case *ent.InvocationTagQuery:
 		return q.Filter(), nil
 	case *ent.InvocationTargetQuery:
 		return q.Filter(), nil
@@ -1005,6 +1057,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.BuildLogChunkMutation:
 		return m.Filter(), nil
+	case *ent.BuildTagMutation:
+		return m.Filter(), nil
 	case *ent.ConfigurationMutation:
 		return m.Filter(), nil
 	case *ent.ConnectionMetadataMutation:
@@ -1018,6 +1072,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.InstanceNameMutation:
 		return m.Filter(), nil
 	case *ent.InvocationFilesMutation:
+		return m.Filter(), nil
+	case *ent.InvocationTagMutation:
 		return m.Filter(), nil
 	case *ent.InvocationTargetMutation:
 		return m.Filter(), nil

@@ -21,20 +21,12 @@ const (
 	FieldStartedAt = "started_at"
 	// FieldEndedAt holds the string denoting the ended_at field in the database.
 	FieldEndedAt = "ended_at"
-	// FieldChangeNumber holds the string denoting the change_number field in the database.
-	FieldChangeNumber = "change_number"
-	// FieldPatchsetNumber holds the string denoting the patchset_number field in the database.
-	FieldPatchsetNumber = "patchset_number"
 	// FieldBepCompleted holds the string denoting the bep_completed field in the database.
 	FieldBepCompleted = "bep_completed"
-	// FieldStepLabel holds the string denoting the step_label field in the database.
-	FieldStepLabel = "step_label"
 	// FieldUsername holds the string denoting the username field in the database.
 	FieldUsername = "username"
 	// FieldHostname holds the string denoting the hostname field in the database.
 	FieldHostname = "hostname"
-	// FieldIsCiWorker holds the string denoting the is_ci_worker field in the database.
-	FieldIsCiWorker = "is_ci_worker"
 	// FieldNumFetches holds the string denoting the num_fetches field in the database.
 	FieldNumFetches = "num_fetches"
 	// FieldProfileName holds the string denoting the profile_name field in the database.
@@ -65,6 +57,8 @@ const (
 	EdgeBuild = "build"
 	// EdgeAuthenticatedUser holds the string denoting the authenticated_user edge name in mutations.
 	EdgeAuthenticatedUser = "authenticated_user"
+	// EdgeTags holds the string denoting the tags edge name in mutations.
+	EdgeTags = "tags"
 	// EdgeEventMetadata holds the string denoting the event_metadata edge name in mutations.
 	EdgeEventMetadata = "event_metadata"
 	// EdgeConnectionMetadata holds the string denoting the connection_metadata edge name in mutations.
@@ -110,6 +104,13 @@ const (
 	AuthenticatedUserInverseTable = "authenticated_users"
 	// AuthenticatedUserColumn is the table column denoting the authenticated_user relation/edge.
 	AuthenticatedUserColumn = "authenticated_user_bazel_invocations"
+	// TagsTable is the table that holds the tags relation/edge.
+	TagsTable = "invocation_tags"
+	// TagsInverseTable is the table name for the InvocationTag entity.
+	// It exists in this package in order to avoid circular dependency with the "invocationtag" package.
+	TagsInverseTable = "invocation_tags"
+	// TagsColumn is the table column denoting the tags relation/edge.
+	TagsColumn = "bazel_invocation_id"
 	// EventMetadataTable is the table that holds the event_metadata relation/edge.
 	EventMetadataTable = "event_metadata"
 	// EventMetadataInverseTable is the table name for the EventMetadata entity.
@@ -196,13 +197,9 @@ var Columns = []string{
 	FieldCreatedTimestamp,
 	FieldStartedAt,
 	FieldEndedAt,
-	FieldChangeNumber,
-	FieldPatchsetNumber,
 	FieldBepCompleted,
-	FieldStepLabel,
 	FieldUsername,
 	FieldHostname,
-	FieldIsCiWorker,
 	FieldNumFetches,
 	FieldProfileName,
 	FieldBazelVersion,
@@ -288,24 +285,9 @@ func ByEndedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndedAt, opts...).ToFunc()
 }
 
-// ByChangeNumber orders the results by the change_number field.
-func ByChangeNumber(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldChangeNumber, opts...).ToFunc()
-}
-
-// ByPatchsetNumber orders the results by the patchset_number field.
-func ByPatchsetNumber(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPatchsetNumber, opts...).ToFunc()
-}
-
 // ByBepCompleted orders the results by the bep_completed field.
 func ByBepCompleted(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBepCompleted, opts...).ToFunc()
-}
-
-// ByStepLabel orders the results by the step_label field.
-func ByStepLabel(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStepLabel, opts...).ToFunc()
 }
 
 // ByUsername orders the results by the username field.
@@ -316,11 +298,6 @@ func ByUsername(opts ...sql.OrderTermOption) OrderOption {
 // ByHostname orders the results by the hostname field.
 func ByHostname(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHostname, opts...).ToFunc()
-}
-
-// ByIsCiWorker orders the results by the is_ci_worker field.
-func ByIsCiWorker(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldIsCiWorker, opts...).ToFunc()
 }
 
 // ByNumFetches orders the results by the num_fetches field.
@@ -386,6 +363,20 @@ func ByBuildField(field string, opts ...sql.OrderTermOption) OrderOption {
 func ByAuthenticatedUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAuthenticatedUserStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByTagsCount orders the results by tags count.
+func ByTagsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTagsStep(), opts...)
+	}
+}
+
+// ByTags orders the results by tags terms.
+func ByTags(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTagsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -508,10 +499,17 @@ func ByTargetKindMappings(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOptio
 	}
 }
 
-// BySourceControlField orders the results by source_control field.
-func BySourceControlField(field string, opts ...sql.OrderTermOption) OrderOption {
+// BySourceControlCount orders the results by source_control count.
+func BySourceControlCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborsCount(s, newSourceControlStep(), opts...)
+	}
+}
+
+// BySourceControl orders the results by source_control terms.
+func BySourceControl(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newInstanceNameStep() *sqlgraph.Step {
@@ -533,6 +531,13 @@ func newAuthenticatedUserStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AuthenticatedUserInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, AuthenticatedUserTable, AuthenticatedUserColumn),
+	)
+}
+func newTagsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TagsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TagsTable, TagsColumn),
 	)
 }
 func newEventMetadataStep() *sqlgraph.Step {
@@ -609,6 +614,6 @@ func newSourceControlStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SourceControlInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, false, SourceControlTable, SourceControlColumn),
+		sqlgraph.Edge(sqlgraph.O2M, false, SourceControlTable, SourceControlColumn),
 	)
 }

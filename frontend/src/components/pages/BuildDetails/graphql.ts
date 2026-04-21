@@ -12,9 +12,17 @@ export const GET_BUILD_BY_UUID_QUERY = gql(/* GraphQL */ `
   ) {
     getBuild(buildUUID: $buildUUID) {
       id
-      buildURL
       buildUUID
       timestamp
+      tags(orderBy: { field: KEY, direction: ASC }) {
+        edges {
+          node {
+            id
+            key
+            value
+          }
+        }
+      }
       invocations(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {
         pageInfo {
           startCursor
@@ -40,11 +48,14 @@ export const GET_BUILD_INVOCATION_FRAGMENT = gql(/* GraphQL */ `
     endedAt
     startedAt
     exitCodeName
-    sourceControl{
-      job
-      action
-      workflow
-      runnerName
+    tags {
+      edges {
+        node {
+          id
+          key
+          value
+        }
+      }
     }
     connectionMetadata {
       connectionLastOpenAt

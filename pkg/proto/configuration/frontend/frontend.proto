@@ -93,4 +93,24 @@ message PortalFrontendConfiguration {
   // Customize the content of the footer. These elements are shown in a row at
   // the bottom of the page, and can be used to link out to useful places.
   repeated FooterElement footer_content = 4;
+
+  // Message that defines a dynamic column in a table.
+  message AdditionalColumn {
+    // The title of the column.
+    string title = 1;
+
+    // The key to use to get the value for the column. The value is either
+    // taken from a BuildTag or a InvocationTag.
+    string value_key = 2;
+
+    // The key to use to get the url for the column. The url is either
+    // taken from a BuildTag or a InvocationTag. Optional.
+    string url_key = 3;
+  }
+
+  // Additional columns to display in the build table.
+  repeated AdditionalColumn additional_build_columns = 5;
+
+  // Additional columns to display in the build invocation table.
+  repeated AdditionalColumn additional_build_invocation_columns = 6;
 }

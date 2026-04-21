@@ -17,6 +17,7 @@ import (
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus"
@@ -53,11 +54,23 @@ type BuildEventRecorder interface {
 	SaveBatch(ctx context.Context, batch []BuildEventWithInfo) error
 }
 
+// Factory is a type for a factory that creates a new BuildEventRecorder.
+type Factory func(ctx context.Context, instanceName, invocationID string) (BuildEventRecorder, error)
+
+// DataExtractors are used to extract specific data from a invocation in
+// different ways.
+type DataExtractors struct {
+	AuthMetadataExtractors      *authmetadataextraction.AuthMetadataExtractors
+	InvocationMetadataExtractor *jmespath.Expression
+}
+
 type buildEventRecorder struct {
-	db            database.Client
-	handledEvents handledEvents
-	saveDataLevel *bb_portal.BuildEventStreamService_SaveDataLevel
-	tracer        trace.Tracer
+	db             database.Client
+	handledEvents  handledEvents
+	saveDataLevel  *bb_portal.BuildEventStreamService_SaveDataLevel
+	tracer         trace.Tracer
+	dataExtractors *DataExtractors
+	buildKey       string
 
 	InstanceName     string
 	InstanceNameDbID int64
@@ -82,7 +95,8 @@ func NewBuildEventRecorder(
 	instanceName string,
 	invocationID string,
 	isRealTime bool,
-	extractors *authmetadataextraction.AuthMetadataExtractors,
+	dataExtractors *DataExtractors,
+	buildKey string,
 ) (BuildEventRecorder, error) {
 	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
 	ctx, span := tracer.Start(
@@ -112,7 +126,7 @@ func NewBuildEventRecorder(
 	}
 	defer tx.Rollback()
 
-	userDbID, err := FindOrCreateAuthenticatedUser(ctx, tx, extractors, prometheusmetrics.AuthenticatedUsersCount)
+	userDbID, err := FindOrCreateAuthenticatedUser(ctx, tx, dataExtractors.AuthMetadataExtractors, prometheusmetrics.AuthenticatedUsersCount)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create authenticated user")
 	}
@@ -131,9 +145,11 @@ func NewBuildEventRecorder(
 	}
 
 	return &buildEventRecorder{
-		db:            db,
-		saveDataLevel: saveDataLevel,
-		tracer:        tracer,
+		db:             db,
+		saveDataLevel:  saveDataLevel,
+		tracer:         tracer,
+		dataExtractors: dataExtractors,
+		buildKey:       buildKey,
 
 		InstanceName:     instanceName,
 		InstanceNameDbID: instanceNameDbID,
@@ -148,10 +164,10 @@ func NewBuildEventRecorder(
 func FindOrCreateAuthenticatedUser(
 	ctx context.Context,
 	db database.Handle,
-	extractors *authmetadataextraction.AuthMetadataExtractors,
+	authMetadataExtractors *authmetadataextraction.AuthMetadataExtractors,
 	authenticatedUsersGauge prometheus.Gauge,
 ) (*int64, error) {
-	userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, extractors)
+	userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, authMetadataExtractors)
 	if userSummary == nil {
 		return nil, nil
 	}

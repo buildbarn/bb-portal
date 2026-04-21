@@ -19,19 +19,19 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
+	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
+	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 
 	"go.opentelemetry.io/otel/trace"
 )
 
-type buildEventRecorderFactory func(ctx context.Context, instanceName, invocationID string) (buildeventrecorder.BuildEventRecorder, error)
-
 // BuildEventServer implements the Build Event Service.
 // It receives events and forwards them to a BuildEventChannel.
 type BuildEventServer struct {
-	buildEventRecorderFactory buildEventRecorderFactory
+	buildEventRecorderFactory buildeventrecorder.Factory
 }
 
 // NewBuildEventServer creates a new BuildEventServer
@@ -54,9 +54,23 @@ func NewBuildEventServer(db database.Client, configuration *bb_portal.Applicatio
 		return nil, fmt.Errorf("No saveDataLevel configured")
 	}
 
-	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
+	dataExtractors := &buildeventrecorder.DataExtractors{
+		AuthMetadataExtractors:      nil,
+		InvocationMetadataExtractor: nil,
+	}
+
+	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
+	}
+	dataExtractors.AuthMetadataExtractors = authMetadataExtractors
+
+	if configuration.BesServiceConfiguration.InvocationMetadataExtractor != nil {
+		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.BesServiceConfiguration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to create InvocationMetadataExtractor")
+		}
+		dataExtractors.InvocationMetadataExtractor = invocationMetadataExtractor
 	}
 
 	return &BuildEventServer{
@@ -70,7 +84,8 @@ func NewBuildEventServer(db database.Client, configuration *bb_portal.Applicatio
 				instanceName,
 				invocationID,
 				true, /* isRealTime */
-				extractors,
+				dataExtractors,
+				configuration.BesServiceConfiguration.BuildKey,
 			)
 			if err != nil {
 				return nil, err

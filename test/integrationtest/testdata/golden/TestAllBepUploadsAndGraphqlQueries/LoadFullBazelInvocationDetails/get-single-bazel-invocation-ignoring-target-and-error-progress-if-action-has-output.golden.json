@@ -108,7 +108,6 @@
       "name": ""
     },
     "invocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
-    "isCiWorker": false,
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
@@ -261,9 +260,11 @@
       ]
     },
     "profile": null,
-    "sourceControl": null,
+    "sourceControl": [],
     "startedAt": "2024-05-03T00:29:47.443Z",
-    "stepLabel": "",
+    "tags": {
+      "edges": []
+    },
     "username": "nameless"
   }
 }

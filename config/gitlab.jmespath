@@ -1,0 +1,27 @@
+{
+  "hostname": env.HOSTNAME
+  "sourceControls": [
+    {
+      "repo": env.CI_PROJECT_PATH
+      "repoUrl": env.CI_PROJECT_URL
+      "ref": env.CI_COMMIT_REF_NAME
+      "refUrl": (env.CI_PROJECT_URL && env.CI_COMMIT_REF_SLUG) && join('/', [env.CI_PROJECT_URL, '-', 'tree', env.CI_COMMIT_REF_SLUG]) || `null`
+      "commit": env.CI_COMMIT_SHA
+      "commitUrl": (env.CI_PROJECT_URL && env.CI_COMMIT_SHA) && join('/', [env.CI_PROJECT_URL, '-', 'commit', env.CI_COMMIT_SHA]) || `null`
+    }
+  ]
+  "invocationTags": {
+    "pipeline": env.CI_PIPELINE_ID
+    "pipeline_url": env.CI_PIPELINE_URL
+    "job": env.CI_JOB_NAME
+    "job_url": env.CI_JOB_URL
+    "job_stage": env.CI_JOB_STAGE
+  }
+  "buildTags": {
+    "repo": env.CI_PROJECT_PATH
+    "repo_url": env.CI_PROJECT_URL
+    "pipeline": env.CI_PIPELINE_ID
+    "pipeline_url": env.CI_PIPELINE_URL
+    "build_id": env.CI_PIPELINE_URL
+  }
+}

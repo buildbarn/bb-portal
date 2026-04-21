@@ -17,8 +17,6 @@ interface Props {
   startedAt: string;
   endedAt: string;
   hostname: string;
-  isCiWorker: boolean;
-  stepLabel: string;
   numFetches: number;
   bazelVersion: string;
 }
@@ -34,8 +32,6 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
   startedAt,
   endedAt,
   hostname,
-  isCiWorker,
-  stepLabel,
   numFetches,
   bazelVersion,
 }) => {
@@ -104,14 +100,6 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
         {numFetches !== 0 && (
           <Descriptions.Item label="Number of Fetches">
             {numFetches}
-          </Descriptions.Item>
-        )}
-        {isCiWorker && (
-          <Descriptions.Item label="CI Worker">True</Descriptions.Item>
-        )}
-        {stepLabel !== "" && (
-          <Descriptions.Item label="CI Step Label">
-            {stepLabel}
           </Descriptions.Item>
         )}
         {bazelVersion !== "" && (

@@ -15,9 +15,10 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
-	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
+	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
+	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
@@ -34,11 +35,7 @@ const (
 
 // BepUploader handles upload of Build Event Protocol files via HTTP.
 type BepUploader struct {
-	db                     database.Client
-	instanceNameAuthorizer auth.Authorizer
-	saveDataLevel          *bb_portal.BuildEventStreamService_SaveDataLevel
-	tracerProvider         trace.TracerProvider
-	extractors             *authmetadataextraction.AuthMetadataExtractors
+	buildEventRecorderFactory buildeventrecorder.Factory
 }
 
 // NewBepUploader creates a new BepUploader
@@ -61,17 +58,44 @@ func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConf
 		return nil, fmt.Errorf("No saveDataLevel configured")
 	}
 
-	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
+	dataExtractors := &buildeventrecorder.DataExtractors{
+		AuthMetadataExtractors:      nil,
+		InvocationMetadataExtractor: nil,
+	}
+
+	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
 	}
+	dataExtractors.AuthMetadataExtractors = authMetadataExtractors
+
+	if configuration.BesServiceConfiguration.InvocationMetadataExtractor != nil {
+		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.BesServiceConfiguration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to create InvocationMetadataExtractor")
+		}
+		dataExtractors.InvocationMetadataExtractor = invocationMetadataExtractor
+	}
 
 	return &BepUploader{
-		db:                     db,
-		instanceNameAuthorizer: instanceNameAuthorizer,
-		saveDataLevel:          saveDataLevel,
-		tracerProvider:         tracerProvider,
-		extractors:             extractors,
+		buildEventRecorderFactory: func(ctx context.Context, instanceName, invocationID string) (buildeventrecorder.BuildEventRecorder, error) {
+			recorder, err := buildeventrecorder.NewBuildEventRecorder(
+				ctx,
+				db,
+				instanceNameAuthorizer,
+				saveDataLevel,
+				tracerProvider,
+				instanceName,
+				invocationID,
+				false, /* isRealTime */
+				dataExtractors,
+				configuration.BesServiceConfiguration.BuildKey,
+			)
+			if err != nil {
+				return nil, err
+			}
+			return buildeventrecorder.NewMetricsBuildEventRecorder(recorder), nil
+		},
 	}, nil
 }
 
@@ -111,22 +135,19 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 			SequenceNumber: sequenceNumber,
 		})
 	}
+	if err := scanner.Err(); err != nil {
+		return "", http.StatusInternalServerError, util.StatusWrap(err, "Failed to read build event file")
+	}
 
 	invocationID, err := getInvocationIDFromEventBuffer(eventBuffer)
 	if err != nil {
 		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to get InvocationID")
 	}
 
-	buildEventRecorder, err := buildeventrecorder.NewBuildEventRecorder(
+	buildEventRecorder, err := b.buildEventRecorderFactory(
 		ctx,
-		b.db,
-		b.instanceNameAuthorizer,
-		b.saveDataLevel,
-		b.tracerProvider,
 		"", // instanceName
 		invocationID,
-		false, // isRealTime,
-		b.extractors,
 	)
 	if err != nil {
 		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to create BuildEventRecorder")
@@ -134,9 +155,6 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 
 	if err := buildEventRecorder.SaveBatch(ctx, eventBuffer); err != nil {
 		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to record build event")
-	}
-	if err := scanner.Err(); err != nil {
-		return "", http.StatusInternalServerError, util.StatusWrap(err, "Failed to read build event file")
 	}
 	return invocationID, http.StatusOK, nil
 }

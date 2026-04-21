@@ -22,34 +22,6 @@ type SourceControlCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetProvider sets the "provider" field.
-func (scc *SourceControlCreate) SetProvider(s sourcecontrol.Provider) *SourceControlCreate {
-	scc.mutation.SetProvider(s)
-	return scc
-}
-
-// SetNillableProvider sets the "provider" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableProvider(s *sourcecontrol.Provider) *SourceControlCreate {
-	if s != nil {
-		scc.SetProvider(*s)
-	}
-	return scc
-}
-
-// SetInstanceURL sets the "instance_url" field.
-func (scc *SourceControlCreate) SetInstanceURL(s string) *SourceControlCreate {
-	scc.mutation.SetInstanceURL(s)
-	return scc
-}
-
-// SetNillableInstanceURL sets the "instance_url" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableInstanceURL(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetInstanceURL(*s)
-	}
-	return scc
-}
-
 // SetRepo sets the "repo" field.
 func (scc *SourceControlCreate) SetRepo(s string) *SourceControlCreate {
 	scc.mutation.SetRepo(s)
@@ -64,184 +36,72 @@ func (scc *SourceControlCreate) SetNillableRepo(s *string) *SourceControlCreate 
 	return scc
 }
 
-// SetRefs sets the "refs" field.
-func (scc *SourceControlCreate) SetRefs(s string) *SourceControlCreate {
-	scc.mutation.SetRefs(s)
+// SetRepoURL sets the "repo_url" field.
+func (scc *SourceControlCreate) SetRepoURL(s string) *SourceControlCreate {
+	scc.mutation.SetRepoURL(s)
 	return scc
 }
 
-// SetNillableRefs sets the "refs" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRefs(s *string) *SourceControlCreate {
+// SetNillableRepoURL sets the "repo_url" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRepoURL(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetRefs(*s)
+		scc.SetRepoURL(*s)
 	}
 	return scc
 }
 
-// SetCommitSha sets the "commit_sha" field.
-func (scc *SourceControlCreate) SetCommitSha(s string) *SourceControlCreate {
-	scc.mutation.SetCommitSha(s)
+// SetRef sets the "ref" field.
+func (scc *SourceControlCreate) SetRef(s string) *SourceControlCreate {
+	scc.mutation.SetRef(s)
 	return scc
 }
 
-// SetNillableCommitSha sets the "commit_sha" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableCommitSha(s *string) *SourceControlCreate {
+// SetNillableRef sets the "ref" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRef(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetCommitSha(*s)
+		scc.SetRef(*s)
 	}
 	return scc
 }
 
-// SetActor sets the "actor" field.
-func (scc *SourceControlCreate) SetActor(s string) *SourceControlCreate {
-	scc.mutation.SetActor(s)
+// SetRefURL sets the "ref_url" field.
+func (scc *SourceControlCreate) SetRefURL(s string) *SourceControlCreate {
+	scc.mutation.SetRefURL(s)
 	return scc
 }
 
-// SetNillableActor sets the "actor" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableActor(s *string) *SourceControlCreate {
+// SetNillableRefURL sets the "ref_url" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRefURL(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetActor(*s)
+		scc.SetRefURL(*s)
 	}
 	return scc
 }
 
-// SetEventName sets the "event_name" field.
-func (scc *SourceControlCreate) SetEventName(s string) *SourceControlCreate {
-	scc.mutation.SetEventName(s)
+// SetCommit sets the "commit" field.
+func (scc *SourceControlCreate) SetCommit(s string) *SourceControlCreate {
+	scc.mutation.SetCommit(s)
 	return scc
 }
 
-// SetNillableEventName sets the "event_name" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableEventName(s *string) *SourceControlCreate {
+// SetNillableCommit sets the "commit" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableCommit(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetEventName(*s)
+		scc.SetCommit(*s)
 	}
 	return scc
 }
 
-// SetWorkflow sets the "workflow" field.
-func (scc *SourceControlCreate) SetWorkflow(s string) *SourceControlCreate {
-	scc.mutation.SetWorkflow(s)
+// SetCommitURL sets the "commit_url" field.
+func (scc *SourceControlCreate) SetCommitURL(s string) *SourceControlCreate {
+	scc.mutation.SetCommitURL(s)
 	return scc
 }
 
-// SetNillableWorkflow sets the "workflow" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableWorkflow(s *string) *SourceControlCreate {
+// SetNillableCommitURL sets the "commit_url" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableCommitURL(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetWorkflow(*s)
-	}
-	return scc
-}
-
-// SetRunID sets the "run_id" field.
-func (scc *SourceControlCreate) SetRunID(s string) *SourceControlCreate {
-	scc.mutation.SetRunID(s)
-	return scc
-}
-
-// SetNillableRunID sets the "run_id" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRunID(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRunID(*s)
-	}
-	return scc
-}
-
-// SetRunNumber sets the "run_number" field.
-func (scc *SourceControlCreate) SetRunNumber(s string) *SourceControlCreate {
-	scc.mutation.SetRunNumber(s)
-	return scc
-}
-
-// SetNillableRunNumber sets the "run_number" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRunNumber(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRunNumber(*s)
-	}
-	return scc
-}
-
-// SetJob sets the "job" field.
-func (scc *SourceControlCreate) SetJob(s string) *SourceControlCreate {
-	scc.mutation.SetJob(s)
-	return scc
-}
-
-// SetNillableJob sets the "job" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableJob(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetJob(*s)
-	}
-	return scc
-}
-
-// SetAction sets the "action" field.
-func (scc *SourceControlCreate) SetAction(s string) *SourceControlCreate {
-	scc.mutation.SetAction(s)
-	return scc
-}
-
-// SetNillableAction sets the "action" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableAction(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetAction(*s)
-	}
-	return scc
-}
-
-// SetRunnerName sets the "runner_name" field.
-func (scc *SourceControlCreate) SetRunnerName(s string) *SourceControlCreate {
-	scc.mutation.SetRunnerName(s)
-	return scc
-}
-
-// SetNillableRunnerName sets the "runner_name" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRunnerName(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRunnerName(*s)
-	}
-	return scc
-}
-
-// SetRunnerArch sets the "runner_arch" field.
-func (scc *SourceControlCreate) SetRunnerArch(s string) *SourceControlCreate {
-	scc.mutation.SetRunnerArch(s)
-	return scc
-}
-
-// SetNillableRunnerArch sets the "runner_arch" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRunnerArch(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRunnerArch(*s)
-	}
-	return scc
-}
-
-// SetRunnerOs sets the "runner_os" field.
-func (scc *SourceControlCreate) SetRunnerOs(s string) *SourceControlCreate {
-	scc.mutation.SetRunnerOs(s)
-	return scc
-}
-
-// SetNillableRunnerOs sets the "runner_os" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRunnerOs(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRunnerOs(*s)
-	}
-	return scc
-}
-
-// SetWorkspace sets the "workspace" field.
-func (scc *SourceControlCreate) SetWorkspace(s string) *SourceControlCreate {
-	scc.mutation.SetWorkspace(s)
-	return scc
-}
-
-// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableWorkspace(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetWorkspace(*s)
+		scc.SetCommitURL(*s)
 	}
 	return scc
 }
@@ -305,11 +165,6 @@ func (scc *SourceControlCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (scc *SourceControlCreate) check() error {
-	if v, ok := scc.mutation.Provider(); ok {
-		if err := sourcecontrol.ProviderValidator(v); err != nil {
-			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "SourceControl.provider": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -343,73 +198,33 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := scc.mutation.Provider(); ok {
-		_spec.SetField(sourcecontrol.FieldProvider, field.TypeEnum, value)
-		_node.Provider = value
-	}
-	if value, ok := scc.mutation.InstanceURL(); ok {
-		_spec.SetField(sourcecontrol.FieldInstanceURL, field.TypeString, value)
-		_node.InstanceURL = value
-	}
 	if value, ok := scc.mutation.Repo(); ok {
 		_spec.SetField(sourcecontrol.FieldRepo, field.TypeString, value)
 		_node.Repo = value
 	}
-	if value, ok := scc.mutation.Refs(); ok {
-		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
-		_node.Refs = value
+	if value, ok := scc.mutation.RepoURL(); ok {
+		_spec.SetField(sourcecontrol.FieldRepoURL, field.TypeString, value)
+		_node.RepoURL = value
 	}
-	if value, ok := scc.mutation.CommitSha(); ok {
-		_spec.SetField(sourcecontrol.FieldCommitSha, field.TypeString, value)
-		_node.CommitSha = value
+	if value, ok := scc.mutation.Ref(); ok {
+		_spec.SetField(sourcecontrol.FieldRef, field.TypeString, value)
+		_node.Ref = value
 	}
-	if value, ok := scc.mutation.Actor(); ok {
-		_spec.SetField(sourcecontrol.FieldActor, field.TypeString, value)
-		_node.Actor = value
+	if value, ok := scc.mutation.RefURL(); ok {
+		_spec.SetField(sourcecontrol.FieldRefURL, field.TypeString, value)
+		_node.RefURL = value
 	}
-	if value, ok := scc.mutation.EventName(); ok {
-		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
-		_node.EventName = value
+	if value, ok := scc.mutation.Commit(); ok {
+		_spec.SetField(sourcecontrol.FieldCommit, field.TypeString, value)
+		_node.Commit = value
 	}
-	if value, ok := scc.mutation.Workflow(); ok {
-		_spec.SetField(sourcecontrol.FieldWorkflow, field.TypeString, value)
-		_node.Workflow = value
-	}
-	if value, ok := scc.mutation.RunID(); ok {
-		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
-		_node.RunID = value
-	}
-	if value, ok := scc.mutation.RunNumber(); ok {
-		_spec.SetField(sourcecontrol.FieldRunNumber, field.TypeString, value)
-		_node.RunNumber = value
-	}
-	if value, ok := scc.mutation.Job(); ok {
-		_spec.SetField(sourcecontrol.FieldJob, field.TypeString, value)
-		_node.Job = value
-	}
-	if value, ok := scc.mutation.Action(); ok {
-		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
-		_node.Action = value
-	}
-	if value, ok := scc.mutation.RunnerName(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerName, field.TypeString, value)
-		_node.RunnerName = value
-	}
-	if value, ok := scc.mutation.RunnerArch(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerArch, field.TypeString, value)
-		_node.RunnerArch = value
-	}
-	if value, ok := scc.mutation.RunnerOs(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerOs, field.TypeString, value)
-		_node.RunnerOs = value
-	}
-	if value, ok := scc.mutation.Workspace(); ok {
-		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
-		_node.Workspace = value
+	if value, ok := scc.mutation.CommitURL(); ok {
+		_spec.SetField(sourcecontrol.FieldCommitURL, field.TypeString, value)
+		_node.CommitURL = value
 	}
 	if nodes := scc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   sourcecontrol.BazelInvocationTable,
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
@@ -431,7 +246,7 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 // of the `INSERT` statement. For example:
 //
 //	client.SourceControl.Create().
-//		SetProvider(v).
+//		SetRepo(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -440,7 +255,7 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SourceControlUpsert) {
-//			SetProvider(v+v).
+//			SetRepo(v+v).
 //		}).
 //		Exec(ctx)
 func (scc *SourceControlCreate) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertOne {
@@ -476,42 +291,6 @@ type (
 	}
 )
 
-// SetProvider sets the "provider" field.
-func (u *SourceControlUpsert) SetProvider(v sourcecontrol.Provider) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldProvider, v)
-	return u
-}
-
-// UpdateProvider sets the "provider" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateProvider() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldProvider)
-	return u
-}
-
-// ClearProvider clears the value of the "provider" field.
-func (u *SourceControlUpsert) ClearProvider() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldProvider)
-	return u
-}
-
-// SetInstanceURL sets the "instance_url" field.
-func (u *SourceControlUpsert) SetInstanceURL(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldInstanceURL, v)
-	return u
-}
-
-// UpdateInstanceURL sets the "instance_url" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateInstanceURL() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldInstanceURL)
-	return u
-}
-
-// ClearInstanceURL clears the value of the "instance_url" field.
-func (u *SourceControlUpsert) ClearInstanceURL() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldInstanceURL)
-	return u
-}
-
 // SetRepo sets the "repo" field.
 func (u *SourceControlUpsert) SetRepo(v string) *SourceControlUpsert {
 	u.Set(sourcecontrol.FieldRepo, v)
@@ -530,237 +309,93 @@ func (u *SourceControlUpsert) ClearRepo() *SourceControlUpsert {
 	return u
 }
 
-// SetRefs sets the "refs" field.
-func (u *SourceControlUpsert) SetRefs(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldRefs, v)
+// SetRepoURL sets the "repo_url" field.
+func (u *SourceControlUpsert) SetRepoURL(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRepoURL, v)
 	return u
 }
 
-// UpdateRefs sets the "refs" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateRefs() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldRefs)
+// UpdateRepoURL sets the "repo_url" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRepoURL() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRepoURL)
 	return u
 }
 
-// ClearRefs clears the value of the "refs" field.
-func (u *SourceControlUpsert) ClearRefs() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldRefs)
+// ClearRepoURL clears the value of the "repo_url" field.
+func (u *SourceControlUpsert) ClearRepoURL() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRepoURL)
 	return u
 }
 
-// SetCommitSha sets the "commit_sha" field.
-func (u *SourceControlUpsert) SetCommitSha(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldCommitSha, v)
+// SetRef sets the "ref" field.
+func (u *SourceControlUpsert) SetRef(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRef, v)
 	return u
 }
 
-// UpdateCommitSha sets the "commit_sha" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateCommitSha() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldCommitSha)
+// UpdateRef sets the "ref" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRef() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRef)
 	return u
 }
 
-// ClearCommitSha clears the value of the "commit_sha" field.
-func (u *SourceControlUpsert) ClearCommitSha() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldCommitSha)
+// ClearRef clears the value of the "ref" field.
+func (u *SourceControlUpsert) ClearRef() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRef)
 	return u
 }
 
-// SetActor sets the "actor" field.
-func (u *SourceControlUpsert) SetActor(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldActor, v)
+// SetRefURL sets the "ref_url" field.
+func (u *SourceControlUpsert) SetRefURL(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRefURL, v)
 	return u
 }
 
-// UpdateActor sets the "actor" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateActor() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldActor)
+// UpdateRefURL sets the "ref_url" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRefURL() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRefURL)
 	return u
 }
 
-// ClearActor clears the value of the "actor" field.
-func (u *SourceControlUpsert) ClearActor() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldActor)
+// ClearRefURL clears the value of the "ref_url" field.
+func (u *SourceControlUpsert) ClearRefURL() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRefURL)
 	return u
 }
 
-// SetEventName sets the "event_name" field.
-func (u *SourceControlUpsert) SetEventName(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldEventName, v)
+// SetCommit sets the "commit" field.
+func (u *SourceControlUpsert) SetCommit(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldCommit, v)
 	return u
 }
 
-// UpdateEventName sets the "event_name" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateEventName() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldEventName)
+// UpdateCommit sets the "commit" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateCommit() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldCommit)
 	return u
 }
 
-// ClearEventName clears the value of the "event_name" field.
-func (u *SourceControlUpsert) ClearEventName() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldEventName)
+// ClearCommit clears the value of the "commit" field.
+func (u *SourceControlUpsert) ClearCommit() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldCommit)
 	return u
 }
 
-// SetWorkflow sets the "workflow" field.
-func (u *SourceControlUpsert) SetWorkflow(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldWorkflow, v)
+// SetCommitURL sets the "commit_url" field.
+func (u *SourceControlUpsert) SetCommitURL(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldCommitURL, v)
 	return u
 }
 
-// UpdateWorkflow sets the "workflow" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateWorkflow() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldWorkflow)
+// UpdateCommitURL sets the "commit_url" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateCommitURL() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldCommitURL)
 	return u
 }
 
-// ClearWorkflow clears the value of the "workflow" field.
-func (u *SourceControlUpsert) ClearWorkflow() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldWorkflow)
-	return u
-}
-
-// SetRunID sets the "run_id" field.
-func (u *SourceControlUpsert) SetRunID(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldRunID, v)
-	return u
-}
-
-// UpdateRunID sets the "run_id" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateRunID() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldRunID)
-	return u
-}
-
-// ClearRunID clears the value of the "run_id" field.
-func (u *SourceControlUpsert) ClearRunID() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldRunID)
-	return u
-}
-
-// SetRunNumber sets the "run_number" field.
-func (u *SourceControlUpsert) SetRunNumber(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldRunNumber, v)
-	return u
-}
-
-// UpdateRunNumber sets the "run_number" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateRunNumber() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldRunNumber)
-	return u
-}
-
-// ClearRunNumber clears the value of the "run_number" field.
-func (u *SourceControlUpsert) ClearRunNumber() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldRunNumber)
-	return u
-}
-
-// SetJob sets the "job" field.
-func (u *SourceControlUpsert) SetJob(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldJob, v)
-	return u
-}
-
-// UpdateJob sets the "job" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateJob() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldJob)
-	return u
-}
-
-// ClearJob clears the value of the "job" field.
-func (u *SourceControlUpsert) ClearJob() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldJob)
-	return u
-}
-
-// SetAction sets the "action" field.
-func (u *SourceControlUpsert) SetAction(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldAction, v)
-	return u
-}
-
-// UpdateAction sets the "action" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateAction() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldAction)
-	return u
-}
-
-// ClearAction clears the value of the "action" field.
-func (u *SourceControlUpsert) ClearAction() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldAction)
-	return u
-}
-
-// SetRunnerName sets the "runner_name" field.
-func (u *SourceControlUpsert) SetRunnerName(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldRunnerName, v)
-	return u
-}
-
-// UpdateRunnerName sets the "runner_name" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateRunnerName() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldRunnerName)
-	return u
-}
-
-// ClearRunnerName clears the value of the "runner_name" field.
-func (u *SourceControlUpsert) ClearRunnerName() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldRunnerName)
-	return u
-}
-
-// SetRunnerArch sets the "runner_arch" field.
-func (u *SourceControlUpsert) SetRunnerArch(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldRunnerArch, v)
-	return u
-}
-
-// UpdateRunnerArch sets the "runner_arch" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateRunnerArch() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldRunnerArch)
-	return u
-}
-
-// ClearRunnerArch clears the value of the "runner_arch" field.
-func (u *SourceControlUpsert) ClearRunnerArch() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldRunnerArch)
-	return u
-}
-
-// SetRunnerOs sets the "runner_os" field.
-func (u *SourceControlUpsert) SetRunnerOs(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldRunnerOs, v)
-	return u
-}
-
-// UpdateRunnerOs sets the "runner_os" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateRunnerOs() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldRunnerOs)
-	return u
-}
-
-// ClearRunnerOs clears the value of the "runner_os" field.
-func (u *SourceControlUpsert) ClearRunnerOs() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldRunnerOs)
-	return u
-}
-
-// SetWorkspace sets the "workspace" field.
-func (u *SourceControlUpsert) SetWorkspace(v string) *SourceControlUpsert {
-	u.Set(sourcecontrol.FieldWorkspace, v)
-	return u
-}
-
-// UpdateWorkspace sets the "workspace" field to the value that was provided on create.
-func (u *SourceControlUpsert) UpdateWorkspace() *SourceControlUpsert {
-	u.SetExcluded(sourcecontrol.FieldWorkspace)
-	return u
-}
-
-// ClearWorkspace clears the value of the "workspace" field.
-func (u *SourceControlUpsert) ClearWorkspace() *SourceControlUpsert {
-	u.SetNull(sourcecontrol.FieldWorkspace)
+// ClearCommitURL clears the value of the "commit_url" field.
+func (u *SourceControlUpsert) ClearCommitURL() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldCommitURL)
 	return u
 }
 
@@ -812,48 +447,6 @@ func (u *SourceControlUpsertOne) Update(set func(*SourceControlUpsert)) *SourceC
 	return u
 }
 
-// SetProvider sets the "provider" field.
-func (u *SourceControlUpsertOne) SetProvider(v sourcecontrol.Provider) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetProvider(v)
-	})
-}
-
-// UpdateProvider sets the "provider" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateProvider() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateProvider()
-	})
-}
-
-// ClearProvider clears the value of the "provider" field.
-func (u *SourceControlUpsertOne) ClearProvider() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearProvider()
-	})
-}
-
-// SetInstanceURL sets the "instance_url" field.
-func (u *SourceControlUpsertOne) SetInstanceURL(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetInstanceURL(v)
-	})
-}
-
-// UpdateInstanceURL sets the "instance_url" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateInstanceURL() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateInstanceURL()
-	})
-}
-
-// ClearInstanceURL clears the value of the "instance_url" field.
-func (u *SourceControlUpsertOne) ClearInstanceURL() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearInstanceURL()
-	})
-}
-
 // SetRepo sets the "repo" field.
 func (u *SourceControlUpsertOne) SetRepo(v string) *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
@@ -875,276 +468,108 @@ func (u *SourceControlUpsertOne) ClearRepo() *SourceControlUpsertOne {
 	})
 }
 
-// SetRefs sets the "refs" field.
-func (u *SourceControlUpsertOne) SetRefs(v string) *SourceControlUpsertOne {
+// SetRepoURL sets the "repo_url" field.
+func (u *SourceControlUpsertOne) SetRepoURL(v string) *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRefs(v)
+		s.SetRepoURL(v)
 	})
 }
 
-// UpdateRefs sets the "refs" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateRefs() *SourceControlUpsertOne {
+// UpdateRepoURL sets the "repo_url" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRepoURL() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRefs()
+		s.UpdateRepoURL()
 	})
 }
 
-// ClearRefs clears the value of the "refs" field.
-func (u *SourceControlUpsertOne) ClearRefs() *SourceControlUpsertOne {
+// ClearRepoURL clears the value of the "repo_url" field.
+func (u *SourceControlUpsertOne) ClearRepoURL() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRefs()
+		s.ClearRepoURL()
 	})
 }
 
-// SetCommitSha sets the "commit_sha" field.
-func (u *SourceControlUpsertOne) SetCommitSha(v string) *SourceControlUpsertOne {
+// SetRef sets the "ref" field.
+func (u *SourceControlUpsertOne) SetRef(v string) *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetCommitSha(v)
+		s.SetRef(v)
 	})
 }
 
-// UpdateCommitSha sets the "commit_sha" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateCommitSha() *SourceControlUpsertOne {
+// UpdateRef sets the "ref" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRef() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateCommitSha()
+		s.UpdateRef()
 	})
 }
 
-// ClearCommitSha clears the value of the "commit_sha" field.
-func (u *SourceControlUpsertOne) ClearCommitSha() *SourceControlUpsertOne {
+// ClearRef clears the value of the "ref" field.
+func (u *SourceControlUpsertOne) ClearRef() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearCommitSha()
+		s.ClearRef()
 	})
 }
 
-// SetActor sets the "actor" field.
-func (u *SourceControlUpsertOne) SetActor(v string) *SourceControlUpsertOne {
+// SetRefURL sets the "ref_url" field.
+func (u *SourceControlUpsertOne) SetRefURL(v string) *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetActor(v)
+		s.SetRefURL(v)
 	})
 }
 
-// UpdateActor sets the "actor" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateActor() *SourceControlUpsertOne {
+// UpdateRefURL sets the "ref_url" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRefURL() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateActor()
+		s.UpdateRefURL()
 	})
 }
 
-// ClearActor clears the value of the "actor" field.
-func (u *SourceControlUpsertOne) ClearActor() *SourceControlUpsertOne {
+// ClearRefURL clears the value of the "ref_url" field.
+func (u *SourceControlUpsertOne) ClearRefURL() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearActor()
+		s.ClearRefURL()
 	})
 }
 
-// SetEventName sets the "event_name" field.
-func (u *SourceControlUpsertOne) SetEventName(v string) *SourceControlUpsertOne {
+// SetCommit sets the "commit" field.
+func (u *SourceControlUpsertOne) SetCommit(v string) *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetEventName(v)
+		s.SetCommit(v)
 	})
 }
 
-// UpdateEventName sets the "event_name" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateEventName() *SourceControlUpsertOne {
+// UpdateCommit sets the "commit" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateCommit() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateEventName()
+		s.UpdateCommit()
 	})
 }
 
-// ClearEventName clears the value of the "event_name" field.
-func (u *SourceControlUpsertOne) ClearEventName() *SourceControlUpsertOne {
+// ClearCommit clears the value of the "commit" field.
+func (u *SourceControlUpsertOne) ClearCommit() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearEventName()
+		s.ClearCommit()
 	})
 }
 
-// SetWorkflow sets the "workflow" field.
-func (u *SourceControlUpsertOne) SetWorkflow(v string) *SourceControlUpsertOne {
+// SetCommitURL sets the "commit_url" field.
+func (u *SourceControlUpsertOne) SetCommitURL(v string) *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetWorkflow(v)
+		s.SetCommitURL(v)
 	})
 }
 
-// UpdateWorkflow sets the "workflow" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateWorkflow() *SourceControlUpsertOne {
+// UpdateCommitURL sets the "commit_url" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateCommitURL() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateWorkflow()
+		s.UpdateCommitURL()
 	})
 }
 
-// ClearWorkflow clears the value of the "workflow" field.
-func (u *SourceControlUpsertOne) ClearWorkflow() *SourceControlUpsertOne {
+// ClearCommitURL clears the value of the "commit_url" field.
+func (u *SourceControlUpsertOne) ClearCommitURL() *SourceControlUpsertOne {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearWorkflow()
-	})
-}
-
-// SetRunID sets the "run_id" field.
-func (u *SourceControlUpsertOne) SetRunID(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunID(v)
-	})
-}
-
-// UpdateRunID sets the "run_id" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateRunID() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunID()
-	})
-}
-
-// ClearRunID clears the value of the "run_id" field.
-func (u *SourceControlUpsertOne) ClearRunID() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunID()
-	})
-}
-
-// SetRunNumber sets the "run_number" field.
-func (u *SourceControlUpsertOne) SetRunNumber(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunNumber(v)
-	})
-}
-
-// UpdateRunNumber sets the "run_number" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateRunNumber() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunNumber()
-	})
-}
-
-// ClearRunNumber clears the value of the "run_number" field.
-func (u *SourceControlUpsertOne) ClearRunNumber() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunNumber()
-	})
-}
-
-// SetJob sets the "job" field.
-func (u *SourceControlUpsertOne) SetJob(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetJob(v)
-	})
-}
-
-// UpdateJob sets the "job" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateJob() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateJob()
-	})
-}
-
-// ClearJob clears the value of the "job" field.
-func (u *SourceControlUpsertOne) ClearJob() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearJob()
-	})
-}
-
-// SetAction sets the "action" field.
-func (u *SourceControlUpsertOne) SetAction(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetAction(v)
-	})
-}
-
-// UpdateAction sets the "action" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateAction() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateAction()
-	})
-}
-
-// ClearAction clears the value of the "action" field.
-func (u *SourceControlUpsertOne) ClearAction() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearAction()
-	})
-}
-
-// SetRunnerName sets the "runner_name" field.
-func (u *SourceControlUpsertOne) SetRunnerName(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunnerName(v)
-	})
-}
-
-// UpdateRunnerName sets the "runner_name" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateRunnerName() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunnerName()
-	})
-}
-
-// ClearRunnerName clears the value of the "runner_name" field.
-func (u *SourceControlUpsertOne) ClearRunnerName() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunnerName()
-	})
-}
-
-// SetRunnerArch sets the "runner_arch" field.
-func (u *SourceControlUpsertOne) SetRunnerArch(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunnerArch(v)
-	})
-}
-
-// UpdateRunnerArch sets the "runner_arch" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateRunnerArch() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunnerArch()
-	})
-}
-
-// ClearRunnerArch clears the value of the "runner_arch" field.
-func (u *SourceControlUpsertOne) ClearRunnerArch() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunnerArch()
-	})
-}
-
-// SetRunnerOs sets the "runner_os" field.
-func (u *SourceControlUpsertOne) SetRunnerOs(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunnerOs(v)
-	})
-}
-
-// UpdateRunnerOs sets the "runner_os" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateRunnerOs() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunnerOs()
-	})
-}
-
-// ClearRunnerOs clears the value of the "runner_os" field.
-func (u *SourceControlUpsertOne) ClearRunnerOs() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunnerOs()
-	})
-}
-
-// SetWorkspace sets the "workspace" field.
-func (u *SourceControlUpsertOne) SetWorkspace(v string) *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetWorkspace(v)
-	})
-}
-
-// UpdateWorkspace sets the "workspace" field to the value that was provided on create.
-func (u *SourceControlUpsertOne) UpdateWorkspace() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateWorkspace()
-	})
-}
-
-// ClearWorkspace clears the value of the "workspace" field.
-func (u *SourceControlUpsertOne) ClearWorkspace() *SourceControlUpsertOne {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearWorkspace()
+		s.ClearCommitURL()
 	})
 }
 
@@ -1282,7 +707,7 @@ func (sccb *SourceControlCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SourceControlUpsert) {
-//			SetProvider(v+v).
+//			SetRepo(v+v).
 //		}).
 //		Exec(ctx)
 func (sccb *SourceControlCreateBulk) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertBulk {
@@ -1361,48 +786,6 @@ func (u *SourceControlUpsertBulk) Update(set func(*SourceControlUpsert)) *Source
 	return u
 }
 
-// SetProvider sets the "provider" field.
-func (u *SourceControlUpsertBulk) SetProvider(v sourcecontrol.Provider) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetProvider(v)
-	})
-}
-
-// UpdateProvider sets the "provider" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateProvider() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateProvider()
-	})
-}
-
-// ClearProvider clears the value of the "provider" field.
-func (u *SourceControlUpsertBulk) ClearProvider() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearProvider()
-	})
-}
-
-// SetInstanceURL sets the "instance_url" field.
-func (u *SourceControlUpsertBulk) SetInstanceURL(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetInstanceURL(v)
-	})
-}
-
-// UpdateInstanceURL sets the "instance_url" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateInstanceURL() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateInstanceURL()
-	})
-}
-
-// ClearInstanceURL clears the value of the "instance_url" field.
-func (u *SourceControlUpsertBulk) ClearInstanceURL() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearInstanceURL()
-	})
-}
-
 // SetRepo sets the "repo" field.
 func (u *SourceControlUpsertBulk) SetRepo(v string) *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
@@ -1424,276 +807,108 @@ func (u *SourceControlUpsertBulk) ClearRepo() *SourceControlUpsertBulk {
 	})
 }
 
-// SetRefs sets the "refs" field.
-func (u *SourceControlUpsertBulk) SetRefs(v string) *SourceControlUpsertBulk {
+// SetRepoURL sets the "repo_url" field.
+func (u *SourceControlUpsertBulk) SetRepoURL(v string) *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRefs(v)
+		s.SetRepoURL(v)
 	})
 }
 
-// UpdateRefs sets the "refs" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateRefs() *SourceControlUpsertBulk {
+// UpdateRepoURL sets the "repo_url" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRepoURL() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRefs()
+		s.UpdateRepoURL()
 	})
 }
 
-// ClearRefs clears the value of the "refs" field.
-func (u *SourceControlUpsertBulk) ClearRefs() *SourceControlUpsertBulk {
+// ClearRepoURL clears the value of the "repo_url" field.
+func (u *SourceControlUpsertBulk) ClearRepoURL() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRefs()
+		s.ClearRepoURL()
 	})
 }
 
-// SetCommitSha sets the "commit_sha" field.
-func (u *SourceControlUpsertBulk) SetCommitSha(v string) *SourceControlUpsertBulk {
+// SetRef sets the "ref" field.
+func (u *SourceControlUpsertBulk) SetRef(v string) *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetCommitSha(v)
+		s.SetRef(v)
 	})
 }
 
-// UpdateCommitSha sets the "commit_sha" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateCommitSha() *SourceControlUpsertBulk {
+// UpdateRef sets the "ref" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRef() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateCommitSha()
+		s.UpdateRef()
 	})
 }
 
-// ClearCommitSha clears the value of the "commit_sha" field.
-func (u *SourceControlUpsertBulk) ClearCommitSha() *SourceControlUpsertBulk {
+// ClearRef clears the value of the "ref" field.
+func (u *SourceControlUpsertBulk) ClearRef() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearCommitSha()
+		s.ClearRef()
 	})
 }
 
-// SetActor sets the "actor" field.
-func (u *SourceControlUpsertBulk) SetActor(v string) *SourceControlUpsertBulk {
+// SetRefURL sets the "ref_url" field.
+func (u *SourceControlUpsertBulk) SetRefURL(v string) *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetActor(v)
+		s.SetRefURL(v)
 	})
 }
 
-// UpdateActor sets the "actor" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateActor() *SourceControlUpsertBulk {
+// UpdateRefURL sets the "ref_url" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRefURL() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateActor()
+		s.UpdateRefURL()
 	})
 }
 
-// ClearActor clears the value of the "actor" field.
-func (u *SourceControlUpsertBulk) ClearActor() *SourceControlUpsertBulk {
+// ClearRefURL clears the value of the "ref_url" field.
+func (u *SourceControlUpsertBulk) ClearRefURL() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearActor()
+		s.ClearRefURL()
 	})
 }
 
-// SetEventName sets the "event_name" field.
-func (u *SourceControlUpsertBulk) SetEventName(v string) *SourceControlUpsertBulk {
+// SetCommit sets the "commit" field.
+func (u *SourceControlUpsertBulk) SetCommit(v string) *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetEventName(v)
+		s.SetCommit(v)
 	})
 }
 
-// UpdateEventName sets the "event_name" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateEventName() *SourceControlUpsertBulk {
+// UpdateCommit sets the "commit" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateCommit() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateEventName()
+		s.UpdateCommit()
 	})
 }
 
-// ClearEventName clears the value of the "event_name" field.
-func (u *SourceControlUpsertBulk) ClearEventName() *SourceControlUpsertBulk {
+// ClearCommit clears the value of the "commit" field.
+func (u *SourceControlUpsertBulk) ClearCommit() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearEventName()
+		s.ClearCommit()
 	})
 }
 
-// SetWorkflow sets the "workflow" field.
-func (u *SourceControlUpsertBulk) SetWorkflow(v string) *SourceControlUpsertBulk {
+// SetCommitURL sets the "commit_url" field.
+func (u *SourceControlUpsertBulk) SetCommitURL(v string) *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.SetWorkflow(v)
+		s.SetCommitURL(v)
 	})
 }
 
-// UpdateWorkflow sets the "workflow" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateWorkflow() *SourceControlUpsertBulk {
+// UpdateCommitURL sets the "commit_url" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateCommitURL() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateWorkflow()
+		s.UpdateCommitURL()
 	})
 }
 
-// ClearWorkflow clears the value of the "workflow" field.
-func (u *SourceControlUpsertBulk) ClearWorkflow() *SourceControlUpsertBulk {
+// ClearCommitURL clears the value of the "commit_url" field.
+func (u *SourceControlUpsertBulk) ClearCommitURL() *SourceControlUpsertBulk {
 	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearWorkflow()
-	})
-}
-
-// SetRunID sets the "run_id" field.
-func (u *SourceControlUpsertBulk) SetRunID(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunID(v)
-	})
-}
-
-// UpdateRunID sets the "run_id" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateRunID() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunID()
-	})
-}
-
-// ClearRunID clears the value of the "run_id" field.
-func (u *SourceControlUpsertBulk) ClearRunID() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunID()
-	})
-}
-
-// SetRunNumber sets the "run_number" field.
-func (u *SourceControlUpsertBulk) SetRunNumber(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunNumber(v)
-	})
-}
-
-// UpdateRunNumber sets the "run_number" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateRunNumber() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunNumber()
-	})
-}
-
-// ClearRunNumber clears the value of the "run_number" field.
-func (u *SourceControlUpsertBulk) ClearRunNumber() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunNumber()
-	})
-}
-
-// SetJob sets the "job" field.
-func (u *SourceControlUpsertBulk) SetJob(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetJob(v)
-	})
-}
-
-// UpdateJob sets the "job" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateJob() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateJob()
-	})
-}
-
-// ClearJob clears the value of the "job" field.
-func (u *SourceControlUpsertBulk) ClearJob() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearJob()
-	})
-}
-
-// SetAction sets the "action" field.
-func (u *SourceControlUpsertBulk) SetAction(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetAction(v)
-	})
-}
-
-// UpdateAction sets the "action" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateAction() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateAction()
-	})
-}
-
-// ClearAction clears the value of the "action" field.
-func (u *SourceControlUpsertBulk) ClearAction() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearAction()
-	})
-}
-
-// SetRunnerName sets the "runner_name" field.
-func (u *SourceControlUpsertBulk) SetRunnerName(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunnerName(v)
-	})
-}
-
-// UpdateRunnerName sets the "runner_name" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateRunnerName() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunnerName()
-	})
-}
-
-// ClearRunnerName clears the value of the "runner_name" field.
-func (u *SourceControlUpsertBulk) ClearRunnerName() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunnerName()
-	})
-}
-
-// SetRunnerArch sets the "runner_arch" field.
-func (u *SourceControlUpsertBulk) SetRunnerArch(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunnerArch(v)
-	})
-}
-
-// UpdateRunnerArch sets the "runner_arch" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateRunnerArch() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunnerArch()
-	})
-}
-
-// ClearRunnerArch clears the value of the "runner_arch" field.
-func (u *SourceControlUpsertBulk) ClearRunnerArch() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunnerArch()
-	})
-}
-
-// SetRunnerOs sets the "runner_os" field.
-func (u *SourceControlUpsertBulk) SetRunnerOs(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetRunnerOs(v)
-	})
-}
-
-// UpdateRunnerOs sets the "runner_os" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateRunnerOs() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateRunnerOs()
-	})
-}
-
-// ClearRunnerOs clears the value of the "runner_os" field.
-func (u *SourceControlUpsertBulk) ClearRunnerOs() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearRunnerOs()
-	})
-}
-
-// SetWorkspace sets the "workspace" field.
-func (u *SourceControlUpsertBulk) SetWorkspace(v string) *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.SetWorkspace(v)
-	})
-}
-
-// UpdateWorkspace sets the "workspace" field to the value that was provided on create.
-func (u *SourceControlUpsertBulk) UpdateWorkspace() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.UpdateWorkspace()
-	})
-}
-
-// ClearWorkspace clears the value of the "workspace" field.
-func (u *SourceControlUpsertBulk) ClearWorkspace() *SourceControlUpsertBulk {
-	return u.Update(func(s *SourceControlUpsert) {
-		s.ClearWorkspace()
+		s.ClearCommitURL()
 	})
 }
 

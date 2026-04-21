@@ -19,8 +19,6 @@ type Build struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
-	// BuildURL holds the value of the "build_url" field.
-	BuildURL string `json:"build_url,omitempty"`
 	// BuildUUID holds the value of the "build_uuid" field.
 	BuildUUID uuid.UUID `json:"build_uuid,omitempty"`
 	// Timestamp holds the value of the "timestamp" field.
@@ -38,13 +36,16 @@ type BuildEdges struct {
 	InstanceName *InstanceName `json:"instance_name,omitempty"`
 	// Invocations holds the value of the invocations edge.
 	Invocations []*BazelInvocation `json:"invocations,omitempty"`
+	// Tags holds the value of the tags edge.
+	Tags []*BuildTag `json:"tags,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 
 	namedInvocations map[string][]*BazelInvocation
+	namedTags        map[string][]*BuildTag
 }
 
 // InstanceNameOrErr returns the InstanceName value or an error if the edge
@@ -67,6 +68,15 @@ func (e BuildEdges) InvocationsOrErr() ([]*BazelInvocation, error) {
 	return nil, &NotLoadedError{edge: "invocations"}
 }
 
+// TagsOrErr returns the Tags value or an error if the edge
+// was not loaded in eager-loading.
+func (e BuildEdges) TagsOrErr() ([]*BuildTag, error) {
+	if e.loadedTypes[2] {
+		return e.Tags, nil
+	}
+	return nil, &NotLoadedError{edge: "tags"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Build) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -74,8 +84,6 @@ func (*Build) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case build.FieldID:
 			values[i] = new(sql.NullInt64)
-		case build.FieldBuildURL:
-			values[i] = new(sql.NullString)
 		case build.FieldTimestamp:
 			values[i] = new(sql.NullTime)
 		case build.FieldBuildUUID:
@@ -103,12 +111,6 @@ func (b *Build) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			b.ID = int64(value.Int64)
-		case build.FieldBuildURL:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field build_url", values[i])
-			} else if value.Valid {
-				b.BuildURL = value.String
-			}
 		case build.FieldBuildUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field build_uuid", values[i])
@@ -151,6 +153,11 @@ func (b *Build) QueryInvocations() *BazelInvocationQuery {
 	return NewBuildClient(b.config).QueryInvocations(b)
 }
 
+// QueryTags queries the "tags" edge of the Build entity.
+func (b *Build) QueryTags() *BuildTagQuery {
+	return NewBuildClient(b.config).QueryTags(b)
+}
+
 // Update returns a builder for updating this Build.
 // Note that you need to call Build.Unwrap() before calling this method if this Build
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -174,9 +181,6 @@ func (b *Build) String() string {
 	var builder strings.Builder
 	builder.WriteString("Build(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", b.ID))
-	builder.WriteString("build_url=")
-	builder.WriteString(b.BuildURL)
-	builder.WriteString(", ")
 	builder.WriteString("build_uuid=")
 	builder.WriteString(fmt.Sprintf("%v", b.BuildUUID))
 	builder.WriteString(", ")
@@ -207,6 +211,30 @@ func (b *Build) appendNamedInvocations(name string, edges ...*BazelInvocation) {
 		b.Edges.namedInvocations[name] = []*BazelInvocation{}
 	} else {
 		b.Edges.namedInvocations[name] = append(b.Edges.namedInvocations[name], edges...)
+	}
+}
+
+// NamedTags returns the Tags named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (b *Build) NamedTags(name string) ([]*BuildTag, error) {
+	if b.Edges.namedTags == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := b.Edges.namedTags[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (b *Build) appendNamedTags(name string, edges ...*BuildTag) {
+	if b.Edges.namedTags == nil {
+		b.Edges.namedTags = make(map[string][]*BuildTag)
+	}
+	if len(edges) == 0 {
+		b.Edges.namedTags[name] = []*BuildTag{}
+	} else {
+		b.Edges.namedTags[name] = append(b.Edges.namedTags[name], edges...)
 	}
 }
 

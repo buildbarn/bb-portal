@@ -22,6 +22,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -78,34 +79,6 @@ func (bic *BazelInvocationCreate) SetNillableEndedAt(t *time.Time) *BazelInvocat
 	return bic
 }
 
-// SetChangeNumber sets the "change_number" field.
-func (bic *BazelInvocationCreate) SetChangeNumber(i int) *BazelInvocationCreate {
-	bic.mutation.SetChangeNumber(i)
-	return bic
-}
-
-// SetNillableChangeNumber sets the "change_number" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableChangeNumber(i *int) *BazelInvocationCreate {
-	if i != nil {
-		bic.SetChangeNumber(*i)
-	}
-	return bic
-}
-
-// SetPatchsetNumber sets the "patchset_number" field.
-func (bic *BazelInvocationCreate) SetPatchsetNumber(i int) *BazelInvocationCreate {
-	bic.mutation.SetPatchsetNumber(i)
-	return bic
-}
-
-// SetNillablePatchsetNumber sets the "patchset_number" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillablePatchsetNumber(i *int) *BazelInvocationCreate {
-	if i != nil {
-		bic.SetPatchsetNumber(*i)
-	}
-	return bic
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (bic *BazelInvocationCreate) SetBepCompleted(b bool) *BazelInvocationCreate {
 	bic.mutation.SetBepCompleted(b)
@@ -116,20 +89,6 @@ func (bic *BazelInvocationCreate) SetBepCompleted(b bool) *BazelInvocationCreate
 func (bic *BazelInvocationCreate) SetNillableBepCompleted(b *bool) *BazelInvocationCreate {
 	if b != nil {
 		bic.SetBepCompleted(*b)
-	}
-	return bic
-}
-
-// SetStepLabel sets the "step_label" field.
-func (bic *BazelInvocationCreate) SetStepLabel(s string) *BazelInvocationCreate {
-	bic.mutation.SetStepLabel(s)
-	return bic
-}
-
-// SetNillableStepLabel sets the "step_label" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableStepLabel(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetStepLabel(*s)
 	}
 	return bic
 }
@@ -158,20 +117,6 @@ func (bic *BazelInvocationCreate) SetHostname(s string) *BazelInvocationCreate {
 func (bic *BazelInvocationCreate) SetNillableHostname(s *string) *BazelInvocationCreate {
 	if s != nil {
 		bic.SetHostname(*s)
-	}
-	return bic
-}
-
-// SetIsCiWorker sets the "is_ci_worker" field.
-func (bic *BazelInvocationCreate) SetIsCiWorker(b bool) *BazelInvocationCreate {
-	bic.mutation.SetIsCiWorker(b)
-	return bic
-}
-
-// SetNillableIsCiWorker sets the "is_ci_worker" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableIsCiWorker(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetIsCiWorker(*b)
 	}
 	return bic
 }
@@ -375,6 +320,21 @@ func (bic *BazelInvocationCreate) SetAuthenticatedUser(a *AuthenticatedUser) *Ba
 	return bic.SetAuthenticatedUserID(a.ID)
 }
 
+// AddTagIDs adds the "tags" edge to the InvocationTag entity by IDs.
+func (bic *BazelInvocationCreate) AddTagIDs(ids ...int64) *BazelInvocationCreate {
+	bic.mutation.AddTagIDs(ids...)
+	return bic
+}
+
+// AddTags adds the "tags" edges to the InvocationTag entity.
+func (bic *BazelInvocationCreate) AddTags(i ...*InvocationTag) *BazelInvocationCreate {
+	ids := make([]int64, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return bic.AddTagIDs(ids...)
+}
+
 // SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
 func (bic *BazelInvocationCreate) SetEventMetadataID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetEventMetadataID(id)
@@ -537,23 +497,19 @@ func (bic *BazelInvocationCreate) AddTargetKindMappings(t ...*TargetKindMapping)
 	return bic.AddTargetKindMappingIDs(ids...)
 }
 
-// SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
-func (bic *BazelInvocationCreate) SetSourceControlID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetSourceControlID(id)
+// AddSourceControlIDs adds the "source_control" edge to the SourceControl entity by IDs.
+func (bic *BazelInvocationCreate) AddSourceControlIDs(ids ...int64) *BazelInvocationCreate {
+	bic.mutation.AddSourceControlIDs(ids...)
 	return bic
 }
 
-// SetNillableSourceControlID sets the "source_control" edge to the SourceControl entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableSourceControlID(id *int64) *BazelInvocationCreate {
-	if id != nil {
-		bic = bic.SetSourceControlID(*id)
+// AddSourceControl adds the "source_control" edges to the SourceControl entity.
+func (bic *BazelInvocationCreate) AddSourceControl(s ...*SourceControl) *BazelInvocationCreate {
+	ids := make([]int64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
 	}
-	return bic
-}
-
-// SetSourceControl sets the "source_control" edge to the SourceControl entity.
-func (bic *BazelInvocationCreate) SetSourceControl(s *SourceControl) *BazelInvocationCreate {
-	return bic.SetSourceControlID(s.ID)
+	return bic.AddSourceControlIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -691,21 +647,9 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldEndedAt, field.TypeTime, value)
 		_node.EndedAt = &value
 	}
-	if value, ok := bic.mutation.ChangeNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldChangeNumber, field.TypeInt, value)
-		_node.ChangeNumber = value
-	}
-	if value, ok := bic.mutation.PatchsetNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldPatchsetNumber, field.TypeInt, value)
-		_node.PatchsetNumber = value
-	}
 	if value, ok := bic.mutation.BepCompleted(); ok {
 		_spec.SetField(bazelinvocation.FieldBepCompleted, field.TypeBool, value)
 		_node.BepCompleted = value
-	}
-	if value, ok := bic.mutation.StepLabel(); ok {
-		_spec.SetField(bazelinvocation.FieldStepLabel, field.TypeString, value)
-		_node.StepLabel = value
 	}
 	if value, ok := bic.mutation.Username(); ok {
 		_spec.SetField(bazelinvocation.FieldUsername, field.TypeString, value)
@@ -714,10 +658,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
 		_node.Hostname = value
-	}
-	if value, ok := bic.mutation.IsCiWorker(); ok {
-		_spec.SetField(bazelinvocation.FieldIsCiWorker, field.TypeBool, value)
-		_node.IsCiWorker = value
 	}
 	if value, ok := bic.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
@@ -816,6 +756,22 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.authenticated_user_bazel_invocations = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.TagsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TagsTable,
+			Columns: []string{bazelinvocation.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bic.mutation.EventMetadataIDs(); len(nodes) > 0 {
@@ -980,7 +936,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	}
 	if nodes := bic.mutation.SourceControlIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.SourceControlTable,
 			Columns: []string{bazelinvocation.SourceControlColumn},
@@ -1082,54 +1038,6 @@ func (u *BazelInvocationUpsert) ClearEndedAt() *BazelInvocationUpsert {
 	return u
 }
 
-// SetChangeNumber sets the "change_number" field.
-func (u *BazelInvocationUpsert) SetChangeNumber(v int) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldChangeNumber, v)
-	return u
-}
-
-// UpdateChangeNumber sets the "change_number" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateChangeNumber() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldChangeNumber)
-	return u
-}
-
-// AddChangeNumber adds v to the "change_number" field.
-func (u *BazelInvocationUpsert) AddChangeNumber(v int) *BazelInvocationUpsert {
-	u.Add(bazelinvocation.FieldChangeNumber, v)
-	return u
-}
-
-// ClearChangeNumber clears the value of the "change_number" field.
-func (u *BazelInvocationUpsert) ClearChangeNumber() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldChangeNumber)
-	return u
-}
-
-// SetPatchsetNumber sets the "patchset_number" field.
-func (u *BazelInvocationUpsert) SetPatchsetNumber(v int) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldPatchsetNumber, v)
-	return u
-}
-
-// UpdatePatchsetNumber sets the "patchset_number" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdatePatchsetNumber() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldPatchsetNumber)
-	return u
-}
-
-// AddPatchsetNumber adds v to the "patchset_number" field.
-func (u *BazelInvocationUpsert) AddPatchsetNumber(v int) *BazelInvocationUpsert {
-	u.Add(bazelinvocation.FieldPatchsetNumber, v)
-	return u
-}
-
-// ClearPatchsetNumber clears the value of the "patchset_number" field.
-func (u *BazelInvocationUpsert) ClearPatchsetNumber() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldPatchsetNumber)
-	return u
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (u *BazelInvocationUpsert) SetBepCompleted(v bool) *BazelInvocationUpsert {
 	u.Set(bazelinvocation.FieldBepCompleted, v)
@@ -1139,24 +1047,6 @@ func (u *BazelInvocationUpsert) SetBepCompleted(v bool) *BazelInvocationUpsert {
 // UpdateBepCompleted sets the "bep_completed" field to the value that was provided on create.
 func (u *BazelInvocationUpsert) UpdateBepCompleted() *BazelInvocationUpsert {
 	u.SetExcluded(bazelinvocation.FieldBepCompleted)
-	return u
-}
-
-// SetStepLabel sets the "step_label" field.
-func (u *BazelInvocationUpsert) SetStepLabel(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldStepLabel, v)
-	return u
-}
-
-// UpdateStepLabel sets the "step_label" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateStepLabel() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldStepLabel)
-	return u
-}
-
-// ClearStepLabel clears the value of the "step_label" field.
-func (u *BazelInvocationUpsert) ClearStepLabel() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldStepLabel)
 	return u
 }
 
@@ -1193,24 +1083,6 @@ func (u *BazelInvocationUpsert) UpdateHostname() *BazelInvocationUpsert {
 // ClearHostname clears the value of the "hostname" field.
 func (u *BazelInvocationUpsert) ClearHostname() *BazelInvocationUpsert {
 	u.SetNull(bazelinvocation.FieldHostname)
-	return u
-}
-
-// SetIsCiWorker sets the "is_ci_worker" field.
-func (u *BazelInvocationUpsert) SetIsCiWorker(v bool) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldIsCiWorker, v)
-	return u
-}
-
-// UpdateIsCiWorker sets the "is_ci_worker" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateIsCiWorker() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldIsCiWorker)
-	return u
-}
-
-// ClearIsCiWorker clears the value of the "is_ci_worker" field.
-func (u *BazelInvocationUpsert) ClearIsCiWorker() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldIsCiWorker)
 	return u
 }
 
@@ -1514,62 +1386,6 @@ func (u *BazelInvocationUpsertOne) ClearEndedAt() *BazelInvocationUpsertOne {
 	})
 }
 
-// SetChangeNumber sets the "change_number" field.
-func (u *BazelInvocationUpsertOne) SetChangeNumber(v int) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetChangeNumber(v)
-	})
-}
-
-// AddChangeNumber adds v to the "change_number" field.
-func (u *BazelInvocationUpsertOne) AddChangeNumber(v int) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.AddChangeNumber(v)
-	})
-}
-
-// UpdateChangeNumber sets the "change_number" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateChangeNumber() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateChangeNumber()
-	})
-}
-
-// ClearChangeNumber clears the value of the "change_number" field.
-func (u *BazelInvocationUpsertOne) ClearChangeNumber() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearChangeNumber()
-	})
-}
-
-// SetPatchsetNumber sets the "patchset_number" field.
-func (u *BazelInvocationUpsertOne) SetPatchsetNumber(v int) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetPatchsetNumber(v)
-	})
-}
-
-// AddPatchsetNumber adds v to the "patchset_number" field.
-func (u *BazelInvocationUpsertOne) AddPatchsetNumber(v int) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.AddPatchsetNumber(v)
-	})
-}
-
-// UpdatePatchsetNumber sets the "patchset_number" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdatePatchsetNumber() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdatePatchsetNumber()
-	})
-}
-
-// ClearPatchsetNumber clears the value of the "patchset_number" field.
-func (u *BazelInvocationUpsertOne) ClearPatchsetNumber() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearPatchsetNumber()
-	})
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (u *BazelInvocationUpsertOne) SetBepCompleted(v bool) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
@@ -1581,27 +1397,6 @@ func (u *BazelInvocationUpsertOne) SetBepCompleted(v bool) *BazelInvocationUpser
 func (u *BazelInvocationUpsertOne) UpdateBepCompleted() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.UpdateBepCompleted()
-	})
-}
-
-// SetStepLabel sets the "step_label" field.
-func (u *BazelInvocationUpsertOne) SetStepLabel(v string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetStepLabel(v)
-	})
-}
-
-// UpdateStepLabel sets the "step_label" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateStepLabel() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateStepLabel()
-	})
-}
-
-// ClearStepLabel clears the value of the "step_label" field.
-func (u *BazelInvocationUpsertOne) ClearStepLabel() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearStepLabel()
 	})
 }
 
@@ -1644,27 +1439,6 @@ func (u *BazelInvocationUpsertOne) UpdateHostname() *BazelInvocationUpsertOne {
 func (u *BazelInvocationUpsertOne) ClearHostname() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearHostname()
-	})
-}
-
-// SetIsCiWorker sets the "is_ci_worker" field.
-func (u *BazelInvocationUpsertOne) SetIsCiWorker(v bool) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetIsCiWorker(v)
-	})
-}
-
-// UpdateIsCiWorker sets the "is_ci_worker" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateIsCiWorker() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateIsCiWorker()
-	})
-}
-
-// ClearIsCiWorker clears the value of the "is_ci_worker" field.
-func (u *BazelInvocationUpsertOne) ClearIsCiWorker() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearIsCiWorker()
 	})
 }
 
@@ -2168,62 +1942,6 @@ func (u *BazelInvocationUpsertBulk) ClearEndedAt() *BazelInvocationUpsertBulk {
 	})
 }
 
-// SetChangeNumber sets the "change_number" field.
-func (u *BazelInvocationUpsertBulk) SetChangeNumber(v int) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetChangeNumber(v)
-	})
-}
-
-// AddChangeNumber adds v to the "change_number" field.
-func (u *BazelInvocationUpsertBulk) AddChangeNumber(v int) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.AddChangeNumber(v)
-	})
-}
-
-// UpdateChangeNumber sets the "change_number" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateChangeNumber() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateChangeNumber()
-	})
-}
-
-// ClearChangeNumber clears the value of the "change_number" field.
-func (u *BazelInvocationUpsertBulk) ClearChangeNumber() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearChangeNumber()
-	})
-}
-
-// SetPatchsetNumber sets the "patchset_number" field.
-func (u *BazelInvocationUpsertBulk) SetPatchsetNumber(v int) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetPatchsetNumber(v)
-	})
-}
-
-// AddPatchsetNumber adds v to the "patchset_number" field.
-func (u *BazelInvocationUpsertBulk) AddPatchsetNumber(v int) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.AddPatchsetNumber(v)
-	})
-}
-
-// UpdatePatchsetNumber sets the "patchset_number" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdatePatchsetNumber() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdatePatchsetNumber()
-	})
-}
-
-// ClearPatchsetNumber clears the value of the "patchset_number" field.
-func (u *BazelInvocationUpsertBulk) ClearPatchsetNumber() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearPatchsetNumber()
-	})
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (u *BazelInvocationUpsertBulk) SetBepCompleted(v bool) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
@@ -2235,27 +1953,6 @@ func (u *BazelInvocationUpsertBulk) SetBepCompleted(v bool) *BazelInvocationUpse
 func (u *BazelInvocationUpsertBulk) UpdateBepCompleted() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.UpdateBepCompleted()
-	})
-}
-
-// SetStepLabel sets the "step_label" field.
-func (u *BazelInvocationUpsertBulk) SetStepLabel(v string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetStepLabel(v)
-	})
-}
-
-// UpdateStepLabel sets the "step_label" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateStepLabel() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateStepLabel()
-	})
-}
-
-// ClearStepLabel clears the value of the "step_label" field.
-func (u *BazelInvocationUpsertBulk) ClearStepLabel() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearStepLabel()
 	})
 }
 
@@ -2298,27 +1995,6 @@ func (u *BazelInvocationUpsertBulk) UpdateHostname() *BazelInvocationUpsertBulk 
 func (u *BazelInvocationUpsertBulk) ClearHostname() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearHostname()
-	})
-}
-
-// SetIsCiWorker sets the "is_ci_worker" field.
-func (u *BazelInvocationUpsertBulk) SetIsCiWorker(v bool) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetIsCiWorker(v)
-	})
-}
-
-// UpdateIsCiWorker sets the "is_ci_worker" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateIsCiWorker() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateIsCiWorker()
-	})
-}
-
-// ClearIsCiWorker clears the value of the "is_ci_worker" field.
-func (u *BazelInvocationUpsertBulk) ClearIsCiWorker() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearIsCiWorker()
 	})
 }
 

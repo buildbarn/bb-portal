@@ -1,0 +1,546 @@
+{
+  "getBazelInvocation": {
+    "actions": [],
+    "authenticatedUser": null,
+    "bazelVersion": "9.0.0",
+    "build": {
+      "buildUUID": "e823d26e-7b76-50bd-ac6a-e8306779da6f",
+      "id": "QnVpbGQ6MQ=="
+    },
+    "canonicalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "flag_alias",
+          "value": "build_python_zip=@@rules_python+//python/config_settings:build_python_zip"
+        },
+        {
+          "option": "flag_alias",
+          "value": "incompatible_default_to_explicit_init_py=@@rules_python+//python/config_settings:incompatible_default_to_explicit_init_py"
+        },
+        {
+          "option": "flag_alias",
+          "value": "python_path=@@rules_python+//python/config_settings:python_path"
+        },
+        {
+          "option": "flag_alias",
+          "value": "experimental_python_import_all_repositories=@@rules_python+//python/config_settings:experimental_python_import_all_repositories"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "github-actions.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": [
+        {
+          "option": "max_idle_secs",
+          "value": "10800"
+        },
+        {
+          "option": "shutdown_on_low_sys_mem",
+          "value": "0"
+        },
+        {
+          "option": "connect_timeout_secs",
+          "value": "30"
+        },
+        {
+          "option": "output_user_root",
+          "value": "/home/runner/.cache/bazel/_bazel_runner"
+        },
+        {
+          "option": "failure_detail_out",
+          "value": "/home/runner/.cache/bazel/_bazel_runner/dce2bcbbac8f1da3f14b617bb598383b/failure_detail.rawproto"
+        },
+        {
+          "option": "idle_server_tasks",
+          "value": "1"
+        },
+        {
+          "option": "write_command_log",
+          "value": "1"
+        },
+        {
+          "option": "fatal_event_bus_exceptions",
+          "value": "0"
+        },
+        {
+          "option": "windows_enable_symlinks",
+          "value": "0"
+        },
+        {
+          "option": "client_debug",
+          "value": "false"
+        },
+        {
+          "option": "ignore_all_rc_files",
+          "value": "1"
+        }
+      ]
+    },
+    "configurations": [
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjoz",
+        "mnemonic": "k8-fastbuild"
+      },
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjo0",
+        "mnemonic": "k8-fastbuild"
+      }
+    ],
+    "connectionMetadata": null,
+    "endedAt": "2026-03-03T08:05:01.66Z",
+    "exitCodeName": "SUCCESS",
+    "hostname": "runnervmnay03",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
+    "instanceName": {
+      "name": ""
+    },
+    "invocationID": "8e56d2d7-ca9b-45e6-a08f-85e7749e3c83",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 0,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjI=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjg=",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjk=",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjEw",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjEx",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjEy",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 3117,
+              "id": "TWlzc0RldGFpOjEz",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 1,
+              "id": "TWlzc0RldGFpOjE0",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjE1",
+              "reason": "DIGEST_MISMATCH"
+            }
+          ],
+          "misses": 3118,
+          "saveTimeInMs": 4,
+          "sizeInBytes": 1210271
+        },
+        "actionData": [
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1271,
+            "firstStartedMs": 1772524578657,
+            "id": "QWN0aW9uRGF0YTo0",
+            "lastEndedMs": 1772525098841,
+            "mnemonic": "GoCompilePkg",
+            "systemTime": 20519,
+            "userTime": 336660
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 406,
+            "firstStartedMs": 1772524516889,
+            "id": "QWN0aW9uRGF0YTo1",
+            "lastEndedMs": 1772525076152,
+            "mnemonic": "CppCompile",
+            "systemTime": 91215,
+            "userTime": 1579299
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 295,
+            "firstStartedMs": 1772524514008,
+            "id": "QWN0aW9uRGF0YTo2",
+            "lastEndedMs": 1772524516804,
+            "mnemonic": "Symlink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 250,
+            "firstStartedMs": 1772524513793,
+            "id": "QWN0aW9uRGF0YTo3",
+            "lastEndedMs": 1772524515178,
+            "mnemonic": "CppModuleMap",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 98,
+            "firstStartedMs": 1772524514881,
+            "id": "QWN0aW9uRGF0YTo4",
+            "lastEndedMs": 1772524515843,
+            "mnemonic": "UnresolvedSymlink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 97,
+            "firstStartedMs": 1772524508538,
+            "id": "QWN0aW9uRGF0YTo5",
+            "lastEndedMs": 1772524516190,
+            "mnemonic": "RepoMappingManifest",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 97,
+            "firstStartedMs": 1772524508570,
+            "id": "QWN0aW9uRGF0YToxMA==",
+            "lastEndedMs": 1772524516198,
+            "mnemonic": "SymlinkTree",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 97,
+            "firstStartedMs": 1772524508537,
+            "id": "QWN0aW9uRGF0YToxMQ==",
+            "lastEndedMs": 1772524516191,
+            "mnemonic": "SourceSymlinkManifest",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 97,
+            "firstStartedMs": 1772524515558,
+            "id": "QWN0aW9uRGF0YToxMg==",
+            "lastEndedMs": 1772525101625,
+            "mnemonic": "RunfilesTree",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 84,
+            "firstStartedMs": 1772524516234,
+            "id": "QWN0aW9uRGF0YToxMw==",
+            "lastEndedMs": 1772524516842,
+            "mnemonic": "NpmPackageExtract",
+            "systemTime": 103,
+            "userTime": 40
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 73,
+            "firstStartedMs": 1772525076282,
+            "id": "QWN0aW9uRGF0YToxNA==",
+            "lastEndedMs": 1772525084509,
+            "mnemonic": "GenProtoDescriptorSet",
+            "systemTime": 174,
+            "userTime": 343
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 59,
+            "firstStartedMs": 1772525076295,
+            "id": "QWN0aW9uRGF0YToxNQ==",
+            "lastEndedMs": 1772525084553,
+            "mnemonic": "GoProtocGen",
+            "systemTime": 543,
+            "userTime": 988
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 47,
+            "firstStartedMs": 1772524510384,
+            "id": "QWN0aW9uRGF0YToxNg==",
+            "lastEndedMs": 1772524516815,
+            "mnemonic": "TemplateExpand",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 43,
+            "firstStartedMs": 1772524508531,
+            "id": "QWN0aW9uRGF0YToxNw==",
+            "lastEndedMs": 1772524515315,
+            "mnemonic": "FileWrite",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 24,
+            "firstStartedMs": 1772524615448,
+            "id": "QWN0aW9uRGF0YToxOA==",
+            "lastEndedMs": 1772525101621,
+            "mnemonic": "GoLink",
+            "systemTime": 6662,
+            "userTime": 19571
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 20,
+            "firstStartedMs": 1772524399868,
+            "id": "QWN0aW9uRGF0YToxOQ==",
+            "lastEndedMs": 1772524515905,
+            "mnemonic": "CopyFile",
+            "systemTime": 50,
+            "userTime": 8
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 12,
+            "firstStartedMs": 1772524515999,
+            "id": "QWN0aW9uRGF0YToyMA==",
+            "lastEndedMs": 1772525079599,
+            "mnemonic": "Genrule",
+            "systemTime": 127,
+            "userTime": 3353
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 9,
+            "firstStartedMs": 1772524514036,
+            "id": "QWN0aW9uRGF0YToyMQ==",
+            "lastEndedMs": 1772524827443,
+            "mnemonic": "ExecutableSymlink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 7,
+            "firstStartedMs": 1772525085527,
+            "id": "QWN0aW9uRGF0YToyMg==",
+            "lastEndedMs": 1772525094315,
+            "mnemonic": "GoCompilePkgExternal",
+            "systemTime": 86,
+            "userTime": 1055
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 7,
+            "firstStartedMs": 1772524544745,
+            "id": "QWN0aW9uRGF0YToyMw==",
+            "lastEndedMs": 1772524544832,
+            "mnemonic": "GoTestGenTest",
+            "systemTime": 14,
+            "userTime": 13
+          }
+        ],
+        "actionsCreated": 4818,
+        "actionsCreatedNotIncludingAspects": 4817,
+        "actionsExecuted": 3118,
+        "id": "QWN0aW9uU3VtbWFyeToy",
+        "remoteCacheHits": 0,
+        "runnerCount": [
+          {
+            "actionsExecuted": 3118,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6NQ==",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 1131,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6Ng==",
+            "name": "internal"
+          },
+          {
+            "actionsExecuted": 22,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6Nw==",
+            "name": "local"
+          },
+          {
+            "actionsExecuted": 1965,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6OA==",
+            "name": "processwrapper-sandbox"
+          }
+        ]
+      },
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjI=",
+        "outputArtifactsFromActionCacheCount": 0,
+        "outputArtifactsFromActionCacheSizeInBytes": 0,
+        "outputArtifactsSeenCount": 6387,
+        "outputArtifactsSeenSizeInBytes": 2108083055,
+        "sourceArtifactsReadCount": 17908,
+        "sourceArtifactsReadSizeInBytes": 6920082876,
+        "topLevelArtifactsCount": 6325,
+        "topLevelArtifactsSizeInBytes": 1246159847
+      },
+      "id": "TWV0cmljczoy",
+      "memoryMetrics": {
+        "garbageMetrics": [
+          {
+            "garbageCollected": 3406080,
+            "id": "R2FyYmFnZU1ldHJpY3M6MQ==",
+            "type": "CodeHeap 'non-profiled nmethods'"
+          },
+          {
+            "garbageCollected": 16410368,
+            "id": "R2FyYmFnZU1ldHJpY3M6Mg==",
+            "type": "CodeHeap 'profiled nmethods'"
+          },
+          {
+            "garbageCollected": 15312,
+            "id": "R2FyYmFnZU1ldHJpY3M6Mw==",
+            "type": "Compressed Class Space"
+          },
+          {
+            "garbageCollected": 11507073024,
+            "id": "R2FyYmFnZU1ldHJpY3M6NA==",
+            "type": "G1 Eden Space"
+          },
+          {
+            "garbageCollected": 2478255688,
+            "id": "R2FyYmFnZU1ldHJpY3M6NQ==",
+            "type": "G1 Old Gen"
+          },
+          {
+            "garbageCollected": 132709832,
+            "id": "R2FyYmFnZU1ldHJpY3M6Ng==",
+            "type": "G1 Survivor Space"
+          },
+          {
+            "garbageCollected": 57256,
+            "id": "R2FyYmFnZU1ldHJpY3M6Nw==",
+            "type": "Metaspace"
+          }
+        ],
+        "id": "TWVtb3J5TWV0cmljczoy",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": {
+        "id": "TmV0d29ya01ldHJpY3M6MQ==",
+        "systemNetworkStats": {
+          "bytesRecv": 3230311505,
+          "bytesSent": 15034040,
+          "id": "U3lzdGVtTmV0d29ya1N0YXRzOjE=",
+          "packetsRecv": 1222858,
+          "packetsSent": 114286,
+          "peakBytesRecvPerSec": 923700749,
+          "peakBytesSentPerSec": 26950,
+          "peakPacketsRecvPerSec": 361351,
+          "peakPacketsSentPerSec": 0
+        }
+      },
+      "targetMetrics": {
+        "id": "VGFyZ2V0TWV0cmljczoy",
+        "targetsConfigured": 54008,
+        "targetsConfiguredNotIncludingAspects": 53742,
+        "targetsLoaded": 0
+      },
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 147926,
+        "cpuTimeInMs": 297190,
+        "executionPhaseTimeInMs": 737099,
+        "id": "VGltaW5nTWV0cmljczoy",
+        "wallTimeInMs": 765696
+      }
+    },
+    "numFetches": 137,
+    "optionsParsed": {
+      "explicitOptions": [
+        "--build_event_json_file=github-actions.bep.ndjson"
+      ],
+      "options": [
+        "--build_event_json_file=github-actions.bep.ndjson"
+      ]
+    },
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "build_event_json_file",
+          "value": "github-actions.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    },
+    "profile": null,
+    "sourceControl": [
+      {
+        "commit": "847b365866c97761b05d72619028b1ed23b5f4e8",
+        "commitURL": "https://github.com/meroton/bb-portal/commit/847b365866c97761b05d72619028b1ed23b5f4e8",
+        "id": "U291cmNlQ29udHJvbDox",
+        "ref": "refs/heads/test-branch",
+        "refURL": "https://github.com/meroton/bb-portal/tree/refs/heads/test-branch",
+        "repo": "meroton/bb-portal",
+        "repoURL": "https://github.com/meroton/bb-portal"
+      }
+    ],
+    "startedAt": "2026-03-03T07:52:14.102Z",
+    "tags": {
+      "edges": [
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzox",
+            "key": "action",
+            "value": "__run_2"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzoy",
+            "key": "job",
+            "value": "build_and_test"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzoz",
+            "key": "workflow",
+            "value": "Build and test backend"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo0",
+            "key": "workflow_url",
+            "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+          }
+        }
+      ]
+    },
+    "username": "runner"
+  }
+}

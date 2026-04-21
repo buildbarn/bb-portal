@@ -1,0 +1,170 @@
+{
+  "getBuild": {
+    "buildUUID": "e823d26e-7b76-50bd-ac6a-e8306779da6f",
+    "id": "QnVpbGQ6MQ==",
+    "invocations": {
+      "edges": [
+        {
+          "node": {
+            "connectionMetadata": null,
+            "endedAt": "2026-03-03T08:05:01.66Z",
+            "exitCodeName": "SUCCESS",
+            "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
+            "invocationID": "8e56d2d7-ca9b-45e6-a08f-85e7749e3c83",
+            "originalCommandLine": {
+              "command": "build",
+              "executable": "bazel",
+              "options": [
+                {
+                  "option": "build_event_json_file",
+                  "value": "github-actions.bep.ndjson"
+                }
+              ],
+              "residual": [
+                "//..."
+              ],
+              "startupOptions": []
+            },
+            "startedAt": "2026-03-03T07:52:14.102Z",
+            "tags": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzox",
+                    "key": "action",
+                    "value": "__run_2"
+                  }
+                },
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzoy",
+                    "key": "job",
+                    "value": "build_and_test"
+                  }
+                },
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzoz",
+                    "key": "workflow",
+                    "value": "Build and test backend"
+                  }
+                },
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzo0",
+                    "key": "workflow_url",
+                    "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+                  }
+                }
+              ]
+            },
+            "username": "runner"
+          }
+        },
+        {
+          "node": {
+            "connectionMetadata": null,
+            "endedAt": "2026-03-03T08:05:01.66Z",
+            "exitCodeName": "SUCCESS",
+            "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+            "invocationID": "63500331-1b71-4d7a-9125-df9b3dfe4e0d",
+            "originalCommandLine": {
+              "command": "build",
+              "executable": "bazel",
+              "options": [
+                {
+                  "option": "build_event_json_file",
+                  "value": "github-actions.bep.ndjson"
+                }
+              ],
+              "residual": [
+                "//..."
+              ],
+              "startupOptions": []
+            },
+            "startedAt": "2026-03-03T07:52:14.102Z",
+            "tags": {
+              "edges": [
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzo1",
+                    "key": "action",
+                    "value": "__run_2"
+                  }
+                },
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzo2",
+                    "key": "job",
+                    "value": "lite_build_and_test"
+                  }
+                },
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzo3",
+                    "key": "workflow",
+                    "value": "Build and test backend"
+                  }
+                },
+                {
+                  "node": {
+                    "id": "SW52b2NhdGlvblRhZzo4",
+                    "key": "workflow_url",
+                    "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+                  }
+                }
+              ]
+            },
+            "username": "runner"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "gaFp0wAAAAAAAAAD",
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": "gaFp0wAAAAAAAAAC"
+      }
+    },
+    "tags": {
+      "edges": [
+        {
+          "node": {
+            "id": "QnVpbGRUYWc6MQ==",
+            "key": "build_id",
+            "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+          }
+        },
+        {
+          "node": {
+            "id": "QnVpbGRUYWc6Mg==",
+            "key": "repo",
+            "value": "meroton/bb-portal"
+          }
+        },
+        {
+          "node": {
+            "id": "QnVpbGRUYWc6Mw==",
+            "key": "repo_url",
+            "value": "https://github.com/meroton/bb-portal"
+          }
+        },
+        {
+          "node": {
+            "id": "QnVpbGRUYWc6NA==",
+            "key": "workflow",
+            "value": "Build and test backend"
+          }
+        },
+        {
+          "node": {
+            "id": "QnVpbGRUYWc6NQ==",
+            "key": "workflow_url",
+            "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+          }
+        }
+      ]
+    },
+    "timestamp": "2026-03-03T07:52:14.102Z"
+  }
+}

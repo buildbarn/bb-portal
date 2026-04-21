@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -71,6 +72,21 @@ func (bu *BuildUpdate) AddInvocations(b ...*BazelInvocation) *BuildUpdate {
 	return bu.AddInvocationIDs(ids...)
 }
 
+// AddTagIDs adds the "tags" edge to the BuildTag entity by IDs.
+func (bu *BuildUpdate) AddTagIDs(ids ...int64) *BuildUpdate {
+	bu.mutation.AddTagIDs(ids...)
+	return bu
+}
+
+// AddTags adds the "tags" edges to the BuildTag entity.
+func (bu *BuildUpdate) AddTags(b ...*BuildTag) *BuildUpdate {
+	ids := make([]int64, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return bu.AddTagIDs(ids...)
+}
+
 // Mutation returns the BuildMutation object of the builder.
 func (bu *BuildUpdate) Mutation() *BuildMutation {
 	return bu.mutation
@@ -101,6 +117,27 @@ func (bu *BuildUpdate) RemoveInvocations(b ...*BazelInvocation) *BuildUpdate {
 		ids[i] = b[i].ID
 	}
 	return bu.RemoveInvocationIDs(ids...)
+}
+
+// ClearTags clears all "tags" edges to the BuildTag entity.
+func (bu *BuildUpdate) ClearTags() *BuildUpdate {
+	bu.mutation.ClearTags()
+	return bu
+}
+
+// RemoveTagIDs removes the "tags" edge to BuildTag entities by IDs.
+func (bu *BuildUpdate) RemoveTagIDs(ids ...int64) *BuildUpdate {
+	bu.mutation.RemoveTagIDs(ids...)
+	return bu
+}
+
+// RemoveTags removes "tags" edges to BuildTag entities.
+func (bu *BuildUpdate) RemoveTags(b ...*BuildTag) *BuildUpdate {
+	ids := make([]int64, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return bu.RemoveTagIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -233,6 +270,51 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if bu.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   build.TagsTable,
+			Columns: []string{build.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bu.mutation.RemovedTagsIDs(); len(nodes) > 0 && !bu.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   build.TagsTable,
+			Columns: []string{build.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bu.mutation.TagsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   build.TagsTable,
+			Columns: []string{build.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	_spec.AddModifiers(bu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, bu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -295,6 +377,21 @@ func (buo *BuildUpdateOne) AddInvocations(b ...*BazelInvocation) *BuildUpdateOne
 	return buo.AddInvocationIDs(ids...)
 }
 
+// AddTagIDs adds the "tags" edge to the BuildTag entity by IDs.
+func (buo *BuildUpdateOne) AddTagIDs(ids ...int64) *BuildUpdateOne {
+	buo.mutation.AddTagIDs(ids...)
+	return buo
+}
+
+// AddTags adds the "tags" edges to the BuildTag entity.
+func (buo *BuildUpdateOne) AddTags(b ...*BuildTag) *BuildUpdateOne {
+	ids := make([]int64, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return buo.AddTagIDs(ids...)
+}
+
 // Mutation returns the BuildMutation object of the builder.
 func (buo *BuildUpdateOne) Mutation() *BuildMutation {
 	return buo.mutation
@@ -325,6 +422,27 @@ func (buo *BuildUpdateOne) RemoveInvocations(b ...*BazelInvocation) *BuildUpdate
 		ids[i] = b[i].ID
 	}
 	return buo.RemoveInvocationIDs(ids...)
+}
+
+// ClearTags clears all "tags" edges to the BuildTag entity.
+func (buo *BuildUpdateOne) ClearTags() *BuildUpdateOne {
+	buo.mutation.ClearTags()
+	return buo
+}
+
+// RemoveTagIDs removes the "tags" edge to BuildTag entities by IDs.
+func (buo *BuildUpdateOne) RemoveTagIDs(ids ...int64) *BuildUpdateOne {
+	buo.mutation.RemoveTagIDs(ids...)
+	return buo
+}
+
+// RemoveTags removes "tags" edges to BuildTag entities.
+func (buo *BuildUpdateOne) RemoveTags(b ...*BuildTag) *BuildUpdateOne {
+	ids := make([]int64, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return buo.RemoveTagIDs(ids...)
 }
 
 // Where appends a list predicates to the BuildUpdate builder.
@@ -480,6 +598,51 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if buo.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   build.TagsTable,
+			Columns: []string{build.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := buo.mutation.RemovedTagsIDs(); len(nodes) > 0 && !buo.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   build.TagsTable,
+			Columns: []string{build.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := buo.mutation.TagsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   build.TagsTable,
+			Columns: []string{build.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -3,9 +3,19 @@
     "edges": [
       {
         "node": {
-          "buildURL": "https://example.com/build/1234",
-          "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
+          "buildUUID": "59268e3d-4eb1-57f0-a88e-f81a384ff8f0",
           "id": "QnVpbGQ6MQ==",
+          "tags": {
+            "edges": [
+              {
+                "node": {
+                  "id": "QnVpbGRUYWc6MQ==",
+                  "key": "build_id",
+                  "value": "https://example.com/build/1234"
+                }
+              }
+            ]
+          },
           "timestamp": "2024-05-13T23:43:23.045Z"
         }
       }

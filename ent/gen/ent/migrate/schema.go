@@ -222,13 +222,9 @@ var (
 		{Name: "created_timestamp", Type: field.TypeTime},
 		{Name: "started_at", Type: field.TypeTime, Nullable: true},
 		{Name: "ended_at", Type: field.TypeTime, Nullable: true},
-		{Name: "change_number", Type: field.TypeInt, Nullable: true},
-		{Name: "patchset_number", Type: field.TypeInt, Nullable: true},
 		{Name: "bep_completed", Type: field.TypeBool, Default: false},
-		{Name: "step_label", Type: field.TypeString, Nullable: true},
 		{Name: "username", Type: field.TypeString, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
-		{Name: "is_ci_worker", Type: field.TypeBool, Nullable: true},
 		{Name: "num_fetches", Type: field.TypeInt64, Nullable: true},
 		{Name: "profile_name", Type: field.TypeString, Nullable: true},
 		{Name: "bazel_version", Type: field.TypeString, Nullable: true},
@@ -253,19 +249,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "bazel_invocations_authenticated_users_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[24]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[20]},
 				RefColumns: []*schema.Column{AuthenticatedUsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "bazel_invocations_builds_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[25]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "bazel_invocations_instance_names_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[26]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[22]},
 				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -289,24 +285,23 @@ var (
 			{
 				Name:    "bazelinvocation_build_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[25]},
+				Columns: []*schema.Column{BazelInvocationsColumns[21]},
 			},
 			{
 				Name:    "bazelinvocation_instance_name_bazel_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[26]},
+				Columns: []*schema.Column{BazelInvocationsColumns[22]},
 			},
 			{
 				Name:    "bazelinvocation_authenticated_user_bazel_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[24]},
+				Columns: []*schema.Column{BazelInvocationsColumns[20]},
 			},
 		},
 	}
 	// BuildsColumns holds the columns for the "builds" table.
 	BuildsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "build_url", Type: field.TypeString},
 		{Name: "build_uuid", Type: field.TypeUUID, Unique: true},
 		{Name: "timestamp", Type: field.TypeTime},
 		{Name: "instance_name_builds", Type: field.TypeInt64},
@@ -319,7 +314,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "builds_instance_names_builds",
-				Columns:    []*schema.Column{BuildsColumns[4]},
+				Columns:    []*schema.Column{BuildsColumns[3]},
 				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -328,27 +323,17 @@ var (
 			{
 				Name:    "build_build_uuid",
 				Unique:  false,
-				Columns: []*schema.Column{BuildsColumns[2]},
-			},
-			{
-				Name:    "build_build_url",
-				Unique:  false,
 				Columns: []*schema.Column{BuildsColumns[1]},
 			},
 			{
 				Name:    "build_timestamp",
 				Unique:  false,
-				Columns: []*schema.Column{BuildsColumns[3]},
+				Columns: []*schema.Column{BuildsColumns[2]},
 			},
 			{
 				Name:    "build_instance_name_builds",
 				Unique:  false,
-				Columns: []*schema.Column{BuildsColumns[4]},
-			},
-			{
-				Name:    "build_build_url_instance_name_builds",
-				Unique:  true,
-				Columns: []*schema.Column{BuildsColumns[1], BuildsColumns[4]},
+				Columns: []*schema.Column{BuildsColumns[3]},
 			},
 		},
 	}
@@ -419,6 +404,39 @@ var (
 				Name:    "buildlogchunk_bazel_invocation_build_log_chunks",
 				Unique:  false,
 				Columns: []*schema.Column{BuildLogChunksColumns[5]},
+			},
+		},
+	}
+	// BuildTagsColumns holds the columns for the "build_tags" table.
+	BuildTagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "key", Type: field.TypeString},
+		{Name: "value", Type: field.TypeString},
+		{Name: "build_id", Type: field.TypeInt64},
+	}
+	// BuildTagsTable holds the schema information for the "build_tags" table.
+	BuildTagsTable = &schema.Table{
+		Name:       "build_tags",
+		Columns:    BuildTagsColumns,
+		PrimaryKey: []*schema.Column{BuildTagsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_tags_builds_tags",
+				Columns:    []*schema.Column{BuildTagsColumns[3]},
+				RefColumns: []*schema.Column{BuildsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildtag_build_id",
+				Unique:  false,
+				Columns: []*schema.Column{BuildTagsColumns[3]},
+			},
+			{
+				Name:    "buildtag_key_value_build_id",
+				Unique:  true,
+				Columns: []*schema.Column{BuildTagsColumns[1], BuildTagsColumns[2], BuildTagsColumns[3]},
 			},
 		},
 	}
@@ -628,6 +646,39 @@ var (
 			},
 		},
 	}
+	// InvocationTagsColumns holds the columns for the "invocation_tags" table.
+	InvocationTagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "key", Type: field.TypeString},
+		{Name: "value", Type: field.TypeString},
+		{Name: "bazel_invocation_id", Type: field.TypeInt64},
+	}
+	// InvocationTagsTable holds the schema information for the "invocation_tags" table.
+	InvocationTagsTable = &schema.Table{
+		Name:       "invocation_tags",
+		Columns:    InvocationTagsColumns,
+		PrimaryKey: []*schema.Column{InvocationTagsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "invocation_tags_bazel_invocations_tags",
+				Columns:    []*schema.Column{InvocationTagsColumns[3]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "invocationtag_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{InvocationTagsColumns[3]},
+			},
+			{
+				Name:    "invocationtag_key_bazel_invocation_id",
+				Unique:  true,
+				Columns: []*schema.Column{InvocationTagsColumns[1], InvocationTagsColumns[3]},
+			},
+		},
+	}
 	// InvocationTargetsColumns holds the columns for the "invocation_targets" table.
 	InvocationTargetsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -831,23 +882,13 @@ var (
 	// SourceControlsColumns holds the columns for the "source_controls" table.
 	SourceControlsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "provider", Type: field.TypeEnum, Nullable: true, Enums: []string{"GITHUB", "GITLAB"}},
-		{Name: "instance_url", Type: field.TypeString, Nullable: true},
 		{Name: "repo", Type: field.TypeString, Nullable: true},
-		{Name: "refs", Type: field.TypeString, Nullable: true},
-		{Name: "commit_sha", Type: field.TypeString, Nullable: true},
-		{Name: "actor", Type: field.TypeString, Nullable: true},
-		{Name: "event_name", Type: field.TypeString, Nullable: true},
-		{Name: "workflow", Type: field.TypeString, Nullable: true},
-		{Name: "run_id", Type: field.TypeString, Nullable: true},
-		{Name: "run_number", Type: field.TypeString, Nullable: true},
-		{Name: "job", Type: field.TypeString, Nullable: true},
-		{Name: "action", Type: field.TypeString, Nullable: true},
-		{Name: "runner_name", Type: field.TypeString, Nullable: true},
-		{Name: "runner_arch", Type: field.TypeString, Nullable: true},
-		{Name: "runner_os", Type: field.TypeString, Nullable: true},
-		{Name: "workspace", Type: field.TypeString, Nullable: true},
-		{Name: "bazel_invocation_source_control", Type: field.TypeInt64, Unique: true, Nullable: true},
+		{Name: "repo_url", Type: field.TypeString, Nullable: true},
+		{Name: "ref", Type: field.TypeString, Nullable: true},
+		{Name: "ref_url", Type: field.TypeString, Nullable: true},
+		{Name: "commit", Type: field.TypeString, Nullable: true},
+		{Name: "commit_url", Type: field.TypeString, Nullable: true},
+		{Name: "bazel_invocation_source_control", Type: field.TypeInt64, Nullable: true},
 	}
 	// SourceControlsTable holds the schema information for the "source_controls" table.
 	SourceControlsTable = &schema.Table{
@@ -857,7 +898,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "source_controls_bazel_invocations_source_control",
-				Columns:    []*schema.Column{SourceControlsColumns[17]},
+				Columns:    []*schema.Column{SourceControlsColumns[7]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -866,7 +907,7 @@ var (
 			{
 				Name:    "sourcecontrol_bazel_invocation_source_control",
 				Unique:  false,
-				Columns: []*schema.Column{SourceControlsColumns[17]},
+				Columns: []*schema.Column{SourceControlsColumns[7]},
 			},
 		},
 	}
@@ -1158,6 +1199,7 @@ var (
 		BuildsTable,
 		BuildGraphMetricsTable,
 		BuildLogChunksTable,
+		BuildTagsTable,
 		ConfigurationsTable,
 		ConnectionMetadataTable,
 		EventMetadataTable,
@@ -1165,6 +1207,7 @@ var (
 		IncompleteBuildLogsTable,
 		InstanceNamesTable,
 		InvocationFilesTable,
+		InvocationTagsTable,
 		InvocationTargetsTable,
 		MemoryMetricsTable,
 		MetricsTable,
@@ -1196,12 +1239,14 @@ func init() {
 	BuildsTable.ForeignKeys[0].RefTable = InstanceNamesTable
 	BuildGraphMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	BuildTagsTable.ForeignKeys[0].RefTable = BuildsTable
 	ConfigurationsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationFilesTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	InvocationTagsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationTargetsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationTargetsTable.ForeignKeys[1].RefTable = ConfigurationsTable
 	InvocationTargetsTable.ForeignKeys[2].RefTable = TargetsTable

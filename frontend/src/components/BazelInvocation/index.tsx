@@ -11,6 +11,7 @@ import {
   InfoCircleOutlined,
   LineChartOutlined,
   RadiusUprightOutlined,
+  TagsOutlined,
 } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
 import { Space, Tabs, Typography } from "antd";
@@ -26,6 +27,7 @@ import type {
 import themeStyles from "@/theme/theme.module.css";
 import { commandLineDataToString } from "@/utils/commandLineDataToString";
 import { env } from "@/utils/env";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
 import { ActionsTab } from "../ActionsTab";
 import styles from "../AppBar/index.module.css";
@@ -34,6 +36,7 @@ import BuildLogsDisplay from "../BuildLogsDisplay";
 import CommandLineDisplay from "../CommandLine";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 import { InvocationResultTag } from "../InvocationResultTag";
+import { InvocationTagTab } from "../InvocationTagTab";
 import { InvocationTargetsTab } from "../InvocationTargets/InvocationTargetsTab";
 import MemoryMetricsDisplay from "../MemoryMetrics";
 import ProfileDropdown from "../ProfileDropdown";
@@ -59,15 +62,16 @@ const getTabItems = (
     metrics,
     numFetches,
     configurations,
-    stepLabel,
     hostname,
-    isCiWorker,
+    tags,
   } = invocationOverview;
 
   var runnerMetrics: RunnerCount[] = [];
   metrics?.actionSummary?.runnerCount?.map((item: RunnerCount) =>
     runnerMetrics.push(item),
   );
+
+  const tagList = parseGraphqlEdgeList(tags);
 
   const hideActionStatisticsTab: boolean =
     metrics?.actionSummary === undefined || metrics?.actionSummary == null;
@@ -84,7 +88,10 @@ const getTabItems = (
   const hideTargetsTab: boolean = !env.featureFlags?.bes?.pageTargets;
   const hideTestsTab: boolean = !env.featureFlags?.bes?.pageTests;
   const hideSourceControlTab: boolean =
-    sourceControl === undefined || sourceControl == null;
+    sourceControl === undefined ||
+    sourceControl == null ||
+    sourceControl.length === 0;
+  const hideTagsTab: boolean = tagList.length === 0;
 
   const command = commandLineDataToString(originalCommandLine);
 
@@ -109,8 +116,6 @@ const getTabItems = (
             startedAt={invocationOverview.startedAt}
             endedAt={invocationOverview.endedAt}
             hostname={hostname ?? ""}
-            isCiWorker={isCiWorker ?? false}
-            stepLabel={stepLabel ?? ""}
             exitCodeName={invocationOverview.exitCodeName || undefined}
             connectionLastOpenAt={
               invocationOverview.connectionMetadata?.connectionLastOpenAt ||
@@ -239,10 +244,18 @@ const getTabItems = (
       icon: <BranchesOutlined />,
       children: (
         <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <SourceControlDisplay
-            sourceControlData={sourceControl}
-            stepLabel={stepLabel}
-          />
+          <SourceControlDisplay sourceControlData={sourceControl} />
+        </Space>
+      ),
+    });
+  if (!hideTagsTab)
+    items.push({
+      key: "BazelInvocationTabs-Tags",
+      label: "Tags",
+      icon: <TagsOutlined />,
+      children: (
+        <Space direction="vertical" size="middle" className={themeStyles.space}>
+          <InvocationTagTab tags={tagList} />
         </Space>
       ),
     });

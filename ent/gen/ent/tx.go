@@ -34,6 +34,8 @@ type Tx struct {
 	BuildGraphMetrics *BuildGraphMetricsClient
 	// BuildLogChunk is the client for interacting with the BuildLogChunk builders.
 	BuildLogChunk *BuildLogChunkClient
+	// BuildTag is the client for interacting with the BuildTag builders.
+	BuildTag *BuildTagClient
 	// Configuration is the client for interacting with the Configuration builders.
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
@@ -48,6 +50,8 @@ type Tx struct {
 	InstanceName *InstanceNameClient
 	// InvocationFiles is the client for interacting with the InvocationFiles builders.
 	InvocationFiles *InvocationFilesClient
+	// InvocationTag is the client for interacting with the InvocationTag builders.
+	InvocationTag *InvocationTagClient
 	// InvocationTarget is the client for interacting with the InvocationTarget builders.
 	InvocationTarget *InvocationTargetClient
 	// MemoryMetrics is the client for interacting with the MemoryMetrics builders.
@@ -219,6 +223,7 @@ func (tx *Tx) init() {
 	tx.Build = NewBuildClient(tx.config)
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
+	tx.BuildTag = NewBuildTagClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
@@ -226,6 +231,7 @@ func (tx *Tx) init() {
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
 	tx.InstanceName = NewInstanceNameClient(tx.config)
 	tx.InvocationFiles = NewInvocationFilesClient(tx.config)
+	tx.InvocationTag = NewInvocationTagClient(tx.config)
 	tx.InvocationTarget = NewInvocationTargetClient(tx.config)
 	tx.MemoryMetrics = NewMemoryMetricsClient(tx.config)
 	tx.Metrics = NewMetricsClient(tx.config)

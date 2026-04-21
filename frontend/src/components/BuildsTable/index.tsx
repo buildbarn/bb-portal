@@ -1,32 +1,30 @@
 import { useQuery } from "@apollo/client/react";
-import type { FilterValue } from "antd/es/table/interface";
-import React from "react";
-import { validate as uuidValidate } from "uuid";
+import React, { useMemo } from "react";
 import {
   type BuildNodeFragment,
   BuildOrderField,
   type BuildWhereInput,
   OrderDirection,
 } from "@/graphql/__generated__/graphql";
+import { applyTableFilters } from "@/utils/applyColumnFilters";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
 import { CursorTable, getNewPaginationVariables } from "../CursorTable";
 import type { PaginationVariables } from "../CursorTable/types";
 import PortalAlert from "../PortalAlert";
-import { columns } from "./Columns";
+import { getColumns } from "./Columns";
 import { BUILD_NODE_FRAGMENT, FIND_BUILDS_QUERY } from "./query.graphql";
 
 const BuildsTable: React.FC = () => {
   const [paginationVariables, setPaginationVariables] =
     React.useState<PaginationVariables>(getNewPaginationVariables());
-
-  const [filterVariables, setFilterVariables] = React.useState<BuildWhereInput>(
-    {},
-  );
+  const [filterVariables, setFilterVariables] = React.useState<
+    BuildWhereInput[]
+  >([]);
 
   const { data, loading, error } = useQuery(FIND_BUILDS_QUERY, {
     variables: {
       ...paginationVariables,
-      where: filterVariables,
+      where: { and: filterVariables },
       orderBy: {
         direction: OrderDirection.Desc,
         field: BuildOrderField.Timestamp,
@@ -34,36 +32,7 @@ const BuildsTable: React.FC = () => {
     },
   });
 
-  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
-    const newFilters: BuildWhereInput[] = [];
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && value.length > 0) {
-        switch (key) {
-          case "buildUUID": {
-            const buildUUID = value[0] as string;
-            if (uuidValidate(buildUUID)) {
-              newFilters.push({ buildUUID: buildUUID as string });
-            }
-            break;
-          }
-          case "buildURL":
-            newFilters.push({ buildURLContainsFold: value[0] as string });
-            break;
-          case "buildDate":
-            if (value.length === 2) {
-              if (value[0]) {
-                newFilters.push({ timestampGTE: value[0] });
-              }
-              if (value[1]) {
-                newFilters.push({ timestampLTE: value[1] });
-              }
-            }
-            break;
-        }
-      }
-    });
-    setFilterVariables({ and: newFilters });
-  };
+  const tableColumns = useMemo(getColumns, []);
 
   if (error) {
     return (
@@ -81,12 +50,12 @@ const BuildsTable: React.FC = () => {
 
   return (
     <CursorTable<BuildNodeFragment>
-      columns={columns}
+      columns={tableColumns}
       loading={loading}
       size="small"
       rowKey="id"
       onChange={(_pagination, filters, _sorter, _extra) =>
-        onFilterChange(filters)
+        applyTableFilters(tableColumns, filters, setFilterVariables)
       }
       dataSource={rowData}
       pagination={{

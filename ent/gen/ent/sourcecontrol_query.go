@@ -77,7 +77,7 @@ func (scq *SourceControlQuery) QueryBazelInvocation() *BazelInvocationQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(sourcecontrol.Table, sourcecontrol.FieldID, selector),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, sourcecontrol.BazelInvocationTable, sourcecontrol.BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, sourcecontrol.BazelInvocationTable, sourcecontrol.BazelInvocationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(scq.driver.Dialect(), step)
 		return fromU, nil
@@ -302,12 +302,12 @@ func (scq *SourceControlQuery) WithBazelInvocation(opts ...func(*BazelInvocation
 // Example:
 //
 //	var v []struct {
-//		Provider sourcecontrol.Provider `json:"provider,omitempty"`
+//		Repo string `json:"repo,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SourceControl.Query().
-//		GroupBy(sourcecontrol.FieldProvider).
+//		GroupBy(sourcecontrol.FieldRepo).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (scq *SourceControlQuery) GroupBy(field string, fields ...string) *SourceControlGroupBy {
@@ -325,11 +325,11 @@ func (scq *SourceControlQuery) GroupBy(field string, fields ...string) *SourceCo
 // Example:
 //
 //	var v []struct {
-//		Provider sourcecontrol.Provider `json:"provider,omitempty"`
+//		Repo string `json:"repo,omitempty"`
 //	}
 //
 //	client.SourceControl.Query().
-//		Select(sourcecontrol.FieldProvider).
+//		Select(sourcecontrol.FieldRepo).
 //		Scan(ctx, &v)
 func (scq *SourceControlQuery) Select(fields ...string) *SourceControlSelect {
 	scq.ctx.Fields = append(scq.ctx.Fields, fields...)

@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "authenticated_users.sql.go",
         "bazel_invocations.sql.go",
+        "builds.sql.go",
         "db.go",
         "event_metadata.sql.go",
         "incomplete_build_logs.sql.go",

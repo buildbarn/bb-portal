@@ -67,7 +67,7 @@ func (r *buildEventRecorder) saveBuildEvent(
 ) error {
 	switch buildEvent.GetId().GetId().(type) {
 	case *bes.BuildEventId_Started:
-		return r.saveStarted(ctx, tx.Ent(), buildEvent.GetStarted())
+		return r.saveStarted(ctx, tx, buildEvent.GetStarted())
 	case *bes.BuildEventId_BuildMetadata:
 		return r.saveBuildMetadata(ctx, tx.Ent(), buildEvent.GetBuildMetadata())
 	case *bes.BuildEventId_OptionsParsed:

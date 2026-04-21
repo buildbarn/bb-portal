@@ -1,14 +1,13 @@
-import { DeploymentUnitOutlined } from "@ant-design/icons";
+import { DeploymentUnitOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { useQuery } from "@apollo/client/react";
-import { Space, Typography } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
+import { Flex, Popover, Space, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 import type React from "react";
-import { useState } from "react";
-import { validate as uuidValidate } from "uuid";
+import { useMemo, useState } from "react";
 import styles from "@/components/AppBar/index.module.css";
 import CollapsableInvocationTimeline from "@/components/CollapsableInvocationTimeline";
 import Content from "@/components/Content";
+import { OptionalLinkWrapper } from "@/components/OptionalLinkWrapper";
 import PortalCard from "@/components/PortalCard";
 import {
   BazelInvocationOrderField,
@@ -16,15 +15,18 @@ import {
   type FindBuildByUuidQuery,
   type GetBuildInvocationFragment,
   OrderDirection,
-  type SourceControlWhereInput,
 } from "@/graphql/__generated__/graphql";
-import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
+import { applyTableFilters } from "@/utils/applyColumnFilters";
+import { env } from "@/utils/env";
+import {
+  parseGraphqlEdgeList,
+  parseGraphqlEdgeListWithFragment,
+} from "@/utils/parseGraphqlEdgeList";
 import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
 import { CursorTable, getNewPaginationVariables } from "../../CursorTable";
 import type { PaginationVariables } from "../../CursorTable/types";
-import { applyInvocationResultTagFilter } from "../../InvocationResultTag/filters";
 import PortalAlert from "../../PortalAlert";
-import { columns } from "./Columns";
+import { getColumns } from "./Columns";
 import {
   GET_BUILD_BY_UUID_QUERY,
   GET_BUILD_INVOCATION_FRAGMENT,
@@ -36,28 +38,54 @@ const getTitleBits = (build: BuildType | undefined): React.ReactNode[] => {
   if (!build) {
     return [];
   }
-  return [
-    <span key="build">
-      Build ID:{" "}
-      <Typography.Text type="secondary" className={styles.normalWeight}>
+  const titleBits = [];
+  titleBits.push(
+    <Space direction="horizontal" size={0}>
+      <Typography.Title level={5}>{`Build ID:`}</Typography.Title>
+      <Typography.Text
+        copyable
+        type="secondary"
+        className={styles.normalWeight}
+      >
         {build.buildUUID}
       </Typography.Text>
-    </span>,
-    <span key="copy-icon" className={styles.copyIcon}>
-      <Typography.Text copyable={{ text: build.buildUUID }} />
-    </span>,
-    <span key="build-url">
-      Build URL:{" "}
-      <a
-        href={build.buildURL}
-        target="_blank"
-        className={styles.normalWeight}
-        rel="noopener"
-      >
-        <Typography.Text type="secondary">{build.buildURL}</Typography.Text>
-      </a>
-    </span>,
-  ];
+    </Space>,
+  );
+
+  const tags = parseGraphqlEdgeList(build.tags);
+  const additionalColumns = env.additionalBuildColumns;
+  for (const column of additionalColumns) {
+    const valueTags = tags.filter((tag) => tag.key === column.valueKey);
+    const urlTags = tags.filter((tag) => tag.key === column.urlKey);
+    const urlTag = urlTags.length === 1 ? urlTags[0] : undefined;
+
+    titleBits.push(
+      <Space direction="horizontal" size={0}>
+        <Typography.Title level={5}>{`${column.title}:`}</Typography.Title>
+        <Space direction="horizontal">
+          <OptionalLinkWrapper url={urlTag?.value}>
+            <Typography.Text type="secondary" className={styles.normalWeight}>
+              {valueTags.map((tag) => tag.value).join(", ")}
+            </Typography.Text>
+          </OptionalLinkWrapper>
+          {urlTags.length > 1 && (
+            <Popover
+              title="This field has multiple urls:"
+              content={urlTags.map((tag) => (
+                <a key={tag.id} href={tag.value}>
+                  {tag.value}
+                </a>
+              ))}
+            >
+              <InfoCircleOutlined />
+            </Popover>
+          )}
+        </Space>
+      </Space>,
+    );
+  }
+
+  return titleBits;
 };
 
 const getExtraBits = (build: BuildType | undefined): React.ReactNode[] => {
@@ -83,13 +111,14 @@ const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
   const [paginationVariables, setPaginationVariables] =
     useState<PaginationVariables>(getNewPaginationVariables());
 
-  const [filterVariables, setFilterVariables] =
-    useState<BazelInvocationWhereInput>({});
+  const [filterVariables, setFilterVariables] = useState<
+    BazelInvocationWhereInput[]
+  >([]);
 
   const { data, loading, error } = useQuery(GET_BUILD_BY_UUID_QUERY, {
     variables: {
       ...paginationVariables,
-      where: filterVariables,
+      where: { and: filterVariables },
       orderBy: {
         direction: OrderDirection.Desc,
         field: BazelInvocationOrderField.StartedAt,
@@ -98,7 +127,10 @@ const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
     },
   });
 
+  const tableColumns = useMemo(getColumns, []);
+
   const build = data?.getBuild ?? undefined;
+  const tags = parseGraphqlEdgeList(build?.tags);
   const invocations = parseGraphqlEdgeListWithFragment(
     GET_BUILD_INVOCATION_FRAGMENT,
     data?.getBuild?.invocations,
@@ -120,52 +152,6 @@ const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
     skip: inProgressInvocations.length === 0,
     pollInterval: 5000,
   });
-
-  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
-    let newFilters: BazelInvocationWhereInput[] = [];
-    const sourceControllFilters: SourceControlWhereInput[] = [];
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && value.length > 0) {
-        switch (key) {
-          case "workflow": {
-            sourceControllFilters.push({
-              workflowContainsFold: value[0] as string,
-            });
-            break;
-          }
-          case "job": {
-            sourceControllFilters.push({ jobContainsFold: value[0] as string });
-            break;
-          }
-          case "action": {
-            sourceControllFilters.push({
-              actionContainsFold: value[0] as string,
-            });
-            break;
-          }
-          case "invocationID": {
-            const invocationID = value[0] as string;
-            if (uuidValidate(invocationID)) {
-              newFilters.push({ invocationID: invocationID });
-            }
-            break;
-          }
-          case "status": {
-            newFilters = newFilters.concat(
-              applyInvocationResultTagFilter(value),
-            );
-            break;
-          }
-        }
-      }
-    });
-    if (sourceControllFilters.length > 0) {
-      newFilters.push({
-        hasSourceControlWith: sourceControllFilters,
-      });
-    }
-    setFilterVariables({ and: newFilters });
-  };
 
   if (error) {
     return (
@@ -202,18 +188,31 @@ const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
       extraBits={getExtraBits(build)}
     >
       <Space direction="vertical" style={{ width: "100%" }}>
+        {tags && tags.length > 0 && (
+          <Flex gap="4px 0" wrap>
+            {tags?.map((tag) => (
+              <Tag
+                color="blue"
+                key={`${tag.key}:${tag.value}`}
+                style={{ fontWeight: "bold" }}
+              >
+                {tag.key}: {tag.value}
+              </Tag>
+            ))}
+          </Flex>
+        )}
         {invocations.length > 1 && (
           <CollapsableInvocationTimeline
             invocations={invocations.toReversed()}
           />
         )}
         <CursorTable<GetBuildInvocationFragment>
-          columns={columns}
+          columns={tableColumns}
           loading={loading}
           size="small"
           rowKey="id"
           onChange={(_pagination, filters, _sorter, _extra) =>
-            onFilterChange(filters)
+            applyTableFilters(tableColumns, filters, setFilterVariables)
           }
           dataSource={invocations}
           pagination={{

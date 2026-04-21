@@ -29,7 +29,15 @@ export const BUILD_NODE_FRAGMENT = gql(/* GraphQL */ `
   fragment BuildNode on Build {
     id
     buildUUID
-    buildURL
     timestamp
+    tags {
+      edges {
+        node {
+          id
+          key
+          value
+        }
+      }
+    }
   }
 `);

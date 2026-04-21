@@ -40,8 +40,8 @@ func RollbackAndWrapError(tx database.Tx, err error) error {
 
 // CalculateBuildUUID calculates a UUID for a build, based on the build URL
 // and instance name.
-func CalculateBuildUUID(buildURL, instanceName string) uuid.UUID {
-	return uuid.NewSHA1(uuid.NameSpaceURL, []byte(fmt.Sprintf("instanceName: %s, buildUrl: %s", instanceName, buildURL)))
+func CalculateBuildUUID(buildKey, instanceName string) uuid.UUID {
+	return uuid.NewSHA1(uuid.NameSpaceURL, []byte(fmt.Sprintf("instanceName: %s, buildKey: %s", instanceName, buildKey)))
 }
 
 // NewSQLConnectionFromConfiguration creates an otel decorated sql

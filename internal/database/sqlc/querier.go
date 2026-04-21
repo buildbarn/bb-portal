@@ -56,6 +56,7 @@ type Querier interface {
 	//
 	// Returns the number of physical blocks of a table
 	SelectPages(ctx context.Context, tableName string) (int32, error)
+	UpdateBuildTimestampFromInvocation(ctx context.Context, invocationID int64) error
 	UpdateCompletedInvocationWithEndTimeFromEventMetadata(ctx context.Context) (int64, error)
 	UpdateEventMetadata(ctx context.Context, arg UpdateEventMetadataParams) (int64, error)
 	UpdateTestSummariesBulk(ctx context.Context, arg UpdateTestSummariesBulkParams) (int64, error)

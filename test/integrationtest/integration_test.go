@@ -73,6 +73,14 @@ var (
 		filename:     "bb_portal_aborted_tests.ndjson",
 		invocationID: "64719226-555e-494d-9918-0fd25d468b1e",
 	}
+	githubActions = bepFile{
+		filename:     "github_actions.bep.ndjson",
+		invocationID: "8e56d2d7-ca9b-45e6-a08f-85e7749e3c83",
+	}
+	githubActionsLite = bepFile{
+		filename:     "github_actions_lite.bep.ndjson",
+		invocationID: "63500331-1b71-4d7a-9125-df9b3dfe4e0d",
+	}
 	authenticatedUserExternalID = authmetadataextraction.ExampleExternalID()
 	authenticatedUserUUID       = uuid.NewSHA1(uuid.NameSpaceURL, []byte(authenticatedUserExternalID)).String()
 
@@ -106,6 +114,12 @@ var (
 					BasicAndTarget: &emptypb.Empty{},
 				},
 			},
+			dataExtractors: &dataExtractors{
+				invocationMetadataExtractor: &jmespath.Expression{
+					Expression: `{"username": env.USER,"hostname": env.HOSTNAME, "buildTags": {"build_id": env.BUILD_URL}}`,
+				},
+			},
+			buildKey: "build_id",
 			bepFileTestCases: []bepFileTestCase{
 				{bepFile: successfulBazelBuild},
 				{bepFile: failedBazelBuild},
@@ -115,6 +129,7 @@ var (
 				{bepFile: abortedAnalysis},
 				{bepFile: abortedBuild},
 				{bepFile: abortedTests},
+				{bepFile: githubActions},
 			},
 			graphqlTestCases: graphqlTestTable{
 				"LoadFullBazelInvocationDetails": {
@@ -266,10 +281,12 @@ var (
 			bepFileTestCases: []bepFileTestCase{
 				{bepFile: successfulBazelBuild},
 			},
-			extractors: &bb_portal.AuthMetadataExtractorConfiguration{
-				ExternalIdExtractionJmespathExpression:  &jmespath.Expression{Expression: "authenticationMetadata.private.external_id"},
-				DisplayNameExtractionJmespathExpression: &jmespath.Expression{Expression: "authenticationMetadata.private.display_name"},
-				UserInfoExtractionJmespathExpression:    &jmespath.Expression{Expression: "authenticationMetadata.public"},
+			dataExtractors: &dataExtractors{
+				authMetadataExtractors: &bb_portal.AuthMetadataExtractorConfiguration{
+					ExternalIdExtractionJmespathExpression:  &jmespath.Expression{Expression: "authenticationMetadata.private.external_id"},
+					DisplayNameExtractionJmespathExpression: &jmespath.Expression{Expression: "authenticationMetadata.private.display_name"},
+					UserInfoExtractionJmespathExpression:    &jmespath.Expression{Expression: "authenticationMetadata.public"},
+				},
 			},
 			ctx: auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromRaw(map[string]any{
 				"private": map[string]any{
@@ -290,6 +307,53 @@ var (
 					"authenticated user found": {
 						variables: testkit.Variables{
 							"userUUID": &authenticatedUserUUID,
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "TestInvocationMetadataExtraction",
+			saveDataLevel: &bb_portal.BuildEventStreamService_SaveDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget{
+					BasicAndTarget: &emptypb.Empty{},
+				},
+			},
+			bepFileTestCases: []bepFileTestCase{
+				{bepFile: successfulBazelBuild},
+				{bepFile: githubActions},
+				{bepFile: githubActionsLite},
+			},
+			dataExtractors: &dataExtractors{
+				invocationMetadataExtractor: githubActionsExtractor(),
+			},
+			buildKey: "build_id",
+			graphqlTestCases: graphqlTestTable{
+				"FindBuilds": {
+					"find all builds": {},
+				},
+				"FindBuildByUUID": {
+					"found": {
+						variables: testkit.Variables{
+							"buildUUID": databasecommon.CalculateBuildUUID("https://github.com/meroton/bb-portal/actions/runs/22613512849", ""),
+						},
+					},
+					"not found": {
+						variables: testkit.Variables{
+							"buildUUID": databasecommon.CalculateBuildUUID("invalid_build_key", ""),
+						},
+						wantErr: errBuildNotFound,
+					},
+				},
+				"LoadFullBazelInvocationDetails": {
+					"github actions": {
+						variables: testkit.Variables{
+							"invocationID": githubActions.invocationID,
+						},
+					},
+					"github actions lite": {
+						variables: testkit.Variables{
+							"invocationID": githubActionsLite.invocationID,
 						},
 					},
 				},

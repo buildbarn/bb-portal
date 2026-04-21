@@ -208,7 +208,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		client := db.Ent()
 		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
-		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
+		buildObj, err := client.Build.Create().SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 		_, err = testutils.StartCreateInvocation(client, instanceName).
 			SetBuild(buildObj).
@@ -230,7 +230,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		client := db.Ent()
 		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
-		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
+		_, err := client.Build.Create().SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
@@ -249,17 +249,17 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
 
 		// Build with invocation
-		buildWithInv, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
+		buildWithInv, err := client.Build.Create().SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 		_, err = testutils.StartCreateInvocation(client, instanceName).
 			SetBuild(buildWithInv).
 			Save(ctx)
 		require.NoError(t, err)
 		// Build without invocation
-		_, err = client.Build.Create().SetBuildURL("2").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
+		_, err = client.Build.Create().SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 		// Another build without invocation
-		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
+		_, err = client.Build.Create().SetBuildUUID(uuid.New()).SetInstanceName(instanceName).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)

@@ -18,6 +18,10 @@
 // At least one service should be configured, otherwise the portal will not
 // do anything useful.
 
+local githubActionsExtractor = importstr 'gh-actions.jmespath';
+local gitlabExtractor = importstr 'gitlab.jmespath';
+local semaphoreExtractor = importstr 'semaphore.jmespath';
+
 {
   global: {
     tracing: {
@@ -90,6 +94,10 @@
       invocationRetention: '604800s',
     },
     minEventBatchDuration: '0.1s',
+    invocationMetadataExtractor: {
+      expression: githubActionsExtractor,
+    },
+    buildKey: "build_id",
   },
 
   // The BrowserService can be disabled by not setting this field.
@@ -142,6 +150,15 @@
           href: 'https://buildteamworld.slack.com/archives/CD6HZC750',
           icon: { slack: {} },
         },
+      ],
+      additionalBuildColumns: [
+        { title: 'Repo', value_key: 'repo', url_key: 'repo_url' },
+        { title: 'PR', value_key: 'pull_request', url_key: 'pull_request_url' },
+        { title: 'Workflow', value_key: 'workflow', url_key: 'workflow_url' },
+      ],
+      additionalBuildInvocationColumns: [
+        { title: 'Job', value_key: 'job' },
+        { title: 'Action', value_key: 'action' },
       ],
     },
   },

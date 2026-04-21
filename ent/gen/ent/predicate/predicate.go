@@ -36,6 +36,9 @@ type BuildGraphMetrics func(*sql.Selector)
 // BuildLogChunk is the predicate function for buildlogchunk builders.
 type BuildLogChunk func(*sql.Selector)
 
+// BuildTag is the predicate function for buildtag builders.
+type BuildTag func(*sql.Selector)
+
 // Configuration is the predicate function for configuration builders.
 type Configuration func(*sql.Selector)
 
@@ -56,6 +59,9 @@ type InstanceName func(*sql.Selector)
 
 // InvocationFiles is the predicate function for invocationfiles builders.
 type InvocationFiles func(*sql.Selector)
+
+// InvocationTag is the predicate function for invocationtag builders.
+type InvocationTag func(*sql.Selector)
 
 // InvocationTarget is the predicate function for invocationtarget builders.
 type InvocationTarget func(*sql.Selector)

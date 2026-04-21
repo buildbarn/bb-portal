@@ -16,10 +16,12 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -2969,50 +2971,9 @@ type BazelInvocationWhereInput struct {
 	EndedAtIsNil  bool        `json:"endedAtIsNil,omitempty"`
 	EndedAtNotNil bool        `json:"endedAtNotNil,omitempty"`
 
-	// "change_number" field predicates.
-	ChangeNumber       *int  `json:"changeNumber,omitempty"`
-	ChangeNumberNEQ    *int  `json:"changeNumberNEQ,omitempty"`
-	ChangeNumberIn     []int `json:"changeNumberIn,omitempty"`
-	ChangeNumberNotIn  []int `json:"changeNumberNotIn,omitempty"`
-	ChangeNumberGT     *int  `json:"changeNumberGT,omitempty"`
-	ChangeNumberGTE    *int  `json:"changeNumberGTE,omitempty"`
-	ChangeNumberLT     *int  `json:"changeNumberLT,omitempty"`
-	ChangeNumberLTE    *int  `json:"changeNumberLTE,omitempty"`
-	ChangeNumberIsNil  bool  `json:"changeNumberIsNil,omitempty"`
-	ChangeNumberNotNil bool  `json:"changeNumberNotNil,omitempty"`
-
-	// "patchset_number" field predicates.
-	PatchsetNumber       *int  `json:"patchsetNumber,omitempty"`
-	PatchsetNumberNEQ    *int  `json:"patchsetNumberNEQ,omitempty"`
-	PatchsetNumberIn     []int `json:"patchsetNumberIn,omitempty"`
-	PatchsetNumberNotIn  []int `json:"patchsetNumberNotIn,omitempty"`
-	PatchsetNumberGT     *int  `json:"patchsetNumberGT,omitempty"`
-	PatchsetNumberGTE    *int  `json:"patchsetNumberGTE,omitempty"`
-	PatchsetNumberLT     *int  `json:"patchsetNumberLT,omitempty"`
-	PatchsetNumberLTE    *int  `json:"patchsetNumberLTE,omitempty"`
-	PatchsetNumberIsNil  bool  `json:"patchsetNumberIsNil,omitempty"`
-	PatchsetNumberNotNil bool  `json:"patchsetNumberNotNil,omitempty"`
-
 	// "bep_completed" field predicates.
 	BepCompleted    *bool `json:"bepCompleted,omitempty"`
 	BepCompletedNEQ *bool `json:"bepCompletedNEQ,omitempty"`
-
-	// "step_label" field predicates.
-	StepLabel             *string  `json:"stepLabel,omitempty"`
-	StepLabelNEQ          *string  `json:"stepLabelNEQ,omitempty"`
-	StepLabelIn           []string `json:"stepLabelIn,omitempty"`
-	StepLabelNotIn        []string `json:"stepLabelNotIn,omitempty"`
-	StepLabelGT           *string  `json:"stepLabelGT,omitempty"`
-	StepLabelGTE          *string  `json:"stepLabelGTE,omitempty"`
-	StepLabelLT           *string  `json:"stepLabelLT,omitempty"`
-	StepLabelLTE          *string  `json:"stepLabelLTE,omitempty"`
-	StepLabelContains     *string  `json:"stepLabelContains,omitempty"`
-	StepLabelHasPrefix    *string  `json:"stepLabelHasPrefix,omitempty"`
-	StepLabelHasSuffix    *string  `json:"stepLabelHasSuffix,omitempty"`
-	StepLabelIsNil        bool     `json:"stepLabelIsNil,omitempty"`
-	StepLabelNotNil       bool     `json:"stepLabelNotNil,omitempty"`
-	StepLabelEqualFold    *string  `json:"stepLabelEqualFold,omitempty"`
-	StepLabelContainsFold *string  `json:"stepLabelContainsFold,omitempty"`
 
 	// "username" field predicates.
 	Username             *string  `json:"username,omitempty"`
@@ -3047,12 +3008,6 @@ type BazelInvocationWhereInput struct {
 	HostnameNotNil       bool     `json:"hostnameNotNil,omitempty"`
 	HostnameEqualFold    *string  `json:"hostnameEqualFold,omitempty"`
 	HostnameContainsFold *string  `json:"hostnameContainsFold,omitempty"`
-
-	// "is_ci_worker" field predicates.
-	IsCiWorker       *bool `json:"isCiWorker,omitempty"`
-	IsCiWorkerNEQ    *bool `json:"isCiWorkerNEQ,omitempty"`
-	IsCiWorkerIsNil  bool  `json:"isCiWorkerIsNil,omitempty"`
-	IsCiWorkerNotNil bool  `json:"isCiWorkerNotNil,omitempty"`
 
 	// "num_fetches" field predicates.
 	NumFetches       *int64  `json:"numFetches,omitempty"`
@@ -3140,6 +3095,10 @@ type BazelInvocationWhereInput struct {
 	// "authenticated_user" edge predicates.
 	HasAuthenticatedUser     *bool                          `json:"hasAuthenticatedUser,omitempty"`
 	HasAuthenticatedUserWith []*AuthenticatedUserWhereInput `json:"hasAuthenticatedUserWith,omitempty"`
+
+	// "tags" edge predicates.
+	HasTags     *bool                      `json:"hasTags,omitempty"`
+	HasTagsWith []*InvocationTagWhereInput `json:"hasTagsWith,omitempty"`
 
 	// "connection_metadata" edge predicates.
 	HasConnectionMetadata     *bool                           `json:"hasConnectionMetadata,omitempty"`
@@ -3345,116 +3304,11 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	if i.EndedAtNotNil {
 		predicates = append(predicates, bazelinvocation.EndedAtNotNil())
 	}
-	if i.ChangeNumber != nil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberEQ(*i.ChangeNumber))
-	}
-	if i.ChangeNumberNEQ != nil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberNEQ(*i.ChangeNumberNEQ))
-	}
-	if len(i.ChangeNumberIn) > 0 {
-		predicates = append(predicates, bazelinvocation.ChangeNumberIn(i.ChangeNumberIn...))
-	}
-	if len(i.ChangeNumberNotIn) > 0 {
-		predicates = append(predicates, bazelinvocation.ChangeNumberNotIn(i.ChangeNumberNotIn...))
-	}
-	if i.ChangeNumberGT != nil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberGT(*i.ChangeNumberGT))
-	}
-	if i.ChangeNumberGTE != nil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberGTE(*i.ChangeNumberGTE))
-	}
-	if i.ChangeNumberLT != nil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberLT(*i.ChangeNumberLT))
-	}
-	if i.ChangeNumberLTE != nil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberLTE(*i.ChangeNumberLTE))
-	}
-	if i.ChangeNumberIsNil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberIsNil())
-	}
-	if i.ChangeNumberNotNil {
-		predicates = append(predicates, bazelinvocation.ChangeNumberNotNil())
-	}
-	if i.PatchsetNumber != nil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberEQ(*i.PatchsetNumber))
-	}
-	if i.PatchsetNumberNEQ != nil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberNEQ(*i.PatchsetNumberNEQ))
-	}
-	if len(i.PatchsetNumberIn) > 0 {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberIn(i.PatchsetNumberIn...))
-	}
-	if len(i.PatchsetNumberNotIn) > 0 {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberNotIn(i.PatchsetNumberNotIn...))
-	}
-	if i.PatchsetNumberGT != nil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberGT(*i.PatchsetNumberGT))
-	}
-	if i.PatchsetNumberGTE != nil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberGTE(*i.PatchsetNumberGTE))
-	}
-	if i.PatchsetNumberLT != nil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberLT(*i.PatchsetNumberLT))
-	}
-	if i.PatchsetNumberLTE != nil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberLTE(*i.PatchsetNumberLTE))
-	}
-	if i.PatchsetNumberIsNil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberIsNil())
-	}
-	if i.PatchsetNumberNotNil {
-		predicates = append(predicates, bazelinvocation.PatchsetNumberNotNil())
-	}
 	if i.BepCompleted != nil {
 		predicates = append(predicates, bazelinvocation.BepCompletedEQ(*i.BepCompleted))
 	}
 	if i.BepCompletedNEQ != nil {
 		predicates = append(predicates, bazelinvocation.BepCompletedNEQ(*i.BepCompletedNEQ))
-	}
-	if i.StepLabel != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelEQ(*i.StepLabel))
-	}
-	if i.StepLabelNEQ != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelNEQ(*i.StepLabelNEQ))
-	}
-	if len(i.StepLabelIn) > 0 {
-		predicates = append(predicates, bazelinvocation.StepLabelIn(i.StepLabelIn...))
-	}
-	if len(i.StepLabelNotIn) > 0 {
-		predicates = append(predicates, bazelinvocation.StepLabelNotIn(i.StepLabelNotIn...))
-	}
-	if i.StepLabelGT != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelGT(*i.StepLabelGT))
-	}
-	if i.StepLabelGTE != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelGTE(*i.StepLabelGTE))
-	}
-	if i.StepLabelLT != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelLT(*i.StepLabelLT))
-	}
-	if i.StepLabelLTE != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelLTE(*i.StepLabelLTE))
-	}
-	if i.StepLabelContains != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelContains(*i.StepLabelContains))
-	}
-	if i.StepLabelHasPrefix != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelHasPrefix(*i.StepLabelHasPrefix))
-	}
-	if i.StepLabelHasSuffix != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelHasSuffix(*i.StepLabelHasSuffix))
-	}
-	if i.StepLabelIsNil {
-		predicates = append(predicates, bazelinvocation.StepLabelIsNil())
-	}
-	if i.StepLabelNotNil {
-		predicates = append(predicates, bazelinvocation.StepLabelNotNil())
-	}
-	if i.StepLabelEqualFold != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelEqualFold(*i.StepLabelEqualFold))
-	}
-	if i.StepLabelContainsFold != nil {
-		predicates = append(predicates, bazelinvocation.StepLabelContainsFold(*i.StepLabelContainsFold))
 	}
 	if i.Username != nil {
 		predicates = append(predicates, bazelinvocation.UsernameEQ(*i.Username))
@@ -3545,18 +3399,6 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	}
 	if i.HostnameContainsFold != nil {
 		predicates = append(predicates, bazelinvocation.HostnameContainsFold(*i.HostnameContainsFold))
-	}
-	if i.IsCiWorker != nil {
-		predicates = append(predicates, bazelinvocation.IsCiWorkerEQ(*i.IsCiWorker))
-	}
-	if i.IsCiWorkerNEQ != nil {
-		predicates = append(predicates, bazelinvocation.IsCiWorkerNEQ(*i.IsCiWorkerNEQ))
-	}
-	if i.IsCiWorkerIsNil {
-		predicates = append(predicates, bazelinvocation.IsCiWorkerIsNil())
-	}
-	if i.IsCiWorkerNotNil {
-		predicates = append(predicates, bazelinvocation.IsCiWorkerNotNil())
 	}
 	if i.NumFetches != nil {
 		predicates = append(predicates, bazelinvocation.NumFetchesEQ(*i.NumFetches))
@@ -3808,6 +3650,24 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 		}
 		predicates = append(predicates, bazelinvocation.HasAuthenticatedUserWith(with...))
 	}
+	if i.HasTags != nil {
+		p := bazelinvocation.HasTags()
+		if !*i.HasTags {
+			p = bazelinvocation.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTagsWith) > 0 {
+		with := make([]predicate.InvocationTag, 0, len(i.HasTagsWith))
+		for _, w := range i.HasTagsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTagsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, bazelinvocation.HasTagsWith(with...))
+	}
 	if i.HasConnectionMetadata != nil {
 		p := bazelinvocation.HasConnectionMetadata()
 		if !*i.HasConnectionMetadata {
@@ -3943,21 +3803,6 @@ type BuildWhereInput struct {
 	IDLT    *int64  `json:"idLT,omitempty"`
 	IDLTE   *int64  `json:"idLTE,omitempty"`
 
-	// "build_url" field predicates.
-	BuildURL             *string  `json:"buildURL,omitempty"`
-	BuildURLNEQ          *string  `json:"buildURLNEQ,omitempty"`
-	BuildURLIn           []string `json:"buildURLIn,omitempty"`
-	BuildURLNotIn        []string `json:"buildURLNotIn,omitempty"`
-	BuildURLGT           *string  `json:"buildURLGT,omitempty"`
-	BuildURLGTE          *string  `json:"buildURLGTE,omitempty"`
-	BuildURLLT           *string  `json:"buildURLLT,omitempty"`
-	BuildURLLTE          *string  `json:"buildURLLTE,omitempty"`
-	BuildURLContains     *string  `json:"buildURLContains,omitempty"`
-	BuildURLHasPrefix    *string  `json:"buildURLHasPrefix,omitempty"`
-	BuildURLHasSuffix    *string  `json:"buildURLHasSuffix,omitempty"`
-	BuildURLEqualFold    *string  `json:"buildURLEqualFold,omitempty"`
-	BuildURLContainsFold *string  `json:"buildURLContainsFold,omitempty"`
-
 	// "build_uuid" field predicates.
 	BuildUUID      *uuid.UUID  `json:"buildUUID,omitempty"`
 	BuildUUIDNEQ   *uuid.UUID  `json:"buildUUIDNEQ,omitempty"`
@@ -3985,6 +3830,10 @@ type BuildWhereInput struct {
 	// "invocations" edge predicates.
 	HasInvocations     *bool                        `json:"hasInvocations,omitempty"`
 	HasInvocationsWith []*BazelInvocationWhereInput `json:"hasInvocationsWith,omitempty"`
+
+	// "tags" edge predicates.
+	HasTags     *bool                 `json:"hasTags,omitempty"`
+	HasTagsWith []*BuildTagWhereInput `json:"hasTagsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -4082,45 +3931,6 @@ func (i *BuildWhereInput) P() (predicate.Build, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, build.IDLTE(*i.IDLTE))
 	}
-	if i.BuildURL != nil {
-		predicates = append(predicates, build.BuildURLEQ(*i.BuildURL))
-	}
-	if i.BuildURLNEQ != nil {
-		predicates = append(predicates, build.BuildURLNEQ(*i.BuildURLNEQ))
-	}
-	if len(i.BuildURLIn) > 0 {
-		predicates = append(predicates, build.BuildURLIn(i.BuildURLIn...))
-	}
-	if len(i.BuildURLNotIn) > 0 {
-		predicates = append(predicates, build.BuildURLNotIn(i.BuildURLNotIn...))
-	}
-	if i.BuildURLGT != nil {
-		predicates = append(predicates, build.BuildURLGT(*i.BuildURLGT))
-	}
-	if i.BuildURLGTE != nil {
-		predicates = append(predicates, build.BuildURLGTE(*i.BuildURLGTE))
-	}
-	if i.BuildURLLT != nil {
-		predicates = append(predicates, build.BuildURLLT(*i.BuildURLLT))
-	}
-	if i.BuildURLLTE != nil {
-		predicates = append(predicates, build.BuildURLLTE(*i.BuildURLLTE))
-	}
-	if i.BuildURLContains != nil {
-		predicates = append(predicates, build.BuildURLContains(*i.BuildURLContains))
-	}
-	if i.BuildURLHasPrefix != nil {
-		predicates = append(predicates, build.BuildURLHasPrefix(*i.BuildURLHasPrefix))
-	}
-	if i.BuildURLHasSuffix != nil {
-		predicates = append(predicates, build.BuildURLHasSuffix(*i.BuildURLHasSuffix))
-	}
-	if i.BuildURLEqualFold != nil {
-		predicates = append(predicates, build.BuildURLEqualFold(*i.BuildURLEqualFold))
-	}
-	if i.BuildURLContainsFold != nil {
-		predicates = append(predicates, build.BuildURLContainsFold(*i.BuildURLContainsFold))
-	}
 	if i.BuildUUID != nil {
 		predicates = append(predicates, build.BuildUUIDEQ(*i.BuildUUID))
 	}
@@ -4205,6 +4015,24 @@ func (i *BuildWhereInput) P() (predicate.Build, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, build.HasInvocationsWith(with...))
+	}
+	if i.HasTags != nil {
+		p := build.HasTags()
+		if !*i.HasTags {
+			p = build.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTagsWith) > 0 {
+		with := make([]predicate.BuildTag, 0, len(i.HasTagsWith))
+		for _, w := range i.HasTagsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTagsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, build.HasTagsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -4737,6 +4565,260 @@ func (i *BuildGraphMetricsWhereInput) P() (predicate.BuildGraphMetrics, error) {
 		return predicates[0], nil
 	default:
 		return buildgraphmetrics.And(predicates...), nil
+	}
+}
+
+// BuildTagWhereInput represents a where input for filtering BuildTag queries.
+type BuildTagWhereInput struct {
+	Predicates []predicate.BuildTag  `json:"-"`
+	Not        *BuildTagWhereInput   `json:"not,omitempty"`
+	Or         []*BuildTagWhereInput `json:"or,omitempty"`
+	And        []*BuildTagWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "key" field predicates.
+	Key             *string  `json:"key,omitempty"`
+	KeyNEQ          *string  `json:"keyNEQ,omitempty"`
+	KeyIn           []string `json:"keyIn,omitempty"`
+	KeyNotIn        []string `json:"keyNotIn,omitempty"`
+	KeyGT           *string  `json:"keyGT,omitempty"`
+	KeyGTE          *string  `json:"keyGTE,omitempty"`
+	KeyLT           *string  `json:"keyLT,omitempty"`
+	KeyLTE          *string  `json:"keyLTE,omitempty"`
+	KeyContains     *string  `json:"keyContains,omitempty"`
+	KeyHasPrefix    *string  `json:"keyHasPrefix,omitempty"`
+	KeyHasSuffix    *string  `json:"keyHasSuffix,omitempty"`
+	KeyEqualFold    *string  `json:"keyEqualFold,omitempty"`
+	KeyContainsFold *string  `json:"keyContainsFold,omitempty"`
+
+	// "value" field predicates.
+	Value             *string  `json:"value,omitempty"`
+	ValueNEQ          *string  `json:"valueNEQ,omitempty"`
+	ValueIn           []string `json:"valueIn,omitempty"`
+	ValueNotIn        []string `json:"valueNotIn,omitempty"`
+	ValueGT           *string  `json:"valueGT,omitempty"`
+	ValueGTE          *string  `json:"valueGTE,omitempty"`
+	ValueLT           *string  `json:"valueLT,omitempty"`
+	ValueLTE          *string  `json:"valueLTE,omitempty"`
+	ValueContains     *string  `json:"valueContains,omitempty"`
+	ValueHasPrefix    *string  `json:"valueHasPrefix,omitempty"`
+	ValueHasSuffix    *string  `json:"valueHasSuffix,omitempty"`
+	ValueEqualFold    *string  `json:"valueEqualFold,omitempty"`
+	ValueContainsFold *string  `json:"valueContainsFold,omitempty"`
+
+	// "build" edge predicates.
+	HasBuild     *bool              `json:"hasBuild,omitempty"`
+	HasBuildWith []*BuildWhereInput `json:"hasBuildWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *BuildTagWhereInput) AddPredicates(predicates ...predicate.BuildTag) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the BuildTagWhereInput filter on the BuildTagQuery builder.
+func (i *BuildTagWhereInput) Filter(q *BuildTagQuery) (*BuildTagQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyBuildTagWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyBuildTagWhereInput is returned in case the BuildTagWhereInput is empty.
+var ErrEmptyBuildTagWhereInput = errors.New("ent: empty predicate BuildTagWhereInput")
+
+// P returns a predicate for filtering buildtags.
+// An error is returned if the input is empty or invalid.
+func (i *BuildTagWhereInput) P() (predicate.BuildTag, error) {
+	var predicates []predicate.BuildTag
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, buildtag.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.BuildTag, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, buildtag.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.BuildTag, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, buildtag.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, buildtag.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, buildtag.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, buildtag.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, buildtag.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, buildtag.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, buildtag.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, buildtag.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, buildtag.IDLTE(*i.IDLTE))
+	}
+	if i.Key != nil {
+		predicates = append(predicates, buildtag.KeyEQ(*i.Key))
+	}
+	if i.KeyNEQ != nil {
+		predicates = append(predicates, buildtag.KeyNEQ(*i.KeyNEQ))
+	}
+	if len(i.KeyIn) > 0 {
+		predicates = append(predicates, buildtag.KeyIn(i.KeyIn...))
+	}
+	if len(i.KeyNotIn) > 0 {
+		predicates = append(predicates, buildtag.KeyNotIn(i.KeyNotIn...))
+	}
+	if i.KeyGT != nil {
+		predicates = append(predicates, buildtag.KeyGT(*i.KeyGT))
+	}
+	if i.KeyGTE != nil {
+		predicates = append(predicates, buildtag.KeyGTE(*i.KeyGTE))
+	}
+	if i.KeyLT != nil {
+		predicates = append(predicates, buildtag.KeyLT(*i.KeyLT))
+	}
+	if i.KeyLTE != nil {
+		predicates = append(predicates, buildtag.KeyLTE(*i.KeyLTE))
+	}
+	if i.KeyContains != nil {
+		predicates = append(predicates, buildtag.KeyContains(*i.KeyContains))
+	}
+	if i.KeyHasPrefix != nil {
+		predicates = append(predicates, buildtag.KeyHasPrefix(*i.KeyHasPrefix))
+	}
+	if i.KeyHasSuffix != nil {
+		predicates = append(predicates, buildtag.KeyHasSuffix(*i.KeyHasSuffix))
+	}
+	if i.KeyEqualFold != nil {
+		predicates = append(predicates, buildtag.KeyEqualFold(*i.KeyEqualFold))
+	}
+	if i.KeyContainsFold != nil {
+		predicates = append(predicates, buildtag.KeyContainsFold(*i.KeyContainsFold))
+	}
+	if i.Value != nil {
+		predicates = append(predicates, buildtag.ValueEQ(*i.Value))
+	}
+	if i.ValueNEQ != nil {
+		predicates = append(predicates, buildtag.ValueNEQ(*i.ValueNEQ))
+	}
+	if len(i.ValueIn) > 0 {
+		predicates = append(predicates, buildtag.ValueIn(i.ValueIn...))
+	}
+	if len(i.ValueNotIn) > 0 {
+		predicates = append(predicates, buildtag.ValueNotIn(i.ValueNotIn...))
+	}
+	if i.ValueGT != nil {
+		predicates = append(predicates, buildtag.ValueGT(*i.ValueGT))
+	}
+	if i.ValueGTE != nil {
+		predicates = append(predicates, buildtag.ValueGTE(*i.ValueGTE))
+	}
+	if i.ValueLT != nil {
+		predicates = append(predicates, buildtag.ValueLT(*i.ValueLT))
+	}
+	if i.ValueLTE != nil {
+		predicates = append(predicates, buildtag.ValueLTE(*i.ValueLTE))
+	}
+	if i.ValueContains != nil {
+		predicates = append(predicates, buildtag.ValueContains(*i.ValueContains))
+	}
+	if i.ValueHasPrefix != nil {
+		predicates = append(predicates, buildtag.ValueHasPrefix(*i.ValueHasPrefix))
+	}
+	if i.ValueHasSuffix != nil {
+		predicates = append(predicates, buildtag.ValueHasSuffix(*i.ValueHasSuffix))
+	}
+	if i.ValueEqualFold != nil {
+		predicates = append(predicates, buildtag.ValueEqualFold(*i.ValueEqualFold))
+	}
+	if i.ValueContainsFold != nil {
+		predicates = append(predicates, buildtag.ValueContainsFold(*i.ValueContainsFold))
+	}
+
+	if i.HasBuild != nil {
+		p := buildtag.HasBuild()
+		if !*i.HasBuild {
+			p = buildtag.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBuildWith) > 0 {
+		with := make([]predicate.Build, 0, len(i.HasBuildWith))
+		for _, w := range i.HasBuildWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBuildWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, buildtag.HasBuildWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyBuildTagWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return buildtag.And(predicates...), nil
 	}
 }
 
@@ -5859,6 +5941,260 @@ func (i *InstanceNameWhereInput) P() (predicate.InstanceName, error) {
 		return predicates[0], nil
 	default:
 		return instancename.And(predicates...), nil
+	}
+}
+
+// InvocationTagWhereInput represents a where input for filtering InvocationTag queries.
+type InvocationTagWhereInput struct {
+	Predicates []predicate.InvocationTag  `json:"-"`
+	Not        *InvocationTagWhereInput   `json:"not,omitempty"`
+	Or         []*InvocationTagWhereInput `json:"or,omitempty"`
+	And        []*InvocationTagWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "key" field predicates.
+	Key             *string  `json:"key,omitempty"`
+	KeyNEQ          *string  `json:"keyNEQ,omitempty"`
+	KeyIn           []string `json:"keyIn,omitempty"`
+	KeyNotIn        []string `json:"keyNotIn,omitempty"`
+	KeyGT           *string  `json:"keyGT,omitempty"`
+	KeyGTE          *string  `json:"keyGTE,omitempty"`
+	KeyLT           *string  `json:"keyLT,omitempty"`
+	KeyLTE          *string  `json:"keyLTE,omitempty"`
+	KeyContains     *string  `json:"keyContains,omitempty"`
+	KeyHasPrefix    *string  `json:"keyHasPrefix,omitempty"`
+	KeyHasSuffix    *string  `json:"keyHasSuffix,omitempty"`
+	KeyEqualFold    *string  `json:"keyEqualFold,omitempty"`
+	KeyContainsFold *string  `json:"keyContainsFold,omitempty"`
+
+	// "value" field predicates.
+	Value             *string  `json:"value,omitempty"`
+	ValueNEQ          *string  `json:"valueNEQ,omitempty"`
+	ValueIn           []string `json:"valueIn,omitempty"`
+	ValueNotIn        []string `json:"valueNotIn,omitempty"`
+	ValueGT           *string  `json:"valueGT,omitempty"`
+	ValueGTE          *string  `json:"valueGTE,omitempty"`
+	ValueLT           *string  `json:"valueLT,omitempty"`
+	ValueLTE          *string  `json:"valueLTE,omitempty"`
+	ValueContains     *string  `json:"valueContains,omitempty"`
+	ValueHasPrefix    *string  `json:"valueHasPrefix,omitempty"`
+	ValueHasSuffix    *string  `json:"valueHasSuffix,omitempty"`
+	ValueEqualFold    *string  `json:"valueEqualFold,omitempty"`
+	ValueContainsFold *string  `json:"valueContainsFold,omitempty"`
+
+	// "bazel_invocation" edge predicates.
+	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
+	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *InvocationTagWhereInput) AddPredicates(predicates ...predicate.InvocationTag) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the InvocationTagWhereInput filter on the InvocationTagQuery builder.
+func (i *InvocationTagWhereInput) Filter(q *InvocationTagQuery) (*InvocationTagQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyInvocationTagWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyInvocationTagWhereInput is returned in case the InvocationTagWhereInput is empty.
+var ErrEmptyInvocationTagWhereInput = errors.New("ent: empty predicate InvocationTagWhereInput")
+
+// P returns a predicate for filtering invocationtags.
+// An error is returned if the input is empty or invalid.
+func (i *InvocationTagWhereInput) P() (predicate.InvocationTag, error) {
+	var predicates []predicate.InvocationTag
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, invocationtag.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.InvocationTag, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, invocationtag.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.InvocationTag, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, invocationtag.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, invocationtag.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, invocationtag.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, invocationtag.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, invocationtag.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, invocationtag.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, invocationtag.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, invocationtag.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, invocationtag.IDLTE(*i.IDLTE))
+	}
+	if i.Key != nil {
+		predicates = append(predicates, invocationtag.KeyEQ(*i.Key))
+	}
+	if i.KeyNEQ != nil {
+		predicates = append(predicates, invocationtag.KeyNEQ(*i.KeyNEQ))
+	}
+	if len(i.KeyIn) > 0 {
+		predicates = append(predicates, invocationtag.KeyIn(i.KeyIn...))
+	}
+	if len(i.KeyNotIn) > 0 {
+		predicates = append(predicates, invocationtag.KeyNotIn(i.KeyNotIn...))
+	}
+	if i.KeyGT != nil {
+		predicates = append(predicates, invocationtag.KeyGT(*i.KeyGT))
+	}
+	if i.KeyGTE != nil {
+		predicates = append(predicates, invocationtag.KeyGTE(*i.KeyGTE))
+	}
+	if i.KeyLT != nil {
+		predicates = append(predicates, invocationtag.KeyLT(*i.KeyLT))
+	}
+	if i.KeyLTE != nil {
+		predicates = append(predicates, invocationtag.KeyLTE(*i.KeyLTE))
+	}
+	if i.KeyContains != nil {
+		predicates = append(predicates, invocationtag.KeyContains(*i.KeyContains))
+	}
+	if i.KeyHasPrefix != nil {
+		predicates = append(predicates, invocationtag.KeyHasPrefix(*i.KeyHasPrefix))
+	}
+	if i.KeyHasSuffix != nil {
+		predicates = append(predicates, invocationtag.KeyHasSuffix(*i.KeyHasSuffix))
+	}
+	if i.KeyEqualFold != nil {
+		predicates = append(predicates, invocationtag.KeyEqualFold(*i.KeyEqualFold))
+	}
+	if i.KeyContainsFold != nil {
+		predicates = append(predicates, invocationtag.KeyContainsFold(*i.KeyContainsFold))
+	}
+	if i.Value != nil {
+		predicates = append(predicates, invocationtag.ValueEQ(*i.Value))
+	}
+	if i.ValueNEQ != nil {
+		predicates = append(predicates, invocationtag.ValueNEQ(*i.ValueNEQ))
+	}
+	if len(i.ValueIn) > 0 {
+		predicates = append(predicates, invocationtag.ValueIn(i.ValueIn...))
+	}
+	if len(i.ValueNotIn) > 0 {
+		predicates = append(predicates, invocationtag.ValueNotIn(i.ValueNotIn...))
+	}
+	if i.ValueGT != nil {
+		predicates = append(predicates, invocationtag.ValueGT(*i.ValueGT))
+	}
+	if i.ValueGTE != nil {
+		predicates = append(predicates, invocationtag.ValueGTE(*i.ValueGTE))
+	}
+	if i.ValueLT != nil {
+		predicates = append(predicates, invocationtag.ValueLT(*i.ValueLT))
+	}
+	if i.ValueLTE != nil {
+		predicates = append(predicates, invocationtag.ValueLTE(*i.ValueLTE))
+	}
+	if i.ValueContains != nil {
+		predicates = append(predicates, invocationtag.ValueContains(*i.ValueContains))
+	}
+	if i.ValueHasPrefix != nil {
+		predicates = append(predicates, invocationtag.ValueHasPrefix(*i.ValueHasPrefix))
+	}
+	if i.ValueHasSuffix != nil {
+		predicates = append(predicates, invocationtag.ValueHasSuffix(*i.ValueHasSuffix))
+	}
+	if i.ValueEqualFold != nil {
+		predicates = append(predicates, invocationtag.ValueEqualFold(*i.ValueEqualFold))
+	}
+	if i.ValueContainsFold != nil {
+		predicates = append(predicates, invocationtag.ValueContainsFold(*i.ValueContainsFold))
+	}
+
+	if i.HasBazelInvocation != nil {
+		p := invocationtag.HasBazelInvocation()
+		if !*i.HasBazelInvocation {
+			p = invocationtag.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBazelInvocationWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasBazelInvocationWith))
+		for _, w := range i.HasBazelInvocationWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBazelInvocationWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, invocationtag.HasBazelInvocationWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyInvocationTagWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return invocationtag.And(predicates...), nil
 	}
 }
 
@@ -7623,31 +7959,6 @@ type SourceControlWhereInput struct {
 	IDLT    *int64  `json:"idLT,omitempty"`
 	IDLTE   *int64  `json:"idLTE,omitempty"`
 
-	// "provider" field predicates.
-	Provider       *sourcecontrol.Provider  `json:"provider,omitempty"`
-	ProviderNEQ    *sourcecontrol.Provider  `json:"providerNEQ,omitempty"`
-	ProviderIn     []sourcecontrol.Provider `json:"providerIn,omitempty"`
-	ProviderNotIn  []sourcecontrol.Provider `json:"providerNotIn,omitempty"`
-	ProviderIsNil  bool                     `json:"providerIsNil,omitempty"`
-	ProviderNotNil bool                     `json:"providerNotNil,omitempty"`
-
-	// "instance_url" field predicates.
-	InstanceURL             *string  `json:"instanceURL,omitempty"`
-	InstanceURLNEQ          *string  `json:"instanceURLNEQ,omitempty"`
-	InstanceURLIn           []string `json:"instanceURLIn,omitempty"`
-	InstanceURLNotIn        []string `json:"instanceURLNotIn,omitempty"`
-	InstanceURLGT           *string  `json:"instanceURLGT,omitempty"`
-	InstanceURLGTE          *string  `json:"instanceURLGTE,omitempty"`
-	InstanceURLLT           *string  `json:"instanceURLLT,omitempty"`
-	InstanceURLLTE          *string  `json:"instanceURLLTE,omitempty"`
-	InstanceURLContains     *string  `json:"instanceURLContains,omitempty"`
-	InstanceURLHasPrefix    *string  `json:"instanceURLHasPrefix,omitempty"`
-	InstanceURLHasSuffix    *string  `json:"instanceURLHasSuffix,omitempty"`
-	InstanceURLIsNil        bool     `json:"instanceURLIsNil,omitempty"`
-	InstanceURLNotNil       bool     `json:"instanceURLNotNil,omitempty"`
-	InstanceURLEqualFold    *string  `json:"instanceURLEqualFold,omitempty"`
-	InstanceURLContainsFold *string  `json:"instanceURLContainsFold,omitempty"`
-
 	// "repo" field predicates.
 	Repo             *string  `json:"repo,omitempty"`
 	RepoNEQ          *string  `json:"repoNEQ,omitempty"`
@@ -7665,226 +7976,90 @@ type SourceControlWhereInput struct {
 	RepoEqualFold    *string  `json:"repoEqualFold,omitempty"`
 	RepoContainsFold *string  `json:"repoContainsFold,omitempty"`
 
-	// "refs" field predicates.
-	Refs             *string  `json:"refs,omitempty"`
-	RefsNEQ          *string  `json:"refsNEQ,omitempty"`
-	RefsIn           []string `json:"refsIn,omitempty"`
-	RefsNotIn        []string `json:"refsNotIn,omitempty"`
-	RefsGT           *string  `json:"refsGT,omitempty"`
-	RefsGTE          *string  `json:"refsGTE,omitempty"`
-	RefsLT           *string  `json:"refsLT,omitempty"`
-	RefsLTE          *string  `json:"refsLTE,omitempty"`
-	RefsContains     *string  `json:"refsContains,omitempty"`
-	RefsHasPrefix    *string  `json:"refsHasPrefix,omitempty"`
-	RefsHasSuffix    *string  `json:"refsHasSuffix,omitempty"`
-	RefsIsNil        bool     `json:"refsIsNil,omitempty"`
-	RefsNotNil       bool     `json:"refsNotNil,omitempty"`
-	RefsEqualFold    *string  `json:"refsEqualFold,omitempty"`
-	RefsContainsFold *string  `json:"refsContainsFold,omitempty"`
+	// "repo_url" field predicates.
+	RepoURL             *string  `json:"repoURL,omitempty"`
+	RepoURLNEQ          *string  `json:"repoURLNEQ,omitempty"`
+	RepoURLIn           []string `json:"repoURLIn,omitempty"`
+	RepoURLNotIn        []string `json:"repoURLNotIn,omitempty"`
+	RepoURLGT           *string  `json:"repoURLGT,omitempty"`
+	RepoURLGTE          *string  `json:"repoURLGTE,omitempty"`
+	RepoURLLT           *string  `json:"repoURLLT,omitempty"`
+	RepoURLLTE          *string  `json:"repoURLLTE,omitempty"`
+	RepoURLContains     *string  `json:"repoURLContains,omitempty"`
+	RepoURLHasPrefix    *string  `json:"repoURLHasPrefix,omitempty"`
+	RepoURLHasSuffix    *string  `json:"repoURLHasSuffix,omitempty"`
+	RepoURLIsNil        bool     `json:"repoURLIsNil,omitempty"`
+	RepoURLNotNil       bool     `json:"repoURLNotNil,omitempty"`
+	RepoURLEqualFold    *string  `json:"repoURLEqualFold,omitempty"`
+	RepoURLContainsFold *string  `json:"repoURLContainsFold,omitempty"`
 
-	// "commit_sha" field predicates.
-	CommitSha             *string  `json:"commitSha,omitempty"`
-	CommitShaNEQ          *string  `json:"commitShaNEQ,omitempty"`
-	CommitShaIn           []string `json:"commitShaIn,omitempty"`
-	CommitShaNotIn        []string `json:"commitShaNotIn,omitempty"`
-	CommitShaGT           *string  `json:"commitShaGT,omitempty"`
-	CommitShaGTE          *string  `json:"commitShaGTE,omitempty"`
-	CommitShaLT           *string  `json:"commitShaLT,omitempty"`
-	CommitShaLTE          *string  `json:"commitShaLTE,omitempty"`
-	CommitShaContains     *string  `json:"commitShaContains,omitempty"`
-	CommitShaHasPrefix    *string  `json:"commitShaHasPrefix,omitempty"`
-	CommitShaHasSuffix    *string  `json:"commitShaHasSuffix,omitempty"`
-	CommitShaIsNil        bool     `json:"commitShaIsNil,omitempty"`
-	CommitShaNotNil       bool     `json:"commitShaNotNil,omitempty"`
-	CommitShaEqualFold    *string  `json:"commitShaEqualFold,omitempty"`
-	CommitShaContainsFold *string  `json:"commitShaContainsFold,omitempty"`
+	// "ref" field predicates.
+	Ref             *string  `json:"ref,omitempty"`
+	RefNEQ          *string  `json:"refNEQ,omitempty"`
+	RefIn           []string `json:"refIn,omitempty"`
+	RefNotIn        []string `json:"refNotIn,omitempty"`
+	RefGT           *string  `json:"refGT,omitempty"`
+	RefGTE          *string  `json:"refGTE,omitempty"`
+	RefLT           *string  `json:"refLT,omitempty"`
+	RefLTE          *string  `json:"refLTE,omitempty"`
+	RefContains     *string  `json:"refContains,omitempty"`
+	RefHasPrefix    *string  `json:"refHasPrefix,omitempty"`
+	RefHasSuffix    *string  `json:"refHasSuffix,omitempty"`
+	RefIsNil        bool     `json:"refIsNil,omitempty"`
+	RefNotNil       bool     `json:"refNotNil,omitempty"`
+	RefEqualFold    *string  `json:"refEqualFold,omitempty"`
+	RefContainsFold *string  `json:"refContainsFold,omitempty"`
 
-	// "actor" field predicates.
-	Actor             *string  `json:"actor,omitempty"`
-	ActorNEQ          *string  `json:"actorNEQ,omitempty"`
-	ActorIn           []string `json:"actorIn,omitempty"`
-	ActorNotIn        []string `json:"actorNotIn,omitempty"`
-	ActorGT           *string  `json:"actorGT,omitempty"`
-	ActorGTE          *string  `json:"actorGTE,omitempty"`
-	ActorLT           *string  `json:"actorLT,omitempty"`
-	ActorLTE          *string  `json:"actorLTE,omitempty"`
-	ActorContains     *string  `json:"actorContains,omitempty"`
-	ActorHasPrefix    *string  `json:"actorHasPrefix,omitempty"`
-	ActorHasSuffix    *string  `json:"actorHasSuffix,omitempty"`
-	ActorIsNil        bool     `json:"actorIsNil,omitempty"`
-	ActorNotNil       bool     `json:"actorNotNil,omitempty"`
-	ActorEqualFold    *string  `json:"actorEqualFold,omitempty"`
-	ActorContainsFold *string  `json:"actorContainsFold,omitempty"`
+	// "ref_url" field predicates.
+	RefURL             *string  `json:"refURL,omitempty"`
+	RefURLNEQ          *string  `json:"refURLNEQ,omitempty"`
+	RefURLIn           []string `json:"refURLIn,omitempty"`
+	RefURLNotIn        []string `json:"refURLNotIn,omitempty"`
+	RefURLGT           *string  `json:"refURLGT,omitempty"`
+	RefURLGTE          *string  `json:"refURLGTE,omitempty"`
+	RefURLLT           *string  `json:"refURLLT,omitempty"`
+	RefURLLTE          *string  `json:"refURLLTE,omitempty"`
+	RefURLContains     *string  `json:"refURLContains,omitempty"`
+	RefURLHasPrefix    *string  `json:"refURLHasPrefix,omitempty"`
+	RefURLHasSuffix    *string  `json:"refURLHasSuffix,omitempty"`
+	RefURLIsNil        bool     `json:"refURLIsNil,omitempty"`
+	RefURLNotNil       bool     `json:"refURLNotNil,omitempty"`
+	RefURLEqualFold    *string  `json:"refURLEqualFold,omitempty"`
+	RefURLContainsFold *string  `json:"refURLContainsFold,omitempty"`
 
-	// "event_name" field predicates.
-	EventName             *string  `json:"eventName,omitempty"`
-	EventNameNEQ          *string  `json:"eventNameNEQ,omitempty"`
-	EventNameIn           []string `json:"eventNameIn,omitempty"`
-	EventNameNotIn        []string `json:"eventNameNotIn,omitempty"`
-	EventNameGT           *string  `json:"eventNameGT,omitempty"`
-	EventNameGTE          *string  `json:"eventNameGTE,omitempty"`
-	EventNameLT           *string  `json:"eventNameLT,omitempty"`
-	EventNameLTE          *string  `json:"eventNameLTE,omitempty"`
-	EventNameContains     *string  `json:"eventNameContains,omitempty"`
-	EventNameHasPrefix    *string  `json:"eventNameHasPrefix,omitempty"`
-	EventNameHasSuffix    *string  `json:"eventNameHasSuffix,omitempty"`
-	EventNameIsNil        bool     `json:"eventNameIsNil,omitempty"`
-	EventNameNotNil       bool     `json:"eventNameNotNil,omitempty"`
-	EventNameEqualFold    *string  `json:"eventNameEqualFold,omitempty"`
-	EventNameContainsFold *string  `json:"eventNameContainsFold,omitempty"`
+	// "commit" field predicates.
+	Commit             *string  `json:"commit,omitempty"`
+	CommitNEQ          *string  `json:"commitNEQ,omitempty"`
+	CommitIn           []string `json:"commitIn,omitempty"`
+	CommitNotIn        []string `json:"commitNotIn,omitempty"`
+	CommitGT           *string  `json:"commitGT,omitempty"`
+	CommitGTE          *string  `json:"commitGTE,omitempty"`
+	CommitLT           *string  `json:"commitLT,omitempty"`
+	CommitLTE          *string  `json:"commitLTE,omitempty"`
+	CommitContains     *string  `json:"commitContains,omitempty"`
+	CommitHasPrefix    *string  `json:"commitHasPrefix,omitempty"`
+	CommitHasSuffix    *string  `json:"commitHasSuffix,omitempty"`
+	CommitIsNil        bool     `json:"commitIsNil,omitempty"`
+	CommitNotNil       bool     `json:"commitNotNil,omitempty"`
+	CommitEqualFold    *string  `json:"commitEqualFold,omitempty"`
+	CommitContainsFold *string  `json:"commitContainsFold,omitempty"`
 
-	// "workflow" field predicates.
-	Workflow             *string  `json:"workflow,omitempty"`
-	WorkflowNEQ          *string  `json:"workflowNEQ,omitempty"`
-	WorkflowIn           []string `json:"workflowIn,omitempty"`
-	WorkflowNotIn        []string `json:"workflowNotIn,omitempty"`
-	WorkflowGT           *string  `json:"workflowGT,omitempty"`
-	WorkflowGTE          *string  `json:"workflowGTE,omitempty"`
-	WorkflowLT           *string  `json:"workflowLT,omitempty"`
-	WorkflowLTE          *string  `json:"workflowLTE,omitempty"`
-	WorkflowContains     *string  `json:"workflowContains,omitempty"`
-	WorkflowHasPrefix    *string  `json:"workflowHasPrefix,omitempty"`
-	WorkflowHasSuffix    *string  `json:"workflowHasSuffix,omitempty"`
-	WorkflowIsNil        bool     `json:"workflowIsNil,omitempty"`
-	WorkflowNotNil       bool     `json:"workflowNotNil,omitempty"`
-	WorkflowEqualFold    *string  `json:"workflowEqualFold,omitempty"`
-	WorkflowContainsFold *string  `json:"workflowContainsFold,omitempty"`
-
-	// "run_id" field predicates.
-	RunID             *string  `json:"runID,omitempty"`
-	RunIDNEQ          *string  `json:"runIDNEQ,omitempty"`
-	RunIDIn           []string `json:"runIDIn,omitempty"`
-	RunIDNotIn        []string `json:"runIDNotIn,omitempty"`
-	RunIDGT           *string  `json:"runIDGT,omitempty"`
-	RunIDGTE          *string  `json:"runIDGTE,omitempty"`
-	RunIDLT           *string  `json:"runIDLT,omitempty"`
-	RunIDLTE          *string  `json:"runIDLTE,omitempty"`
-	RunIDContains     *string  `json:"runIDContains,omitempty"`
-	RunIDHasPrefix    *string  `json:"runIDHasPrefix,omitempty"`
-	RunIDHasSuffix    *string  `json:"runIDHasSuffix,omitempty"`
-	RunIDIsNil        bool     `json:"runIDIsNil,omitempty"`
-	RunIDNotNil       bool     `json:"runIDNotNil,omitempty"`
-	RunIDEqualFold    *string  `json:"runIDEqualFold,omitempty"`
-	RunIDContainsFold *string  `json:"runIDContainsFold,omitempty"`
-
-	// "run_number" field predicates.
-	RunNumber             *string  `json:"runNumber,omitempty"`
-	RunNumberNEQ          *string  `json:"runNumberNEQ,omitempty"`
-	RunNumberIn           []string `json:"runNumberIn,omitempty"`
-	RunNumberNotIn        []string `json:"runNumberNotIn,omitempty"`
-	RunNumberGT           *string  `json:"runNumberGT,omitempty"`
-	RunNumberGTE          *string  `json:"runNumberGTE,omitempty"`
-	RunNumberLT           *string  `json:"runNumberLT,omitempty"`
-	RunNumberLTE          *string  `json:"runNumberLTE,omitempty"`
-	RunNumberContains     *string  `json:"runNumberContains,omitempty"`
-	RunNumberHasPrefix    *string  `json:"runNumberHasPrefix,omitempty"`
-	RunNumberHasSuffix    *string  `json:"runNumberHasSuffix,omitempty"`
-	RunNumberIsNil        bool     `json:"runNumberIsNil,omitempty"`
-	RunNumberNotNil       bool     `json:"runNumberNotNil,omitempty"`
-	RunNumberEqualFold    *string  `json:"runNumberEqualFold,omitempty"`
-	RunNumberContainsFold *string  `json:"runNumberContainsFold,omitempty"`
-
-	// "job" field predicates.
-	Job             *string  `json:"job,omitempty"`
-	JobNEQ          *string  `json:"jobNEQ,omitempty"`
-	JobIn           []string `json:"jobIn,omitempty"`
-	JobNotIn        []string `json:"jobNotIn,omitempty"`
-	JobGT           *string  `json:"jobGT,omitempty"`
-	JobGTE          *string  `json:"jobGTE,omitempty"`
-	JobLT           *string  `json:"jobLT,omitempty"`
-	JobLTE          *string  `json:"jobLTE,omitempty"`
-	JobContains     *string  `json:"jobContains,omitempty"`
-	JobHasPrefix    *string  `json:"jobHasPrefix,omitempty"`
-	JobHasSuffix    *string  `json:"jobHasSuffix,omitempty"`
-	JobIsNil        bool     `json:"jobIsNil,omitempty"`
-	JobNotNil       bool     `json:"jobNotNil,omitempty"`
-	JobEqualFold    *string  `json:"jobEqualFold,omitempty"`
-	JobContainsFold *string  `json:"jobContainsFold,omitempty"`
-
-	// "action" field predicates.
-	Action             *string  `json:"action,omitempty"`
-	ActionNEQ          *string  `json:"actionNEQ,omitempty"`
-	ActionIn           []string `json:"actionIn,omitempty"`
-	ActionNotIn        []string `json:"actionNotIn,omitempty"`
-	ActionGT           *string  `json:"actionGT,omitempty"`
-	ActionGTE          *string  `json:"actionGTE,omitempty"`
-	ActionLT           *string  `json:"actionLT,omitempty"`
-	ActionLTE          *string  `json:"actionLTE,omitempty"`
-	ActionContains     *string  `json:"actionContains,omitempty"`
-	ActionHasPrefix    *string  `json:"actionHasPrefix,omitempty"`
-	ActionHasSuffix    *string  `json:"actionHasSuffix,omitempty"`
-	ActionIsNil        bool     `json:"actionIsNil,omitempty"`
-	ActionNotNil       bool     `json:"actionNotNil,omitempty"`
-	ActionEqualFold    *string  `json:"actionEqualFold,omitempty"`
-	ActionContainsFold *string  `json:"actionContainsFold,omitempty"`
-
-	// "runner_name" field predicates.
-	RunnerName             *string  `json:"runnerName,omitempty"`
-	RunnerNameNEQ          *string  `json:"runnerNameNEQ,omitempty"`
-	RunnerNameIn           []string `json:"runnerNameIn,omitempty"`
-	RunnerNameNotIn        []string `json:"runnerNameNotIn,omitempty"`
-	RunnerNameGT           *string  `json:"runnerNameGT,omitempty"`
-	RunnerNameGTE          *string  `json:"runnerNameGTE,omitempty"`
-	RunnerNameLT           *string  `json:"runnerNameLT,omitempty"`
-	RunnerNameLTE          *string  `json:"runnerNameLTE,omitempty"`
-	RunnerNameContains     *string  `json:"runnerNameContains,omitempty"`
-	RunnerNameHasPrefix    *string  `json:"runnerNameHasPrefix,omitempty"`
-	RunnerNameHasSuffix    *string  `json:"runnerNameHasSuffix,omitempty"`
-	RunnerNameIsNil        bool     `json:"runnerNameIsNil,omitempty"`
-	RunnerNameNotNil       bool     `json:"runnerNameNotNil,omitempty"`
-	RunnerNameEqualFold    *string  `json:"runnerNameEqualFold,omitempty"`
-	RunnerNameContainsFold *string  `json:"runnerNameContainsFold,omitempty"`
-
-	// "runner_arch" field predicates.
-	RunnerArch             *string  `json:"runnerArch,omitempty"`
-	RunnerArchNEQ          *string  `json:"runnerArchNEQ,omitempty"`
-	RunnerArchIn           []string `json:"runnerArchIn,omitempty"`
-	RunnerArchNotIn        []string `json:"runnerArchNotIn,omitempty"`
-	RunnerArchGT           *string  `json:"runnerArchGT,omitempty"`
-	RunnerArchGTE          *string  `json:"runnerArchGTE,omitempty"`
-	RunnerArchLT           *string  `json:"runnerArchLT,omitempty"`
-	RunnerArchLTE          *string  `json:"runnerArchLTE,omitempty"`
-	RunnerArchContains     *string  `json:"runnerArchContains,omitempty"`
-	RunnerArchHasPrefix    *string  `json:"runnerArchHasPrefix,omitempty"`
-	RunnerArchHasSuffix    *string  `json:"runnerArchHasSuffix,omitempty"`
-	RunnerArchIsNil        bool     `json:"runnerArchIsNil,omitempty"`
-	RunnerArchNotNil       bool     `json:"runnerArchNotNil,omitempty"`
-	RunnerArchEqualFold    *string  `json:"runnerArchEqualFold,omitempty"`
-	RunnerArchContainsFold *string  `json:"runnerArchContainsFold,omitempty"`
-
-	// "runner_os" field predicates.
-	RunnerOs             *string  `json:"runnerOs,omitempty"`
-	RunnerOsNEQ          *string  `json:"runnerOsNEQ,omitempty"`
-	RunnerOsIn           []string `json:"runnerOsIn,omitempty"`
-	RunnerOsNotIn        []string `json:"runnerOsNotIn,omitempty"`
-	RunnerOsGT           *string  `json:"runnerOsGT,omitempty"`
-	RunnerOsGTE          *string  `json:"runnerOsGTE,omitempty"`
-	RunnerOsLT           *string  `json:"runnerOsLT,omitempty"`
-	RunnerOsLTE          *string  `json:"runnerOsLTE,omitempty"`
-	RunnerOsContains     *string  `json:"runnerOsContains,omitempty"`
-	RunnerOsHasPrefix    *string  `json:"runnerOsHasPrefix,omitempty"`
-	RunnerOsHasSuffix    *string  `json:"runnerOsHasSuffix,omitempty"`
-	RunnerOsIsNil        bool     `json:"runnerOsIsNil,omitempty"`
-	RunnerOsNotNil       bool     `json:"runnerOsNotNil,omitempty"`
-	RunnerOsEqualFold    *string  `json:"runnerOsEqualFold,omitempty"`
-	RunnerOsContainsFold *string  `json:"runnerOsContainsFold,omitempty"`
-
-	// "workspace" field predicates.
-	Workspace             *string  `json:"workspace,omitempty"`
-	WorkspaceNEQ          *string  `json:"workspaceNEQ,omitempty"`
-	WorkspaceIn           []string `json:"workspaceIn,omitempty"`
-	WorkspaceNotIn        []string `json:"workspaceNotIn,omitempty"`
-	WorkspaceGT           *string  `json:"workspaceGT,omitempty"`
-	WorkspaceGTE          *string  `json:"workspaceGTE,omitempty"`
-	WorkspaceLT           *string  `json:"workspaceLT,omitempty"`
-	WorkspaceLTE          *string  `json:"workspaceLTE,omitempty"`
-	WorkspaceContains     *string  `json:"workspaceContains,omitempty"`
-	WorkspaceHasPrefix    *string  `json:"workspaceHasPrefix,omitempty"`
-	WorkspaceHasSuffix    *string  `json:"workspaceHasSuffix,omitempty"`
-	WorkspaceIsNil        bool     `json:"workspaceIsNil,omitempty"`
-	WorkspaceNotNil       bool     `json:"workspaceNotNil,omitempty"`
-	WorkspaceEqualFold    *string  `json:"workspaceEqualFold,omitempty"`
-	WorkspaceContainsFold *string  `json:"workspaceContainsFold,omitempty"`
+	// "commit_url" field predicates.
+	CommitURL             *string  `json:"commitURL,omitempty"`
+	CommitURLNEQ          *string  `json:"commitURLNEQ,omitempty"`
+	CommitURLIn           []string `json:"commitURLIn,omitempty"`
+	CommitURLNotIn        []string `json:"commitURLNotIn,omitempty"`
+	CommitURLGT           *string  `json:"commitURLGT,omitempty"`
+	CommitURLGTE          *string  `json:"commitURLGTE,omitempty"`
+	CommitURLLT           *string  `json:"commitURLLT,omitempty"`
+	CommitURLLTE          *string  `json:"commitURLLTE,omitempty"`
+	CommitURLContains     *string  `json:"commitURLContains,omitempty"`
+	CommitURLHasPrefix    *string  `json:"commitURLHasPrefix,omitempty"`
+	CommitURLHasSuffix    *string  `json:"commitURLHasSuffix,omitempty"`
+	CommitURLIsNil        bool     `json:"commitURLIsNil,omitempty"`
+	CommitURLNotNil       bool     `json:"commitURLNotNil,omitempty"`
+	CommitURLEqualFold    *string  `json:"commitURLEqualFold,omitempty"`
+	CommitURLContainsFold *string  `json:"commitURLContainsFold,omitempty"`
 
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
@@ -7986,69 +8161,6 @@ func (i *SourceControlWhereInput) P() (predicate.SourceControl, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, sourcecontrol.IDLTE(*i.IDLTE))
 	}
-	if i.Provider != nil {
-		predicates = append(predicates, sourcecontrol.ProviderEQ(*i.Provider))
-	}
-	if i.ProviderNEQ != nil {
-		predicates = append(predicates, sourcecontrol.ProviderNEQ(*i.ProviderNEQ))
-	}
-	if len(i.ProviderIn) > 0 {
-		predicates = append(predicates, sourcecontrol.ProviderIn(i.ProviderIn...))
-	}
-	if len(i.ProviderNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.ProviderNotIn(i.ProviderNotIn...))
-	}
-	if i.ProviderIsNil {
-		predicates = append(predicates, sourcecontrol.ProviderIsNil())
-	}
-	if i.ProviderNotNil {
-		predicates = append(predicates, sourcecontrol.ProviderNotNil())
-	}
-	if i.InstanceURL != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLEQ(*i.InstanceURL))
-	}
-	if i.InstanceURLNEQ != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLNEQ(*i.InstanceURLNEQ))
-	}
-	if len(i.InstanceURLIn) > 0 {
-		predicates = append(predicates, sourcecontrol.InstanceURLIn(i.InstanceURLIn...))
-	}
-	if len(i.InstanceURLNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.InstanceURLNotIn(i.InstanceURLNotIn...))
-	}
-	if i.InstanceURLGT != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLGT(*i.InstanceURLGT))
-	}
-	if i.InstanceURLGTE != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLGTE(*i.InstanceURLGTE))
-	}
-	if i.InstanceURLLT != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLLT(*i.InstanceURLLT))
-	}
-	if i.InstanceURLLTE != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLLTE(*i.InstanceURLLTE))
-	}
-	if i.InstanceURLContains != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLContains(*i.InstanceURLContains))
-	}
-	if i.InstanceURLHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLHasPrefix(*i.InstanceURLHasPrefix))
-	}
-	if i.InstanceURLHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLHasSuffix(*i.InstanceURLHasSuffix))
-	}
-	if i.InstanceURLIsNil {
-		predicates = append(predicates, sourcecontrol.InstanceURLIsNil())
-	}
-	if i.InstanceURLNotNil {
-		predicates = append(predicates, sourcecontrol.InstanceURLNotNil())
-	}
-	if i.InstanceURLEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLEqualFold(*i.InstanceURLEqualFold))
-	}
-	if i.InstanceURLContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.InstanceURLContainsFold(*i.InstanceURLContainsFold))
-	}
 	if i.Repo != nil {
 		predicates = append(predicates, sourcecontrol.RepoEQ(*i.Repo))
 	}
@@ -8094,590 +8206,230 @@ func (i *SourceControlWhereInput) P() (predicate.SourceControl, error) {
 	if i.RepoContainsFold != nil {
 		predicates = append(predicates, sourcecontrol.RepoContainsFold(*i.RepoContainsFold))
 	}
-	if i.Refs != nil {
-		predicates = append(predicates, sourcecontrol.RefsEQ(*i.Refs))
+	if i.RepoURL != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLEQ(*i.RepoURL))
 	}
-	if i.RefsNEQ != nil {
-		predicates = append(predicates, sourcecontrol.RefsNEQ(*i.RefsNEQ))
+	if i.RepoURLNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLNEQ(*i.RepoURLNEQ))
 	}
-	if len(i.RefsIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RefsIn(i.RefsIn...))
+	if len(i.RepoURLIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RepoURLIn(i.RepoURLIn...))
 	}
-	if len(i.RefsNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RefsNotIn(i.RefsNotIn...))
+	if len(i.RepoURLNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RepoURLNotIn(i.RepoURLNotIn...))
 	}
-	if i.RefsGT != nil {
-		predicates = append(predicates, sourcecontrol.RefsGT(*i.RefsGT))
+	if i.RepoURLGT != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLGT(*i.RepoURLGT))
 	}
-	if i.RefsGTE != nil {
-		predicates = append(predicates, sourcecontrol.RefsGTE(*i.RefsGTE))
+	if i.RepoURLGTE != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLGTE(*i.RepoURLGTE))
 	}
-	if i.RefsLT != nil {
-		predicates = append(predicates, sourcecontrol.RefsLT(*i.RefsLT))
+	if i.RepoURLLT != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLLT(*i.RepoURLLT))
 	}
-	if i.RefsLTE != nil {
-		predicates = append(predicates, sourcecontrol.RefsLTE(*i.RefsLTE))
+	if i.RepoURLLTE != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLLTE(*i.RepoURLLTE))
 	}
-	if i.RefsContains != nil {
-		predicates = append(predicates, sourcecontrol.RefsContains(*i.RefsContains))
+	if i.RepoURLContains != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLContains(*i.RepoURLContains))
 	}
-	if i.RefsHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.RefsHasPrefix(*i.RefsHasPrefix))
+	if i.RepoURLHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLHasPrefix(*i.RepoURLHasPrefix))
 	}
-	if i.RefsHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.RefsHasSuffix(*i.RefsHasSuffix))
+	if i.RepoURLHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLHasSuffix(*i.RepoURLHasSuffix))
 	}
-	if i.RefsIsNil {
-		predicates = append(predicates, sourcecontrol.RefsIsNil())
+	if i.RepoURLIsNil {
+		predicates = append(predicates, sourcecontrol.RepoURLIsNil())
 	}
-	if i.RefsNotNil {
-		predicates = append(predicates, sourcecontrol.RefsNotNil())
+	if i.RepoURLNotNil {
+		predicates = append(predicates, sourcecontrol.RepoURLNotNil())
 	}
-	if i.RefsEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.RefsEqualFold(*i.RefsEqualFold))
+	if i.RepoURLEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLEqualFold(*i.RepoURLEqualFold))
 	}
-	if i.RefsContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.RefsContainsFold(*i.RefsContainsFold))
+	if i.RepoURLContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLContainsFold(*i.RepoURLContainsFold))
 	}
-	if i.CommitSha != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaEQ(*i.CommitSha))
+	if i.Ref != nil {
+		predicates = append(predicates, sourcecontrol.RefEQ(*i.Ref))
 	}
-	if i.CommitShaNEQ != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaNEQ(*i.CommitShaNEQ))
+	if i.RefNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RefNEQ(*i.RefNEQ))
 	}
-	if len(i.CommitShaIn) > 0 {
-		predicates = append(predicates, sourcecontrol.CommitShaIn(i.CommitShaIn...))
+	if len(i.RefIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RefIn(i.RefIn...))
 	}
-	if len(i.CommitShaNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.CommitShaNotIn(i.CommitShaNotIn...))
+	if len(i.RefNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RefNotIn(i.RefNotIn...))
 	}
-	if i.CommitShaGT != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaGT(*i.CommitShaGT))
+	if i.RefGT != nil {
+		predicates = append(predicates, sourcecontrol.RefGT(*i.RefGT))
 	}
-	if i.CommitShaGTE != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaGTE(*i.CommitShaGTE))
+	if i.RefGTE != nil {
+		predicates = append(predicates, sourcecontrol.RefGTE(*i.RefGTE))
 	}
-	if i.CommitShaLT != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaLT(*i.CommitShaLT))
+	if i.RefLT != nil {
+		predicates = append(predicates, sourcecontrol.RefLT(*i.RefLT))
 	}
-	if i.CommitShaLTE != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaLTE(*i.CommitShaLTE))
+	if i.RefLTE != nil {
+		predicates = append(predicates, sourcecontrol.RefLTE(*i.RefLTE))
 	}
-	if i.CommitShaContains != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaContains(*i.CommitShaContains))
+	if i.RefContains != nil {
+		predicates = append(predicates, sourcecontrol.RefContains(*i.RefContains))
 	}
-	if i.CommitShaHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaHasPrefix(*i.CommitShaHasPrefix))
+	if i.RefHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RefHasPrefix(*i.RefHasPrefix))
 	}
-	if i.CommitShaHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaHasSuffix(*i.CommitShaHasSuffix))
+	if i.RefHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RefHasSuffix(*i.RefHasSuffix))
 	}
-	if i.CommitShaIsNil {
-		predicates = append(predicates, sourcecontrol.CommitShaIsNil())
+	if i.RefIsNil {
+		predicates = append(predicates, sourcecontrol.RefIsNil())
 	}
-	if i.CommitShaNotNil {
-		predicates = append(predicates, sourcecontrol.CommitShaNotNil())
+	if i.RefNotNil {
+		predicates = append(predicates, sourcecontrol.RefNotNil())
 	}
-	if i.CommitShaEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaEqualFold(*i.CommitShaEqualFold))
+	if i.RefEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RefEqualFold(*i.RefEqualFold))
 	}
-	if i.CommitShaContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.CommitShaContainsFold(*i.CommitShaContainsFold))
+	if i.RefContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RefContainsFold(*i.RefContainsFold))
 	}
-	if i.Actor != nil {
-		predicates = append(predicates, sourcecontrol.ActorEQ(*i.Actor))
+	if i.RefURL != nil {
+		predicates = append(predicates, sourcecontrol.RefURLEQ(*i.RefURL))
 	}
-	if i.ActorNEQ != nil {
-		predicates = append(predicates, sourcecontrol.ActorNEQ(*i.ActorNEQ))
+	if i.RefURLNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RefURLNEQ(*i.RefURLNEQ))
 	}
-	if len(i.ActorIn) > 0 {
-		predicates = append(predicates, sourcecontrol.ActorIn(i.ActorIn...))
+	if len(i.RefURLIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RefURLIn(i.RefURLIn...))
 	}
-	if len(i.ActorNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.ActorNotIn(i.ActorNotIn...))
+	if len(i.RefURLNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RefURLNotIn(i.RefURLNotIn...))
 	}
-	if i.ActorGT != nil {
-		predicates = append(predicates, sourcecontrol.ActorGT(*i.ActorGT))
+	if i.RefURLGT != nil {
+		predicates = append(predicates, sourcecontrol.RefURLGT(*i.RefURLGT))
 	}
-	if i.ActorGTE != nil {
-		predicates = append(predicates, sourcecontrol.ActorGTE(*i.ActorGTE))
+	if i.RefURLGTE != nil {
+		predicates = append(predicates, sourcecontrol.RefURLGTE(*i.RefURLGTE))
 	}
-	if i.ActorLT != nil {
-		predicates = append(predicates, sourcecontrol.ActorLT(*i.ActorLT))
+	if i.RefURLLT != nil {
+		predicates = append(predicates, sourcecontrol.RefURLLT(*i.RefURLLT))
 	}
-	if i.ActorLTE != nil {
-		predicates = append(predicates, sourcecontrol.ActorLTE(*i.ActorLTE))
+	if i.RefURLLTE != nil {
+		predicates = append(predicates, sourcecontrol.RefURLLTE(*i.RefURLLTE))
 	}
-	if i.ActorContains != nil {
-		predicates = append(predicates, sourcecontrol.ActorContains(*i.ActorContains))
+	if i.RefURLContains != nil {
+		predicates = append(predicates, sourcecontrol.RefURLContains(*i.RefURLContains))
 	}
-	if i.ActorHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.ActorHasPrefix(*i.ActorHasPrefix))
+	if i.RefURLHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RefURLHasPrefix(*i.RefURLHasPrefix))
 	}
-	if i.ActorHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.ActorHasSuffix(*i.ActorHasSuffix))
+	if i.RefURLHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RefURLHasSuffix(*i.RefURLHasSuffix))
 	}
-	if i.ActorIsNil {
-		predicates = append(predicates, sourcecontrol.ActorIsNil())
+	if i.RefURLIsNil {
+		predicates = append(predicates, sourcecontrol.RefURLIsNil())
 	}
-	if i.ActorNotNil {
-		predicates = append(predicates, sourcecontrol.ActorNotNil())
+	if i.RefURLNotNil {
+		predicates = append(predicates, sourcecontrol.RefURLNotNil())
 	}
-	if i.ActorEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.ActorEqualFold(*i.ActorEqualFold))
+	if i.RefURLEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RefURLEqualFold(*i.RefURLEqualFold))
 	}
-	if i.ActorContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.ActorContainsFold(*i.ActorContainsFold))
+	if i.RefURLContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RefURLContainsFold(*i.RefURLContainsFold))
 	}
-	if i.EventName != nil {
-		predicates = append(predicates, sourcecontrol.EventNameEQ(*i.EventName))
+	if i.Commit != nil {
+		predicates = append(predicates, sourcecontrol.CommitEQ(*i.Commit))
 	}
-	if i.EventNameNEQ != nil {
-		predicates = append(predicates, sourcecontrol.EventNameNEQ(*i.EventNameNEQ))
+	if i.CommitNEQ != nil {
+		predicates = append(predicates, sourcecontrol.CommitNEQ(*i.CommitNEQ))
 	}
-	if len(i.EventNameIn) > 0 {
-		predicates = append(predicates, sourcecontrol.EventNameIn(i.EventNameIn...))
+	if len(i.CommitIn) > 0 {
+		predicates = append(predicates, sourcecontrol.CommitIn(i.CommitIn...))
 	}
-	if len(i.EventNameNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.EventNameNotIn(i.EventNameNotIn...))
+	if len(i.CommitNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.CommitNotIn(i.CommitNotIn...))
 	}
-	if i.EventNameGT != nil {
-		predicates = append(predicates, sourcecontrol.EventNameGT(*i.EventNameGT))
+	if i.CommitGT != nil {
+		predicates = append(predicates, sourcecontrol.CommitGT(*i.CommitGT))
 	}
-	if i.EventNameGTE != nil {
-		predicates = append(predicates, sourcecontrol.EventNameGTE(*i.EventNameGTE))
+	if i.CommitGTE != nil {
+		predicates = append(predicates, sourcecontrol.CommitGTE(*i.CommitGTE))
 	}
-	if i.EventNameLT != nil {
-		predicates = append(predicates, sourcecontrol.EventNameLT(*i.EventNameLT))
+	if i.CommitLT != nil {
+		predicates = append(predicates, sourcecontrol.CommitLT(*i.CommitLT))
 	}
-	if i.EventNameLTE != nil {
-		predicates = append(predicates, sourcecontrol.EventNameLTE(*i.EventNameLTE))
+	if i.CommitLTE != nil {
+		predicates = append(predicates, sourcecontrol.CommitLTE(*i.CommitLTE))
 	}
-	if i.EventNameContains != nil {
-		predicates = append(predicates, sourcecontrol.EventNameContains(*i.EventNameContains))
+	if i.CommitContains != nil {
+		predicates = append(predicates, sourcecontrol.CommitContains(*i.CommitContains))
 	}
-	if i.EventNameHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.EventNameHasPrefix(*i.EventNameHasPrefix))
+	if i.CommitHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.CommitHasPrefix(*i.CommitHasPrefix))
 	}
-	if i.EventNameHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.EventNameHasSuffix(*i.EventNameHasSuffix))
+	if i.CommitHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.CommitHasSuffix(*i.CommitHasSuffix))
 	}
-	if i.EventNameIsNil {
-		predicates = append(predicates, sourcecontrol.EventNameIsNil())
+	if i.CommitIsNil {
+		predicates = append(predicates, sourcecontrol.CommitIsNil())
 	}
-	if i.EventNameNotNil {
-		predicates = append(predicates, sourcecontrol.EventNameNotNil())
+	if i.CommitNotNil {
+		predicates = append(predicates, sourcecontrol.CommitNotNil())
 	}
-	if i.EventNameEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.EventNameEqualFold(*i.EventNameEqualFold))
+	if i.CommitEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.CommitEqualFold(*i.CommitEqualFold))
 	}
-	if i.EventNameContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.EventNameContainsFold(*i.EventNameContainsFold))
+	if i.CommitContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.CommitContainsFold(*i.CommitContainsFold))
 	}
-	if i.Workflow != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowEQ(*i.Workflow))
+	if i.CommitURL != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLEQ(*i.CommitURL))
 	}
-	if i.WorkflowNEQ != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowNEQ(*i.WorkflowNEQ))
+	if i.CommitURLNEQ != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLNEQ(*i.CommitURLNEQ))
 	}
-	if len(i.WorkflowIn) > 0 {
-		predicates = append(predicates, sourcecontrol.WorkflowIn(i.WorkflowIn...))
+	if len(i.CommitURLIn) > 0 {
+		predicates = append(predicates, sourcecontrol.CommitURLIn(i.CommitURLIn...))
 	}
-	if len(i.WorkflowNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.WorkflowNotIn(i.WorkflowNotIn...))
+	if len(i.CommitURLNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.CommitURLNotIn(i.CommitURLNotIn...))
 	}
-	if i.WorkflowGT != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowGT(*i.WorkflowGT))
+	if i.CommitURLGT != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLGT(*i.CommitURLGT))
 	}
-	if i.WorkflowGTE != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowGTE(*i.WorkflowGTE))
+	if i.CommitURLGTE != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLGTE(*i.CommitURLGTE))
 	}
-	if i.WorkflowLT != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowLT(*i.WorkflowLT))
+	if i.CommitURLLT != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLLT(*i.CommitURLLT))
 	}
-	if i.WorkflowLTE != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowLTE(*i.WorkflowLTE))
+	if i.CommitURLLTE != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLLTE(*i.CommitURLLTE))
 	}
-	if i.WorkflowContains != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowContains(*i.WorkflowContains))
+	if i.CommitURLContains != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLContains(*i.CommitURLContains))
 	}
-	if i.WorkflowHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowHasPrefix(*i.WorkflowHasPrefix))
+	if i.CommitURLHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLHasPrefix(*i.CommitURLHasPrefix))
 	}
-	if i.WorkflowHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowHasSuffix(*i.WorkflowHasSuffix))
+	if i.CommitURLHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLHasSuffix(*i.CommitURLHasSuffix))
 	}
-	if i.WorkflowIsNil {
-		predicates = append(predicates, sourcecontrol.WorkflowIsNil())
+	if i.CommitURLIsNil {
+		predicates = append(predicates, sourcecontrol.CommitURLIsNil())
 	}
-	if i.WorkflowNotNil {
-		predicates = append(predicates, sourcecontrol.WorkflowNotNil())
+	if i.CommitURLNotNil {
+		predicates = append(predicates, sourcecontrol.CommitURLNotNil())
 	}
-	if i.WorkflowEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowEqualFold(*i.WorkflowEqualFold))
+	if i.CommitURLEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLEqualFold(*i.CommitURLEqualFold))
 	}
-	if i.WorkflowContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.WorkflowContainsFold(*i.WorkflowContainsFold))
-	}
-	if i.RunID != nil {
-		predicates = append(predicates, sourcecontrol.RunIDEQ(*i.RunID))
-	}
-	if i.RunIDNEQ != nil {
-		predicates = append(predicates, sourcecontrol.RunIDNEQ(*i.RunIDNEQ))
-	}
-	if len(i.RunIDIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunIDIn(i.RunIDIn...))
-	}
-	if len(i.RunIDNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunIDNotIn(i.RunIDNotIn...))
-	}
-	if i.RunIDGT != nil {
-		predicates = append(predicates, sourcecontrol.RunIDGT(*i.RunIDGT))
-	}
-	if i.RunIDGTE != nil {
-		predicates = append(predicates, sourcecontrol.RunIDGTE(*i.RunIDGTE))
-	}
-	if i.RunIDLT != nil {
-		predicates = append(predicates, sourcecontrol.RunIDLT(*i.RunIDLT))
-	}
-	if i.RunIDLTE != nil {
-		predicates = append(predicates, sourcecontrol.RunIDLTE(*i.RunIDLTE))
-	}
-	if i.RunIDContains != nil {
-		predicates = append(predicates, sourcecontrol.RunIDContains(*i.RunIDContains))
-	}
-	if i.RunIDHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.RunIDHasPrefix(*i.RunIDHasPrefix))
-	}
-	if i.RunIDHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.RunIDHasSuffix(*i.RunIDHasSuffix))
-	}
-	if i.RunIDIsNil {
-		predicates = append(predicates, sourcecontrol.RunIDIsNil())
-	}
-	if i.RunIDNotNil {
-		predicates = append(predicates, sourcecontrol.RunIDNotNil())
-	}
-	if i.RunIDEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.RunIDEqualFold(*i.RunIDEqualFold))
-	}
-	if i.RunIDContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.RunIDContainsFold(*i.RunIDContainsFold))
-	}
-	if i.RunNumber != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberEQ(*i.RunNumber))
-	}
-	if i.RunNumberNEQ != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberNEQ(*i.RunNumberNEQ))
-	}
-	if len(i.RunNumberIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunNumberIn(i.RunNumberIn...))
-	}
-	if len(i.RunNumberNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunNumberNotIn(i.RunNumberNotIn...))
-	}
-	if i.RunNumberGT != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberGT(*i.RunNumberGT))
-	}
-	if i.RunNumberGTE != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberGTE(*i.RunNumberGTE))
-	}
-	if i.RunNumberLT != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberLT(*i.RunNumberLT))
-	}
-	if i.RunNumberLTE != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberLTE(*i.RunNumberLTE))
-	}
-	if i.RunNumberContains != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberContains(*i.RunNumberContains))
-	}
-	if i.RunNumberHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberHasPrefix(*i.RunNumberHasPrefix))
-	}
-	if i.RunNumberHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberHasSuffix(*i.RunNumberHasSuffix))
-	}
-	if i.RunNumberIsNil {
-		predicates = append(predicates, sourcecontrol.RunNumberIsNil())
-	}
-	if i.RunNumberNotNil {
-		predicates = append(predicates, sourcecontrol.RunNumberNotNil())
-	}
-	if i.RunNumberEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberEqualFold(*i.RunNumberEqualFold))
-	}
-	if i.RunNumberContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.RunNumberContainsFold(*i.RunNumberContainsFold))
-	}
-	if i.Job != nil {
-		predicates = append(predicates, sourcecontrol.JobEQ(*i.Job))
-	}
-	if i.JobNEQ != nil {
-		predicates = append(predicates, sourcecontrol.JobNEQ(*i.JobNEQ))
-	}
-	if len(i.JobIn) > 0 {
-		predicates = append(predicates, sourcecontrol.JobIn(i.JobIn...))
-	}
-	if len(i.JobNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.JobNotIn(i.JobNotIn...))
-	}
-	if i.JobGT != nil {
-		predicates = append(predicates, sourcecontrol.JobGT(*i.JobGT))
-	}
-	if i.JobGTE != nil {
-		predicates = append(predicates, sourcecontrol.JobGTE(*i.JobGTE))
-	}
-	if i.JobLT != nil {
-		predicates = append(predicates, sourcecontrol.JobLT(*i.JobLT))
-	}
-	if i.JobLTE != nil {
-		predicates = append(predicates, sourcecontrol.JobLTE(*i.JobLTE))
-	}
-	if i.JobContains != nil {
-		predicates = append(predicates, sourcecontrol.JobContains(*i.JobContains))
-	}
-	if i.JobHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.JobHasPrefix(*i.JobHasPrefix))
-	}
-	if i.JobHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.JobHasSuffix(*i.JobHasSuffix))
-	}
-	if i.JobIsNil {
-		predicates = append(predicates, sourcecontrol.JobIsNil())
-	}
-	if i.JobNotNil {
-		predicates = append(predicates, sourcecontrol.JobNotNil())
-	}
-	if i.JobEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.JobEqualFold(*i.JobEqualFold))
-	}
-	if i.JobContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.JobContainsFold(*i.JobContainsFold))
-	}
-	if i.Action != nil {
-		predicates = append(predicates, sourcecontrol.ActionEQ(*i.Action))
-	}
-	if i.ActionNEQ != nil {
-		predicates = append(predicates, sourcecontrol.ActionNEQ(*i.ActionNEQ))
-	}
-	if len(i.ActionIn) > 0 {
-		predicates = append(predicates, sourcecontrol.ActionIn(i.ActionIn...))
-	}
-	if len(i.ActionNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.ActionNotIn(i.ActionNotIn...))
-	}
-	if i.ActionGT != nil {
-		predicates = append(predicates, sourcecontrol.ActionGT(*i.ActionGT))
-	}
-	if i.ActionGTE != nil {
-		predicates = append(predicates, sourcecontrol.ActionGTE(*i.ActionGTE))
-	}
-	if i.ActionLT != nil {
-		predicates = append(predicates, sourcecontrol.ActionLT(*i.ActionLT))
-	}
-	if i.ActionLTE != nil {
-		predicates = append(predicates, sourcecontrol.ActionLTE(*i.ActionLTE))
-	}
-	if i.ActionContains != nil {
-		predicates = append(predicates, sourcecontrol.ActionContains(*i.ActionContains))
-	}
-	if i.ActionHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.ActionHasPrefix(*i.ActionHasPrefix))
-	}
-	if i.ActionHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.ActionHasSuffix(*i.ActionHasSuffix))
-	}
-	if i.ActionIsNil {
-		predicates = append(predicates, sourcecontrol.ActionIsNil())
-	}
-	if i.ActionNotNil {
-		predicates = append(predicates, sourcecontrol.ActionNotNil())
-	}
-	if i.ActionEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.ActionEqualFold(*i.ActionEqualFold))
-	}
-	if i.ActionContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.ActionContainsFold(*i.ActionContainsFold))
-	}
-	if i.RunnerName != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameEQ(*i.RunnerName))
-	}
-	if i.RunnerNameNEQ != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameNEQ(*i.RunnerNameNEQ))
-	}
-	if len(i.RunnerNameIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunnerNameIn(i.RunnerNameIn...))
-	}
-	if len(i.RunnerNameNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunnerNameNotIn(i.RunnerNameNotIn...))
-	}
-	if i.RunnerNameGT != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameGT(*i.RunnerNameGT))
-	}
-	if i.RunnerNameGTE != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameGTE(*i.RunnerNameGTE))
-	}
-	if i.RunnerNameLT != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameLT(*i.RunnerNameLT))
-	}
-	if i.RunnerNameLTE != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameLTE(*i.RunnerNameLTE))
-	}
-	if i.RunnerNameContains != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameContains(*i.RunnerNameContains))
-	}
-	if i.RunnerNameHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameHasPrefix(*i.RunnerNameHasPrefix))
-	}
-	if i.RunnerNameHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameHasSuffix(*i.RunnerNameHasSuffix))
-	}
-	if i.RunnerNameIsNil {
-		predicates = append(predicates, sourcecontrol.RunnerNameIsNil())
-	}
-	if i.RunnerNameNotNil {
-		predicates = append(predicates, sourcecontrol.RunnerNameNotNil())
-	}
-	if i.RunnerNameEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameEqualFold(*i.RunnerNameEqualFold))
-	}
-	if i.RunnerNameContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.RunnerNameContainsFold(*i.RunnerNameContainsFold))
-	}
-	if i.RunnerArch != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchEQ(*i.RunnerArch))
-	}
-	if i.RunnerArchNEQ != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchNEQ(*i.RunnerArchNEQ))
-	}
-	if len(i.RunnerArchIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunnerArchIn(i.RunnerArchIn...))
-	}
-	if len(i.RunnerArchNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunnerArchNotIn(i.RunnerArchNotIn...))
-	}
-	if i.RunnerArchGT != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchGT(*i.RunnerArchGT))
-	}
-	if i.RunnerArchGTE != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchGTE(*i.RunnerArchGTE))
-	}
-	if i.RunnerArchLT != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchLT(*i.RunnerArchLT))
-	}
-	if i.RunnerArchLTE != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchLTE(*i.RunnerArchLTE))
-	}
-	if i.RunnerArchContains != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchContains(*i.RunnerArchContains))
-	}
-	if i.RunnerArchHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchHasPrefix(*i.RunnerArchHasPrefix))
-	}
-	if i.RunnerArchHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchHasSuffix(*i.RunnerArchHasSuffix))
-	}
-	if i.RunnerArchIsNil {
-		predicates = append(predicates, sourcecontrol.RunnerArchIsNil())
-	}
-	if i.RunnerArchNotNil {
-		predicates = append(predicates, sourcecontrol.RunnerArchNotNil())
-	}
-	if i.RunnerArchEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchEqualFold(*i.RunnerArchEqualFold))
-	}
-	if i.RunnerArchContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.RunnerArchContainsFold(*i.RunnerArchContainsFold))
-	}
-	if i.RunnerOs != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsEQ(*i.RunnerOs))
-	}
-	if i.RunnerOsNEQ != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsNEQ(*i.RunnerOsNEQ))
-	}
-	if len(i.RunnerOsIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunnerOsIn(i.RunnerOsIn...))
-	}
-	if len(i.RunnerOsNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.RunnerOsNotIn(i.RunnerOsNotIn...))
-	}
-	if i.RunnerOsGT != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsGT(*i.RunnerOsGT))
-	}
-	if i.RunnerOsGTE != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsGTE(*i.RunnerOsGTE))
-	}
-	if i.RunnerOsLT != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsLT(*i.RunnerOsLT))
-	}
-	if i.RunnerOsLTE != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsLTE(*i.RunnerOsLTE))
-	}
-	if i.RunnerOsContains != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsContains(*i.RunnerOsContains))
-	}
-	if i.RunnerOsHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsHasPrefix(*i.RunnerOsHasPrefix))
-	}
-	if i.RunnerOsHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsHasSuffix(*i.RunnerOsHasSuffix))
-	}
-	if i.RunnerOsIsNil {
-		predicates = append(predicates, sourcecontrol.RunnerOsIsNil())
-	}
-	if i.RunnerOsNotNil {
-		predicates = append(predicates, sourcecontrol.RunnerOsNotNil())
-	}
-	if i.RunnerOsEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsEqualFold(*i.RunnerOsEqualFold))
-	}
-	if i.RunnerOsContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.RunnerOsContainsFold(*i.RunnerOsContainsFold))
-	}
-	if i.Workspace != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceEQ(*i.Workspace))
-	}
-	if i.WorkspaceNEQ != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceNEQ(*i.WorkspaceNEQ))
-	}
-	if len(i.WorkspaceIn) > 0 {
-		predicates = append(predicates, sourcecontrol.WorkspaceIn(i.WorkspaceIn...))
-	}
-	if len(i.WorkspaceNotIn) > 0 {
-		predicates = append(predicates, sourcecontrol.WorkspaceNotIn(i.WorkspaceNotIn...))
-	}
-	if i.WorkspaceGT != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceGT(*i.WorkspaceGT))
-	}
-	if i.WorkspaceGTE != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceGTE(*i.WorkspaceGTE))
-	}
-	if i.WorkspaceLT != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceLT(*i.WorkspaceLT))
-	}
-	if i.WorkspaceLTE != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceLTE(*i.WorkspaceLTE))
-	}
-	if i.WorkspaceContains != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceContains(*i.WorkspaceContains))
-	}
-	if i.WorkspaceHasPrefix != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceHasPrefix(*i.WorkspaceHasPrefix))
-	}
-	if i.WorkspaceHasSuffix != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceHasSuffix(*i.WorkspaceHasSuffix))
-	}
-	if i.WorkspaceIsNil {
-		predicates = append(predicates, sourcecontrol.WorkspaceIsNil())
-	}
-	if i.WorkspaceNotNil {
-		predicates = append(predicates, sourcecontrol.WorkspaceNotNil())
-	}
-	if i.WorkspaceEqualFold != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceEqualFold(*i.WorkspaceEqualFold))
-	}
-	if i.WorkspaceContainsFold != nil {
-		predicates = append(predicates, sourcecontrol.WorkspaceContainsFold(*i.WorkspaceContainsFold))
+	if i.CommitURLContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.CommitURLContainsFold(*i.CommitURLContainsFold))
 	}
 
 	if i.HasBazelInvocation != nil {

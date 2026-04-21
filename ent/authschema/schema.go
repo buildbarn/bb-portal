@@ -21,6 +21,8 @@ type (
 	BazelInvocation struct{ schema.BazelInvocation }
 	// Build reexport with auth policy added
 	Build struct{ schema.Build }
+	// BuildTag reexport with auth policy added
+	BuildTag struct{ schema.BuildTag }
 	// BuildLogChunk reexport with auth policy added
 	BuildLogChunk struct{ schema.BuildLogChunk }
 	// BuildGraphMetrics reexport with auth policy added
@@ -37,6 +39,8 @@ type (
 	IncompleteBuildLog struct{ schema.IncompleteBuildLog }
 	// InstanceName reexport with auth policy added
 	InstanceName struct{ schema.InstanceName }
+	// InvocationTag reexport with auth policy added
+	InvocationTag struct{ schema.InvocationTag }
 	// InvocationFiles reexport with auth policy added
 	InvocationFiles struct{ schema.InvocationFiles }
 	// InvocationTarget reexport with auth policy added

@@ -29,46 +29,6 @@ func (scu *SourceControlUpdate) Where(ps ...predicate.SourceControl) *SourceCont
 	return scu
 }
 
-// SetProvider sets the "provider" field.
-func (scu *SourceControlUpdate) SetProvider(s sourcecontrol.Provider) *SourceControlUpdate {
-	scu.mutation.SetProvider(s)
-	return scu
-}
-
-// SetNillableProvider sets the "provider" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableProvider(s *sourcecontrol.Provider) *SourceControlUpdate {
-	if s != nil {
-		scu.SetProvider(*s)
-	}
-	return scu
-}
-
-// ClearProvider clears the value of the "provider" field.
-func (scu *SourceControlUpdate) ClearProvider() *SourceControlUpdate {
-	scu.mutation.ClearProvider()
-	return scu
-}
-
-// SetInstanceURL sets the "instance_url" field.
-func (scu *SourceControlUpdate) SetInstanceURL(s string) *SourceControlUpdate {
-	scu.mutation.SetInstanceURL(s)
-	return scu
-}
-
-// SetNillableInstanceURL sets the "instance_url" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableInstanceURL(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetInstanceURL(*s)
-	}
-	return scu
-}
-
-// ClearInstanceURL clears the value of the "instance_url" field.
-func (scu *SourceControlUpdate) ClearInstanceURL() *SourceControlUpdate {
-	scu.mutation.ClearInstanceURL()
-	return scu
-}
-
 // SetRepo sets the "repo" field.
 func (scu *SourceControlUpdate) SetRepo(s string) *SourceControlUpdate {
 	scu.mutation.SetRepo(s)
@@ -89,263 +49,103 @@ func (scu *SourceControlUpdate) ClearRepo() *SourceControlUpdate {
 	return scu
 }
 
-// SetRefs sets the "refs" field.
-func (scu *SourceControlUpdate) SetRefs(s string) *SourceControlUpdate {
-	scu.mutation.SetRefs(s)
+// SetRepoURL sets the "repo_url" field.
+func (scu *SourceControlUpdate) SetRepoURL(s string) *SourceControlUpdate {
+	scu.mutation.SetRepoURL(s)
 	return scu
 }
 
-// SetNillableRefs sets the "refs" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRefs(s *string) *SourceControlUpdate {
+// SetNillableRepoURL sets the "repo_url" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRepoURL(s *string) *SourceControlUpdate {
 	if s != nil {
-		scu.SetRefs(*s)
+		scu.SetRepoURL(*s)
 	}
 	return scu
 }
 
-// ClearRefs clears the value of the "refs" field.
-func (scu *SourceControlUpdate) ClearRefs() *SourceControlUpdate {
-	scu.mutation.ClearRefs()
+// ClearRepoURL clears the value of the "repo_url" field.
+func (scu *SourceControlUpdate) ClearRepoURL() *SourceControlUpdate {
+	scu.mutation.ClearRepoURL()
 	return scu
 }
 
-// SetCommitSha sets the "commit_sha" field.
-func (scu *SourceControlUpdate) SetCommitSha(s string) *SourceControlUpdate {
-	scu.mutation.SetCommitSha(s)
+// SetRef sets the "ref" field.
+func (scu *SourceControlUpdate) SetRef(s string) *SourceControlUpdate {
+	scu.mutation.SetRef(s)
 	return scu
 }
 
-// SetNillableCommitSha sets the "commit_sha" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableCommitSha(s *string) *SourceControlUpdate {
+// SetNillableRef sets the "ref" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRef(s *string) *SourceControlUpdate {
 	if s != nil {
-		scu.SetCommitSha(*s)
+		scu.SetRef(*s)
 	}
 	return scu
 }
 
-// ClearCommitSha clears the value of the "commit_sha" field.
-func (scu *SourceControlUpdate) ClearCommitSha() *SourceControlUpdate {
-	scu.mutation.ClearCommitSha()
+// ClearRef clears the value of the "ref" field.
+func (scu *SourceControlUpdate) ClearRef() *SourceControlUpdate {
+	scu.mutation.ClearRef()
 	return scu
 }
 
-// SetActor sets the "actor" field.
-func (scu *SourceControlUpdate) SetActor(s string) *SourceControlUpdate {
-	scu.mutation.SetActor(s)
+// SetRefURL sets the "ref_url" field.
+func (scu *SourceControlUpdate) SetRefURL(s string) *SourceControlUpdate {
+	scu.mutation.SetRefURL(s)
 	return scu
 }
 
-// SetNillableActor sets the "actor" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableActor(s *string) *SourceControlUpdate {
+// SetNillableRefURL sets the "ref_url" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRefURL(s *string) *SourceControlUpdate {
 	if s != nil {
-		scu.SetActor(*s)
+		scu.SetRefURL(*s)
 	}
 	return scu
 }
 
-// ClearActor clears the value of the "actor" field.
-func (scu *SourceControlUpdate) ClearActor() *SourceControlUpdate {
-	scu.mutation.ClearActor()
+// ClearRefURL clears the value of the "ref_url" field.
+func (scu *SourceControlUpdate) ClearRefURL() *SourceControlUpdate {
+	scu.mutation.ClearRefURL()
 	return scu
 }
 
-// SetEventName sets the "event_name" field.
-func (scu *SourceControlUpdate) SetEventName(s string) *SourceControlUpdate {
-	scu.mutation.SetEventName(s)
+// SetCommit sets the "commit" field.
+func (scu *SourceControlUpdate) SetCommit(s string) *SourceControlUpdate {
+	scu.mutation.SetCommit(s)
 	return scu
 }
 
-// SetNillableEventName sets the "event_name" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableEventName(s *string) *SourceControlUpdate {
+// SetNillableCommit sets the "commit" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableCommit(s *string) *SourceControlUpdate {
 	if s != nil {
-		scu.SetEventName(*s)
+		scu.SetCommit(*s)
 	}
 	return scu
 }
 
-// ClearEventName clears the value of the "event_name" field.
-func (scu *SourceControlUpdate) ClearEventName() *SourceControlUpdate {
-	scu.mutation.ClearEventName()
+// ClearCommit clears the value of the "commit" field.
+func (scu *SourceControlUpdate) ClearCommit() *SourceControlUpdate {
+	scu.mutation.ClearCommit()
 	return scu
 }
 
-// SetWorkflow sets the "workflow" field.
-func (scu *SourceControlUpdate) SetWorkflow(s string) *SourceControlUpdate {
-	scu.mutation.SetWorkflow(s)
+// SetCommitURL sets the "commit_url" field.
+func (scu *SourceControlUpdate) SetCommitURL(s string) *SourceControlUpdate {
+	scu.mutation.SetCommitURL(s)
 	return scu
 }
 
-// SetNillableWorkflow sets the "workflow" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableWorkflow(s *string) *SourceControlUpdate {
+// SetNillableCommitURL sets the "commit_url" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableCommitURL(s *string) *SourceControlUpdate {
 	if s != nil {
-		scu.SetWorkflow(*s)
+		scu.SetCommitURL(*s)
 	}
 	return scu
 }
 
-// ClearWorkflow clears the value of the "workflow" field.
-func (scu *SourceControlUpdate) ClearWorkflow() *SourceControlUpdate {
-	scu.mutation.ClearWorkflow()
-	return scu
-}
-
-// SetRunID sets the "run_id" field.
-func (scu *SourceControlUpdate) SetRunID(s string) *SourceControlUpdate {
-	scu.mutation.SetRunID(s)
-	return scu
-}
-
-// SetNillableRunID sets the "run_id" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRunID(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRunID(*s)
-	}
-	return scu
-}
-
-// ClearRunID clears the value of the "run_id" field.
-func (scu *SourceControlUpdate) ClearRunID() *SourceControlUpdate {
-	scu.mutation.ClearRunID()
-	return scu
-}
-
-// SetRunNumber sets the "run_number" field.
-func (scu *SourceControlUpdate) SetRunNumber(s string) *SourceControlUpdate {
-	scu.mutation.SetRunNumber(s)
-	return scu
-}
-
-// SetNillableRunNumber sets the "run_number" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRunNumber(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRunNumber(*s)
-	}
-	return scu
-}
-
-// ClearRunNumber clears the value of the "run_number" field.
-func (scu *SourceControlUpdate) ClearRunNumber() *SourceControlUpdate {
-	scu.mutation.ClearRunNumber()
-	return scu
-}
-
-// SetJob sets the "job" field.
-func (scu *SourceControlUpdate) SetJob(s string) *SourceControlUpdate {
-	scu.mutation.SetJob(s)
-	return scu
-}
-
-// SetNillableJob sets the "job" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableJob(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetJob(*s)
-	}
-	return scu
-}
-
-// ClearJob clears the value of the "job" field.
-func (scu *SourceControlUpdate) ClearJob() *SourceControlUpdate {
-	scu.mutation.ClearJob()
-	return scu
-}
-
-// SetAction sets the "action" field.
-func (scu *SourceControlUpdate) SetAction(s string) *SourceControlUpdate {
-	scu.mutation.SetAction(s)
-	return scu
-}
-
-// SetNillableAction sets the "action" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableAction(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetAction(*s)
-	}
-	return scu
-}
-
-// ClearAction clears the value of the "action" field.
-func (scu *SourceControlUpdate) ClearAction() *SourceControlUpdate {
-	scu.mutation.ClearAction()
-	return scu
-}
-
-// SetRunnerName sets the "runner_name" field.
-func (scu *SourceControlUpdate) SetRunnerName(s string) *SourceControlUpdate {
-	scu.mutation.SetRunnerName(s)
-	return scu
-}
-
-// SetNillableRunnerName sets the "runner_name" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRunnerName(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRunnerName(*s)
-	}
-	return scu
-}
-
-// ClearRunnerName clears the value of the "runner_name" field.
-func (scu *SourceControlUpdate) ClearRunnerName() *SourceControlUpdate {
-	scu.mutation.ClearRunnerName()
-	return scu
-}
-
-// SetRunnerArch sets the "runner_arch" field.
-func (scu *SourceControlUpdate) SetRunnerArch(s string) *SourceControlUpdate {
-	scu.mutation.SetRunnerArch(s)
-	return scu
-}
-
-// SetNillableRunnerArch sets the "runner_arch" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRunnerArch(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRunnerArch(*s)
-	}
-	return scu
-}
-
-// ClearRunnerArch clears the value of the "runner_arch" field.
-func (scu *SourceControlUpdate) ClearRunnerArch() *SourceControlUpdate {
-	scu.mutation.ClearRunnerArch()
-	return scu
-}
-
-// SetRunnerOs sets the "runner_os" field.
-func (scu *SourceControlUpdate) SetRunnerOs(s string) *SourceControlUpdate {
-	scu.mutation.SetRunnerOs(s)
-	return scu
-}
-
-// SetNillableRunnerOs sets the "runner_os" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRunnerOs(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRunnerOs(*s)
-	}
-	return scu
-}
-
-// ClearRunnerOs clears the value of the "runner_os" field.
-func (scu *SourceControlUpdate) ClearRunnerOs() *SourceControlUpdate {
-	scu.mutation.ClearRunnerOs()
-	return scu
-}
-
-// SetWorkspace sets the "workspace" field.
-func (scu *SourceControlUpdate) SetWorkspace(s string) *SourceControlUpdate {
-	scu.mutation.SetWorkspace(s)
-	return scu
-}
-
-// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableWorkspace(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetWorkspace(*s)
-	}
-	return scu
-}
-
-// ClearWorkspace clears the value of the "workspace" field.
-func (scu *SourceControlUpdate) ClearWorkspace() *SourceControlUpdate {
-	scu.mutation.ClearWorkspace()
+// ClearCommitURL clears the value of the "commit_url" field.
+func (scu *SourceControlUpdate) ClearCommitURL() *SourceControlUpdate {
+	scu.mutation.ClearCommitURL()
 	return scu
 }
 
@@ -406,16 +206,6 @@ func (scu *SourceControlUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (scu *SourceControlUpdate) check() error {
-	if v, ok := scu.mutation.Provider(); ok {
-		if err := sourcecontrol.ProviderValidator(v); err != nil {
-			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "SourceControl.provider": %w`, err)}
-		}
-	}
-	return nil
-}
-
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (scu *SourceControlUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SourceControlUpdate {
 	scu.modifiers = append(scu.modifiers, modifiers...)
@@ -423,9 +213,6 @@ func (scu *SourceControlUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) 
 }
 
 func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := scu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	if ps := scu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -434,105 +221,45 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			}
 		}
 	}
-	if value, ok := scu.mutation.Provider(); ok {
-		_spec.SetField(sourcecontrol.FieldProvider, field.TypeEnum, value)
-	}
-	if scu.mutation.ProviderCleared() {
-		_spec.ClearField(sourcecontrol.FieldProvider, field.TypeEnum)
-	}
-	if value, ok := scu.mutation.InstanceURL(); ok {
-		_spec.SetField(sourcecontrol.FieldInstanceURL, field.TypeString, value)
-	}
-	if scu.mutation.InstanceURLCleared() {
-		_spec.ClearField(sourcecontrol.FieldInstanceURL, field.TypeString)
-	}
 	if value, ok := scu.mutation.Repo(); ok {
 		_spec.SetField(sourcecontrol.FieldRepo, field.TypeString, value)
 	}
 	if scu.mutation.RepoCleared() {
 		_spec.ClearField(sourcecontrol.FieldRepo, field.TypeString)
 	}
-	if value, ok := scu.mutation.Refs(); ok {
-		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
+	if value, ok := scu.mutation.RepoURL(); ok {
+		_spec.SetField(sourcecontrol.FieldRepoURL, field.TypeString, value)
 	}
-	if scu.mutation.RefsCleared() {
-		_spec.ClearField(sourcecontrol.FieldRefs, field.TypeString)
+	if scu.mutation.RepoURLCleared() {
+		_spec.ClearField(sourcecontrol.FieldRepoURL, field.TypeString)
 	}
-	if value, ok := scu.mutation.CommitSha(); ok {
-		_spec.SetField(sourcecontrol.FieldCommitSha, field.TypeString, value)
+	if value, ok := scu.mutation.Ref(); ok {
+		_spec.SetField(sourcecontrol.FieldRef, field.TypeString, value)
 	}
-	if scu.mutation.CommitShaCleared() {
-		_spec.ClearField(sourcecontrol.FieldCommitSha, field.TypeString)
+	if scu.mutation.RefCleared() {
+		_spec.ClearField(sourcecontrol.FieldRef, field.TypeString)
 	}
-	if value, ok := scu.mutation.Actor(); ok {
-		_spec.SetField(sourcecontrol.FieldActor, field.TypeString, value)
+	if value, ok := scu.mutation.RefURL(); ok {
+		_spec.SetField(sourcecontrol.FieldRefURL, field.TypeString, value)
 	}
-	if scu.mutation.ActorCleared() {
-		_spec.ClearField(sourcecontrol.FieldActor, field.TypeString)
+	if scu.mutation.RefURLCleared() {
+		_spec.ClearField(sourcecontrol.FieldRefURL, field.TypeString)
 	}
-	if value, ok := scu.mutation.EventName(); ok {
-		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
+	if value, ok := scu.mutation.Commit(); ok {
+		_spec.SetField(sourcecontrol.FieldCommit, field.TypeString, value)
 	}
-	if scu.mutation.EventNameCleared() {
-		_spec.ClearField(sourcecontrol.FieldEventName, field.TypeString)
+	if scu.mutation.CommitCleared() {
+		_spec.ClearField(sourcecontrol.FieldCommit, field.TypeString)
 	}
-	if value, ok := scu.mutation.Workflow(); ok {
-		_spec.SetField(sourcecontrol.FieldWorkflow, field.TypeString, value)
+	if value, ok := scu.mutation.CommitURL(); ok {
+		_spec.SetField(sourcecontrol.FieldCommitURL, field.TypeString, value)
 	}
-	if scu.mutation.WorkflowCleared() {
-		_spec.ClearField(sourcecontrol.FieldWorkflow, field.TypeString)
-	}
-	if value, ok := scu.mutation.RunID(); ok {
-		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
-	}
-	if scu.mutation.RunIDCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunID, field.TypeString)
-	}
-	if value, ok := scu.mutation.RunNumber(); ok {
-		_spec.SetField(sourcecontrol.FieldRunNumber, field.TypeString, value)
-	}
-	if scu.mutation.RunNumberCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunNumber, field.TypeString)
-	}
-	if value, ok := scu.mutation.Job(); ok {
-		_spec.SetField(sourcecontrol.FieldJob, field.TypeString, value)
-	}
-	if scu.mutation.JobCleared() {
-		_spec.ClearField(sourcecontrol.FieldJob, field.TypeString)
-	}
-	if value, ok := scu.mutation.Action(); ok {
-		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
-	}
-	if scu.mutation.ActionCleared() {
-		_spec.ClearField(sourcecontrol.FieldAction, field.TypeString)
-	}
-	if value, ok := scu.mutation.RunnerName(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerName, field.TypeString, value)
-	}
-	if scu.mutation.RunnerNameCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunnerName, field.TypeString)
-	}
-	if value, ok := scu.mutation.RunnerArch(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerArch, field.TypeString, value)
-	}
-	if scu.mutation.RunnerArchCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunnerArch, field.TypeString)
-	}
-	if value, ok := scu.mutation.RunnerOs(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerOs, field.TypeString, value)
-	}
-	if scu.mutation.RunnerOsCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunnerOs, field.TypeString)
-	}
-	if value, ok := scu.mutation.Workspace(); ok {
-		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
-	}
-	if scu.mutation.WorkspaceCleared() {
-		_spec.ClearField(sourcecontrol.FieldWorkspace, field.TypeString)
+	if scu.mutation.CommitURLCleared() {
+		_spec.ClearField(sourcecontrol.FieldCommitURL, field.TypeString)
 	}
 	if scu.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   sourcecontrol.BazelInvocationTable,
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
@@ -545,7 +272,7 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if nodes := scu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   sourcecontrol.BazelInvocationTable,
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
@@ -581,46 +308,6 @@ type SourceControlUpdateOne struct {
 	modifiers []func(*sql.UpdateBuilder)
 }
 
-// SetProvider sets the "provider" field.
-func (scuo *SourceControlUpdateOne) SetProvider(s sourcecontrol.Provider) *SourceControlUpdateOne {
-	scuo.mutation.SetProvider(s)
-	return scuo
-}
-
-// SetNillableProvider sets the "provider" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableProvider(s *sourcecontrol.Provider) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetProvider(*s)
-	}
-	return scuo
-}
-
-// ClearProvider clears the value of the "provider" field.
-func (scuo *SourceControlUpdateOne) ClearProvider() *SourceControlUpdateOne {
-	scuo.mutation.ClearProvider()
-	return scuo
-}
-
-// SetInstanceURL sets the "instance_url" field.
-func (scuo *SourceControlUpdateOne) SetInstanceURL(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetInstanceURL(s)
-	return scuo
-}
-
-// SetNillableInstanceURL sets the "instance_url" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableInstanceURL(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetInstanceURL(*s)
-	}
-	return scuo
-}
-
-// ClearInstanceURL clears the value of the "instance_url" field.
-func (scuo *SourceControlUpdateOne) ClearInstanceURL() *SourceControlUpdateOne {
-	scuo.mutation.ClearInstanceURL()
-	return scuo
-}
-
 // SetRepo sets the "repo" field.
 func (scuo *SourceControlUpdateOne) SetRepo(s string) *SourceControlUpdateOne {
 	scuo.mutation.SetRepo(s)
@@ -641,263 +328,103 @@ func (scuo *SourceControlUpdateOne) ClearRepo() *SourceControlUpdateOne {
 	return scuo
 }
 
-// SetRefs sets the "refs" field.
-func (scuo *SourceControlUpdateOne) SetRefs(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRefs(s)
+// SetRepoURL sets the "repo_url" field.
+func (scuo *SourceControlUpdateOne) SetRepoURL(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRepoURL(s)
 	return scuo
 }
 
-// SetNillableRefs sets the "refs" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRefs(s *string) *SourceControlUpdateOne {
+// SetNillableRepoURL sets the "repo_url" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRepoURL(s *string) *SourceControlUpdateOne {
 	if s != nil {
-		scuo.SetRefs(*s)
+		scuo.SetRepoURL(*s)
 	}
 	return scuo
 }
 
-// ClearRefs clears the value of the "refs" field.
-func (scuo *SourceControlUpdateOne) ClearRefs() *SourceControlUpdateOne {
-	scuo.mutation.ClearRefs()
+// ClearRepoURL clears the value of the "repo_url" field.
+func (scuo *SourceControlUpdateOne) ClearRepoURL() *SourceControlUpdateOne {
+	scuo.mutation.ClearRepoURL()
 	return scuo
 }
 
-// SetCommitSha sets the "commit_sha" field.
-func (scuo *SourceControlUpdateOne) SetCommitSha(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetCommitSha(s)
+// SetRef sets the "ref" field.
+func (scuo *SourceControlUpdateOne) SetRef(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRef(s)
 	return scuo
 }
 
-// SetNillableCommitSha sets the "commit_sha" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableCommitSha(s *string) *SourceControlUpdateOne {
+// SetNillableRef sets the "ref" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRef(s *string) *SourceControlUpdateOne {
 	if s != nil {
-		scuo.SetCommitSha(*s)
+		scuo.SetRef(*s)
 	}
 	return scuo
 }
 
-// ClearCommitSha clears the value of the "commit_sha" field.
-func (scuo *SourceControlUpdateOne) ClearCommitSha() *SourceControlUpdateOne {
-	scuo.mutation.ClearCommitSha()
+// ClearRef clears the value of the "ref" field.
+func (scuo *SourceControlUpdateOne) ClearRef() *SourceControlUpdateOne {
+	scuo.mutation.ClearRef()
 	return scuo
 }
 
-// SetActor sets the "actor" field.
-func (scuo *SourceControlUpdateOne) SetActor(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetActor(s)
+// SetRefURL sets the "ref_url" field.
+func (scuo *SourceControlUpdateOne) SetRefURL(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRefURL(s)
 	return scuo
 }
 
-// SetNillableActor sets the "actor" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableActor(s *string) *SourceControlUpdateOne {
+// SetNillableRefURL sets the "ref_url" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRefURL(s *string) *SourceControlUpdateOne {
 	if s != nil {
-		scuo.SetActor(*s)
+		scuo.SetRefURL(*s)
 	}
 	return scuo
 }
 
-// ClearActor clears the value of the "actor" field.
-func (scuo *SourceControlUpdateOne) ClearActor() *SourceControlUpdateOne {
-	scuo.mutation.ClearActor()
+// ClearRefURL clears the value of the "ref_url" field.
+func (scuo *SourceControlUpdateOne) ClearRefURL() *SourceControlUpdateOne {
+	scuo.mutation.ClearRefURL()
 	return scuo
 }
 
-// SetEventName sets the "event_name" field.
-func (scuo *SourceControlUpdateOne) SetEventName(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetEventName(s)
+// SetCommit sets the "commit" field.
+func (scuo *SourceControlUpdateOne) SetCommit(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetCommit(s)
 	return scuo
 }
 
-// SetNillableEventName sets the "event_name" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableEventName(s *string) *SourceControlUpdateOne {
+// SetNillableCommit sets the "commit" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableCommit(s *string) *SourceControlUpdateOne {
 	if s != nil {
-		scuo.SetEventName(*s)
+		scuo.SetCommit(*s)
 	}
 	return scuo
 }
 
-// ClearEventName clears the value of the "event_name" field.
-func (scuo *SourceControlUpdateOne) ClearEventName() *SourceControlUpdateOne {
-	scuo.mutation.ClearEventName()
+// ClearCommit clears the value of the "commit" field.
+func (scuo *SourceControlUpdateOne) ClearCommit() *SourceControlUpdateOne {
+	scuo.mutation.ClearCommit()
 	return scuo
 }
 
-// SetWorkflow sets the "workflow" field.
-func (scuo *SourceControlUpdateOne) SetWorkflow(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetWorkflow(s)
+// SetCommitURL sets the "commit_url" field.
+func (scuo *SourceControlUpdateOne) SetCommitURL(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetCommitURL(s)
 	return scuo
 }
 
-// SetNillableWorkflow sets the "workflow" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableWorkflow(s *string) *SourceControlUpdateOne {
+// SetNillableCommitURL sets the "commit_url" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableCommitURL(s *string) *SourceControlUpdateOne {
 	if s != nil {
-		scuo.SetWorkflow(*s)
+		scuo.SetCommitURL(*s)
 	}
 	return scuo
 }
 
-// ClearWorkflow clears the value of the "workflow" field.
-func (scuo *SourceControlUpdateOne) ClearWorkflow() *SourceControlUpdateOne {
-	scuo.mutation.ClearWorkflow()
-	return scuo
-}
-
-// SetRunID sets the "run_id" field.
-func (scuo *SourceControlUpdateOne) SetRunID(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRunID(s)
-	return scuo
-}
-
-// SetNillableRunID sets the "run_id" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRunID(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRunID(*s)
-	}
-	return scuo
-}
-
-// ClearRunID clears the value of the "run_id" field.
-func (scuo *SourceControlUpdateOne) ClearRunID() *SourceControlUpdateOne {
-	scuo.mutation.ClearRunID()
-	return scuo
-}
-
-// SetRunNumber sets the "run_number" field.
-func (scuo *SourceControlUpdateOne) SetRunNumber(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRunNumber(s)
-	return scuo
-}
-
-// SetNillableRunNumber sets the "run_number" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRunNumber(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRunNumber(*s)
-	}
-	return scuo
-}
-
-// ClearRunNumber clears the value of the "run_number" field.
-func (scuo *SourceControlUpdateOne) ClearRunNumber() *SourceControlUpdateOne {
-	scuo.mutation.ClearRunNumber()
-	return scuo
-}
-
-// SetJob sets the "job" field.
-func (scuo *SourceControlUpdateOne) SetJob(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetJob(s)
-	return scuo
-}
-
-// SetNillableJob sets the "job" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableJob(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetJob(*s)
-	}
-	return scuo
-}
-
-// ClearJob clears the value of the "job" field.
-func (scuo *SourceControlUpdateOne) ClearJob() *SourceControlUpdateOne {
-	scuo.mutation.ClearJob()
-	return scuo
-}
-
-// SetAction sets the "action" field.
-func (scuo *SourceControlUpdateOne) SetAction(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetAction(s)
-	return scuo
-}
-
-// SetNillableAction sets the "action" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableAction(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetAction(*s)
-	}
-	return scuo
-}
-
-// ClearAction clears the value of the "action" field.
-func (scuo *SourceControlUpdateOne) ClearAction() *SourceControlUpdateOne {
-	scuo.mutation.ClearAction()
-	return scuo
-}
-
-// SetRunnerName sets the "runner_name" field.
-func (scuo *SourceControlUpdateOne) SetRunnerName(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRunnerName(s)
-	return scuo
-}
-
-// SetNillableRunnerName sets the "runner_name" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRunnerName(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRunnerName(*s)
-	}
-	return scuo
-}
-
-// ClearRunnerName clears the value of the "runner_name" field.
-func (scuo *SourceControlUpdateOne) ClearRunnerName() *SourceControlUpdateOne {
-	scuo.mutation.ClearRunnerName()
-	return scuo
-}
-
-// SetRunnerArch sets the "runner_arch" field.
-func (scuo *SourceControlUpdateOne) SetRunnerArch(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRunnerArch(s)
-	return scuo
-}
-
-// SetNillableRunnerArch sets the "runner_arch" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRunnerArch(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRunnerArch(*s)
-	}
-	return scuo
-}
-
-// ClearRunnerArch clears the value of the "runner_arch" field.
-func (scuo *SourceControlUpdateOne) ClearRunnerArch() *SourceControlUpdateOne {
-	scuo.mutation.ClearRunnerArch()
-	return scuo
-}
-
-// SetRunnerOs sets the "runner_os" field.
-func (scuo *SourceControlUpdateOne) SetRunnerOs(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRunnerOs(s)
-	return scuo
-}
-
-// SetNillableRunnerOs sets the "runner_os" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRunnerOs(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRunnerOs(*s)
-	}
-	return scuo
-}
-
-// ClearRunnerOs clears the value of the "runner_os" field.
-func (scuo *SourceControlUpdateOne) ClearRunnerOs() *SourceControlUpdateOne {
-	scuo.mutation.ClearRunnerOs()
-	return scuo
-}
-
-// SetWorkspace sets the "workspace" field.
-func (scuo *SourceControlUpdateOne) SetWorkspace(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetWorkspace(s)
-	return scuo
-}
-
-// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableWorkspace(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetWorkspace(*s)
-	}
-	return scuo
-}
-
-// ClearWorkspace clears the value of the "workspace" field.
-func (scuo *SourceControlUpdateOne) ClearWorkspace() *SourceControlUpdateOne {
-	scuo.mutation.ClearWorkspace()
+// ClearCommitURL clears the value of the "commit_url" field.
+func (scuo *SourceControlUpdateOne) ClearCommitURL() *SourceControlUpdateOne {
+	scuo.mutation.ClearCommitURL()
 	return scuo
 }
 
@@ -971,16 +498,6 @@ func (scuo *SourceControlUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (scuo *SourceControlUpdateOne) check() error {
-	if v, ok := scuo.mutation.Provider(); ok {
-		if err := sourcecontrol.ProviderValidator(v); err != nil {
-			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "SourceControl.provider": %w`, err)}
-		}
-	}
-	return nil
-}
-
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (scuo *SourceControlUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SourceControlUpdateOne {
 	scuo.modifiers = append(scuo.modifiers, modifiers...)
@@ -988,9 +505,6 @@ func (scuo *SourceControlUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilde
 }
 
 func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceControl, err error) {
-	if err := scuo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	id, ok := scuo.mutation.ID()
 	if !ok {
@@ -1016,105 +530,45 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 			}
 		}
 	}
-	if value, ok := scuo.mutation.Provider(); ok {
-		_spec.SetField(sourcecontrol.FieldProvider, field.TypeEnum, value)
-	}
-	if scuo.mutation.ProviderCleared() {
-		_spec.ClearField(sourcecontrol.FieldProvider, field.TypeEnum)
-	}
-	if value, ok := scuo.mutation.InstanceURL(); ok {
-		_spec.SetField(sourcecontrol.FieldInstanceURL, field.TypeString, value)
-	}
-	if scuo.mutation.InstanceURLCleared() {
-		_spec.ClearField(sourcecontrol.FieldInstanceURL, field.TypeString)
-	}
 	if value, ok := scuo.mutation.Repo(); ok {
 		_spec.SetField(sourcecontrol.FieldRepo, field.TypeString, value)
 	}
 	if scuo.mutation.RepoCleared() {
 		_spec.ClearField(sourcecontrol.FieldRepo, field.TypeString)
 	}
-	if value, ok := scuo.mutation.Refs(); ok {
-		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
+	if value, ok := scuo.mutation.RepoURL(); ok {
+		_spec.SetField(sourcecontrol.FieldRepoURL, field.TypeString, value)
 	}
-	if scuo.mutation.RefsCleared() {
-		_spec.ClearField(sourcecontrol.FieldRefs, field.TypeString)
+	if scuo.mutation.RepoURLCleared() {
+		_spec.ClearField(sourcecontrol.FieldRepoURL, field.TypeString)
 	}
-	if value, ok := scuo.mutation.CommitSha(); ok {
-		_spec.SetField(sourcecontrol.FieldCommitSha, field.TypeString, value)
+	if value, ok := scuo.mutation.Ref(); ok {
+		_spec.SetField(sourcecontrol.FieldRef, field.TypeString, value)
 	}
-	if scuo.mutation.CommitShaCleared() {
-		_spec.ClearField(sourcecontrol.FieldCommitSha, field.TypeString)
+	if scuo.mutation.RefCleared() {
+		_spec.ClearField(sourcecontrol.FieldRef, field.TypeString)
 	}
-	if value, ok := scuo.mutation.Actor(); ok {
-		_spec.SetField(sourcecontrol.FieldActor, field.TypeString, value)
+	if value, ok := scuo.mutation.RefURL(); ok {
+		_spec.SetField(sourcecontrol.FieldRefURL, field.TypeString, value)
 	}
-	if scuo.mutation.ActorCleared() {
-		_spec.ClearField(sourcecontrol.FieldActor, field.TypeString)
+	if scuo.mutation.RefURLCleared() {
+		_spec.ClearField(sourcecontrol.FieldRefURL, field.TypeString)
 	}
-	if value, ok := scuo.mutation.EventName(); ok {
-		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
+	if value, ok := scuo.mutation.Commit(); ok {
+		_spec.SetField(sourcecontrol.FieldCommit, field.TypeString, value)
 	}
-	if scuo.mutation.EventNameCleared() {
-		_spec.ClearField(sourcecontrol.FieldEventName, field.TypeString)
+	if scuo.mutation.CommitCleared() {
+		_spec.ClearField(sourcecontrol.FieldCommit, field.TypeString)
 	}
-	if value, ok := scuo.mutation.Workflow(); ok {
-		_spec.SetField(sourcecontrol.FieldWorkflow, field.TypeString, value)
+	if value, ok := scuo.mutation.CommitURL(); ok {
+		_spec.SetField(sourcecontrol.FieldCommitURL, field.TypeString, value)
 	}
-	if scuo.mutation.WorkflowCleared() {
-		_spec.ClearField(sourcecontrol.FieldWorkflow, field.TypeString)
-	}
-	if value, ok := scuo.mutation.RunID(); ok {
-		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
-	}
-	if scuo.mutation.RunIDCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunID, field.TypeString)
-	}
-	if value, ok := scuo.mutation.RunNumber(); ok {
-		_spec.SetField(sourcecontrol.FieldRunNumber, field.TypeString, value)
-	}
-	if scuo.mutation.RunNumberCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunNumber, field.TypeString)
-	}
-	if value, ok := scuo.mutation.Job(); ok {
-		_spec.SetField(sourcecontrol.FieldJob, field.TypeString, value)
-	}
-	if scuo.mutation.JobCleared() {
-		_spec.ClearField(sourcecontrol.FieldJob, field.TypeString)
-	}
-	if value, ok := scuo.mutation.Action(); ok {
-		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
-	}
-	if scuo.mutation.ActionCleared() {
-		_spec.ClearField(sourcecontrol.FieldAction, field.TypeString)
-	}
-	if value, ok := scuo.mutation.RunnerName(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerName, field.TypeString, value)
-	}
-	if scuo.mutation.RunnerNameCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunnerName, field.TypeString)
-	}
-	if value, ok := scuo.mutation.RunnerArch(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerArch, field.TypeString, value)
-	}
-	if scuo.mutation.RunnerArchCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunnerArch, field.TypeString)
-	}
-	if value, ok := scuo.mutation.RunnerOs(); ok {
-		_spec.SetField(sourcecontrol.FieldRunnerOs, field.TypeString, value)
-	}
-	if scuo.mutation.RunnerOsCleared() {
-		_spec.ClearField(sourcecontrol.FieldRunnerOs, field.TypeString)
-	}
-	if value, ok := scuo.mutation.Workspace(); ok {
-		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
-	}
-	if scuo.mutation.WorkspaceCleared() {
-		_spec.ClearField(sourcecontrol.FieldWorkspace, field.TypeString)
+	if scuo.mutation.CommitURLCleared() {
+		_spec.ClearField(sourcecontrol.FieldCommitURL, field.TypeString)
 	}
 	if scuo.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   sourcecontrol.BazelInvocationTable,
 			Columns: []string{sourcecontrol.BazelInvocationColumn},
@@ -1127,7 +581,7 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 	}
 	if nodes := scuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   sourcecontrol.BazelInvocationTable,
 			Columns: []string{sourcecontrol.BazelInvocationColumn},

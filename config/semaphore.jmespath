@@ -1,0 +1,37 @@
+{
+  "username": env.USER
+  "hostname": env.HOSTNAME
+  "sourceControls": [
+    {
+      "repo": env.SEMAPHORE_GIT_REPO_SLUG
+      "repoUrl": (env.SEMAPHORE_GIT_REPO_SLUG) && join('/', ['https://github.com', env.SEMAPHORE_GIT_REPO_SLUG]) || `null`
+      "ref": env.SEMAPHORE_GIT_REF
+      "refUrl": (env.SEMAPHORE_GIT_REPO_SLUG && env.SEMAPHORE_GIT_REF) && join('/', ['https://github.com', env.SEMAPHORE_GIT_REPO_SLUG, 'tree', env.SEMAPHORE_GIT_REF]) || `null`
+      "commit": env.SEMAPHORE_GIT_SHA
+      "commitUrl": (env.SEMAPHORE_GIT_REPO_SLUG && env.SEMAPHORE_GIT_SHA) && join('/', ['https://github.com', env.SEMAPHORE_GIT_REPO_SLUG, 'commit', env.SEMAPHORE_GIT_SHA]) || `null`
+    }
+  ]
+  "invocationTags": {
+    "semaphore_block": env.SEMAPHORE_BLOCK_NAME
+    "semaphore_environment_type": env.SEMAPHORE_AGENT_MACHINE_ENVIRONMENT_TYPE
+    "semaphore_initiator": env.SEMAPHORE_WORKFLOW_TRIGGERED_BY
+    "semaphore_job": env.SEMAPHORE_JOB_NAME
+    "semaphore_job_url": (env.SEMAPHORE_ORGANIZATION_URL && env.SEMAPHORE_JOB_ID) && join('/', [env.SEMAPHORE_ORGANIZATION_URL, 'jobs', env.SEMAPHORE_JOB_ID]) || `null`
+    "semaphore_machine_type": env.SEMAPHORE_AGENT_MACHINE_TYPE
+    "semaphore_os_image": env.SEMAPHORE_AGENT_MACHINE_OS_IMAGE
+    "semaphore_pipeline": env.SEMAPHORE_PIPELINE_NAME
+    "semaphore_pipeline_url": (env.SEMAPHORE_ORGANIZATION_URL && env.SEMAPHORE_WORKFLOW_ID && env.SEMAPHORE_PIPELINE_ID) && join('/', [env.SEMAPHORE_ORGANIZATION_URL, 'workflows', env.SEMAPHORE_WORKFLOW_ID, join('', ['?pipeline_id=', env.SEMAPHORE_PIPELINE_ID])]) || `null`
+    "semaphore_project": env.SEMAPHORE_PROJECT_NAME
+    "semaphore_project_url": (env.SEMAPHORE_ORGANIZATION_URL && env.SEMAPHORE_PROJECT_ID) && join('/', [env.SEMAPHORE_ORGANIZATION_URL, 'projects', env.SEMAPHORE_PROJECT_ID]) || `null`
+    "semaphore_workflow": (env.SEMAPHORE_ORGANIZATION_URL && env.SEMAPHORE_WORKFLOW_ID) && join('/', [env.SEMAPHORE_ORGANIZATION_URL, 'workflows', env.SEMAPHORE_WORKFLOW_ID]) || `null`
+  }
+  "buildTags": {
+    "repo": env.SEMAPHORE_GIT_REPO_SLUG
+    "repo_url": (env.SEMAPHORE_GIT_REPO_SLUG) && join('/', ['https://github.com', env.SEMAPHORE_GIT_REPO_SLUG]) || `null`
+    "semaphore_initiator": env.SEMAPHORE_WORKFLOW_TRIGGERED_BY
+    "semaphore_project": env.SEMAPHORE_PROJECT_NAME
+    "semaphore_project_url": (env.SEMAPHORE_ORGANIZATION_URL && env.SEMAPHORE_PROJECT_ID) && join('/', [env.SEMAPHORE_ORGANIZATION_URL, 'projects', env.SEMAPHORE_PROJECT_ID]) || `null`
+    "semaphore_workflow": (env.SEMAPHORE_ORGANIZATION_URL && env.SEMAPHORE_WORKFLOW_ID) && join('/', [env.SEMAPHORE_ORGANIZATION_URL, 'workflows', env.SEMAPHORE_WORKFLOW_ID]) || `null`
+    "build_id": (env.SEMAPHORE_ORGANIZATION_URL && env.SEMAPHORE_WORKFLOW_ID) && join('/', [env.SEMAPHORE_ORGANIZATION_URL, 'workflows', env.SEMAPHORE_WORKFLOW_ID]) || `null`
+  }
+}
