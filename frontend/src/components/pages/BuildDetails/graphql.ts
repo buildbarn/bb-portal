@@ -36,7 +36,7 @@ export const GET_BUILD_INVOCATION_FRAGMENT = gql(/* GraphQL */ `
   fragment GetBuildInvocation on BazelInvocation {
     id
     invocationID
-    userLdap
+    username
     endedAt
     startedAt
     exitCodeName

@@ -96,14 +96,9 @@ func StepLabel(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldStepLabel, v))
 }
 
-// UserEmail applies equality check predicate on the "user_email" field. It's identical to UserEmailEQ.
-func UserEmail(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldUserEmail, v))
-}
-
-// UserLdap applies equality check predicate on the "user_ldap" field. It's identical to UserLdapEQ.
-func UserLdap(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldUserLdap, v))
+// Username applies equality check predicate on the "username" field. It's identical to UsernameEQ.
+func Username(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldUsername, v))
 }
 
 // Hostname applies equality check predicate on the "hostname" field. It's identical to HostnameEQ.
@@ -526,154 +521,79 @@ func StepLabelContainsFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldContainsFold(FieldStepLabel, v))
 }
 
-// UserEmailEQ applies the EQ predicate on the "user_email" field.
-func UserEmailEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldUserEmail, v))
+// UsernameEQ applies the EQ predicate on the "username" field.
+func UsernameEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldUsername, v))
 }
 
-// UserEmailNEQ applies the NEQ predicate on the "user_email" field.
-func UserEmailNEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldUserEmail, v))
+// UsernameNEQ applies the NEQ predicate on the "username" field.
+func UsernameNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldUsername, v))
 }
 
-// UserEmailIn applies the In predicate on the "user_email" field.
-func UserEmailIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIn(FieldUserEmail, vs...))
+// UsernameIn applies the In predicate on the "username" field.
+func UsernameIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldUsername, vs...))
 }
 
-// UserEmailNotIn applies the NotIn predicate on the "user_email" field.
-func UserEmailNotIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotIn(FieldUserEmail, vs...))
+// UsernameNotIn applies the NotIn predicate on the "username" field.
+func UsernameNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldUsername, vs...))
 }
 
-// UserEmailGT applies the GT predicate on the "user_email" field.
-func UserEmailGT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGT(FieldUserEmail, v))
+// UsernameGT applies the GT predicate on the "username" field.
+func UsernameGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldUsername, v))
 }
 
-// UserEmailGTE applies the GTE predicate on the "user_email" field.
-func UserEmailGTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGTE(FieldUserEmail, v))
+// UsernameGTE applies the GTE predicate on the "username" field.
+func UsernameGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldUsername, v))
 }
 
-// UserEmailLT applies the LT predicate on the "user_email" field.
-func UserEmailLT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLT(FieldUserEmail, v))
+// UsernameLT applies the LT predicate on the "username" field.
+func UsernameLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldUsername, v))
 }
 
-// UserEmailLTE applies the LTE predicate on the "user_email" field.
-func UserEmailLTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLTE(FieldUserEmail, v))
+// UsernameLTE applies the LTE predicate on the "username" field.
+func UsernameLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldUsername, v))
 }
 
-// UserEmailContains applies the Contains predicate on the "user_email" field.
-func UserEmailContains(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContains(FieldUserEmail, v))
+// UsernameContains applies the Contains predicate on the "username" field.
+func UsernameContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldUsername, v))
 }
 
-// UserEmailHasPrefix applies the HasPrefix predicate on the "user_email" field.
-func UserEmailHasPrefix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldUserEmail, v))
+// UsernameHasPrefix applies the HasPrefix predicate on the "username" field.
+func UsernameHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldUsername, v))
 }
 
-// UserEmailHasSuffix applies the HasSuffix predicate on the "user_email" field.
-func UserEmailHasSuffix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldUserEmail, v))
+// UsernameHasSuffix applies the HasSuffix predicate on the "username" field.
+func UsernameHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldUsername, v))
 }
 
-// UserEmailIsNil applies the IsNil predicate on the "user_email" field.
-func UserEmailIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldUserEmail))
+// UsernameIsNil applies the IsNil predicate on the "username" field.
+func UsernameIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldUsername))
 }
 
-// UserEmailNotNil applies the NotNil predicate on the "user_email" field.
-func UserEmailNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldUserEmail))
+// UsernameNotNil applies the NotNil predicate on the "username" field.
+func UsernameNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldUsername))
 }
 
-// UserEmailEqualFold applies the EqualFold predicate on the "user_email" field.
-func UserEmailEqualFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEqualFold(FieldUserEmail, v))
+// UsernameEqualFold applies the EqualFold predicate on the "username" field.
+func UsernameEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldUsername, v))
 }
 
-// UserEmailContainsFold applies the ContainsFold predicate on the "user_email" field.
-func UserEmailContainsFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContainsFold(FieldUserEmail, v))
-}
-
-// UserLdapEQ applies the EQ predicate on the "user_ldap" field.
-func UserLdapEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldUserLdap, v))
-}
-
-// UserLdapNEQ applies the NEQ predicate on the "user_ldap" field.
-func UserLdapNEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldUserLdap, v))
-}
-
-// UserLdapIn applies the In predicate on the "user_ldap" field.
-func UserLdapIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIn(FieldUserLdap, vs...))
-}
-
-// UserLdapNotIn applies the NotIn predicate on the "user_ldap" field.
-func UserLdapNotIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotIn(FieldUserLdap, vs...))
-}
-
-// UserLdapGT applies the GT predicate on the "user_ldap" field.
-func UserLdapGT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGT(FieldUserLdap, v))
-}
-
-// UserLdapGTE applies the GTE predicate on the "user_ldap" field.
-func UserLdapGTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGTE(FieldUserLdap, v))
-}
-
-// UserLdapLT applies the LT predicate on the "user_ldap" field.
-func UserLdapLT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLT(FieldUserLdap, v))
-}
-
-// UserLdapLTE applies the LTE predicate on the "user_ldap" field.
-func UserLdapLTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLTE(FieldUserLdap, v))
-}
-
-// UserLdapContains applies the Contains predicate on the "user_ldap" field.
-func UserLdapContains(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContains(FieldUserLdap, v))
-}
-
-// UserLdapHasPrefix applies the HasPrefix predicate on the "user_ldap" field.
-func UserLdapHasPrefix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldUserLdap, v))
-}
-
-// UserLdapHasSuffix applies the HasSuffix predicate on the "user_ldap" field.
-func UserLdapHasSuffix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldUserLdap, v))
-}
-
-// UserLdapIsNil applies the IsNil predicate on the "user_ldap" field.
-func UserLdapIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldUserLdap))
-}
-
-// UserLdapNotNil applies the NotNil predicate on the "user_ldap" field.
-func UserLdapNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldUserLdap))
-}
-
-// UserLdapEqualFold applies the EqualFold predicate on the "user_ldap" field.
-func UserLdapEqualFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEqualFold(FieldUserLdap, v))
-}
-
-// UserLdapContainsFold applies the ContainsFold predicate on the "user_ldap" field.
-func UserLdapContainsFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContainsFold(FieldUserLdap, v))
+// UsernameContainsFold applies the ContainsFold predicate on the "username" field.
+func UsernameContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldUsername, v))
 }
 
 // HostnameEQ applies the EQ predicate on the "hostname" field.

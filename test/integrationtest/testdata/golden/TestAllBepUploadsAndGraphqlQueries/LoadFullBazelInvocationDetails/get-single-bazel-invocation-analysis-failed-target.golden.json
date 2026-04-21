@@ -293,9 +293,6 @@
     "sourceControl": null,
     "startedAt": "2024-05-13T23:43:23.045Z",
     "stepLabel": "nextjs_test",
-    "user": {
-      "Email": "",
-      "LDAP": "nameless"
-    }
+    "username": "nameless"
   }
 }

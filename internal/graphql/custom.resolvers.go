@@ -20,14 +20,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// User is the resolver for the user field.
-func (r *bazelInvocationResolver) User(ctx context.Context, obj *ent.BazelInvocation) (*model.User, error) {
-	return &model.User{
-		Email: obj.UserEmail,
-		Ldap:  obj.UserLdap,
-	}, nil
-}
-
 // Profile is the resolver for the profile field.
 func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error) {
 	profile, err := obj.QueryInvocationFiles().Where(invocationfiles.NameEQ(obj.ProfileName)).Only(ctx)

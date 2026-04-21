@@ -29,10 +29,8 @@ const (
 	FieldBepCompleted = "bep_completed"
 	// FieldStepLabel holds the string denoting the step_label field in the database.
 	FieldStepLabel = "step_label"
-	// FieldUserEmail holds the string denoting the user_email field in the database.
-	FieldUserEmail = "user_email"
-	// FieldUserLdap holds the string denoting the user_ldap field in the database.
-	FieldUserLdap = "user_ldap"
+	// FieldUsername holds the string denoting the username field in the database.
+	FieldUsername = "username"
 	// FieldHostname holds the string denoting the hostname field in the database.
 	FieldHostname = "hostname"
 	// FieldIsCiWorker holds the string denoting the is_ci_worker field in the database.
@@ -202,8 +200,7 @@ var Columns = []string{
 	FieldPatchsetNumber,
 	FieldBepCompleted,
 	FieldStepLabel,
-	FieldUserEmail,
-	FieldUserLdap,
+	FieldUsername,
 	FieldHostname,
 	FieldIsCiWorker,
 	FieldNumFetches,
@@ -311,14 +308,9 @@ func ByStepLabel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStepLabel, opts...).ToFunc()
 }
 
-// ByUserEmail orders the results by the user_email field.
-func ByUserEmail(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUserEmail, opts...).ToFunc()
-}
-
-// ByUserLdap orders the results by the user_ldap field.
-func ByUserLdap(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUserLdap, opts...).ToFunc()
+// ByUsername orders the results by the username field.
+func ByUsername(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUsername, opts...).ToFunc()
 }
 
 // ByHostname orders the results by the hostname field.

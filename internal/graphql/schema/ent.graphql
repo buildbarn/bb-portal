@@ -862,8 +862,7 @@ type BazelInvocation implements Node {
   patchsetNumber: Int
   bepCompleted: Boolean!
   stepLabel: String
-  userEmail: String
-  userLdap: String
+  username: String
   hostname: String
   isCiWorker: Boolean
   numFetches: Int
@@ -970,7 +969,7 @@ Properties by which BazelInvocation connections can be ordered.
 """
 enum BazelInvocationOrderField {
   STARTED_AT
-  USER_LDAP
+  USERNAME
 }
 """
 BazelInvocationWhereInput is used for filtering BazelInvocation objects.
@@ -1078,41 +1077,23 @@ input BazelInvocationWhereInput {
   stepLabelEqualFold: String
   stepLabelContainsFold: String
   """
-  user_email field predicates
+  username field predicates
   """
-  userEmail: String
-  userEmailNEQ: String
-  userEmailIn: [String!]
-  userEmailNotIn: [String!]
-  userEmailGT: String
-  userEmailGTE: String
-  userEmailLT: String
-  userEmailLTE: String
-  userEmailContains: String
-  userEmailHasPrefix: String
-  userEmailHasSuffix: String
-  userEmailIsNil: Boolean
-  userEmailNotNil: Boolean
-  userEmailEqualFold: String
-  userEmailContainsFold: String
-  """
-  user_ldap field predicates
-  """
-  userLdap: String
-  userLdapNEQ: String
-  userLdapIn: [String!]
-  userLdapNotIn: [String!]
-  userLdapGT: String
-  userLdapGTE: String
-  userLdapLT: String
-  userLdapLTE: String
-  userLdapContains: String
-  userLdapHasPrefix: String
-  userLdapHasSuffix: String
-  userLdapIsNil: Boolean
-  userLdapNotNil: Boolean
-  userLdapEqualFold: String
-  userLdapContainsFold: String
+  username: String
+  usernameNEQ: String
+  usernameIn: [String!]
+  usernameNotIn: [String!]
+  usernameGT: String
+  usernameGTE: String
+  usernameLT: String
+  usernameLTE: String
+  usernameContains: String
+  usernameHasPrefix: String
+  usernameHasSuffix: String
+  usernameIsNil: Boolean
+  usernameNotNil: Boolean
+  usernameEqualFold: String
+  usernameContainsFold: String
   """
   hostname field predicates
   """

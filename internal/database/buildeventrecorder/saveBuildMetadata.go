@@ -26,11 +26,8 @@ func (r *buildEventRecorder) saveBuildMetadata(ctx context.Context, tx *ent.Clie
 	if stepLabel, ok := metadataMap["BUILD_STEP_LABEL"]; ok {
 		update.SetStepLabel(stepLabel)
 	}
-	if userEmail, ok := metadataMap["user_email"]; ok {
-		update.SetUserEmail(userEmail)
-	}
-	if userLdap, ok := metadataMap["user_ldap"]; ok {
-		update.SetUserLdap(userLdap)
+	if username, ok := metadataMap["user_ldap"]; ok {
+		update.SetUsername(username)
 	}
 	if isCiWorkerVal, ok := metadataMap["is_ci_worker"]; ok {
 		update.SetIsCiWorker(isCiWorkerVal == "true" || isCiWorkerVal == "True" || isCiWorkerVal == "TRUE")

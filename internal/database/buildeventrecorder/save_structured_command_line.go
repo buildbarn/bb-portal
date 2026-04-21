@@ -392,18 +392,13 @@ func (r *buildEventRecorder) recordMetadataFromEnvVars(ctx context.Context, tx *
 
 	if user, ok := envVars["GITHUB_ACTOR"]; ok {
 		// Github
-		update.SetUserLdap(user)
+		update.SetUsername(user)
 	} else if user, ok := envVars["GITLAB_USER_LOGIN"]; ok {
 		// Gitlab
-		update.SetUserLdap(user)
+		update.SetUsername(user)
 	} else if user, ok := envVars["USER"]; ok {
 		// Local
-		update.SetUserLdap(user)
-	}
-
-	if email, ok := envVars["GITLAB_USER_EMAIL"]; ok {
-		// Gitlab
-		update.SetUserEmail(email)
+		update.SetUsername(user)
 	}
 
 	err := update.Exec(ctx)

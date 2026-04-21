@@ -1074,15 +1074,10 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, bazelinvocation.FieldStepLabel)
 				fieldSeen[bazelinvocation.FieldStepLabel] = struct{}{}
 			}
-		case "userEmail":
-			if _, ok := fieldSeen[bazelinvocation.FieldUserEmail]; !ok {
-				selectedFields = append(selectedFields, bazelinvocation.FieldUserEmail)
-				fieldSeen[bazelinvocation.FieldUserEmail] = struct{}{}
-			}
-		case "userLdap":
-			if _, ok := fieldSeen[bazelinvocation.FieldUserLdap]; !ok {
-				selectedFields = append(selectedFields, bazelinvocation.FieldUserLdap)
-				fieldSeen[bazelinvocation.FieldUserLdap] = struct{}{}
+		case "username":
+			if _, ok := fieldSeen[bazelinvocation.FieldUsername]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldUsername)
+				fieldSeen[bazelinvocation.FieldUsername] = struct{}{}
 			}
 		case "hostname":
 			if _, ok := fieldSeen[bazelinvocation.FieldHostname]; !ok {

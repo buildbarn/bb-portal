@@ -188,8 +188,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			bazelinvocation.FieldPatchsetNumber:                {Type: field.TypeInt, Column: bazelinvocation.FieldPatchsetNumber},
 			bazelinvocation.FieldBepCompleted:                  {Type: field.TypeBool, Column: bazelinvocation.FieldBepCompleted},
 			bazelinvocation.FieldStepLabel:                     {Type: field.TypeString, Column: bazelinvocation.FieldStepLabel},
-			bazelinvocation.FieldUserEmail:                     {Type: field.TypeString, Column: bazelinvocation.FieldUserEmail},
-			bazelinvocation.FieldUserLdap:                      {Type: field.TypeString, Column: bazelinvocation.FieldUserLdap},
+			bazelinvocation.FieldUsername:                      {Type: field.TypeString, Column: bazelinvocation.FieldUsername},
 			bazelinvocation.FieldHostname:                      {Type: field.TypeString, Column: bazelinvocation.FieldHostname},
 			bazelinvocation.FieldIsCiWorker:                    {Type: field.TypeBool, Column: bazelinvocation.FieldIsCiWorker},
 			bazelinvocation.FieldNumFetches:                    {Type: field.TypeInt64, Column: bazelinvocation.FieldNumFetches},
@@ -2217,14 +2216,9 @@ func (f *BazelInvocationFilter) WhereStepLabel(p entql.StringP) {
 	f.Where(p.Field(bazelinvocation.FieldStepLabel))
 }
 
-// WhereUserEmail applies the entql string predicate on the user_email field.
-func (f *BazelInvocationFilter) WhereUserEmail(p entql.StringP) {
-	f.Where(p.Field(bazelinvocation.FieldUserEmail))
-}
-
-// WhereUserLdap applies the entql string predicate on the user_ldap field.
-func (f *BazelInvocationFilter) WhereUserLdap(p entql.StringP) {
-	f.Where(p.Field(bazelinvocation.FieldUserLdap))
+// WhereUsername applies the entql string predicate on the username field.
+func (f *BazelInvocationFilter) WhereUsername(p entql.StringP) {
+	f.Where(p.Field(bazelinvocation.FieldUsername))
 }
 
 // WhereHostname applies the entql string predicate on the hostname field.

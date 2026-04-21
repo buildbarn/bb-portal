@@ -27,7 +27,7 @@ func (r *buildEventRecorder) saveWorkspaceStatus(ctx context.Context, tx *ent.Cl
 		case "BUILD_HOST":
 			update.SetHostname(item.GetValue())
 		case "BUILD_USER":
-			update.SetUserLdap(item.GetValue())
+			update.SetUsername(item.GetValue())
 		}
 	}
 

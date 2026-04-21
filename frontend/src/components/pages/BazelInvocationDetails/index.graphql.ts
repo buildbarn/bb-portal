@@ -149,10 +149,7 @@ fragment BazelInvocationInfo on BazelInvocation {
     sizeInBytes
     digestFunction
   }
-  user {
-    Email
-    LDAP
-  }
+  username
   startedAt
   endedAt
   exitCodeName

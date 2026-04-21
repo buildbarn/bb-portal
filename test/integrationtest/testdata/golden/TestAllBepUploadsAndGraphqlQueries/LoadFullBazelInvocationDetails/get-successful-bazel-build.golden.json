@@ -296,9 +296,6 @@
     "sourceControl": null,
     "startedAt": "2024-05-03T00:24:28.621Z",
     "stepLabel": "",
-    "user": {
-      "Email": "",
-      "LDAP": "nameless"
-    }
+    "username": "nameless"
   }
 }

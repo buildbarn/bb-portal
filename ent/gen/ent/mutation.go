@@ -6672,8 +6672,7 @@ type BazelInvocationMutation struct {
 	addpatchset_number               *int
 	bep_completed                    *bool
 	step_label                       *string
-	user_email                       *string
-	user_ldap                        *string
+	username                         *string
 	hostname                         *string
 	is_ci_worker                     *bool
 	num_fetches                      *int64
@@ -7230,102 +7229,53 @@ func (m *BazelInvocationMutation) ResetStepLabel() {
 	delete(m.clearedFields, bazelinvocation.FieldStepLabel)
 }
 
-// SetUserEmail sets the "user_email" field.
-func (m *BazelInvocationMutation) SetUserEmail(s string) {
-	m.user_email = &s
+// SetUsername sets the "username" field.
+func (m *BazelInvocationMutation) SetUsername(s string) {
+	m.username = &s
 }
 
-// UserEmail returns the value of the "user_email" field in the mutation.
-func (m *BazelInvocationMutation) UserEmail() (r string, exists bool) {
-	v := m.user_email
+// Username returns the value of the "username" field in the mutation.
+func (m *BazelInvocationMutation) Username() (r string, exists bool) {
+	v := m.username
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUserEmail returns the old "user_email" field's value of the BazelInvocation entity.
+// OldUsername returns the old "username" field's value of the BazelInvocation entity.
 // If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldUserEmail(ctx context.Context) (v string, err error) {
+func (m *BazelInvocationMutation) OldUsername(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserEmail is only allowed on UpdateOne operations")
+		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserEmail requires an ID field in the mutation")
+		return v, errors.New("OldUsername requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserEmail: %w", err)
+		return v, fmt.Errorf("querying old value for OldUsername: %w", err)
 	}
-	return oldValue.UserEmail, nil
+	return oldValue.Username, nil
 }
 
-// ClearUserEmail clears the value of the "user_email" field.
-func (m *BazelInvocationMutation) ClearUserEmail() {
-	m.user_email = nil
-	m.clearedFields[bazelinvocation.FieldUserEmail] = struct{}{}
+// ClearUsername clears the value of the "username" field.
+func (m *BazelInvocationMutation) ClearUsername() {
+	m.username = nil
+	m.clearedFields[bazelinvocation.FieldUsername] = struct{}{}
 }
 
-// UserEmailCleared returns if the "user_email" field was cleared in this mutation.
-func (m *BazelInvocationMutation) UserEmailCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldUserEmail]
+// UsernameCleared returns if the "username" field was cleared in this mutation.
+func (m *BazelInvocationMutation) UsernameCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldUsername]
 	return ok
 }
 
-// ResetUserEmail resets all changes to the "user_email" field.
-func (m *BazelInvocationMutation) ResetUserEmail() {
-	m.user_email = nil
-	delete(m.clearedFields, bazelinvocation.FieldUserEmail)
-}
-
-// SetUserLdap sets the "user_ldap" field.
-func (m *BazelInvocationMutation) SetUserLdap(s string) {
-	m.user_ldap = &s
-}
-
-// UserLdap returns the value of the "user_ldap" field in the mutation.
-func (m *BazelInvocationMutation) UserLdap() (r string, exists bool) {
-	v := m.user_ldap
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUserLdap returns the old "user_ldap" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldUserLdap(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserLdap is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserLdap requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserLdap: %w", err)
-	}
-	return oldValue.UserLdap, nil
-}
-
-// ClearUserLdap clears the value of the "user_ldap" field.
-func (m *BazelInvocationMutation) ClearUserLdap() {
-	m.user_ldap = nil
-	m.clearedFields[bazelinvocation.FieldUserLdap] = struct{}{}
-}
-
-// UserLdapCleared returns if the "user_ldap" field was cleared in this mutation.
-func (m *BazelInvocationMutation) UserLdapCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldUserLdap]
-	return ok
-}
-
-// ResetUserLdap resets all changes to the "user_ldap" field.
-func (m *BazelInvocationMutation) ResetUserLdap() {
-	m.user_ldap = nil
-	delete(m.clearedFields, bazelinvocation.FieldUserLdap)
+// ResetUsername resets all changes to the "username" field.
+func (m *BazelInvocationMutation) ResetUsername() {
+	m.username = nil
+	delete(m.clearedFields, bazelinvocation.FieldUsername)
 }
 
 // SetHostname sets the "hostname" field.
@@ -8689,7 +8639,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 24)
+	fields := make([]string, 0, 23)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -8714,11 +8664,8 @@ func (m *BazelInvocationMutation) Fields() []string {
 	if m.step_label != nil {
 		fields = append(fields, bazelinvocation.FieldStepLabel)
 	}
-	if m.user_email != nil {
-		fields = append(fields, bazelinvocation.FieldUserEmail)
-	}
-	if m.user_ldap != nil {
-		fields = append(fields, bazelinvocation.FieldUserLdap)
+	if m.username != nil {
+		fields = append(fields, bazelinvocation.FieldUsername)
 	}
 	if m.hostname != nil {
 		fields = append(fields, bazelinvocation.FieldHostname)
@@ -8786,10 +8733,8 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.BepCompleted()
 	case bazelinvocation.FieldStepLabel:
 		return m.StepLabel()
-	case bazelinvocation.FieldUserEmail:
-		return m.UserEmail()
-	case bazelinvocation.FieldUserLdap:
-		return m.UserLdap()
+	case bazelinvocation.FieldUsername:
+		return m.Username()
 	case bazelinvocation.FieldHostname:
 		return m.Hostname()
 	case bazelinvocation.FieldIsCiWorker:
@@ -8843,10 +8788,8 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldBepCompleted(ctx)
 	case bazelinvocation.FieldStepLabel:
 		return m.OldStepLabel(ctx)
-	case bazelinvocation.FieldUserEmail:
-		return m.OldUserEmail(ctx)
-	case bazelinvocation.FieldUserLdap:
-		return m.OldUserLdap(ctx)
+	case bazelinvocation.FieldUsername:
+		return m.OldUsername(ctx)
 	case bazelinvocation.FieldHostname:
 		return m.OldHostname(ctx)
 	case bazelinvocation.FieldIsCiWorker:
@@ -8940,19 +8883,12 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStepLabel(v)
 		return nil
-	case bazelinvocation.FieldUserEmail:
+	case bazelinvocation.FieldUsername:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUserEmail(v)
-		return nil
-	case bazelinvocation.FieldUserLdap:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUserLdap(v)
+		m.SetUsername(v)
 		return nil
 	case bazelinvocation.FieldHostname:
 		v, ok := value.(string)
@@ -9148,11 +9084,8 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldStepLabel) {
 		fields = append(fields, bazelinvocation.FieldStepLabel)
 	}
-	if m.FieldCleared(bazelinvocation.FieldUserEmail) {
-		fields = append(fields, bazelinvocation.FieldUserEmail)
-	}
-	if m.FieldCleared(bazelinvocation.FieldUserLdap) {
-		fields = append(fields, bazelinvocation.FieldUserLdap)
+	if m.FieldCleared(bazelinvocation.FieldUsername) {
+		fields = append(fields, bazelinvocation.FieldUsername)
 	}
 	if m.FieldCleared(bazelinvocation.FieldHostname) {
 		fields = append(fields, bazelinvocation.FieldHostname)
@@ -9213,11 +9146,8 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 	case bazelinvocation.FieldStepLabel:
 		m.ClearStepLabel()
 		return nil
-	case bazelinvocation.FieldUserEmail:
-		m.ClearUserEmail()
-		return nil
-	case bazelinvocation.FieldUserLdap:
-		m.ClearUserLdap()
+	case bazelinvocation.FieldUsername:
+		m.ClearUsername()
 		return nil
 	case bazelinvocation.FieldHostname:
 		m.ClearHostname()
@@ -9281,11 +9211,8 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 	case bazelinvocation.FieldStepLabel:
 		m.ResetStepLabel()
 		return nil
-	case bazelinvocation.FieldUserEmail:
-		m.ResetUserEmail()
-		return nil
-	case bazelinvocation.FieldUserLdap:
-		m.ResetUserLdap()
+	case bazelinvocation.FieldUsername:
+		m.ResetUsername()
 		return nil
 	case bazelinvocation.FieldHostname:
 		m.ResetHostname()

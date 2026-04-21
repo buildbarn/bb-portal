@@ -5,11 +5,14 @@ import type { BazelInvocationNodeFragment } from "@/graphql/__generated__/graphq
 
 const { useToken } = theme;
 interface Props {
-  authenticatedUser: BazelInvocationNodeFragment["authenticatedUser"];
-  user: BazelInvocationNodeFragment["user"];
+  authenticatedUser?: BazelInvocationNodeFragment["authenticatedUser"];
+  username?: string;
 }
 
-const UserStatusIndicator: React.FC<Props> = ({ authenticatedUser, user }) => {
+const UserStatusIndicator: React.FC<Props> = ({
+  authenticatedUser,
+  username,
+}) => {
   const { token } = useToken();
   if (authenticatedUser) {
     return (
@@ -38,7 +41,7 @@ const UserStatusIndicator: React.FC<Props> = ({ authenticatedUser, user }) => {
       <Tooltip title="This user is unauthenticated">
         <UserOutlined style={{ color: "red" }} />
       </Tooltip>{" "}
-      {user?.LDAP}
+      {username || <i>No display name</i>}
     </>
   );
 };
