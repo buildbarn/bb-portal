@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { Spin } from "antd";
+import { Space, Spin } from "antd";
 import { fileSystemAccessCacheClient } from "@/grpc/fileSystemAccessCacheClient";
-import type { BrowserPageParams } from "@/types/BrowserPageType";
+import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import type { FileSystemAccessProfileReference } from "@/types/FileSystemAccessProfileReference";
-import BrowserDirectory from "../BrowserDirectory";
+import { BrowserDirectory } from "../BrowserDirectory";
+import CopyBbClientdDirectoryButton from "../BrowserDirectory/CopyBbClientdDirectoryButton";
+import DownloadAsTarballButton from "../BrowserDirectory/DownloadAsTarballButton";
+import { DirectoryPrefetchDescription } from "../BrowserDirectory/directoryPrefetchDescription";
 import PortalAlert from "../PortalAlert";
 
 interface Params {
@@ -53,13 +56,34 @@ const BrowserDirectoryPage: React.FC<Params> = ({
   }
 
   return (
-    <BrowserDirectory
-      instanceName={browserPageParams.instanceName}
-      digestFunction={browserPageParams.digestFunction}
-      inputRootDigest={browserPageParams.digest}
-      fileSystemAccessProfile={data}
-      fileSystemAccessProfileReference={fileSystemAccessProfileReference}
-    />
+    <Space direction="vertical">
+      <BrowserDirectory
+        baseData={{
+          instanceName: browserPageParams.instanceName,
+          digestFunction: browserPageParams.digestFunction,
+          digest: browserPageParams.digest,
+          fileSystemAccessProfile: data,
+          fileSystemAccessProfileReference: fileSystemAccessProfileReference,
+        }}
+        openDirsString=""
+        useBloomFilter={true}
+      />
+      <Space direction="vertical" size="small">
+        <DirectoryPrefetchDescription prefetchDataExists={!!data} />
+        <Space direction="horizontal">
+          <CopyBbClientdDirectoryButton
+            instanceName={browserPageParams.instanceName}
+            digestFunction={browserPageParams.digestFunction}
+            inputRootDigest={browserPageParams.digest}
+          />
+          <DownloadAsTarballButton
+            instanceName={browserPageParams.instanceName}
+            digestFunction={browserPageParams.digestFunction}
+            directoryDigest={browserPageParams.digest}
+          />
+        </Space>
+      </Space>
+    </Space>
   );
 };
 

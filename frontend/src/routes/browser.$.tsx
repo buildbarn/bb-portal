@@ -1,20 +1,28 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { BrowserPage } from "@/components/pages/Browser";
+import { NotFoundError } from "@/main";
+import { BrowserPageSchema } from "@/types/BrowserPageParams";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
-const BrowserSearchSchema = z.object({
-  fileSystemAccessProfile: z
+const FileSystemAccessProfileSchema = z.object({
+  digest: z
     .object({
-      digest: z
-        .object({
-          hash: z.string(),
-          sizeBytes: z.string(),
-        })
-        .or(z.undefined()),
-      pathHashesBaseHash: z.string(),
+      hash: z.string(),
+      sizeBytes: z.string(),
     })
-    .optional(),
+    .or(z.undefined()),
+  pathHashesBaseHash: z.string(),
+});
+
+const ComparedActionSchema = BrowserPageSchema.omit({
+  browserPageType: true,
+});
+
+const BrowserSearchSchema = z.object({
+  fileSystemAccessProfile: FileSystemAccessProfileSchema.optional(),
+  comparedAction: ComparedActionSchema.optional(),
+  openDirs: z.string().optional(),
 });
 
 export type BrowserSearchParams = z.infer<typeof BrowserSearchSchema>;
@@ -27,16 +35,15 @@ export const Route = createFileRoute("/browser/$")({
     // REv2 grpc client. This prevents the client from being loaded for
     // every route as we only need it when actually loading the browser
     // page.
-    const { parseBrowserPageSlug } = await import(
-      "@/utils/parseBrowserPageSlug"
-    );
+    const { parseBrowserPageSlug } = await import("@/types/BrowserPageParams");
     const browserPageParams = parseBrowserPageSlug(
       (params._splat || "").split("/"),
     );
-    if (!browserPageParams) {
-      throw notFound();
+    const result = BrowserPageSchema.safeParse(browserPageParams);
+    if (!result.data) {
+      throw new NotFoundError("page", result.error?.message);
     }
-    return browserPageParams;
+    return result.data;
   },
   head: (_ctx) => {
     const browserPageParams = _ctx.loaderData;
