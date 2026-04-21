@@ -163,26 +163,24 @@ fragment BazelInvocationInfo on BazelInvocation {
     mnemonic
   }
   numFetches
-  stepLabel
   hostname
-  isCiWorker
   sourceControl {
     id
-    provider
-    instanceURL
     repo
-    refs
-    commitSha
-    actor
-    eventName
-    workflow
-    runID
-    runNumber
-    job
-    action
-    runnerName
-    runnerArch
-    runnerOs
+    repoURL
+    ref
+    refURL
+    commit
+    commitURL
+  }
+  tags(orderBy: { field: KEY, direction: ASC }) {
+    edges {
+      node {
+        id
+        key
+        value
+      }
+    }
   }
 }
 `);

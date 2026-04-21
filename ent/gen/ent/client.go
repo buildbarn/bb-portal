@@ -25,6 +25,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
@@ -32,6 +33,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -76,6 +78,8 @@ type Client struct {
 	BuildGraphMetrics *BuildGraphMetricsClient
 	// BuildLogChunk is the client for interacting with the BuildLogChunk builders.
 	BuildLogChunk *BuildLogChunkClient
+	// BuildTag is the client for interacting with the BuildTag builders.
+	BuildTag *BuildTagClient
 	// Configuration is the client for interacting with the Configuration builders.
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
@@ -90,6 +94,8 @@ type Client struct {
 	InstanceName *InstanceNameClient
 	// InvocationFiles is the client for interacting with the InvocationFiles builders.
 	InvocationFiles *InvocationFilesClient
+	// InvocationTag is the client for interacting with the InvocationTag builders.
+	InvocationTag *InvocationTagClient
 	// InvocationTarget is the client for interacting with the InvocationTarget builders.
 	InvocationTarget *InvocationTargetClient
 	// MemoryMetrics is the client for interacting with the MemoryMetrics builders.
@@ -143,6 +149,7 @@ func (c *Client) init() {
 	c.Build = NewBuildClient(c.config)
 	c.BuildGraphMetrics = NewBuildGraphMetricsClient(c.config)
 	c.BuildLogChunk = NewBuildLogChunkClient(c.config)
+	c.BuildTag = NewBuildTagClient(c.config)
 	c.Configuration = NewConfigurationClient(c.config)
 	c.ConnectionMetadata = NewConnectionMetadataClient(c.config)
 	c.EventMetadata = NewEventMetadataClient(c.config)
@@ -150,6 +157,7 @@ func (c *Client) init() {
 	c.IncompleteBuildLog = NewIncompleteBuildLogClient(c.config)
 	c.InstanceName = NewInstanceNameClient(c.config)
 	c.InvocationFiles = NewInvocationFilesClient(c.config)
+	c.InvocationTag = NewInvocationTagClient(c.config)
 	c.InvocationTarget = NewInvocationTargetClient(c.config)
 	c.MemoryMetrics = NewMemoryMetricsClient(c.config)
 	c.Metrics = NewMetricsClient(c.config)
@@ -267,6 +275,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Build:                 NewBuildClient(cfg),
 		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
 		BuildLogChunk:         NewBuildLogChunkClient(cfg),
+		BuildTag:              NewBuildTagClient(cfg),
 		Configuration:         NewConfigurationClient(cfg),
 		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
 		EventMetadata:         NewEventMetadataClient(cfg),
@@ -274,6 +283,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		IncompleteBuildLog:    NewIncompleteBuildLogClient(cfg),
 		InstanceName:          NewInstanceNameClient(cfg),
 		InvocationFiles:       NewInvocationFilesClient(cfg),
+		InvocationTag:         NewInvocationTagClient(cfg),
 		InvocationTarget:      NewInvocationTargetClient(cfg),
 		MemoryMetrics:         NewMemoryMetricsClient(cfg),
 		Metrics:               NewMetricsClient(cfg),
@@ -318,6 +328,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Build:                 NewBuildClient(cfg),
 		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
 		BuildLogChunk:         NewBuildLogChunkClient(cfg),
+		BuildTag:              NewBuildTagClient(cfg),
 		Configuration:         NewConfigurationClient(cfg),
 		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
 		EventMetadata:         NewEventMetadataClient(cfg),
@@ -325,6 +336,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		IncompleteBuildLog:    NewIncompleteBuildLogClient(cfg),
 		InstanceName:          NewInstanceNameClient(cfg),
 		InvocationFiles:       NewInvocationFilesClient(cfg),
+		InvocationTag:         NewInvocationTagClient(cfg),
 		InvocationTarget:      NewInvocationTargetClient(cfg),
 		MemoryMetrics:         NewMemoryMetricsClient(cfg),
 		Metrics:               NewMetricsClient(cfg),
@@ -371,12 +383,12 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
-		c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration, c.ConnectionMetadata,
-		c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
-		c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics, c.Metrics,
-		c.MissDetail, c.NetworkMetrics, c.RunnerCount, c.SourceControl,
-		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
-		c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
+		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.Configuration,
+		c.ConnectionMetadata, c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog,
+		c.InstanceName, c.InvocationFiles, c.InvocationTag, c.InvocationTarget,
+		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics, c.RunnerCount,
+		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
+		c.TargetMetrics, c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -388,12 +400,12 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
-		c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration, c.ConnectionMetadata,
-		c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
-		c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics, c.Metrics,
-		c.MissDetail, c.NetworkMetrics, c.RunnerCount, c.SourceControl,
-		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
-		c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
+		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.Configuration,
+		c.ConnectionMetadata, c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog,
+		c.InstanceName, c.InvocationFiles, c.InvocationTag, c.InvocationTarget,
+		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics, c.RunnerCount,
+		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
+		c.TargetMetrics, c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -422,6 +434,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BuildGraphMetrics.mutate(ctx, m)
 	case *BuildLogChunkMutation:
 		return c.BuildLogChunk.mutate(ctx, m)
+	case *BuildTagMutation:
+		return c.BuildTag.mutate(ctx, m)
 	case *ConfigurationMutation:
 		return c.Configuration.mutate(ctx, m)
 	case *ConnectionMetadataMutation:
@@ -436,6 +450,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.InstanceName.mutate(ctx, m)
 	case *InvocationFilesMutation:
 		return c.InvocationFiles.mutate(ctx, m)
+	case *InvocationTagMutation:
+		return c.InvocationTag.mutate(ctx, m)
 	case *InvocationTargetMutation:
 		return c.InvocationTarget.mutate(ctx, m)
 	case *MemoryMetricsMutation:
@@ -1602,6 +1618,22 @@ func (c *BazelInvocationClient) QueryAuthenticatedUser(bi *BazelInvocation) *Aut
 	return query
 }
 
+// QueryTags queries the tags edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryTags(bi *BazelInvocation) *InvocationTagQuery {
+	query := (&InvocationTagClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(invocationtag.Table, invocationtag.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TagsTable, bazelinvocation.TagsColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryEventMetadata queries the event_metadata edge of a BazelInvocation.
 func (c *BazelInvocationClient) QueryEventMetadata(bi *BazelInvocation) *EventMetadataQuery {
 	query := (&EventMetadataClient{config: c.config}).Query()
@@ -1770,7 +1802,7 @@ func (c *BazelInvocationClient) QuerySourceControl(bi *BazelInvocation) *SourceC
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(sourcecontrol.Table, sourcecontrol.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -1937,6 +1969,22 @@ func (c *BuildClient) QueryInvocations(b *Build) *BazelInvocationQuery {
 			sqlgraph.From(build.Table, build.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, build.InvocationsTable, build.InvocationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(b.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTags queries the tags edge of a Build.
+func (c *BuildClient) QueryTags(b *Build) *BuildTagQuery {
+	query := (&BuildTagClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := b.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(build.Table, build.FieldID, id),
+			sqlgraph.To(buildtag.Table, buildtag.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, build.TagsTable, build.TagsColumn),
 		)
 		fromV = sqlgraph.Neighbors(b.driver.Dialect(), step)
 		return fromV, nil
@@ -2265,6 +2313,155 @@ func (c *BuildLogChunkClient) mutate(ctx context.Context, m *BuildLogChunkMutati
 		return (&BuildLogChunkDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown BuildLogChunk mutation op: %q", m.Op())
+	}
+}
+
+// BuildTagClient is a client for the BuildTag schema.
+type BuildTagClient struct {
+	config
+}
+
+// NewBuildTagClient returns a client for the BuildTag from the given config.
+func NewBuildTagClient(c config) *BuildTagClient {
+	return &BuildTagClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `buildtag.Hooks(f(g(h())))`.
+func (c *BuildTagClient) Use(hooks ...Hook) {
+	c.hooks.BuildTag = append(c.hooks.BuildTag, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `buildtag.Intercept(f(g(h())))`.
+func (c *BuildTagClient) Intercept(interceptors ...Interceptor) {
+	c.inters.BuildTag = append(c.inters.BuildTag, interceptors...)
+}
+
+// Create returns a builder for creating a BuildTag entity.
+func (c *BuildTagClient) Create() *BuildTagCreate {
+	mutation := newBuildTagMutation(c.config, OpCreate)
+	return &BuildTagCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BuildTag entities.
+func (c *BuildTagClient) CreateBulk(builders ...*BuildTagCreate) *BuildTagCreateBulk {
+	return &BuildTagCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BuildTagClient) MapCreateBulk(slice any, setFunc func(*BuildTagCreate, int)) *BuildTagCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BuildTagCreateBulk{err: fmt.Errorf("calling to BuildTagClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BuildTagCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BuildTagCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BuildTag.
+func (c *BuildTagClient) Update() *BuildTagUpdate {
+	mutation := newBuildTagMutation(c.config, OpUpdate)
+	return &BuildTagUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BuildTagClient) UpdateOne(bt *BuildTag) *BuildTagUpdateOne {
+	mutation := newBuildTagMutation(c.config, OpUpdateOne, withBuildTag(bt))
+	return &BuildTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BuildTagClient) UpdateOneID(id int64) *BuildTagUpdateOne {
+	mutation := newBuildTagMutation(c.config, OpUpdateOne, withBuildTagID(id))
+	return &BuildTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BuildTag.
+func (c *BuildTagClient) Delete() *BuildTagDelete {
+	mutation := newBuildTagMutation(c.config, OpDelete)
+	return &BuildTagDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BuildTagClient) DeleteOne(bt *BuildTag) *BuildTagDeleteOne {
+	return c.DeleteOneID(bt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BuildTagClient) DeleteOneID(id int64) *BuildTagDeleteOne {
+	builder := c.Delete().Where(buildtag.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BuildTagDeleteOne{builder}
+}
+
+// Query returns a query builder for BuildTag.
+func (c *BuildTagClient) Query() *BuildTagQuery {
+	return &BuildTagQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBuildTag},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a BuildTag entity by its id.
+func (c *BuildTagClient) Get(ctx context.Context, id int64) (*BuildTag, error) {
+	return c.Query().Where(buildtag.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BuildTagClient) GetX(ctx context.Context, id int64) *BuildTag {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBuild queries the build edge of a BuildTag.
+func (c *BuildTagClient) QueryBuild(bt *BuildTag) *BuildQuery {
+	query := (&BuildClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(buildtag.Table, buildtag.FieldID, id),
+			sqlgraph.To(build.Table, build.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, buildtag.BuildTable, buildtag.BuildColumn),
+		)
+		fromV = sqlgraph.Neighbors(bt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *BuildTagClient) Hooks() []Hook {
+	return c.hooks.BuildTag
+}
+
+// Interceptors returns the client interceptors.
+func (c *BuildTagClient) Interceptors() []Interceptor {
+	return c.inters.BuildTag
+}
+
+func (c *BuildTagClient) mutate(ctx context.Context, m *BuildTagMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BuildTagCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BuildTagUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BuildTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BuildTagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown BuildTag mutation op: %q", m.Op())
 	}
 }
 
@@ -3372,6 +3569,155 @@ func (c *InvocationFilesClient) mutate(ctx context.Context, m *InvocationFilesMu
 		return (&InvocationFilesDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown InvocationFiles mutation op: %q", m.Op())
+	}
+}
+
+// InvocationTagClient is a client for the InvocationTag schema.
+type InvocationTagClient struct {
+	config
+}
+
+// NewInvocationTagClient returns a client for the InvocationTag from the given config.
+func NewInvocationTagClient(c config) *InvocationTagClient {
+	return &InvocationTagClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `invocationtag.Hooks(f(g(h())))`.
+func (c *InvocationTagClient) Use(hooks ...Hook) {
+	c.hooks.InvocationTag = append(c.hooks.InvocationTag, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `invocationtag.Intercept(f(g(h())))`.
+func (c *InvocationTagClient) Intercept(interceptors ...Interceptor) {
+	c.inters.InvocationTag = append(c.inters.InvocationTag, interceptors...)
+}
+
+// Create returns a builder for creating a InvocationTag entity.
+func (c *InvocationTagClient) Create() *InvocationTagCreate {
+	mutation := newInvocationTagMutation(c.config, OpCreate)
+	return &InvocationTagCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of InvocationTag entities.
+func (c *InvocationTagClient) CreateBulk(builders ...*InvocationTagCreate) *InvocationTagCreateBulk {
+	return &InvocationTagCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *InvocationTagClient) MapCreateBulk(slice any, setFunc func(*InvocationTagCreate, int)) *InvocationTagCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &InvocationTagCreateBulk{err: fmt.Errorf("calling to InvocationTagClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*InvocationTagCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &InvocationTagCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for InvocationTag.
+func (c *InvocationTagClient) Update() *InvocationTagUpdate {
+	mutation := newInvocationTagMutation(c.config, OpUpdate)
+	return &InvocationTagUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *InvocationTagClient) UpdateOne(it *InvocationTag) *InvocationTagUpdateOne {
+	mutation := newInvocationTagMutation(c.config, OpUpdateOne, withInvocationTag(it))
+	return &InvocationTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *InvocationTagClient) UpdateOneID(id int64) *InvocationTagUpdateOne {
+	mutation := newInvocationTagMutation(c.config, OpUpdateOne, withInvocationTagID(id))
+	return &InvocationTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for InvocationTag.
+func (c *InvocationTagClient) Delete() *InvocationTagDelete {
+	mutation := newInvocationTagMutation(c.config, OpDelete)
+	return &InvocationTagDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *InvocationTagClient) DeleteOne(it *InvocationTag) *InvocationTagDeleteOne {
+	return c.DeleteOneID(it.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *InvocationTagClient) DeleteOneID(id int64) *InvocationTagDeleteOne {
+	builder := c.Delete().Where(invocationtag.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &InvocationTagDeleteOne{builder}
+}
+
+// Query returns a query builder for InvocationTag.
+func (c *InvocationTagClient) Query() *InvocationTagQuery {
+	return &InvocationTagQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeInvocationTag},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a InvocationTag entity by its id.
+func (c *InvocationTagClient) Get(ctx context.Context, id int64) (*InvocationTag, error) {
+	return c.Query().Where(invocationtag.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *InvocationTagClient) GetX(ctx context.Context, id int64) *InvocationTag {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a InvocationTag.
+func (c *InvocationTagClient) QueryBazelInvocation(it *InvocationTag) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := it.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(invocationtag.Table, invocationtag.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, invocationtag.BazelInvocationTable, invocationtag.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(it.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *InvocationTagClient) Hooks() []Hook {
+	return c.hooks.InvocationTag
+}
+
+// Interceptors returns the client interceptors.
+func (c *InvocationTagClient) Interceptors() []Interceptor {
+	return c.inters.InvocationTag
+}
+
+func (c *InvocationTagClient) mutate(ctx context.Context, m *InvocationTagMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&InvocationTagCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&InvocationTagUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&InvocationTagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&InvocationTagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown InvocationTag mutation op: %q", m.Op())
 	}
 }
 
@@ -4577,7 +4923,7 @@ func (c *SourceControlClient) QueryBazelInvocation(sc *SourceControl) *BazelInvo
 		step := sqlgraph.NewStep(
 			sqlgraph.From(sourcecontrol.Table, sourcecontrol.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, sourcecontrol.BazelInvocationTable, sourcecontrol.BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, sourcecontrol.BazelInvocationTable, sourcecontrol.BazelInvocationColumn),
 		)
 		fromV = sqlgraph.Neighbors(sc.driver.Dialect(), step)
 		return fromV, nil
@@ -5890,20 +6236,21 @@ type (
 	hooks struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
-		Configuration, ConnectionMetadata, EventMetadata, GarbageMetrics,
-		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
-		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, RunnerCount, SourceControl,
-		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestResult,
-		TestSummary, TestTarget, TimingMetrics []ent.Hook
+		BuildTag, Configuration, ConnectionMetadata, EventMetadata, GarbageMetrics,
+		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTag,
+		InvocationTarget, MemoryMetrics, Metrics, MissDetail, NetworkMetrics,
+		RunnerCount, SourceControl, SystemNetworkStats, Target, TargetKindMapping,
+		TargetMetrics, TestResult, TestSummary, TestTarget, TimingMetrics []ent.Hook
 	}
 	inters struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
-		Configuration, ConnectionMetadata, EventMetadata, GarbageMetrics,
-		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
-		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, RunnerCount, SourceControl,
-		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestResult,
-		TestSummary, TestTarget, TimingMetrics []ent.Interceptor
+		BuildTag, Configuration, ConnectionMetadata, EventMetadata, GarbageMetrics,
+		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTag,
+		InvocationTarget, MemoryMetrics, Metrics, MissDetail, NetworkMetrics,
+		RunnerCount, SourceControl, SystemNetworkStats, Target, TargetKindMapping,
+		TargetMetrics, TestResult, TestSummary, TestTarget,
+		TimingMetrics []ent.Interceptor
 	}
 )
 

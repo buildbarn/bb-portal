@@ -15,55 +15,17 @@ type SourceControl struct {
 // Fields of the SourceControl object.
 func (SourceControl) Fields() []ent.Field {
 	return []ent.Field{
-		// The provider of the source control
-		field.Enum("provider").
-			Values("GITHUB", "GITLAB").
-			Optional(),
-
-		// The URL of the source control instance (e.g., https://github.com)
-		field.String("instance_url").Optional(),
-
-		// The Repository Url associated wth the invocation
+		// The repo used for a invocation
 		field.String("repo").Optional(),
+		field.String("repo_url").Optional(),
 
-		// The source control refs associated with the invocation
-		field.String("refs").Optional(),
+		// Git ref used for the invocation, such as branch or pull request
+		field.String("ref").Optional(),
+		field.String("ref_url").Optional(),
 
-		// The Commit SHA of the invocation
-		field.String("commit_sha").Optional(),
-
-		// The source control actor that triggered the run
-		field.String("actor").Optional(),
-
-		// The source control event name associated with the invocation
-		field.String("event_name").Optional(),
-
-		// The source control workflow associated with the invocation
-		field.String("workflow").Optional(),
-
-		// The source control run id associated with the invocation
-		field.String("run_id").Optional(),
-
-		// The source control run id associated with the invocation
-		field.String("run_number").Optional(),
-
-		// The source control job associated with the invocation
-		field.String("job").Optional(),
-
-		// The source control action associated with the invocation
-		field.String("action").Optional(),
-
-		// The source control job associated with the invocation (Possible duplicate)
-		field.String("runner_name").Optional(),
-
-		// The source control runner architecture associated with the invocation (Possible duplicate)
-		field.String("runner_arch").Optional(),
-
-		// The source control runner architecture associated with the invocation (Possible duplicate)
-		field.String("runner_os").Optional(),
-
-		// The source control workspace associated with the invocation
-		field.String("workspace").Optional(),
+		// Commit used for the invocation
+		field.String("commit").Optional(),
+		field.String("commit_url").Optional(),
 	}
 }
 

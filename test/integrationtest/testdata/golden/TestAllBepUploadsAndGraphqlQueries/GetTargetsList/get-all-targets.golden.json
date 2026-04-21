@@ -3069,10 +3069,65 @@
           "label": "//tools:sqlc_macos",
           "targetKind": "alias rule"
         }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI4MA==",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//ent/authschema:authschema_test",
+          "targetKind": "go_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI4MQ==",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//frontend:google_field_behavior_proto",
+          "targetKind": "_write_source_file rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI4Mg==",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//frontend:google_field_behavior_proto_src",
+          "targetKind": "get_proto_src rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI4Mw==",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//frontend:google_field_behavior_proto_test",
+          "targetKind": "_diff_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI4NA==",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//test/testutils:testutils",
+          "targetKind": "go_library rule"
+        }
       }
     ],
     "pageInfo": {
-      "endCursor": "gaFp0wAAAAAAAAEX",
+      "endCursor": "gaFp0wAAAAAAAAEc",
       "hasNextPage": false,
       "hasPreviousPage": false,
       "startCursor": "gaFp0wAAAAAAAAAB"

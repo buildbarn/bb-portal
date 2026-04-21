@@ -161,6 +161,42 @@ message BuildEventStreamService {
   // process than min_event_batch_duration this has no impact.
   // Recommended value: '0.1s'
   google.protobuf.Duration min_event_batch_duration = 10;
+
+  // JMESPath expression for extracting metadata about a invocation.
+  //
+  // If configured, each expression is called against a JSON object with the
+  // following structure:
+  //
+  //     {
+  //       "env": map<string, any>,
+  //       "files": map<string, any>
+  //     }
+  //
+  // "env" is an map of all environment variables present when Bazel ran.
+  //
+  // "files" corresponds to any files that are specified within the
+  // buildbarn.configuration.jmespath.Expression configuration.
+  //
+  // The expected result is a JSON object where all fields are optional. The
+  // expected fields are:
+  //
+  // - "username": The username to set for the invocation.
+  // - "hostname": The hostname to set for the invocation.
+  // - "sourceControls": An array of `SourceControl` objects.
+  // - "invocationTags": A JSON object with string values which are converted
+  //   to key-value pairs associated with the invocation.
+  // - "buildTags": A JSON object with string values which are converted
+  //   to key-value pairs associated with the invocation.
+  buildbarn.configuration.jmespath.Expression invocation_metadata_extractor =
+      11;
+
+  // Specifies which key in the `buildTags` map for a invocation that
+  // identifies the Build ID. The value of `buildTags[buildKey]` for a
+  // invocation is the Build ID for the invocation, and it is what is used to
+  // group invocations together into builds. If either `buildKey` or
+  // `buildTags[buildKey]` is unset, the invocation will not be associated with
+  // any build.
+  string build_key = 12;
 }
 
 message BrowserService {

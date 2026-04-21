@@ -32,27 +32,14 @@ func (BazelInvocation) Fields() []ent.Field {
 		// Time the event ended
 		field.Time("ended_at").Optional().Nillable(),
 
-		// Rethink? Keep for now to capture existing processing.
-		field.Int("change_number").Optional(),
-
-		// Rethink? Keep for now.
-		field.Int("patchset_number").Optional(),
-
 		// Build Event Protocol completed successfuly.
 		field.Bool("bep_completed").Default(false),
-
-		// Rethink, keep for now.
-		// A step label pulled from the metada
-		field.String("step_label").Optional(),
 
 		// Username of the user who launched the invocation if provided.
 		field.String("username").Optional().Annotations(entgql.OrderField("USERNAME")),
 
 		// The host name from the system where the invocation was launched
 		field.String("hostname").Optional(),
-
-		// If this invocation is part of CI
-		field.Bool("is_ci_worker").Optional(),
 
 		// The number of successful fetch events seen.
 		field.Int64("num_fetches").Optional(),
@@ -107,6 +94,13 @@ func (BazelInvocation) Edges() []ent.Edge {
 		edge.From("authenticated_user", AuthenticatedUser.Type).
 			Ref("bazel_invocations").
 			Unique(),
+
+		// Metadata for a BazelInvocation.
+		edge.To("tags", InvocationTag.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+				entgql.RelayConnection(),
+			),
 
 		// Event metadata for all events processed for this invocation.
 		edge.To("event_metadata", EventMetadata.Type).
@@ -172,7 +166,6 @@ func (BazelInvocation) Edges() []ent.Edge {
 
 		// Edge to source control information
 		edge.To("source_control", SourceControl.Type).
-			Unique().
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),

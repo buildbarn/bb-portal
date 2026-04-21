@@ -129,6 +129,18 @@ func (f BuildLogChunkFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildLogChunkMutation", m)
 }
 
+// The BuildTagFunc type is an adapter to allow the use of ordinary
+// function as BuildTag mutator.
+type BuildTagFunc func(context.Context, *ent.BuildTagMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BuildTagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BuildTagMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildTagMutation", m)
+}
+
 // The ConfigurationFunc type is an adapter to allow the use of ordinary
 // function as Configuration mutator.
 type ConfigurationFunc func(context.Context, *ent.ConfigurationMutation) (ent.Value, error)
@@ -211,6 +223,18 @@ func (f InvocationFilesFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationFilesMutation", m)
+}
+
+// The InvocationTagFunc type is an adapter to allow the use of ordinary
+// function as InvocationTag mutator.
+type InvocationTagFunc func(context.Context, *ent.InvocationTagMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f InvocationTagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.InvocationTagMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationTagMutation", m)
 }
 
 // The InvocationTargetFunc type is an adapter to allow the use of ordinary

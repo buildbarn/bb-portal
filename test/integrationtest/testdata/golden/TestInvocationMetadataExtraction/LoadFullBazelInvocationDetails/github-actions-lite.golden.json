@@ -1,0 +1,166 @@
+{
+  "getBazelInvocation": {
+    "actions": [],
+    "authenticatedUser": null,
+    "bazelVersion": "9.0.0",
+    "build": {
+      "buildUUID": "e823d26e-7b76-50bd-ac6a-e8306779da6f",
+      "id": "QnVpbGQ6MQ=="
+    },
+    "canonicalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "flag_alias",
+          "value": "build_python_zip=@@rules_python+//python/config_settings:build_python_zip"
+        },
+        {
+          "option": "flag_alias",
+          "value": "incompatible_default_to_explicit_init_py=@@rules_python+//python/config_settings:incompatible_default_to_explicit_init_py"
+        },
+        {
+          "option": "flag_alias",
+          "value": "python_path=@@rules_python+//python/config_settings:python_path"
+        },
+        {
+          "option": "flag_alias",
+          "value": "experimental_python_import_all_repositories=@@rules_python+//python/config_settings:experimental_python_import_all_repositories"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "github-actions.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": [
+        {
+          "option": "max_idle_secs",
+          "value": "10800"
+        },
+        {
+          "option": "shutdown_on_low_sys_mem",
+          "value": "0"
+        },
+        {
+          "option": "connect_timeout_secs",
+          "value": "30"
+        },
+        {
+          "option": "output_user_root",
+          "value": "/home/runner/.cache/bazel/_bazel_runner"
+        },
+        {
+          "option": "failure_detail_out",
+          "value": "/home/runner/.cache/bazel/_bazel_runner/dce2bcbbac8f1da3f14b617bb598383b/failure_detail.rawproto"
+        },
+        {
+          "option": "idle_server_tasks",
+          "value": "1"
+        },
+        {
+          "option": "write_command_log",
+          "value": "1"
+        },
+        {
+          "option": "fatal_event_bus_exceptions",
+          "value": "0"
+        },
+        {
+          "option": "windows_enable_symlinks",
+          "value": "0"
+        },
+        {
+          "option": "client_debug",
+          "value": "false"
+        },
+        {
+          "option": "ignore_all_rc_files",
+          "value": "1"
+        }
+      ]
+    },
+    "configurations": [],
+    "connectionMetadata": null,
+    "endedAt": "2026-03-03T08:05:01.66Z",
+    "exitCodeName": "SUCCESS",
+    "hostname": "",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "instanceName": {
+      "name": ""
+    },
+    "invocationID": "63500331-1b71-4d7a-9125-df9b3dfe4e0d",
+    "metrics": null,
+    "numFetches": 0,
+    "optionsParsed": {
+      "explicitOptions": [
+        "--build_event_json_file=github-actions.bep.ndjson"
+      ],
+      "options": [
+        "--build_event_json_file=github-actions.bep.ndjson"
+      ]
+    },
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "build_event_json_file",
+          "value": "github-actions.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    },
+    "profile": null,
+    "sourceControl": [
+      {
+        "commit": "847b365866c97761b05d72619028b1ed23b5f4e8",
+        "commitURL": "https://github.com/meroton/bb-portal/commit/847b365866c97761b05d72619028b1ed23b5f4e8",
+        "id": "U291cmNlQ29udHJvbDoy",
+        "ref": "refs/heads/test-branch",
+        "refURL": "https://github.com/meroton/bb-portal/tree/refs/heads/test-branch",
+        "repo": "meroton/bb-portal",
+        "repoURL": "https://github.com/meroton/bb-portal"
+      }
+    ],
+    "startedAt": "2026-03-03T07:52:14.102Z",
+    "tags": {
+      "edges": [
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo1",
+            "key": "action",
+            "value": "__run_2"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo2",
+            "key": "job",
+            "value": "lite_build_and_test"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo3",
+            "key": "workflow",
+            "value": "Build and test backend"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo4",
+            "key": "workflow_url",
+            "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+          }
+        }
+      ]
+    },
+    "username": "runner"
+  }
+}

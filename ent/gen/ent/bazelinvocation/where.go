@@ -76,24 +76,9 @@ func EndedAt(v time.Time) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldEndedAt, v))
 }
 
-// ChangeNumber applies equality check predicate on the "change_number" field. It's identical to ChangeNumberEQ.
-func ChangeNumber(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldChangeNumber, v))
-}
-
-// PatchsetNumber applies equality check predicate on the "patchset_number" field. It's identical to PatchsetNumberEQ.
-func PatchsetNumber(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldPatchsetNumber, v))
-}
-
 // BepCompleted applies equality check predicate on the "bep_completed" field. It's identical to BepCompletedEQ.
 func BepCompleted(v bool) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldBepCompleted, v))
-}
-
-// StepLabel applies equality check predicate on the "step_label" field. It's identical to StepLabelEQ.
-func StepLabel(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldStepLabel, v))
 }
 
 // Username applies equality check predicate on the "username" field. It's identical to UsernameEQ.
@@ -104,11 +89,6 @@ func Username(v string) predicate.BazelInvocation {
 // Hostname applies equality check predicate on the "hostname" field. It's identical to HostnameEQ.
 func Hostname(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldHostname, v))
-}
-
-// IsCiWorker applies equality check predicate on the "is_ci_worker" field. It's identical to IsCiWorkerEQ.
-func IsCiWorker(v bool) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldIsCiWorker, v))
 }
 
 // NumFetches applies equality check predicate on the "num_fetches" field. It's identical to NumFetchesEQ.
@@ -336,106 +316,6 @@ func EndedAtNotNil() predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldNotNull(FieldEndedAt))
 }
 
-// ChangeNumberEQ applies the EQ predicate on the "change_number" field.
-func ChangeNumberEQ(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldChangeNumber, v))
-}
-
-// ChangeNumberNEQ applies the NEQ predicate on the "change_number" field.
-func ChangeNumberNEQ(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldChangeNumber, v))
-}
-
-// ChangeNumberIn applies the In predicate on the "change_number" field.
-func ChangeNumberIn(vs ...int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIn(FieldChangeNumber, vs...))
-}
-
-// ChangeNumberNotIn applies the NotIn predicate on the "change_number" field.
-func ChangeNumberNotIn(vs ...int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotIn(FieldChangeNumber, vs...))
-}
-
-// ChangeNumberGT applies the GT predicate on the "change_number" field.
-func ChangeNumberGT(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGT(FieldChangeNumber, v))
-}
-
-// ChangeNumberGTE applies the GTE predicate on the "change_number" field.
-func ChangeNumberGTE(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGTE(FieldChangeNumber, v))
-}
-
-// ChangeNumberLT applies the LT predicate on the "change_number" field.
-func ChangeNumberLT(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLT(FieldChangeNumber, v))
-}
-
-// ChangeNumberLTE applies the LTE predicate on the "change_number" field.
-func ChangeNumberLTE(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLTE(FieldChangeNumber, v))
-}
-
-// ChangeNumberIsNil applies the IsNil predicate on the "change_number" field.
-func ChangeNumberIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldChangeNumber))
-}
-
-// ChangeNumberNotNil applies the NotNil predicate on the "change_number" field.
-func ChangeNumberNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldChangeNumber))
-}
-
-// PatchsetNumberEQ applies the EQ predicate on the "patchset_number" field.
-func PatchsetNumberEQ(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldPatchsetNumber, v))
-}
-
-// PatchsetNumberNEQ applies the NEQ predicate on the "patchset_number" field.
-func PatchsetNumberNEQ(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldPatchsetNumber, v))
-}
-
-// PatchsetNumberIn applies the In predicate on the "patchset_number" field.
-func PatchsetNumberIn(vs ...int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIn(FieldPatchsetNumber, vs...))
-}
-
-// PatchsetNumberNotIn applies the NotIn predicate on the "patchset_number" field.
-func PatchsetNumberNotIn(vs ...int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotIn(FieldPatchsetNumber, vs...))
-}
-
-// PatchsetNumberGT applies the GT predicate on the "patchset_number" field.
-func PatchsetNumberGT(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGT(FieldPatchsetNumber, v))
-}
-
-// PatchsetNumberGTE applies the GTE predicate on the "patchset_number" field.
-func PatchsetNumberGTE(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGTE(FieldPatchsetNumber, v))
-}
-
-// PatchsetNumberLT applies the LT predicate on the "patchset_number" field.
-func PatchsetNumberLT(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLT(FieldPatchsetNumber, v))
-}
-
-// PatchsetNumberLTE applies the LTE predicate on the "patchset_number" field.
-func PatchsetNumberLTE(v int) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLTE(FieldPatchsetNumber, v))
-}
-
-// PatchsetNumberIsNil applies the IsNil predicate on the "patchset_number" field.
-func PatchsetNumberIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldPatchsetNumber))
-}
-
-// PatchsetNumberNotNil applies the NotNil predicate on the "patchset_number" field.
-func PatchsetNumberNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldPatchsetNumber))
-}
-
 // BepCompletedEQ applies the EQ predicate on the "bep_completed" field.
 func BepCompletedEQ(v bool) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldBepCompleted, v))
@@ -444,81 +324,6 @@ func BepCompletedEQ(v bool) predicate.BazelInvocation {
 // BepCompletedNEQ applies the NEQ predicate on the "bep_completed" field.
 func BepCompletedNEQ(v bool) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldNEQ(FieldBepCompleted, v))
-}
-
-// StepLabelEQ applies the EQ predicate on the "step_label" field.
-func StepLabelEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldStepLabel, v))
-}
-
-// StepLabelNEQ applies the NEQ predicate on the "step_label" field.
-func StepLabelNEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldStepLabel, v))
-}
-
-// StepLabelIn applies the In predicate on the "step_label" field.
-func StepLabelIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIn(FieldStepLabel, vs...))
-}
-
-// StepLabelNotIn applies the NotIn predicate on the "step_label" field.
-func StepLabelNotIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotIn(FieldStepLabel, vs...))
-}
-
-// StepLabelGT applies the GT predicate on the "step_label" field.
-func StepLabelGT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGT(FieldStepLabel, v))
-}
-
-// StepLabelGTE applies the GTE predicate on the "step_label" field.
-func StepLabelGTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGTE(FieldStepLabel, v))
-}
-
-// StepLabelLT applies the LT predicate on the "step_label" field.
-func StepLabelLT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLT(FieldStepLabel, v))
-}
-
-// StepLabelLTE applies the LTE predicate on the "step_label" field.
-func StepLabelLTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLTE(FieldStepLabel, v))
-}
-
-// StepLabelContains applies the Contains predicate on the "step_label" field.
-func StepLabelContains(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContains(FieldStepLabel, v))
-}
-
-// StepLabelHasPrefix applies the HasPrefix predicate on the "step_label" field.
-func StepLabelHasPrefix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldStepLabel, v))
-}
-
-// StepLabelHasSuffix applies the HasSuffix predicate on the "step_label" field.
-func StepLabelHasSuffix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldStepLabel, v))
-}
-
-// StepLabelIsNil applies the IsNil predicate on the "step_label" field.
-func StepLabelIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldStepLabel))
-}
-
-// StepLabelNotNil applies the NotNil predicate on the "step_label" field.
-func StepLabelNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldStepLabel))
-}
-
-// StepLabelEqualFold applies the EqualFold predicate on the "step_label" field.
-func StepLabelEqualFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEqualFold(FieldStepLabel, v))
-}
-
-// StepLabelContainsFold applies the ContainsFold predicate on the "step_label" field.
-func StepLabelContainsFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContainsFold(FieldStepLabel, v))
 }
 
 // UsernameEQ applies the EQ predicate on the "username" field.
@@ -669,26 +474,6 @@ func HostnameEqualFold(v string) predicate.BazelInvocation {
 // HostnameContainsFold applies the ContainsFold predicate on the "hostname" field.
 func HostnameContainsFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldContainsFold(FieldHostname, v))
-}
-
-// IsCiWorkerEQ applies the EQ predicate on the "is_ci_worker" field.
-func IsCiWorkerEQ(v bool) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldIsCiWorker, v))
-}
-
-// IsCiWorkerNEQ applies the NEQ predicate on the "is_ci_worker" field.
-func IsCiWorkerNEQ(v bool) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldIsCiWorker, v))
-}
-
-// IsCiWorkerIsNil applies the IsNil predicate on the "is_ci_worker" field.
-func IsCiWorkerIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldIsCiWorker))
-}
-
-// IsCiWorkerNotNil applies the NotNil predicate on the "is_ci_worker" field.
-func IsCiWorkerNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldIsCiWorker))
 }
 
 // NumFetchesEQ applies the EQ predicate on the "num_fetches" field.
@@ -1155,6 +940,29 @@ func HasAuthenticatedUserWith(preds ...predicate.AuthenticatedUser) predicate.Ba
 	})
 }
 
+// HasTags applies the HasEdge predicate on the "tags" edge.
+func HasTags() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TagsTable, TagsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTagsWith applies the HasEdge predicate on the "tags" edge with a given conditions (other predicates).
+func HasTagsWith(preds ...predicate.InvocationTag) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newTagsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasEventMetadata applies the HasEdge predicate on the "event_metadata" edge.
 func HasEventMetadata() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
@@ -1390,7 +1198,7 @@ func HasSourceControl() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, SourceControlTable, SourceControlColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, SourceControlTable, SourceControlColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

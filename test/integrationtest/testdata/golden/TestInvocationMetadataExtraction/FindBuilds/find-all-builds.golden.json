@@ -1,0 +1,58 @@
+{
+  "findBuilds": {
+    "edges": [
+      {
+        "node": {
+          "buildUUID": "e823d26e-7b76-50bd-ac6a-e8306779da6f",
+          "id": "QnVpbGQ6MQ==",
+          "tags": {
+            "edges": [
+              {
+                "node": {
+                  "id": "QnVpbGRUYWc6MQ==",
+                  "key": "build_id",
+                  "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+                }
+              },
+              {
+                "node": {
+                  "id": "QnVpbGRUYWc6Mg==",
+                  "key": "repo",
+                  "value": "meroton/bb-portal"
+                }
+              },
+              {
+                "node": {
+                  "id": "QnVpbGRUYWc6Mw==",
+                  "key": "repo_url",
+                  "value": "https://github.com/meroton/bb-portal"
+                }
+              },
+              {
+                "node": {
+                  "id": "QnVpbGRUYWc6NA==",
+                  "key": "workflow",
+                  "value": "Build and test backend"
+                }
+              },
+              {
+                "node": {
+                  "id": "QnVpbGRUYWc6NQ==",
+                  "key": "workflow_url",
+                  "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+                }
+              }
+            ]
+          },
+          "timestamp": "2026-03-03T07:52:14.102Z"
+        }
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "gaFp0wAAAAAAAAAB",
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": "gaFp0wAAAAAAAAAB"
+    }
+  }
+}

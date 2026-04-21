@@ -43,23 +43,23 @@ func init() {
 	bazelinvocationFields := authschema.BazelInvocation{}.Fields()
 	_ = bazelinvocationFields
 	// bazelinvocationDescBepCompleted is the schema descriptor for bep_completed field.
-	bazelinvocationDescBepCompleted := bazelinvocationFields[6].Descriptor()
+	bazelinvocationDescBepCompleted := bazelinvocationFields[4].Descriptor()
 	// bazelinvocation.DefaultBepCompleted holds the default value on creation for the bep_completed field.
 	bazelinvocation.DefaultBepCompleted = bazelinvocationDescBepCompleted.Default.(bool)
 	// bazelinvocationDescProcessedEventStarted is the schema descriptor for processed_event_started field.
-	bazelinvocationDescProcessedEventStarted := bazelinvocationFields[19].Descriptor()
+	bazelinvocationDescProcessedEventStarted := bazelinvocationFields[15].Descriptor()
 	// bazelinvocation.DefaultProcessedEventStarted holds the default value on creation for the processed_event_started field.
 	bazelinvocation.DefaultProcessedEventStarted = bazelinvocationDescProcessedEventStarted.Default.(bool)
 	// bazelinvocationDescProcessedEventBuildMetadata is the schema descriptor for processed_event_build_metadata field.
-	bazelinvocationDescProcessedEventBuildMetadata := bazelinvocationFields[20].Descriptor()
+	bazelinvocationDescProcessedEventBuildMetadata := bazelinvocationFields[16].Descriptor()
 	// bazelinvocation.DefaultProcessedEventBuildMetadata holds the default value on creation for the processed_event_build_metadata field.
 	bazelinvocation.DefaultProcessedEventBuildMetadata = bazelinvocationDescProcessedEventBuildMetadata.Default.(bool)
 	// bazelinvocationDescProcessedEventBuildFinished is the schema descriptor for processed_event_build_finished field.
-	bazelinvocationDescProcessedEventBuildFinished := bazelinvocationFields[21].Descriptor()
+	bazelinvocationDescProcessedEventBuildFinished := bazelinvocationFields[17].Descriptor()
 	// bazelinvocation.DefaultProcessedEventBuildFinished holds the default value on creation for the processed_event_build_finished field.
 	bazelinvocation.DefaultProcessedEventBuildFinished = bazelinvocationDescProcessedEventBuildFinished.Default.(bool)
 	// bazelinvocationDescProcessedEventWorkspaceStatus is the schema descriptor for processed_event_workspace_status field.
-	bazelinvocationDescProcessedEventWorkspaceStatus := bazelinvocationFields[22].Descriptor()
+	bazelinvocationDescProcessedEventWorkspaceStatus := bazelinvocationFields[18].Descriptor()
 	// bazelinvocation.DefaultProcessedEventWorkspaceStatus holds the default value on creation for the processed_event_workspace_status field.
 	bazelinvocation.DefaultProcessedEventWorkspaceStatus = bazelinvocationDescProcessedEventWorkspaceStatus.Default.(bool)
 	build.Policy = privacy.NewPolicies(authschema.Build{})

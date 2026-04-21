@@ -8,10 +8,11 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *buildEventRecorder) saveStarted(ctx context.Context, tx *ent.Client, event *bes.BuildStarted) error {
+func (r *buildEventRecorder) saveStarted(ctx context.Context, tx database.Tx, event *bes.BuildStarted) error {
 	if event == nil {
 		return nil
 	}
@@ -41,7 +42,7 @@ func (r *buildEventRecorder) saveStarted(ctx context.Context, tx *ent.Client, ev
 	// Don't use `UpdateOne()` or `UpdateOneID()` as the internal ent
 	// implementation also does a query after the update to return the updated
 	// object, even if it is not returned by using `Exec()`.
-	err := tx.BazelInvocation.
+	err := tx.Ent().BazelInvocation.
 		Update().
 		Where(
 			bazelinvocation.ID(r.InvocationDbID),
@@ -57,5 +58,14 @@ func (r *buildEventRecorder) saveStarted(ctx context.Context, tx *ent.Client, ev
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save started event to database")
 	}
+
+	// In the rare occation that the event that creates the build object is
+	// processed before the started event, we need to ensure that the build
+	// timestamp is updated.
+	err = tx.Sqlc().UpdateBuildTimestampFromInvocation(ctx, r.InvocationDbID)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to update build timestamp")
+	}
+
 	return nil
 }

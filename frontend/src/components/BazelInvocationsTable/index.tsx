@@ -1,7 +1,6 @@
 import { BuildOutlined } from "@ant-design/icons";
 import { useQuery } from "@apollo/client/react";
 import { Space, Typography } from "antd";
-import type { FilterValue } from "antd/lib/table/interface";
 import React from "react";
 import {
   buildColumn,
@@ -18,6 +17,7 @@ import {
 } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
 import styles from "@/theme/theme.module.css";
+import { applyTableFilters } from "@/utils/applyColumnFilters";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
 import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
 import { CursorTable, getNewPaginationVariables } from "../CursorTable";
@@ -37,7 +37,7 @@ const BazelInvocationsTable: React.FC = () => {
   const { loading, data, error } = useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
     variables: {
       where: {
-        and: [{ startedAtNotNil: true }, ...filterVariables],
+        and: [...filterVariables, { startedAtNotNil: true }],
       },
       orderBy: {
         direction: OrderDirection.Desc,
@@ -78,26 +78,6 @@ const BazelInvocationsTable: React.FC = () => {
     buildColumn,
   ];
 
-  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
-    const newFilters: BazelInvocationWhereInput[] = [];
-    tableColumns.forEach((column) => {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (
-          value &&
-          key === column.key &&
-          "applyFilter" in column &&
-          column.applyFilter
-        ) {
-          const appliedFilters = column.applyFilter(value);
-          if (appliedFilters) {
-            newFilters.push(...appliedFilters);
-          }
-        }
-      });
-    });
-    setFilterVariables(newFilters);
-  };
-
   if (error) {
     return (
       <PortalAlert
@@ -135,7 +115,7 @@ const BazelInvocationsTable: React.FC = () => {
         ),
       }}
       onChange={(_pagination, filters, _sorter, _extra) =>
-        onFilterChange(filters)
+        applyTableFilters(tableColumns, filters, setFilterVariables)
       }
       pagination={{
         position: "bottom",

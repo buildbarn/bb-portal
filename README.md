@@ -21,7 +21,7 @@ similarly to bb-browser, which it is aimed at replacing.
 Both the backend and the frontend is configured via a jsonnet configuration
 file. Look at `config/portal.jsonnet` for an example configuration file, and
 `pkg/proto/configuration/bb_portal/bb_portal.proto` and
-`pkg/proto/configuration/frontend/frontend.proto` for the configuration schema.
+`pkg/proto/configuration/frontend/frontend.proto` for the configuration schema. See [CI-integration.md](docs/CI-integration.md) for instructions on how to integrate with different CI systems.
 
 ## Frontend
 

@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
+	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace"
@@ -35,13 +36,22 @@ func TestMain(m *testing.M) {
 }
 
 func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *bepuploader.BepUploader {
+	var authExtractors *bb_portal.AuthMetadataExtractorConfiguration
+	var invocationExtractor *jmespath.Expression
+	if testCase.dataExtractors != nil {
+		authExtractors = testCase.dataExtractors.authMetadataExtractors
+		invocationExtractor = testCase.dataExtractors.invocationMetadataExtractor
+	}
+
 	config := &bb_portal.ApplicationConfiguration{
 		InstanceNameAuthorizer: &auth.AuthorizerConfiguration{
 			Policy: &auth.AuthorizerConfiguration_Allow{},
 		},
 		BesServiceConfiguration: &bb_portal.BuildEventStreamService{
 			SaveDataLevel:                testCase.saveDataLevel,
-			AuthMetadataKeyConfiguration: testCase.extractors,
+			AuthMetadataKeyConfiguration: authExtractors,
+			InvocationMetadataExtractor:  invocationExtractor,
+			BuildKey:                     testCase.buildKey,
 		},
 	}
 	bepUploader, err := bepuploader.NewBepUploader(db, config, nil, nil, noop.NewTracerProvider())
@@ -71,4 +81,41 @@ func checkIfErrorMatches(t *testing.T, wantErr, err error) {
 	} else {
 		require.NoError(t, err)
 	}
+}
+
+func githubActionsExtractor() *jmespath.Expression {
+	s := ""
+
+	// This was the easiest way to build this string. We cannot use multiline
+	// strings since it contains backticks
+	s += "{"
+	s += "  \"username\": env.USER"
+	s += "  \"hostname\": env.HOSTNAME"
+	s += "  \"sourceControls\": ["
+	s += "    {"
+	s += "      \"repo\": env.GITHUB_REPOSITORY"
+	s += "      \"repoUrl\": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY]) || `null`"
+	s += "      \"ref\": env.GITHUB_REF"
+	s += "      \"refUrl\": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_REF) && join('/', [env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, 'tree', env.GITHUB_REF]) || `null`"
+	s += "      \"commit\": env.GITHUB_SHA"
+	s += "      \"commitUrl\": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_SHA) && join('/', [env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, 'commit', env.GITHUB_SHA]) || `null`"
+	s += "    }"
+	s += "  ]"
+	s += "  \"invocationTags\": {"
+	s += "    \"workflow\": env.GITHUB_WORKFLOW"
+	s += "    \"workflow_url\": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_RUN_ID) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY, 'actions', 'runs', env.GITHUB_RUN_ID]) || `null`"
+	s += "    \"job\": env.GITHUB_JOB"
+	s += "    \"action\": env.GITHUB_ACTION"
+	s += "  }"
+	s += "  \"buildTags\": {"
+	s += "    \"repo\": env.GITHUB_REPOSITORY"
+	s += "    \"repo_url\": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY]) || `null`"
+	s += "    \"workflow\": env.GITHUB_WORKFLOW"
+	s += "    \"workflow_url\": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_RUN_ID) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY, 'actions', 'runs', env.GITHUB_RUN_ID]) || `null`"
+	s += "    \"build_id\": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_RUN_ID) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY, 'actions', 'runs', env.GITHUB_RUN_ID]) || `null`"
+	s += "  }"
+	s += "}"
+
+	expr := jmespath.Expression{Expression: s}
+	return &expr
 }

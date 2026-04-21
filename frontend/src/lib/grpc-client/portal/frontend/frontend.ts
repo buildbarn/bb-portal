@@ -39,6 +39,10 @@ export interface PortalFrontendConfiguration {
    * the bottom of the page, and can be used to link out to useful places.
    */
   footerContent: PortalFrontendConfiguration_FooterElement[];
+  /** Additional columns to display in the build table. */
+  additionalBuildColumns: PortalFrontendConfiguration_AdditionalColumn[];
+  /** Additional columns to display in the build invocation table. */
+  additionalBuildInvocationColumns: PortalFrontendConfiguration_AdditionalColumn[];
 }
 
 export interface PortalFrontendConfiguration_FeatureFlags {
@@ -118,8 +122,31 @@ export interface PortalFrontendConfiguration_FooterElement_Icon {
   discord?: Empty | undefined;
 }
 
+/** Message that defines a dynamic column in a table. */
+export interface PortalFrontendConfiguration_AdditionalColumn {
+  /** The title of the column. */
+  title: string;
+  /**
+   * The key to use to get the value for the column. The value is either
+   * taken from a BuildTag or a InvocationTag.
+   */
+  valueKey: string;
+  /**
+   * The key to use to get the url for the column. The url is either
+   * taken from a BuildTag or a InvocationTag. Optional.
+   */
+  urlKey: string;
+}
+
 function createBasePortalFrontendConfiguration(): PortalFrontendConfiguration {
-  return { featureFlags: undefined, grpcBackendUrl: "", companyName: "", footerContent: [] };
+  return {
+    featureFlags: undefined,
+    grpcBackendUrl: "",
+    companyName: "",
+    footerContent: [],
+    additionalBuildColumns: [],
+    additionalBuildInvocationColumns: [],
+  };
 }
 
 export const PortalFrontendConfiguration: MessageFns<PortalFrontendConfiguration> = {
@@ -135,6 +162,12 @@ export const PortalFrontendConfiguration: MessageFns<PortalFrontendConfiguration
     }
     for (const v of message.footerContent) {
       PortalFrontendConfiguration_FooterElement.encode(v!, writer.uint32(34).fork()).join();
+    }
+    for (const v of message.additionalBuildColumns) {
+      PortalFrontendConfiguration_AdditionalColumn.encode(v!, writer.uint32(42).fork()).join();
+    }
+    for (const v of message.additionalBuildInvocationColumns) {
+      PortalFrontendConfiguration_AdditionalColumn.encode(v!, writer.uint32(50).fork()).join();
     }
     return writer;
   },
@@ -178,6 +211,26 @@ export const PortalFrontendConfiguration: MessageFns<PortalFrontendConfiguration
           message.footerContent.push(PortalFrontendConfiguration_FooterElement.decode(reader, reader.uint32()));
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.additionalBuildColumns.push(
+            PortalFrontendConfiguration_AdditionalColumn.decode(reader, reader.uint32()),
+          );
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.additionalBuildInvocationColumns.push(
+            PortalFrontendConfiguration_AdditionalColumn.decode(reader, reader.uint32()),
+          );
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -209,6 +262,20 @@ export const PortalFrontendConfiguration: MessageFns<PortalFrontendConfiguration
         : globalThis.Array.isArray(object?.footer_content)
         ? object.footer_content.map((e: any) => PortalFrontendConfiguration_FooterElement.fromJSON(e))
         : [],
+      additionalBuildColumns: globalThis.Array.isArray(object?.additionalBuildColumns)
+        ? object.additionalBuildColumns.map((e: any) => PortalFrontendConfiguration_AdditionalColumn.fromJSON(e))
+        : globalThis.Array.isArray(object?.additional_build_columns)
+        ? object.additional_build_columns.map((e: any) => PortalFrontendConfiguration_AdditionalColumn.fromJSON(e))
+        : [],
+      additionalBuildInvocationColumns: globalThis.Array.isArray(object?.additionalBuildInvocationColumns)
+        ? object.additionalBuildInvocationColumns.map((e: any) =>
+          PortalFrontendConfiguration_AdditionalColumn.fromJSON(e)
+        )
+        : globalThis.Array.isArray(object?.additional_build_invocation_columns)
+        ? object.additional_build_invocation_columns.map((e: any) =>
+          PortalFrontendConfiguration_AdditionalColumn.fromJSON(e)
+        )
+        : [],
     };
   },
 
@@ -226,6 +293,16 @@ export const PortalFrontendConfiguration: MessageFns<PortalFrontendConfiguration
     if (message.footerContent?.length) {
       obj.footerContent = message.footerContent.map((e) => PortalFrontendConfiguration_FooterElement.toJSON(e));
     }
+    if (message.additionalBuildColumns?.length) {
+      obj.additionalBuildColumns = message.additionalBuildColumns.map((e) =>
+        PortalFrontendConfiguration_AdditionalColumn.toJSON(e)
+      );
+    }
+    if (message.additionalBuildInvocationColumns?.length) {
+      obj.additionalBuildInvocationColumns = message.additionalBuildInvocationColumns.map((e) =>
+        PortalFrontendConfiguration_AdditionalColumn.toJSON(e)
+      );
+    }
     return obj;
   },
 
@@ -241,6 +318,12 @@ export const PortalFrontendConfiguration: MessageFns<PortalFrontendConfiguration
     message.companyName = object.companyName ?? "";
     message.footerContent =
       object.footerContent?.map((e) => PortalFrontendConfiguration_FooterElement.fromPartial(e)) || [];
+    message.additionalBuildColumns =
+      object.additionalBuildColumns?.map((e) => PortalFrontendConfiguration_AdditionalColumn.fromPartial(e)) || [];
+    message.additionalBuildInvocationColumns =
+      object.additionalBuildInvocationColumns?.map((e) =>
+        PortalFrontendConfiguration_AdditionalColumn.fromPartial(e)
+      ) || [];
     return message;
   },
 };
@@ -838,6 +921,113 @@ export const PortalFrontendConfiguration_FooterElement_Icon: MessageFns<
     message.discord = (object.discord !== undefined && object.discord !== null)
       ? Empty.fromPartial(object.discord)
       : undefined;
+    return message;
+  },
+};
+
+function createBasePortalFrontendConfiguration_AdditionalColumn(): PortalFrontendConfiguration_AdditionalColumn {
+  return { title: "", valueKey: "", urlKey: "" };
+}
+
+export const PortalFrontendConfiguration_AdditionalColumn: MessageFns<PortalFrontendConfiguration_AdditionalColumn> = {
+  encode(
+    message: PortalFrontendConfiguration_AdditionalColumn,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.valueKey !== "") {
+      writer.uint32(18).string(message.valueKey);
+    }
+    if (message.urlKey !== "") {
+      writer.uint32(26).string(message.urlKey);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PortalFrontendConfiguration_AdditionalColumn {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePortalFrontendConfiguration_AdditionalColumn();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.valueKey = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.urlKey = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PortalFrontendConfiguration_AdditionalColumn {
+    return {
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      valueKey: isSet(object.valueKey)
+        ? globalThis.String(object.valueKey)
+        : isSet(object.value_key)
+        ? globalThis.String(object.value_key)
+        : "",
+      urlKey: isSet(object.urlKey)
+        ? globalThis.String(object.urlKey)
+        : isSet(object.url_key)
+        ? globalThis.String(object.url_key)
+        : "",
+    };
+  },
+
+  toJSON(message: PortalFrontendConfiguration_AdditionalColumn): unknown {
+    const obj: any = {};
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.valueKey !== "") {
+      obj.valueKey = message.valueKey;
+    }
+    if (message.urlKey !== "") {
+      obj.urlKey = message.urlKey;
+    }
+    return obj;
+  },
+
+  create(
+    base?: DeepPartial<PortalFrontendConfiguration_AdditionalColumn>,
+  ): PortalFrontendConfiguration_AdditionalColumn {
+    return PortalFrontendConfiguration_AdditionalColumn.fromPartial(base ?? {});
+  },
+  fromPartial(
+    object: DeepPartial<PortalFrontendConfiguration_AdditionalColumn>,
+  ): PortalFrontendConfiguration_AdditionalColumn {
+    const message = createBasePortalFrontendConfiguration_AdditionalColumn();
+    message.title = object.title ?? "";
+    message.valueKey = object.valueKey ?? "";
+    message.urlKey = object.urlKey ?? "";
     return message;
   },
 };

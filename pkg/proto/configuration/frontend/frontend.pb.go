@@ -23,13 +23,15 @@ const (
 )
 
 type PortalFrontendConfiguration struct {
-	state          protoimpl.MessageState                       `protogen:"open.v1"`
-	FeatureFlags   *PortalFrontendConfiguration_FeatureFlags    `protobuf:"bytes,1,opt,name=feature_flags,json=featureFlags,proto3" json:"feature_flags,omitempty"`
-	GrpcBackendUrl string                                       `protobuf:"bytes,2,opt,name=grpc_backend_url,json=grpcBackendUrl,proto3" json:"grpc_backend_url,omitempty"`
-	CompanyName    string                                       `protobuf:"bytes,3,opt,name=company_name,json=companyName,proto3" json:"company_name,omitempty"`
-	FooterContent  []*PortalFrontendConfiguration_FooterElement `protobuf:"bytes,4,rep,name=footer_content,json=footerContent,proto3" json:"footer_content,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state                            protoimpl.MessageState                          `protogen:"open.v1"`
+	FeatureFlags                     *PortalFrontendConfiguration_FeatureFlags       `protobuf:"bytes,1,opt,name=feature_flags,json=featureFlags,proto3" json:"feature_flags,omitempty"`
+	GrpcBackendUrl                   string                                          `protobuf:"bytes,2,opt,name=grpc_backend_url,json=grpcBackendUrl,proto3" json:"grpc_backend_url,omitempty"`
+	CompanyName                      string                                          `protobuf:"bytes,3,opt,name=company_name,json=companyName,proto3" json:"company_name,omitempty"`
+	FooterContent                    []*PortalFrontendConfiguration_FooterElement    `protobuf:"bytes,4,rep,name=footer_content,json=footerContent,proto3" json:"footer_content,omitempty"`
+	AdditionalBuildColumns           []*PortalFrontendConfiguration_AdditionalColumn `protobuf:"bytes,5,rep,name=additional_build_columns,json=additionalBuildColumns,proto3" json:"additional_build_columns,omitempty"`
+	AdditionalBuildInvocationColumns []*PortalFrontendConfiguration_AdditionalColumn `protobuf:"bytes,6,rep,name=additional_build_invocation_columns,json=additionalBuildInvocationColumns,proto3" json:"additional_build_invocation_columns,omitempty"`
+	unknownFields                    protoimpl.UnknownFields
+	sizeCache                        protoimpl.SizeCache
 }
 
 func (x *PortalFrontendConfiguration) Reset() {
@@ -86,6 +88,20 @@ func (x *PortalFrontendConfiguration) GetCompanyName() string {
 func (x *PortalFrontendConfiguration) GetFooterContent() []*PortalFrontendConfiguration_FooterElement {
 	if x != nil {
 		return x.FooterContent
+	}
+	return nil
+}
+
+func (x *PortalFrontendConfiguration) GetAdditionalBuildColumns() []*PortalFrontendConfiguration_AdditionalColumn {
+	if x != nil {
+		return x.AdditionalBuildColumns
+	}
+	return nil
+}
+
+func (x *PortalFrontendConfiguration) GetAdditionalBuildInvocationColumns() []*PortalFrontendConfiguration_AdditionalColumn {
+	if x != nil {
+		return x.AdditionalBuildInvocationColumns
 	}
 	return nil
 }
@@ -218,6 +234,66 @@ func (x *PortalFrontendConfiguration_FooterElement) GetIcon() *PortalFrontendCon
 	return nil
 }
 
+type PortalFrontendConfiguration_AdditionalColumn struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	ValueKey      string                 `protobuf:"bytes,2,opt,name=value_key,json=valueKey,proto3" json:"value_key,omitempty"`
+	UrlKey        string                 `protobuf:"bytes,3,opt,name=url_key,json=urlKey,proto3" json:"url_key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PortalFrontendConfiguration_AdditionalColumn) Reset() {
+	*x = PortalFrontendConfiguration_AdditionalColumn{}
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PortalFrontendConfiguration_AdditionalColumn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PortalFrontendConfiguration_AdditionalColumn) ProtoMessage() {}
+
+func (x *PortalFrontendConfiguration_AdditionalColumn) ProtoReflect() protoreflect.Message {
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PortalFrontendConfiguration_AdditionalColumn.ProtoReflect.Descriptor instead.
+func (*PortalFrontendConfiguration_AdditionalColumn) Descriptor() ([]byte, []int) {
+	return file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_rawDescGZIP(), []int{0, 2}
+}
+
+func (x *PortalFrontendConfiguration_AdditionalColumn) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *PortalFrontendConfiguration_AdditionalColumn) GetValueKey() string {
+	if x != nil {
+		return x.ValueKey
+	}
+	return ""
+}
+
+func (x *PortalFrontendConfiguration_AdditionalColumn) GetUrlKey() string {
+	if x != nil {
+		return x.UrlKey
+	}
+	return ""
+}
+
 type PortalFrontendConfiguration_FeatureFlags_HomePage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	FileUpload    *emptypb.Empty         `protobuf:"bytes,1,opt,name=file_upload,json=fileUpload,proto3" json:"file_upload,omitempty"`
@@ -228,7 +304,7 @@ type PortalFrontendConfiguration_FeatureFlags_HomePage struct {
 
 func (x *PortalFrontendConfiguration_FeatureFlags_HomePage) Reset() {
 	*x = PortalFrontendConfiguration_FeatureFlags_HomePage{}
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[3]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -240,7 +316,7 @@ func (x *PortalFrontendConfiguration_FeatureFlags_HomePage) String() string {
 func (*PortalFrontendConfiguration_FeatureFlags_HomePage) ProtoMessage() {}
 
 func (x *PortalFrontendConfiguration_FeatureFlags_HomePage) ProtoReflect() protoreflect.Message {
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[3]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -283,7 +359,7 @@ type PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags struct {
 
 func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) Reset() {
 	*x = PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags{}
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[4]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -295,7 +371,7 @@ func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) String() stri
 func (*PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) ProtoMessage() {}
 
 func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) ProtoReflect() protoreflect.Message {
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[4]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -361,7 +437,7 @@ type PortalFrontendConfiguration_FooterElement_Icon struct {
 
 func (x *PortalFrontendConfiguration_FooterElement_Icon) Reset() {
 	*x = PortalFrontendConfiguration_FooterElement_Icon{}
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[5]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -373,7 +449,7 @@ func (x *PortalFrontendConfiguration_FooterElement_Icon) String() string {
 func (*PortalFrontendConfiguration_FooterElement_Icon) ProtoMessage() {}
 
 func (x *PortalFrontendConfiguration_FooterElement_Icon) ProtoReflect() protoreflect.Message {
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[5]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -468,12 +544,14 @@ var File_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_fronten
 
 const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_rawDesc = "" +
 	"\n" +
-	"Ngithub.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto\x12 buildbarn.configuration.frontend\x1a\x1bgoogle/protobuf/empty.proto\"\xb6\v\n" +
+	"Ngithub.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto\x12 buildbarn.configuration.frontend\x1a\x1bgoogle/protobuf/empty.proto\"\xc1\x0e\n" +
 	"\x1bPortalFrontendConfiguration\x12o\n" +
 	"\rfeature_flags\x18\x01 \x01(\v2J.buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlagsR\ffeatureFlags\x12(\n" +
 	"\x10grpc_backend_url\x18\x02 \x01(\tR\x0egrpcBackendUrl\x12!\n" +
 	"\fcompany_name\x18\x03 \x01(\tR\vcompanyName\x12r\n" +
-	"\x0efooter_content\x18\x04 \x03(\v2K.buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElementR\rfooterContent\x1a\x89\x06\n" +
+	"\x0efooter_content\x18\x04 \x03(\v2K.buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElementR\rfooterContent\x12\x88\x01\n" +
+	"\x18additional_build_columns\x18\x05 \x03(\v2N.buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumnR\x16additionalBuildColumns\x12\x9d\x01\n" +
+	"#additional_build_invocation_columns\x18\x06 \x03(\v2N.buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumnR additionalBuildInvocationColumns\x1a\x89\x06\n" +
 	"\fFeatureFlags\x12g\n" +
 	"\x04home\x18\x01 \x01(\v2S.buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePageR\x04home\x12l\n" +
 	"\x03bes\x18\x02 \x01(\v2Z.buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlagsR\x03bes\x120\n" +
@@ -501,7 +579,11 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_front
 	"\x05slack\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05slack\x120\n" +
 	"\x06github\x18\x03 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x06github\x122\n" +
 	"\adiscord\x18\x04 \x01(\v2\x16.google.protobuf.EmptyH\x00R\adiscordB\x06\n" +
-	"\x04iconBAZ?github.com/buildbarn/bb-portal/pkg/proto/configuration/frontendb\x06proto3"
+	"\x04icon\x1a^\n" +
+	"\x10AdditionalColumn\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12\x1b\n" +
+	"\tvalue_key\x18\x02 \x01(\tR\bvalueKey\x12\x17\n" +
+	"\aurl_key\x18\x03 \x01(\tR\x06urlKeyBAZ?github.com/buildbarn/bb-portal/pkg/proto/configuration/frontendb\x06proto3"
 
 var (
 	file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_rawDescOnce sync.Once
@@ -515,39 +597,42 @@ func file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_fronte
 	return file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_rawDescData
 }
 
-var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_goTypes = []any{
 	(*PortalFrontendConfiguration)(nil),                              // 0: buildbarn.configuration.frontend.PortalFrontendConfiguration
 	(*PortalFrontendConfiguration_FeatureFlags)(nil),                 // 1: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags
 	(*PortalFrontendConfiguration_FooterElement)(nil),                // 2: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement
-	(*PortalFrontendConfiguration_FeatureFlags_HomePage)(nil),        // 3: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage
-	(*PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags)(nil), // 4: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags
-	(*PortalFrontendConfiguration_FooterElement_Icon)(nil),           // 5: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon
-	(*emptypb.Empty)(nil),                                            // 6: google.protobuf.Empty
+	(*PortalFrontendConfiguration_AdditionalColumn)(nil),             // 3: buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumn
+	(*PortalFrontendConfiguration_FeatureFlags_HomePage)(nil),        // 4: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage
+	(*PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags)(nil), // 5: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags
+	(*PortalFrontendConfiguration_FooterElement_Icon)(nil),           // 6: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon
+	(*emptypb.Empty)(nil),                                            // 7: google.protobuf.Empty
 }
 var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_depIdxs = []int32{
 	1,  // 0: buildbarn.configuration.frontend.PortalFrontendConfiguration.feature_flags:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags
 	2,  // 1: buildbarn.configuration.frontend.PortalFrontendConfiguration.footer_content:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement
-	3,  // 2: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.home:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage
-	4,  // 3: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.bes:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags
-	6,  // 4: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.browser:type_name -> google.protobuf.Empty
-	6,  // 5: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.scheduler:type_name -> google.protobuf.Empty
-	5,  // 6: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.icon:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon
-	6,  // 7: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage.file_upload:type_name -> google.protobuf.Empty
-	6,  // 8: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage.instructions:type_name -> google.protobuf.Empty
-	6,  // 9: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_builds:type_name -> google.protobuf.Empty
-	6,  // 10: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_invocations:type_name -> google.protobuf.Empty
-	6,  // 11: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_targets:type_name -> google.protobuf.Empty
-	6,  // 12: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_tests:type_name -> google.protobuf.Empty
-	6,  // 13: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_trends:type_name -> google.protobuf.Empty
-	6,  // 14: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.slack:type_name -> google.protobuf.Empty
-	6,  // 15: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.github:type_name -> google.protobuf.Empty
-	6,  // 16: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.discord:type_name -> google.protobuf.Empty
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	3,  // 2: buildbarn.configuration.frontend.PortalFrontendConfiguration.additional_build_columns:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumn
+	3,  // 3: buildbarn.configuration.frontend.PortalFrontendConfiguration.additional_build_invocation_columns:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumn
+	4,  // 4: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.home:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage
+	5,  // 5: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.bes:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags
+	7,  // 6: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.browser:type_name -> google.protobuf.Empty
+	7,  // 7: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.scheduler:type_name -> google.protobuf.Empty
+	6,  // 8: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.icon:type_name -> buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon
+	7,  // 9: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage.file_upload:type_name -> google.protobuf.Empty
+	7,  // 10: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePage.instructions:type_name -> google.protobuf.Empty
+	7,  // 11: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_builds:type_name -> google.protobuf.Empty
+	7,  // 12: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_invocations:type_name -> google.protobuf.Empty
+	7,  // 13: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_targets:type_name -> google.protobuf.Empty
+	7,  // 14: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_tests:type_name -> google.protobuf.Empty
+	7,  // 15: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_trends:type_name -> google.protobuf.Empty
+	7,  // 16: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.slack:type_name -> google.protobuf.Empty
+	7,  // 17: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.github:type_name -> google.protobuf.Empty
+	7,  // 18: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.discord:type_name -> google.protobuf.Empty
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() {
@@ -557,7 +642,7 @@ func file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_fronte
 	if File_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto != nil {
 		return
 	}
-	file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[5].OneofWrappers = []any{
+	file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_msgTypes[6].OneofWrappers = []any{
 		(*PortalFrontendConfiguration_FooterElement_Icon_Url)(nil),
 		(*PortalFrontendConfiguration_FooterElement_Icon_Slack)(nil),
 		(*PortalFrontendConfiguration_FooterElement_Icon_Github)(nil),
@@ -569,7 +654,7 @@ func file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_fronte
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_rawDesc), len(file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

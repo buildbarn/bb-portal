@@ -13,14 +13,20 @@ import {
 } from "recharts";
 import type { GetBuildInvocationFragment } from "@/graphql/__generated__/graphql";
 import dayjs from "@/lib/dayjs";
+import { env } from "@/utils/env";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import {
   readableDurationFromDates,
   readableDurationFromMilliseconds,
 } from "@/utils/time";
 import CommandLinePreview from "../CommandLinePreview";
+import { INVOCATION_RESULT_TAGS } from "../InvocationResultTag";
+import {
+  getInvocationResultTagEnum,
+  InvocationResult,
+} from "../InvocationResultTag/enum";
 import PortalAlert from "../PortalAlert";
 import type { InvocationInfo, TickProps } from "./types";
-import { getInvocationResultTagColor } from "./utils";
 
 interface Props {
   invocations: GetBuildInvocationFragment[];
@@ -38,9 +44,12 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
       invocations
         .filter((entry) => !!entry.startedAt)
         .map((entry) => {
-          const startTime = entry.startedAt;
+          const invocationStatus = getInvocationResultTagEnum(
+            entry.exitCodeName || undefined,
+            entry.connectionMetadata?.timeSinceLastConnectionMillis,
+          );
           let endTime = entry.endedAt;
-          if (!endTime) {
+          if (!endTime && invocationStatus !== InvocationResult.IN_PROGRESS) {
             endTime = entry.connectionMetadata?.connectionLastOpenAt;
           }
           if (!endTime) {
@@ -49,15 +58,13 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
           return {
             invocationId: entry.invocationID,
             // Timestamp interval in milliseconds since UNIX epoch.
-            timestamps: [dayjs(startTime).valueOf(), dayjs(endTime).valueOf()],
-            exitCodeName: entry.exitCodeName || undefined,
-            timeSinceLastConnectionMillis:
-              entry.connectionMetadata?.timeSinceLastConnectionMillis ||
-              undefined,
+            timestamps: [
+              dayjs(entry.startedAt).valueOf(),
+              dayjs(endTime).valueOf(),
+            ],
+            invocationStatus,
             command: entry.originalCommandLine,
-            job: entry.sourceControl?.job,
-            workflow: entry.sourceControl?.workflow,
-            action: entry.sourceControl?.action,
+            tags: parseGraphqlEdgeList(entry.tags),
           };
         }),
     [invocations],
@@ -143,7 +150,10 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
           }}
           wrapperStyle={{ maxWidth: "50vw", zIndex: 999 }}
           labelFormatter={(label, payload) => {
-            const invocationEntry = payload[0]?.payload;
+            const columns = env.additionalBuildInvocationColumns;
+            const invocationEntry = payload[0]?.payload as
+              | InvocationInfo
+              | undefined;
             return (
               // The labels are wrapped in a span with `display: block` to
               // simulate a div for text formatting purposes. Using divs
@@ -151,21 +161,17 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
               // formatter wraps the elements below in a <p> tag.
               <>
                 <b>Invocation ID:</b> <code>{label}</code>
-                {invocationEntry?.workflow && (
-                  <span style={{ display: "block" }}>
-                    <b>Workflow: </b> <code>{invocationEntry?.workflow}</code>
-                  </span>
-                )}
-                {invocationEntry?.job && (
-                  <span style={{ display: "block" }}>
-                    <b>Job: </b> <code>{invocationEntry?.job}</code>
-                  </span>
-                )}
-                {invocationEntry?.action && (
-                  <span style={{ display: "block" }}>
-                    <b>Action: </b> <code>{invocationEntry?.action}</code>
-                  </span>
-                )}
+                {invocationEntry &&
+                  columns.map((column) => (
+                    <span key={column.valueKey} style={{ display: "block" }}>
+                      <b>{column.title}:</b>{" "}
+                      <code>
+                        {invocationEntry.tags.find(
+                          (tag) => tag.key === column.valueKey,
+                        )?.value || "-"}
+                      </code>
+                    </span>
+                  ))}
                 {invocationEntry?.timestamps[0] && (
                   <span style={{ display: "block" }}>
                     <b>Duration: </b>
@@ -198,10 +204,7 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
           {invocationsInfo.map((entry) => (
             <Cell
               key={entry.invocationId}
-              fill={getInvocationResultTagColor(
-                entry.exitCodeName,
-                entry.timeSinceLastConnectionMillis,
-              )}
+              fill={INVOCATION_RESULT_TAGS[entry.invocationStatus].color}
             />
           ))}
         </Bar>

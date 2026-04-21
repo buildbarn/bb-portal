@@ -23,10 +23,12 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -2477,6 +2479,302 @@ func (bgm *BuildGraphMetrics) ToEdge(order *BuildGraphMetricsOrder) *BuildGraphM
 	}
 }
 
+// BuildTagEdge is the edge representation of BuildTag.
+type BuildTagEdge struct {
+	Node   *BuildTag `json:"node"`
+	Cursor Cursor    `json:"cursor"`
+}
+
+// BuildTagConnection is the connection containing edges to BuildTag.
+type BuildTagConnection struct {
+	Edges      []*BuildTagEdge `json:"edges"`
+	PageInfo   PageInfo        `json:"pageInfo"`
+	TotalCount int             `json:"totalCount"`
+}
+
+func (c *BuildTagConnection) build(nodes []*BuildTag, pager *buildtagPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *BuildTag
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *BuildTag {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *BuildTag {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*BuildTagEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &BuildTagEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// BuildTagPaginateOption enables pagination customization.
+type BuildTagPaginateOption func(*buildtagPager) error
+
+// WithBuildTagOrder configures pagination ordering.
+func WithBuildTagOrder(order *BuildTagOrder) BuildTagPaginateOption {
+	if order == nil {
+		order = DefaultBuildTagOrder
+	}
+	o := *order
+	return func(pager *buildtagPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultBuildTagOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithBuildTagFilter configures pagination filter.
+func WithBuildTagFilter(filter func(*BuildTagQuery) (*BuildTagQuery, error)) BuildTagPaginateOption {
+	return func(pager *buildtagPager) error {
+		if filter == nil {
+			return errors.New("BuildTagQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type buildtagPager struct {
+	reverse bool
+	order   *BuildTagOrder
+	filter  func(*BuildTagQuery) (*BuildTagQuery, error)
+}
+
+func newBuildTagPager(opts []BuildTagPaginateOption, reverse bool) (*buildtagPager, error) {
+	pager := &buildtagPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultBuildTagOrder
+	}
+	return pager, nil
+}
+
+func (p *buildtagPager) applyFilter(query *BuildTagQuery) (*BuildTagQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *buildtagPager) toCursor(bt *BuildTag) Cursor {
+	return p.order.Field.toCursor(bt)
+}
+
+func (p *buildtagPager) applyCursors(query *BuildTagQuery, after, before *Cursor) (*BuildTagQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultBuildTagOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *buildtagPager) applyOrder(query *BuildTagQuery) *BuildTagQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultBuildTagOrder.Field {
+		query = query.Order(DefaultBuildTagOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *buildtagPager) orderExpr(query *BuildTagQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultBuildTagOrder.Field {
+			b.Comma().Ident(DefaultBuildTagOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to BuildTag.
+func (bt *BuildTagQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...BuildTagPaginateOption,
+) (*BuildTagConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newBuildTagPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if bt, err = pager.applyFilter(bt); err != nil {
+		return nil, err
+	}
+	conn := &BuildTagConnection{Edges: []*BuildTagEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := bt.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
+		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if bt, err = pager.applyCursors(bt, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		bt.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := bt.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	bt = pager.applyOrder(bt)
+	nodes, err := bt.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// BuildTagOrderFieldKey orders BuildTag by key.
+	BuildTagOrderFieldKey = &BuildTagOrderField{
+		Value: func(bt *BuildTag) (ent.Value, error) {
+			return bt.Key, nil
+		},
+		column: buildtag.FieldKey,
+		toTerm: buildtag.ByKey,
+		toCursor: func(bt *BuildTag) Cursor {
+			return Cursor{
+				ID:    bt.ID,
+				Value: bt.Key,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f BuildTagOrderField) String() string {
+	var str string
+	switch f.column {
+	case BuildTagOrderFieldKey.column:
+		str = "KEY"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f BuildTagOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *BuildTagOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("BuildTagOrderField %T must be a string", v)
+	}
+	switch str {
+	case "KEY":
+		*f = *BuildTagOrderFieldKey
+	default:
+		return fmt.Errorf("%s is not a valid BuildTagOrderField", str)
+	}
+	return nil
+}
+
+// BuildTagOrderField defines the ordering field of BuildTag.
+type BuildTagOrderField struct {
+	// Value extracts the ordering value from the given BuildTag.
+	Value    func(*BuildTag) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) buildtag.OrderOption
+	toCursor func(*BuildTag) Cursor
+}
+
+// BuildTagOrder defines the ordering of BuildTag.
+type BuildTagOrder struct {
+	Direction OrderDirection      `json:"direction"`
+	Field     *BuildTagOrderField `json:"field"`
+}
+
+// DefaultBuildTagOrder is the default ordering of BuildTag.
+var DefaultBuildTagOrder = &BuildTagOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &BuildTagOrderField{
+		Value: func(bt *BuildTag) (ent.Value, error) {
+			return bt.ID, nil
+		},
+		column: buildtag.FieldID,
+		toTerm: buildtag.ByID,
+		toCursor: func(bt *BuildTag) Cursor {
+			return Cursor{ID: bt.ID}
+		},
+	},
+}
+
+// ToEdge converts BuildTag into BuildTagEdge.
+func (bt *BuildTag) ToEdge(order *BuildTagOrder) *BuildTagEdge {
+	if order == nil {
+		order = DefaultBuildTagOrder
+	}
+	return &BuildTagEdge{
+		Node:   bt,
+		Cursor: order.Field.toCursor(bt),
+	}
+}
+
 // ConfigurationEdge is the edge representation of Configuration.
 type ConfigurationEdge struct {
 	Node   *Configuration `json:"node"`
@@ -3470,6 +3768,302 @@ func (in *InstanceName) ToEdge(order *InstanceNameOrder) *InstanceNameEdge {
 	return &InstanceNameEdge{
 		Node:   in,
 		Cursor: order.Field.toCursor(in),
+	}
+}
+
+// InvocationTagEdge is the edge representation of InvocationTag.
+type InvocationTagEdge struct {
+	Node   *InvocationTag `json:"node"`
+	Cursor Cursor         `json:"cursor"`
+}
+
+// InvocationTagConnection is the connection containing edges to InvocationTag.
+type InvocationTagConnection struct {
+	Edges      []*InvocationTagEdge `json:"edges"`
+	PageInfo   PageInfo             `json:"pageInfo"`
+	TotalCount int                  `json:"totalCount"`
+}
+
+func (c *InvocationTagConnection) build(nodes []*InvocationTag, pager *invocationtagPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *InvocationTag
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *InvocationTag {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *InvocationTag {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*InvocationTagEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &InvocationTagEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// InvocationTagPaginateOption enables pagination customization.
+type InvocationTagPaginateOption func(*invocationtagPager) error
+
+// WithInvocationTagOrder configures pagination ordering.
+func WithInvocationTagOrder(order *InvocationTagOrder) InvocationTagPaginateOption {
+	if order == nil {
+		order = DefaultInvocationTagOrder
+	}
+	o := *order
+	return func(pager *invocationtagPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultInvocationTagOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithInvocationTagFilter configures pagination filter.
+func WithInvocationTagFilter(filter func(*InvocationTagQuery) (*InvocationTagQuery, error)) InvocationTagPaginateOption {
+	return func(pager *invocationtagPager) error {
+		if filter == nil {
+			return errors.New("InvocationTagQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type invocationtagPager struct {
+	reverse bool
+	order   *InvocationTagOrder
+	filter  func(*InvocationTagQuery) (*InvocationTagQuery, error)
+}
+
+func newInvocationTagPager(opts []InvocationTagPaginateOption, reverse bool) (*invocationtagPager, error) {
+	pager := &invocationtagPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultInvocationTagOrder
+	}
+	return pager, nil
+}
+
+func (p *invocationtagPager) applyFilter(query *InvocationTagQuery) (*InvocationTagQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *invocationtagPager) toCursor(it *InvocationTag) Cursor {
+	return p.order.Field.toCursor(it)
+}
+
+func (p *invocationtagPager) applyCursors(query *InvocationTagQuery, after, before *Cursor) (*InvocationTagQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultInvocationTagOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *invocationtagPager) applyOrder(query *InvocationTagQuery) *InvocationTagQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultInvocationTagOrder.Field {
+		query = query.Order(DefaultInvocationTagOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *invocationtagPager) orderExpr(query *InvocationTagQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultInvocationTagOrder.Field {
+			b.Comma().Ident(DefaultInvocationTagOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to InvocationTag.
+func (it *InvocationTagQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...InvocationTagPaginateOption,
+) (*InvocationTagConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newInvocationTagPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if it, err = pager.applyFilter(it); err != nil {
+		return nil, err
+	}
+	conn := &InvocationTagConnection{Edges: []*InvocationTagEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := it.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
+		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if it, err = pager.applyCursors(it, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		it.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := it.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	it = pager.applyOrder(it)
+	nodes, err := it.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// InvocationTagOrderFieldKey orders InvocationTag by key.
+	InvocationTagOrderFieldKey = &InvocationTagOrderField{
+		Value: func(it *InvocationTag) (ent.Value, error) {
+			return it.Key, nil
+		},
+		column: invocationtag.FieldKey,
+		toTerm: invocationtag.ByKey,
+		toCursor: func(it *InvocationTag) Cursor {
+			return Cursor{
+				ID:    it.ID,
+				Value: it.Key,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f InvocationTagOrderField) String() string {
+	var str string
+	switch f.column {
+	case InvocationTagOrderFieldKey.column:
+		str = "KEY"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f InvocationTagOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *InvocationTagOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("InvocationTagOrderField %T must be a string", v)
+	}
+	switch str {
+	case "KEY":
+		*f = *InvocationTagOrderFieldKey
+	default:
+		return fmt.Errorf("%s is not a valid InvocationTagOrderField", str)
+	}
+	return nil
+}
+
+// InvocationTagOrderField defines the ordering field of InvocationTag.
+type InvocationTagOrderField struct {
+	// Value extracts the ordering value from the given InvocationTag.
+	Value    func(*InvocationTag) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) invocationtag.OrderOption
+	toCursor func(*InvocationTag) Cursor
+}
+
+// InvocationTagOrder defines the ordering of InvocationTag.
+type InvocationTagOrder struct {
+	Direction OrderDirection           `json:"direction"`
+	Field     *InvocationTagOrderField `json:"field"`
+}
+
+// DefaultInvocationTagOrder is the default ordering of InvocationTag.
+var DefaultInvocationTagOrder = &InvocationTagOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &InvocationTagOrderField{
+		Value: func(it *InvocationTag) (ent.Value, error) {
+			return it.ID, nil
+		},
+		column: invocationtag.FieldID,
+		toTerm: invocationtag.ByID,
+		toCursor: func(it *InvocationTag) Cursor {
+			return Cursor{ID: it.ID}
+		},
+	},
+}
+
+// ToEdge converts InvocationTag into InvocationTagEdge.
+func (it *InvocationTag) ToEdge(order *InvocationTagOrder) *InvocationTagEdge {
+	if order == nil {
+		order = DefaultInvocationTagOrder
+	}
+	return &InvocationTagEdge{
+		Node:   it,
+		Cursor: order.Field.toCursor(it),
 	}
 }
 

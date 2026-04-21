@@ -22,6 +22,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -84,60 +85,6 @@ func (biu *BazelInvocationUpdate) ClearEndedAt() *BazelInvocationUpdate {
 	return biu
 }
 
-// SetChangeNumber sets the "change_number" field.
-func (biu *BazelInvocationUpdate) SetChangeNumber(i int) *BazelInvocationUpdate {
-	biu.mutation.ResetChangeNumber()
-	biu.mutation.SetChangeNumber(i)
-	return biu
-}
-
-// SetNillableChangeNumber sets the "change_number" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableChangeNumber(i *int) *BazelInvocationUpdate {
-	if i != nil {
-		biu.SetChangeNumber(*i)
-	}
-	return biu
-}
-
-// AddChangeNumber adds i to the "change_number" field.
-func (biu *BazelInvocationUpdate) AddChangeNumber(i int) *BazelInvocationUpdate {
-	biu.mutation.AddChangeNumber(i)
-	return biu
-}
-
-// ClearChangeNumber clears the value of the "change_number" field.
-func (biu *BazelInvocationUpdate) ClearChangeNumber() *BazelInvocationUpdate {
-	biu.mutation.ClearChangeNumber()
-	return biu
-}
-
-// SetPatchsetNumber sets the "patchset_number" field.
-func (biu *BazelInvocationUpdate) SetPatchsetNumber(i int) *BazelInvocationUpdate {
-	biu.mutation.ResetPatchsetNumber()
-	biu.mutation.SetPatchsetNumber(i)
-	return biu
-}
-
-// SetNillablePatchsetNumber sets the "patchset_number" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillablePatchsetNumber(i *int) *BazelInvocationUpdate {
-	if i != nil {
-		biu.SetPatchsetNumber(*i)
-	}
-	return biu
-}
-
-// AddPatchsetNumber adds i to the "patchset_number" field.
-func (biu *BazelInvocationUpdate) AddPatchsetNumber(i int) *BazelInvocationUpdate {
-	biu.mutation.AddPatchsetNumber(i)
-	return biu
-}
-
-// ClearPatchsetNumber clears the value of the "patchset_number" field.
-func (biu *BazelInvocationUpdate) ClearPatchsetNumber() *BazelInvocationUpdate {
-	biu.mutation.ClearPatchsetNumber()
-	return biu
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (biu *BazelInvocationUpdate) SetBepCompleted(b bool) *BazelInvocationUpdate {
 	biu.mutation.SetBepCompleted(b)
@@ -149,26 +96,6 @@ func (biu *BazelInvocationUpdate) SetNillableBepCompleted(b *bool) *BazelInvocat
 	if b != nil {
 		biu.SetBepCompleted(*b)
 	}
-	return biu
-}
-
-// SetStepLabel sets the "step_label" field.
-func (biu *BazelInvocationUpdate) SetStepLabel(s string) *BazelInvocationUpdate {
-	biu.mutation.SetStepLabel(s)
-	return biu
-}
-
-// SetNillableStepLabel sets the "step_label" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableStepLabel(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetStepLabel(*s)
-	}
-	return biu
-}
-
-// ClearStepLabel clears the value of the "step_label" field.
-func (biu *BazelInvocationUpdate) ClearStepLabel() *BazelInvocationUpdate {
-	biu.mutation.ClearStepLabel()
 	return biu
 }
 
@@ -209,26 +136,6 @@ func (biu *BazelInvocationUpdate) SetNillableHostname(s *string) *BazelInvocatio
 // ClearHostname clears the value of the "hostname" field.
 func (biu *BazelInvocationUpdate) ClearHostname() *BazelInvocationUpdate {
 	biu.mutation.ClearHostname()
-	return biu
-}
-
-// SetIsCiWorker sets the "is_ci_worker" field.
-func (biu *BazelInvocationUpdate) SetIsCiWorker(b bool) *BazelInvocationUpdate {
-	biu.mutation.SetIsCiWorker(b)
-	return biu
-}
-
-// SetNillableIsCiWorker sets the "is_ci_worker" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableIsCiWorker(b *bool) *BazelInvocationUpdate {
-	if b != nil {
-		biu.SetIsCiWorker(*b)
-	}
-	return biu
-}
-
-// ClearIsCiWorker clears the value of the "is_ci_worker" field.
-func (biu *BazelInvocationUpdate) ClearIsCiWorker() *BazelInvocationUpdate {
-	biu.mutation.ClearIsCiWorker()
 	return biu
 }
 
@@ -487,6 +394,21 @@ func (biu *BazelInvocationUpdate) SetAuthenticatedUser(a *AuthenticatedUser) *Ba
 	return biu.SetAuthenticatedUserID(a.ID)
 }
 
+// AddTagIDs adds the "tags" edge to the InvocationTag entity by IDs.
+func (biu *BazelInvocationUpdate) AddTagIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.AddTagIDs(ids...)
+	return biu
+}
+
+// AddTags adds the "tags" edges to the InvocationTag entity.
+func (biu *BazelInvocationUpdate) AddTags(i ...*InvocationTag) *BazelInvocationUpdate {
+	ids := make([]int64, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biu.AddTagIDs(ids...)
+}
+
 // SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
 func (biu *BazelInvocationUpdate) SetEventMetadataID(id int64) *BazelInvocationUpdate {
 	biu.mutation.SetEventMetadataID(id)
@@ -649,23 +571,19 @@ func (biu *BazelInvocationUpdate) AddTargetKindMappings(t ...*TargetKindMapping)
 	return biu.AddTargetKindMappingIDs(ids...)
 }
 
-// SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
-func (biu *BazelInvocationUpdate) SetSourceControlID(id int64) *BazelInvocationUpdate {
-	biu.mutation.SetSourceControlID(id)
+// AddSourceControlIDs adds the "source_control" edge to the SourceControl entity by IDs.
+func (biu *BazelInvocationUpdate) AddSourceControlIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.AddSourceControlIDs(ids...)
 	return biu
 }
 
-// SetNillableSourceControlID sets the "source_control" edge to the SourceControl entity by ID if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableSourceControlID(id *int64) *BazelInvocationUpdate {
-	if id != nil {
-		biu = biu.SetSourceControlID(*id)
+// AddSourceControl adds the "source_control" edges to the SourceControl entity.
+func (biu *BazelInvocationUpdate) AddSourceControl(s ...*SourceControl) *BazelInvocationUpdate {
+	ids := make([]int64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
 	}
-	return biu
-}
-
-// SetSourceControl sets the "source_control" edge to the SourceControl entity.
-func (biu *BazelInvocationUpdate) SetSourceControl(s *SourceControl) *BazelInvocationUpdate {
-	return biu.SetSourceControlID(s.ID)
+	return biu.AddSourceControlIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -689,6 +607,27 @@ func (biu *BazelInvocationUpdate) ClearBuild() *BazelInvocationUpdate {
 func (biu *BazelInvocationUpdate) ClearAuthenticatedUser() *BazelInvocationUpdate {
 	biu.mutation.ClearAuthenticatedUser()
 	return biu
+}
+
+// ClearTags clears all "tags" edges to the InvocationTag entity.
+func (biu *BazelInvocationUpdate) ClearTags() *BazelInvocationUpdate {
+	biu.mutation.ClearTags()
+	return biu
+}
+
+// RemoveTagIDs removes the "tags" edge to InvocationTag entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveTagIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.RemoveTagIDs(ids...)
+	return biu
+}
+
+// RemoveTags removes "tags" edges to InvocationTag entities.
+func (biu *BazelInvocationUpdate) RemoveTags(i ...*InvocationTag) *BazelInvocationUpdate {
+	ids := make([]int64, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biu.RemoveTagIDs(ids...)
 }
 
 // ClearEventMetadata clears the "event_metadata" edge to the EventMetadata entity.
@@ -856,10 +795,25 @@ func (biu *BazelInvocationUpdate) RemoveTargetKindMappings(t ...*TargetKindMappi
 	return biu.RemoveTargetKindMappingIDs(ids...)
 }
 
-// ClearSourceControl clears the "source_control" edge to the SourceControl entity.
+// ClearSourceControl clears all "source_control" edges to the SourceControl entity.
 func (biu *BazelInvocationUpdate) ClearSourceControl() *BazelInvocationUpdate {
 	biu.mutation.ClearSourceControl()
 	return biu
+}
+
+// RemoveSourceControlIDs removes the "source_control" edge to SourceControl entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveSourceControlIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.RemoveSourceControlIDs(ids...)
+	return biu
+}
+
+// RemoveSourceControl removes "source_control" edges to SourceControl entities.
+func (biu *BazelInvocationUpdate) RemoveSourceControl(s ...*SourceControl) *BazelInvocationUpdate {
+	ids := make([]int64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return biu.RemoveSourceControlIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -927,32 +881,8 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if biu.mutation.EndedAtCleared() {
 		_spec.ClearField(bazelinvocation.FieldEndedAt, field.TypeTime)
 	}
-	if value, ok := biu.mutation.ChangeNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldChangeNumber, field.TypeInt, value)
-	}
-	if value, ok := biu.mutation.AddedChangeNumber(); ok {
-		_spec.AddField(bazelinvocation.FieldChangeNumber, field.TypeInt, value)
-	}
-	if biu.mutation.ChangeNumberCleared() {
-		_spec.ClearField(bazelinvocation.FieldChangeNumber, field.TypeInt)
-	}
-	if value, ok := biu.mutation.PatchsetNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldPatchsetNumber, field.TypeInt, value)
-	}
-	if value, ok := biu.mutation.AddedPatchsetNumber(); ok {
-		_spec.AddField(bazelinvocation.FieldPatchsetNumber, field.TypeInt, value)
-	}
-	if biu.mutation.PatchsetNumberCleared() {
-		_spec.ClearField(bazelinvocation.FieldPatchsetNumber, field.TypeInt)
-	}
 	if value, ok := biu.mutation.BepCompleted(); ok {
 		_spec.SetField(bazelinvocation.FieldBepCompleted, field.TypeBool, value)
-	}
-	if value, ok := biu.mutation.StepLabel(); ok {
-		_spec.SetField(bazelinvocation.FieldStepLabel, field.TypeString, value)
-	}
-	if biu.mutation.StepLabelCleared() {
-		_spec.ClearField(bazelinvocation.FieldStepLabel, field.TypeString)
 	}
 	if value, ok := biu.mutation.Username(); ok {
 		_spec.SetField(bazelinvocation.FieldUsername, field.TypeString, value)
@@ -965,12 +895,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.HostnameCleared() {
 		_spec.ClearField(bazelinvocation.FieldHostname, field.TypeString)
-	}
-	if value, ok := biu.mutation.IsCiWorker(); ok {
-		_spec.SetField(bazelinvocation.FieldIsCiWorker, field.TypeBool, value)
-	}
-	if biu.mutation.IsCiWorkerCleared() {
-		_spec.ClearField(bazelinvocation.FieldIsCiWorker, field.TypeBool)
 	}
 	if value, ok := biu.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
@@ -1118,6 +1042,51 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TagsTable,
+			Columns: []string{bazelinvocation.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedTagsIDs(); len(nodes) > 0 && !biu.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TagsTable,
+			Columns: []string{bazelinvocation.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.TagsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TagsTable,
+			Columns: []string{bazelinvocation.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1529,7 +1498,7 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.SourceControlCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.SourceControlTable,
 			Columns: []string{bazelinvocation.SourceControlColumn},
@@ -1540,9 +1509,25 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
+	if nodes := biu.mutation.RemovedSourceControlIDs(); len(nodes) > 0 && !biu.mutation.SourceControlCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.SourceControlTable,
+			Columns: []string{bazelinvocation.SourceControlColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
 	if nodes := biu.mutation.SourceControlIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.SourceControlTable,
 			Columns: []string{bazelinvocation.SourceControlColumn},
@@ -1618,60 +1603,6 @@ func (biuo *BazelInvocationUpdateOne) ClearEndedAt() *BazelInvocationUpdateOne {
 	return biuo
 }
 
-// SetChangeNumber sets the "change_number" field.
-func (biuo *BazelInvocationUpdateOne) SetChangeNumber(i int) *BazelInvocationUpdateOne {
-	biuo.mutation.ResetChangeNumber()
-	biuo.mutation.SetChangeNumber(i)
-	return biuo
-}
-
-// SetNillableChangeNumber sets the "change_number" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableChangeNumber(i *int) *BazelInvocationUpdateOne {
-	if i != nil {
-		biuo.SetChangeNumber(*i)
-	}
-	return biuo
-}
-
-// AddChangeNumber adds i to the "change_number" field.
-func (biuo *BazelInvocationUpdateOne) AddChangeNumber(i int) *BazelInvocationUpdateOne {
-	biuo.mutation.AddChangeNumber(i)
-	return biuo
-}
-
-// ClearChangeNumber clears the value of the "change_number" field.
-func (biuo *BazelInvocationUpdateOne) ClearChangeNumber() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearChangeNumber()
-	return biuo
-}
-
-// SetPatchsetNumber sets the "patchset_number" field.
-func (biuo *BazelInvocationUpdateOne) SetPatchsetNumber(i int) *BazelInvocationUpdateOne {
-	biuo.mutation.ResetPatchsetNumber()
-	biuo.mutation.SetPatchsetNumber(i)
-	return biuo
-}
-
-// SetNillablePatchsetNumber sets the "patchset_number" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillablePatchsetNumber(i *int) *BazelInvocationUpdateOne {
-	if i != nil {
-		biuo.SetPatchsetNumber(*i)
-	}
-	return biuo
-}
-
-// AddPatchsetNumber adds i to the "patchset_number" field.
-func (biuo *BazelInvocationUpdateOne) AddPatchsetNumber(i int) *BazelInvocationUpdateOne {
-	biuo.mutation.AddPatchsetNumber(i)
-	return biuo
-}
-
-// ClearPatchsetNumber clears the value of the "patchset_number" field.
-func (biuo *BazelInvocationUpdateOne) ClearPatchsetNumber() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearPatchsetNumber()
-	return biuo
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (biuo *BazelInvocationUpdateOne) SetBepCompleted(b bool) *BazelInvocationUpdateOne {
 	biuo.mutation.SetBepCompleted(b)
@@ -1683,26 +1614,6 @@ func (biuo *BazelInvocationUpdateOne) SetNillableBepCompleted(b *bool) *BazelInv
 	if b != nil {
 		biuo.SetBepCompleted(*b)
 	}
-	return biuo
-}
-
-// SetStepLabel sets the "step_label" field.
-func (biuo *BazelInvocationUpdateOne) SetStepLabel(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetStepLabel(s)
-	return biuo
-}
-
-// SetNillableStepLabel sets the "step_label" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableStepLabel(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetStepLabel(*s)
-	}
-	return biuo
-}
-
-// ClearStepLabel clears the value of the "step_label" field.
-func (biuo *BazelInvocationUpdateOne) ClearStepLabel() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearStepLabel()
 	return biuo
 }
 
@@ -1743,26 +1654,6 @@ func (biuo *BazelInvocationUpdateOne) SetNillableHostname(s *string) *BazelInvoc
 // ClearHostname clears the value of the "hostname" field.
 func (biuo *BazelInvocationUpdateOne) ClearHostname() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearHostname()
-	return biuo
-}
-
-// SetIsCiWorker sets the "is_ci_worker" field.
-func (biuo *BazelInvocationUpdateOne) SetIsCiWorker(b bool) *BazelInvocationUpdateOne {
-	biuo.mutation.SetIsCiWorker(b)
-	return biuo
-}
-
-// SetNillableIsCiWorker sets the "is_ci_worker" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableIsCiWorker(b *bool) *BazelInvocationUpdateOne {
-	if b != nil {
-		biuo.SetIsCiWorker(*b)
-	}
-	return biuo
-}
-
-// ClearIsCiWorker clears the value of the "is_ci_worker" field.
-func (biuo *BazelInvocationUpdateOne) ClearIsCiWorker() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearIsCiWorker()
 	return biuo
 }
 
@@ -2021,6 +1912,21 @@ func (biuo *BazelInvocationUpdateOne) SetAuthenticatedUser(a *AuthenticatedUser)
 	return biuo.SetAuthenticatedUserID(a.ID)
 }
 
+// AddTagIDs adds the "tags" edge to the InvocationTag entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddTagIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.AddTagIDs(ids...)
+	return biuo
+}
+
+// AddTags adds the "tags" edges to the InvocationTag entity.
+func (biuo *BazelInvocationUpdateOne) AddTags(i ...*InvocationTag) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biuo.AddTagIDs(ids...)
+}
+
 // SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
 func (biuo *BazelInvocationUpdateOne) SetEventMetadataID(id int64) *BazelInvocationUpdateOne {
 	biuo.mutation.SetEventMetadataID(id)
@@ -2183,23 +2089,19 @@ func (biuo *BazelInvocationUpdateOne) AddTargetKindMappings(t ...*TargetKindMapp
 	return biuo.AddTargetKindMappingIDs(ids...)
 }
 
-// SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
-func (biuo *BazelInvocationUpdateOne) SetSourceControlID(id int64) *BazelInvocationUpdateOne {
-	biuo.mutation.SetSourceControlID(id)
+// AddSourceControlIDs adds the "source_control" edge to the SourceControl entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddSourceControlIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.AddSourceControlIDs(ids...)
 	return biuo
 }
 
-// SetNillableSourceControlID sets the "source_control" edge to the SourceControl entity by ID if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableSourceControlID(id *int64) *BazelInvocationUpdateOne {
-	if id != nil {
-		biuo = biuo.SetSourceControlID(*id)
+// AddSourceControl adds the "source_control" edges to the SourceControl entity.
+func (biuo *BazelInvocationUpdateOne) AddSourceControl(s ...*SourceControl) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
 	}
-	return biuo
-}
-
-// SetSourceControl sets the "source_control" edge to the SourceControl entity.
-func (biuo *BazelInvocationUpdateOne) SetSourceControl(s *SourceControl) *BazelInvocationUpdateOne {
-	return biuo.SetSourceControlID(s.ID)
+	return biuo.AddSourceControlIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -2223,6 +2125,27 @@ func (biuo *BazelInvocationUpdateOne) ClearBuild() *BazelInvocationUpdateOne {
 func (biuo *BazelInvocationUpdateOne) ClearAuthenticatedUser() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearAuthenticatedUser()
 	return biuo
+}
+
+// ClearTags clears all "tags" edges to the InvocationTag entity.
+func (biuo *BazelInvocationUpdateOne) ClearTags() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearTags()
+	return biuo
+}
+
+// RemoveTagIDs removes the "tags" edge to InvocationTag entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveTagIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveTagIDs(ids...)
+	return biuo
+}
+
+// RemoveTags removes "tags" edges to InvocationTag entities.
+func (biuo *BazelInvocationUpdateOne) RemoveTags(i ...*InvocationTag) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biuo.RemoveTagIDs(ids...)
 }
 
 // ClearEventMetadata clears the "event_metadata" edge to the EventMetadata entity.
@@ -2390,10 +2313,25 @@ func (biuo *BazelInvocationUpdateOne) RemoveTargetKindMappings(t ...*TargetKindM
 	return biuo.RemoveTargetKindMappingIDs(ids...)
 }
 
-// ClearSourceControl clears the "source_control" edge to the SourceControl entity.
+// ClearSourceControl clears all "source_control" edges to the SourceControl entity.
 func (biuo *BazelInvocationUpdateOne) ClearSourceControl() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearSourceControl()
 	return biuo
+}
+
+// RemoveSourceControlIDs removes the "source_control" edge to SourceControl entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveSourceControlIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveSourceControlIDs(ids...)
+	return biuo
+}
+
+// RemoveSourceControl removes "source_control" edges to SourceControl entities.
+func (biuo *BazelInvocationUpdateOne) RemoveSourceControl(s ...*SourceControl) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return biuo.RemoveSourceControlIDs(ids...)
 }
 
 // Where appends a list predicates to the BazelInvocationUpdate builder.
@@ -2491,32 +2429,8 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if biuo.mutation.EndedAtCleared() {
 		_spec.ClearField(bazelinvocation.FieldEndedAt, field.TypeTime)
 	}
-	if value, ok := biuo.mutation.ChangeNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldChangeNumber, field.TypeInt, value)
-	}
-	if value, ok := biuo.mutation.AddedChangeNumber(); ok {
-		_spec.AddField(bazelinvocation.FieldChangeNumber, field.TypeInt, value)
-	}
-	if biuo.mutation.ChangeNumberCleared() {
-		_spec.ClearField(bazelinvocation.FieldChangeNumber, field.TypeInt)
-	}
-	if value, ok := biuo.mutation.PatchsetNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldPatchsetNumber, field.TypeInt, value)
-	}
-	if value, ok := biuo.mutation.AddedPatchsetNumber(); ok {
-		_spec.AddField(bazelinvocation.FieldPatchsetNumber, field.TypeInt, value)
-	}
-	if biuo.mutation.PatchsetNumberCleared() {
-		_spec.ClearField(bazelinvocation.FieldPatchsetNumber, field.TypeInt)
-	}
 	if value, ok := biuo.mutation.BepCompleted(); ok {
 		_spec.SetField(bazelinvocation.FieldBepCompleted, field.TypeBool, value)
-	}
-	if value, ok := biuo.mutation.StepLabel(); ok {
-		_spec.SetField(bazelinvocation.FieldStepLabel, field.TypeString, value)
-	}
-	if biuo.mutation.StepLabelCleared() {
-		_spec.ClearField(bazelinvocation.FieldStepLabel, field.TypeString)
 	}
 	if value, ok := biuo.mutation.Username(); ok {
 		_spec.SetField(bazelinvocation.FieldUsername, field.TypeString, value)
@@ -2529,12 +2443,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.HostnameCleared() {
 		_spec.ClearField(bazelinvocation.FieldHostname, field.TypeString)
-	}
-	if value, ok := biuo.mutation.IsCiWorker(); ok {
-		_spec.SetField(bazelinvocation.FieldIsCiWorker, field.TypeBool, value)
-	}
-	if biuo.mutation.IsCiWorkerCleared() {
-		_spec.ClearField(bazelinvocation.FieldIsCiWorker, field.TypeBool)
 	}
 	if value, ok := biuo.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
@@ -2682,6 +2590,51 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TagsTable,
+			Columns: []string{bazelinvocation.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedTagsIDs(); len(nodes) > 0 && !biuo.mutation.TagsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TagsTable,
+			Columns: []string{bazelinvocation.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.TagsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TagsTable,
+			Columns: []string{bazelinvocation.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -3093,7 +3046,7 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.SourceControlCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.SourceControlTable,
 			Columns: []string{bazelinvocation.SourceControlColumn},
@@ -3104,9 +3057,25 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
+	if nodes := biuo.mutation.RemovedSourceControlIDs(); len(nodes) > 0 && !biuo.mutation.SourceControlCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.SourceControlTable,
+			Columns: []string{bazelinvocation.SourceControlColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
 	if nodes := biuo.mutation.SourceControlIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.SourceControlTable,
 			Columns: []string{bazelinvocation.SourceControlColumn},

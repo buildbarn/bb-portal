@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -28,10 +29,12 @@ type BuildQuery struct {
 	predicates           []predicate.Build
 	withInstanceName     *InstanceNameQuery
 	withInvocations      *BazelInvocationQuery
+	withTags             *BuildTagQuery
 	withFKs              bool
 	loadTotal            []func(context.Context, []*Build) error
 	modifiers            []func(*sql.Selector)
 	withNamedInvocations map[string]*BazelInvocationQuery
+	withNamedTags        map[string]*BuildTagQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -105,6 +108,28 @@ func (bq *BuildQuery) QueryInvocations() *BazelInvocationQuery {
 			sqlgraph.From(build.Table, build.FieldID, selector),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, build.InvocationsTable, build.InvocationsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(bq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTags chains the current query on the "tags" edge.
+func (bq *BuildQuery) QueryTags() *BuildTagQuery {
+	query := (&BuildTagClient{config: bq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := bq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := bq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(build.Table, build.FieldID, selector),
+			sqlgraph.To(buildtag.Table, buildtag.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, build.TagsTable, build.TagsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bq.driver.Dialect(), step)
 		return fromU, nil
@@ -306,6 +331,7 @@ func (bq *BuildQuery) Clone() *BuildQuery {
 		predicates:       append([]predicate.Build{}, bq.predicates...),
 		withInstanceName: bq.withInstanceName.Clone(),
 		withInvocations:  bq.withInvocations.Clone(),
+		withTags:         bq.withTags.Clone(),
 		// clone intermediate query.
 		sql:       bq.sql.Clone(),
 		path:      bq.path,
@@ -335,18 +361,29 @@ func (bq *BuildQuery) WithInvocations(opts ...func(*BazelInvocationQuery)) *Buil
 	return bq
 }
 
+// WithTags tells the query-builder to eager-load the nodes that are connected to
+// the "tags" edge. The optional arguments are used to configure the query builder of the edge.
+func (bq *BuildQuery) WithTags(opts ...func(*BuildTagQuery)) *BuildQuery {
+	query := (&BuildTagClient{config: bq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	bq.withTags = query
+	return bq
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
 //
 //	var v []struct {
-//		BuildURL string `json:"build_url,omitempty"`
+//		BuildUUID uuid.UUID `json:"build_uuid,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Build.Query().
-//		GroupBy(build.FieldBuildURL).
+//		GroupBy(build.FieldBuildUUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (bq *BuildQuery) GroupBy(field string, fields ...string) *BuildGroupBy {
@@ -364,11 +401,11 @@ func (bq *BuildQuery) GroupBy(field string, fields ...string) *BuildGroupBy {
 // Example:
 //
 //	var v []struct {
-//		BuildURL string `json:"build_url,omitempty"`
+//		BuildUUID uuid.UUID `json:"build_uuid,omitempty"`
 //	}
 //
 //	client.Build.Query().
-//		Select(build.FieldBuildURL).
+//		Select(build.FieldBuildUUID).
 //		Scan(ctx, &v)
 func (bq *BuildQuery) Select(fields ...string) *BuildSelect {
 	bq.ctx.Fields = append(bq.ctx.Fields, fields...)
@@ -420,9 +457,10 @@ func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build,
 		nodes       = []*Build{}
 		withFKs     = bq.withFKs
 		_spec       = bq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			bq.withInstanceName != nil,
 			bq.withInvocations != nil,
+			bq.withTags != nil,
 		}
 	)
 	if bq.withInstanceName != nil {
@@ -465,10 +503,24 @@ func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build,
 			return nil, err
 		}
 	}
+	if query := bq.withTags; query != nil {
+		if err := bq.loadTags(ctx, query, nodes,
+			func(n *Build) { n.Edges.Tags = []*BuildTag{} },
+			func(n *Build, e *BuildTag) { n.Edges.Tags = append(n.Edges.Tags, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range bq.withNamedInvocations {
 		if err := bq.loadInvocations(ctx, query, nodes,
 			func(n *Build) { n.appendNamedInvocations(name) },
 			func(n *Build, e *BazelInvocation) { n.appendNamedInvocations(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range bq.withNamedTags {
+		if err := bq.loadTags(ctx, query, nodes,
+			func(n *Build) { n.appendNamedTags(name) },
+			func(n *Build, e *BuildTag) { n.appendNamedTags(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -538,6 +590,36 @@ func (bq *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocatio
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "build_invocations" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (bq *BuildQuery) loadTags(ctx context.Context, query *BuildTagQuery, nodes []*Build, init func(*Build), assign func(*Build, *BuildTag)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Build)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(buildtag.FieldBuildID)
+	}
+	query.Where(predicate.BuildTag(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(build.TagsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.BuildID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "build_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -648,6 +730,20 @@ func (bq *BuildQuery) WithNamedInvocations(name string, opts ...func(*BazelInvoc
 		bq.withNamedInvocations = make(map[string]*BazelInvocationQuery)
 	}
 	bq.withNamedInvocations[name] = query
+	return bq
+}
+
+// WithNamedTags tells the query-builder to eager-load the nodes that are connected to the "tags"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (bq *BuildQuery) WithNamedTags(name string, opts ...func(*BuildTagQuery)) *BuildQuery {
+	query := (&BuildTagClient{config: bq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if bq.withNamedTags == nil {
+		bq.withNamedTags = make(map[string]*BuildTagQuery)
+	}
+	bq.withNamedTags[name] = query
 	return bq
 }
 

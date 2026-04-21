@@ -91,13 +91,9 @@ type BazelInvocation struct {
 	CreatedTimestamp                  time.Time
 	StartedAt                         sql.NullTime
 	EndedAt                           sql.NullTime
-	ChangeNumber                      sql.NullInt64
-	PatchsetNumber                    sql.NullInt64
 	BepCompleted                      bool
-	StepLabel                         sql.NullString
 	Username                          sql.NullString
 	Hostname                          sql.NullString
-	IsCiWorker                        sql.NullBool
 	NumFetches                        sql.NullInt64
 	ProfileName                       sql.NullString
 	BazelVersion                      sql.NullString
@@ -117,7 +113,6 @@ type BazelInvocation struct {
 
 type Build struct {
 	ID                 int64
-	BuildUrl           string
 	BuildUuid          uuid.UUID
 	Timestamp          time.Time
 	InstanceNameBuilds int64
@@ -144,6 +139,13 @@ type BuildLogChunk struct {
 	FirstLineIndex                int64
 	LastLineIndex                 int64
 	BazelInvocationBuildLogChunks int64
+}
+
+type BuildTag struct {
+	ID      int64
+	Key     string
+	Value   string
+	BuildID int64
 }
 
 type Configuration struct {
@@ -198,6 +200,13 @@ type InvocationFile struct {
 	SizeBytes                      sql.NullInt64
 	DigestFunction                 sql.NullString
 	BazelInvocationInvocationFiles sql.NullInt64
+}
+
+type InvocationTag struct {
+	ID                int64
+	Key               string
+	Value             string
+	BazelInvocationID int64
 }
 
 type InvocationTarget struct {
@@ -285,22 +294,12 @@ type RunnerCount struct {
 
 type SourceControl struct {
 	ID                           int64
-	Provider                     sql.NullString
-	InstanceUrl                  sql.NullString
 	Repo                         sql.NullString
-	Refs                         sql.NullString
-	CommitSha                    sql.NullString
-	Actor                        sql.NullString
-	EventName                    sql.NullString
-	Workflow                     sql.NullString
-	RunID                        sql.NullString
-	RunNumber                    sql.NullString
-	Job                          sql.NullString
-	Action                       sql.NullString
-	RunnerName                   sql.NullString
-	RunnerArch                   sql.NullString
-	RunnerOs                     sql.NullString
-	Workspace                    sql.NullString
+	RepoUrl                      sql.NullString
+	Ref                          sql.NullString
+	RefUrl                       sql.NullString
+	Commit                       sql.NullString
+	CommitUrl                    sql.NullString
 	BazelInvocationSourceControl sql.NullInt64
 }
 

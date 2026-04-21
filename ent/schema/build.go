@@ -19,7 +19,6 @@ type Build struct {
 // Fields of the Build.
 func (Build) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("build_url").Immutable(),
 		field.UUID("build_uuid", uuid.UUID{}).Unique().Immutable(),
 		field.Time("timestamp").Annotations(entgql.OrderField("TIMESTAMP")),
 	}
@@ -38,6 +37,13 @@ func (Build) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 				entgql.RelayConnection(),
 			),
+
+		// Metadata for a Build.
+		edge.To("tags", BuildTag.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+				entgql.RelayConnection(),
+			),
 	}
 }
 
@@ -45,12 +51,8 @@ func (Build) Edges() []ent.Edge {
 func (Build) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("build_uuid"),
-		index.Fields("build_url"),
 		index.Fields("timestamp"),
 		index.Edges("instance_name"),
-		index.Fields("build_url").
-			Edges("instance_name").
-			Unique(),
 	}
 }
 

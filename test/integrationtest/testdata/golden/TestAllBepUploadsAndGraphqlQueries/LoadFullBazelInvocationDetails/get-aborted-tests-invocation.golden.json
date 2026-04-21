@@ -135,7 +135,6 @@
       "name": ""
     },
     "invocationID": "64719226-555e-494d-9918-0fd25d468b1e",
-    "isCiWorker": false,
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
@@ -489,9 +488,11 @@
       "startupOptions": []
     },
     "profile": null,
-    "sourceControl": null,
+    "sourceControl": [],
     "startedAt": "2026-02-04T09:03:25.376Z",
-    "stepLabel": "",
+    "tags": {
+      "edges": []
+    },
     "username": "root"
   }
 }

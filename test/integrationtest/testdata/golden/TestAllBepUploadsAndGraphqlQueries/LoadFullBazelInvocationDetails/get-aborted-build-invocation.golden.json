@@ -96,7 +96,6 @@
       "name": ""
     },
     "invocationID": "76651929-40d8-4f79-a2de-6a4a5092b76c",
-    "isCiWorker": false,
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": null,
@@ -410,9 +409,11 @@
       "startupOptions": []
     },
     "profile": null,
-    "sourceControl": null,
+    "sourceControl": [],
     "startedAt": "2026-02-04T08:42:48.403Z",
-    "stepLabel": "",
+    "tags": {
+      "edges": []
+    },
     "username": ""
   }
 }

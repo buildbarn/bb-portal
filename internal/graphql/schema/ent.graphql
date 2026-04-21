@@ -858,13 +858,9 @@ type BazelInvocation implements Node {
   invocationID: UUID!
   startedAt: Time
   endedAt: Time
-  changeNumber: Int
-  patchsetNumber: Int
   bepCompleted: Boolean!
-  stepLabel: String
   username: String
   hostname: String
-  isCiWorker: Boolean
   numFetches: Int
   bazelVersion: String
   exitCodeName: String
@@ -884,6 +880,37 @@ type BazelInvocation implements Node {
   instanceName: InstanceName!
   build: Build
   authenticatedUser: AuthenticatedUser
+  tags(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for InvocationTags returned from the connection.
+    """
+    orderBy: InvocationTagOrder
+
+    """
+    Filtering options for InvocationTags returned from the connection.
+    """
+    where: InvocationTagWhereInput
+  ): InvocationTagConnection!
   connectionMetadata: ConnectionMetadata
   configurations: [Configuration!]
   actions: [Action!]
@@ -919,7 +946,7 @@ type BazelInvocation implements Node {
     """
     where: InvocationTargetWhereInput
   ): InvocationTargetConnection!
-  sourceControl: SourceControl
+  sourceControl: [SourceControl!]
 }
 """
 A connection to a list of items.
@@ -1028,54 +1055,10 @@ input BazelInvocationWhereInput {
   endedAtIsNil: Boolean
   endedAtNotNil: Boolean
   """
-  change_number field predicates
-  """
-  changeNumber: Int
-  changeNumberNEQ: Int
-  changeNumberIn: [Int!]
-  changeNumberNotIn: [Int!]
-  changeNumberGT: Int
-  changeNumberGTE: Int
-  changeNumberLT: Int
-  changeNumberLTE: Int
-  changeNumberIsNil: Boolean
-  changeNumberNotNil: Boolean
-  """
-  patchset_number field predicates
-  """
-  patchsetNumber: Int
-  patchsetNumberNEQ: Int
-  patchsetNumberIn: [Int!]
-  patchsetNumberNotIn: [Int!]
-  patchsetNumberGT: Int
-  patchsetNumberGTE: Int
-  patchsetNumberLT: Int
-  patchsetNumberLTE: Int
-  patchsetNumberIsNil: Boolean
-  patchsetNumberNotNil: Boolean
-  """
   bep_completed field predicates
   """
   bepCompleted: Boolean
   bepCompletedNEQ: Boolean
-  """
-  step_label field predicates
-  """
-  stepLabel: String
-  stepLabelNEQ: String
-  stepLabelIn: [String!]
-  stepLabelNotIn: [String!]
-  stepLabelGT: String
-  stepLabelGTE: String
-  stepLabelLT: String
-  stepLabelLTE: String
-  stepLabelContains: String
-  stepLabelHasPrefix: String
-  stepLabelHasSuffix: String
-  stepLabelIsNil: Boolean
-  stepLabelNotNil: Boolean
-  stepLabelEqualFold: String
-  stepLabelContainsFold: String
   """
   username field predicates
   """
@@ -1112,13 +1095,6 @@ input BazelInvocationWhereInput {
   hostnameNotNil: Boolean
   hostnameEqualFold: String
   hostnameContainsFold: String
-  """
-  is_ci_worker field predicates
-  """
-  isCiWorker: Boolean
-  isCiWorkerNEQ: Boolean
-  isCiWorkerIsNil: Boolean
-  isCiWorkerNotNil: Boolean
   """
   num_fetches field predicates
   """
@@ -1215,6 +1191,11 @@ input BazelInvocationWhereInput {
   hasAuthenticatedUser: Boolean
   hasAuthenticatedUserWith: [AuthenticatedUserWhereInput!]
   """
+  tags edge predicates
+  """
+  hasTags: Boolean
+  hasTagsWith: [InvocationTagWhereInput!]
+  """
   connection_metadata edge predicates
   """
   hasConnectionMetadata: Boolean
@@ -1247,7 +1228,6 @@ input BazelInvocationWhereInput {
 }
 type Build implements Node {
   id: ID!
-  buildURL: String!
   buildUUID: UUID!
   timestamp: Time!
   instanceName: InstanceName!
@@ -1282,6 +1262,37 @@ type Build implements Node {
     """
     where: BazelInvocationWhereInput
   ): BazelInvocationConnection!
+  tags(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for BuildTags returned from the connection.
+    """
+    orderBy: BuildTagOrder
+
+    """
+    Filtering options for BuildTags returned from the connection.
+    """
+    where: BuildTagWhereInput
+  ): BuildTagConnection!
 }
 """
 A connection to a list of items.
@@ -1487,6 +1498,118 @@ Properties by which Build connections can be ordered.
 enum BuildOrderField {
   TIMESTAMP
 }
+type BuildTag implements Node {
+  id: ID!
+  key: String!
+  value: String!
+  build: Build!
+}
+"""
+A connection to a list of items.
+"""
+type BuildTagConnection {
+  """
+  A list of edges.
+  """
+  edges: [BuildTagEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type BuildTagEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: BuildTag
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for BuildTag connections
+"""
+input BuildTagOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order BuildTags.
+  """
+  field: BuildTagOrderField!
+}
+"""
+Properties by which BuildTag connections can be ordered.
+"""
+enum BuildTagOrderField {
+  KEY
+}
+"""
+BuildTagWhereInput is used for filtering BuildTag objects.
+Input was generated by ent.
+"""
+input BuildTagWhereInput {
+  not: BuildTagWhereInput
+  and: [BuildTagWhereInput!]
+  or: [BuildTagWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  key field predicates
+  """
+  key: String
+  keyNEQ: String
+  keyIn: [String!]
+  keyNotIn: [String!]
+  keyGT: String
+  keyGTE: String
+  keyLT: String
+  keyLTE: String
+  keyContains: String
+  keyHasPrefix: String
+  keyHasSuffix: String
+  keyEqualFold: String
+  keyContainsFold: String
+  """
+  value field predicates
+  """
+  value: String
+  valueNEQ: String
+  valueIn: [String!]
+  valueNotIn: [String!]
+  valueGT: String
+  valueGTE: String
+  valueLT: String
+  valueLTE: String
+  valueContains: String
+  valueHasPrefix: String
+  valueHasSuffix: String
+  valueEqualFold: String
+  valueContainsFold: String
+  """
+  build edge predicates
+  """
+  hasBuild: Boolean
+  hasBuildWith: [BuildWhereInput!]
+}
 """
 BuildWhereInput is used for filtering Build objects.
 Input was generated by ent.
@@ -1506,22 +1629,6 @@ input BuildWhereInput {
   idGTE: ID
   idLT: ID
   idLTE: ID
-  """
-  build_url field predicates
-  """
-  buildURL: String
-  buildURLNEQ: String
-  buildURLIn: [String!]
-  buildURLNotIn: [String!]
-  buildURLGT: String
-  buildURLGTE: String
-  buildURLLT: String
-  buildURLLTE: String
-  buildURLContains: String
-  buildURLHasPrefix: String
-  buildURLHasSuffix: String
-  buildURLEqualFold: String
-  buildURLContainsFold: String
   """
   build_uuid field predicates
   """
@@ -1554,6 +1661,11 @@ input BuildWhereInput {
   """
   hasInvocations: Boolean
   hasInvocationsWith: [BazelInvocationWhereInput!]
+  """
+  tags edge predicates
+  """
+  hasTags: Boolean
+  hasTagsWith: [BuildTagWhereInput!]
 }
 type Configuration implements Node {
   id: ID!
@@ -1844,6 +1956,118 @@ input InstanceNameWhereInput {
   """
   hasTargets: Boolean
   hasTargetsWith: [TargetWhereInput!]
+}
+type InvocationTag implements Node {
+  id: ID!
+  key: String!
+  value: String!
+  bazelInvocation: BazelInvocation!
+}
+"""
+A connection to a list of items.
+"""
+type InvocationTagConnection {
+  """
+  A list of edges.
+  """
+  edges: [InvocationTagEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type InvocationTagEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: InvocationTag
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for InvocationTag connections
+"""
+input InvocationTagOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order InvocationTags.
+  """
+  field: InvocationTagOrderField!
+}
+"""
+Properties by which InvocationTag connections can be ordered.
+"""
+enum InvocationTagOrderField {
+  KEY
+}
+"""
+InvocationTagWhereInput is used for filtering InvocationTag objects.
+Input was generated by ent.
+"""
+input InvocationTagWhereInput {
+  not: InvocationTagWhereInput
+  and: [InvocationTagWhereInput!]
+  or: [InvocationTagWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  key field predicates
+  """
+  key: String
+  keyNEQ: String
+  keyIn: [String!]
+  keyNotIn: [String!]
+  keyGT: String
+  keyGTE: String
+  keyLT: String
+  keyLTE: String
+  keyContains: String
+  keyHasPrefix: String
+  keyHasSuffix: String
+  keyEqualFold: String
+  keyContainsFold: String
+  """
+  value field predicates
+  """
+  value: String
+  valueNEQ: String
+  valueIn: [String!]
+  valueNotIn: [String!]
+  valueGT: String
+  valueGTE: String
+  valueLT: String
+  valueLTE: String
+  valueContains: String
+  valueHasPrefix: String
+  valueHasSuffix: String
+  valueEqualFold: String
+  valueContainsFold: String
+  """
+  bazel_invocation edge predicates
+  """
+  hasBazelInvocation: Boolean
+  hasBazelInvocationWith: [BazelInvocationWhereInput!]
 }
 type InvocationTarget implements Node {
   id: ID!
@@ -2546,30 +2770,13 @@ input RunnerCountWhereInput {
 }
 type SourceControl implements Node {
   id: ID!
-  provider: SourceControlProvider
-  instanceURL: String
   repo: String
-  refs: String
-  commitSha: String
-  actor: String
-  eventName: String
-  workflow: String
-  runID: String
-  runNumber: String
-  job: String
-  action: String
-  runnerName: String
-  runnerArch: String
-  runnerOs: String
-  workspace: String
+  repoURL: String
+  ref: String
+  refURL: String
+  commit: String
+  commitURL: String
   bazelInvocation: BazelInvocation
-}
-"""
-SourceControlProvider is enum for the field provider
-"""
-enum SourceControlProvider @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol.Provider") {
-  GITHUB
-  GITLAB
 }
 """
 SourceControlWhereInput is used for filtering SourceControl objects.
@@ -2591,33 +2798,6 @@ input SourceControlWhereInput {
   idLT: ID
   idLTE: ID
   """
-  provider field predicates
-  """
-  provider: SourceControlProvider
-  providerNEQ: SourceControlProvider
-  providerIn: [SourceControlProvider!]
-  providerNotIn: [SourceControlProvider!]
-  providerIsNil: Boolean
-  providerNotNil: Boolean
-  """
-  instance_url field predicates
-  """
-  instanceURL: String
-  instanceURLNEQ: String
-  instanceURLIn: [String!]
-  instanceURLNotIn: [String!]
-  instanceURLGT: String
-  instanceURLGTE: String
-  instanceURLLT: String
-  instanceURLLTE: String
-  instanceURLContains: String
-  instanceURLHasPrefix: String
-  instanceURLHasSuffix: String
-  instanceURLIsNil: Boolean
-  instanceURLNotNil: Boolean
-  instanceURLEqualFold: String
-  instanceURLContainsFold: String
-  """
   repo field predicates
   """
   repo: String
@@ -2636,239 +2816,95 @@ input SourceControlWhereInput {
   repoEqualFold: String
   repoContainsFold: String
   """
-  refs field predicates
+  repo_url field predicates
   """
-  refs: String
-  refsNEQ: String
-  refsIn: [String!]
-  refsNotIn: [String!]
-  refsGT: String
-  refsGTE: String
-  refsLT: String
-  refsLTE: String
-  refsContains: String
-  refsHasPrefix: String
-  refsHasSuffix: String
-  refsIsNil: Boolean
-  refsNotNil: Boolean
-  refsEqualFold: String
-  refsContainsFold: String
+  repoURL: String
+  repoURLNEQ: String
+  repoURLIn: [String!]
+  repoURLNotIn: [String!]
+  repoURLGT: String
+  repoURLGTE: String
+  repoURLLT: String
+  repoURLLTE: String
+  repoURLContains: String
+  repoURLHasPrefix: String
+  repoURLHasSuffix: String
+  repoURLIsNil: Boolean
+  repoURLNotNil: Boolean
+  repoURLEqualFold: String
+  repoURLContainsFold: String
   """
-  commit_sha field predicates
+  ref field predicates
   """
-  commitSha: String
-  commitShaNEQ: String
-  commitShaIn: [String!]
-  commitShaNotIn: [String!]
-  commitShaGT: String
-  commitShaGTE: String
-  commitShaLT: String
-  commitShaLTE: String
-  commitShaContains: String
-  commitShaHasPrefix: String
-  commitShaHasSuffix: String
-  commitShaIsNil: Boolean
-  commitShaNotNil: Boolean
-  commitShaEqualFold: String
-  commitShaContainsFold: String
+  ref: String
+  refNEQ: String
+  refIn: [String!]
+  refNotIn: [String!]
+  refGT: String
+  refGTE: String
+  refLT: String
+  refLTE: String
+  refContains: String
+  refHasPrefix: String
+  refHasSuffix: String
+  refIsNil: Boolean
+  refNotNil: Boolean
+  refEqualFold: String
+  refContainsFold: String
   """
-  actor field predicates
+  ref_url field predicates
   """
-  actor: String
-  actorNEQ: String
-  actorIn: [String!]
-  actorNotIn: [String!]
-  actorGT: String
-  actorGTE: String
-  actorLT: String
-  actorLTE: String
-  actorContains: String
-  actorHasPrefix: String
-  actorHasSuffix: String
-  actorIsNil: Boolean
-  actorNotNil: Boolean
-  actorEqualFold: String
-  actorContainsFold: String
+  refURL: String
+  refURLNEQ: String
+  refURLIn: [String!]
+  refURLNotIn: [String!]
+  refURLGT: String
+  refURLGTE: String
+  refURLLT: String
+  refURLLTE: String
+  refURLContains: String
+  refURLHasPrefix: String
+  refURLHasSuffix: String
+  refURLIsNil: Boolean
+  refURLNotNil: Boolean
+  refURLEqualFold: String
+  refURLContainsFold: String
   """
-  event_name field predicates
+  commit field predicates
   """
-  eventName: String
-  eventNameNEQ: String
-  eventNameIn: [String!]
-  eventNameNotIn: [String!]
-  eventNameGT: String
-  eventNameGTE: String
-  eventNameLT: String
-  eventNameLTE: String
-  eventNameContains: String
-  eventNameHasPrefix: String
-  eventNameHasSuffix: String
-  eventNameIsNil: Boolean
-  eventNameNotNil: Boolean
-  eventNameEqualFold: String
-  eventNameContainsFold: String
+  commit: String
+  commitNEQ: String
+  commitIn: [String!]
+  commitNotIn: [String!]
+  commitGT: String
+  commitGTE: String
+  commitLT: String
+  commitLTE: String
+  commitContains: String
+  commitHasPrefix: String
+  commitHasSuffix: String
+  commitIsNil: Boolean
+  commitNotNil: Boolean
+  commitEqualFold: String
+  commitContainsFold: String
   """
-  workflow field predicates
+  commit_url field predicates
   """
-  workflow: String
-  workflowNEQ: String
-  workflowIn: [String!]
-  workflowNotIn: [String!]
-  workflowGT: String
-  workflowGTE: String
-  workflowLT: String
-  workflowLTE: String
-  workflowContains: String
-  workflowHasPrefix: String
-  workflowHasSuffix: String
-  workflowIsNil: Boolean
-  workflowNotNil: Boolean
-  workflowEqualFold: String
-  workflowContainsFold: String
-  """
-  run_id field predicates
-  """
-  runID: String
-  runIDNEQ: String
-  runIDIn: [String!]
-  runIDNotIn: [String!]
-  runIDGT: String
-  runIDGTE: String
-  runIDLT: String
-  runIDLTE: String
-  runIDContains: String
-  runIDHasPrefix: String
-  runIDHasSuffix: String
-  runIDIsNil: Boolean
-  runIDNotNil: Boolean
-  runIDEqualFold: String
-  runIDContainsFold: String
-  """
-  run_number field predicates
-  """
-  runNumber: String
-  runNumberNEQ: String
-  runNumberIn: [String!]
-  runNumberNotIn: [String!]
-  runNumberGT: String
-  runNumberGTE: String
-  runNumberLT: String
-  runNumberLTE: String
-  runNumberContains: String
-  runNumberHasPrefix: String
-  runNumberHasSuffix: String
-  runNumberIsNil: Boolean
-  runNumberNotNil: Boolean
-  runNumberEqualFold: String
-  runNumberContainsFold: String
-  """
-  job field predicates
-  """
-  job: String
-  jobNEQ: String
-  jobIn: [String!]
-  jobNotIn: [String!]
-  jobGT: String
-  jobGTE: String
-  jobLT: String
-  jobLTE: String
-  jobContains: String
-  jobHasPrefix: String
-  jobHasSuffix: String
-  jobIsNil: Boolean
-  jobNotNil: Boolean
-  jobEqualFold: String
-  jobContainsFold: String
-  """
-  action field predicates
-  """
-  action: String
-  actionNEQ: String
-  actionIn: [String!]
-  actionNotIn: [String!]
-  actionGT: String
-  actionGTE: String
-  actionLT: String
-  actionLTE: String
-  actionContains: String
-  actionHasPrefix: String
-  actionHasSuffix: String
-  actionIsNil: Boolean
-  actionNotNil: Boolean
-  actionEqualFold: String
-  actionContainsFold: String
-  """
-  runner_name field predicates
-  """
-  runnerName: String
-  runnerNameNEQ: String
-  runnerNameIn: [String!]
-  runnerNameNotIn: [String!]
-  runnerNameGT: String
-  runnerNameGTE: String
-  runnerNameLT: String
-  runnerNameLTE: String
-  runnerNameContains: String
-  runnerNameHasPrefix: String
-  runnerNameHasSuffix: String
-  runnerNameIsNil: Boolean
-  runnerNameNotNil: Boolean
-  runnerNameEqualFold: String
-  runnerNameContainsFold: String
-  """
-  runner_arch field predicates
-  """
-  runnerArch: String
-  runnerArchNEQ: String
-  runnerArchIn: [String!]
-  runnerArchNotIn: [String!]
-  runnerArchGT: String
-  runnerArchGTE: String
-  runnerArchLT: String
-  runnerArchLTE: String
-  runnerArchContains: String
-  runnerArchHasPrefix: String
-  runnerArchHasSuffix: String
-  runnerArchIsNil: Boolean
-  runnerArchNotNil: Boolean
-  runnerArchEqualFold: String
-  runnerArchContainsFold: String
-  """
-  runner_os field predicates
-  """
-  runnerOs: String
-  runnerOsNEQ: String
-  runnerOsIn: [String!]
-  runnerOsNotIn: [String!]
-  runnerOsGT: String
-  runnerOsGTE: String
-  runnerOsLT: String
-  runnerOsLTE: String
-  runnerOsContains: String
-  runnerOsHasPrefix: String
-  runnerOsHasSuffix: String
-  runnerOsIsNil: Boolean
-  runnerOsNotNil: Boolean
-  runnerOsEqualFold: String
-  runnerOsContainsFold: String
-  """
-  workspace field predicates
-  """
-  workspace: String
-  workspaceNEQ: String
-  workspaceIn: [String!]
-  workspaceNotIn: [String!]
-  workspaceGT: String
-  workspaceGTE: String
-  workspaceLT: String
-  workspaceLTE: String
-  workspaceContains: String
-  workspaceHasPrefix: String
-  workspaceHasSuffix: String
-  workspaceIsNil: Boolean
-  workspaceNotNil: Boolean
-  workspaceEqualFold: String
-  workspaceContainsFold: String
+  commitURL: String
+  commitURLNEQ: String
+  commitURLIn: [String!]
+  commitURLNotIn: [String!]
+  commitURLGT: String
+  commitURLGTE: String
+  commitURLLT: String
+  commitURLLTE: String
+  commitURLContains: String
+  commitURLHasPrefix: String
+  commitURLHasSuffix: String
+  commitURLIsNil: Boolean
+  commitURLNotNil: Boolean
+  commitURLEqualFold: String
+  commitURLContainsFold: String
   """
   bazel_invocation edge predicates
   """

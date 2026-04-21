@@ -145,6 +145,27 @@ func (bi *BazelInvocation) AuthenticatedUser(ctx context.Context) (*Authenticate
 	return result, MaskNotFound(err)
 }
 
+func (bi *BazelInvocation) Tags(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTagOrder, where *InvocationTagWhereInput,
+) (*InvocationTagConnection, error) {
+	opts := []InvocationTagPaginateOption{
+		WithInvocationTagOrder(orderBy),
+		WithInvocationTagFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := bi.Edges.totalCount[3][alias]
+	if nodes, err := bi.NamedTags(alias); err == nil || hasTotalCount {
+		pager, err := newInvocationTagPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &InvocationTagConnection{Edges: []*InvocationTagEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return bi.QueryTags().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (bi *BazelInvocation) ConnectionMetadata(ctx context.Context) (*ConnectionMetadata, error) {
 	result, err := bi.Edges.ConnectionMetadataOrErr()
 	if IsNotLoaded(err) {
@@ -193,7 +214,7 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[7][alias]
+	totalCount, hasTotalCount := bi.Edges.totalCount[8][alias]
 	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
@@ -206,12 +227,16 @@ func (bi *BazelInvocation) InvocationTargets(
 	return bi.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (bi *BazelInvocation) SourceControl(ctx context.Context) (*SourceControl, error) {
-	result, err := bi.Edges.SourceControlOrErr()
-	if IsNotLoaded(err) {
-		result, err = bi.QuerySourceControl().Only(ctx)
+func (bi *BazelInvocation) SourceControl(ctx context.Context) (result []*SourceControl, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = bi.NamedSourceControl(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = bi.Edges.SourceControlOrErr()
 	}
-	return result, MaskNotFound(err)
+	if IsNotLoaded(err) {
+		result, err = bi.QuerySourceControl().All(ctx)
+	}
+	return result, err
 }
 
 func (b *Build) InstanceName(ctx context.Context) (*InstanceName, error) {
@@ -243,12 +268,41 @@ func (b *Build) Invocations(
 	return b.QueryInvocations().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (b *Build) Tags(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *BuildTagOrder, where *BuildTagWhereInput,
+) (*BuildTagConnection, error) {
+	opts := []BuildTagPaginateOption{
+		WithBuildTagOrder(orderBy),
+		WithBuildTagFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := b.Edges.totalCount[2][alias]
+	if nodes, err := b.NamedTags(alias); err == nil || hasTotalCount {
+		pager, err := newBuildTagPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &BuildTagConnection{Edges: []*BuildTagEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return b.QueryTags().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (bgm *BuildGraphMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := bgm.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = bgm.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (bt *BuildTag) Build(ctx context.Context) (*Build, error) {
+	result, err := bt.Edges.BuildOrErr()
+	if IsNotLoaded(err) {
+		result, err = bt.QueryBuild().Only(ctx)
+	}
+	return result, err
 }
 
 func (c *Configuration) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
@@ -331,6 +385,14 @@ func (in *InstanceName) Targets(ctx context.Context) (result []*Target, err erro
 	}
 	if IsNotLoaded(err) {
 		result, err = in.QueryTargets().All(ctx)
+	}
+	return result, err
+}
+
+func (it *InvocationTag) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := it.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = it.QueryBazelInvocation().Only(ctx)
 	}
 	return result, err
 }

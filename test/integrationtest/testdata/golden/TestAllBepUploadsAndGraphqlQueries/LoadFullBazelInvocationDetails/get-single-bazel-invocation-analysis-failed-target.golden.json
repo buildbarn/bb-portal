@@ -4,7 +4,7 @@
     "authenticatedUser": null,
     "bazelVersion": "7.1.0",
     "build": {
-      "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
+      "buildUUID": "59268e3d-4eb1-57f0-a88e-f81a384ff8f0",
       "id": "QnVpbGQ6MQ=="
     },
     "canonicalCommandLine": {
@@ -115,7 +115,6 @@
       "name": ""
     },
     "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
-    "isCiWorker": false,
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
@@ -290,9 +289,11 @@
       ]
     },
     "profile": null,
-    "sourceControl": null,
+    "sourceControl": [],
     "startedAt": "2024-05-13T23:43:23.045Z",
-    "stepLabel": "nextjs_test",
+    "tags": {
+      "edges": []
+    },
     "username": "nameless"
   }
 }

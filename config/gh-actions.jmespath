@@ -1,0 +1,31 @@
+{
+  "username": env.USER
+  "hostname": env.HOSTNAME
+  "sourceControls": [
+    {
+      "repo": env.GITHUB_REPOSITORY
+      "repoUrl": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY]) || `null`
+      "ref": env.GITHUB_REF
+      "refUrl": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_REF_NAME && ends_with(env.GITHUB_REF_NAME, '/merge')) && join('/', [env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, 'pull', env.GITHUB_REF_NAME]) || (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_REF) && join('/', [env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, 'tree', env.GITHUB_REF]) || `null`
+      "commit": env.GITHUB_SHA
+      "commitUrl": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_SHA) && join('/', [env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, 'commit', env.GITHUB_SHA]) || `null`
+    }
+  ]
+  "invocationTags": {
+    "pull_request": env.GITHUB_REF_NAME && ends_with(env.GITHUB_REF_NAME, '/merge') && env.GITHUB_REF_NAME || `null`
+    "pull_request_url": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_REF_NAME && ends_with(env.GITHUB_REF_NAME, '/merge')) && join('/', [env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, 'pull', env.GITHUB_REF_NAME]) || `null`
+    "workflow": env.GITHUB_WORKFLOW
+    "workflow_url": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_RUN_ID) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY, 'actions', 'runs', env.GITHUB_RUN_ID]) || `null`
+    "job": env.GITHUB_JOB
+    "action": env.GITHUB_ACTION
+  }
+  "buildTags": {
+    "repo": env.GITHUB_REPOSITORY
+    "repo_url": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY]) || `null`
+    "pull_request": env.GITHUB_REF_NAME && ends_with(env.GITHUB_REF_NAME, '/merge') && env.GITHUB_REF_NAME || `null`
+    "pull_request_url": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_REF_NAME && ends_with(env.GITHUB_REF_NAME, '/merge')) && join('/', [env.GITHUB_SERVER_URL, env.GITHUB_REPOSITORY, 'pull', env.GITHUB_REF_NAME]) || `null`
+    "workflow": env.GITHUB_WORKFLOW
+    "workflow_url": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_RUN_ID) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY, 'actions', 'runs', env.GITHUB_RUN_ID]) || `null`
+    "build_id": (env.GITHUB_SERVER_URL && env.GITHUB_REPOSITORY && env.GITHUB_RUN_ID) && join('/', [env.GITHUB_SERVER_URL , env.GITHUB_REPOSITORY, 'actions', 'runs', env.GITHUB_RUN_ID]) || `null`
+  }
+}

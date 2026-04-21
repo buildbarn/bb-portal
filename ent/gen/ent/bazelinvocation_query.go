@@ -24,6 +24,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -41,6 +42,7 @@ type BazelInvocationQuery struct {
 	withInstanceName             *InstanceNameQuery
 	withBuild                    *BuildQuery
 	withAuthenticatedUser        *AuthenticatedUserQuery
+	withTags                     *InvocationTagQuery
 	withEventMetadata            *EventMetadataQuery
 	withConnectionMetadata       *ConnectionMetadataQuery
 	withConfigurations           *ConfigurationQuery
@@ -55,6 +57,7 @@ type BazelInvocationQuery struct {
 	withFKs                      bool
 	loadTotal                    []func(context.Context, []*BazelInvocation) error
 	modifiers                    []func(*sql.Selector)
+	withNamedTags                map[string]*InvocationTagQuery
 	withNamedConfigurations      map[string]*ConfigurationQuery
 	withNamedActions             map[string]*ActionQuery
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
@@ -62,6 +65,7 @@ type BazelInvocationQuery struct {
 	withNamedInvocationFiles     map[string]*InvocationFilesQuery
 	withNamedInvocationTargets   map[string]*InvocationTargetQuery
 	withNamedTargetKindMappings  map[string]*TargetKindMappingQuery
+	withNamedSourceControl       map[string]*SourceControlQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -157,6 +161,28 @@ func (biq *BazelInvocationQuery) QueryAuthenticatedUser() *AuthenticatedUserQuer
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(authenticateduser.Table, authenticateduser.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, bazelinvocation.AuthenticatedUserTable, bazelinvocation.AuthenticatedUserColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTags chains the current query on the "tags" edge.
+func (biq *BazelInvocationQuery) QueryTags() *InvocationTagQuery {
+	query := (&InvocationTagClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(invocationtag.Table, invocationtag.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TagsTable, bazelinvocation.TagsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -398,7 +424,7 @@ func (biq *BazelInvocationQuery) QuerySourceControl() *SourceControlQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(sourcecontrol.Table, sourcecontrol.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -601,6 +627,7 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withInstanceName:        biq.withInstanceName.Clone(),
 		withBuild:               biq.withBuild.Clone(),
 		withAuthenticatedUser:   biq.withAuthenticatedUser.Clone(),
+		withTags:                biq.withTags.Clone(),
 		withEventMetadata:       biq.withEventMetadata.Clone(),
 		withConnectionMetadata:  biq.withConnectionMetadata.Clone(),
 		withConfigurations:      biq.withConfigurations.Clone(),
@@ -649,6 +676,17 @@ func (biq *BazelInvocationQuery) WithAuthenticatedUser(opts ...func(*Authenticat
 		opt(query)
 	}
 	biq.withAuthenticatedUser = query
+	return biq
+}
+
+// WithTags tells the query-builder to eager-load the nodes that are connected to
+// the "tags" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithTags(opts ...func(*InvocationTagQuery)) *BazelInvocationQuery {
+	query := (&InvocationTagClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withTags = query
 	return biq
 }
 
@@ -858,10 +896,11 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [14]bool{
+		loadedTypes = [15]bool{
 			biq.withInstanceName != nil,
 			biq.withBuild != nil,
 			biq.withAuthenticatedUser != nil,
+			biq.withTags != nil,
 			biq.withEventMetadata != nil,
 			biq.withConnectionMetadata != nil,
 			biq.withConfigurations != nil,
@@ -917,6 +956,13 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if query := biq.withAuthenticatedUser; query != nil {
 		if err := biq.loadAuthenticatedUser(ctx, query, nodes, nil,
 			func(n *BazelInvocation, e *AuthenticatedUser) { n.Edges.AuthenticatedUser = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withTags; query != nil {
+		if err := biq.loadTags(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.Tags = []*InvocationTag{} },
+			func(n *BazelInvocation, e *InvocationTag) { n.Edges.Tags = append(n.Edges.Tags, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -996,8 +1042,16 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		}
 	}
 	if query := biq.withSourceControl; query != nil {
-		if err := biq.loadSourceControl(ctx, query, nodes, nil,
-			func(n *BazelInvocation, e *SourceControl) { n.Edges.SourceControl = e }); err != nil {
+		if err := biq.loadSourceControl(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.SourceControl = []*SourceControl{} },
+			func(n *BazelInvocation, e *SourceControl) { n.Edges.SourceControl = append(n.Edges.SourceControl, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedTags {
+		if err := biq.loadTags(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedTags(name) },
+			func(n *BazelInvocation, e *InvocationTag) { n.appendNamedTags(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1047,6 +1101,13 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		if err := biq.loadTargetKindMappings(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedTargetKindMappings(name) },
 			func(n *BazelInvocation, e *TargetKindMapping) { n.appendNamedTargetKindMappings(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedSourceControl {
+		if err := biq.loadSourceControl(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedSourceControl(name) },
+			func(n *BazelInvocation, e *SourceControl) { n.appendNamedSourceControl(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1151,6 +1212,36 @@ func (biq *BazelInvocationQuery) loadAuthenticatedUser(ctx context.Context, quer
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadTags(ctx context.Context, query *InvocationTagQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationTag)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(invocationtag.FieldBazelInvocationID)
+	}
+	query.Where(predicate.InvocationTag(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.TagsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -1456,6 +1547,9 @@ func (biq *BazelInvocationQuery) loadSourceControl(ctx context.Context, query *S
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
 	}
 	query.withFKs = true
 	query.Where(predicate.SourceControl(func(s *sql.Selector) {
@@ -1572,6 +1666,20 @@ func (biq *BazelInvocationQuery) Modify(modifiers ...func(s *sql.Selector)) *Baz
 	return biq.Select()
 }
 
+// WithNamedTags tells the query-builder to eager-load the nodes that are connected to the "tags"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedTags(name string, opts ...func(*InvocationTagQuery)) *BazelInvocationQuery {
+	query := (&InvocationTagClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedTags == nil {
+		biq.withNamedTags = make(map[string]*InvocationTagQuery)
+	}
+	biq.withNamedTags[name] = query
+	return biq
+}
+
 // WithNamedConfigurations tells the query-builder to eager-load the nodes that are connected to the "configurations"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
 func (biq *BazelInvocationQuery) WithNamedConfigurations(name string, opts ...func(*ConfigurationQuery)) *BazelInvocationQuery {
@@ -1667,6 +1775,20 @@ func (biq *BazelInvocationQuery) WithNamedTargetKindMappings(name string, opts .
 		biq.withNamedTargetKindMappings = make(map[string]*TargetKindMappingQuery)
 	}
 	biq.withNamedTargetKindMappings[name] = query
+	return biq
+}
+
+// WithNamedSourceControl tells the query-builder to eager-load the nodes that are connected to the "source_control"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedSourceControl(name string, opts ...func(*SourceControlQuery)) *BazelInvocationQuery {
+	query := (&SourceControlClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedSourceControl == nil {
+		biq.withNamedSourceControl = make(map[string]*SourceControlQuery)
+	}
+	biq.withNamedSourceControl[name] = query
 	return biq
 }
 

@@ -22,10 +22,12 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -94,6 +96,11 @@ var buildgraphmetricsImplementors = []string{"BuildGraphMetrics", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*BuildGraphMetrics) IsNode() {}
 
+var buildtagImplementors = []string{"BuildTag", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*BuildTag) IsNode() {}
+
 var configurationImplementors = []string{"Configuration", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
@@ -113,6 +120,11 @@ var instancenameImplementors = []string{"InstanceName", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*InstanceName) IsNode() {}
+
+var invocationtagImplementors = []string{"InvocationTag", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*InvocationTag) IsNode() {}
 
 var invocationtargetImplementors = []string{"InvocationTarget", "Node"}
 
@@ -323,6 +335,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			}
 		}
 		return query.Only(ctx)
+	case buildtag.Table:
+		query := c.BuildTag.Query().
+			Where(buildtag.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, buildtagImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case configuration.Table:
 		query := c.Configuration.Query().
 			Where(configuration.ID(id))
@@ -355,6 +376,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(instancename.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, instancenameImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case invocationtag.Table:
+		query := c.InvocationTag.Query().
+			Where(invocationtag.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, invocationtagImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -702,6 +732,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 				*noder = node
 			}
 		}
+	case buildtag.Table:
+		query := c.BuildTag.Query().
+			Where(buildtag.IDIn(ids...))
+		query, err := query.CollectFields(ctx, buildtagImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case configuration.Table:
 		query := c.Configuration.Query().
 			Where(configuration.IDIn(ids...))
@@ -754,6 +800,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.InstanceName.Query().
 			Where(instancename.IDIn(ids...))
 		query, err := query.CollectFields(ctx, instancenameImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case invocationtag.Table:
+		query := c.InvocationTag.Query().
+			Where(invocationtag.IDIn(ids...))
+		query, err := query.CollectFields(ctx, invocationtagImplementors...)
 		if err != nil {
 			return nil, err
 		}

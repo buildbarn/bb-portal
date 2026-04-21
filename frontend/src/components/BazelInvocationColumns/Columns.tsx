@@ -2,7 +2,6 @@ import { ClockCircleFilled, SearchOutlined } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
 import { Typography } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
-import type { ColumnType } from "antd/lib/table";
 import dayjs from "dayjs";
 import PortalDuration from "@/components/PortalDuration";
 import {
@@ -14,6 +13,7 @@ import type {
   BazelInvocationNodeFragment,
   BazelInvocationWhereInput,
 } from "@/graphql/__generated__/graphql";
+import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
 import { InvocationResultTag } from "../InvocationResultTag";
 import {
   applyInvocationResultTagFilter,
@@ -22,89 +22,94 @@ import {
 import UserStatusIndicator from "../UserStatusIndicator";
 import styles from "./Columns.module.css";
 
-type ColumnTypeWithFilter<T> = ColumnType<T> & {
-  applyFilter?: (value: FilterValue) => BazelInvocationWhereInput[] | undefined;
+export const invocationIdColumn: TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+> = {
+  key: "invocationID",
+  width: 220,
+  title: "Invocation",
+  render: (_, record) => (
+    <Link
+      to={`/bazel-invocations/$invocationID`}
+      params={{ invocationID: record.invocationID }}
+    >
+      {record.invocationID}
+    </Link>
+  ),
+  filterDropdown: (filterProps) => (
+    <SearchWidget
+      placeholder="Provide a Bazel invocation ID..."
+      {...filterProps}
+    />
+  ),
+  filterIcon: (filtered) => (
+    <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+  ),
+  applyFilter: (value: FilterValue) => {
+    if (value.length === 0) {
+      return undefined;
+    }
+    return [{ invocationID: value[0] as string }];
+  },
 };
 
-export const invocationIdColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
-  {
-    key: "invocationID",
-    width: 220,
-    title: "Invocation",
-    render: (_, record) => (
-      <Link
-        to={`/bazel-invocations/$invocationID`}
-        params={{ invocationID: record.invocationID }}
-      >
-        {record.invocationID}
-      </Link>
-    ),
-    filterDropdown: (filterProps) => (
-      <SearchWidget
-        placeholder="Provide a Bazel invocation ID..."
-        {...filterProps}
-      />
-    ),
-    filterIcon: (filtered) => (
-      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
-    ),
-    applyFilter: (value: FilterValue) => {
-      if (value.length === 0) {
-        return undefined;
-      }
-      return [{ invocationID: value[0] as string }];
-    },
-  };
+export const startedAtColumn: TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+> = {
+  key: "startedAt",
+  width: 165,
+  title: "Start Time",
+  render: (_, record) => (
+    <Typography.Text code ellipsis className={styles.startedAt}>
+      {dayjs(record.startedAt).format("YYYY-MM-DD hh:mm:ss A")}
+    </Typography.Text>
+  ),
+  filterDropdown: (filterProps) => <TimeRangeSelector {...filterProps} />,
+  filterIcon: (filtered) => (
+    <SearchFilterIcon icon={<ClockCircleFilled />} filtered={filtered} />
+  ),
+  applyFilter: (value: FilterValue) => {
+    if (value.length !== 2) {
+      return undefined;
+    }
+    const filter: BazelInvocationWhereInput[] = [];
+    if (value[0]) {
+      filter.push({ startedAtGTE: value[0] });
+    }
+    if (value[1]) {
+      filter.push({ startedAtLTE: value[1] });
+    }
+    return filter;
+  },
+};
 
-export const startedAtColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
-  {
-    key: "startedAt",
-    width: 165,
-    title: "Start Time",
-    render: (_, record) => (
-      <Typography.Text code ellipsis className={styles.startedAt}>
-        {dayjs(record.startedAt).format("YYYY-MM-DD hh:mm:ss A")}
-      </Typography.Text>
-    ),
-    filterDropdown: (filterProps) => <TimeRangeSelector {...filterProps} />,
-    filterIcon: (filtered) => (
-      <SearchFilterIcon icon={<ClockCircleFilled />} filtered={filtered} />
-    ),
-    applyFilter: (value: FilterValue) => {
-      if (value.length !== 2) {
-        return undefined;
+export const durationColumn: TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+> = {
+  key: "duration",
+  width: 100,
+  title: "Duration",
+  render: (_, record) => (
+    <PortalDuration
+      from={record.startedAt || undefined}
+      to={
+        record.endedAt
+          ? record.endedAt
+          : record.connectionMetadata?.connectionLastOpenAt || undefined
       }
-      const filter: BazelInvocationWhereInput[] = [];
-      if (value[0]) {
-        filter.push({ startedAtGTE: value[0] });
-      }
-      if (value[1]) {
-        filter.push({ startedAtLTE: value[1] });
-      }
-      return filter;
-    },
-  };
+      includePopover
+      formatConfig={{ smallestUnit: "s" }}
+    />
+  ),
+};
 
-export const durationColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
-  {
-    key: "duration",
-    width: 100,
-    title: "Duration",
-    render: (_, record) => (
-      <PortalDuration
-        from={record.startedAt || undefined}
-        to={
-          record.endedAt
-            ? record.endedAt
-            : record.connectionMetadata?.connectionLastOpenAt || undefined
-        }
-        includePopover
-        formatConfig={{ smallestUnit: "s" }}
-      />
-    ),
-  };
-
-export const statusColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
+export const statusColumn: TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+> = {
   key: "result",
   width: 120,
   title: "Result",
@@ -123,7 +128,10 @@ export const statusColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
   applyFilter: applyInvocationResultTagFilter,
 };
 
-export const buildColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
+export const buildColumn: TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+> = {
   key: "build",
   width: 220,
   title: "Build",
@@ -150,7 +158,10 @@ export const buildColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
   },
 };
 
-export const userColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> = {
+export const userColumn: TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+> = {
   key: "user",
   width: 120,
   title: "User",

@@ -13,8 +13,6 @@ const (
 	Label = "build"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldBuildURL holds the string denoting the build_url field in the database.
-	FieldBuildURL = "build_url"
 	// FieldBuildUUID holds the string denoting the build_uuid field in the database.
 	FieldBuildUUID = "build_uuid"
 	// FieldTimestamp holds the string denoting the timestamp field in the database.
@@ -23,6 +21,8 @@ const (
 	EdgeInstanceName = "instance_name"
 	// EdgeInvocations holds the string denoting the invocations edge name in mutations.
 	EdgeInvocations = "invocations"
+	// EdgeTags holds the string denoting the tags edge name in mutations.
+	EdgeTags = "tags"
 	// Table holds the table name of the build in the database.
 	Table = "builds"
 	// InstanceNameTable is the table that holds the instance_name relation/edge.
@@ -39,12 +39,18 @@ const (
 	InvocationsInverseTable = "bazel_invocations"
 	// InvocationsColumn is the table column denoting the invocations relation/edge.
 	InvocationsColumn = "build_invocations"
+	// TagsTable is the table that holds the tags relation/edge.
+	TagsTable = "build_tags"
+	// TagsInverseTable is the table name for the BuildTag entity.
+	// It exists in this package in order to avoid circular dependency with the "buildtag" package.
+	TagsInverseTable = "build_tags"
+	// TagsColumn is the table column denoting the tags relation/edge.
+	TagsColumn = "build_id"
 )
 
 // Columns holds all SQL columns for build fields.
 var Columns = []string{
 	FieldID,
-	FieldBuildURL,
 	FieldBuildUUID,
 	FieldTimestamp,
 }
@@ -88,11 +94,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByBuildURL orders the results by the build_url field.
-func ByBuildURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBuildURL, opts...).ToFunc()
-}
-
 // ByBuildUUID orders the results by the build_uuid field.
 func ByBuildUUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBuildUUID, opts...).ToFunc()
@@ -123,6 +124,20 @@ func ByInvocations(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newInvocationsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByTagsCount orders the results by tags count.
+func ByTagsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTagsStep(), opts...)
+	}
+}
+
+// ByTags orders the results by tags terms.
+func ByTags(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTagsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newInstanceNameStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -135,5 +150,12 @@ func newInvocationsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(InvocationsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, InvocationsTable, InvocationsColumn),
+	)
+}
+func newTagsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TagsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TagsTable, TagsColumn),
 	)
 }
