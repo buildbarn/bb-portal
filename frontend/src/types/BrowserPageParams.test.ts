@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseBrowserPageSlug } from "./parseBrowserPageSlug";
+import { parseBrowserPageSlug } from "./BrowserPageParams";
 
 describe("parseBrowserPageSlug", () => {
   it('should return undefined if "blobs" is not in the slug', () => {
@@ -8,7 +8,7 @@ describe("parseBrowserPageSlug", () => {
       "not-blobs",
       "sha256",
       "action",
-      "hash-size",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef-308",
       "other",
       "params",
     ]);
@@ -20,7 +20,7 @@ describe("parseBrowserPageSlug", () => {
       "instance",
       "sha256",
       "action",
-      "hash-size",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef-308",
       "other",
       "params",
       "blobs",
@@ -34,7 +34,7 @@ describe("parseBrowserPageSlug", () => {
       "blobs",
       "sha256",
       "invalidType",
-      "hash-size",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef-308",
     ]);
     expect(result).toBeUndefined();
   });
@@ -56,16 +56,16 @@ describe("parseBrowserPageSlug", () => {
       "blobs",
       "sha256",
       "action",
-      "hash-size",
-      "other",
-      "params",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef-308",
     ]);
     expect(result).toEqual({
       instanceName: "instance",
       digestFunction: 1,
       browserPageType: "action",
-      digest: { hash: "hash", sizeBytes: "size" },
-      otherParams: ["other", "params"],
+      digest: {
+        hash: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        sizeBytes: "308",
+      },
     });
   });
 
@@ -74,14 +74,16 @@ describe("parseBrowserPageSlug", () => {
       "blobs",
       "sha256",
       "action",
-      "hash-size",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef-308",
     ]);
     expect(result).toEqual({
       instanceName: "",
       digestFunction: 1,
       browserPageType: "action",
-      digest: { hash: "hash", sizeBytes: "size" },
-      otherParams: [],
+      digest: {
+        hash: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        sizeBytes: "308",
+      },
     });
   });
 
@@ -94,14 +96,16 @@ describe("parseBrowserPageSlug", () => {
       "blobs",
       "sha256",
       "action",
-      "hash-size",
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef-308",
     ]);
     expect(result).toEqual({
       instanceName: "instance/name/with/slashes",
       digestFunction: 1,
       browserPageType: "action",
-      digest: { hash: "hash", sizeBytes: "size" },
-      otherParams: [],
+      digest: {
+        hash: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        sizeBytes: "308",
+      },
     });
   });
 });

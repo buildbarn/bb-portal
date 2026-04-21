@@ -2,10 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { Descriptions, Space, Typography } from "antd";
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { PreviousExecutionStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
-import {
-  type BrowserPageParams,
-  BrowserPageType,
-} from "@/types/BrowserPageType";
+import type { BrowserPageParams } from "@/types/BrowserPageParams";
+import { BrowserPageType } from "@/types/BrowserPageType";
 import { generateBrowserSplat } from "@/utils/urlGenerator";
 import PreviousExecutionsPlot from "../PreviousExecuteStatsPlot";
 import SizeClassOutcome from "../SizeClassOutcome";

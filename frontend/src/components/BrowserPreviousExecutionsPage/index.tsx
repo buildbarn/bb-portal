@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Space, Spin, Typography } from "antd";
 import { initialSizeClassCacheClient } from "@/grpc/initialSizeClassCacheClient";
 import { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import type { BrowserPageParams } from "@/types/BrowserPageType";
+import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import BrowserPreviousExecutionsDisplay from "../BrowserPreviousExecutionsDisplay";
 import PortalAlert from "../PortalAlert";
 

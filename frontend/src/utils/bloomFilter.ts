@@ -88,6 +88,12 @@ export class PathHashes {
     }
     return new PathHashes(BigInt.asUintN(64, hash));
   }
+  appendComponents(names: string[]): PathHashes {
+    return names.reduce<PathHashes>(
+      (hashes, name) => hashes.appendComponent(name),
+      this,
+    );
+  }
 
   toString(): string {
     return this.baseHash.toString();
