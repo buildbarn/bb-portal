@@ -1,73 +1,99 @@
 import { CalendarFilled } from "@ant-design/icons";
-import { useQuery } from "@apollo/client/react";
-import { Flex, Spin } from "antd";
+import { Collapse, Descriptions, Space, Typography } from "antd";
 import type React from "react";
-import Content from "@/components/Content";
-import PortalAlert from "@/components/PortalAlert";
-import PortalCard from "@/components/PortalCard";
-import UserView from "@/components/UserView";
-import { getFragmentData } from "@/graphql/__generated__";
 import {
-  BazelInvocationOrderField,
-  OrderDirection,
+  buildColumn,
+  durationColumn,
+  invocationIdColumn,
+  startedAtColumn,
+  statusColumn,
+} from "@/components/BazelInvocationColumns/Columns";
+import Content from "@/components/Content";
+import { PageCursorTable } from "@/components/PageCursorTable";
+import type { OnTablePaginationChange } from "@/components/PageCursorTable/types";
+import { tableFiltersToGraphqlWhere } from "@/components/PageCursorTable/utils";
+import PortalCard from "@/components/PortalCard";
+import type {
+  AuthenticatedUserNodeFragmentFragment,
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput,
 } from "@/graphql/__generated__/graphql";
-import GET_AUTHENTICATED_USER_BY_UUID, {
-  AUTHENTICATED_USER_NODE_FRAGMENT,
-} from "./index.graphql";
-import styles from "./index.module.css";
+import themeStyles from "@/theme/theme.module.css";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 
-interface Params {
-  userUUID: string;
+interface Props {
+  pageSize: number | undefined;
+  user: AuthenticatedUserNodeFragmentFragment;
+  onPaginationChange: OnTablePaginationChange;
+  onFilterChange: (where: BazelInvocationWhereInput[]) => void;
 }
 
-export const UserDetailsPage: React.FC<Params> = ({ userUUID }) => {
-  const { loading, data, error } = useQuery(GET_AUTHENTICATED_USER_BY_UUID, {
-    variables: {
-      userUUID: userUUID,
-      bazelInvocationsOrderBy: {
-        field: BazelInvocationOrderField.StartedAt,
-        direction: OrderDirection.Desc,
-      },
-    },
-    fetchPolicy: "network-only",
-  });
+export const UserDetailsPage: React.FC<Props> = (params) => {
+  return <Content content={<UserDetails {...params} />} />;
+};
 
-  if (loading)
-    return (
-      <Flex justify="center">
-        <Spin />
-      </Flex>
-    );
+const UserDetails: React.FC<Props> = ({
+  pageSize,
+  user,
+  onPaginationChange,
+  onFilterChange,
+}) => {
+  const invocations = parseGraphqlEdgeList(user.bazelInvocations);
+  const userInfo = user.userInfo || {};
 
-  if (error)
-    return (
-      <PortalAlert
-        type="error"
-        message={`There was a problem communicating with the backend server: ${error?.message}`}
-        showIcon
-        className={styles.alert}
-      />
-    );
-
-  const authenticatedUser = getFragmentData(
-    AUTHENTICATED_USER_NODE_FRAGMENT,
-    data?.getAuthenticatedUser,
-  );
+  const tableColumns = [
+    invocationIdColumn,
+    startedAtColumn,
+    durationColumn,
+    statusColumn,
+    buildColumn,
+  ];
 
   return (
-    <Content
-      content={
-        <PortalCard
-          icon={<CalendarFilled />}
-          titleBits={[
-            <span key="title">
-              User {authenticatedUser?.displayName || userUUID}
-            </span>,
-          ]}
-        >
-          <UserView authenticatedUser={authenticatedUser} />
-        </PortalCard>
-      }
-    />
+    <PortalCard
+      icon={<CalendarFilled />}
+      titleBits={[
+        <span key="title">User {user.displayName || user.userUUID}</span>,
+      ]}
+    >
+      <Space direction="vertical" className={themeStyles.space}>
+        {Object.keys(userInfo).length > 0 && (
+          <Collapse
+            bordered={false}
+            items={[
+              {
+                key: 0,
+                label: (
+                  <Typography.Text strong>User information</Typography.Text>
+                ),
+                children: (
+                  <Descriptions column={1} bordered size="small">
+                    {Object.keys(userInfo).map((value) => {
+                      return (
+                        <Descriptions.Item key={value} label={value}>
+                          {userInfo[value]}
+                        </Descriptions.Item>
+                      );
+                    })}
+                  </Descriptions>
+                ),
+              },
+            ]}
+          />
+        )}
+
+        <PageCursorTable
+          dataSource={invocations as BazelInvocationNodeFragment[]}
+          columns={tableColumns}
+          size="small"
+          pageInfo={user.bazelInvocations.pageInfo}
+          pageSize={pageSize}
+          onPaginationChange={onPaginationChange}
+          onChange={(_pagination, filters, _sorter, _extra) => {
+            onFilterChange(tableFiltersToGraphqlWhere(tableColumns, filters));
+          }}
+        />
+      </Space>
+    </PortalCard>
   );
 };

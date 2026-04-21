@@ -8,13 +8,21 @@
             "connectionMetadata": null,
             "endedAt": "2024-05-03T00:24:29.605Z",
             "exitCodeName": "SUCCESS",
+            "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
             "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9",
             "startedAt": "2024-05-03T00:24:28.621Z"
           }
         }
-      ]
+      ],
+      "pageInfo": {
+        "endCursor": "gaFp0wAAAAAAAAAB",
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": "gaFp0wAAAAAAAAAB"
+      }
     },
     "displayName": "example_username",
+    "id": "QXV0aGVudGljYXRlZFVzZXI6MQ==",
     "userInfo": {
       "age": 30,
       "contact_information": {
@@ -22,6 +30,7 @@
         "phone_number": "800-555-0199"
       },
       "full_name": "Example Name"
-    }
+    },
+    "userUUID": "25600353-adb4-55f6-a82b-e96236c21fd0"
   }
 }

@@ -16,6 +16,19 @@ const config: CodegenConfig = {
         persistedDocuments: true,
       },
     },
+    "./src/graphql/__generated__/zod.ts": {
+      plugins: ["typescript-validation-schema"],
+      config: {
+        schema: "zodv4",
+        scalarSchemas: {
+          Time: "z.iso.datetime({ offset: true })",
+          UUID: "z.uuid()",
+        },
+        importFrom: "./graphql",
+        notAllowEmptyString: true,
+        useEnumTypeAsDefaultValue: true,
+      },
+    },
   },
 };
 
