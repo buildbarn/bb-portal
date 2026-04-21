@@ -1,22 +1,18 @@
 import {
-  CalculatorOutlined,
-  CalendarFilled,
   CodeOutlined,
   FolderOpenFilled,
   HistoryOutlined,
 } from "@ant-design/icons";
 import { Typography } from "antd";
 import type React from "react";
-import BrowserActionGrid from "@/components/BrowserActionGrid";
+import { BrowserActionPages } from "@/components/BrowserActionPages";
 import BrowserCommandGrid from "@/components/BrowserCommandGrid";
 import BrowserDirectoryPage from "@/components/BrowserDirectoryPage";
 import BrowserPreviousExecutionsPage from "@/components/BrowserPreviousExecutionsPage";
 import PortalCard from "@/components/PortalCard";
 import type { BrowserSearchParams } from "@/routes/browser.$";
-import {
-  type BrowserPageParams,
-  BrowserPageType,
-} from "@/types/BrowserPageType";
+import type { BrowserPageParams } from "@/types/BrowserPageParams";
+import { BrowserPageType } from "@/types/BrowserPageType";
 
 interface Params {
   params: BrowserPageParams;
@@ -25,15 +21,9 @@ interface Params {
 
 export const BrowserPage: React.FC<Params> = ({ params, search }) => {
   switch (params.browserPageType) {
-    case BrowserPageType.Action:
-      return (
-        <PortalCard
-          icon={<CalculatorOutlined />}
-          titleBits={[<span key="title">Action</span>]}
-        >
-          <BrowserActionGrid browserPageParams={params} />
-        </PortalCard>
-      );
+    case BrowserPageType.Action: // Intentional fall-though
+    case BrowserPageType.HistoricalExecuteResponse:
+      return <BrowserActionPages params={params} search={search} />;
 
     case BrowserPageType.Command:
       return (
@@ -70,19 +60,6 @@ export const BrowserPage: React.FC<Params> = ({ params, search }) => {
             <code>forceUploadTreesAndDirectories: true</code> in your{" "}
             <code>bb_worker.jsonnet</code>.
           </div>
-        </PortalCard>
-      );
-
-    case BrowserPageType.HistoricalExecuteResponse:
-      return (
-        <PortalCard
-          icon={<CalendarFilled />}
-          titleBits={[<span key="title">Historical Execute Response</span>]}
-        >
-          <Typography.Title level={2}>
-            Historical Execute Response
-          </Typography.Title>
-          <BrowserActionGrid browserPageParams={params} showTitle />
         </PortalCard>
       );
 
