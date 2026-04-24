@@ -102,6 +102,7 @@ fragment BazelInvocationInfo on BazelInvocation {
   canonicalCommandLine
   originalCommandLine
   optionsParsed
+  environmentVariables
   id
   invocationID
   instanceName {

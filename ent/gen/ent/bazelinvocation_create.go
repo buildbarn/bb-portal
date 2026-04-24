@@ -209,6 +209,12 @@ func (bic *BazelInvocationCreate) SetOptionsParsed(iclo *invocation.ParsedComman
 	return bic
 }
 
+// SetEnvironmentVariables sets the "environment_variables" field.
+func (bic *BazelInvocationCreate) SetEnvironmentVariables(m map[string]string) *BazelInvocationCreate {
+	bic.mutation.SetEnvironmentVariables(m)
+	return bic
+}
+
 // SetProcessedEventStarted sets the "processed_event_started" field.
 func (bic *BazelInvocationCreate) SetProcessedEventStarted(b bool) *BazelInvocationCreate {
 	bic.mutation.SetProcessedEventStarted(b)
@@ -690,6 +696,10 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.OptionsParsed(); ok {
 		_spec.SetField(bazelinvocation.FieldOptionsParsed, field.TypeJSON, value)
 		_node.OptionsParsed = value
+	}
+	if value, ok := bic.mutation.EnvironmentVariables(); ok {
+		_spec.SetField(bazelinvocation.FieldEnvironmentVariables, field.TypeJSON, value)
+		_node.EnvironmentVariables = value
 	}
 	if value, ok := bic.mutation.ProcessedEventStarted(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
@@ -1242,6 +1252,24 @@ func (u *BazelInvocationUpsert) ClearOptionsParsed() *BazelInvocationUpsert {
 	return u
 }
 
+// SetEnvironmentVariables sets the "environment_variables" field.
+func (u *BazelInvocationUpsert) SetEnvironmentVariables(v map[string]string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldEnvironmentVariables, v)
+	return u
+}
+
+// UpdateEnvironmentVariables sets the "environment_variables" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateEnvironmentVariables() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldEnvironmentVariables)
+	return u
+}
+
+// ClearEnvironmentVariables clears the value of the "environment_variables" field.
+func (u *BazelInvocationUpsert) ClearEnvironmentVariables() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldEnvironmentVariables)
+	return u
+}
+
 // SetProcessedEventStarted sets the "processed_event_started" field.
 func (u *BazelInvocationUpsert) SetProcessedEventStarted(v bool) *BazelInvocationUpsert {
 	u.Set(bazelinvocation.FieldProcessedEventStarted, v)
@@ -1621,6 +1649,27 @@ func (u *BazelInvocationUpsertOne) UpdateOptionsParsed() *BazelInvocationUpsertO
 func (u *BazelInvocationUpsertOne) ClearOptionsParsed() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearOptionsParsed()
+	})
+}
+
+// SetEnvironmentVariables sets the "environment_variables" field.
+func (u *BazelInvocationUpsertOne) SetEnvironmentVariables(v map[string]string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetEnvironmentVariables(v)
+	})
+}
+
+// UpdateEnvironmentVariables sets the "environment_variables" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateEnvironmentVariables() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateEnvironmentVariables()
+	})
+}
+
+// ClearEnvironmentVariables clears the value of the "environment_variables" field.
+func (u *BazelInvocationUpsertOne) ClearEnvironmentVariables() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearEnvironmentVariables()
 	})
 }
 
@@ -2177,6 +2226,27 @@ func (u *BazelInvocationUpsertBulk) UpdateOptionsParsed() *BazelInvocationUpsert
 func (u *BazelInvocationUpsertBulk) ClearOptionsParsed() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearOptionsParsed()
+	})
+}
+
+// SetEnvironmentVariables sets the "environment_variables" field.
+func (u *BazelInvocationUpsertBulk) SetEnvironmentVariables(v map[string]string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetEnvironmentVariables(v)
+	})
+}
+
+// UpdateEnvironmentVariables sets the "environment_variables" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateEnvironmentVariables() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateEnvironmentVariables()
+	})
+}
+
+// ClearEnvironmentVariables clears the value of the "environment_variables" field.
+func (u *BazelInvocationUpsertBulk) ClearEnvironmentVariables() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearEnvironmentVariables()
 	})
 }
 

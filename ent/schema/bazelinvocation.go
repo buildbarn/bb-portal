@@ -68,6 +68,10 @@ func (BazelInvocation) Fields() []ent.Field {
 			Annotations(entgql.Type("Map")).
 			Comment("JSON representation of the parsed command line options"),
 
+		field.JSON("environment_variables", map[string]string{}).
+			Optional().
+			Annotations(entgql.Type("Map")),
+
 		// Track which event types have been processed. Used to block duplicate
 		// events.
 		field.Bool("processed_event_started").Default(false).Annotations(entgql.Skip()),

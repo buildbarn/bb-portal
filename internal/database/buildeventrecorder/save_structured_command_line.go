@@ -57,6 +57,14 @@ func parseProfileNameFromSectionOptions(section *bes.CommandLineSection) string 
 	return "command.profile.gz"
 }
 
+func censorEnvironmentVariables(envVars map[string]string) map[string]string {
+	censored := make(map[string]string, len(envVars))
+	for k := range envVars {
+		censored[k] = "[REDACTED]"
+	}
+	return censored
+}
+
 func (r *buildEventRecorder) recordSourceControl(ctx context.Context, tx *ent.Client, sourceControls []invocationmetadataextraction.SourceControl) error {
 	scBuilders := make([]*ent.SourceControlCreate, 0, len(sourceControls))
 	for _, sc := range sourceControls {
@@ -203,7 +211,8 @@ func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx d
 		update := tx.Ent().BazelInvocation.
 			UpdateOneID(r.InvocationDbID).
 			SetProfileName(profileName).
-			SetCanonicalCommandLine(&data)
+			SetCanonicalCommandLine(&data).
+			SetEnvironmentVariables(censorEnvironmentVariables(envVars))
 
 		invocationMetadata := invocationmetadataextraction.ExtractInvocationMetadata(r.dataExtractors.InvocationMetadataExtractor, envVars)
 		if invocationMetadata != nil {

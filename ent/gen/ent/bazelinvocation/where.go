@@ -831,6 +831,16 @@ func OptionsParsedNotNil() predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldNotNull(FieldOptionsParsed))
 }
 
+// EnvironmentVariablesIsNil applies the IsNil predicate on the "environment_variables" field.
+func EnvironmentVariablesIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldEnvironmentVariables))
+}
+
+// EnvironmentVariablesNotNil applies the NotNil predicate on the "environment_variables" field.
+func EnvironmentVariablesNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldEnvironmentVariables))
+}
+
 // ProcessedEventStartedEQ applies the EQ predicate on the "processed_event_started" field.
 func ProcessedEventStartedEQ(v bool) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventStarted, v))

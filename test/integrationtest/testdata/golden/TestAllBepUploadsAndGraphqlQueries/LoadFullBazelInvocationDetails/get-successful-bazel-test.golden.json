@@ -101,6 +101,12 @@
     ],
     "connectionMetadata": null,
     "endedAt": "2024-05-03T00:23:40.441Z",
+    "environmentVariables": {
+      "BAZELISK_SKIP_WRAPPER": "[REDACTED]",
+      "HOME": "[REDACTED]",
+      "PATH": "[REDACTED]",
+      "__CF_USER_TEXT_ENCODING": "[REDACTED]"
+    },
     "exitCodeName": "SUCCESS",
     "hostname": "Namelesss-MacBook-Pro.local",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",

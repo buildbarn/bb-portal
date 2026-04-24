@@ -56,6 +56,8 @@ type BazelInvocation struct {
 	OriginalCommandLine *invocation.CommandLineData `json:"original_command_line,omitempty"`
 	// JSON representation of the parsed command line options
 	OptionsParsed *invocation.ParsedCommandLineOptions `json:"options_parsed,omitempty"`
+	// EnvironmentVariables holds the value of the "environment_variables" field.
+	EnvironmentVariables map[string]string `json:"environment_variables,omitempty"`
 	// ProcessedEventStarted holds the value of the "processed_event_started" field.
 	ProcessedEventStarted bool `json:"processed_event_started,omitempty"`
 	// ProcessedEventBuildMetadata holds the value of the "processed_event_build_metadata" field.
@@ -274,7 +276,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case bazelinvocation.FieldCanonicalCommandLine, bazelinvocation.FieldOriginalCommandLine, bazelinvocation.FieldOptionsParsed:
+		case bazelinvocation.FieldCanonicalCommandLine, bazelinvocation.FieldOriginalCommandLine, bazelinvocation.FieldOptionsParsed, bazelinvocation.FieldEnvironmentVariables:
 			values[i] = new([]byte)
 		case bazelinvocation.FieldBepCompleted, bazelinvocation.FieldProcessedEventStarted, bazelinvocation.FieldProcessedEventBuildMetadata, bazelinvocation.FieldProcessedEventBuildFinished, bazelinvocation.FieldProcessedEventWorkspaceStatus:
 			values[i] = new(sql.NullBool)
@@ -408,6 +410,14 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value != nil && len(*value) > 0 {
 				if err := json.Unmarshal(*value, &bi.OptionsParsed); err != nil {
 					return fmt.Errorf("unmarshal field options_parsed: %w", err)
+				}
+			}
+		case bazelinvocation.FieldEnvironmentVariables:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field environment_variables", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &bi.EnvironmentVariables); err != nil {
+					return fmt.Errorf("unmarshal field environment_variables: %w", err)
 				}
 			}
 		case bazelinvocation.FieldProcessedEventStarted:
@@ -612,6 +622,9 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("options_parsed=")
 	builder.WriteString(fmt.Sprintf("%v", bi.OptionsParsed))
+	builder.WriteString(", ")
+	builder.WriteString("environment_variables=")
+	builder.WriteString(fmt.Sprintf("%v", bi.EnvironmentVariables))
 	builder.WriteString(", ")
 	builder.WriteString("processed_event_started=")
 	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventStarted))
