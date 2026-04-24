@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "invocationmetadataextraction",
+    srcs = ["metadata_extraction.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/invocationmetadataextraction",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_buildbarn_bb_storage//pkg/jmespath"],
+)
+
+go_test(
+    name = "invocationmetadataextraction_test",
+    srcs = ["metadata_extraction_test.go"],
+    deps = [
+        ":invocationmetadataextraction",
+        "@com_github_buildbarn_bb_storage//pkg/clock",
+        "@com_github_buildbarn_bb_storage//pkg/jmespath",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
+        "@com_github_stretchr_testify//require",
+    ],
+)
