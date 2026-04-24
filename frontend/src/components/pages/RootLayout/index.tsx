@@ -4,7 +4,7 @@ import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ConfigProvider, Layout } from "antd";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
 import AppBar from "@/components/AppBar";
 import GrpcClientsProvider from "@/context/GrpcClientsProvider";
@@ -12,65 +12,37 @@ import { Status } from "@/lib/grpc-client/google/rpc/status";
 import dark from "@/theme/dark";
 import light from "@/theme/light";
 import { isRetryableGrpcError } from "@/utils/grpcStatus";
-import parseStringBoolean from "@/utils/storage";
 import styles from "./index.module.css";
 
 const PREFERS_DARK_KEY = "prefers-dark";
 
-function windowDefined(): boolean {
-  return typeof window !== "undefined";
+function getTheme(): "dark" | "light" {
+  return document.documentElement.getAttribute("data-theme") === "dark"
+    ? "dark"
+    : "light";
 }
 
-function calculatePrefersDark(): boolean {
-  if (windowDefined()) {
-    const prefersDark = window.localStorage.getItem(PREFERS_DARK_KEY);
-    if (prefersDark) {
-      return parseStringBoolean(prefersDark);
-    }
-  }
-  return browserPrefersDark();
-}
-
-function browserPrefersDark(): boolean {
-  if (windowDefined()) {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  }
-  return false;
-}
-
-function savePrefersDark(prefersDark: boolean): void {
-  if (windowDefined()) {
-    window.localStorage.setItem(
-      PREFERS_DARK_KEY,
-      prefersDark ? "true" : "false",
-    );
-    window.localStorage.setItem(
-      "graphiql:theme",
-      prefersDark ? "dark" : "light",
-    );
-  }
+function setTheme(theme: "dark" | "light") {
+  window.localStorage.setItem(
+    PREFERS_DARK_KEY,
+    theme === "dark" ? "true" : "false",
+  );
+  document.documentElement.setAttribute("data-theme", theme);
 }
 
 export const RootLayout = () => {
-  const [prefersDark, setPrefersDark] = useState<boolean>(
-    calculatePrefersDark(),
-  );
-  const theme = prefersDark ? dark : light;
+  // Inner theme is a meaningless state used to force rerender when we modify the html tag.
+  const [innerTheme, setInnerTheme] = useState(() => getTheme());
 
   useLayoutEffect(() => {
     document.getElementById("splash")?.remove();
   }, []);
 
-  useEffect(() => {
-    const val = calculatePrefersDark();
-    setPrefersDark(val);
-  }, []);
-
   const toggleTheme = useCallback(() => {
-    const opposite = !prefersDark;
-    savePrefersDark(opposite);
-    setPrefersDark(opposite);
-  }, [prefersDark]);
+    const opposite = getTheme() === "dark" ? "light" : "dark";
+    setTheme(opposite);
+    setInnerTheme(opposite);
+  }, []);
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -86,11 +58,14 @@ export const RootLayout = () => {
   });
   return (
     <ApolloWrapper>
-      <ConfigProvider theme={theme}>
+      <ConfigProvider theme={innerTheme === "dark" ? dark : light}>
         <QueryClientProvider client={queryClient}>
           <GrpcClientsProvider>
             <Layout className={styles.layout}>
-              <AppBar toggleTheme={toggleTheme} prefersDark={prefersDark} />
+              <AppBar
+                toggleTheme={toggleTheme}
+                prefersDark={innerTheme === "dark"}
+              />
               <Outlet />
             </Layout>
           </GrpcClientsProvider>
