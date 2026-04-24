@@ -47,7 +47,7 @@ const PageContent: React.FC<Params> = ({ invocationID }) => {
     }
   }, [invocation, stopPolling]);
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <PortalCard icon={<BuildOutlined />} titleBits={["Bazel Invocation"]}>
         <Spin />
