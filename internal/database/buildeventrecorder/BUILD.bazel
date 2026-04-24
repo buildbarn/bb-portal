@@ -44,6 +44,7 @@ go_library(
         "//internal/database/sqlc",
         "//pkg/authmetadataextraction",
         "//pkg/invocation",
+        "//pkg/invocationmetadataextraction",
         "//pkg/prometheus_metrics",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf",

@@ -2,8 +2,6 @@ package buildeventrecorder
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"slices"
 	"sort"
 	"strings"
@@ -15,27 +13,11 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/invocation"
+	"github.com/buildbarn/bb-portal/pkg/invocationmetadataextraction"
 	"github.com/buildbarn/bb-storage/pkg/util"
 
 	bes "github.com/bazelbuild/bazel/src/main/protobuf"
 )
-
-type sourceControl struct {
-	Repo      *string `json:"repo,omitempty"`
-	RepoURL   *string `json:"repoUrl,omitempty"`
-	Ref       *string `json:"ref,omitempty"`
-	RefURL    *string `json:"refUrl,omitempty"`
-	Commit    *string `json:"commit,omitempty"`
-	CommitURL *string `json:"commitUrl,omitempty"`
-}
-
-type invocationMetadata struct {
-	Username       *string           `json:"username,omitempty"`
-	Hostname       *string           `json:"hostname,omitempty"`
-	SourceControls []sourceControl   `json:"sourceControls,omitempty"`
-	InvocationTags map[string]string `json:"invocationTags,omitempty"`
-	BuildTags      map[string]string `json:"buildTags,omitempty"`
-}
 
 func parseEnvVarsFromSectionOptions(section *bes.CommandLineSection) map[string]string {
 	if section.GetOptionList() == nil {
@@ -75,40 +57,7 @@ func parseProfileNameFromSectionOptions(section *bes.CommandLineSection) string 
 	return "command.profile.gz"
 }
 
-func (r *buildEventRecorder) extractInvocationMetadata(envVars map[string]string) (*invocationMetadata, error) {
-	extractor := r.dataExtractors.InvocationMetadataExtractor
-	if extractor == nil {
-		return nil, nil
-	}
-
-	// Convert map[string]string to map[string]any that the extractor needs
-	searchVars := make(map[string]any, len(envVars))
-	for k, v := range envVars {
-		searchVars[k] = v
-	}
-
-	searchResult, err := extractor.Search(map[string]any{
-		"env": searchVars,
-	})
-	if err != nil {
-		return nil, nil
-	}
-
-	// Convert map[string]any to JSON bytes
-	jsonBytes, err := json.Marshal(searchResult)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal search result: %w", err)
-	}
-
-	// Unmarshal into the pointer-based struct
-	var metadata invocationMetadata
-	if err := json.Unmarshal(jsonBytes, &metadata); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal into InvocationMetadata: %w", err)
-	}
-	return &metadata, nil
-}
-
-func (r *buildEventRecorder) recordSourceControl(ctx context.Context, tx *ent.Client, sourceControls []sourceControl) error {
+func (r *buildEventRecorder) recordSourceControl(ctx context.Context, tx *ent.Client, sourceControls []invocationmetadataextraction.SourceControl) error {
 	scBuilders := make([]*ent.SourceControlCreate, 0, len(sourceControls))
 	for _, sc := range sourceControls {
 		create := tx.SourceControl.Create().SetBazelInvocationID(r.InvocationDbID)
@@ -180,7 +129,7 @@ func (r *buildEventRecorder) recordBuildTags(ctx context.Context, tx *ent.Client
 	return nil
 }
 
-func (r *buildEventRecorder) recordBuild(ctx context.Context, tx database.Tx, invocationMetadata *invocationMetadata) error {
+func (r *buildEventRecorder) recordBuild(ctx context.Context, tx database.Tx, invocationMetadata *invocationmetadataextraction.InvocationMetadata) error {
 	if r.buildKey == "" {
 		return nil
 	}
@@ -256,10 +205,7 @@ func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx d
 			SetProfileName(profileName).
 			SetCanonicalCommandLine(&data)
 
-		invocationMetadata, err := r.extractInvocationMetadata(envVars)
-		if err != nil {
-			return util.StatusWrap(err, "Failed get invocation metadata from environment variables")
-		}
+		invocationMetadata := invocationmetadataextraction.ExtractInvocationMetadata(r.dataExtractors.InvocationMetadataExtractor, envVars)
 		if invocationMetadata != nil {
 			if username := invocationMetadata.Username; username != nil && *username != "" {
 				update.SetUsername(*username)
@@ -278,7 +224,7 @@ func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx d
 				return util.StatusWrap(err, "Failed to record invocation tags")
 			}
 		}
-		if err = update.Exec(ctx); err != nil {
+		if err := update.Exec(ctx); err != nil {
 			return util.StatusWrapf(err, "Failed to update invocation with data from StructuredCommandLine event")
 		}
 	case "original":
