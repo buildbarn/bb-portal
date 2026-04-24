@@ -282,7 +282,7 @@ const getTitleBits = (
   const titleBits: React.ReactNode[] = [];
   if (username && username !== "")
     titleBits.push(
-      <span key="label">
+      <span key="username">
         User:{" "}
         <Typography.Text type="secondary" className={styles.normalWeight}>
           <UserStatusIndicator
@@ -294,7 +294,7 @@ const getTitleBits = (
     );
   if (invocationID && invocationID !== "")
     titleBits.push(
-      <span key="label">
+      <span key="invocationID">
         Invocation ID:{" "}
         <Typography.Text
           type="secondary"
