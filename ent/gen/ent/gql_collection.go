@@ -1197,6 +1197,11 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, bazelinvocation.FieldOptionsParsed)
 				fieldSeen[bazelinvocation.FieldOptionsParsed] = struct{}{}
 			}
+		case "environmentVariables":
+			if _, ok := fieldSeen[bazelinvocation.FieldEnvironmentVariables]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldEnvironmentVariables)
+				fieldSeen[bazelinvocation.FieldEnvironmentVariables] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

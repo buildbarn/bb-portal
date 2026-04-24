@@ -39,3 +39,16 @@ func PaginationCursorsToUTC(after, before *entgql.Cursor[int64]) {
 	paginationCursorToUTC(after)
 	paginationCursorToUTC(before)
 }
+
+// StringMapToAnyMap converts a map[string]string to a map[string]any. This is
+// useful for converting from the database type to the Graphql type.
+func StringMapToAnyMap(m map[string]string) map[string]any {
+	if m == nil {
+		return nil
+	}
+	result := make(map[string]any, len(m))
+	for k, v := range m {
+		result[k] = v
+	}
+	return result
+}

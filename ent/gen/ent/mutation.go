@@ -6683,6 +6683,7 @@ type BazelInvocationMutation struct {
 	canonical_command_line           **invocation.CommandLineData
 	original_command_line            **invocation.CommandLineData
 	options_parsed                   **invocation.ParsedCommandLineOptions
+	environment_variables            *map[string]string
 	processed_event_started          *bool
 	processed_event_build_metadata   *bool
 	processed_event_build_finished   *bool
@@ -7572,6 +7573,55 @@ func (m *BazelInvocationMutation) OptionsParsedCleared() bool {
 func (m *BazelInvocationMutation) ResetOptionsParsed() {
 	m.options_parsed = nil
 	delete(m.clearedFields, bazelinvocation.FieldOptionsParsed)
+}
+
+// SetEnvironmentVariables sets the "environment_variables" field.
+func (m *BazelInvocationMutation) SetEnvironmentVariables(value map[string]string) {
+	m.environment_variables = &value
+}
+
+// EnvironmentVariables returns the value of the "environment_variables" field in the mutation.
+func (m *BazelInvocationMutation) EnvironmentVariables() (r map[string]string, exists bool) {
+	v := m.environment_variables
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEnvironmentVariables returns the old "environment_variables" field's value of the BazelInvocation entity.
+// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BazelInvocationMutation) OldEnvironmentVariables(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEnvironmentVariables is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEnvironmentVariables requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEnvironmentVariables: %w", err)
+	}
+	return oldValue.EnvironmentVariables, nil
+}
+
+// ClearEnvironmentVariables clears the value of the "environment_variables" field.
+func (m *BazelInvocationMutation) ClearEnvironmentVariables() {
+	m.environment_variables = nil
+	m.clearedFields[bazelinvocation.FieldEnvironmentVariables] = struct{}{}
+}
+
+// EnvironmentVariablesCleared returns if the "environment_variables" field was cleared in this mutation.
+func (m *BazelInvocationMutation) EnvironmentVariablesCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldEnvironmentVariables]
+	return ok
+}
+
+// ResetEnvironmentVariables resets all changes to the "environment_variables" field.
+func (m *BazelInvocationMutation) ResetEnvironmentVariables() {
+	m.environment_variables = nil
+	delete(m.clearedFields, bazelinvocation.FieldEnvironmentVariables)
 }
 
 // SetProcessedEventStarted sets the "processed_event_started" field.
@@ -8472,7 +8522,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 19)
+	fields := make([]string, 0, 20)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -8517,6 +8567,9 @@ func (m *BazelInvocationMutation) Fields() []string {
 	}
 	if m.options_parsed != nil {
 		fields = append(fields, bazelinvocation.FieldOptionsParsed)
+	}
+	if m.environment_variables != nil {
+		fields = append(fields, bazelinvocation.FieldEnvironmentVariables)
 	}
 	if m.processed_event_started != nil {
 		fields = append(fields, bazelinvocation.FieldProcessedEventStarted)
@@ -8568,6 +8621,8 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.OriginalCommandLine()
 	case bazelinvocation.FieldOptionsParsed:
 		return m.OptionsParsed()
+	case bazelinvocation.FieldEnvironmentVariables:
+		return m.EnvironmentVariables()
 	case bazelinvocation.FieldProcessedEventStarted:
 		return m.ProcessedEventStarted()
 	case bazelinvocation.FieldProcessedEventBuildMetadata:
@@ -8615,6 +8670,8 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldOriginalCommandLine(ctx)
 	case bazelinvocation.FieldOptionsParsed:
 		return m.OldOptionsParsed(ctx)
+	case bazelinvocation.FieldEnvironmentVariables:
+		return m.OldEnvironmentVariables(ctx)
 	case bazelinvocation.FieldProcessedEventStarted:
 		return m.OldProcessedEventStarted(ctx)
 	case bazelinvocation.FieldProcessedEventBuildMetadata:
@@ -8737,6 +8794,13 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetOptionsParsed(v)
 		return nil
+	case bazelinvocation.FieldEnvironmentVariables:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEnvironmentVariables(v)
+		return nil
 	case bazelinvocation.FieldProcessedEventStarted:
 		v, ok := value.(bool)
 		if !ok {
@@ -8858,6 +8922,9 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldOptionsParsed) {
 		fields = append(fields, bazelinvocation.FieldOptionsParsed)
 	}
+	if m.FieldCleared(bazelinvocation.FieldEnvironmentVariables) {
+		fields = append(fields, bazelinvocation.FieldEnvironmentVariables)
+	}
 	return fields
 }
 
@@ -8907,6 +8974,9 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 		return nil
 	case bazelinvocation.FieldOptionsParsed:
 		m.ClearOptionsParsed()
+		return nil
+	case bazelinvocation.FieldEnvironmentVariables:
+		m.ClearEnvironmentVariables()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation nullable field %s", name)
@@ -8960,6 +9030,9 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 		return nil
 	case bazelinvocation.FieldOptionsParsed:
 		m.ResetOptionsParsed()
+		return nil
+	case bazelinvocation.FieldEnvironmentVariables:
+		m.ResetEnvironmentVariables()
 		return nil
 	case bazelinvocation.FieldProcessedEventStarted:
 		m.ResetProcessedEventStarted()

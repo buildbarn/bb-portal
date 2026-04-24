@@ -288,6 +288,18 @@ func (biu *BazelInvocationUpdate) ClearOptionsParsed() *BazelInvocationUpdate {
 	return biu
 }
 
+// SetEnvironmentVariables sets the "environment_variables" field.
+func (biu *BazelInvocationUpdate) SetEnvironmentVariables(m map[string]string) *BazelInvocationUpdate {
+	biu.mutation.SetEnvironmentVariables(m)
+	return biu
+}
+
+// ClearEnvironmentVariables clears the value of the "environment_variables" field.
+func (biu *BazelInvocationUpdate) ClearEnvironmentVariables() *BazelInvocationUpdate {
+	biu.mutation.ClearEnvironmentVariables()
+	return biu
+}
+
 // SetProcessedEventStarted sets the "processed_event_started" field.
 func (biu *BazelInvocationUpdate) SetProcessedEventStarted(b bool) *BazelInvocationUpdate {
 	biu.mutation.SetProcessedEventStarted(b)
@@ -942,6 +954,12 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.OptionsParsedCleared() {
 		_spec.ClearField(bazelinvocation.FieldOptionsParsed, field.TypeJSON)
+	}
+	if value, ok := biu.mutation.EnvironmentVariables(); ok {
+		_spec.SetField(bazelinvocation.FieldEnvironmentVariables, field.TypeJSON, value)
+	}
+	if biu.mutation.EnvironmentVariablesCleared() {
+		_spec.ClearField(bazelinvocation.FieldEnvironmentVariables, field.TypeJSON)
 	}
 	if value, ok := biu.mutation.ProcessedEventStarted(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
@@ -1798,6 +1816,18 @@ func (biuo *BazelInvocationUpdateOne) ClearOptionsParsed() *BazelInvocationUpdat
 	return biuo
 }
 
+// SetEnvironmentVariables sets the "environment_variables" field.
+func (biuo *BazelInvocationUpdateOne) SetEnvironmentVariables(m map[string]string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetEnvironmentVariables(m)
+	return biuo
+}
+
+// ClearEnvironmentVariables clears the value of the "environment_variables" field.
+func (biuo *BazelInvocationUpdateOne) ClearEnvironmentVariables() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearEnvironmentVariables()
+	return biuo
+}
+
 // SetProcessedEventStarted sets the "processed_event_started" field.
 func (biuo *BazelInvocationUpdateOne) SetProcessedEventStarted(b bool) *BazelInvocationUpdateOne {
 	biuo.mutation.SetProcessedEventStarted(b)
@@ -2482,6 +2512,12 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.OptionsParsedCleared() {
 		_spec.ClearField(bazelinvocation.FieldOptionsParsed, field.TypeJSON)
+	}
+	if value, ok := biuo.mutation.EnvironmentVariables(); ok {
+		_spec.SetField(bazelinvocation.FieldEnvironmentVariables, field.TypeJSON, value)
+	}
+	if biuo.mutation.EnvironmentVariablesCleared() {
+		_spec.ClearField(bazelinvocation.FieldEnvironmentVariables, field.TypeJSON)
 	}
 	if value, ok := biuo.mutation.ProcessedEventStarted(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)

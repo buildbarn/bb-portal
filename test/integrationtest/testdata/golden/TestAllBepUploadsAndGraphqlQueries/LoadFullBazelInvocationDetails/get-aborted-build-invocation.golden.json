@@ -89,6 +89,15 @@
     ],
     "connectionMetadata": null,
     "endedAt": "2026-02-04T08:42:52.138Z",
+    "environmentVariables": {
+      "HOME": "[REDACTED]",
+      "HOSTNAME": "[REDACTED]",
+      "OLDPWD": "[REDACTED]",
+      "PATH": "[REDACTED]",
+      "PWD": "[REDACTED]",
+      "SHLVL": "[REDACTED]",
+      "_": "[REDACTED]"
+    },
     "exitCodeName": "SUCCESS",
     "hostname": "3280a8b94607",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjc=",

@@ -98,6 +98,11 @@ func (r *bazelInvocationResolver) OptionsParsed(ctx context.Context, obj *ent.Ba
 	return m, nil
 }
 
+// EnvironmentVariables is the resolver for the environmentVariables field.
+func (r *bazelInvocationResolver) EnvironmentVariables(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error) {
+	return helpers.StringMapToAnyMap(obj.EnvironmentVariables), nil
+}
+
 // ID is the resolver for the id field.
 func (r *buildResolver) ID(ctx context.Context, obj *ent.Build) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("Build", obj.ID), nil
@@ -120,14 +125,7 @@ func (r *configurationResolver) ID(ctx context.Context, obj *ent.Configuration) 
 
 // MakeVariables is the resolver for the makeVariables field.
 func (r *configurationResolver) MakeVariables(ctx context.Context, obj *ent.Configuration) (map[string]any, error) {
-	if obj.MakeVariables == nil {
-		return nil, nil
-	}
-	res := make(map[string]any, len(obj.MakeVariables))
-	for k, v := range obj.MakeVariables {
-		res[k] = v
-	}
-	return res, nil
+	return helpers.StringMapToAnyMap(obj.MakeVariables), nil
 }
 
 // ID is the resolver for the id field.

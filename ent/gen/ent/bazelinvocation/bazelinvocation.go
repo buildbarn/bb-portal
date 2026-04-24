@@ -43,6 +43,8 @@ const (
 	FieldOriginalCommandLine = "original_command_line"
 	// FieldOptionsParsed holds the string denoting the options_parsed field in the database.
 	FieldOptionsParsed = "options_parsed"
+	// FieldEnvironmentVariables holds the string denoting the environment_variables field in the database.
+	FieldEnvironmentVariables = "environment_variables"
 	// FieldProcessedEventStarted holds the string denoting the processed_event_started field in the database.
 	FieldProcessedEventStarted = "processed_event_started"
 	// FieldProcessedEventBuildMetadata holds the string denoting the processed_event_build_metadata field in the database.
@@ -208,6 +210,7 @@ var Columns = []string{
 	FieldCanonicalCommandLine,
 	FieldOriginalCommandLine,
 	FieldOptionsParsed,
+	FieldEnvironmentVariables,
 	FieldProcessedEventStarted,
 	FieldProcessedEventBuildMetadata,
 	FieldProcessedEventBuildFinished,

@@ -102,6 +102,7 @@ type BazelInvocation struct {
 	CanonicalCommandLine              pqtype.NullRawMessage
 	OriginalCommandLine               pqtype.NullRawMessage
 	OptionsParsed                     pqtype.NullRawMessage
+	EnvironmentVariables              pqtype.NullRawMessage
 	ProcessedEventStarted             bool
 	ProcessedEventBuildMetadata       bool
 	ProcessedEventBuildFinished       bool

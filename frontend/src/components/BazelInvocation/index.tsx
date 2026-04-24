@@ -57,6 +57,7 @@ const getTabItems = (
     canonicalCommandLine,
     originalCommandLine,
     optionsParsed,
+    environmentVariables,
     bazelVersion,
     sourceControl,
     metrics,
@@ -233,6 +234,7 @@ const getTabItems = (
           parsedOptions={optionsParsed}
           rawCommand={command}
           canonicalCommandLine={canonicalCommandLine}
+          environmentVariables={environmentVariables}
         />
       </Space>
     ),

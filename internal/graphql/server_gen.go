@@ -198,6 +198,7 @@ type ComplexityRoot struct {
 		Configurations       func(childComplexity int) int
 		ConnectionMetadata   func(childComplexity int) int
 		EndedAt              func(childComplexity int) int
+		EnvironmentVariables func(childComplexity int) int
 		ExitCodeCode         func(childComplexity int) int
 		ExitCodeName         func(childComplexity int) int
 		Hostname             func(childComplexity int) int
@@ -568,6 +569,7 @@ type BazelInvocationResolver interface {
 	CanonicalCommandLine(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 	OriginalCommandLine(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 	OptionsParsed(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
+	EnvironmentVariables(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 
 	Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error)
 }
@@ -1458,6 +1460,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.BazelInvocation.EndedAt(childComplexity), true
+
+	case "BazelInvocation.environmentVariables":
+		if e.complexity.BazelInvocation.EnvironmentVariables == nil {
+			break
+		}
+
+		return e.complexity.BazelInvocation.EnvironmentVariables(childComplexity), true
 
 	case "BazelInvocation.exitCodeCode":
 		if e.complexity.BazelInvocation.ExitCodeCode == nil {
@@ -5783,6 +5792,8 @@ func (ec *executionContext) fieldContext_Action_bazelInvocation(_ context.Contex
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -8366,6 +8377,47 @@ func (ec *executionContext) fieldContext_BazelInvocation_optionsParsed(_ context
 	return fc, nil
 }
 
+func (ec *executionContext) _BazelInvocation_environmentVariables(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BazelInvocation().EnvironmentVariables(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(map[string]any)
+	fc.Result = res
+	return ec.marshalOMap2map(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BazelInvocation_environmentVariables(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BazelInvocation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Map does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _BazelInvocation_instanceName(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 	if err != nil {
@@ -9233,6 +9285,8 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -11128,6 +11182,8 @@ func (ec *executionContext) fieldContext_Configuration_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -11458,6 +11514,8 @@ func (ec *executionContext) fieldContext_ConnectionMetadata_bazelInvocation(_ co
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -11864,6 +11922,8 @@ func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -12206,6 +12266,8 @@ func (ec *executionContext) fieldContext_InvocationTag_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -12879,6 +12941,8 @@ func (ec *executionContext) fieldContext_InvocationTarget_bazelInvocation(_ cont
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -13743,6 +13807,8 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -15410,6 +15476,8 @@ func (ec *executionContext) fieldContext_Query_getBazelInvocation(ctx context.Co
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -16299,6 +16367,8 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_originalCommandLine(ctx, field)
 			case "optionsParsed":
 				return ec.fieldContext_BazelInvocation_optionsParsed(ctx, field)
+			case "environmentVariables":
+				return ec.fieldContext_BazelInvocation_environmentVariables(ctx, field)
 			case "instanceName":
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
@@ -37628,6 +37698,39 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 					}
 				}()
 				res = ec._BazelInvocation_optionsParsed(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "environmentVariables":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BazelInvocation_environmentVariables(ctx, field, obj)
 				return res
 			}
 

@@ -1,5 +1,5 @@
 import { CodeOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { Empty, List, Tooltip } from "antd";
+import { List, Tooltip } from "antd";
 import type React from "react";
 import PortalCard from "../PortalCard";
 
@@ -25,37 +25,24 @@ interface ParsedOptions {
 }
 
 interface Props {
-  rawCommand: string | null;
-  canonicalCommandLine: CommandLineData | null;
-  parsedOptions: ParsedOptions;
+  rawCommand: string | undefined | null;
+  canonicalCommandLine: CommandLineData | undefined | null;
+  parsedOptions: ParsedOptions | undefined | null;
+  environmentVariables: Record<string, string> | undefined | null;
 }
 
 const CommandLineDisplay: React.FC<Props> = ({
   rawCommand,
   canonicalCommandLine,
   parsedOptions,
+  environmentVariables,
 }) => {
-  if (!canonicalCommandLine) {
-    return (
-      <PortalCard
-        icon={<CodeOutlined />}
-        titleBits={["Command Line", rawCommand]}
-      >
-        <Empty description="No information about the command line available..." />
-      </PortalCard>
-    );
-  }
-
-  const opts = canonicalCommandLine.options.filter(
-    (x) => x.option !== "config",
-  );
-
   return (
     <PortalCard
       icon={<CodeOutlined />}
       titleBits={["Command Line", rawCommand]}
     >
-      {!parsedOptions ? null : (
+      {parsedOptions && (
         <List
           bordered
           size="small"
@@ -71,42 +58,71 @@ const CommandLineDisplay: React.FC<Props> = ({
           renderItem={(x) => <List.Item>{x}</List.Item>}
         />
       )}
-      <List
-        bordered
-        size="small"
-        style={{ width: "100%" }}
-        header={
-          <strong>
-            <Tooltip title="The expanded command line options used by bazel flags after normalization">
-              Normalized Options <InfoCircleOutlined />
-            </Tooltip>
-          </strong>
-        }
-        dataSource={opts}
-        renderItem={(item) => (
-          <List.Item>
-            --{item.option}={item.value}
-          </List.Item>
-        )}
-      />
-      <List
-        bordered
-        size="small"
-        style={{ width: "100%" }}
-        header={
-          <strong>
-            <Tooltip title="The startup options for the bazel server process">
-              Startup Options <InfoCircleOutlined />
-            </Tooltip>
-          </strong>
-        }
-        dataSource={canonicalCommandLine.startupOptions}
-        renderItem={(item) => (
-          <List.Item>
-            --{item.option}={item.value}
-          </List.Item>
-        )}
-      />
+      {canonicalCommandLine?.options && (
+        <List
+          bordered
+          size="small"
+          style={{ width: "100%" }}
+          header={
+            <strong>
+              <Tooltip title="The expanded command line options used by bazel flags after normalization">
+                Normalized Options <InfoCircleOutlined />
+              </Tooltip>
+            </strong>
+          }
+          dataSource={canonicalCommandLine.options.filter(
+            (x) => x.option !== "config",
+          )}
+          renderItem={(item) => (
+            <List.Item>
+              --{item.option}={item.value}
+            </List.Item>
+          )}
+        />
+      )}
+      {canonicalCommandLine?.startupOptions && (
+        <List
+          bordered
+          size="small"
+          style={{ width: "100%" }}
+          header={
+            <strong>
+              <Tooltip title="The startup options for the bazel server process">
+                Startup Options <InfoCircleOutlined />
+              </Tooltip>
+            </strong>
+          }
+          dataSource={canonicalCommandLine.startupOptions}
+          renderItem={(item) => (
+            <List.Item>
+              --{item.option}={item.value}
+            </List.Item>
+          )}
+        />
+      )}
+      {environmentVariables && (
+        <List
+          bordered
+          size="small"
+          style={{ width: "100%" }}
+          header={
+            <strong>
+              <Tooltip title="The environment variables that the Bazel process was started with. The environment variables are censored to avoid revealing sensitive values.">
+                Environment Variables <InfoCircleOutlined />
+              </Tooltip>
+            </strong>
+          }
+          dataSource={Object.entries(environmentVariables).map((item) => ({
+            key: item[0],
+            value: item[1],
+          }))}
+          renderItem={(item) => (
+            <List.Item>
+              {item.key}={item.value}
+            </List.Item>
+          )}
+        />
+      )}
     </PortalCard>
   );
 };
