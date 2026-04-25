@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Space, Spin, Typography } from "antd";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { initialSizeClassCacheClient } from "@/grpc/initialSizeClassCacheClient";
 import { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
 import BrowserPreviousExecutionsDisplay from "../BrowserPreviousExecutionsDisplay";
@@ -13,8 +13,6 @@ interface Params {
 const BrowserPreviousExecutionsPage: React.FC<Params> = ({
   browserPageParams,
 }) => {
-  const { initialSizeClassCacheClient } = useGrpcClients();
-
   const reducedActionDigest = Digest.create(browserPageParams.digest);
 
   const { data, isPending, isError, error } = useQuery({

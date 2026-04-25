@@ -7,7 +7,6 @@ import { ConfigProvider, Layout } from "antd";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
 import { PageWrapper } from "@/components/PageWrapper";
-import GrpcClientsProvider from "@/context/GrpcClientsProvider";
 import { Status } from "@/lib/grpc-client/google/rpc/status";
 import dark from "@/theme/dark";
 import light from "@/theme/light";
@@ -44,32 +43,34 @@ export const RootLayout = () => {
     setInnerTheme(opposite);
   }, []);
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: (failureCount: number, error: Error) => {
-          if (failureCount >= 3) {
-            return false;
-          }
-          return isRetryableGrpcError(Status.fromJSON(error));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: (failureCount: number, error: Error) => {
+              if (failureCount >= 3) {
+                return false;
+              }
+              return isRetryableGrpcError(Status.fromJSON(error));
+            },
+          },
         },
-      },
-    },
-  });
+      }),
+  );
+
   return (
     <ApolloWrapper>
       <ConfigProvider theme={innerTheme === "dark" ? dark : light}>
         <QueryClientProvider client={queryClient}>
-          <GrpcClientsProvider>
-            <Layout className={styles.layout}>
-              <PageWrapper
-                toggleTheme={toggleTheme}
-                prefersDark={innerTheme === "dark"}
-              >
-                <Outlet />
-              </PageWrapper>
-            </Layout>
-          </GrpcClientsProvider>
+          <Layout className={styles.layout}>
+            <PageWrapper
+              toggleTheme={toggleTheme}
+              prefersDark={innerTheme === "dark"}
+            >
+              <Outlet />
+            </PageWrapper>
+          </Layout>
           {/* Devtools for Tanstack components. Automatically removed for prod builds */}
           <TanStackDevtools
             plugins={[

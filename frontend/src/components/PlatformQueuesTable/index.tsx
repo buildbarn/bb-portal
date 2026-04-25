@@ -1,15 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
 import type React from "react";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import themeStyles from "@/theme/theme.module.css";
 import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
 import type { PlatformQueueTableState } from "./types";
 
 const PlatformQueuesTable: React.FC = () => {
-  const { buildQueueStateClient } = useGrpcClients();
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["listPlatformQueues"],
     queryFn: async (): Promise<PlatformQueueTableState[]> => {
