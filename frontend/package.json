@@ -16,7 +16,8 @@
     "format": "biome format --write",
     "lint": "biome lint --write",
     "check": "biome check --write",
-    "biome-ci": "biome ci"
+    "biome-ci": "biome ci",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@ant-design/colors": "^7.0.2",

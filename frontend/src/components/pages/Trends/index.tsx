@@ -35,11 +35,9 @@ export const TrendsPage: React.FC = () => {
   );
 
   const activeData = loading ? previousData : data;
-  let _emptyText = "No builds match the specified search criteria";
   let dataSource: BazelInvocationNodeFragment[] = [];
 
   if (error) {
-    _emptyText = error.message;
     dataSource = [];
   } else {
     const buildTimes =
