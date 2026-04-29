@@ -1,6 +1,7 @@
 import type { PortalFrontendConfiguration } from "@/lib/grpc-client/portal/frontend/frontend";
 
-export const env: PortalFrontendConfiguration = window.__env__;
+// biome-ignore lint/suspicious/noExplicitAny: We have no type information, and it is checked by the backend anyways.
+export const env: PortalFrontendConfiguration = (window as any).__env__;
 
 if (!env) {
   throw new Error(

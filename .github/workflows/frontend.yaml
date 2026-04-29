@@ -30,6 +30,11 @@
                "run": "git add . && git diff --exit-code HEAD --"
             },
             {
+               "name": "Check types",
+               "run": "npm run check-types",
+               "working-directory": "frontend"
+            },
+            {
                "name": "Lint and format",
                "run": "npm run biome-ci",
                "working-directory": "frontend"
