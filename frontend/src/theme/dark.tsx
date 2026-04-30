@@ -17,7 +17,6 @@ const dark: ThemeConfig = {
       footerBg: darkCanvasPalette[0],
       headerBg: `${darkCanvasPalette[1]}${HEADER_OPACITY_HEX}`,
       headerPadding: "0 32px",
-      siderBg: darkCanvasPalette[1],
     },
     Menu: {
       activeBarBorderWidth: 0,

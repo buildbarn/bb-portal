@@ -3,14 +3,6 @@
   margin: 0;
 }
 
-.contentWithSiderBar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100% !important;
-  padding-left: var(--sider-width);
-}
-
 .container {
   position: relative;
   min-height: 100vh;
