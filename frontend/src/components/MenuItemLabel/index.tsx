@@ -2,8 +2,9 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Tag } from "antd";
 import { type ForwardedRef, forwardRef, useLayoutEffect, useRef } from "react";
 import styles from "@/components/MenuItemLabel/index.module.css";
-import { SIDEBAR_MENU_INLINE_INDENT } from "@/components/SiderBar";
 import type { UpdateSidebarMenuExpandedWidthFunction } from "@/components/Utilities/navigation";
+
+export const MENU_INLINE_INDENT = 24;
 
 export interface MenuItemTag {
   label: string;
@@ -39,7 +40,7 @@ export const MenuItemLabel = forwardRef(
             itemMarginInline +
             iconWidth +
             iconMarginInlineEnd +
-            (props.depth + 1) * SIDEBAR_MENU_INLINE_INDENT +
+            (props.depth + 1) * MENU_INLINE_INDENT +
             menuItemLabelRef.current.clientWidth +
             marginBetweenLabelAndExpandWidth +
             submenuExpanderWidth +

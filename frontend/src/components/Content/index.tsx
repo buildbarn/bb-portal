@@ -1,64 +1,24 @@
-import { FloatButton, Layout, type MenuProps } from "antd";
-import type { ItemType } from "antd/es/menu/interface";
+import { FloatButton, Layout } from "antd";
 import type React from "react";
-import type { Key } from "react";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import styles from "@/components/Content/index.module.css";
 import FooterBar from "@/components/FooterBar";
-import SiderBar from "@/components/SiderBar";
-import useScreenSize from "@/utils/screen";
-
-export const SIDER_BAR_MINIMUM_SCREEN_WIDTH = 932;
 
 interface Props {
-  sidebarMenuKey?: Key;
-  sidebarMenuItems?: ItemType[];
-  sidebarMenuDefaultSelectedKeys?: Key[];
-  sidebarMenuDefaultOpenKeys?: Key[];
-  sidebarMenuOpenKeys?: Key[];
-  sidebarMenuOnOpenChange?: MenuProps["onOpenChange"];
-  sidebarMenuExpandedWidth?: number;
   content: React.ReactNode;
 }
 
-const Content: React.FC<Props> = ({
-  sidebarMenuKey,
-  sidebarMenuItems,
-  sidebarMenuDefaultSelectedKeys,
-  sidebarMenuDefaultOpenKeys,
-  sidebarMenuOpenKeys,
-  sidebarMenuOnOpenChange,
-  sidebarMenuExpandedWidth,
-  content,
-}) => {
-  const screenSize = useScreenSize();
-  const showSiderBar =
-    sidebarMenuItems?.length &&
-    screenSize.width > SIDER_BAR_MINIMUM_SCREEN_WIDTH;
+const Content: React.FC<Props> = ({ content }) => {
   return (
     <Layout>
-      {showSiderBar ? (
-        <SiderBar
-          key={sidebarMenuKey}
-          menuKey={sidebarMenuKey}
-          items={sidebarMenuItems}
-          defaultSelectedKeys={sidebarMenuDefaultSelectedKeys}
-          defaultOpenKeys={sidebarMenuDefaultOpenKeys}
-          openKeys={sidebarMenuOpenKeys}
-          onOpenChange={sidebarMenuOnOpenChange}
-          expandedWidth={sidebarMenuExpandedWidth}
-        />
-      ) : null}
-      <Layout className={showSiderBar ? styles.contentWithSiderBar : undefined}>
-        <div className={styles.container}>
-          <Breadcrumbs />
-          <Layout.Content className={styles.content}>{content}</Layout.Content>
-          <div className={styles.footer}>
-            <FooterBar />
-          </div>
+      <div className={styles.container}>
+        <Breadcrumbs />
+        <Layout.Content className={styles.content}>{content}</Layout.Content>
+        <div className={styles.footer}>
+          <FooterBar />
         </div>
-        <FloatButton.BackTop />
-      </Layout>
+      </div>
+      <FloatButton.BackTop />
     </Layout>
   );
 };

@@ -7,7 +7,6 @@ import AppBarButtons from "@/components/AppBar/AppBarButtons";
 import AppBarMenu from "@/components/AppBar/AppBarMenu";
 import AppBarTitle from "@/components/AppBar/AppBarTitle";
 import styles from "@/components/AppBar/index.module.css";
-import { SIDER_BAR_MINIMUM_SCREEN_WIDTH } from "@/components/Content";
 import FooterBar from "@/components/FooterBar";
 import { getItem } from "@/components/Utilities/navigation";
 import { env } from "@/utils/env";
@@ -69,6 +68,8 @@ const getAppBarMenuItems = (): ItemType[] => {
 
 const APP_BAR_MENU_ITEMS: ItemType[] = getAppBarMenuItems();
 
+export const SIDE_BAR_MINIMUM_SCREEN_WIDTH = 932;
+
 type Props = {
   toggleTheme: () => void;
   prefersDark: boolean;
@@ -76,7 +77,7 @@ type Props = {
 
 const AppBar: React.FC<Props> = ({ toggleTheme, prefersDark }) => {
   const screenSize = useScreenSize();
-  const showHeaderMenu = screenSize.width > SIDER_BAR_MINIMUM_SCREEN_WIDTH;
+  const showHeaderMenu = screenSize.width > SIDE_BAR_MINIMUM_SCREEN_WIDTH;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {

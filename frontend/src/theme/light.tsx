@@ -17,7 +17,6 @@ const light: ThemeConfig = {
       footerBg: lightCanvasPalette[0],
       headerBg: `${lightCanvasPalette[1]}${HEADER_OPACITY_HEX}`,
       headerPadding: "0 32px",
-      siderBg: lightCanvasPalette[1],
     },
     Menu: {
       activeBarBorderWidth: 0,
