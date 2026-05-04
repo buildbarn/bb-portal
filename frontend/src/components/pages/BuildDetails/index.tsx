@@ -6,7 +6,6 @@ import type React from "react";
 import { useMemo, useState } from "react";
 import styles from "@/components/AppBar/index.module.css";
 import CollapsableInvocationTimeline from "@/components/CollapsableInvocationTimeline";
-import Content from "@/components/Content";
 import { OptionalLinkWrapper } from "@/components/OptionalLinkWrapper";
 import PortalCard from "@/components/PortalCard";
 import {
@@ -103,11 +102,7 @@ interface Props {
   buildUUID: string;
 }
 
-export const BuildDetailsPage: React.FC<Props> = (params) => {
-  return <Content content={<BuildDetails {...params} />} />;
-};
-
-const BuildDetails: React.FC<Props> = ({ buildUUID }) => {
+export const BuildDetailsPage: React.FC<Props> = ({ buildUUID }) => {
   const [paginationVariables, setPaginationVariables] =
     useState<PaginationVariables>(getNewPaginationVariables());
 

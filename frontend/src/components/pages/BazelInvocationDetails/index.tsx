@@ -4,7 +4,6 @@ import { Spin, Typography } from "antd";
 import type React from "react";
 import { useEffect } from "react";
 import BazelInvocation from "@/components/BazelInvocation";
-import Content from "@/components/Content";
 import PortalAlert from "@/components/PortalAlert";
 import PortalCard from "@/components/PortalCard";
 import { getFragmentData } from "@/graphql/__generated__";
@@ -19,11 +18,9 @@ interface Params {
   invocationID: string;
 }
 
-export const BazelInvocationDetailsPage: React.FC<Params> = (params) => {
-  return <Content content={<PageContent {...params} />} />;
-};
-
-const PageContent: React.FC<Params> = ({ invocationID }) => {
+export const BazelInvocationDetailsPage: React.FC<Params> = ({
+  invocationID,
+}) => {
   const { data, error, loading, stopPolling } =
     useQuery<LoadFullBazelInvocationDetailsQuery>(
       LOAD_FULL_BAZEL_INVOCATION_DETAILS,

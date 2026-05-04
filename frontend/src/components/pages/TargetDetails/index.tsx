@@ -15,7 +15,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import Content from "@/components/Content";
 import {
   CursorTable,
   getNewPaginationVariables,
@@ -230,17 +229,13 @@ const TargetDetails: React.FC<Props> = ({
 
 export const TargetDetailsPage: React.FC<Props> = (params) => {
   return (
-    <Content
-      content={
-        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-          <PortalCard
-            icon={<DeploymentUnitOutlined />}
-            titleBits={[<span key="title">Target Details</span>]}
-          >
-            <TargetDetails {...params} />
-          </PortalCard>
-        </Space>
-      }
-    />
+    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+      <PortalCard
+        icon={<DeploymentUnitOutlined />}
+        titleBits={[<span key="title">Target Details</span>]}
+      >
+        <TargetDetails {...params} />
+      </PortalCard>
+    </Space>
   );
 };

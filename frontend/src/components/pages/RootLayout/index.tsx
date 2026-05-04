@@ -6,7 +6,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ConfigProvider, Layout } from "antd";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
-import AppBar from "@/components/AppBar";
+import { PageWrapper } from "@/components/PageWrapper";
 import GrpcClientsProvider from "@/context/GrpcClientsProvider";
 import { Status } from "@/lib/grpc-client/google/rpc/status";
 import dark from "@/theme/dark";
@@ -62,11 +62,12 @@ export const RootLayout = () => {
         <QueryClientProvider client={queryClient}>
           <GrpcClientsProvider>
             <Layout className={styles.layout}>
-              <AppBar
+              <PageWrapper
                 toggleTheme={toggleTheme}
                 prefersDark={innerTheme === "dark"}
-              />
-              <Outlet />
+              >
+                <Outlet />
+              </PageWrapper>
             </Layout>
           </GrpcClientsProvider>
           {/* Devtools for Tanstack components. Automatically removed for prod builds */}
