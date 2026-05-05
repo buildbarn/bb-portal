@@ -1,25 +1,21 @@
-import { Descriptions, Space, Tag, Typography } from "antd";
-import Paragraph from "antd/es/typography/Paragraph";
+import { Descriptions, Space, Tag } from "antd";
 import type React from "react";
 import type { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { POSIXResourceUsage } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
-import { readableFileSizeFromString } from "@/utils/filesize";
-import { generateFileUrl } from "@/utils/urlGenerator";
-import type { ActionConsoleOutput } from "../BrowserActionGrid/types";
+import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
+import { CasViewer } from "../LogViewer/casViewer";
 
 interface Params {
   browserPageParams: BrowserPageParams;
   executeResponse: ExecuteResponse;
   posixResourceUsage: POSIXResourceUsage | undefined;
-  consoleOutputs: ActionConsoleOutput[];
 }
 
 const BrowserResultDescription: React.FC<Params> = ({
   browserPageParams,
   executeResponse,
   posixResourceUsage,
-  consoleOutputs,
 }) => {
   const renderResult = () => {
     if (executeResponse.status !== undefined) {
@@ -53,63 +49,49 @@ const BrowserResultDescription: React.FC<Params> = ({
     );
   };
 
-  const renderConsoleOutput = (consoleOutput: ActionConsoleOutput) => {
-    const logLinkHref = consoleOutput.digest
-      ? generateFileUrl(
-          browserPageParams.instanceName,
-          browserPageParams.digestFunction,
-          consoleOutput.digest,
-          "log.txt",
-        )
-      : undefined;
-
-    const label = () => {
-      if (logLinkHref) {
-        return <a href={logLinkHref}>{consoleOutput.name}</a>;
-      }
-      return consoleOutput.name;
-    };
-
-    const content = () => {
-      if (consoleOutput.notFound) {
-        return "The log file for this action could not be found.";
-      }
-      if (consoleOutput.tooLarge) {
-        if (consoleOutput.digest && logLinkHref) {
-          return (
-            <Typography.Text>
-              The <a href={logLinkHref}>log file</a> for this action is to large
-              to display (
-              {readableFileSizeFromString(consoleOutput.digest.sizeBytes)}).
-            </Typography.Text>
-          );
-        }
-        return "The log file for this action is to large to display.";
-      }
-      return (
-        <Paragraph style={{ margin: 0 }}>
-          <pre style={{ margin: 0 }}>{consoleOutput.content}</pre>
-        </Paragraph>
-      );
-    };
-
-    return (
-      <Descriptions.Item label={label()} key={consoleOutput.name}>
-        {content()}
-      </Descriptions.Item>
-    );
-  };
-
   return (
-    <Descriptions
-      column={1}
-      size="small"
-      bordered
-      styles={{ label: { width: "25%" }, content: { width: "75%" } }}
-    >
-      {renderResult()}
-      {consoleOutputs.map(renderConsoleOutput)}
-    </Descriptions>
+    <Space direction="vertical" size="small" style={{ width: "100%" }}>
+      <Descriptions
+        column={1}
+        size="small"
+        bordered
+        styles={{ label: { width: "25%" }, content: { width: "75%" } }}
+      >
+        {renderResult()}
+      </Descriptions>
+      {executeResponse.result?.stdoutDigest?.hash &&
+        executeResponse.result?.stdoutDigest?.sizeBytes && (
+          <CasViewer
+            instanceName={browserPageParams.instanceName}
+            digestFunction={digestFunctionValueToString(
+              browserPageParams.digestFunction,
+            )}
+            digest={executeResponse.result.stdoutDigest.hash}
+            sizeBytes={Number.parseInt(
+              executeResponse.result.stdoutDigest.sizeBytes,
+              10,
+            )}
+            title="Standard Output"
+            fileName="standard_output.txt"
+          />
+        )}
+      {executeResponse.result?.stderrDigest?.hash &&
+        executeResponse.result?.stderrDigest?.sizeBytes && (
+          <CasViewer
+            instanceName={browserPageParams.instanceName}
+            digestFunction={digestFunctionValueToString(
+              browserPageParams.digestFunction,
+            )}
+            digest={executeResponse.result?.stderrDigest?.hash}
+            sizeBytes={Number.parseInt(
+              executeResponse.result?.stderrDigest?.sizeBytes,
+              10,
+            )}
+            title="Standard Error"
+            fileName="standard_error.txt"
+          />
+        )}
+    </Space>
   );
 };
 

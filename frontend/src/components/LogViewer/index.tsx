@@ -1,30 +1,30 @@
-import { AnsiUp } from "ansi_up";
-import { Spin } from "antd";
-import React from "react";
-import { v4 as uuidv4 } from "uuid";
-import { WindowVirtualizer } from "virtua";
+import { DownloadOutlined, FileSearchOutlined } from "@ant-design/icons";
+import { Button, Spin } from "antd";
+import type React from "react";
 import PortalAlert from "@/components/PortalAlert";
+import { useBbPortalMessage } from "@/context/MessageContext";
+import PortalCard from "../PortalCard";
+import { AnsiScrollingWindow } from "./ansiScrollWindow";
 import styles from "./index.module.css";
 
-const ansi = new AnsiUp();
-
 interface Props {
-  log?: string | null;
+  log?: string | undefined;
   loading?: boolean;
   error?: Error | null;
+  title: string;
+  logDownloadUrl: string | undefined;
+  fileName?: string;
 }
 
-const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
-  const lines = React.useMemo(() => {
-    if (!log) return [];
-    return ansi
-      .ansi_to_html(log)
-      .split("\n")
-      .map((line) => ({
-        line,
-        key: uuidv4(),
-      }));
-  }, [log]);
+const LogViewerCard: React.FC<Props> = ({
+  log,
+  loading,
+  error,
+  title,
+  logDownloadUrl,
+  fileName,
+}) => {
+  const { copyToClipboard } = useBbPortalMessage();
 
   if (loading === true)
     return (
@@ -32,18 +32,17 @@ const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
         <pre />
       </Spin>
     );
-
   if (error) {
     return (
       <PortalAlert
         type="error"
         message={error.message}
+        description={error.cause?.toString()}
         showIcon
         className={styles.alert}
       />
     );
   }
-
   if (!log) {
     return (
       <PortalAlert
@@ -54,21 +53,39 @@ const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
       />
     );
   }
-
   return (
-    <pre className={styles.logContainer}>
-      <WindowVirtualizer>
-        {lines.map((line) => (
-          <span
-            key={line.key}
-            // TODO: Remove the danger
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: Should be reworked
-            dangerouslySetInnerHTML={{ __html: line.line }}
-          />
-        ))}
-      </WindowVirtualizer>
-    </pre>
+    <PortalCard
+      type="inner"
+      styles={{
+        body: {
+          padding: "0px",
+        },
+      }}
+      className={!error ? styles.compactCard : undefined}
+      icon={<FileSearchOutlined />}
+      titleBits={[title]}
+      extraBits={[
+        logDownloadUrl && (
+          <Button icon={<DownloadOutlined />} type="primary">
+            <a
+              href={logDownloadUrl}
+              download={fileName || "log.txt"}
+              target="_self"
+            >
+              Download Log
+            </a>
+          </Button>
+        ),
+        log && (
+          <Button type="primary" onClick={() => copyToClipboard(log)}>
+            Copy to clipboard
+          </Button>
+        ),
+      ]}
+    >
+      <AnsiScrollingWindow log={log} />
+    </PortalCard>
   );
 };
 
-export default LogViewer;
+export { LogViewerCard };

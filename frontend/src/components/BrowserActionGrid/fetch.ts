@@ -30,9 +30,8 @@ import {
 } from "@/types/BrowserPageType";
 import { ProtobufTypeUrls } from "@/types/protobufTypeUrls";
 import { getReducedActionDigest_SHA256 } from "@/utils/digestFunctionUtils";
-import { fetchCasObject, fetchCasObjectAndParse } from "@/utils/fetchCasObject";
+import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
 import { protobufToObject } from "@/utils/protobufToObject";
-import type { ActionConsoleOutput } from "./types";
 
 export const fetchBrowserActionGrid = async (
   browserPageParams: BrowserPageParams,
@@ -52,7 +51,6 @@ export const fetchBrowserActionGrid = async (
   monetaryResourceUsage: MonetaryResourceUsage | undefined;
   casCommand: Command | undefined;
   casDirectory: Directory | undefined;
-  consoleOutputs: ActionConsoleOutput[];
   previousExecutionStats: PreviousExecutionStats | undefined;
   fileSystemAccessProfile: FileSystemAccessProfile | undefined;
 }> => {
@@ -83,7 +81,6 @@ export const fetchBrowserActionGrid = async (
     casCommand,
     casDirectory,
     previousExecutionStats,
-    consoleOutputs,
     fileSystemAccessProfile,
   ] = await Promise.all([
     // Fetch Command
@@ -115,13 +112,6 @@ export const fetchBrowserActionGrid = async (
       browserPageParams,
     ),
 
-    // Fetch Console Outputs
-    getConsoleActionOutputs(
-      browserPageParams,
-      casByteStreamClient,
-      executeResponse,
-    ),
-
     // Fetch File System Access Cache Profile
     fetchFileSystemAccessProfile(
       action,
@@ -142,66 +132,9 @@ export const fetchBrowserActionGrid = async (
     monetaryResourceUsage,
     casCommand,
     casDirectory,
-    consoleOutputs,
     previousExecutionStats,
     fileSystemAccessProfile,
   };
-};
-
-export const getActionConsoleOutput = async (
-  browserPageParams: BrowserPageParams,
-  casByteStreamClient: ByteStreamClient,
-  digest: Digest | undefined,
-  rawBytes: Uint8Array | undefined,
-  name: string,
-): Promise<ActionConsoleOutput | undefined> => {
-  if (rawBytes && rawBytes.length > 0)
-    return {
-      name,
-      digest,
-      tooLarge: false,
-      notFound: false,
-      content: new TextDecoder().decode(rawBytes),
-    };
-
-  if (digest === undefined) {
-    return undefined;
-  }
-
-  const MAX_CONSOLE_OUTPUT_SIZE = 100000;
-  if (Number.parseInt(digest.sizeBytes, 10) > MAX_CONSOLE_OUTPUT_SIZE) {
-    return {
-      name,
-      digest,
-      tooLarge: true,
-      notFound: false,
-      content: undefined,
-    };
-  }
-
-  try {
-    const content = await fetchCasObject(
-      casByteStreamClient,
-      browserPageParams.instanceName,
-      browserPageParams.digestFunction,
-      digest,
-    );
-    return {
-      name,
-      digest,
-      tooLarge: false,
-      notFound: false,
-      content: new TextDecoder().decode(content),
-    };
-  } catch (_e) {
-    return {
-      name,
-      digest,
-      tooLarge: false,
-      notFound: true,
-      content: undefined,
-    };
-  }
 };
 
 async function fetchPreviousExecutionStats(
@@ -225,38 +158,6 @@ async function fetchPreviousExecutionStats(
   } catch (_error) {
     console.log("No previous execution stats found");
   }
-}
-
-async function getConsoleActionOutputs(
-  browserPageParams: BrowserPageParams,
-  casByteStreamClient: ByteStreamClient,
-  executeResponse: ExecuteResponse | undefined,
-): Promise<ActionConsoleOutput[]> {
-  const consoleOutputs: ActionConsoleOutput[] = [];
-
-  const stdoutOutput = await getActionConsoleOutput(
-    browserPageParams,
-    casByteStreamClient,
-    executeResponse?.result?.stdoutDigest,
-    executeResponse?.result?.stdoutRaw,
-    "Standard output",
-  );
-  if (stdoutOutput) {
-    consoleOutputs.push(stdoutOutput);
-  }
-
-  const stderrOutput = await getActionConsoleOutput(
-    browserPageParams,
-    casByteStreamClient,
-    executeResponse?.result?.stderrDigest,
-    executeResponse?.result?.stderrRaw,
-    "Standard error",
-  );
-  if (stderrOutput) {
-    consoleOutputs.push(stderrOutput);
-  }
-
-  return consoleOutputs;
 }
 
 function extractMetadataFromExecuteResponse(
