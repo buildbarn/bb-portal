@@ -21,7 +21,7 @@ export const digestFunctionValueFromString = (
 
 export const digestFunctionValueToString = (
   value: DigestFunction_Value,
-): string | undefined => {
+): string => {
   return digestFunction_ValueToJSON(value).toLowerCase();
 };
 

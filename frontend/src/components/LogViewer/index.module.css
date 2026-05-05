@@ -10,3 +10,31 @@
 .logContainer > div > div {
   width: max-content !important;
 }
+
+.scrollWindow {
+  /* Shadow covers */
+  background:
+    linear-gradient(rgb(var(--callout-rgb)) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(rgba(255, 255, 255, 0), rgb(var(--callout-rgb)) 70%) 0 100%,
+    /* Shadows */
+    radial-gradient(
+      farthest-side at 50% 0,
+      rgba(128, 128, 128, 0.4),
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(
+      farthest-side at 50% 100%,
+      rgba(128, 128, 128, 0.4),
+      rgba(0, 0, 0, 0)
+    )
+    0 100%;
+  background-repeat: no-repeat;
+  background-color: rgb(var(--callout-rgb));
+  background-size:
+    100% 40px,
+    100% 40px,
+    100% 14px,
+    100% 14px;
+  background-attachment: local, local, scroll, scroll;
+  padding: 6px 0.6em;
+}

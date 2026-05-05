@@ -193,7 +193,6 @@ const BrowserActionGrid: React.FC<Params> = ({
             browserPageParams={browserPageParams}
             executeResponse={data.executeResponse}
             posixResourceUsage={data.posixResourceUsage}
-            consoleOutputs={data.consoleOutputs}
           />
         ) : (
           <Typography.Text>
