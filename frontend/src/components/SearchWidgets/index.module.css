@@ -24,3 +24,32 @@
 .searchWidgetButtonsSpacing {
   flex: auto;
 }
+
+.searchWidgetCheckBoxItem {
+  padding: 2px 8px;
+  display: flex;
+  border-radius: 4px;
+}
+
+.searchWidgetCheckBoxItem:hover {
+  background-color: rgb(var(--callout-rgb));
+}
+
+.searchWidgetCheckBoxItemActive {
+  background-color: #e6f4ff;
+}
+.searchWidgetCheckBoxItemActive:hover {
+  background-color: #bae0ff;
+}
+
+[data-theme="dark"] {
+  .searchWidgetCheckBoxItem:hover {
+    background-color: rgba(225, 225, 225, 0.08);
+  }
+  .searchWidgetCheckBoxItemActive {
+    background-color: #15325b;
+  }
+  .searchWidgetCheckBoxItemActive:hover {
+    background-color: #15417e;
+  }
+}

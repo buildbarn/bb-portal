@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { validate as uuidValidate } from "uuid";
 import PortalDuration from "@/components/PortalDuration";
 import {
+  FilterPickerDropdown,
   SearchFilterIcon,
   SearchWidget,
   TimeRangeSelector,
@@ -127,6 +128,7 @@ export const statusColumn: TableColumnTypeWithFilter<
   filterIcon: (filtered) => (
     <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
   ),
+  filterDropdown: (filterProps) => <FilterPickerDropdown {...filterProps} />,
   filters: invocationResultTagFilters,
   applyFilter: applyInvocationResultTagFilter,
 };
