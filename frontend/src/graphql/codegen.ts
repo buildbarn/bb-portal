@@ -15,6 +15,9 @@ const config: CodegenConfig = {
         fragmentMasking: { unmaskFunctionName: "getFragmentData" },
         persistedDocuments: true,
       },
+      config: {
+        useTypeImports: true,
+      },
     },
     "./src/graphql/__generated__/zod.ts": {
       plugins: ["typescript-validation-schema"],
