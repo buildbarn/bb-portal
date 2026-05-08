@@ -1,92 +1,89 @@
 import { RadiusUprightOutlined } from "@ant-design/icons";
-import { Col, Row, Space, Table } from "antd";
-import type { TableColumnsType } from "antd/lib";
+import { Space } from "antd";
 import type React from "react";
 import type { BazelInvocationMetricsArtifactMetricsFragment } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
-import styles from "../../theme/theme.module.css";
+import { MultiStatistic } from "../MultiStatistic";
 import PortalCard from "../PortalCard";
 
-const artifacts_columns: TableColumnsType<ArtifactMetricsTableData> = [
-  {
-    title: "Type",
-    dataIndex: "name",
-  },
-  {
-    title: "Size",
-    dataIndex: "sizeInBytes",
-    align: "right",
-    render: (_, record) => (
-      <span className={styles.numberFormat}>
-        {readableFileSize(record.sizeInBytes)}
-      </span>
-    ),
-    sorter: (a, b) => (a.sizeInBytes ?? 0) - (b.sizeInBytes ?? 0),
-  },
-  {
-    title: "Count",
-    dataIndex: "count",
-    align: "right",
-    render: (_, record) => (
-      <span className={styles.numberFormat}>{record.count}</span>
-    ),
-    sorter: (a, b) => (a.count ?? 0) - (b.count ?? 0),
-  },
-];
-
-interface ArtifactMetricsTableData {
-  name: string;
-  sizeInBytes: number;
-  count: number;
+interface Props {
+  artifactMetrics: BazelInvocationMetricsArtifactMetricsFragment;
+  cardStyle?: React.CSSProperties;
 }
 
-export const ArtifactsMetricsDisplay: React.FC<{
-  artifactMetrics: BazelInvocationMetricsArtifactMetricsFragment;
-}> = ({ artifactMetrics }) => {
-  const artifacts_data: ArtifactMetricsTableData[] = [];
-  artifacts_data.push(
-    {
-      name: "Source Artifacts Read",
-      sizeInBytes: artifactMetrics.sourceArtifactsReadSizeInBytes ?? 0,
-      count: artifactMetrics.sourceArtifactsReadCount ?? 0,
-    },
-    {
-      name: "Output Artifacts From Action Cache",
-      sizeInBytes:
-        artifactMetrics.outputArtifactsFromActionCacheSizeInBytes ?? 0,
-      count: artifactMetrics.outputArtifactsFromActionCacheCount ?? 0,
-    },
-    {
-      name: "Output Artifacts Seen",
-      sizeInBytes: artifactMetrics.outputArtifactsSeenSizeInBytes ?? 0,
-      count: artifactMetrics.outputArtifactsSeenCount ?? 0,
-    },
-    {
-      name: "Top Level Artifacts",
-      sizeInBytes: artifactMetrics.topLevelArtifactsSizeInBytes ?? 0,
-      count: artifactMetrics.topLevelArtifactsCount ?? 0,
-    },
-  );
-
+export const ArtifactsMetricsDisplay: React.FC<Props> = ({
+  artifactMetrics,
+  cardStyle,
+}) => {
   return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-      <PortalCard
-        type="inner"
-        icon={<RadiusUprightOutlined />}
-        titleBits={["Artifacts Metrics"]}
-      >
-        <Row justify="space-around" align="middle">
-          <Col span="18">
-            <Table
-              columns={artifacts_columns}
-              dataSource={artifacts_data}
-              showSorterTooltip={{ target: "sorter-icon" }}
-              pagination={false}
-            />
-          </Col>
-          <Col span="6" />
-        </Row>
-      </PortalCard>
-    </Space>
+    <PortalCard
+      type="inner"
+      icon={<RadiusUprightOutlined />}
+      style={cardStyle}
+      titleBits={["Artifacts Metrics"]}
+    >
+      <Space size="large">
+        <MultiStatistic
+          title="Source Artifacts Read"
+          values={[
+            {
+              key: "count",
+              value: artifactMetrics.sourceArtifactsReadCount ?? 0,
+            },
+            {
+              key: "size",
+              value: readableFileSize(
+                artifactMetrics.sourceArtifactsReadSizeInBytes ?? 0,
+              ),
+            },
+          ]}
+        />
+        <MultiStatistic
+          title="Output Artifacts From Action Cache"
+          values={[
+            {
+              key: "count",
+              value: artifactMetrics.outputArtifactsFromActionCacheCount ?? 0,
+            },
+            {
+              key: "size",
+              value: readableFileSize(
+                artifactMetrics.outputArtifactsFromActionCacheSizeInBytes ?? 0,
+              ),
+            },
+          ]}
+        />
+        <MultiStatistic
+          title="Output Artifacts Seen"
+          values={[
+            {
+              key: "count",
+              value: artifactMetrics.outputArtifactsSeenCount ?? 0,
+            },
+            {
+              key: "size",
+              value: readableFileSize(
+                artifactMetrics.outputArtifactsSeenSizeInBytes ?? 0,
+              ),
+            },
+          ]}
+        />
+        <MultiStatistic
+          title="Top Level Artifacts"
+          values={[
+            {
+              key: "count",
+              value: artifactMetrics.topLevelArtifactsCount ?? 0,
+            },
+            {
+              key: "size",
+              value: readableFileSize(
+                artifactMetrics.topLevelArtifactsSizeInBytes ?? 0,
+              ),
+            },
+          ]}
+        />
+      </Space>
+    </PortalCard>
   );
 };

@@ -96,10 +96,17 @@ export const BAZEL_INVOCATION_METRICS_MEMORY_METRICS_FRAGMENT =
     peakPostGcHeapSize
     peakPostGcTenuredSpaceHeapSize
     garbageMetrics {
-      id
-      garbageCollected
-      type
+      ...BazelInvocationMetricsGarbageMetrics
     }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_GARBAGE_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsGarbageMetrics on GarbageMetrics {
+    id
+    garbageCollected
+    type
   }
 `);
 
