@@ -2,16 +2,19 @@ import { FieldTimeOutlined } from "@ant-design/icons";
 import { Row, Space, Statistic } from "antd";
 import type React from "react";
 import type {
-  SystemNetworkStats,
-  TimingMetrics,
+  BazelInvocationSystemNetworkStatsFragment,
+  BazelInvocationTimingMetricsFragment,
 } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import PortalCard from "../PortalCard";
 
 const SystemMetricsDisplay: React.FC<{
-  timingMetrics: TimingMetrics | undefined;
-  systemNetworkStats: SystemNetworkStats | undefined;
+  timingMetrics: BazelInvocationTimingMetricsFragment | undefined | null;
+  systemNetworkStats:
+    | BazelInvocationSystemNetworkStatsFragment
+    | undefined
+    | null;
 }> = ({ timingMetrics, systemNetworkStats }) => {
   return (
     <Space size={"large"} direction="vertical" style={{ display: "flex" }}>

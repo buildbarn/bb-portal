@@ -1,0 +1,14 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "metrics": {
+      "id": "TWV0cmljczoz",
+      "targetMetrics": {
+        "id": "VGFyZ2V0TWV0cmljczoz",
+        "targetsConfigured": 0,
+        "targetsConfiguredNotIncludingAspects": 0,
+        "targetsLoaded": 0
+      }
+    }
+  }
+}

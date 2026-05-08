@@ -1,0 +1,33 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
+    "invocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "build_event_json_file",
+          "value": "./pkg/summary/testdata/nextjs_target_failed.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": [
+        {
+          "option": "",
+          "value": ""
+        },
+        {
+          "option": "",
+          "value": ""
+        },
+        {
+          "option": "",
+          "value": ""
+        }
+      ]
+    }
+  }
+}

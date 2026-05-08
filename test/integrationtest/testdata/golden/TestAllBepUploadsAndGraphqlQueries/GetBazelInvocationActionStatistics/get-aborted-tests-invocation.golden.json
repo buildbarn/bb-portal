@@ -1,0 +1,276 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjg=",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 2,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjc=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM2",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM3",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM4",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM5",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjQw",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjQx",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 41,
+              "id": "TWlzc0RldGFpOjQy",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            }
+          ],
+          "misses": 41,
+          "saveTimeInMs": 1,
+          "sizeInBytes": 1439630
+        },
+        "actionData": [
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 40,
+            "firstStartedMs": 1770195805736,
+            "id": "QWN0aW9uRGF0YTozNA==",
+            "lastEndedMs": 1770195807359,
+            "mnemonic": "TestRunner",
+            "systemTime": 1575,
+            "userTime": 614
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1,
+            "firstStartedMs": 1770195805695,
+            "id": "QWN0aW9uRGF0YTozNQ==",
+            "lastEndedMs": 1770195805697,
+            "mnemonic": "BazelWorkspaceStatusAction",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozNg==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CcStrip",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozNw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "Action",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozOA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "NpmLifecycleHook",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTozOQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GoLink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0MA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CopyToDirectory",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0MQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "PackageTar",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Mg==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "Jsonnet",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Mw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GoStdlib",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0NA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CppModuleMap",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0NQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GoProtocGen",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Ng==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "OCIIndex",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0Nw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "UnresolvedSymlink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0OA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "CopyFile",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo0OQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "ExecutableSymlink",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1MA==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "Genrule",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1MQ==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "NpmPackageExtract",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1Mg==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "GenProtoDescriptorSet",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 0,
+            "firstStartedMs": 10993513914488,
+            "id": "QWN0aW9uRGF0YTo1Mw==",
+            "lastEndedMs": 1770141877634,
+            "mnemonic": "OCIDescriptor",
+            "systemTime": 0,
+            "userTime": 0
+          }
+        ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
+        "actionsExecuted": 41,
+        "id": "QWN0aW9uU3VtbWFyeTo4",
+        "remoteCacheHits": 0,
+        "runnerCount": [
+          {
+            "actionsExecuted": 41,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTk=",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 71,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6MjA=",
+            "name": "processwrapper-sandbox"
+          }
+        ]
+      },
+      "id": "TWV0cmljczo4"
+    }
+  }
+}

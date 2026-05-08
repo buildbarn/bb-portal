@@ -83,7 +83,7 @@ export const INVOCATION_RESULT_TAGS: {
 };
 
 interface Props {
-  exitCodeName: string | undefined;
+  exitCodeName: string | undefined | null;
   timeSinceLastConnectionMillis: number | undefined;
 }
 

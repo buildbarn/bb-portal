@@ -1,0 +1,86 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 4,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjU=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjI5",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMw",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMx",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMy",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMz",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM0",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 1,
+              "id": "TWlzc0RldGFpOjM1",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            }
+          ],
+          "misses": 1,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 1549398
+        },
+        "actionData": [
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1,
+            "firstStartedMs": 1714696187752,
+            "id": "QWN0aW9uRGF0YToxMw==",
+            "lastEndedMs": 1714696187754,
+            "mnemonic": "BazelWorkspaceStatusAction",
+            "systemTime": 0,
+            "userTime": 0
+          }
+        ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
+        "actionsExecuted": 1,
+        "id": "QWN0aW9uU3VtbWFyeTo1",
+        "remoteCacheHits": 0,
+        "runnerCount": [
+          {
+            "actionsExecuted": 1,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTU=",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTY=",
+            "name": "internal"
+          }
+        ]
+      },
+      "id": "TWV0cmljczo1"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
+    "metrics": {
+      "id": "TWV0cmljczox",
+      "networkMetrics": null,
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 51,
+        "cpuTimeInMs": 2619,
+        "executionPhaseTimeInMs": 680,
+        "id": "VGltaW5nTWV0cmljczox",
+        "wallTimeInMs": 954
+      }
+    }
+  }
+}

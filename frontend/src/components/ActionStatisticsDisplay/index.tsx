@@ -5,10 +5,7 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import { Flex } from "antd";
-import type {
-  ActionSummary,
-  RunnerCount,
-} from "@/graphql/__generated__/graphql";
+import type { BazelInvocationActionSummaryFragment } from "@/graphql/__generated__/graphql";
 import ActionCacheMissMetrics from "../ActionCacheMissMetrics";
 import ActionCacheOverview from "../ActionCacheOverview";
 import ActionRunnerMetrics from "../ActionRunnerMetrics";
@@ -16,14 +13,10 @@ import ActionTypeMetrics from "../ActionTypeMetrics";
 import PortalCard from "../PortalCard";
 
 type Props = {
-  runnerMetrics: RunnerCount[];
-  actionData?: ActionSummary;
+  actionSummary: BazelInvocationActionSummaryFragment;
 };
 
-const ActionStatisticsDisplay: React.FC<Props> = ({
-  runnerMetrics,
-  actionData,
-}) => {
+const ActionStatisticsDisplay: React.FC<Props> = ({ actionSummary }) => {
   return (
     <Flex vertical={false} gap="small" wrap={true}>
       <PortalCard
@@ -31,7 +24,9 @@ const ActionStatisticsDisplay: React.FC<Props> = ({
         icon={<DashboardOutlined />}
         titleBits={["Action Cache Overview"]}
       >
-        <ActionCacheOverview acStatistics={actionData?.actionCacheStatistics} />
+        <ActionCacheOverview
+          acStatistics={actionSummary?.actionCacheStatistics}
+        />
       </PortalCard>
 
       <PortalCard
@@ -40,7 +35,7 @@ const ActionStatisticsDisplay: React.FC<Props> = ({
         titleBits={["Cache Miss Breakdown"]}
       >
         <ActionCacheMissMetrics
-          acStatistics={actionData?.actionCacheStatistics}
+          acStatistics={actionSummary?.actionCacheStatistics}
         />
       </PortalCard>
       <PortalCard
@@ -48,7 +43,7 @@ const ActionStatisticsDisplay: React.FC<Props> = ({
         icon={<ClusterOutlined />}
         titleBits={["Action Runners Breakdown"]}
       >
-        <ActionRunnerMetrics runnerMetrics={runnerMetrics} />
+        <ActionRunnerMetrics runnerMetrics={actionSummary.runnerCount ?? []} />
       </PortalCard>
 
       <PortalCard
@@ -56,7 +51,7 @@ const ActionStatisticsDisplay: React.FC<Props> = ({
         icon={<NodeCollapseOutlined />}
         titleBits={["Action Types"]}
       >
-        <ActionTypeMetrics actionData={actionData?.actionData} />
+        <ActionTypeMetrics actionData={actionSummary?.actionData} />
       </PortalCard>
     </Flex>
   );

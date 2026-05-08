@@ -2,7 +2,7 @@ import { RadiusUprightOutlined } from "@ant-design/icons";
 import { Col, Row, Space, Table } from "antd";
 import type { TableColumnsType } from "antd/lib";
 import type React from "react";
-import type { ArtifactMetrics } from "@/graphql/__generated__/graphql";
+import type { BazelInvocationArtifactMetricsFragment } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
 import styles from "../../theme/theme.module.css";
 import PortalCard from "../PortalCard";
@@ -41,30 +41,30 @@ interface ArtifactMetricsTableData {
 }
 
 const ArtifactsDataMetrics: React.FC<{
-  artifactMetrics: ArtifactMetrics | undefined;
+  artifactMetrics: BazelInvocationArtifactMetricsFragment;
 }> = ({ artifactMetrics }) => {
   const artifacts_data: ArtifactMetricsTableData[] = [];
   artifacts_data.push(
     {
       name: "Source Artifacts Read",
-      sizeInBytes: artifactMetrics?.sourceArtifactsReadSizeInBytes ?? 0,
-      count: artifactMetrics?.sourceArtifactsReadCount ?? 0,
+      sizeInBytes: artifactMetrics.sourceArtifactsReadSizeInBytes ?? 0,
+      count: artifactMetrics.sourceArtifactsReadCount ?? 0,
     },
     {
       name: "Output Artifacts From Action Cache",
       sizeInBytes:
-        artifactMetrics?.outputArtifactsFromActionCacheSizeInBytes ?? 0,
-      count: artifactMetrics?.outputArtifactsFromActionCacheCount ?? 0,
+        artifactMetrics.outputArtifactsFromActionCacheSizeInBytes ?? 0,
+      count: artifactMetrics.outputArtifactsFromActionCacheCount ?? 0,
     },
     {
       name: "Output Artifacts Seen",
-      sizeInBytes: artifactMetrics?.outputArtifactsSeenSizeInBytes ?? 0,
-      count: artifactMetrics?.outputArtifactsSeenCount ?? 0,
+      sizeInBytes: artifactMetrics.outputArtifactsSeenSizeInBytes ?? 0,
+      count: artifactMetrics.outputArtifactsSeenCount ?? 0,
     },
     {
       name: "Top Level Artifacts",
-      sizeInBytes: artifactMetrics?.topLevelArtifactsSizeInBytes ?? 0,
-      count: artifactMetrics?.topLevelArtifactsCount ?? 0,
+      sizeInBytes: artifactMetrics.topLevelArtifactsSizeInBytes ?? 0,
+      count: artifactMetrics.topLevelArtifactsCount ?? 0,
     },
   );
 

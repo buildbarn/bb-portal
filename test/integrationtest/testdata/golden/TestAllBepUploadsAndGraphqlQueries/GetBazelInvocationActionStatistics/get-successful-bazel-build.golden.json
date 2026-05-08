@@ -1,0 +1,118 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 19,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjE=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjE=",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjI=",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM=",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 1,
+              "id": "TWlzc0RldGFpOjQ=",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjU=",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 1,
+              "id": "TWlzc0RldGFpOjY=",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 1,
+              "id": "TWlzc0RldGFpOjc=",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            }
+          ],
+          "misses": 3,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 1549126
+        },
+        "actionData": [
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1,
+            "firstStartedMs": 1714695868925,
+            "id": "QWN0aW9uRGF0YTox",
+            "lastEndedMs": 1714695868927,
+            "mnemonic": "BazelWorkspaceStatusAction",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1,
+            "firstStartedMs": 1714695868965,
+            "id": "QWN0aW9uRGF0YToy",
+            "lastEndedMs": 1714695868981,
+            "mnemonic": "CopyFile",
+            "systemTime": 2,
+            "userTime": 1
+          },
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1,
+            "firstStartedMs": 1714695868981,
+            "id": "QWN0aW9uRGF0YToz",
+            "lastEndedMs": 1714695869600,
+            "mnemonic": "TsProject",
+            "systemTime": 55,
+            "userTime": 1009
+          }
+        ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
+        "actionsExecuted": 3,
+        "id": "QWN0aW9uU3VtbWFyeTox",
+        "remoteCacheHits": 0,
+        "runnerCount": [
+          {
+            "actionsExecuted": 3,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MQ==",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6Mg==",
+            "name": "internal"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6Mw==",
+            "name": "darwin-sandbox"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6NA==",
+            "name": "local"
+          }
+        ]
+      },
+      "id": "TWV0cmljczox"
+    }
+  }
+}

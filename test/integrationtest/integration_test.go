@@ -132,7 +132,535 @@ var (
 				{bepFile: githubActions},
 			},
 			graphqlTestCases: graphqlTestTable{
-				"LoadFullBazelInvocationDetails": {
+				"GetBazelInvocationCommon": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationActionStatistics": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationActions": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationArtifactMetrics": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationCommandline": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationOverview": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationLog": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationMemoryMetrics": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationSourceControl": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationSystemMetrics": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationTags": {
+					"get successful bazel build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get successful bazel test": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get single failed bazel invocation": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelBuild.invocationID,
+						},
+					},
+					"get single bazel invocation ignoring target and error progress if action has output": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+					"get single bazel invocation analysis failed target": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
+					"bazel invocation not found": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+					"get aborted analysis invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedAnalysis.invocationID,
+						},
+					},
+					"get aborted build invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedBuild.invocationID,
+						},
+					},
+					"get aborted tests invocation": {
+						variables: testkit.Variables{
+							"invocationID": abortedTests.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationTargets": {
 					"get successful bazel build": {
 						variables: testkit.Variables{
 							"invocationID": successfulBazelBuild.invocationID,
@@ -345,7 +873,43 @@ var (
 						wantErr: errBuildNotFound,
 					},
 				},
-				"LoadFullBazelInvocationDetails": {
+				"GetBazelInvocationCommon": {
+					"github actions": {
+						variables: testkit.Variables{
+							"invocationID": githubActions.invocationID,
+						},
+					},
+					"github actions lite": {
+						variables: testkit.Variables{
+							"invocationID": githubActionsLite.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationOverview": {
+					"github actions": {
+						variables: testkit.Variables{
+							"invocationID": githubActions.invocationID,
+						},
+					},
+					"github actions lite": {
+						variables: testkit.Variables{
+							"invocationID": githubActionsLite.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationSourceControl": {
+					"github actions": {
+						variables: testkit.Variables{
+							"invocationID": githubActions.invocationID,
+						},
+					},
+					"github actions lite": {
+						variables: testkit.Variables{
+							"invocationID": githubActionsLite.invocationID,
+						},
+					},
+				},
+				"GetBazelInvocationTags": {
 					"github actions": {
 						variables: testkit.Variables{
 							"invocationID": githubActions.invocationID,

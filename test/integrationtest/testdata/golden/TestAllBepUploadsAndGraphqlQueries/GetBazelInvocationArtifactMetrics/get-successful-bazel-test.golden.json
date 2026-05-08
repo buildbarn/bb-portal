@@ -1,0 +1,19 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "metrics": {
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjM=",
+        "outputArtifactsFromActionCacheCount": 21,
+        "outputArtifactsFromActionCacheSizeInBytes": 4565,
+        "outputArtifactsSeenCount": 28,
+        "outputArtifactsSeenSizeInBytes": 6768,
+        "sourceArtifactsReadCount": 1,
+        "sourceArtifactsReadSizeInBytes": 466,
+        "topLevelArtifactsCount": 21393,
+        "topLevelArtifactsSizeInBytes": 2216329047
+      },
+      "id": "TWV0cmljczoz"
+    }
+  }
+}

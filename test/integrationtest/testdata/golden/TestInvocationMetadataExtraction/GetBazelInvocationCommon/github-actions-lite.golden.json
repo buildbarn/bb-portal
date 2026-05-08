@@ -1,0 +1,30 @@
+{
+  "getBazelInvocation": {
+    "actions": [],
+    "authenticatedUser": null,
+    "build": {
+      "buildUUID": "e823d26e-7b76-50bd-ac6a-e8306779da6f",
+      "id": "QnVpbGQ6MQ=="
+    },
+    "connectionMetadata": null,
+    "endedAt": "2026-03-03T08:05:01.66Z",
+    "exitCodeName": "SUCCESS",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "instanceName": {
+      "name": ""
+    },
+    "invocationID": "63500331-1b71-4d7a-9125-df9b3dfe4e0d",
+    "metrics": null,
+    "profile": null,
+    "sourceControl": [
+      {
+        "id": "U291cmNlQ29udHJvbDoy"
+      }
+    ],
+    "startedAt": "2026-03-03T07:52:14.102Z",
+    "tags": {
+      "totalCount": 4
+    },
+    "username": "runner"
+  }
+}

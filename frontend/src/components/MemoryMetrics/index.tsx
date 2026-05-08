@@ -3,8 +3,8 @@ import { Col, Row, Space, Statistic, Table } from "antd";
 import type { TableColumnsType } from "antd/lib";
 import type React from "react";
 import type {
+  BazelInvocationMemoryMetricsFragment,
   GarbageMetrics,
-  MemoryMetrics,
 } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
 import styles from "../../theme/theme.module.css";
@@ -35,7 +35,7 @@ const garbage_columns: TableColumnsType<GarbageMetricDetailDisplayType> = [
 ];
 
 const MemoryMetricsDisplay: React.FC<{
-  memoryMetrics: MemoryMetrics | undefined;
+  memoryMetrics: BazelInvocationMemoryMetricsFragment;
 }> = ({ memoryMetrics }) => {
   const garbage_data: GarbageMetricDetailDisplayType[] = [];
   memoryMetrics?.garbageMetrics?.forEach((item: GarbageMetrics, index) => {

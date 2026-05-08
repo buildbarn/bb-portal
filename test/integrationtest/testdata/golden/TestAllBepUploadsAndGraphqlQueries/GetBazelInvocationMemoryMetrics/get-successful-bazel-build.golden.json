@@ -1,0 +1,15 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
+    "metrics": {
+      "id": "TWV0cmljczox",
+      "memoryMetrics": {
+        "garbageMetrics": [],
+        "id": "TWVtb3J5TWV0cmljczox",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      }
+    }
+  }
+}

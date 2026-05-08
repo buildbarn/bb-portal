@@ -1,0 +1,26 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjY=",
+    "metrics": {
+      "id": "TWV0cmljczo2",
+      "memoryMetrics": {
+        "garbageMetrics": [
+          {
+            "garbageCollected": 2192568,
+            "id": "R2FyYmFnZU1ldHJpY3M6MQ==",
+            "type": "G1 Survivor Space"
+          },
+          {
+            "garbageCollected": 167772160,
+            "id": "R2FyYmFnZU1ldHJpY3M6Mg==",
+            "type": "G1 Eden Space"
+          }
+        ],
+        "id": "TWVtb3J5TWV0cmljczo2",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      }
+    }
+  }
+}
