@@ -15,20 +15,7 @@
     },
     "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
     "metrics": {
-      "actionSummary": {
-        "id": "QWN0aW9uU3VtbWFyeTo0"
-      },
-      "artifactMetrics": {
-        "id": "QXJ0aWZhY3RNZXRyaWNzOjQ="
-      },
-      "id": "TWV0cmljczo0",
-      "memoryMetrics": {
-        "id": "TWVtb3J5TWV0cmljczo0"
-      },
-      "networkMetrics": null,
-      "timingMetrics": {
-        "id": "VGltaW5nTWV0cmljczo0"
-      }
+      "id": "TWV0cmljczo0"
     },
     "profile": null,
     "sourceControl": [],

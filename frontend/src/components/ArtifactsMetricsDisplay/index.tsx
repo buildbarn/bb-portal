@@ -2,7 +2,7 @@ import { RadiusUprightOutlined } from "@ant-design/icons";
 import { Col, Row, Space, Table } from "antd";
 import type { TableColumnsType } from "antd/lib";
 import type React from "react";
-import type { BazelInvocationArtifactMetricsFragment } from "@/graphql/__generated__/graphql";
+import type { BazelInvocationMetricsArtifactMetricsFragment } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
 import styles from "../../theme/theme.module.css";
 import PortalCard from "../PortalCard";
@@ -40,8 +40,8 @@ interface ArtifactMetricsTableData {
   count: number;
 }
 
-const ArtifactsDataMetrics: React.FC<{
-  artifactMetrics: BazelInvocationArtifactMetricsFragment;
+export const ArtifactsMetricsDisplay: React.FC<{
+  artifactMetrics: BazelInvocationMetricsArtifactMetricsFragment;
 }> = ({ artifactMetrics }) => {
   const artifacts_data: ArtifactMetricsTableData[] = [];
   artifacts_data.push(
@@ -68,14 +68,12 @@ const ArtifactsDataMetrics: React.FC<{
     },
   );
 
-  const actionsTitle: React.ReactNode[] = [<span key="label">Artifacts</span>];
-
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
       <PortalCard
         type="inner"
         icon={<RadiusUprightOutlined />}
-        titleBits={actionsTitle}
+        titleBits={["Artifacts Metrics"]}
       >
         <Row justify="space-around" align="middle">
           <Col span="18">
@@ -92,5 +90,3 @@ const ArtifactsDataMetrics: React.FC<{
     </Space>
   );
 };
-
-export default ArtifactsDataMetrics;

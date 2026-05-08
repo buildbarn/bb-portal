@@ -107,7 +107,34 @@
           }
         ]
       },
-      "id": "TWV0cmljczoz"
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjM=",
+        "outputArtifactsFromActionCacheCount": 21,
+        "outputArtifactsFromActionCacheSizeInBytes": 4565,
+        "outputArtifactsSeenCount": 28,
+        "outputArtifactsSeenSizeInBytes": 6768,
+        "sourceArtifactsReadCount": 1,
+        "sourceArtifactsReadSizeInBytes": 466,
+        "topLevelArtifactsCount": 21393,
+        "topLevelArtifactsSizeInBytes": 2216329047
+      },
+      "id": "TWV0cmljczoz",
+      "memoryMetrics": {
+        "garbageMetrics": [],
+        "id": "TWVtb3J5TWV0cmljczoz",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": null,
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 56,
+        "cpuTimeInMs": 3495,
+        "executionPhaseTimeInMs": 2268,
+        "id": "VGltaW5nTWV0cmljczoz",
+        "wallTimeInMs": 2565
+      }
     }
   }
 }

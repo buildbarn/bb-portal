@@ -12,22 +12,7 @@
     },
     "invocationID": "bb2b45d9-d695-4194-8fdc-01ba50477a92",
     "metrics": {
-      "actionSummary": {
-        "id": "QWN0aW9uU3VtbWFyeTo2"
-      },
-      "artifactMetrics": {
-        "id": "QXJ0aWZhY3RNZXRyaWNzOjY="
-      },
-      "id": "TWV0cmljczo2",
-      "memoryMetrics": {
-        "id": "TWVtb3J5TWV0cmljczo2"
-      },
-      "networkMetrics": {
-        "id": "TmV0d29ya01ldHJpY3M6MQ=="
-      },
-      "timingMetrics": {
-        "id": "VGltaW5nTWV0cmljczo2"
-      }
+      "id": "TWV0cmljczo2"
     },
     "profile": null,
     "sourceControl": [],
