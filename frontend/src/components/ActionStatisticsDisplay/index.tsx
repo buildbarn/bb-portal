@@ -31,7 +31,7 @@ const ActionStatisticsDisplay: React.FC<Props> = ({ actionSummary }) => {
           titleBits={["Action Cache Overview"]}
         >
           <ActionCacheOverview
-            acStatistics={actionSummary?.actionCacheStatistics}
+            acStatistics={actionSummary.actionCacheStatistics}
           />
         </PortalCard>
 
@@ -41,7 +41,7 @@ const ActionStatisticsDisplay: React.FC<Props> = ({ actionSummary }) => {
           titleBits={["Action Cache Miss Breakdown"]}
         >
           <ActionCacheMissMetrics
-            acStatistics={actionSummary?.actionCacheStatistics}
+            acStatistics={actionSummary.actionCacheStatistics}
           />
         </PortalCard>
         <PortalCard
@@ -59,7 +59,7 @@ const ActionStatisticsDisplay: React.FC<Props> = ({ actionSummary }) => {
           icon={<NodeCollapseOutlined />}
           titleBits={["Action Types"]}
         >
-          <ActionTypeMetrics actionData={actionSummary?.actionData} />
+          <ActionTypeMetrics actionData={actionSummary.actionData} />
         </PortalCard>
       </Flex>
     </PortalCard>
