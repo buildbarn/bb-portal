@@ -1,14 +1,14 @@
 import { TagsOutlined } from "@ant-design/icons";
 import { Descriptions } from "antd";
 import type React from "react";
-import type { InvocationTag } from "@/graphql/__generated__/graphql";
+import type { BazelInvocationTagsFragment } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 
 const linkRegex =
   /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)$/;
 
 interface Props {
-  tags: Omit<InvocationTag, "bazelInvocation">[] | undefined;
+  tags: BazelInvocationTagsFragment[];
 }
 
 export const InvocationTagTab: React.FC<Props> = ({ tags }) => {

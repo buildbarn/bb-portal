@@ -1,0 +1,43 @@
+{
+  "getBazelInvocation": {
+    "bazelVersion": "9.0.0",
+    "configurations": [
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjoz",
+        "mnemonic": "k8-fastbuild"
+      },
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjo0",
+        "mnemonic": "k8-fastbuild"
+      }
+    ],
+    "connectionMetadata": null,
+    "endedAt": "2026-03-03T08:05:01.66Z",
+    "exitCodeName": "SUCCESS",
+    "hostname": "runnervmnay03",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
+    "instanceName": {
+      "id": "SW5zdGFuY2VOYW1lOjE=",
+      "name": ""
+    },
+    "invocationID": "8e56d2d7-ca9b-45e6-a08f-85e7749e3c83",
+    "numFetches": 137,
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "build_event_json_file",
+          "value": "github-actions.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    },
+    "startedAt": "2026-03-03T07:52:14.102Z"
+  }
+}

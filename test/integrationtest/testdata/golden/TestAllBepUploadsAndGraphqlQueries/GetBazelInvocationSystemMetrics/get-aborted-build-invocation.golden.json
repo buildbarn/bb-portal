@@ -1,0 +1,30 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjc=",
+    "metrics": {
+      "id": "TWV0cmljczo3",
+      "networkMetrics": {
+        "id": "TmV0d29ya01ldHJpY3M6Mg==",
+        "systemNetworkStats": {
+          "bytesRecv": 1760841279,
+          "bytesSent": 7108400,
+          "id": "U3lzdGVtTmV0d29ya1N0YXRzOjI=",
+          "packetsRecv": 103033,
+          "packetsSent": 88218,
+          "peakBytesRecvPerSec": 446898144,
+          "peakBytesSentPerSec": 19205,
+          "peakPacketsRecvPerSec": 20403,
+          "peakPacketsSentPerSec": 0
+        }
+      },
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 2915,
+        "cpuTimeInMs": 45220,
+        "executionPhaseTimeInMs": 0,
+        "id": "VGltaW5nTWV0cmljczo3",
+        "wallTimeInMs": 3730
+      }
+    }
+  }
+}

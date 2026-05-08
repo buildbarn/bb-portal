@@ -1,7 +1,7 @@
 import { WarningOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Descriptions, Flex, Space, Tooltip } from "antd";
-import type { BazelInvocationInfoFragment } from "@/graphql/__generated__/graphql";
+import type { BazelInvocationActionsFragment } from "@/graphql/__generated__/graphql";
 import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
@@ -10,10 +10,6 @@ import { fetchCasObject } from "@/utils/fetchCasObject";
 import { readableFileSize } from "@/utils/filesize";
 import { generateFileUrl } from "@/utils/urlGenerator";
 import { LogViewerCard } from "../LogViewer";
-
-export type ActionDetailsData = NonNullable<
-  BazelInvocationInfoFragment["actions"]
->[number];
 
 const SIZE_BYTE_LIMIT = 1000000; // 1MiB
 
@@ -42,7 +38,7 @@ const fetchLog = async (
 
 interface Props {
   instanceName: string;
-  action: ActionDetailsData;
+  action: BazelInvocationActionsFragment;
 }
 
 export const ActionDetails: React.FC<Props> = ({ instanceName, action }) => {

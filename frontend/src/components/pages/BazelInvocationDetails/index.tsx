@@ -1,82 +1,117 @@
 import { BuildOutlined } from "@ant-design/icons";
-import { useQuery } from "@apollo/client/react";
-import { Spin, Typography } from "antd";
-import type React from "react";
-import { useEffect } from "react";
-import BazelInvocation from "@/components/BazelInvocation";
-import PortalAlert from "@/components/PortalAlert";
-import PortalCard from "@/components/PortalCard";
-import { getFragmentData } from "@/graphql/__generated__";
-import type { LoadFullBazelInvocationDetailsQuery } from "@/graphql/__generated__/graphql";
-import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
-import {
-  BAZEL_INVOCATION_FRAGMENT,
-  LOAD_FULL_BAZEL_INVOCATION_DETAILS,
-} from "./index.graphql";
+import { Link, Outlet } from "@tanstack/react-router";
+import { Typography } from "antd";
+import { useMemo } from "react";
+import styles from "@/components/AppBar/index.module.css";
+import { BazelInvocationTabBar } from "@/components/BazelInvocationTabBar";
+import { InvocationResultTag } from "@/components/InvocationResultTag";
+import { PortalCard } from "@/components/PortalCard";
+import PortalDuration from "@/components/PortalDuration";
+import ProfileDropdown from "@/components/ProfileDropdown";
+import UserStatusIndicator from "@/components/UserStatusIndicator";
+import type { BazelInvocationCommonFragment } from "@/graphql/__generated__/graphql";
 
-interface Params {
-  invocationID: string;
+const getTitleBits = (
+  invocation: BazelInvocationCommonFragment,
+): React.ReactNode[] => {
+  const { invocationID, authenticatedUser, username } = invocation;
+
+  const titleBits: React.ReactNode[] = [];
+  if (username && username !== "")
+    titleBits.push(
+      <span key="username">
+        User:{" "}
+        <Typography.Text type="secondary" className={styles.normalWeight}>
+          <UserStatusIndicator
+            authenticatedUser={authenticatedUser}
+            username={username}
+            showIcon
+          />
+        </Typography.Text>
+      </span>,
+    );
+  if (invocationID && invocationID !== "")
+    titleBits.push(
+      <span key="invocationID">
+        Invocation ID:{" "}
+        <Typography.Text
+          type="secondary"
+          className={styles.normalWeight}
+          copyable={{ text: invocationID ?? "Copy" }}
+        >
+          {invocationID}
+        </Typography.Text>{" "}
+      </span>,
+    );
+  titleBits.push(
+    <InvocationResultTag
+      key="result"
+      exitCodeName={invocation.exitCodeName || undefined}
+      timeSinceLastConnectionMillis={
+        invocation.connectionMetadata?.timeSinceLastConnectionMillis ||
+        undefined
+      }
+    />,
+  );
+  return titleBits;
+};
+
+const getExtraBits = (
+  invocation: BazelInvocationCommonFragment,
+): React.ReactNode[] => {
+  const { invocationID, instanceName, build, profile } = invocation;
+
+  const extraBits: React.ReactNode[] = [];
+  if (build?.buildUUID) {
+    extraBits.push(
+      <span key="build">
+        Build{" "}
+        <Link to={`/builds/$buildUUID`} params={{ buildUUID: build.buildUUID }}>
+          {build.buildUUID}
+        </Link>
+      </span>,
+    );
+  }
+  extraBits.push(
+    <PortalDuration
+      key="duration"
+      from={invocation.startedAt || undefined}
+      to={
+        invocation.endedAt
+          ? invocation.endedAt
+          : invocation.connectionMetadata?.connectionLastOpenAt
+      }
+      includeIcon
+      formatConfig={{ smallestUnit: "s" }}
+    />,
+  );
+  if (profile)
+    extraBits.push(
+      <ProfileDropdown
+        instanceName={instanceName.name}
+        profile={profile}
+        invocationID={invocationID}
+      />,
+    );
+  return extraBits;
+};
+
+interface Props {
+  invocation: BazelInvocationCommonFragment;
 }
 
-export const BazelInvocationDetailsPage: React.FC<Params> = ({
-  invocationID,
-}) => {
-  const { data, error, loading, stopPolling } =
-    useQuery<LoadFullBazelInvocationDetailsQuery>(
-      LOAD_FULL_BAZEL_INVOCATION_DETAILS,
-      {
-        variables: { invocationID: invocationID },
-        fetchPolicy: "cache-and-network",
-        // nextFetchPolicy prevents unnecessary refetches if the logs are fetched
-        nextFetchPolicy: "cache-and-network",
-        pollInterval: 5000,
-      },
-    );
-  const invocation = getFragmentData(
-    BAZEL_INVOCATION_FRAGMENT,
-    data?.getBazelInvocation,
+export const BazelInvocationDetailsPage: React.FC<Props> = ({ invocation }) => {
+  const titleBits = useMemo(() => getTitleBits(invocation), [invocation]);
+  const extraBits = useMemo(() => getExtraBits(invocation), [invocation]);
+
+  return (
+    <PortalCard
+      icon={<BuildOutlined />}
+      titleBits={titleBits}
+      extraBits={extraBits}
+    >
+      <BazelInvocationTabBar invocation={invocation} />
+      <Outlet />
+    </PortalCard>
   );
-
-  // Poll continuously until the invocation is completed. Then we should stop.
-  useEffect(() => {
-    if (!shouldPollInvocation(invocation)) {
-      stopPolling();
-    }
-  }, [invocation, stopPolling]);
-
-  if (loading && !data) {
-    return (
-      <PortalCard icon={<BuildOutlined />} titleBits={["Bazel Invocation"]}>
-        <Spin />
-      </PortalCard>
-    );
-  }
-  if (error || !invocation) {
-    return (
-      <PortalCard icon={<BuildOutlined />} titleBits={["Bazel Invocation"]}>
-        <PortalAlert
-          showIcon
-          type="error"
-          message="Error fetching invocation details"
-          description={
-            <>
-              {error?.message ? (
-                <Typography.Paragraph>{error.message}</Typography.Paragraph>
-              ) : (
-                <Typography.Paragraph>
-                  Unknown error occurred while fetching data from the server.
-                </Typography.Paragraph>
-              )}
-              <Typography.Paragraph>
-                It could be that the invocation is too old and has been removed,
-                or that you don&quot;t have access to this invocation.
-              </Typography.Paragraph>
-            </>
-          }
-        />
-      </PortalCard>
-    );
-  }
-
-  return <BazelInvocation invocationOverview={invocation} />;
 };

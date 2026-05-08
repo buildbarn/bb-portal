@@ -1,0 +1,41 @@
+{
+  "getBazelInvocation": {
+    "actions": [],
+    "authenticatedUser": null,
+    "build": {
+      "buildUUID": "59268e3d-4eb1-57f0-a88e-f81a384ff8f0",
+      "id": "QnVpbGQ6MQ=="
+    },
+    "connectionMetadata": null,
+    "endedAt": "2024-05-13T23:43:26.247Z",
+    "exitCodeName": "TESTS_FAILED",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
+    "instanceName": {
+      "name": ""
+    },
+    "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
+    "metrics": {
+      "actionSummary": {
+        "id": "QWN0aW9uU3VtbWFyeTo0"
+      },
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjQ="
+      },
+      "id": "TWV0cmljczo0",
+      "memoryMetrics": {
+        "id": "TWVtb3J5TWV0cmljczo0"
+      },
+      "networkMetrics": null,
+      "timingMetrics": {
+        "id": "VGltaW5nTWV0cmljczo0"
+      }
+    },
+    "profile": null,
+    "sourceControl": [],
+    "startedAt": "2024-05-13T23:43:23.045Z",
+    "tags": {
+      "totalCount": 0
+    },
+    "username": "nameless"
+  }
+}

@@ -4,11 +4,9 @@ import {
   ProjectOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, type MenuProps, Space } from "antd";
-import type { BazelInvocationInfoFragment } from "@/graphql/__generated__/graphql";
+import type { Profile } from "@/graphql/__generated__/graphql";
 import { digestFunctionValueFromString } from "@/utils/digestFunctionUtils";
 import { generateFileUrl } from "@/utils/urlGenerator";
-
-type Profile = NonNullable<BazelInvocationInfoFragment["profile"]>;
 
 const PERFETTO_URL = "https://ui.perfetto.dev";
 

@@ -1,0 +1,16 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
+    "sourceControl": [
+      {
+        "commit": "847b365866c97761b05d72619028b1ed23b5f4e8",
+        "commitURL": "https://github.com/meroton/bb-portal/commit/847b365866c97761b05d72619028b1ed23b5f4e8",
+        "id": "U291cmNlQ29udHJvbDox",
+        "ref": "refs/heads/test-branch",
+        "refURL": "https://github.com/meroton/bb-portal/tree/refs/heads/test-branch",
+        "repo": "meroton/bb-portal",
+        "repoURL": "https://github.com/meroton/bb-portal"
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "tags": {
+      "edges": [
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo1",
+            "key": "action",
+            "value": "__run_2"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo2",
+            "key": "job",
+            "value": "lite_build_and_test"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo3",
+            "key": "workflow",
+            "value": "Build and test backend"
+          }
+        },
+        {
+          "node": {
+            "id": "SW52b2NhdGlvblRhZzo4",
+            "key": "workflow_url",
+            "value": "https://github.com/meroton/bb-portal/actions/runs/22613512849"
+          }
+        }
+      ]
+    }
+  }
+}
