@@ -290,6 +290,7 @@ const getTitleBits = (
           <UserStatusIndicator
             authenticatedUser={authenticatedUser}
             username={username}
+            showIcon
           />
         </Typography.Text>
       </span>,
@@ -336,7 +337,6 @@ const getExtraBits = (
           : invocationOverview.connectionMetadata?.connectionLastOpenAt
       }
       includeIcon
-      includePopover
       formatConfig={{ smallestUnit: "s" }}
     />,
   );

@@ -79,7 +79,6 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
             from={startedAt || undefined}
             to={endedAt ? endedAt : connectionLastOpenAt || undefined}
             includeIcon
-            includePopover
             formatConfig={{ smallestUnit: "s" }}
           />
         </Descriptions.Item>

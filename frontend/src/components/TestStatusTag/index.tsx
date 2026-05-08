@@ -6,9 +6,8 @@ import {
   QuestionCircleFilled,
   StopOutlined,
 } from "@ant-design/icons";
-import { Tag } from "antd";
 import type React from "react";
-import themeStyles from "@/theme/theme.module.css";
+import ResultTag, { type TagVariables } from "@/components/ResultTag";
 
 export const ALL_STATUS_VALUES = [
   "NO_STATUS",
@@ -30,83 +29,62 @@ interface Props {
   displayText: boolean;
 }
 
-const STATUS_TAGS: { [key in TestStatusEnum]: React.ReactNode } = {
-  NO_STATUS: (
-    <Tag icon={<QuestionCircleFilled />} className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>No Status</span>
-    </Tag>
-  ),
-  PASSED: (
-    <Tag icon={<CheckCircleFilled />} color="green" className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>Passed</span>
-    </Tag>
-  ),
-  FLAKY: (
-    <Tag icon={<InfoCircleFilled />} color="orange" className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>Flaky</span>
-    </Tag>
-  ),
-  FAILED: (
-    <Tag icon={<CloseCircleFilled />} color="red" className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>Failed</span>
-    </Tag>
-  ),
-  TIMEOUT: (
-    <Tag icon={<MinusCircleFilled />} color="red" className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>Timeout</span>
-    </Tag>
-  ),
-  INCOMPLETE: (
-    <Tag icon={<StopOutlined />} color="blue" className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>Incomplete</span>
-    </Tag>
-  ),
-  REMOTE_FAILURE: (
-    <Tag icon={<CloseCircleFilled />} color="red" className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>Remote Failure</span>
-    </Tag>
-  ),
-  FAILED_TO_BUILD: (
-    <Tag
-      icon={<QuestionCircleFilled />}
-      color="red"
-      className={themeStyles.tag}
-    >
-      <span className={themeStyles.tagContent}>Failed to Build</span>
-    </Tag>
-  ),
-  TOOL_HALTED_BEFORE_TESTING: (
-    <Tag
-      icon={<QuestionCircleFilled />}
-      color="blue"
-      className={themeStyles.tag}
-    >
-      <span className={themeStyles.tagContent}>Status Unknown</span>
-    </Tag>
-  ),
-};
-
-const ICON_TAGS: { [key in TestStatusEnum]: React.ReactNode } = {
-  NO_STATUS: (
-    <Tag icon={<QuestionCircleFilled />} className={themeStyles.tag} />
-  ),
-  PASSED: <Tag icon={<CheckCircleFilled size={100} />} color="green" />,
-  FLAKY: <Tag icon={<InfoCircleFilled />} color="orange" />,
-  FAILED: <Tag icon={<CloseCircleFilled />} color="red" />,
-  TIMEOUT: <Tag icon={<MinusCircleFilled />} color="red" />,
-  INCOMPLETE: <Tag icon={<StopOutlined />} color="blue" />,
-  REMOTE_FAILURE: <Tag icon={<CloseCircleFilled />} color="red" />,
-  FAILED_TO_BUILD: <Tag icon={<QuestionCircleFilled />} color="red" />,
-  TOOL_HALTED_BEFORE_TESTING: (
-    <Tag icon={<QuestionCircleFilled />} color="blue" />
-  ),
+const TEST_RESULT_TAGS: { [key in TestStatusEnum]: TagVariables } = {
+  NO_STATUS: {
+    icon: <QuestionCircleFilled />,
+    text: "No Status",
+    color: "default",
+  },
+  PASSED: {
+    icon: <CheckCircleFilled />,
+    color: "green",
+    text: "Passed",
+  },
+  FLAKY: {
+    icon: <InfoCircleFilled />,
+    color: "orange",
+    text: "Flaky",
+  },
+  FAILED: {
+    icon: <CloseCircleFilled />,
+    color: "red",
+    text: "Failed",
+  },
+  TIMEOUT: {
+    icon: <MinusCircleFilled />,
+    color: "red",
+    text: "Timeout",
+  },
+  INCOMPLETE: {
+    icon: <StopOutlined />,
+    color: "blue",
+    text: "Incomplete",
+  },
+  REMOTE_FAILURE: {
+    icon: <CloseCircleFilled />,
+    color: "red",
+    text: "Remote Failure",
+  },
+  FAILED_TO_BUILD: {
+    icon: <QuestionCircleFilled />,
+    color: "red",
+    text: "Failed to Build",
+  },
+  TOOL_HALTED_BEFORE_TESTING: {
+    icon: <QuestionCircleFilled />,
+    color: "blue",
+    text: "Status Unknown",
+  },
 };
 
 const TestStatusTag: React.FC<Props> = ({ status, displayText }) => {
-  const resultTag = displayText
-    ? STATUS_TAGS[status] || STATUS_TAGS.NO_STATUS
-    : ICON_TAGS[status] || ICON_TAGS.NO_STATUS;
-  return <>{resultTag}</>;
+  const tagVars = TEST_RESULT_TAGS[status];
+
+  if (displayText) {
+    return <ResultTag tagVars={tagVars} />;
+  }
+
+  return <ResultTag tagVars={{ ...tagVars, text: undefined }} />;
 };
 
 export default TestStatusTag;

@@ -3,76 +3,46 @@ import {
   CloseCircleFilled,
   QuestionCircleFilled,
 } from "@ant-design/icons";
-import { Tag } from "antd";
 import type React from "react";
-import themeStyles from "@/theme/theme.module.css";
+import ResultTag from "@/components/ResultTag";
 
 interface Props {
   status: boolean | null;
   hideText?: boolean;
 }
-export const BOOL_MAP = [
-  "true_tag",
-  "false_tag",
-  "false_hide_tag",
-  "null_tag",
-  "true_hide_tag",
-] as const;
-
-export type BoolTuple = typeof BOOL_MAP;
-export type NilBoolEnum = BoolTuple[number];
-
-const BOOL_TAGS: { [key in NilBoolEnum]: React.ReactNode } = {
-  false_tag: (
-    <Tag icon={<CloseCircleFilled />} color="red" className={themeStyles.tag}>
-      No
-    </Tag>
-  ),
-  false_hide_tag: (
-    <Tag icon={<CloseCircleFilled />} color="red" className={themeStyles.tag} />
-  ),
-  true_tag: (
-    <Tag icon={<CheckCircleFilled />} color="green" className={themeStyles.tag}>
-      Yes
-    </Tag>
-  ),
-  true_hide_tag: (
-    <Tag
-      icon={<CheckCircleFilled />}
-      color="green"
-      className={themeStyles.tag}
-    />
-  ),
-  null_tag: (
-    <Tag
-      icon={<QuestionCircleFilled />}
-      color="orange"
-      className={themeStyles.tag}
-    >
-      ?
-    </Tag>
-  ),
-};
 
 const NullBooleanTag: React.FC<Props> = ({ status, hideText }) => {
-  if (hideText == null) {
-    hideText = false;
+  let text: string;
+  let color: string;
+  let icon: React.ReactNode;
+
+  switch (status) {
+    case true:
+      color = "green";
+      text = "Yes";
+      icon = <CheckCircleFilled />;
+      break;
+    case false:
+      color = "red";
+      text = "No";
+      icon = <CloseCircleFilled />;
+      break;
+    default:
+      color = "orange";
+      text = "?";
+      icon = <QuestionCircleFilled />;
+      break;
   }
-  var status_string: NilBoolEnum = "null_tag";
-  if (status === true && hideText === false) {
-    status_string = "true_tag";
-  }
-  if (status === true && hideText === true) {
-    status_string = "true_hide_tag";
-  }
-  if (status === false && hideText === false) {
-    status_string = "false_tag";
-  }
-  if (status === false && hideText === true) {
-    status_string = "false_hide_tag";
-  }
-  const resultTag = BOOL_TAGS[status_string] || BOOL_TAGS.null_tag;
-  return <>{resultTag}</>;
+
+  return (
+    <ResultTag
+      tagVars={{
+        color: color,
+        icon: icon,
+        text: hideText ? undefined : text,
+      }}
+    />
+  );
 };
 
 export default NullBooleanTag;

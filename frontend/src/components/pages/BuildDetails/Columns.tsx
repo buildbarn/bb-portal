@@ -1,11 +1,10 @@
 import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
-import { Space, Typography } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import { validate as uuidValidate } from "uuid";
-import appbarStyles from "@/components/AppBar/index.module.css";
 import { CodeLink } from "@/components/CodeLink";
 import type { CommandLineData } from "@/components/CommandLine";
 import CommandLinePreview from "@/components/CommandLinePreview";
+import CopyableIcon from "@/components/CopyableIcon";
 import { InvocationResultTag } from "@/components/InvocationResultTag";
 import {
   applyInvocationResultTagFilter,
@@ -100,20 +99,17 @@ export const getColumns = (): TableColumnTypeWithFilter<
         <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
       ),
       render: (_, record) => (
-        <Space>
-          <span className={appbarStyles.copyIcon}>
-            <Typography.Text
-              copyable={{ text: record.invocationID ?? "Copy" }}
-            />
-          </span>
+        <>
+          <CopyableIcon text={record.invocationID} />
           <CodeLink
+            truncate
             text={record.invocationID}
             link={{
               to: "/bazel-invocations/$invocationID",
               params: { invocationID: record.invocationID },
             }}
           />
-        </Space>
+        </>
       ),
       applyFilter: (value: FilterValue) => {
         if (value.length === 0) {
@@ -135,8 +131,6 @@ export const getColumns = (): TableColumnTypeWithFilter<
               ? record.endedAt
               : record.connectionMetadata?.connectionLastOpenAt || undefined
           }
-          includeIcon
-          includePopover
           formatConfig={{ smallestUnit: "s" }}
         />
       ),

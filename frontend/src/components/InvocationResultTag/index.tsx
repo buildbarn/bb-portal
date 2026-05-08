@@ -7,10 +7,9 @@ import {
   QuestionCircleFilled,
   StopFilled,
 } from "@ant-design/icons";
-import { Tag } from "antd";
 import type React from "react";
-import themeStyles from "@/theme/theme.module.css";
-import { getInvocationResultTagEnum, type InvocationResult } from "./enum";
+import ResultTag from "@/components/ResultTag";
+import { getInvocationResultTagEnum, InvocationResult } from "./enum";
 
 type TagVariables = {
   icon: React.ReactNode;
@@ -66,11 +65,10 @@ export const INVOCATION_RESULT_TAGS: {
     color: "cyan",
     text: "Interrupted",
   },
-  // TODO: Make this show the code
   UNKNOWN_EXIT_CODE: {
     icon: <QuestionCircleFilled />,
     color: "default",
-    text: "Status Unknown",
+    text: "Unknown Exit Code",
   },
   IN_PROGRESS: {
     icon: <LoadingOutlined />,
@@ -98,9 +96,14 @@ export const InvocationResultTag: React.FC<Props> = ({
     timeSinceLastConnectionMillis,
   );
   const tagVars = INVOCATION_RESULT_TAGS[tagEnum];
-  return (
-    <Tag icon={tagVars.icon} color={tagVars.color} className={themeStyles.tag}>
-      <span className={themeStyles.tagContent}>{tagVars.text}</span>
-    </Tag>
-  );
+
+  if (tagEnum === InvocationResult.UNKNOWN_EXIT_CODE) {
+    return (
+      <ResultTag
+        tagVars={{ ...tagVars, text: `${tagVars.text} (${exitCodeName})` }}
+      />
+    );
+  }
+
+  return <ResultTag tagVars={tagVars} />;
 };

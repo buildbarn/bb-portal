@@ -15,7 +15,6 @@ const items = (
         <PortalDuration
           from={action.startTime || undefined}
           to={action.endTime || undefined}
-          includePopover
           formatConfig={{ smallestUnit: "ms" }}
         />
       ),
