@@ -1,5 +1,6 @@
-import { Button, message } from "antd";
+import { Button } from "antd";
 import type React from "react";
+import { useBbPortalMessage } from "@/context/MessageContext";
 import type {
   Digest,
   DigestFunction_Value,
@@ -17,7 +18,7 @@ const CopyBbClientdDirectoryButton: React.FC<Params> = ({
   digestFunction,
   inputRootDigest,
 }) => {
-  const [messageApi, contextHolder] = message.useMessage();
+  const { copyToClipboard } = useBbPortalMessage();
 
   const inputRootBbClientdPath = getBBClientdPath(
     instanceName,
@@ -27,18 +28,12 @@ const CopyBbClientdDirectoryButton: React.FC<Params> = ({
   );
 
   return (
-    <>
-      {contextHolder}
-      <Button
-        type="primary"
-        onClick={() => {
-          navigator.clipboard.writeText(inputRootBbClientdPath);
-          messageApi.success("Copied command to clipboard", 1.5);
-        }}
-      >
-        Copy bb_clientd path to clipboard
-      </Button>
-    </>
+    <Button
+      type="primary"
+      onClick={() => copyToClipboard(inputRootBbClientdPath)}
+    >
+      Copy bb_clientd path to clipboard
+    </Button>
   );
 };
 

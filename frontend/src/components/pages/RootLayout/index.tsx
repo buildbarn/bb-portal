@@ -7,6 +7,7 @@ import { ConfigProvider, Layout } from "antd";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
 import { PageWrapper } from "@/components/PageWrapper";
+import MessageProvider from "@/context/MessageProvider";
 import { Status } from "@/lib/grpc-client/google/rpc/status";
 import dark from "@/theme/dark";
 import light from "@/theme/light";
@@ -63,14 +64,16 @@ export const RootLayout = () => {
     <ApolloWrapper>
       <ConfigProvider theme={innerTheme === "dark" ? dark : light}>
         <QueryClientProvider client={queryClient}>
-          <Layout className={styles.layout}>
-            <PageWrapper
-              toggleTheme={toggleTheme}
-              prefersDark={innerTheme === "dark"}
-            >
-              <Outlet />
-            </PageWrapper>
-          </Layout>
+          <MessageProvider>
+            <Layout className={styles.layout}>
+              <PageWrapper
+                toggleTheme={toggleTheme}
+                prefersDark={innerTheme === "dark"}
+              >
+                <Outlet />
+              </PageWrapper>
+            </Layout>
+          </MessageProvider>
           {/* Devtools for Tanstack components. Automatically removed for prod builds */}
           <TanStackDevtools
             plugins={[

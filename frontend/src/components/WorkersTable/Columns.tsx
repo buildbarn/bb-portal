@@ -65,6 +65,7 @@ const operationNameColumn: ColumnType<WorkerState> = {
     if (operationID) {
       return (
         <CodeLink
+          truncate
           text={operationID}
           link={{
             to: "/operations/$operationID",
@@ -86,6 +87,7 @@ const actionDigestColumn: ColumnType<WorkerState> = {
     if (record.currentOperation?.actionDigest) {
       return (
         <CodeLink
+          truncate
           text={`${record.currentOperation.actionDigest.hash}-${record.currentOperation.actionDigest.sizeBytes}`}
           link={{
             to: "/browser/$",

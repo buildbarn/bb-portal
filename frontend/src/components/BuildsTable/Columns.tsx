@@ -1,10 +1,9 @@
 import { InfoCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
-import { Popover, Space, Typography } from "antd";
+import { Popover } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { validate as uuidValidate } from "uuid";
-import styles from "@/components/BazelInvocationColumns/Columns.module.css";
 import {
   SearchFilterIcon,
   SearchWidget,
@@ -17,6 +16,7 @@ import type {
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
 import { env } from "@/utils/env";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
+import CodeText from "../CodeText";
 import { OptionalLinkWrapper } from "../OptionalLinkWrapper";
 
 export const getColumns = (): TableColumnTypeWithFilter<
@@ -41,7 +41,7 @@ export const getColumns = (): TableColumnTypeWithFilter<
         const singleUrl = urlTags.length === 1 ? urlTags[0].value : undefined;
 
         return (
-          <Space direction="horizontal">
+          <>
             <OptionalLinkWrapper url={singleUrl}>
               {valueTags.map((tag) => tag.value).join(", ")}
             </OptionalLinkWrapper>
@@ -54,10 +54,10 @@ export const getColumns = (): TableColumnTypeWithFilter<
                   </a>
                 ))}
               >
-                <InfoCircleOutlined />
+                <InfoCircleOutlined style={{ marginLeft: "7px" }} />
               </Popover>
             )}
-          </Space>
+          </>
         );
       },
       filterDropdown: (filterProps) => (
@@ -119,9 +119,9 @@ export const getColumns = (): TableColumnTypeWithFilter<
       key: "buildDate",
       title: "Timestamp",
       render: (_, record) => (
-        <Typography.Text code ellipsis className={styles.startedAt}>
+        <CodeText>
           {dayjs(record.timestamp).format("YYYY-MM-DD hh:mm:ss A")}
-        </Typography.Text>
+        </CodeText>
       ),
       filterDropdown: (filterProps) => <TimeRangeSelector {...filterProps} />,
       filterIcon: (filtered) => (

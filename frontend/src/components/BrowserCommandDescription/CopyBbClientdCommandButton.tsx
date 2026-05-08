@@ -1,5 +1,6 @@
-import { Button, message } from "antd";
+import { Button } from "antd";
 import type React from "react";
+import { useBbPortalMessage } from "@/context/MessageContext";
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
 import { getBBClientdPath } from "@/utils/getBbClientdPath";
@@ -13,7 +14,7 @@ const CopyBbClientdCommandButton: React.FC<Params> = ({
   browserPageParams,
   commandDigest,
 }) => {
-  const [messageApi, contextHolder] = message.useMessage();
+  const { copyToClipboard } = useBbPortalMessage();
 
   const commandBbClientdPath = getBBClientdPath(
     browserPageParams.instanceName,
@@ -23,18 +24,12 @@ const CopyBbClientdCommandButton: React.FC<Params> = ({
   );
 
   return (
-    <>
-      {contextHolder}
-      <Button
-        type="primary"
-        onClick={() => {
-          navigator.clipboard.writeText(commandBbClientdPath);
-          messageApi.success("Copied path to clipboard", 1.5);
-        }}
-      >
-        Copy bb_clientd path of shell script to clipboard
-      </Button>
-    </>
+    <Button
+      type="primary"
+      onClick={() => copyToClipboard(commandBbClientdPath)}
+    >
+      Copy bb_clientd path of shell script to clipboard
+    </Button>
   );
 };
 
