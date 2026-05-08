@@ -94,7 +94,34 @@
           }
         ]
       },
-      "id": "TWV0cmljczoy"
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjI=",
+        "outputArtifactsFromActionCacheCount": 16,
+        "outputArtifactsFromActionCacheSizeInBytes": 3733,
+        "outputArtifactsSeenCount": 19,
+        "outputArtifactsSeenSizeInBytes": 6359,
+        "sourceArtifactsReadCount": 1,
+        "sourceArtifactsReadSizeInBytes": 2491,
+        "topLevelArtifactsCount": 0,
+        "topLevelArtifactsSizeInBytes": 0
+      },
+      "id": "TWV0cmljczoy",
+      "memoryMetrics": {
+        "garbageMetrics": [],
+        "id": "TWVtb3J5TWV0cmljczoy",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": null,
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 55,
+        "cpuTimeInMs": 2792,
+        "executionPhaseTimeInMs": 702,
+        "id": "VGltaW5nTWV0cmljczoy",
+        "wallTimeInMs": 960
+      }
     }
   }
 }

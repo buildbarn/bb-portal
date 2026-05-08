@@ -12,20 +12,7 @@
     },
     "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9",
     "metrics": {
-      "actionSummary": {
-        "id": "QWN0aW9uU3VtbWFyeTox"
-      },
-      "artifactMetrics": {
-        "id": "QXJ0aWZhY3RNZXRyaWNzOjE="
-      },
-      "id": "TWV0cmljczox",
-      "memoryMetrics": {
-        "id": "TWVtb3J5TWV0cmljczox"
-      },
-      "networkMetrics": null,
-      "timingMetrics": {
-        "id": "VGltaW5nTWV0cmljczox"
-      }
+      "id": "TWV0cmljczox"
     },
     "profile": null,
     "sourceControl": [],

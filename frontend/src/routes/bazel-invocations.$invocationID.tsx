@@ -30,27 +30,12 @@ const BAZEL_INVOCATION_COMMON_FRAGMENT = gql(/* GraphQL */ `
       displayName
       userUUID
     }
-    metrics {
-      id
-      actionSummary {
-        id
-      }
-      artifactMetrics {
-        id
-      }
-      memoryMetrics {
-        id
-      }
-      timingMetrics {
-        id
-      }
-      networkMetrics {
-        id
-      }
-    }
     build {
       id
       buildUUID
+    }
+    metrics {
+      id
     }
     actions {
       id

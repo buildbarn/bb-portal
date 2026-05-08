@@ -1,15 +1,12 @@
 import {
-  AreaChartOutlined,
   BranchesOutlined,
   CodeOutlined,
   DatabaseOutlined,
   DeploymentUnitOutlined,
   ExperimentOutlined,
-  FieldTimeOutlined,
   FileSearchOutlined,
   InfoCircleOutlined,
   LineChartOutlined,
-  RadiusUprightOutlined,
   TagsOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "@tanstack/react-router";
@@ -23,26 +20,14 @@ import { env } from "@/utils/env";
 const getMenuItems = (
   invocation: BazelInvocationCommonFragment,
 ): ItemType[] => {
-  const { invocationID, actions, sourceControl, metrics, tags } = invocation;
+  const { invocationID } = invocation;
 
-  const hideActionStatisticsTab: boolean =
-    metrics?.actionSummary === undefined || metrics?.actionSummary == null;
-  const hideArtifactsTab: boolean =
-    metrics?.artifactMetrics === undefined || metrics?.artifactMetrics == null;
-  const hideMemoryTab: boolean =
-    metrics?.memoryMetrics === undefined || metrics?.memoryMetrics == null;
-  const hideSystemMetricsTab: boolean =
-    (metrics?.timingMetrics === undefined || metrics?.timingMetrics == null) &&
-    (metrics?.networkMetrics === undefined || metrics?.networkMetrics == null);
-  const hideFailedActionsTab: boolean =
-    actions === undefined || actions == null || actions.length === 0;
-  const hideTargetsTab: boolean = !env.featureFlags?.bes?.pageTargets;
-  const hideTestsTab: boolean = !env.featureFlags?.bes?.pageTests;
-  const hideSourceControlTab: boolean =
-    sourceControl === undefined ||
-    sourceControl == null ||
-    sourceControl.length === 0;
-  const hideTagsTab: boolean = tags.totalCount === 0;
+  const showActionsTab = !!invocation.actions?.length;
+  const showMetricsTab = !!invocation.metrics;
+  const showSourceControlTab = !!invocation.sourceControl?.length;
+  const showTagsTab = !!invocation.tags?.totalCount;
+  const showTargetsTab = !!env.featureFlags?.bes?.pageTargets;
+  const showTestsTab = !!env.featureFlags?.bes?.pageTests;
 
   const items: ItemType[] = [];
   items.push({
@@ -54,19 +39,6 @@ const getMenuItems = (
       </Link>
     ),
   });
-  if (!hideActionStatisticsTab)
-    items.push({
-      key: "action-statistics",
-      icon: <LineChartOutlined />,
-      label: (
-        <Link
-          to="/bazel-invocations/$invocationID/action-statistics"
-          params={{ invocationID }}
-        >
-          Action Statistics
-        </Link>
-      ),
-    });
   items.push({
     key: "log",
     icon: <FileSearchOutlined />,
@@ -76,46 +48,20 @@ const getMenuItems = (
       </Link>
     ),
   });
-  if (!hideArtifactsTab)
+  if (showMetricsTab)
     items.push({
-      key: "artifacts",
-      icon: <RadiusUprightOutlined />,
+      key: "metrics",
+      icon: <LineChartOutlined />,
       label: (
         <Link
-          to="/bazel-invocations/$invocationID/artifacts"
+          to="/bazel-invocations/$invocationID/metrics"
           params={{ invocationID }}
         >
-          Artifacts
+          Metrics
         </Link>
       ),
     });
-  if (!hideMemoryTab)
-    items.push({
-      key: "memory",
-      icon: <AreaChartOutlined />,
-      label: (
-        <Link
-          to="/bazel-invocations/$invocationID/memory"
-          params={{ invocationID }}
-        >
-          Memory
-        </Link>
-      ),
-    });
-  if (!hideSystemMetricsTab)
-    items.push({
-      key: "system-metrics",
-      icon: <FieldTimeOutlined />,
-      label: (
-        <Link
-          to="/bazel-invocations/$invocationID/system-metrics"
-          params={{ invocationID }}
-        >
-          System Metrics
-        </Link>
-      ),
-    });
-  if (!hideTargetsTab)
+  if (showTargetsTab)
     items.push({
       key: "targets",
       icon: <DeploymentUnitOutlined />,
@@ -128,7 +74,7 @@ const getMenuItems = (
         </Link>
       ),
     });
-  if (!hideTestsTab)
+  if (showTestsTab)
     items.push({
       key: "tests",
       icon: <ExperimentOutlined />,
@@ -153,7 +99,7 @@ const getMenuItems = (
       </Link>
     ),
   });
-  if (!hideSourceControlTab)
+  if (showSourceControlTab)
     items.push({
       key: "source-control",
       icon: <BranchesOutlined />,
@@ -166,7 +112,7 @@ const getMenuItems = (
         </Link>
       ),
     });
-  if (!hideTagsTab)
+  if (showTagsTab)
     items.push({
       key: "tags",
       icon: <TagsOutlined />,
@@ -179,7 +125,7 @@ const getMenuItems = (
         </Link>
       ),
     });
-  if (!hideFailedActionsTab)
+  if (showActionsTab)
     items.push({
       key: "actions",
       icon: <DatabaseOutlined />,
