@@ -128,7 +128,7 @@ export const InvocationTargetsTable: React.FC<Props> = ({
           expandedRowRender: (record) => (
             <Space direction="vertical" style={{ paddingLeft: "48px" }}>
               <strong>Failure Message:</strong>
-              <pre>{record.failureMessage}</pre>
+              <pre style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>{record.failureMessage}</pre>
             </Space>
           ),
         }}
