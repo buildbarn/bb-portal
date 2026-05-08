@@ -50,51 +50,36 @@
         },
         "actionData": [
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714695819112,
             "id": "QWN0aW9uRGF0YTo3",
-            "lastEndedMs": 1714695820440,
             "mnemonic": "TestRunner",
             "systemTime": 356,
             "userTime": 830
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714695818173,
             "id": "QWN0aW9uRGF0YTo4",
-            "lastEndedMs": 1714695818174,
             "mnemonic": "BazelWorkspaceStatusAction",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714695818220,
             "id": "QWN0aW9uRGF0YTo5",
-            "lastEndedMs": 1714695818246,
             "mnemonic": "CopyFile",
             "systemTime": 3,
             "userTime": 1
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714695818246,
             "id": "QWN0aW9uRGF0YToxMA==",
-            "lastEndedMs": 1714695819108,
             "mnemonic": "TsProject",
             "systemTime": 67,
             "userTime": 978
           }
         ],
-        "actionsCreated": 0,
-        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 4,
         "id": "QWN0aW9uU3VtbWFyeToz",
-        "remoteCacheHits": 0,
         "runnerCount": [
           {
             "actionsExecuted": 4,

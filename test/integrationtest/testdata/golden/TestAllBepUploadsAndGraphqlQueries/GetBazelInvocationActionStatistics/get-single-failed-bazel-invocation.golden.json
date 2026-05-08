@@ -50,41 +50,29 @@
         },
         "actionData": [
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714695855664,
             "id": "QWN0aW9uRGF0YTo0",
-            "lastEndedMs": 1714695855666,
             "mnemonic": "BazelWorkspaceStatusAction",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714695855711,
             "id": "QWN0aW9uRGF0YTo1",
-            "lastEndedMs": 1714695855724,
             "mnemonic": "CopyFile",
             "systemTime": 1,
             "userTime": 1
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714695855725,
             "id": "QWN0aW9uRGF0YTo2",
-            "lastEndedMs": 1714695856359,
             "mnemonic": "TsProject",
             "systemTime": 0,
             "userTime": 0
           }
         ],
-        "actionsCreated": 0,
-        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 3,
         "id": "QWN0aW9uU3VtbWFyeToy",
-        "remoteCacheHits": 0,
         "runnerCount": [
           {
             "actionsExecuted": 3,

@@ -50,31 +50,22 @@
         },
         "actionData": [
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1715643804513,
             "id": "QWN0aW9uRGF0YToxMQ==",
-            "lastEndedMs": 1715643806245,
             "mnemonic": "TestRunner",
             "systemTime": 397,
             "userTime": 842
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1715643803398,
             "id": "QWN0aW9uRGF0YToxMg==",
-            "lastEndedMs": 1715643803400,
             "mnemonic": "BazelWorkspaceStatusAction",
             "systemTime": 0,
             "userTime": 0
           }
         ],
-        "actionsCreated": 22,
-        "actionsCreatedNotIncludingAspects": 22,
         "actionsExecuted": 2,
         "id": "QWN0aW9uU3VtbWFyeTo0",
-        "remoteCacheHits": 0,
         "runnerCount": [
           {
             "actionsExecuted": 2,

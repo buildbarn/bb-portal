@@ -50,21 +50,15 @@
         },
         "actionData": [
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1714696187752,
             "id": "QWN0aW9uRGF0YToxMw==",
-            "lastEndedMs": 1714696187754,
             "mnemonic": "BazelWorkspaceStatusAction",
             "systemTime": 0,
             "userTime": 0
           }
         ],
-        "actionsCreated": 0,
-        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 1,
         "id": "QWN0aW9uU3VtbWFyeTo1",
-        "remoteCacheHits": 0,
         "runnerCount": [
           {
             "actionsExecuted": 1,
