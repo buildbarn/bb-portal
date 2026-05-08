@@ -21,10 +21,7 @@ const GET_BAZEL_INVOCATION_ACTION_STATISTICS = gql(/* GraphQL */ `
 const BAZEL_INVOCATION_ACTION_SUMMARY_FRAGMENT = gql(/* GraphQL */ `
   fragment BazelInvocationActionSummary on ActionSummary {
     id
-    actionsCreated
     actionsExecuted
-    actionsCreatedNotIncludingAspects
-    remoteCacheHits
     actionCacheStatistics {
       id
       loadTimeInMs
@@ -49,10 +46,7 @@ const BAZEL_INVOCATION_ACTION_SUMMARY_FRAGMENT = gql(/* GraphQL */ `
       mnemonic
       userTime
       systemTime
-      lastEndedMs
-      actionsCreated
       actionsExecuted
-      firstStartedMs
     }
   }
 `);

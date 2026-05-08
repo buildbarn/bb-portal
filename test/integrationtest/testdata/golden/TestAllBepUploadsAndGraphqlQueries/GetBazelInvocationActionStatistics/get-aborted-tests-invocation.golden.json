@@ -50,211 +50,148 @@
         },
         "actionData": [
           {
-            "actionsCreated": 0,
             "actionsExecuted": 40,
-            "firstStartedMs": 1770195805736,
             "id": "QWN0aW9uRGF0YTozNA==",
-            "lastEndedMs": 1770195807359,
             "mnemonic": "TestRunner",
             "systemTime": 1575,
             "userTime": 614
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 1,
-            "firstStartedMs": 1770195805695,
             "id": "QWN0aW9uRGF0YTozNQ==",
-            "lastEndedMs": 1770195805697,
             "mnemonic": "BazelWorkspaceStatusAction",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTozNg==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "CcStrip",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTozNw==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "Action",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTozOA==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "NpmLifecycleHook",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTozOQ==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "GoLink",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0MA==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "CopyToDirectory",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0MQ==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "PackageTar",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0Mg==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "Jsonnet",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0Mw==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "GoStdlib",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0NA==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "CppModuleMap",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0NQ==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "GoProtocGen",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0Ng==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "OCIIndex",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0Nw==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "UnresolvedSymlink",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0OA==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "CopyFile",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo0OQ==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "ExecutableSymlink",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo1MA==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "Genrule",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo1MQ==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "NpmPackageExtract",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo1Mg==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "GenProtoDescriptorSet",
             "systemTime": 0,
             "userTime": 0
           },
           {
-            "actionsCreated": 0,
             "actionsExecuted": 0,
-            "firstStartedMs": 10993513914488,
             "id": "QWN0aW9uRGF0YTo1Mw==",
-            "lastEndedMs": 1770141877634,
             "mnemonic": "OCIDescriptor",
             "systemTime": 0,
             "userTime": 0
           }
         ],
-        "actionsCreated": 0,
-        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 41,
         "id": "QWN0aW9uU3VtbWFyeTo4",
-        "remoteCacheHits": 0,
         "runnerCount": [
           {
             "actionsExecuted": 41,
