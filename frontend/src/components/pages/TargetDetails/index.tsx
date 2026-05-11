@@ -193,7 +193,11 @@ const TargetDetails: React.FC<Props> = ({
             expandedRowRender: (record) => (
               <Space direction="vertical" style={{ paddingLeft: "48px" }}>
                 <strong>Failure Message:</strong>
-                <pre style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>{record.failureMessage}</pre>
+                <pre
+                  style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}
+                >
+                  {record.failureMessage}
+                </pre>
               </Space>
             ),
           }}
