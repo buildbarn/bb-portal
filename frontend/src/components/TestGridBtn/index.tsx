@@ -6,25 +6,52 @@ import {
   QuestionCircleFilled,
   StopOutlined,
 } from "@ant-design/icons";
-import { Link } from "@tanstack/react-router";
-import { Button } from "antd";
+import type { ButtonColorType } from "antd/es/button";
 import type React from "react";
+import { LinkButton } from "@/components/LinkButton";
+import type { TestStatusEnum } from "@/components/TestStatusTag";
 import themeStyles from "@/theme/theme.module.css";
 
-export const ALL_STATUS_VALUES = [
-  "NO_STATUS",
-  "PASSED",
-  "FLAKY",
-  "TIMEOUT",
-  "FAILED",
-  "INCOMPLETE",
-  "REMOTE_FAILURE",
-  "FAILED_TO_BUILD",
-  "TOOL_HALTED_BEFORE_TESTING",
-] as const;
-
-export type StatusTuple = typeof ALL_STATUS_VALUES;
-export type TestStatusEnum = StatusTuple[number];
+const STATUS_CONFIG: Record<
+  TestStatusEnum,
+  {
+    icon: React.ReactNode;
+    className: string;
+    color?: ButtonColorType;
+  }
+> = {
+  NO_STATUS: {
+    icon: <QuestionCircleFilled />,
+    className: themeStyles.colorDisabled,
+  },
+  PASSED: { icon: <CheckCircleFilled />, className: themeStyles.colorSuccess },
+  FLAKY: { icon: <InfoCircleFilled />, className: themeStyles.colorAborted },
+  FAILED: {
+    icon: <CloseCircleFilled />,
+    className: themeStyles.colorFailure,
+    color: "danger",
+  },
+  TIMEOUT: {
+    icon: <MinusCircleFilled />,
+    className: themeStyles.colorFailure,
+    color: "danger",
+  },
+  INCOMPLETE: { icon: <StopOutlined />, className: themeStyles.colorAborted },
+  REMOTE_FAILURE: {
+    icon: <CloseCircleFilled />,
+    className: themeStyles.colorFailure,
+    color: "danger",
+  },
+  FAILED_TO_BUILD: {
+    icon: <QuestionCircleFilled />,
+    className: themeStyles.colorFailure,
+    color: "danger",
+  },
+  TOOL_HALTED_BEFORE_TESTING: {
+    icon: <QuestionCircleFilled />,
+    className: themeStyles.colorDisabled,
+  },
+};
 
 interface Props {
   status: TestStatusEnum;
@@ -32,72 +59,16 @@ interface Props {
 }
 
 const TestGridBtn: React.FC<Props> = ({ status, invocationId }) => {
-  const ICON_BTNS: { [key in TestStatusEnum]: React.ReactNode } = {
-    NO_STATUS: (
-      <Button
-        icon={<QuestionCircleFilled />}
-        className={themeStyles.colorDisabled}
-      />
-    ),
-    PASSED: (
-      <Button
-        icon={<CheckCircleFilled />}
-        className={themeStyles.colorSuccess}
-      />
-    ),
-    FLAKY: (
-      <Button
-        icon={<InfoCircleFilled />}
-        className={themeStyles.colorAborted}
-      />
-    ),
-    FAILED: (
-      <Button
-        icon={<CloseCircleFilled />}
-        color="danger"
-        className={themeStyles.colorFailure}
-      />
-    ),
-    TIMEOUT: (
-      <Button
-        icon={<MinusCircleFilled />}
-        color="danger"
-        className={themeStyles.colorFailure}
-      />
-    ),
-    INCOMPLETE: (
-      <Button icon={<StopOutlined />} className={themeStyles.colorAborted} />
-    ),
-    REMOTE_FAILURE: (
-      <Button
-        icon={<CloseCircleFilled />}
-        color="danger"
-        className={themeStyles.colorFailure}
-      />
-    ),
-    FAILED_TO_BUILD: (
-      <Button
-        icon={<QuestionCircleFilled />}
-        color="danger"
-        className={themeStyles.colorFailure}
-      />
-    ),
-    TOOL_HALTED_BEFORE_TESTING: (
-      <Button
-        icon={<QuestionCircleFilled />}
-        className={themeStyles.colorDisabled}
-      />
-    ),
-  };
+  const config = STATUS_CONFIG[status] || STATUS_CONFIG.NO_STATUS;
 
-  const resultTag = ICON_BTNS[status] || ICON_BTNS.NO_STATUS;
   return (
-    <Link
+    <LinkButton
       to="/bazel-invocations/$invocationID"
       params={{ invocationID: invocationId }}
-    >
-      {resultTag}
-    </Link>
+      icon={config.icon}
+      className={config.className}
+      color={config.color}
+    />
   );
 };
 
