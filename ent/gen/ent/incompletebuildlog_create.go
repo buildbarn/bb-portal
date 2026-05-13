@@ -23,47 +23,47 @@ type IncompleteBuildLogCreate struct {
 }
 
 // SetSnippetID sets the "snippet_id" field.
-func (iblc *IncompleteBuildLogCreate) SetSnippetID(i int32) *IncompleteBuildLogCreate {
-	iblc.mutation.SetSnippetID(i)
-	return iblc
+func (_c *IncompleteBuildLogCreate) SetSnippetID(v int32) *IncompleteBuildLogCreate {
+	_c.mutation.SetSnippetID(v)
+	return _c
 }
 
 // SetLogSnippet sets the "log_snippet" field.
-func (iblc *IncompleteBuildLogCreate) SetLogSnippet(b []byte) *IncompleteBuildLogCreate {
-	iblc.mutation.SetLogSnippet(b)
-	return iblc
+func (_c *IncompleteBuildLogCreate) SetLogSnippet(v []byte) *IncompleteBuildLogCreate {
+	_c.mutation.SetLogSnippet(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (iblc *IncompleteBuildLogCreate) SetBazelInvocationID(i int64) *IncompleteBuildLogCreate {
-	iblc.mutation.SetBazelInvocationID(i)
-	return iblc
+func (_c *IncompleteBuildLogCreate) SetBazelInvocationID(v int64) *IncompleteBuildLogCreate {
+	_c.mutation.SetBazelInvocationID(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (iblc *IncompleteBuildLogCreate) SetID(i int64) *IncompleteBuildLogCreate {
-	iblc.mutation.SetID(i)
-	return iblc
+func (_c *IncompleteBuildLogCreate) SetID(v int64) *IncompleteBuildLogCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (iblc *IncompleteBuildLogCreate) SetBazelInvocation(b *BazelInvocation) *IncompleteBuildLogCreate {
-	return iblc.SetBazelInvocationID(b.ID)
+func (_c *IncompleteBuildLogCreate) SetBazelInvocation(v *BazelInvocation) *IncompleteBuildLogCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the IncompleteBuildLogMutation object of the builder.
-func (iblc *IncompleteBuildLogCreate) Mutation() *IncompleteBuildLogMutation {
-	return iblc.mutation
+func (_c *IncompleteBuildLogCreate) Mutation() *IncompleteBuildLogMutation {
+	return _c.mutation
 }
 
 // Save creates the IncompleteBuildLog in the database.
-func (iblc *IncompleteBuildLogCreate) Save(ctx context.Context) (*IncompleteBuildLog, error) {
-	return withHooks(ctx, iblc.sqlSave, iblc.mutation, iblc.hooks)
+func (_c *IncompleteBuildLogCreate) Save(ctx context.Context) (*IncompleteBuildLog, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (iblc *IncompleteBuildLogCreate) SaveX(ctx context.Context) *IncompleteBuildLog {
-	v, err := iblc.Save(ctx)
+func (_c *IncompleteBuildLogCreate) SaveX(ctx context.Context) *IncompleteBuildLog {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -71,41 +71,41 @@ func (iblc *IncompleteBuildLogCreate) SaveX(ctx context.Context) *IncompleteBuil
 }
 
 // Exec executes the query.
-func (iblc *IncompleteBuildLogCreate) Exec(ctx context.Context) error {
-	_, err := iblc.Save(ctx)
+func (_c *IncompleteBuildLogCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iblc *IncompleteBuildLogCreate) ExecX(ctx context.Context) {
-	if err := iblc.Exec(ctx); err != nil {
+func (_c *IncompleteBuildLogCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iblc *IncompleteBuildLogCreate) check() error {
-	if _, ok := iblc.mutation.SnippetID(); !ok {
+func (_c *IncompleteBuildLogCreate) check() error {
+	if _, ok := _c.mutation.SnippetID(); !ok {
 		return &ValidationError{Name: "snippet_id", err: errors.New(`ent: missing required field "IncompleteBuildLog.snippet_id"`)}
 	}
-	if _, ok := iblc.mutation.LogSnippet(); !ok {
+	if _, ok := _c.mutation.LogSnippet(); !ok {
 		return &ValidationError{Name: "log_snippet", err: errors.New(`ent: missing required field "IncompleteBuildLog.log_snippet"`)}
 	}
-	if _, ok := iblc.mutation.BazelInvocationID(); !ok {
+	if _, ok := _c.mutation.BazelInvocationID(); !ok {
 		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "IncompleteBuildLog.bazel_invocation_id"`)}
 	}
-	if len(iblc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "IncompleteBuildLog.bazel_invocation"`)}
 	}
 	return nil
 }
 
-func (iblc *IncompleteBuildLogCreate) sqlSave(ctx context.Context) (*IncompleteBuildLog, error) {
-	if err := iblc.check(); err != nil {
+func (_c *IncompleteBuildLogCreate) sqlSave(ctx context.Context) (*IncompleteBuildLog, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := iblc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, iblc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -115,30 +115,30 @@ func (iblc *IncompleteBuildLogCreate) sqlSave(ctx context.Context) (*IncompleteB
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	iblc.mutation.id = &_node.ID
-	iblc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (iblc *IncompleteBuildLogCreate) createSpec() (*IncompleteBuildLog, *sqlgraph.CreateSpec) {
+func (_c *IncompleteBuildLogCreate) createSpec() (*IncompleteBuildLog, *sqlgraph.CreateSpec) {
 	var (
-		_node = &IncompleteBuildLog{config: iblc.config}
+		_node = &IncompleteBuildLog{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(incompletebuildlog.Table, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = iblc.conflict
-	if id, ok := iblc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := iblc.mutation.SnippetID(); ok {
+	if value, ok := _c.mutation.SnippetID(); ok {
 		_spec.SetField(incompletebuildlog.FieldSnippetID, field.TypeInt32, value)
 		_node.SnippetID = value
 	}
-	if value, ok := iblc.mutation.LogSnippet(); ok {
+	if value, ok := _c.mutation.LogSnippet(); ok {
 		_spec.SetField(incompletebuildlog.FieldLogSnippet, field.TypeBytes, value)
 		_node.LogSnippet = value
 	}
-	if nodes := iblc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -174,10 +174,10 @@ func (iblc *IncompleteBuildLogCreate) createSpec() (*IncompleteBuildLog, *sqlgra
 //			SetSnippetID(v+v).
 //		}).
 //		Exec(ctx)
-func (iblc *IncompleteBuildLogCreate) OnConflict(opts ...sql.ConflictOption) *IncompleteBuildLogUpsertOne {
-	iblc.conflict = opts
+func (_c *IncompleteBuildLogCreate) OnConflict(opts ...sql.ConflictOption) *IncompleteBuildLogUpsertOne {
+	_c.conflict = opts
 	return &IncompleteBuildLogUpsertOne{
-		create: iblc,
+		create: _c,
 	}
 }
 
@@ -187,10 +187,10 @@ func (iblc *IncompleteBuildLogCreate) OnConflict(opts ...sql.ConflictOption) *In
 //	client.IncompleteBuildLog.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (iblc *IncompleteBuildLogCreate) OnConflictColumns(columns ...string) *IncompleteBuildLogUpsertOne {
-	iblc.conflict = append(iblc.conflict, sql.ConflictColumns(columns...))
+func (_c *IncompleteBuildLogCreate) OnConflictColumns(columns ...string) *IncompleteBuildLogUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &IncompleteBuildLogUpsertOne{
-		create: iblc,
+		create: _c,
 	}
 }
 
@@ -306,16 +306,16 @@ type IncompleteBuildLogCreateBulk struct {
 }
 
 // Save creates the IncompleteBuildLog entities in the database.
-func (iblcb *IncompleteBuildLogCreateBulk) Save(ctx context.Context) ([]*IncompleteBuildLog, error) {
-	if iblcb.err != nil {
-		return nil, iblcb.err
+func (_c *IncompleteBuildLogCreateBulk) Save(ctx context.Context) ([]*IncompleteBuildLog, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(iblcb.builders))
-	nodes := make([]*IncompleteBuildLog, len(iblcb.builders))
-	mutators := make([]Mutator, len(iblcb.builders))
-	for i := range iblcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*IncompleteBuildLog, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := iblcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*IncompleteBuildLogMutation)
 				if !ok {
@@ -328,12 +328,12 @@ func (iblcb *IncompleteBuildLogCreateBulk) Save(ctx context.Context) ([]*Incompl
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, iblcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = iblcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, iblcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -357,7 +357,7 @@ func (iblcb *IncompleteBuildLogCreateBulk) Save(ctx context.Context) ([]*Incompl
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, iblcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -365,8 +365,8 @@ func (iblcb *IncompleteBuildLogCreateBulk) Save(ctx context.Context) ([]*Incompl
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iblcb *IncompleteBuildLogCreateBulk) SaveX(ctx context.Context) []*IncompleteBuildLog {
-	v, err := iblcb.Save(ctx)
+func (_c *IncompleteBuildLogCreateBulk) SaveX(ctx context.Context) []*IncompleteBuildLog {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -374,14 +374,14 @@ func (iblcb *IncompleteBuildLogCreateBulk) SaveX(ctx context.Context) []*Incompl
 }
 
 // Exec executes the query.
-func (iblcb *IncompleteBuildLogCreateBulk) Exec(ctx context.Context) error {
-	_, err := iblcb.Save(ctx)
+func (_c *IncompleteBuildLogCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iblcb *IncompleteBuildLogCreateBulk) ExecX(ctx context.Context) {
-	if err := iblcb.Exec(ctx); err != nil {
+func (_c *IncompleteBuildLogCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -401,10 +401,10 @@ func (iblcb *IncompleteBuildLogCreateBulk) ExecX(ctx context.Context) {
 //			SetSnippetID(v+v).
 //		}).
 //		Exec(ctx)
-func (iblcb *IncompleteBuildLogCreateBulk) OnConflict(opts ...sql.ConflictOption) *IncompleteBuildLogUpsertBulk {
-	iblcb.conflict = opts
+func (_c *IncompleteBuildLogCreateBulk) OnConflict(opts ...sql.ConflictOption) *IncompleteBuildLogUpsertBulk {
+	_c.conflict = opts
 	return &IncompleteBuildLogUpsertBulk{
-		create: iblcb,
+		create: _c,
 	}
 }
 
@@ -414,10 +414,10 @@ func (iblcb *IncompleteBuildLogCreateBulk) OnConflict(opts ...sql.ConflictOption
 //	client.IncompleteBuildLog.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (iblcb *IncompleteBuildLogCreateBulk) OnConflictColumns(columns ...string) *IncompleteBuildLogUpsertBulk {
-	iblcb.conflict = append(iblcb.conflict, sql.ConflictColumns(columns...))
+func (_c *IncompleteBuildLogCreateBulk) OnConflictColumns(columns ...string) *IncompleteBuildLogUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &IncompleteBuildLogUpsertBulk{
-		create: iblcb,
+		create: _c,
 	}
 }
 

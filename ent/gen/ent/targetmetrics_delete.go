@@ -20,56 +20,56 @@ type TargetMetricsDelete struct {
 }
 
 // Where appends a list predicates to the TargetMetricsDelete builder.
-func (tmd *TargetMetricsDelete) Where(ps ...predicate.TargetMetrics) *TargetMetricsDelete {
-	tmd.mutation.Where(ps...)
-	return tmd
+func (_d *TargetMetricsDelete) Where(ps ...predicate.TargetMetrics) *TargetMetricsDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (tmd *TargetMetricsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, tmd.sqlExec, tmd.mutation, tmd.hooks)
+func (_d *TargetMetricsDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmd *TargetMetricsDelete) ExecX(ctx context.Context) int {
-	n, err := tmd.Exec(ctx)
+func (_d *TargetMetricsDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (tmd *TargetMetricsDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *TargetMetricsDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(targetmetrics.Table, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
-	if ps := tmd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, tmd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	tmd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // TargetMetricsDeleteOne is the builder for deleting a single TargetMetrics entity.
 type TargetMetricsDeleteOne struct {
-	tmd *TargetMetricsDelete
+	_d *TargetMetricsDelete
 }
 
 // Where appends a list predicates to the TargetMetricsDelete builder.
-func (tmdo *TargetMetricsDeleteOne) Where(ps ...predicate.TargetMetrics) *TargetMetricsDeleteOne {
-	tmdo.tmd.mutation.Where(ps...)
-	return tmdo
+func (_d *TargetMetricsDeleteOne) Where(ps ...predicate.TargetMetrics) *TargetMetricsDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (tmdo *TargetMetricsDeleteOne) Exec(ctx context.Context) error {
-	n, err := tmdo.tmd.Exec(ctx)
+func (_d *TargetMetricsDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (tmdo *TargetMetricsDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmdo *TargetMetricsDeleteOne) ExecX(ctx context.Context) {
-	if err := tmdo.Exec(ctx); err != nil {
+func (_d *TargetMetricsDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

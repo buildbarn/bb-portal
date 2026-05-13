@@ -41,44 +41,44 @@ type BuildQuery struct {
 }
 
 // Where adds a new predicate for the BuildQuery builder.
-func (bq *BuildQuery) Where(ps ...predicate.Build) *BuildQuery {
-	bq.predicates = append(bq.predicates, ps...)
-	return bq
+func (_q *BuildQuery) Where(ps ...predicate.Build) *BuildQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (bq *BuildQuery) Limit(limit int) *BuildQuery {
-	bq.ctx.Limit = &limit
-	return bq
+func (_q *BuildQuery) Limit(limit int) *BuildQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (bq *BuildQuery) Offset(offset int) *BuildQuery {
-	bq.ctx.Offset = &offset
-	return bq
+func (_q *BuildQuery) Offset(offset int) *BuildQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (bq *BuildQuery) Unique(unique bool) *BuildQuery {
-	bq.ctx.Unique = &unique
-	return bq
+func (_q *BuildQuery) Unique(unique bool) *BuildQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (bq *BuildQuery) Order(o ...build.OrderOption) *BuildQuery {
-	bq.order = append(bq.order, o...)
-	return bq
+func (_q *BuildQuery) Order(o ...build.OrderOption) *BuildQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryInstanceName chains the current query on the "instance_name" edge.
-func (bq *BuildQuery) QueryInstanceName() *InstanceNameQuery {
-	query := (&InstanceNameClient{config: bq.config}).Query()
+func (_q *BuildQuery) QueryInstanceName() *InstanceNameQuery {
+	query := (&InstanceNameClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := bq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := bq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -87,20 +87,20 @@ func (bq *BuildQuery) QueryInstanceName() *InstanceNameQuery {
 			sqlgraph.To(instancename.Table, instancename.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, build.InstanceNameTable, build.InstanceNameColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(bq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryInvocations chains the current query on the "invocations" edge.
-func (bq *BuildQuery) QueryInvocations() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: bq.config}).Query()
+func (_q *BuildQuery) QueryInvocations() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := bq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := bq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -109,20 +109,20 @@ func (bq *BuildQuery) QueryInvocations() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, build.InvocationsTable, build.InvocationsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(bq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTags chains the current query on the "tags" edge.
-func (bq *BuildQuery) QueryTags() *BuildTagQuery {
-	query := (&BuildTagClient{config: bq.config}).Query()
+func (_q *BuildQuery) QueryTags() *BuildTagQuery {
+	query := (&BuildTagClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := bq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := bq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -131,7 +131,7 @@ func (bq *BuildQuery) QueryTags() *BuildTagQuery {
 			sqlgraph.To(buildtag.Table, buildtag.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, build.TagsTable, build.TagsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(bq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -139,8 +139,8 @@ func (bq *BuildQuery) QueryTags() *BuildTagQuery {
 
 // First returns the first Build entity from the query.
 // Returns a *NotFoundError when no Build was found.
-func (bq *BuildQuery) First(ctx context.Context) (*Build, error) {
-	nodes, err := bq.Limit(1).All(setContextOp(ctx, bq.ctx, ent.OpQueryFirst))
+func (_q *BuildQuery) First(ctx context.Context) (*Build, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +151,8 @@ func (bq *BuildQuery) First(ctx context.Context) (*Build, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (bq *BuildQuery) FirstX(ctx context.Context) *Build {
-	node, err := bq.First(ctx)
+func (_q *BuildQuery) FirstX(ctx context.Context) *Build {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -161,9 +161,9 @@ func (bq *BuildQuery) FirstX(ctx context.Context) *Build {
 
 // FirstID returns the first Build ID from the query.
 // Returns a *NotFoundError when no Build ID was found.
-func (bq *BuildQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *BuildQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = bq.Limit(1).IDs(setContextOp(ctx, bq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -174,8 +174,8 @@ func (bq *BuildQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (bq *BuildQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := bq.FirstID(ctx)
+func (_q *BuildQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -185,8 +185,8 @@ func (bq *BuildQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single Build entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Build entity is found.
 // Returns a *NotFoundError when no Build entities are found.
-func (bq *BuildQuery) Only(ctx context.Context) (*Build, error) {
-	nodes, err := bq.Limit(2).All(setContextOp(ctx, bq.ctx, ent.OpQueryOnly))
+func (_q *BuildQuery) Only(ctx context.Context) (*Build, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -201,8 +201,8 @@ func (bq *BuildQuery) Only(ctx context.Context) (*Build, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (bq *BuildQuery) OnlyX(ctx context.Context) *Build {
-	node, err := bq.Only(ctx)
+func (_q *BuildQuery) OnlyX(ctx context.Context) *Build {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -212,9 +212,9 @@ func (bq *BuildQuery) OnlyX(ctx context.Context) *Build {
 // OnlyID is like Only, but returns the only Build ID in the query.
 // Returns a *NotSingularError when more than one Build ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (bq *BuildQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *BuildQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = bq.Limit(2).IDs(setContextOp(ctx, bq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -229,8 +229,8 @@ func (bq *BuildQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (bq *BuildQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := bq.OnlyID(ctx)
+func (_q *BuildQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -238,18 +238,18 @@ func (bq *BuildQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of Builds.
-func (bq *BuildQuery) All(ctx context.Context) ([]*Build, error) {
-	ctx = setContextOp(ctx, bq.ctx, ent.OpQueryAll)
-	if err := bq.prepareQuery(ctx); err != nil {
+func (_q *BuildQuery) All(ctx context.Context) ([]*Build, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Build, *BuildQuery]()
-	return withInterceptors[[]*Build](ctx, bq, qr, bq.inters)
+	return withInterceptors[[]*Build](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (bq *BuildQuery) AllX(ctx context.Context) []*Build {
-	nodes, err := bq.All(ctx)
+func (_q *BuildQuery) AllX(ctx context.Context) []*Build {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -257,20 +257,20 @@ func (bq *BuildQuery) AllX(ctx context.Context) []*Build {
 }
 
 // IDs executes the query and returns a list of Build IDs.
-func (bq *BuildQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if bq.ctx.Unique == nil && bq.path != nil {
-		bq.Unique(true)
+func (_q *BuildQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, bq.ctx, ent.OpQueryIDs)
-	if err = bq.Select(build.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(build.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (bq *BuildQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := bq.IDs(ctx)
+func (_q *BuildQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -278,17 +278,17 @@ func (bq *BuildQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (bq *BuildQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, bq.ctx, ent.OpQueryCount)
-	if err := bq.prepareQuery(ctx); err != nil {
+func (_q *BuildQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, bq, querierCount[*BuildQuery](), bq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*BuildQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (bq *BuildQuery) CountX(ctx context.Context) int {
-	count, err := bq.Count(ctx)
+func (_q *BuildQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -296,9 +296,9 @@ func (bq *BuildQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (bq *BuildQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, bq.ctx, ent.OpQueryExist)
-	switch _, err := bq.FirstID(ctx); {
+func (_q *BuildQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -309,8 +309,8 @@ func (bq *BuildQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (bq *BuildQuery) ExistX(ctx context.Context) bool {
-	exist, err := bq.Exist(ctx)
+func (_q *BuildQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -319,56 +319,56 @@ func (bq *BuildQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the BuildQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (bq *BuildQuery) Clone() *BuildQuery {
-	if bq == nil {
+func (_q *BuildQuery) Clone() *BuildQuery {
+	if _q == nil {
 		return nil
 	}
 	return &BuildQuery{
-		config:           bq.config,
-		ctx:              bq.ctx.Clone(),
-		order:            append([]build.OrderOption{}, bq.order...),
-		inters:           append([]Interceptor{}, bq.inters...),
-		predicates:       append([]predicate.Build{}, bq.predicates...),
-		withInstanceName: bq.withInstanceName.Clone(),
-		withInvocations:  bq.withInvocations.Clone(),
-		withTags:         bq.withTags.Clone(),
+		config:           _q.config,
+		ctx:              _q.ctx.Clone(),
+		order:            append([]build.OrderOption{}, _q.order...),
+		inters:           append([]Interceptor{}, _q.inters...),
+		predicates:       append([]predicate.Build{}, _q.predicates...),
+		withInstanceName: _q.withInstanceName.Clone(),
+		withInvocations:  _q.withInvocations.Clone(),
+		withTags:         _q.withTags.Clone(),
 		// clone intermediate query.
-		sql:  bq.sql.Clone(),
-		path: bq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithInstanceName tells the query-builder to eager-load the nodes that are connected to
 // the "instance_name" edge. The optional arguments are used to configure the query builder of the edge.
-func (bq *BuildQuery) WithInstanceName(opts ...func(*InstanceNameQuery)) *BuildQuery {
-	query := (&InstanceNameClient{config: bq.config}).Query()
+func (_q *BuildQuery) WithInstanceName(opts ...func(*InstanceNameQuery)) *BuildQuery {
+	query := (&InstanceNameClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	bq.withInstanceName = query
-	return bq
+	_q.withInstanceName = query
+	return _q
 }
 
 // WithInvocations tells the query-builder to eager-load the nodes that are connected to
 // the "invocations" edge. The optional arguments are used to configure the query builder of the edge.
-func (bq *BuildQuery) WithInvocations(opts ...func(*BazelInvocationQuery)) *BuildQuery {
-	query := (&BazelInvocationClient{config: bq.config}).Query()
+func (_q *BuildQuery) WithInvocations(opts ...func(*BazelInvocationQuery)) *BuildQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	bq.withInvocations = query
-	return bq
+	_q.withInvocations = query
+	return _q
 }
 
 // WithTags tells the query-builder to eager-load the nodes that are connected to
 // the "tags" edge. The optional arguments are used to configure the query builder of the edge.
-func (bq *BuildQuery) WithTags(opts ...func(*BuildTagQuery)) *BuildQuery {
-	query := (&BuildTagClient{config: bq.config}).Query()
+func (_q *BuildQuery) WithTags(opts ...func(*BuildTagQuery)) *BuildQuery {
+	query := (&BuildTagClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	bq.withTags = query
-	return bq
+	_q.withTags = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -385,10 +385,10 @@ func (bq *BuildQuery) WithTags(opts ...func(*BuildTagQuery)) *BuildQuery {
 //		GroupBy(build.FieldBuildUUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (bq *BuildQuery) GroupBy(field string, fields ...string) *BuildGroupBy {
-	bq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &BuildGroupBy{build: bq}
-	grbuild.flds = &bq.ctx.Fields
+func (_q *BuildQuery) GroupBy(field string, fields ...string) *BuildGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &BuildGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = build.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -406,63 +406,63 @@ func (bq *BuildQuery) GroupBy(field string, fields ...string) *BuildGroupBy {
 //	client.Build.Query().
 //		Select(build.FieldBuildUUID).
 //		Scan(ctx, &v)
-func (bq *BuildQuery) Select(fields ...string) *BuildSelect {
-	bq.ctx.Fields = append(bq.ctx.Fields, fields...)
-	sbuild := &BuildSelect{BuildQuery: bq}
+func (_q *BuildQuery) Select(fields ...string) *BuildSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &BuildSelect{BuildQuery: _q}
 	sbuild.label = build.Label
-	sbuild.flds, sbuild.scan = &bq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a BuildSelect configured with the given aggregations.
-func (bq *BuildQuery) Aggregate(fns ...AggregateFunc) *BuildSelect {
-	return bq.Select().Aggregate(fns...)
+func (_q *BuildQuery) Aggregate(fns ...AggregateFunc) *BuildSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (bq *BuildQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range bq.inters {
+func (_q *BuildQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, bq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range bq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !build.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if bq.path != nil {
-		prev, err := bq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		bq.sql = prev
+		_q.sql = prev
 	}
 	if build.Policy == nil {
 		return errors.New("ent: uninitialized build.Policy (forgotten import ent/runtime?)")
 	}
-	if err := build.Policy.EvalQuery(ctx, bq); err != nil {
+	if err := build.Policy.EvalQuery(ctx, _q); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build, error) {
+func (_q *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build, error) {
 	var (
 		nodes       = []*Build{}
-		withFKs     = bq.withFKs
-		_spec       = bq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [3]bool{
-			bq.withInstanceName != nil,
-			bq.withInvocations != nil,
-			bq.withTags != nil,
+			_q.withInstanceName != nil,
+			_q.withInvocations != nil,
+			_q.withTags != nil,
 		}
 	)
-	if bq.withInstanceName != nil {
+	if _q.withInstanceName != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -472,66 +472,66 @@ func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build,
 		return (*Build).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Build{config: bq.config}
+		node := &Build{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(bq.modifiers) > 0 {
-		_spec.Modifiers = bq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, bq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := bq.withInstanceName; query != nil {
-		if err := bq.loadInstanceName(ctx, query, nodes, nil,
+	if query := _q.withInstanceName; query != nil {
+		if err := _q.loadInstanceName(ctx, query, nodes, nil,
 			func(n *Build, e *InstanceName) { n.Edges.InstanceName = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := bq.withInvocations; query != nil {
-		if err := bq.loadInvocations(ctx, query, nodes,
+	if query := _q.withInvocations; query != nil {
+		if err := _q.loadInvocations(ctx, query, nodes,
 			func(n *Build) { n.Edges.Invocations = []*BazelInvocation{} },
 			func(n *Build, e *BazelInvocation) { n.Edges.Invocations = append(n.Edges.Invocations, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := bq.withTags; query != nil {
-		if err := bq.loadTags(ctx, query, nodes,
+	if query := _q.withTags; query != nil {
+		if err := _q.loadTags(ctx, query, nodes,
 			func(n *Build) { n.Edges.Tags = []*BuildTag{} },
 			func(n *Build, e *BuildTag) { n.Edges.Tags = append(n.Edges.Tags, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range bq.withNamedInvocations {
-		if err := bq.loadInvocations(ctx, query, nodes,
+	for name, query := range _q.withNamedInvocations {
+		if err := _q.loadInvocations(ctx, query, nodes,
 			func(n *Build) { n.appendNamedInvocations(name) },
 			func(n *Build, e *BazelInvocation) { n.appendNamedInvocations(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range bq.withNamedTags {
-		if err := bq.loadTags(ctx, query, nodes,
+	for name, query := range _q.withNamedTags {
+		if err := _q.loadTags(ctx, query, nodes,
 			func(n *Build) { n.appendNamedTags(name) },
 			func(n *Build, e *BuildTag) { n.appendNamedTags(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range bq.loadTotal {
-		if err := bq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (bq *BuildQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Build, init func(*Build), assign func(*Build, *InstanceName)) error {
+func (_q *BuildQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Build, init func(*Build), assign func(*Build, *InstanceName)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*Build)
 	for i := range nodes {
@@ -563,7 +563,7 @@ func (bq *BuildQuery) loadInstanceName(ctx context.Context, query *InstanceNameQ
 	}
 	return nil
 }
-func (bq *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*Build, init func(*Build), assign func(*Build, *BazelInvocation)) error {
+func (_q *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*Build, init func(*Build), assign func(*Build, *BazelInvocation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Build)
 	for i := range nodes {
@@ -594,7 +594,7 @@ func (bq *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocatio
 	}
 	return nil
 }
-func (bq *BuildQuery) loadTags(ctx context.Context, query *BuildTagQuery, nodes []*Build, init func(*Build), assign func(*Build, *BuildTag)) error {
+func (_q *BuildQuery) loadTags(ctx context.Context, query *BuildTagQuery, nodes []*Build, init func(*Build), assign func(*Build, *BuildTag)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Build)
 	for i := range nodes {
@@ -625,27 +625,27 @@ func (bq *BuildQuery) loadTags(ctx context.Context, query *BuildTagQuery, nodes 
 	return nil
 }
 
-func (bq *BuildQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := bq.querySpec()
-	if len(bq.modifiers) > 0 {
-		_spec.Modifiers = bq.modifiers
+func (_q *BuildQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = bq.ctx.Fields
-	if len(bq.ctx.Fields) > 0 {
-		_spec.Unique = bq.ctx.Unique != nil && *bq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, bq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (bq *BuildQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *BuildQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64))
-	_spec.From = bq.sql
-	if unique := bq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if bq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := bq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, build.FieldID)
 		for i := range fields {
@@ -654,20 +654,20 @@ func (bq *BuildQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := bq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := bq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := bq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := bq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -677,33 +677,33 @@ func (bq *BuildQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (bq *BuildQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(bq.driver.Dialect())
+func (_q *BuildQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(build.Table)
-	columns := bq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = build.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if bq.sql != nil {
-		selector = bq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if bq.ctx.Unique != nil && *bq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range bq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range bq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := bq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := bq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -711,30 +711,30 @@ func (bq *BuildQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedInvocations tells the query-builder to eager-load the nodes that are connected to the "invocations"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bq *BuildQuery) WithNamedInvocations(name string, opts ...func(*BazelInvocationQuery)) *BuildQuery {
-	query := (&BazelInvocationClient{config: bq.config}).Query()
+func (_q *BuildQuery) WithNamedInvocations(name string, opts ...func(*BazelInvocationQuery)) *BuildQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if bq.withNamedInvocations == nil {
-		bq.withNamedInvocations = make(map[string]*BazelInvocationQuery)
+	if _q.withNamedInvocations == nil {
+		_q.withNamedInvocations = make(map[string]*BazelInvocationQuery)
 	}
-	bq.withNamedInvocations[name] = query
-	return bq
+	_q.withNamedInvocations[name] = query
+	return _q
 }
 
 // WithNamedTags tells the query-builder to eager-load the nodes that are connected to the "tags"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bq *BuildQuery) WithNamedTags(name string, opts ...func(*BuildTagQuery)) *BuildQuery {
-	query := (&BuildTagClient{config: bq.config}).Query()
+func (_q *BuildQuery) WithNamedTags(name string, opts ...func(*BuildTagQuery)) *BuildQuery {
+	query := (&BuildTagClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if bq.withNamedTags == nil {
-		bq.withNamedTags = make(map[string]*BuildTagQuery)
+	if _q.withNamedTags == nil {
+		_q.withNamedTags = make(map[string]*BuildTagQuery)
 	}
-	bq.withNamedTags[name] = query
-	return bq
+	_q.withNamedTags[name] = query
+	return _q
 }
 
 // BuildGroupBy is the group-by builder for Build entities.
@@ -744,41 +744,41 @@ type BuildGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (bgb *BuildGroupBy) Aggregate(fns ...AggregateFunc) *BuildGroupBy {
-	bgb.fns = append(bgb.fns, fns...)
-	return bgb
+func (_g *BuildGroupBy) Aggregate(fns ...AggregateFunc) *BuildGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (bgb *BuildGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bgb.build.ctx, ent.OpQueryGroupBy)
-	if err := bgb.build.prepareQuery(ctx); err != nil {
+func (_g *BuildGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*BuildQuery, *BuildGroupBy](ctx, bgb.build, bgb, bgb.build.inters, v)
+	return scanWithInterceptors[*BuildQuery, *BuildGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (bgb *BuildGroupBy) sqlScan(ctx context.Context, root *BuildQuery, v any) error {
+func (_g *BuildGroupBy) sqlScan(ctx context.Context, root *BuildQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(bgb.fns))
-	for _, fn := range bgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*bgb.flds)+len(bgb.fns))
-		for _, f := range *bgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*bgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := bgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -792,27 +792,27 @@ type BuildSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (bs *BuildSelect) Aggregate(fns ...AggregateFunc) *BuildSelect {
-	bs.fns = append(bs.fns, fns...)
-	return bs
+func (_s *BuildSelect) Aggregate(fns ...AggregateFunc) *BuildSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (bs *BuildSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bs.ctx, ent.OpQuerySelect)
-	if err := bs.prepareQuery(ctx); err != nil {
+func (_s *BuildSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*BuildQuery, *BuildSelect](ctx, bs.BuildQuery, bs, bs.inters, v)
+	return scanWithInterceptors[*BuildQuery, *BuildSelect](ctx, _s.BuildQuery, _s, _s.inters, v)
 }
 
-func (bs *BuildSelect) sqlScan(ctx context.Context, root *BuildQuery, v any) error {
+func (_s *BuildSelect) sqlScan(ctx context.Context, root *BuildQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(bs.fns))
-	for _, fn := range bs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*bs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -820,7 +820,7 @@ func (bs *BuildSelect) sqlScan(ctx context.Context, root *BuildQuery, v any) err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := bs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

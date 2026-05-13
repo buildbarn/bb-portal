@@ -72,7 +72,7 @@ func (*RunnerCount) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the RunnerCount fields.
-func (rc *RunnerCount) assignValues(columns []string, values []any) error {
+func (_m *RunnerCount) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -83,34 +83,34 @@ func (rc *RunnerCount) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			rc.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case runnercount.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				rc.Name = value.String
+				_m.Name = value.String
 			}
 		case runnercount.FieldExecKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field exec_kind", values[i])
 			} else if value.Valid {
-				rc.ExecKind = value.String
+				_m.ExecKind = value.String
 			}
 		case runnercount.FieldActionsExecuted:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_executed", values[i])
 			} else if value.Valid {
-				rc.ActionsExecuted = value.Int64
+				_m.ActionsExecuted = value.Int64
 			}
 		case runnercount.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_summary_runner_count", value)
 			} else if value.Valid {
-				rc.action_summary_runner_count = new(int64)
-				*rc.action_summary_runner_count = int64(value.Int64)
+				_m.action_summary_runner_count = new(int64)
+				*_m.action_summary_runner_count = int64(value.Int64)
 			}
 		default:
-			rc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -118,46 +118,46 @@ func (rc *RunnerCount) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the RunnerCount.
 // This includes values selected through modifiers, order, etc.
-func (rc *RunnerCount) Value(name string) (ent.Value, error) {
-	return rc.selectValues.Get(name)
+func (_m *RunnerCount) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryActionSummary queries the "action_summary" edge of the RunnerCount entity.
-func (rc *RunnerCount) QueryActionSummary() *ActionSummaryQuery {
-	return NewRunnerCountClient(rc.config).QueryActionSummary(rc)
+func (_m *RunnerCount) QueryActionSummary() *ActionSummaryQuery {
+	return NewRunnerCountClient(_m.config).QueryActionSummary(_m)
 }
 
 // Update returns a builder for updating this RunnerCount.
 // Note that you need to call RunnerCount.Unwrap() before calling this method if this RunnerCount
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (rc *RunnerCount) Update() *RunnerCountUpdateOne {
-	return NewRunnerCountClient(rc.config).UpdateOne(rc)
+func (_m *RunnerCount) Update() *RunnerCountUpdateOne {
+	return NewRunnerCountClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the RunnerCount entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (rc *RunnerCount) Unwrap() *RunnerCount {
-	_tx, ok := rc.config.driver.(*txDriver)
+func (_m *RunnerCount) Unwrap() *RunnerCount {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: RunnerCount is not a transactional entity")
 	}
-	rc.config.driver = _tx.drv
-	return rc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (rc *RunnerCount) String() string {
+func (_m *RunnerCount) String() string {
 	var builder strings.Builder
 	builder.WriteString("RunnerCount(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", rc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(rc.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("exec_kind=")
-	builder.WriteString(rc.ExecKind)
+	builder.WriteString(_m.ExecKind)
 	builder.WriteString(", ")
 	builder.WriteString("actions_executed=")
-	builder.WriteString(fmt.Sprintf("%v", rc.ActionsExecuted))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionsExecuted))
 	builder.WriteByte(')')
 	return builder.String()
 }

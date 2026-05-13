@@ -13,9 +13,10 @@ import (
 )
 
 func getGqlTemplates() []*gen.Template {
-	customPaginationTemplate := gen.MustParse(gen.NewTemplate("./ent/template/pagination.tmpl").
-		Funcs(entgql.TemplateFuncs).
-		ParseFiles("./ent/template/pagination.tmpl"),
+	customPaginationTemplate := gen.MustParse(
+		gen.NewTemplate("./ent/template/pagination.tmpl").
+			Funcs(entgql.TemplateFuncs).
+			ParseFiles("./ent/template/pagination.tmpl"),
 	)
 	return append(entgql.AllTemplates, customPaginationTemplate)
 }

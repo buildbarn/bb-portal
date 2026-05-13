@@ -40,44 +40,44 @@ type InstanceNameQuery struct {
 }
 
 // Where adds a new predicate for the InstanceNameQuery builder.
-func (inq *InstanceNameQuery) Where(ps ...predicate.InstanceName) *InstanceNameQuery {
-	inq.predicates = append(inq.predicates, ps...)
-	return inq
+func (_q *InstanceNameQuery) Where(ps ...predicate.InstanceName) *InstanceNameQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (inq *InstanceNameQuery) Limit(limit int) *InstanceNameQuery {
-	inq.ctx.Limit = &limit
-	return inq
+func (_q *InstanceNameQuery) Limit(limit int) *InstanceNameQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (inq *InstanceNameQuery) Offset(offset int) *InstanceNameQuery {
-	inq.ctx.Offset = &offset
-	return inq
+func (_q *InstanceNameQuery) Offset(offset int) *InstanceNameQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (inq *InstanceNameQuery) Unique(unique bool) *InstanceNameQuery {
-	inq.ctx.Unique = &unique
-	return inq
+func (_q *InstanceNameQuery) Unique(unique bool) *InstanceNameQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (inq *InstanceNameQuery) Order(o ...instancename.OrderOption) *InstanceNameQuery {
-	inq.order = append(inq.order, o...)
-	return inq
+func (_q *InstanceNameQuery) Order(o ...instancename.OrderOption) *InstanceNameQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocations chains the current query on the "bazel_invocations" edge.
-func (inq *InstanceNameQuery) QueryBazelInvocations() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) QueryBazelInvocations() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := inq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := inq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -86,20 +86,20 @@ func (inq *InstanceNameQuery) QueryBazelInvocations() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, instancename.BazelInvocationsTable, instancename.BazelInvocationsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(inq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryBuilds chains the current query on the "builds" edge.
-func (inq *InstanceNameQuery) QueryBuilds() *BuildQuery {
-	query := (&BuildClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) QueryBuilds() *BuildQuery {
+	query := (&BuildClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := inq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := inq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -108,20 +108,20 @@ func (inq *InstanceNameQuery) QueryBuilds() *BuildQuery {
 			sqlgraph.To(build.Table, build.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, instancename.BuildsTable, instancename.BuildsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(inq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTargets chains the current query on the "targets" edge.
-func (inq *InstanceNameQuery) QueryTargets() *TargetQuery {
-	query := (&TargetClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) QueryTargets() *TargetQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := inq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := inq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -130,7 +130,7 @@ func (inq *InstanceNameQuery) QueryTargets() *TargetQuery {
 			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, instancename.TargetsTable, instancename.TargetsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(inq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -138,8 +138,8 @@ func (inq *InstanceNameQuery) QueryTargets() *TargetQuery {
 
 // First returns the first InstanceName entity from the query.
 // Returns a *NotFoundError when no InstanceName was found.
-func (inq *InstanceNameQuery) First(ctx context.Context) (*InstanceName, error) {
-	nodes, err := inq.Limit(1).All(setContextOp(ctx, inq.ctx, ent.OpQueryFirst))
+func (_q *InstanceNameQuery) First(ctx context.Context) (*InstanceName, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -150,8 +150,8 @@ func (inq *InstanceNameQuery) First(ctx context.Context) (*InstanceName, error) 
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (inq *InstanceNameQuery) FirstX(ctx context.Context) *InstanceName {
-	node, err := inq.First(ctx)
+func (_q *InstanceNameQuery) FirstX(ctx context.Context) *InstanceName {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (inq *InstanceNameQuery) FirstX(ctx context.Context) *InstanceName {
 
 // FirstID returns the first InstanceName ID from the query.
 // Returns a *NotFoundError when no InstanceName ID was found.
-func (inq *InstanceNameQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *InstanceNameQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = inq.Limit(1).IDs(setContextOp(ctx, inq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -173,8 +173,8 @@ func (inq *InstanceNameQuery) FirstID(ctx context.Context) (id int64, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (inq *InstanceNameQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := inq.FirstID(ctx)
+func (_q *InstanceNameQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -184,8 +184,8 @@ func (inq *InstanceNameQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single InstanceName entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one InstanceName entity is found.
 // Returns a *NotFoundError when no InstanceName entities are found.
-func (inq *InstanceNameQuery) Only(ctx context.Context) (*InstanceName, error) {
-	nodes, err := inq.Limit(2).All(setContextOp(ctx, inq.ctx, ent.OpQueryOnly))
+func (_q *InstanceNameQuery) Only(ctx context.Context) (*InstanceName, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -200,8 +200,8 @@ func (inq *InstanceNameQuery) Only(ctx context.Context) (*InstanceName, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (inq *InstanceNameQuery) OnlyX(ctx context.Context) *InstanceName {
-	node, err := inq.Only(ctx)
+func (_q *InstanceNameQuery) OnlyX(ctx context.Context) *InstanceName {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -211,9 +211,9 @@ func (inq *InstanceNameQuery) OnlyX(ctx context.Context) *InstanceName {
 // OnlyID is like Only, but returns the only InstanceName ID in the query.
 // Returns a *NotSingularError when more than one InstanceName ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (inq *InstanceNameQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *InstanceNameQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = inq.Limit(2).IDs(setContextOp(ctx, inq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -228,8 +228,8 @@ func (inq *InstanceNameQuery) OnlyID(ctx context.Context) (id int64, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (inq *InstanceNameQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := inq.OnlyID(ctx)
+func (_q *InstanceNameQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -237,18 +237,18 @@ func (inq *InstanceNameQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of InstanceNames.
-func (inq *InstanceNameQuery) All(ctx context.Context) ([]*InstanceName, error) {
-	ctx = setContextOp(ctx, inq.ctx, ent.OpQueryAll)
-	if err := inq.prepareQuery(ctx); err != nil {
+func (_q *InstanceNameQuery) All(ctx context.Context) ([]*InstanceName, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*InstanceName, *InstanceNameQuery]()
-	return withInterceptors[[]*InstanceName](ctx, inq, qr, inq.inters)
+	return withInterceptors[[]*InstanceName](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (inq *InstanceNameQuery) AllX(ctx context.Context) []*InstanceName {
-	nodes, err := inq.All(ctx)
+func (_q *InstanceNameQuery) AllX(ctx context.Context) []*InstanceName {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -256,20 +256,20 @@ func (inq *InstanceNameQuery) AllX(ctx context.Context) []*InstanceName {
 }
 
 // IDs executes the query and returns a list of InstanceName IDs.
-func (inq *InstanceNameQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if inq.ctx.Unique == nil && inq.path != nil {
-		inq.Unique(true)
+func (_q *InstanceNameQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, inq.ctx, ent.OpQueryIDs)
-	if err = inq.Select(instancename.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(instancename.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (inq *InstanceNameQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := inq.IDs(ctx)
+func (_q *InstanceNameQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -277,17 +277,17 @@ func (inq *InstanceNameQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (inq *InstanceNameQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, inq.ctx, ent.OpQueryCount)
-	if err := inq.prepareQuery(ctx); err != nil {
+func (_q *InstanceNameQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, inq, querierCount[*InstanceNameQuery](), inq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*InstanceNameQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (inq *InstanceNameQuery) CountX(ctx context.Context) int {
-	count, err := inq.Count(ctx)
+func (_q *InstanceNameQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -295,9 +295,9 @@ func (inq *InstanceNameQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (inq *InstanceNameQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, inq.ctx, ent.OpQueryExist)
-	switch _, err := inq.FirstID(ctx); {
+func (_q *InstanceNameQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -308,8 +308,8 @@ func (inq *InstanceNameQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (inq *InstanceNameQuery) ExistX(ctx context.Context) bool {
-	exist, err := inq.Exist(ctx)
+func (_q *InstanceNameQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -318,56 +318,56 @@ func (inq *InstanceNameQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the InstanceNameQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (inq *InstanceNameQuery) Clone() *InstanceNameQuery {
-	if inq == nil {
+func (_q *InstanceNameQuery) Clone() *InstanceNameQuery {
+	if _q == nil {
 		return nil
 	}
 	return &InstanceNameQuery{
-		config:               inq.config,
-		ctx:                  inq.ctx.Clone(),
-		order:                append([]instancename.OrderOption{}, inq.order...),
-		inters:               append([]Interceptor{}, inq.inters...),
-		predicates:           append([]predicate.InstanceName{}, inq.predicates...),
-		withBazelInvocations: inq.withBazelInvocations.Clone(),
-		withBuilds:           inq.withBuilds.Clone(),
-		withTargets:          inq.withTargets.Clone(),
+		config:               _q.config,
+		ctx:                  _q.ctx.Clone(),
+		order:                append([]instancename.OrderOption{}, _q.order...),
+		inters:               append([]Interceptor{}, _q.inters...),
+		predicates:           append([]predicate.InstanceName{}, _q.predicates...),
+		withBazelInvocations: _q.withBazelInvocations.Clone(),
+		withBuilds:           _q.withBuilds.Clone(),
+		withTargets:          _q.withTargets.Clone(),
 		// clone intermediate query.
-		sql:  inq.sql.Clone(),
-		path: inq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocations tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocations" edge. The optional arguments are used to configure the query builder of the edge.
-func (inq *InstanceNameQuery) WithBazelInvocations(opts ...func(*BazelInvocationQuery)) *InstanceNameQuery {
-	query := (&BazelInvocationClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) WithBazelInvocations(opts ...func(*BazelInvocationQuery)) *InstanceNameQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	inq.withBazelInvocations = query
-	return inq
+	_q.withBazelInvocations = query
+	return _q
 }
 
 // WithBuilds tells the query-builder to eager-load the nodes that are connected to
 // the "builds" edge. The optional arguments are used to configure the query builder of the edge.
-func (inq *InstanceNameQuery) WithBuilds(opts ...func(*BuildQuery)) *InstanceNameQuery {
-	query := (&BuildClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) WithBuilds(opts ...func(*BuildQuery)) *InstanceNameQuery {
+	query := (&BuildClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	inq.withBuilds = query
-	return inq
+	_q.withBuilds = query
+	return _q
 }
 
 // WithTargets tells the query-builder to eager-load the nodes that are connected to
 // the "targets" edge. The optional arguments are used to configure the query builder of the edge.
-func (inq *InstanceNameQuery) WithTargets(opts ...func(*TargetQuery)) *InstanceNameQuery {
-	query := (&TargetClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) WithTargets(opts ...func(*TargetQuery)) *InstanceNameQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	inq.withTargets = query
-	return inq
+	_q.withTargets = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -384,10 +384,10 @@ func (inq *InstanceNameQuery) WithTargets(opts ...func(*TargetQuery)) *InstanceN
 //		GroupBy(instancename.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (inq *InstanceNameQuery) GroupBy(field string, fields ...string) *InstanceNameGroupBy {
-	inq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &InstanceNameGroupBy{build: inq}
-	grbuild.flds = &inq.ctx.Fields
+func (_q *InstanceNameQuery) GroupBy(field string, fields ...string) *InstanceNameGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &InstanceNameGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = instancename.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -405,78 +405,78 @@ func (inq *InstanceNameQuery) GroupBy(field string, fields ...string) *InstanceN
 //	client.InstanceName.Query().
 //		Select(instancename.FieldName).
 //		Scan(ctx, &v)
-func (inq *InstanceNameQuery) Select(fields ...string) *InstanceNameSelect {
-	inq.ctx.Fields = append(inq.ctx.Fields, fields...)
-	sbuild := &InstanceNameSelect{InstanceNameQuery: inq}
+func (_q *InstanceNameQuery) Select(fields ...string) *InstanceNameSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &InstanceNameSelect{InstanceNameQuery: _q}
 	sbuild.label = instancename.Label
-	sbuild.flds, sbuild.scan = &inq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a InstanceNameSelect configured with the given aggregations.
-func (inq *InstanceNameQuery) Aggregate(fns ...AggregateFunc) *InstanceNameSelect {
-	return inq.Select().Aggregate(fns...)
+func (_q *InstanceNameQuery) Aggregate(fns ...AggregateFunc) *InstanceNameSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (inq *InstanceNameQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range inq.inters {
+func (_q *InstanceNameQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, inq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range inq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !instancename.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if inq.path != nil {
-		prev, err := inq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		inq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (inq *InstanceNameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*InstanceName, error) {
+func (_q *InstanceNameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*InstanceName, error) {
 	var (
 		nodes       = []*InstanceName{}
-		_spec       = inq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [3]bool{
-			inq.withBazelInvocations != nil,
-			inq.withBuilds != nil,
-			inq.withTargets != nil,
+			_q.withBazelInvocations != nil,
+			_q.withBuilds != nil,
+			_q.withTargets != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*InstanceName).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &InstanceName{config: inq.config}
+		node := &InstanceName{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(inq.modifiers) > 0 {
-		_spec.Modifiers = inq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, inq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := inq.withBazelInvocations; query != nil {
-		if err := inq.loadBazelInvocations(ctx, query, nodes,
+	if query := _q.withBazelInvocations; query != nil {
+		if err := _q.loadBazelInvocations(ctx, query, nodes,
 			func(n *InstanceName) { n.Edges.BazelInvocations = []*BazelInvocation{} },
 			func(n *InstanceName, e *BazelInvocation) {
 				n.Edges.BazelInvocations = append(n.Edges.BazelInvocations, e)
@@ -484,50 +484,50 @@ func (inq *InstanceNameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 			return nil, err
 		}
 	}
-	if query := inq.withBuilds; query != nil {
-		if err := inq.loadBuilds(ctx, query, nodes,
+	if query := _q.withBuilds; query != nil {
+		if err := _q.loadBuilds(ctx, query, nodes,
 			func(n *InstanceName) { n.Edges.Builds = []*Build{} },
 			func(n *InstanceName, e *Build) { n.Edges.Builds = append(n.Edges.Builds, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := inq.withTargets; query != nil {
-		if err := inq.loadTargets(ctx, query, nodes,
+	if query := _q.withTargets; query != nil {
+		if err := _q.loadTargets(ctx, query, nodes,
 			func(n *InstanceName) { n.Edges.Targets = []*Target{} },
 			func(n *InstanceName, e *Target) { n.Edges.Targets = append(n.Edges.Targets, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range inq.withNamedBazelInvocations {
-		if err := inq.loadBazelInvocations(ctx, query, nodes,
+	for name, query := range _q.withNamedBazelInvocations {
+		if err := _q.loadBazelInvocations(ctx, query, nodes,
 			func(n *InstanceName) { n.appendNamedBazelInvocations(name) },
 			func(n *InstanceName, e *BazelInvocation) { n.appendNamedBazelInvocations(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range inq.withNamedBuilds {
-		if err := inq.loadBuilds(ctx, query, nodes,
+	for name, query := range _q.withNamedBuilds {
+		if err := _q.loadBuilds(ctx, query, nodes,
 			func(n *InstanceName) { n.appendNamedBuilds(name) },
 			func(n *InstanceName, e *Build) { n.appendNamedBuilds(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range inq.withNamedTargets {
-		if err := inq.loadTargets(ctx, query, nodes,
+	for name, query := range _q.withNamedTargets {
+		if err := _q.loadTargets(ctx, query, nodes,
 			func(n *InstanceName) { n.appendNamedTargets(name) },
 			func(n *InstanceName, e *Target) { n.appendNamedTargets(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range inq.loadTotal {
-		if err := inq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (inq *InstanceNameQuery) loadBazelInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *BazelInvocation)) error {
+func (_q *InstanceNameQuery) loadBazelInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *BazelInvocation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*InstanceName)
 	for i := range nodes {
@@ -558,7 +558,7 @@ func (inq *InstanceNameQuery) loadBazelInvocations(ctx context.Context, query *B
 	}
 	return nil
 }
-func (inq *InstanceNameQuery) loadBuilds(ctx context.Context, query *BuildQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Build)) error {
+func (_q *InstanceNameQuery) loadBuilds(ctx context.Context, query *BuildQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Build)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*InstanceName)
 	for i := range nodes {
@@ -589,7 +589,7 @@ func (inq *InstanceNameQuery) loadBuilds(ctx context.Context, query *BuildQuery,
 	}
 	return nil
 }
-func (inq *InstanceNameQuery) loadTargets(ctx context.Context, query *TargetQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Target)) error {
+func (_q *InstanceNameQuery) loadTargets(ctx context.Context, query *TargetQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Target)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*InstanceName)
 	for i := range nodes {
@@ -621,27 +621,27 @@ func (inq *InstanceNameQuery) loadTargets(ctx context.Context, query *TargetQuer
 	return nil
 }
 
-func (inq *InstanceNameQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := inq.querySpec()
-	if len(inq.modifiers) > 0 {
-		_spec.Modifiers = inq.modifiers
+func (_q *InstanceNameQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = inq.ctx.Fields
-	if len(inq.ctx.Fields) > 0 {
-		_spec.Unique = inq.ctx.Unique != nil && *inq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, inq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (inq *InstanceNameQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *InstanceNameQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(instancename.Table, instancename.Columns, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
-	_spec.From = inq.sql
-	if unique := inq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if inq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := inq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, instancename.FieldID)
 		for i := range fields {
@@ -650,20 +650,20 @@ func (inq *InstanceNameQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := inq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := inq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := inq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := inq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -673,33 +673,33 @@ func (inq *InstanceNameQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (inq *InstanceNameQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(inq.driver.Dialect())
+func (_q *InstanceNameQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(instancename.Table)
-	columns := inq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = instancename.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if inq.sql != nil {
-		selector = inq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if inq.ctx.Unique != nil && *inq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range inq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range inq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := inq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := inq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -707,44 +707,44 @@ func (inq *InstanceNameQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedBazelInvocations tells the query-builder to eager-load the nodes that are connected to the "bazel_invocations"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (inq *InstanceNameQuery) WithNamedBazelInvocations(name string, opts ...func(*BazelInvocationQuery)) *InstanceNameQuery {
-	query := (&BazelInvocationClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) WithNamedBazelInvocations(name string, opts ...func(*BazelInvocationQuery)) *InstanceNameQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if inq.withNamedBazelInvocations == nil {
-		inq.withNamedBazelInvocations = make(map[string]*BazelInvocationQuery)
+	if _q.withNamedBazelInvocations == nil {
+		_q.withNamedBazelInvocations = make(map[string]*BazelInvocationQuery)
 	}
-	inq.withNamedBazelInvocations[name] = query
-	return inq
+	_q.withNamedBazelInvocations[name] = query
+	return _q
 }
 
 // WithNamedBuilds tells the query-builder to eager-load the nodes that are connected to the "builds"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (inq *InstanceNameQuery) WithNamedBuilds(name string, opts ...func(*BuildQuery)) *InstanceNameQuery {
-	query := (&BuildClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) WithNamedBuilds(name string, opts ...func(*BuildQuery)) *InstanceNameQuery {
+	query := (&BuildClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if inq.withNamedBuilds == nil {
-		inq.withNamedBuilds = make(map[string]*BuildQuery)
+	if _q.withNamedBuilds == nil {
+		_q.withNamedBuilds = make(map[string]*BuildQuery)
 	}
-	inq.withNamedBuilds[name] = query
-	return inq
+	_q.withNamedBuilds[name] = query
+	return _q
 }
 
 // WithNamedTargets tells the query-builder to eager-load the nodes that are connected to the "targets"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (inq *InstanceNameQuery) WithNamedTargets(name string, opts ...func(*TargetQuery)) *InstanceNameQuery {
-	query := (&TargetClient{config: inq.config}).Query()
+func (_q *InstanceNameQuery) WithNamedTargets(name string, opts ...func(*TargetQuery)) *InstanceNameQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if inq.withNamedTargets == nil {
-		inq.withNamedTargets = make(map[string]*TargetQuery)
+	if _q.withNamedTargets == nil {
+		_q.withNamedTargets = make(map[string]*TargetQuery)
 	}
-	inq.withNamedTargets[name] = query
-	return inq
+	_q.withNamedTargets[name] = query
+	return _q
 }
 
 // InstanceNameGroupBy is the group-by builder for InstanceName entities.
@@ -754,41 +754,41 @@ type InstanceNameGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ingb *InstanceNameGroupBy) Aggregate(fns ...AggregateFunc) *InstanceNameGroupBy {
-	ingb.fns = append(ingb.fns, fns...)
-	return ingb
+func (_g *InstanceNameGroupBy) Aggregate(fns ...AggregateFunc) *InstanceNameGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ingb *InstanceNameGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ingb.build.ctx, ent.OpQueryGroupBy)
-	if err := ingb.build.prepareQuery(ctx); err != nil {
+func (_g *InstanceNameGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*InstanceNameQuery, *InstanceNameGroupBy](ctx, ingb.build, ingb, ingb.build.inters, v)
+	return scanWithInterceptors[*InstanceNameQuery, *InstanceNameGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ingb *InstanceNameGroupBy) sqlScan(ctx context.Context, root *InstanceNameQuery, v any) error {
+func (_g *InstanceNameGroupBy) sqlScan(ctx context.Context, root *InstanceNameQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ingb.fns))
-	for _, fn := range ingb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ingb.flds)+len(ingb.fns))
-		for _, f := range *ingb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ingb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ingb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -802,27 +802,27 @@ type InstanceNameSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ins *InstanceNameSelect) Aggregate(fns ...AggregateFunc) *InstanceNameSelect {
-	ins.fns = append(ins.fns, fns...)
-	return ins
+func (_s *InstanceNameSelect) Aggregate(fns ...AggregateFunc) *InstanceNameSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ins *InstanceNameSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ins.ctx, ent.OpQuerySelect)
-	if err := ins.prepareQuery(ctx); err != nil {
+func (_s *InstanceNameSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*InstanceNameQuery, *InstanceNameSelect](ctx, ins.InstanceNameQuery, ins, ins.inters, v)
+	return scanWithInterceptors[*InstanceNameQuery, *InstanceNameSelect](ctx, _s.InstanceNameQuery, _s, _s.inters, v)
 }
 
-func (ins *InstanceNameSelect) sqlScan(ctx context.Context, root *InstanceNameQuery, v any) error {
+func (_s *InstanceNameSelect) sqlScan(ctx context.Context, root *InstanceNameQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ins.fns))
-	for _, fn := range ins.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ins.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -830,7 +830,7 @@ func (ins *InstanceNameSelect) sqlScan(ctx context.Context, root *InstanceNameQu
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ins.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

@@ -111,7 +111,7 @@ func (*Target) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Target fields.
-func (t *Target) assignValues(columns []string, values []any) error {
+func (_m *Target) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -122,34 +122,34 @@ func (t *Target) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			t.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case target.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
 			} else if value.Valid {
-				t.Label = value.String
+				_m.Label = value.String
 			}
 		case target.FieldAspect:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field aspect", values[i])
 			} else if value.Valid {
-				t.Aspect = value.String
+				_m.Aspect = value.String
 			}
 		case target.FieldTargetKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field target_kind", values[i])
 			} else if value.Valid {
-				t.TargetKind = value.String
+				_m.TargetKind = value.String
 			}
 		case target.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_targets", value)
 			} else if value.Valid {
-				t.instance_name_targets = new(int64)
-				*t.instance_name_targets = int64(value.Int64)
+				_m.instance_name_targets = new(int64)
+				*_m.instance_name_targets = int64(value.Int64)
 			}
 		default:
-			t.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -157,110 +157,110 @@ func (t *Target) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Target.
 // This includes values selected through modifiers, order, etc.
-func (t *Target) Value(name string) (ent.Value, error) {
-	return t.selectValues.Get(name)
+func (_m *Target) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryInstanceName queries the "instance_name" edge of the Target entity.
-func (t *Target) QueryInstanceName() *InstanceNameQuery {
-	return NewTargetClient(t.config).QueryInstanceName(t)
+func (_m *Target) QueryInstanceName() *InstanceNameQuery {
+	return NewTargetClient(_m.config).QueryInstanceName(_m)
 }
 
 // QueryInvocationTargets queries the "invocation_targets" edge of the Target entity.
-func (t *Target) QueryInvocationTargets() *InvocationTargetQuery {
-	return NewTargetClient(t.config).QueryInvocationTargets(t)
+func (_m *Target) QueryInvocationTargets() *InvocationTargetQuery {
+	return NewTargetClient(_m.config).QueryInvocationTargets(_m)
 }
 
 // QueryTargetKindMappings queries the "target_kind_mappings" edge of the Target entity.
-func (t *Target) QueryTargetKindMappings() *TargetKindMappingQuery {
-	return NewTargetClient(t.config).QueryTargetKindMappings(t)
+func (_m *Target) QueryTargetKindMappings() *TargetKindMappingQuery {
+	return NewTargetClient(_m.config).QueryTargetKindMappings(_m)
 }
 
 // QueryTestTarget queries the "test_target" edge of the Target entity.
-func (t *Target) QueryTestTarget() *TestTargetQuery {
-	return NewTargetClient(t.config).QueryTestTarget(t)
+func (_m *Target) QueryTestTarget() *TestTargetQuery {
+	return NewTargetClient(_m.config).QueryTestTarget(_m)
 }
 
 // Update returns a builder for updating this Target.
 // Note that you need to call Target.Unwrap() before calling this method if this Target
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (t *Target) Update() *TargetUpdateOne {
-	return NewTargetClient(t.config).UpdateOne(t)
+func (_m *Target) Update() *TargetUpdateOne {
+	return NewTargetClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Target entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (t *Target) Unwrap() *Target {
-	_tx, ok := t.config.driver.(*txDriver)
+func (_m *Target) Unwrap() *Target {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Target is not a transactional entity")
 	}
-	t.config.driver = _tx.drv
-	return t
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (t *Target) String() string {
+func (_m *Target) String() string {
 	var builder strings.Builder
 	builder.WriteString("Target(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", t.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("label=")
-	builder.WriteString(t.Label)
+	builder.WriteString(_m.Label)
 	builder.WriteString(", ")
 	builder.WriteString("aspect=")
-	builder.WriteString(t.Aspect)
+	builder.WriteString(_m.Aspect)
 	builder.WriteString(", ")
 	builder.WriteString("target_kind=")
-	builder.WriteString(t.TargetKind)
+	builder.WriteString(_m.TargetKind)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedInvocationTargets returns the InvocationTargets named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (t *Target) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
-	if t.Edges.namedInvocationTargets == nil {
+func (_m *Target) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
+	if _m.Edges.namedInvocationTargets == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := t.Edges.namedInvocationTargets[name]
+	nodes, ok := _m.Edges.namedInvocationTargets[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (t *Target) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
-	if t.Edges.namedInvocationTargets == nil {
-		t.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
+func (_m *Target) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
+	if _m.Edges.namedInvocationTargets == nil {
+		_m.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
 	}
 	if len(edges) == 0 {
-		t.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
+		_m.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
 	} else {
-		t.Edges.namedInvocationTargets[name] = append(t.Edges.namedInvocationTargets[name], edges...)
+		_m.Edges.namedInvocationTargets[name] = append(_m.Edges.namedInvocationTargets[name], edges...)
 	}
 }
 
 // NamedTargetKindMappings returns the TargetKindMappings named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (t *Target) NamedTargetKindMappings(name string) ([]*TargetKindMapping, error) {
-	if t.Edges.namedTargetKindMappings == nil {
+func (_m *Target) NamedTargetKindMappings(name string) ([]*TargetKindMapping, error) {
+	if _m.Edges.namedTargetKindMappings == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := t.Edges.namedTargetKindMappings[name]
+	nodes, ok := _m.Edges.namedTargetKindMappings[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (t *Target) appendNamedTargetKindMappings(name string, edges ...*TargetKindMapping) {
-	if t.Edges.namedTargetKindMappings == nil {
-		t.Edges.namedTargetKindMappings = make(map[string][]*TargetKindMapping)
+func (_m *Target) appendNamedTargetKindMappings(name string, edges ...*TargetKindMapping) {
+	if _m.Edges.namedTargetKindMappings == nil {
+		_m.Edges.namedTargetKindMappings = make(map[string][]*TargetKindMapping)
 	}
 	if len(edges) == 0 {
-		t.Edges.namedTargetKindMappings[name] = []*TargetKindMapping{}
+		_m.Edges.namedTargetKindMappings[name] = []*TargetKindMapping{}
 	} else {
-		t.Edges.namedTargetKindMappings[name] = append(t.Edges.namedTargetKindMappings[name], edges...)
+		_m.Edges.namedTargetKindMappings[name] = append(_m.Edges.namedTargetKindMappings[name], edges...)
 	}
 }
 

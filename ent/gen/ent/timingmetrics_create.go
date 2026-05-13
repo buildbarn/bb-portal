@@ -23,113 +23,113 @@ type TimingMetricsCreate struct {
 }
 
 // SetCPUTimeInMs sets the "cpu_time_in_ms" field.
-func (tmc *TimingMetricsCreate) SetCPUTimeInMs(i int64) *TimingMetricsCreate {
-	tmc.mutation.SetCPUTimeInMs(i)
-	return tmc
+func (_c *TimingMetricsCreate) SetCPUTimeInMs(v int64) *TimingMetricsCreate {
+	_c.mutation.SetCPUTimeInMs(v)
+	return _c
 }
 
 // SetNillableCPUTimeInMs sets the "cpu_time_in_ms" field if the given value is not nil.
-func (tmc *TimingMetricsCreate) SetNillableCPUTimeInMs(i *int64) *TimingMetricsCreate {
-	if i != nil {
-		tmc.SetCPUTimeInMs(*i)
+func (_c *TimingMetricsCreate) SetNillableCPUTimeInMs(v *int64) *TimingMetricsCreate {
+	if v != nil {
+		_c.SetCPUTimeInMs(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetWallTimeInMs sets the "wall_time_in_ms" field.
-func (tmc *TimingMetricsCreate) SetWallTimeInMs(i int64) *TimingMetricsCreate {
-	tmc.mutation.SetWallTimeInMs(i)
-	return tmc
+func (_c *TimingMetricsCreate) SetWallTimeInMs(v int64) *TimingMetricsCreate {
+	_c.mutation.SetWallTimeInMs(v)
+	return _c
 }
 
 // SetNillableWallTimeInMs sets the "wall_time_in_ms" field if the given value is not nil.
-func (tmc *TimingMetricsCreate) SetNillableWallTimeInMs(i *int64) *TimingMetricsCreate {
-	if i != nil {
-		tmc.SetWallTimeInMs(*i)
+func (_c *TimingMetricsCreate) SetNillableWallTimeInMs(v *int64) *TimingMetricsCreate {
+	if v != nil {
+		_c.SetWallTimeInMs(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetAnalysisPhaseTimeInMs sets the "analysis_phase_time_in_ms" field.
-func (tmc *TimingMetricsCreate) SetAnalysisPhaseTimeInMs(i int64) *TimingMetricsCreate {
-	tmc.mutation.SetAnalysisPhaseTimeInMs(i)
-	return tmc
+func (_c *TimingMetricsCreate) SetAnalysisPhaseTimeInMs(v int64) *TimingMetricsCreate {
+	_c.mutation.SetAnalysisPhaseTimeInMs(v)
+	return _c
 }
 
 // SetNillableAnalysisPhaseTimeInMs sets the "analysis_phase_time_in_ms" field if the given value is not nil.
-func (tmc *TimingMetricsCreate) SetNillableAnalysisPhaseTimeInMs(i *int64) *TimingMetricsCreate {
-	if i != nil {
-		tmc.SetAnalysisPhaseTimeInMs(*i)
+func (_c *TimingMetricsCreate) SetNillableAnalysisPhaseTimeInMs(v *int64) *TimingMetricsCreate {
+	if v != nil {
+		_c.SetAnalysisPhaseTimeInMs(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetExecutionPhaseTimeInMs sets the "execution_phase_time_in_ms" field.
-func (tmc *TimingMetricsCreate) SetExecutionPhaseTimeInMs(i int64) *TimingMetricsCreate {
-	tmc.mutation.SetExecutionPhaseTimeInMs(i)
-	return tmc
+func (_c *TimingMetricsCreate) SetExecutionPhaseTimeInMs(v int64) *TimingMetricsCreate {
+	_c.mutation.SetExecutionPhaseTimeInMs(v)
+	return _c
 }
 
 // SetNillableExecutionPhaseTimeInMs sets the "execution_phase_time_in_ms" field if the given value is not nil.
-func (tmc *TimingMetricsCreate) SetNillableExecutionPhaseTimeInMs(i *int64) *TimingMetricsCreate {
-	if i != nil {
-		tmc.SetExecutionPhaseTimeInMs(*i)
+func (_c *TimingMetricsCreate) SetNillableExecutionPhaseTimeInMs(v *int64) *TimingMetricsCreate {
+	if v != nil {
+		_c.SetExecutionPhaseTimeInMs(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetActionsExecutionStartInMs sets the "actions_execution_start_in_ms" field.
-func (tmc *TimingMetricsCreate) SetActionsExecutionStartInMs(i int64) *TimingMetricsCreate {
-	tmc.mutation.SetActionsExecutionStartInMs(i)
-	return tmc
+func (_c *TimingMetricsCreate) SetActionsExecutionStartInMs(v int64) *TimingMetricsCreate {
+	_c.mutation.SetActionsExecutionStartInMs(v)
+	return _c
 }
 
 // SetNillableActionsExecutionStartInMs sets the "actions_execution_start_in_ms" field if the given value is not nil.
-func (tmc *TimingMetricsCreate) SetNillableActionsExecutionStartInMs(i *int64) *TimingMetricsCreate {
-	if i != nil {
-		tmc.SetActionsExecutionStartInMs(*i)
+func (_c *TimingMetricsCreate) SetNillableActionsExecutionStartInMs(v *int64) *TimingMetricsCreate {
+	if v != nil {
+		_c.SetActionsExecutionStartInMs(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tmc *TimingMetricsCreate) SetID(i int64) *TimingMetricsCreate {
-	tmc.mutation.SetID(i)
-	return tmc
+func (_c *TimingMetricsCreate) SetID(v int64) *TimingMetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmc *TimingMetricsCreate) SetMetricsID(id int64) *TimingMetricsCreate {
-	tmc.mutation.SetMetricsID(id)
-	return tmc
+func (_c *TimingMetricsCreate) SetMetricsID(id int64) *TimingMetricsCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmc *TimingMetricsCreate) SetNillableMetricsID(id *int64) *TimingMetricsCreate {
+func (_c *TimingMetricsCreate) SetNillableMetricsID(id *int64) *TimingMetricsCreate {
 	if id != nil {
-		tmc = tmc.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return tmc
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (tmc *TimingMetricsCreate) SetMetrics(m *Metrics) *TimingMetricsCreate {
-	return tmc.SetMetricsID(m.ID)
+func (_c *TimingMetricsCreate) SetMetrics(v *Metrics) *TimingMetricsCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // Mutation returns the TimingMetricsMutation object of the builder.
-func (tmc *TimingMetricsCreate) Mutation() *TimingMetricsMutation {
-	return tmc.mutation
+func (_c *TimingMetricsCreate) Mutation() *TimingMetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the TimingMetrics in the database.
-func (tmc *TimingMetricsCreate) Save(ctx context.Context) (*TimingMetrics, error) {
-	return withHooks(ctx, tmc.sqlSave, tmc.mutation, tmc.hooks)
+func (_c *TimingMetricsCreate) Save(ctx context.Context) (*TimingMetrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tmc *TimingMetricsCreate) SaveX(ctx context.Context) *TimingMetrics {
-	v, err := tmc.Save(ctx)
+func (_c *TimingMetricsCreate) SaveX(ctx context.Context) *TimingMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -137,29 +137,29 @@ func (tmc *TimingMetricsCreate) SaveX(ctx context.Context) *TimingMetrics {
 }
 
 // Exec executes the query.
-func (tmc *TimingMetricsCreate) Exec(ctx context.Context) error {
-	_, err := tmc.Save(ctx)
+func (_c *TimingMetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmc *TimingMetricsCreate) ExecX(ctx context.Context) {
-	if err := tmc.Exec(ctx); err != nil {
+func (_c *TimingMetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tmc *TimingMetricsCreate) check() error {
+func (_c *TimingMetricsCreate) check() error {
 	return nil
 }
 
-func (tmc *TimingMetricsCreate) sqlSave(ctx context.Context) (*TimingMetrics, error) {
-	if err := tmc.check(); err != nil {
+func (_c *TimingMetricsCreate) sqlSave(ctx context.Context) (*TimingMetrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -169,42 +169,42 @@ func (tmc *TimingMetricsCreate) sqlSave(ctx context.Context) (*TimingMetrics, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	tmc.mutation.id = &_node.ID
-	tmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tmc *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSpec) {
+func (_c *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TimingMetrics{config: tmc.config}
+		_node = &TimingMetrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(timingmetrics.Table, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = tmc.conflict
-	if id, ok := tmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := tmc.mutation.CPUTimeInMs(); ok {
+	if value, ok := _c.mutation.CPUTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64, value)
 		_node.CPUTimeInMs = value
 	}
-	if value, ok := tmc.mutation.WallTimeInMs(); ok {
+	if value, ok := _c.mutation.WallTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldWallTimeInMs, field.TypeInt64, value)
 		_node.WallTimeInMs = value
 	}
-	if value, ok := tmc.mutation.AnalysisPhaseTimeInMs(); ok {
+	if value, ok := _c.mutation.AnalysisPhaseTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldAnalysisPhaseTimeInMs, field.TypeInt64, value)
 		_node.AnalysisPhaseTimeInMs = value
 	}
-	if value, ok := tmc.mutation.ExecutionPhaseTimeInMs(); ok {
+	if value, ok := _c.mutation.ExecutionPhaseTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldExecutionPhaseTimeInMs, field.TypeInt64, value)
 		_node.ExecutionPhaseTimeInMs = value
 	}
-	if value, ok := tmc.mutation.ActionsExecutionStartInMs(); ok {
+	if value, ok := _c.mutation.ActionsExecutionStartInMs(); ok {
 		_spec.SetField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64, value)
 		_node.ActionsExecutionStartInMs = value
 	}
-	if nodes := tmc.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -240,10 +240,10 @@ func (tmc *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSp
 //			SetCPUTimeInMs(v+v).
 //		}).
 //		Exec(ctx)
-func (tmc *TimingMetricsCreate) OnConflict(opts ...sql.ConflictOption) *TimingMetricsUpsertOne {
-	tmc.conflict = opts
+func (_c *TimingMetricsCreate) OnConflict(opts ...sql.ConflictOption) *TimingMetricsUpsertOne {
+	_c.conflict = opts
 	return &TimingMetricsUpsertOne{
-		create: tmc,
+		create: _c,
 	}
 }
 
@@ -253,10 +253,10 @@ func (tmc *TimingMetricsCreate) OnConflict(opts ...sql.ConflictOption) *TimingMe
 //	client.TimingMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tmc *TimingMetricsCreate) OnConflictColumns(columns ...string) *TimingMetricsUpsertOne {
-	tmc.conflict = append(tmc.conflict, sql.ConflictColumns(columns...))
+func (_c *TimingMetricsCreate) OnConflictColumns(columns ...string) *TimingMetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TimingMetricsUpsertOne{
-		create: tmc,
+		create: _c,
 	}
 }
 
@@ -623,16 +623,16 @@ type TimingMetricsCreateBulk struct {
 }
 
 // Save creates the TimingMetrics entities in the database.
-func (tmcb *TimingMetricsCreateBulk) Save(ctx context.Context) ([]*TimingMetrics, error) {
-	if tmcb.err != nil {
-		return nil, tmcb.err
+func (_c *TimingMetricsCreateBulk) Save(ctx context.Context) ([]*TimingMetrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tmcb.builders))
-	nodes := make([]*TimingMetrics, len(tmcb.builders))
-	mutators := make([]Mutator, len(tmcb.builders))
-	for i := range tmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TimingMetrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TimingMetricsMutation)
 				if !ok {
@@ -645,12 +645,12 @@ func (tmcb *TimingMetricsCreateBulk) Save(ctx context.Context) ([]*TimingMetrics
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -674,7 +674,7 @@ func (tmcb *TimingMetricsCreateBulk) Save(ctx context.Context) ([]*TimingMetrics
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -682,8 +682,8 @@ func (tmcb *TimingMetricsCreateBulk) Save(ctx context.Context) ([]*TimingMetrics
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tmcb *TimingMetricsCreateBulk) SaveX(ctx context.Context) []*TimingMetrics {
-	v, err := tmcb.Save(ctx)
+func (_c *TimingMetricsCreateBulk) SaveX(ctx context.Context) []*TimingMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -691,14 +691,14 @@ func (tmcb *TimingMetricsCreateBulk) SaveX(ctx context.Context) []*TimingMetrics
 }
 
 // Exec executes the query.
-func (tmcb *TimingMetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := tmcb.Save(ctx)
+func (_c *TimingMetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmcb *TimingMetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := tmcb.Exec(ctx); err != nil {
+func (_c *TimingMetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -718,10 +718,10 @@ func (tmcb *TimingMetricsCreateBulk) ExecX(ctx context.Context) {
 //			SetCPUTimeInMs(v+v).
 //		}).
 //		Exec(ctx)
-func (tmcb *TimingMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *TimingMetricsUpsertBulk {
-	tmcb.conflict = opts
+func (_c *TimingMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *TimingMetricsUpsertBulk {
+	_c.conflict = opts
 	return &TimingMetricsUpsertBulk{
-		create: tmcb,
+		create: _c,
 	}
 }
 
@@ -731,10 +731,10 @@ func (tmcb *TimingMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *Tim
 //	client.TimingMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tmcb *TimingMetricsCreateBulk) OnConflictColumns(columns ...string) *TimingMetricsUpsertBulk {
-	tmcb.conflict = append(tmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *TimingMetricsCreateBulk) OnConflictColumns(columns ...string) *TimingMetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TimingMetricsUpsertBulk{
-		create: tmcb,
+		create: _c,
 	}
 }
 

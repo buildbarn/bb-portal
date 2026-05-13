@@ -28,7 +28,8 @@ func BenchmarkDbAuthService_GetAuthorizedInstanceNames(b *testing.B) {
 	}
 
 	adminCtx := dbauthservice.NewContextWithDbAuthServiceBypass(context.Background())
-	authCtx := auth.NewContextWithAuthenticationMetadata(context.Background(),
+	authCtx := auth.NewContextWithAuthenticationMetadata(
+		context.Background(),
 		util.Must(auth.NewAuthenticationMetadataFromRaw(map[string]any{
 			"private": map[string]any{
 				"roles": []string{"admin"},

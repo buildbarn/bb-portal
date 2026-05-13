@@ -25,132 +25,132 @@ type InstanceNameUpdate struct {
 }
 
 // Where appends a list predicates to the InstanceNameUpdate builder.
-func (inu *InstanceNameUpdate) Where(ps ...predicate.InstanceName) *InstanceNameUpdate {
-	inu.mutation.Where(ps...)
-	return inu
+func (_u *InstanceNameUpdate) Where(ps ...predicate.InstanceName) *InstanceNameUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (inu *InstanceNameUpdate) AddBazelInvocationIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.AddBazelInvocationIDs(ids...)
-	return inu
+func (_u *InstanceNameUpdate) AddBazelInvocationIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.AddBazelInvocationIDs(ids...)
+	return _u
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
-func (inu *InstanceNameUpdate) AddBazelInvocations(b ...*BazelInvocation) *InstanceNameUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdate) AddBazelInvocations(v ...*BazelInvocation) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inu.AddBazelInvocationIDs(ids...)
+	return _u.AddBazelInvocationIDs(ids...)
 }
 
 // AddBuildIDs adds the "builds" edge to the Build entity by IDs.
-func (inu *InstanceNameUpdate) AddBuildIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.AddBuildIDs(ids...)
-	return inu
+func (_u *InstanceNameUpdate) AddBuildIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.AddBuildIDs(ids...)
+	return _u
 }
 
 // AddBuilds adds the "builds" edges to the Build entity.
-func (inu *InstanceNameUpdate) AddBuilds(b ...*Build) *InstanceNameUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdate) AddBuilds(v ...*Build) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inu.AddBuildIDs(ids...)
+	return _u.AddBuildIDs(ids...)
 }
 
 // AddTargetIDs adds the "targets" edge to the Target entity by IDs.
-func (inu *InstanceNameUpdate) AddTargetIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.AddTargetIDs(ids...)
-	return inu
+func (_u *InstanceNameUpdate) AddTargetIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.AddTargetIDs(ids...)
+	return _u
 }
 
 // AddTargets adds the "targets" edges to the Target entity.
-func (inu *InstanceNameUpdate) AddTargets(t ...*Target) *InstanceNameUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InstanceNameUpdate) AddTargets(v ...*Target) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inu.AddTargetIDs(ids...)
+	return _u.AddTargetIDs(ids...)
 }
 
 // Mutation returns the InstanceNameMutation object of the builder.
-func (inu *InstanceNameUpdate) Mutation() *InstanceNameMutation {
-	return inu.mutation
+func (_u *InstanceNameUpdate) Mutation() *InstanceNameMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocations clears all "bazel_invocations" edges to the BazelInvocation entity.
-func (inu *InstanceNameUpdate) ClearBazelInvocations() *InstanceNameUpdate {
-	inu.mutation.ClearBazelInvocations()
-	return inu
+func (_u *InstanceNameUpdate) ClearBazelInvocations() *InstanceNameUpdate {
+	_u.mutation.ClearBazelInvocations()
+	return _u
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to BazelInvocation entities by IDs.
-func (inu *InstanceNameUpdate) RemoveBazelInvocationIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.RemoveBazelInvocationIDs(ids...)
-	return inu
+func (_u *InstanceNameUpdate) RemoveBazelInvocationIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.RemoveBazelInvocationIDs(ids...)
+	return _u
 }
 
 // RemoveBazelInvocations removes "bazel_invocations" edges to BazelInvocation entities.
-func (inu *InstanceNameUpdate) RemoveBazelInvocations(b ...*BazelInvocation) *InstanceNameUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdate) RemoveBazelInvocations(v ...*BazelInvocation) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inu.RemoveBazelInvocationIDs(ids...)
+	return _u.RemoveBazelInvocationIDs(ids...)
 }
 
 // ClearBuilds clears all "builds" edges to the Build entity.
-func (inu *InstanceNameUpdate) ClearBuilds() *InstanceNameUpdate {
-	inu.mutation.ClearBuilds()
-	return inu
+func (_u *InstanceNameUpdate) ClearBuilds() *InstanceNameUpdate {
+	_u.mutation.ClearBuilds()
+	return _u
 }
 
 // RemoveBuildIDs removes the "builds" edge to Build entities by IDs.
-func (inu *InstanceNameUpdate) RemoveBuildIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.RemoveBuildIDs(ids...)
-	return inu
+func (_u *InstanceNameUpdate) RemoveBuildIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.RemoveBuildIDs(ids...)
+	return _u
 }
 
 // RemoveBuilds removes "builds" edges to Build entities.
-func (inu *InstanceNameUpdate) RemoveBuilds(b ...*Build) *InstanceNameUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdate) RemoveBuilds(v ...*Build) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inu.RemoveBuildIDs(ids...)
+	return _u.RemoveBuildIDs(ids...)
 }
 
 // ClearTargets clears all "targets" edges to the Target entity.
-func (inu *InstanceNameUpdate) ClearTargets() *InstanceNameUpdate {
-	inu.mutation.ClearTargets()
-	return inu
+func (_u *InstanceNameUpdate) ClearTargets() *InstanceNameUpdate {
+	_u.mutation.ClearTargets()
+	return _u
 }
 
 // RemoveTargetIDs removes the "targets" edge to Target entities by IDs.
-func (inu *InstanceNameUpdate) RemoveTargetIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.RemoveTargetIDs(ids...)
-	return inu
+func (_u *InstanceNameUpdate) RemoveTargetIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.RemoveTargetIDs(ids...)
+	return _u
 }
 
 // RemoveTargets removes "targets" edges to Target entities.
-func (inu *InstanceNameUpdate) RemoveTargets(t ...*Target) *InstanceNameUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InstanceNameUpdate) RemoveTargets(v ...*Target) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inu.RemoveTargetIDs(ids...)
+	return _u.RemoveTargetIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (inu *InstanceNameUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, inu.sqlSave, inu.mutation, inu.hooks)
+func (_u *InstanceNameUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (inu *InstanceNameUpdate) SaveX(ctx context.Context) int {
-	affected, err := inu.Save(ctx)
+func (_u *InstanceNameUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -158,28 +158,28 @@ func (inu *InstanceNameUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (inu *InstanceNameUpdate) Exec(ctx context.Context) error {
-	_, err := inu.Save(ctx)
+func (_u *InstanceNameUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (inu *InstanceNameUpdate) ExecX(ctx context.Context) {
-	if err := inu.Exec(ctx); err != nil {
+func (_u *InstanceNameUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *InstanceNameUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(instancename.Table, instancename.Columns, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
-	if ps := inu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if inu.mutation.BazelInvocationsCleared() {
+	if _u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -192,7 +192,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inu.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !inu.mutation.BazelInvocationsCleared() {
+	if nodes := _u.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !_u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -208,7 +208,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inu.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -224,7 +224,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if inu.mutation.BuildsCleared() {
+	if _u.mutation.BuildsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -237,7 +237,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inu.mutation.RemovedBuildsIDs(); len(nodes) > 0 && !inu.mutation.BuildsCleared() {
+	if nodes := _u.mutation.RemovedBuildsIDs(); len(nodes) > 0 && !_u.mutation.BuildsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -253,7 +253,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inu.mutation.BuildsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BuildsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -269,7 +269,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if inu.mutation.TargetsCleared() {
+	if _u.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -282,7 +282,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inu.mutation.RemovedTargetsIDs(); len(nodes) > 0 && !inu.mutation.TargetsCleared() {
+	if nodes := _u.mutation.RemovedTargetsIDs(); len(nodes) > 0 && !_u.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -298,7 +298,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inu.mutation.TargetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -314,7 +314,7 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, inu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{instancename.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -322,8 +322,8 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	inu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // InstanceNameUpdateOne is the builder for updating a single InstanceName entity.
@@ -335,139 +335,139 @@ type InstanceNameUpdateOne struct {
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (inuo *InstanceNameUpdateOne) AddBazelInvocationIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.AddBazelInvocationIDs(ids...)
-	return inuo
+func (_u *InstanceNameUpdateOne) AddBazelInvocationIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.AddBazelInvocationIDs(ids...)
+	return _u
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
-func (inuo *InstanceNameUpdateOne) AddBazelInvocations(b ...*BazelInvocation) *InstanceNameUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdateOne) AddBazelInvocations(v ...*BazelInvocation) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inuo.AddBazelInvocationIDs(ids...)
+	return _u.AddBazelInvocationIDs(ids...)
 }
 
 // AddBuildIDs adds the "builds" edge to the Build entity by IDs.
-func (inuo *InstanceNameUpdateOne) AddBuildIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.AddBuildIDs(ids...)
-	return inuo
+func (_u *InstanceNameUpdateOne) AddBuildIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.AddBuildIDs(ids...)
+	return _u
 }
 
 // AddBuilds adds the "builds" edges to the Build entity.
-func (inuo *InstanceNameUpdateOne) AddBuilds(b ...*Build) *InstanceNameUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdateOne) AddBuilds(v ...*Build) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inuo.AddBuildIDs(ids...)
+	return _u.AddBuildIDs(ids...)
 }
 
 // AddTargetIDs adds the "targets" edge to the Target entity by IDs.
-func (inuo *InstanceNameUpdateOne) AddTargetIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.AddTargetIDs(ids...)
-	return inuo
+func (_u *InstanceNameUpdateOne) AddTargetIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.AddTargetIDs(ids...)
+	return _u
 }
 
 // AddTargets adds the "targets" edges to the Target entity.
-func (inuo *InstanceNameUpdateOne) AddTargets(t ...*Target) *InstanceNameUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InstanceNameUpdateOne) AddTargets(v ...*Target) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inuo.AddTargetIDs(ids...)
+	return _u.AddTargetIDs(ids...)
 }
 
 // Mutation returns the InstanceNameMutation object of the builder.
-func (inuo *InstanceNameUpdateOne) Mutation() *InstanceNameMutation {
-	return inuo.mutation
+func (_u *InstanceNameUpdateOne) Mutation() *InstanceNameMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocations clears all "bazel_invocations" edges to the BazelInvocation entity.
-func (inuo *InstanceNameUpdateOne) ClearBazelInvocations() *InstanceNameUpdateOne {
-	inuo.mutation.ClearBazelInvocations()
-	return inuo
+func (_u *InstanceNameUpdateOne) ClearBazelInvocations() *InstanceNameUpdateOne {
+	_u.mutation.ClearBazelInvocations()
+	return _u
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to BazelInvocation entities by IDs.
-func (inuo *InstanceNameUpdateOne) RemoveBazelInvocationIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.RemoveBazelInvocationIDs(ids...)
-	return inuo
+func (_u *InstanceNameUpdateOne) RemoveBazelInvocationIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.RemoveBazelInvocationIDs(ids...)
+	return _u
 }
 
 // RemoveBazelInvocations removes "bazel_invocations" edges to BazelInvocation entities.
-func (inuo *InstanceNameUpdateOne) RemoveBazelInvocations(b ...*BazelInvocation) *InstanceNameUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdateOne) RemoveBazelInvocations(v ...*BazelInvocation) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inuo.RemoveBazelInvocationIDs(ids...)
+	return _u.RemoveBazelInvocationIDs(ids...)
 }
 
 // ClearBuilds clears all "builds" edges to the Build entity.
-func (inuo *InstanceNameUpdateOne) ClearBuilds() *InstanceNameUpdateOne {
-	inuo.mutation.ClearBuilds()
-	return inuo
+func (_u *InstanceNameUpdateOne) ClearBuilds() *InstanceNameUpdateOne {
+	_u.mutation.ClearBuilds()
+	return _u
 }
 
 // RemoveBuildIDs removes the "builds" edge to Build entities by IDs.
-func (inuo *InstanceNameUpdateOne) RemoveBuildIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.RemoveBuildIDs(ids...)
-	return inuo
+func (_u *InstanceNameUpdateOne) RemoveBuildIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.RemoveBuildIDs(ids...)
+	return _u
 }
 
 // RemoveBuilds removes "builds" edges to Build entities.
-func (inuo *InstanceNameUpdateOne) RemoveBuilds(b ...*Build) *InstanceNameUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *InstanceNameUpdateOne) RemoveBuilds(v ...*Build) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inuo.RemoveBuildIDs(ids...)
+	return _u.RemoveBuildIDs(ids...)
 }
 
 // ClearTargets clears all "targets" edges to the Target entity.
-func (inuo *InstanceNameUpdateOne) ClearTargets() *InstanceNameUpdateOne {
-	inuo.mutation.ClearTargets()
-	return inuo
+func (_u *InstanceNameUpdateOne) ClearTargets() *InstanceNameUpdateOne {
+	_u.mutation.ClearTargets()
+	return _u
 }
 
 // RemoveTargetIDs removes the "targets" edge to Target entities by IDs.
-func (inuo *InstanceNameUpdateOne) RemoveTargetIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.RemoveTargetIDs(ids...)
-	return inuo
+func (_u *InstanceNameUpdateOne) RemoveTargetIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.RemoveTargetIDs(ids...)
+	return _u
 }
 
 // RemoveTargets removes "targets" edges to Target entities.
-func (inuo *InstanceNameUpdateOne) RemoveTargets(t ...*Target) *InstanceNameUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InstanceNameUpdateOne) RemoveTargets(v ...*Target) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inuo.RemoveTargetIDs(ids...)
+	return _u.RemoveTargetIDs(ids...)
 }
 
 // Where appends a list predicates to the InstanceNameUpdate builder.
-func (inuo *InstanceNameUpdateOne) Where(ps ...predicate.InstanceName) *InstanceNameUpdateOne {
-	inuo.mutation.Where(ps...)
-	return inuo
+func (_u *InstanceNameUpdateOne) Where(ps ...predicate.InstanceName) *InstanceNameUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (inuo *InstanceNameUpdateOne) Select(field string, fields ...string) *InstanceNameUpdateOne {
-	inuo.fields = append([]string{field}, fields...)
-	return inuo
+func (_u *InstanceNameUpdateOne) Select(field string, fields ...string) *InstanceNameUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated InstanceName entity.
-func (inuo *InstanceNameUpdateOne) Save(ctx context.Context) (*InstanceName, error) {
-	return withHooks(ctx, inuo.sqlSave, inuo.mutation, inuo.hooks)
+func (_u *InstanceNameUpdateOne) Save(ctx context.Context) (*InstanceName, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (inuo *InstanceNameUpdateOne) SaveX(ctx context.Context) *InstanceName {
-	node, err := inuo.Save(ctx)
+func (_u *InstanceNameUpdateOne) SaveX(ctx context.Context) *InstanceName {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -475,26 +475,26 @@ func (inuo *InstanceNameUpdateOne) SaveX(ctx context.Context) *InstanceName {
 }
 
 // Exec executes the query on the entity.
-func (inuo *InstanceNameUpdateOne) Exec(ctx context.Context) error {
-	_, err := inuo.Save(ctx)
+func (_u *InstanceNameUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (inuo *InstanceNameUpdateOne) ExecX(ctx context.Context) {
-	if err := inuo.Exec(ctx); err != nil {
+func (_u *InstanceNameUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *InstanceName, err error) {
+func (_u *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *InstanceName, err error) {
 	_spec := sqlgraph.NewUpdateSpec(instancename.Table, instancename.Columns, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
-	id, ok := inuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "InstanceName.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := inuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, instancename.FieldID)
 		for _, f := range fields {
@@ -506,14 +506,14 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 			}
 		}
 	}
-	if ps := inuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if inuo.mutation.BazelInvocationsCleared() {
+	if _u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -526,7 +526,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inuo.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !inuo.mutation.BazelInvocationsCleared() {
+	if nodes := _u.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !_u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -542,7 +542,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inuo.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -558,7 +558,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if inuo.mutation.BuildsCleared() {
+	if _u.mutation.BuildsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -571,7 +571,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inuo.mutation.RemovedBuildsIDs(); len(nodes) > 0 && !inuo.mutation.BuildsCleared() {
+	if nodes := _u.mutation.RemovedBuildsIDs(); len(nodes) > 0 && !_u.mutation.BuildsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -587,7 +587,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inuo.mutation.BuildsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BuildsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -603,7 +603,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if inuo.mutation.TargetsCleared() {
+	if _u.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -616,7 +616,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inuo.mutation.RemovedTargetsIDs(); len(nodes) > 0 && !inuo.mutation.TargetsCleared() {
+	if nodes := _u.mutation.RemovedTargetsIDs(); len(nodes) > 0 && !_u.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -632,7 +632,7 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := inuo.mutation.TargetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -648,10 +648,10 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &InstanceName{config: inuo.config}
+	_node = &InstanceName{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, inuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{instancename.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -659,6 +659,6 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 		}
 		return nil, err
 	}
-	inuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

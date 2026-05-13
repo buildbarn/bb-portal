@@ -25,75 +25,75 @@ type InstanceNameCreate struct {
 }
 
 // SetName sets the "name" field.
-func (inc *InstanceNameCreate) SetName(s string) *InstanceNameCreate {
-	inc.mutation.SetName(s)
-	return inc
+func (_c *InstanceNameCreate) SetName(v string) *InstanceNameCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (inc *InstanceNameCreate) SetID(i int64) *InstanceNameCreate {
-	inc.mutation.SetID(i)
-	return inc
+func (_c *InstanceNameCreate) SetID(v int64) *InstanceNameCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (inc *InstanceNameCreate) AddBazelInvocationIDs(ids ...int64) *InstanceNameCreate {
-	inc.mutation.AddBazelInvocationIDs(ids...)
-	return inc
+func (_c *InstanceNameCreate) AddBazelInvocationIDs(ids ...int64) *InstanceNameCreate {
+	_c.mutation.AddBazelInvocationIDs(ids...)
+	return _c
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
-func (inc *InstanceNameCreate) AddBazelInvocations(b ...*BazelInvocation) *InstanceNameCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_c *InstanceNameCreate) AddBazelInvocations(v ...*BazelInvocation) *InstanceNameCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inc.AddBazelInvocationIDs(ids...)
+	return _c.AddBazelInvocationIDs(ids...)
 }
 
 // AddBuildIDs adds the "builds" edge to the Build entity by IDs.
-func (inc *InstanceNameCreate) AddBuildIDs(ids ...int64) *InstanceNameCreate {
-	inc.mutation.AddBuildIDs(ids...)
-	return inc
+func (_c *InstanceNameCreate) AddBuildIDs(ids ...int64) *InstanceNameCreate {
+	_c.mutation.AddBuildIDs(ids...)
+	return _c
 }
 
 // AddBuilds adds the "builds" edges to the Build entity.
-func (inc *InstanceNameCreate) AddBuilds(b ...*Build) *InstanceNameCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_c *InstanceNameCreate) AddBuilds(v ...*Build) *InstanceNameCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inc.AddBuildIDs(ids...)
+	return _c.AddBuildIDs(ids...)
 }
 
 // AddTargetIDs adds the "targets" edge to the Target entity by IDs.
-func (inc *InstanceNameCreate) AddTargetIDs(ids ...int64) *InstanceNameCreate {
-	inc.mutation.AddTargetIDs(ids...)
-	return inc
+func (_c *InstanceNameCreate) AddTargetIDs(ids ...int64) *InstanceNameCreate {
+	_c.mutation.AddTargetIDs(ids...)
+	return _c
 }
 
 // AddTargets adds the "targets" edges to the Target entity.
-func (inc *InstanceNameCreate) AddTargets(t ...*Target) *InstanceNameCreate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_c *InstanceNameCreate) AddTargets(v ...*Target) *InstanceNameCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return inc.AddTargetIDs(ids...)
+	return _c.AddTargetIDs(ids...)
 }
 
 // Mutation returns the InstanceNameMutation object of the builder.
-func (inc *InstanceNameCreate) Mutation() *InstanceNameMutation {
-	return inc.mutation
+func (_c *InstanceNameCreate) Mutation() *InstanceNameMutation {
+	return _c.mutation
 }
 
 // Save creates the InstanceName in the database.
-func (inc *InstanceNameCreate) Save(ctx context.Context) (*InstanceName, error) {
-	return withHooks(ctx, inc.sqlSave, inc.mutation, inc.hooks)
+func (_c *InstanceNameCreate) Save(ctx context.Context) (*InstanceName, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (inc *InstanceNameCreate) SaveX(ctx context.Context) *InstanceName {
-	v, err := inc.Save(ctx)
+func (_c *InstanceNameCreate) SaveX(ctx context.Context) *InstanceName {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -101,32 +101,32 @@ func (inc *InstanceNameCreate) SaveX(ctx context.Context) *InstanceName {
 }
 
 // Exec executes the query.
-func (inc *InstanceNameCreate) Exec(ctx context.Context) error {
-	_, err := inc.Save(ctx)
+func (_c *InstanceNameCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (inc *InstanceNameCreate) ExecX(ctx context.Context) {
-	if err := inc.Exec(ctx); err != nil {
+func (_c *InstanceNameCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (inc *InstanceNameCreate) check() error {
-	if _, ok := inc.mutation.Name(); !ok {
+func (_c *InstanceNameCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "InstanceName.name"`)}
 	}
 	return nil
 }
 
-func (inc *InstanceNameCreate) sqlSave(ctx context.Context) (*InstanceName, error) {
-	if err := inc.check(); err != nil {
+func (_c *InstanceNameCreate) sqlSave(ctx context.Context) (*InstanceName, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := inc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, inc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -136,26 +136,26 @@ func (inc *InstanceNameCreate) sqlSave(ctx context.Context) (*InstanceName, erro
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	inc.mutation.id = &_node.ID
-	inc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec) {
+func (_c *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec) {
 	var (
-		_node = &InstanceName{config: inc.config}
+		_node = &InstanceName{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(instancename.Table, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = inc.conflict
-	if id, ok := inc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := inc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(instancename.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if nodes := inc.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -171,7 +171,7 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := inc.mutation.BuildsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BuildsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -187,7 +187,7 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := inc.mutation.TargetsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -222,10 +222,10 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (inc *InstanceNameCreate) OnConflict(opts ...sql.ConflictOption) *InstanceNameUpsertOne {
-	inc.conflict = opts
+func (_c *InstanceNameCreate) OnConflict(opts ...sql.ConflictOption) *InstanceNameUpsertOne {
+	_c.conflict = opts
 	return &InstanceNameUpsertOne{
-		create: inc,
+		create: _c,
 	}
 }
 
@@ -235,10 +235,10 @@ func (inc *InstanceNameCreate) OnConflict(opts ...sql.ConflictOption) *InstanceN
 //	client.InstanceName.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (inc *InstanceNameCreate) OnConflictColumns(columns ...string) *InstanceNameUpsertOne {
-	inc.conflict = append(inc.conflict, sql.ConflictColumns(columns...))
+func (_c *InstanceNameCreate) OnConflictColumns(columns ...string) *InstanceNameUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InstanceNameUpsertOne{
-		create: inc,
+		create: _c,
 	}
 }
 
@@ -348,16 +348,16 @@ type InstanceNameCreateBulk struct {
 }
 
 // Save creates the InstanceName entities in the database.
-func (incb *InstanceNameCreateBulk) Save(ctx context.Context) ([]*InstanceName, error) {
-	if incb.err != nil {
-		return nil, incb.err
+func (_c *InstanceNameCreateBulk) Save(ctx context.Context) ([]*InstanceName, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(incb.builders))
-	nodes := make([]*InstanceName, len(incb.builders))
-	mutators := make([]Mutator, len(incb.builders))
-	for i := range incb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*InstanceName, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := incb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*InstanceNameMutation)
 				if !ok {
@@ -370,12 +370,12 @@ func (incb *InstanceNameCreateBulk) Save(ctx context.Context) ([]*InstanceName, 
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, incb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = incb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, incb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -399,7 +399,7 @@ func (incb *InstanceNameCreateBulk) Save(ctx context.Context) ([]*InstanceName, 
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, incb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -407,8 +407,8 @@ func (incb *InstanceNameCreateBulk) Save(ctx context.Context) ([]*InstanceName, 
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (incb *InstanceNameCreateBulk) SaveX(ctx context.Context) []*InstanceName {
-	v, err := incb.Save(ctx)
+func (_c *InstanceNameCreateBulk) SaveX(ctx context.Context) []*InstanceName {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -416,14 +416,14 @@ func (incb *InstanceNameCreateBulk) SaveX(ctx context.Context) []*InstanceName {
 }
 
 // Exec executes the query.
-func (incb *InstanceNameCreateBulk) Exec(ctx context.Context) error {
-	_, err := incb.Save(ctx)
+func (_c *InstanceNameCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (incb *InstanceNameCreateBulk) ExecX(ctx context.Context) {
-	if err := incb.Exec(ctx); err != nil {
+func (_c *InstanceNameCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -443,10 +443,10 @@ func (incb *InstanceNameCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (incb *InstanceNameCreateBulk) OnConflict(opts ...sql.ConflictOption) *InstanceNameUpsertBulk {
-	incb.conflict = opts
+func (_c *InstanceNameCreateBulk) OnConflict(opts ...sql.ConflictOption) *InstanceNameUpsertBulk {
+	_c.conflict = opts
 	return &InstanceNameUpsertBulk{
-		create: incb,
+		create: _c,
 	}
 }
 
@@ -456,10 +456,10 @@ func (incb *InstanceNameCreateBulk) OnConflict(opts ...sql.ConflictOption) *Inst
 //	client.InstanceName.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (incb *InstanceNameCreateBulk) OnConflictColumns(columns ...string) *InstanceNameUpsertBulk {
-	incb.conflict = append(incb.conflict, sql.ConflictColumns(columns...))
+func (_c *InstanceNameCreateBulk) OnConflictColumns(columns ...string) *InstanceNameUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InstanceNameUpsertBulk{
-		create: incb,
+		create: _c,
 	}
 }
 

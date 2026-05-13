@@ -33,44 +33,44 @@ type SourceControlQuery struct {
 }
 
 // Where adds a new predicate for the SourceControlQuery builder.
-func (scq *SourceControlQuery) Where(ps ...predicate.SourceControl) *SourceControlQuery {
-	scq.predicates = append(scq.predicates, ps...)
-	return scq
+func (_q *SourceControlQuery) Where(ps ...predicate.SourceControl) *SourceControlQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (scq *SourceControlQuery) Limit(limit int) *SourceControlQuery {
-	scq.ctx.Limit = &limit
-	return scq
+func (_q *SourceControlQuery) Limit(limit int) *SourceControlQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (scq *SourceControlQuery) Offset(offset int) *SourceControlQuery {
-	scq.ctx.Offset = &offset
-	return scq
+func (_q *SourceControlQuery) Offset(offset int) *SourceControlQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (scq *SourceControlQuery) Unique(unique bool) *SourceControlQuery {
-	scq.ctx.Unique = &unique
-	return scq
+func (_q *SourceControlQuery) Unique(unique bool) *SourceControlQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (scq *SourceControlQuery) Order(o ...sourcecontrol.OrderOption) *SourceControlQuery {
-	scq.order = append(scq.order, o...)
-	return scq
+func (_q *SourceControlQuery) Order(o ...sourcecontrol.OrderOption) *SourceControlQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (scq *SourceControlQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: scq.config}).Query()
+func (_q *SourceControlQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := scq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := scq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (scq *SourceControlQuery) QueryBazelInvocation() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, sourcecontrol.BazelInvocationTable, sourcecontrol.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(scq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (scq *SourceControlQuery) QueryBazelInvocation() *BazelInvocationQuery {
 
 // First returns the first SourceControl entity from the query.
 // Returns a *NotFoundError when no SourceControl was found.
-func (scq *SourceControlQuery) First(ctx context.Context) (*SourceControl, error) {
-	nodes, err := scq.Limit(1).All(setContextOp(ctx, scq.ctx, ent.OpQueryFirst))
+func (_q *SourceControlQuery) First(ctx context.Context) (*SourceControl, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (scq *SourceControlQuery) First(ctx context.Context) (*SourceControl, error
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (scq *SourceControlQuery) FirstX(ctx context.Context) *SourceControl {
-	node, err := scq.First(ctx)
+func (_q *SourceControlQuery) FirstX(ctx context.Context) *SourceControl {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (scq *SourceControlQuery) FirstX(ctx context.Context) *SourceControl {
 
 // FirstID returns the first SourceControl ID from the query.
 // Returns a *NotFoundError when no SourceControl ID was found.
-func (scq *SourceControlQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *SourceControlQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = scq.Limit(1).IDs(setContextOp(ctx, scq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (scq *SourceControlQuery) FirstID(ctx context.Context) (id int64, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (scq *SourceControlQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := scq.FirstID(ctx)
+func (_q *SourceControlQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (scq *SourceControlQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single SourceControl entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one SourceControl entity is found.
 // Returns a *NotFoundError when no SourceControl entities are found.
-func (scq *SourceControlQuery) Only(ctx context.Context) (*SourceControl, error) {
-	nodes, err := scq.Limit(2).All(setContextOp(ctx, scq.ctx, ent.OpQueryOnly))
+func (_q *SourceControlQuery) Only(ctx context.Context) (*SourceControl, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (scq *SourceControlQuery) Only(ctx context.Context) (*SourceControl, error)
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (scq *SourceControlQuery) OnlyX(ctx context.Context) *SourceControl {
-	node, err := scq.Only(ctx)
+func (_q *SourceControlQuery) OnlyX(ctx context.Context) *SourceControl {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (scq *SourceControlQuery) OnlyX(ctx context.Context) *SourceControl {
 // OnlyID is like Only, but returns the only SourceControl ID in the query.
 // Returns a *NotSingularError when more than one SourceControl ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (scq *SourceControlQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *SourceControlQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = scq.Limit(2).IDs(setContextOp(ctx, scq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (scq *SourceControlQuery) OnlyID(ctx context.Context) (id int64, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (scq *SourceControlQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := scq.OnlyID(ctx)
+func (_q *SourceControlQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (scq *SourceControlQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of SourceControls.
-func (scq *SourceControlQuery) All(ctx context.Context) ([]*SourceControl, error) {
-	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryAll)
-	if err := scq.prepareQuery(ctx); err != nil {
+func (_q *SourceControlQuery) All(ctx context.Context) ([]*SourceControl, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*SourceControl, *SourceControlQuery]()
-	return withInterceptors[[]*SourceControl](ctx, scq, qr, scq.inters)
+	return withInterceptors[[]*SourceControl](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (scq *SourceControlQuery) AllX(ctx context.Context) []*SourceControl {
-	nodes, err := scq.All(ctx)
+func (_q *SourceControlQuery) AllX(ctx context.Context) []*SourceControl {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (scq *SourceControlQuery) AllX(ctx context.Context) []*SourceControl {
 }
 
 // IDs executes the query and returns a list of SourceControl IDs.
-func (scq *SourceControlQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if scq.ctx.Unique == nil && scq.path != nil {
-		scq.Unique(true)
+func (_q *SourceControlQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryIDs)
-	if err = scq.Select(sourcecontrol.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(sourcecontrol.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (scq *SourceControlQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := scq.IDs(ctx)
+func (_q *SourceControlQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (scq *SourceControlQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (scq *SourceControlQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryCount)
-	if err := scq.prepareQuery(ctx); err != nil {
+func (_q *SourceControlQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, scq, querierCount[*SourceControlQuery](), scq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*SourceControlQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (scq *SourceControlQuery) CountX(ctx context.Context) int {
-	count, err := scq.Count(ctx)
+func (_q *SourceControlQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (scq *SourceControlQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (scq *SourceControlQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryExist)
-	switch _, err := scq.FirstID(ctx); {
+func (_q *SourceControlQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (scq *SourceControlQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (scq *SourceControlQuery) ExistX(ctx context.Context) bool {
-	exist, err := scq.Exist(ctx)
+func (_q *SourceControlQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (scq *SourceControlQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the SourceControlQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (scq *SourceControlQuery) Clone() *SourceControlQuery {
-	if scq == nil {
+func (_q *SourceControlQuery) Clone() *SourceControlQuery {
+	if _q == nil {
 		return nil
 	}
 	return &SourceControlQuery{
-		config:              scq.config,
-		ctx:                 scq.ctx.Clone(),
-		order:               append([]sourcecontrol.OrderOption{}, scq.order...),
-		inters:              append([]Interceptor{}, scq.inters...),
-		predicates:          append([]predicate.SourceControl{}, scq.predicates...),
-		withBazelInvocation: scq.withBazelInvocation.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]sourcecontrol.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.SourceControl{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  scq.sql.Clone(),
-		path: scq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (scq *SourceControlQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *SourceControlQuery {
-	query := (&BazelInvocationClient{config: scq.config}).Query()
+func (_q *SourceControlQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *SourceControlQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	scq.withBazelInvocation = query
-	return scq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (scq *SourceControlQuery) WithBazelInvocation(opts ...func(*BazelInvocation
 //		GroupBy(sourcecontrol.FieldRepo).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (scq *SourceControlQuery) GroupBy(field string, fields ...string) *SourceControlGroupBy {
-	scq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &SourceControlGroupBy{build: scq}
-	grbuild.flds = &scq.ctx.Fields
+func (_q *SourceControlQuery) GroupBy(field string, fields ...string) *SourceControlGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &SourceControlGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = sourcecontrol.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (scq *SourceControlQuery) GroupBy(field string, fields ...string) *SourceCo
 //	client.SourceControl.Query().
 //		Select(sourcecontrol.FieldRepo).
 //		Scan(ctx, &v)
-func (scq *SourceControlQuery) Select(fields ...string) *SourceControlSelect {
-	scq.ctx.Fields = append(scq.ctx.Fields, fields...)
-	sbuild := &SourceControlSelect{SourceControlQuery: scq}
+func (_q *SourceControlQuery) Select(fields ...string) *SourceControlSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &SourceControlSelect{SourceControlQuery: _q}
 	sbuild.label = sourcecontrol.Label
-	sbuild.flds, sbuild.scan = &scq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a SourceControlSelect configured with the given aggregations.
-func (scq *SourceControlQuery) Aggregate(fns ...AggregateFunc) *SourceControlSelect {
-	return scq.Select().Aggregate(fns...)
+func (_q *SourceControlQuery) Aggregate(fns ...AggregateFunc) *SourceControlSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (scq *SourceControlQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range scq.inters {
+func (_q *SourceControlQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, scq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range scq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !sourcecontrol.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if scq.path != nil {
-		prev, err := scq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		scq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (scq *SourceControlQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SourceControl, error) {
+func (_q *SourceControlQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SourceControl, error) {
 	var (
 		nodes       = []*SourceControl{}
-		withFKs     = scq.withFKs
-		_spec       = scq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			scq.withBazelInvocation != nil,
+			_q.withBazelInvocation != nil,
 		}
 	)
-	if scq.withBazelInvocation != nil {
+	if _q.withBazelInvocation != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (scq *SourceControlQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		return (*SourceControl).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &SourceControl{config: scq.config}
+		node := &SourceControl{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(scq.modifiers) > 0 {
-		_spec.Modifiers = scq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, scq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := scq.withBazelInvocation; query != nil {
-		if err := scq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *SourceControl, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range scq.loadTotal {
-		if err := scq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (scq *SourceControlQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*SourceControl, init func(*SourceControl), assign func(*SourceControl, *BazelInvocation)) error {
+func (_q *SourceControlQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*SourceControl, init func(*SourceControl), assign func(*SourceControl, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*SourceControl)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (scq *SourceControlQuery) loadBazelInvocation(ctx context.Context, query *B
 	return nil
 }
 
-func (scq *SourceControlQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := scq.querySpec()
-	if len(scq.modifiers) > 0 {
-		_spec.Modifiers = scq.modifiers
+func (_q *SourceControlQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = scq.ctx.Fields
-	if len(scq.ctx.Fields) > 0 {
-		_spec.Unique = scq.ctx.Unique != nil && *scq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, scq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (scq *SourceControlQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *SourceControlQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
-	_spec.From = scq.sql
-	if unique := scq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if scq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := scq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sourcecontrol.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (scq *SourceControlQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := scq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := scq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := scq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := scq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (scq *SourceControlQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (scq *SourceControlQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(scq.driver.Dialect())
+func (_q *SourceControlQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(sourcecontrol.Table)
-	columns := scq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = sourcecontrol.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if scq.sql != nil {
-		selector = scq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if scq.ctx.Unique != nil && *scq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range scq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range scq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := scq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := scq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type SourceControlGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (scgb *SourceControlGroupBy) Aggregate(fns ...AggregateFunc) *SourceControlGroupBy {
-	scgb.fns = append(scgb.fns, fns...)
-	return scgb
+func (_g *SourceControlGroupBy) Aggregate(fns ...AggregateFunc) *SourceControlGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (scgb *SourceControlGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, scgb.build.ctx, ent.OpQueryGroupBy)
-	if err := scgb.build.prepareQuery(ctx); err != nil {
+func (_g *SourceControlGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SourceControlQuery, *SourceControlGroupBy](ctx, scgb.build, scgb, scgb.build.inters, v)
+	return scanWithInterceptors[*SourceControlQuery, *SourceControlGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (scgb *SourceControlGroupBy) sqlScan(ctx context.Context, root *SourceControlQuery, v any) error {
+func (_g *SourceControlGroupBy) sqlScan(ctx context.Context, root *SourceControlQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(scgb.fns))
-	for _, fn := range scgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*scgb.flds)+len(scgb.fns))
-		for _, f := range *scgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*scgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := scgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type SourceControlSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (scs *SourceControlSelect) Aggregate(fns ...AggregateFunc) *SourceControlSelect {
-	scs.fns = append(scs.fns, fns...)
-	return scs
+func (_s *SourceControlSelect) Aggregate(fns ...AggregateFunc) *SourceControlSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (scs *SourceControlSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, scs.ctx, ent.OpQuerySelect)
-	if err := scs.prepareQuery(ctx); err != nil {
+func (_s *SourceControlSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SourceControlQuery, *SourceControlSelect](ctx, scs.SourceControlQuery, scs, scs.inters, v)
+	return scanWithInterceptors[*SourceControlQuery, *SourceControlSelect](ctx, _s.SourceControlQuery, _s, _s.inters, v)
 }
 
-func (scs *SourceControlSelect) sqlScan(ctx context.Context, root *SourceControlQuery, v any) error {
+func (_s *SourceControlSelect) sqlScan(ctx context.Context, root *SourceControlQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(scs.fns))
-	for _, fn := range scs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*scs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (scs *SourceControlSelect) sqlScan(ctx context.Context, root *SourceControl
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := scs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

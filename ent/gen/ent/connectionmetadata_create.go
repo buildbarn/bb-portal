@@ -24,41 +24,41 @@ type ConnectionMetadataCreate struct {
 }
 
 // SetConnectionLastOpenAt sets the "connection_last_open_at" field.
-func (cmc *ConnectionMetadataCreate) SetConnectionLastOpenAt(t time.Time) *ConnectionMetadataCreate {
-	cmc.mutation.SetConnectionLastOpenAt(t)
-	return cmc
+func (_c *ConnectionMetadataCreate) SetConnectionLastOpenAt(v time.Time) *ConnectionMetadataCreate {
+	_c.mutation.SetConnectionLastOpenAt(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (cmc *ConnectionMetadataCreate) SetID(i int64) *ConnectionMetadataCreate {
-	cmc.mutation.SetID(i)
-	return cmc
+func (_c *ConnectionMetadataCreate) SetID(v int64) *ConnectionMetadataCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (cmc *ConnectionMetadataCreate) SetBazelInvocationID(id int64) *ConnectionMetadataCreate {
-	cmc.mutation.SetBazelInvocationID(id)
-	return cmc
+func (_c *ConnectionMetadataCreate) SetBazelInvocationID(id int64) *ConnectionMetadataCreate {
+	_c.mutation.SetBazelInvocationID(id)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (cmc *ConnectionMetadataCreate) SetBazelInvocation(b *BazelInvocation) *ConnectionMetadataCreate {
-	return cmc.SetBazelInvocationID(b.ID)
+func (_c *ConnectionMetadataCreate) SetBazelInvocation(v *BazelInvocation) *ConnectionMetadataCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the ConnectionMetadataMutation object of the builder.
-func (cmc *ConnectionMetadataCreate) Mutation() *ConnectionMetadataMutation {
-	return cmc.mutation
+func (_c *ConnectionMetadataCreate) Mutation() *ConnectionMetadataMutation {
+	return _c.mutation
 }
 
 // Save creates the ConnectionMetadata in the database.
-func (cmc *ConnectionMetadataCreate) Save(ctx context.Context) (*ConnectionMetadata, error) {
-	return withHooks(ctx, cmc.sqlSave, cmc.mutation, cmc.hooks)
+func (_c *ConnectionMetadataCreate) Save(ctx context.Context) (*ConnectionMetadata, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (cmc *ConnectionMetadataCreate) SaveX(ctx context.Context) *ConnectionMetadata {
-	v, err := cmc.Save(ctx)
+func (_c *ConnectionMetadataCreate) SaveX(ctx context.Context) *ConnectionMetadata {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -66,35 +66,35 @@ func (cmc *ConnectionMetadataCreate) SaveX(ctx context.Context) *ConnectionMetad
 }
 
 // Exec executes the query.
-func (cmc *ConnectionMetadataCreate) Exec(ctx context.Context) error {
-	_, err := cmc.Save(ctx)
+func (_c *ConnectionMetadataCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cmc *ConnectionMetadataCreate) ExecX(ctx context.Context) {
-	if err := cmc.Exec(ctx); err != nil {
+func (_c *ConnectionMetadataCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cmc *ConnectionMetadataCreate) check() error {
-	if _, ok := cmc.mutation.ConnectionLastOpenAt(); !ok {
+func (_c *ConnectionMetadataCreate) check() error {
+	if _, ok := _c.mutation.ConnectionLastOpenAt(); !ok {
 		return &ValidationError{Name: "connection_last_open_at", err: errors.New(`ent: missing required field "ConnectionMetadata.connection_last_open_at"`)}
 	}
-	if len(cmc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "ConnectionMetadata.bazel_invocation"`)}
 	}
 	return nil
 }
 
-func (cmc *ConnectionMetadataCreate) sqlSave(ctx context.Context) (*ConnectionMetadata, error) {
-	if err := cmc.check(); err != nil {
+func (_c *ConnectionMetadataCreate) sqlSave(ctx context.Context) (*ConnectionMetadata, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := cmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, cmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -104,26 +104,26 @@ func (cmc *ConnectionMetadataCreate) sqlSave(ctx context.Context) (*ConnectionMe
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	cmc.mutation.id = &_node.ID
-	cmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (cmc *ConnectionMetadataCreate) createSpec() (*ConnectionMetadata, *sqlgraph.CreateSpec) {
+func (_c *ConnectionMetadataCreate) createSpec() (*ConnectionMetadata, *sqlgraph.CreateSpec) {
 	var (
-		_node = &ConnectionMetadata{config: cmc.config}
+		_node = &ConnectionMetadata{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(connectionmetadata.Table, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = cmc.conflict
-	if id, ok := cmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := cmc.mutation.ConnectionLastOpenAt(); ok {
+	if value, ok := _c.mutation.ConnectionLastOpenAt(); ok {
 		_spec.SetField(connectionmetadata.FieldConnectionLastOpenAt, field.TypeTime, value)
 		_node.ConnectionLastOpenAt = value
 	}
-	if nodes := cmc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -159,10 +159,10 @@ func (cmc *ConnectionMetadataCreate) createSpec() (*ConnectionMetadata, *sqlgrap
 //			SetConnectionLastOpenAt(v+v).
 //		}).
 //		Exec(ctx)
-func (cmc *ConnectionMetadataCreate) OnConflict(opts ...sql.ConflictOption) *ConnectionMetadataUpsertOne {
-	cmc.conflict = opts
+func (_c *ConnectionMetadataCreate) OnConflict(opts ...sql.ConflictOption) *ConnectionMetadataUpsertOne {
+	_c.conflict = opts
 	return &ConnectionMetadataUpsertOne{
-		create: cmc,
+		create: _c,
 	}
 }
 
@@ -172,10 +172,10 @@ func (cmc *ConnectionMetadataCreate) OnConflict(opts ...sql.ConflictOption) *Con
 //	client.ConnectionMetadata.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (cmc *ConnectionMetadataCreate) OnConflictColumns(columns ...string) *ConnectionMetadataUpsertOne {
-	cmc.conflict = append(cmc.conflict, sql.ConflictColumns(columns...))
+func (_c *ConnectionMetadataCreate) OnConflictColumns(columns ...string) *ConnectionMetadataUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ConnectionMetadataUpsertOne{
-		create: cmc,
+		create: _c,
 	}
 }
 
@@ -308,16 +308,16 @@ type ConnectionMetadataCreateBulk struct {
 }
 
 // Save creates the ConnectionMetadata entities in the database.
-func (cmcb *ConnectionMetadataCreateBulk) Save(ctx context.Context) ([]*ConnectionMetadata, error) {
-	if cmcb.err != nil {
-		return nil, cmcb.err
+func (_c *ConnectionMetadataCreateBulk) Save(ctx context.Context) ([]*ConnectionMetadata, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(cmcb.builders))
-	nodes := make([]*ConnectionMetadata, len(cmcb.builders))
-	mutators := make([]Mutator, len(cmcb.builders))
-	for i := range cmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*ConnectionMetadata, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := cmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ConnectionMetadataMutation)
 				if !ok {
@@ -330,12 +330,12 @@ func (cmcb *ConnectionMetadataCreateBulk) Save(ctx context.Context) ([]*Connecti
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, cmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = cmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, cmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -359,7 +359,7 @@ func (cmcb *ConnectionMetadataCreateBulk) Save(ctx context.Context) ([]*Connecti
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, cmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -367,8 +367,8 @@ func (cmcb *ConnectionMetadataCreateBulk) Save(ctx context.Context) ([]*Connecti
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cmcb *ConnectionMetadataCreateBulk) SaveX(ctx context.Context) []*ConnectionMetadata {
-	v, err := cmcb.Save(ctx)
+func (_c *ConnectionMetadataCreateBulk) SaveX(ctx context.Context) []*ConnectionMetadata {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -376,14 +376,14 @@ func (cmcb *ConnectionMetadataCreateBulk) SaveX(ctx context.Context) []*Connecti
 }
 
 // Exec executes the query.
-func (cmcb *ConnectionMetadataCreateBulk) Exec(ctx context.Context) error {
-	_, err := cmcb.Save(ctx)
+func (_c *ConnectionMetadataCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cmcb *ConnectionMetadataCreateBulk) ExecX(ctx context.Context) {
-	if err := cmcb.Exec(ctx); err != nil {
+func (_c *ConnectionMetadataCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -403,10 +403,10 @@ func (cmcb *ConnectionMetadataCreateBulk) ExecX(ctx context.Context) {
 //			SetConnectionLastOpenAt(v+v).
 //		}).
 //		Exec(ctx)
-func (cmcb *ConnectionMetadataCreateBulk) OnConflict(opts ...sql.ConflictOption) *ConnectionMetadataUpsertBulk {
-	cmcb.conflict = opts
+func (_c *ConnectionMetadataCreateBulk) OnConflict(opts ...sql.ConflictOption) *ConnectionMetadataUpsertBulk {
+	_c.conflict = opts
 	return &ConnectionMetadataUpsertBulk{
-		create: cmcb,
+		create: _c,
 	}
 }
 
@@ -416,10 +416,10 @@ func (cmcb *ConnectionMetadataCreateBulk) OnConflict(opts ...sql.ConflictOption)
 //	client.ConnectionMetadata.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (cmcb *ConnectionMetadataCreateBulk) OnConflictColumns(columns ...string) *ConnectionMetadataUpsertBulk {
-	cmcb.conflict = append(cmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *ConnectionMetadataCreateBulk) OnConflictColumns(columns ...string) *ConnectionMetadataUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ConnectionMetadataUpsertBulk{
-		create: cmcb,
+		create: _c,
 	}
 }
 

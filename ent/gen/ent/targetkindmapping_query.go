@@ -34,44 +34,44 @@ type TargetKindMappingQuery struct {
 }
 
 // Where adds a new predicate for the TargetKindMappingQuery builder.
-func (tkmq *TargetKindMappingQuery) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingQuery {
-	tkmq.predicates = append(tkmq.predicates, ps...)
-	return tkmq
+func (_q *TargetKindMappingQuery) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (tkmq *TargetKindMappingQuery) Limit(limit int) *TargetKindMappingQuery {
-	tkmq.ctx.Limit = &limit
-	return tkmq
+func (_q *TargetKindMappingQuery) Limit(limit int) *TargetKindMappingQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (tkmq *TargetKindMappingQuery) Offset(offset int) *TargetKindMappingQuery {
-	tkmq.ctx.Offset = &offset
-	return tkmq
+func (_q *TargetKindMappingQuery) Offset(offset int) *TargetKindMappingQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (tkmq *TargetKindMappingQuery) Unique(unique bool) *TargetKindMappingQuery {
-	tkmq.ctx.Unique = &unique
-	return tkmq
+func (_q *TargetKindMappingQuery) Unique(unique bool) *TargetKindMappingQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (tkmq *TargetKindMappingQuery) Order(o ...targetkindmapping.OrderOption) *TargetKindMappingQuery {
-	tkmq.order = append(tkmq.order, o...)
-	return tkmq
+func (_q *TargetKindMappingQuery) Order(o ...targetkindmapping.OrderOption) *TargetKindMappingQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (tkmq *TargetKindMappingQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: tkmq.config}).Query()
+func (_q *TargetKindMappingQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tkmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tkmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -80,20 +80,20 @@ func (tkmq *TargetKindMappingQuery) QueryBazelInvocation() *BazelInvocationQuery
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, targetkindmapping.BazelInvocationTable, targetkindmapping.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tkmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTarget chains the current query on the "target" edge.
-func (tkmq *TargetKindMappingQuery) QueryTarget() *TargetQuery {
-	query := (&TargetClient{config: tkmq.config}).Query()
+func (_q *TargetKindMappingQuery) QueryTarget() *TargetQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tkmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tkmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (tkmq *TargetKindMappingQuery) QueryTarget() *TargetQuery {
 			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, targetkindmapping.TargetTable, targetkindmapping.TargetColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tkmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -110,8 +110,8 @@ func (tkmq *TargetKindMappingQuery) QueryTarget() *TargetQuery {
 
 // First returns the first TargetKindMapping entity from the query.
 // Returns a *NotFoundError when no TargetKindMapping was found.
-func (tkmq *TargetKindMappingQuery) First(ctx context.Context) (*TargetKindMapping, error) {
-	nodes, err := tkmq.Limit(1).All(setContextOp(ctx, tkmq.ctx, ent.OpQueryFirst))
+func (_q *TargetKindMappingQuery) First(ctx context.Context) (*TargetKindMapping, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (tkmq *TargetKindMappingQuery) First(ctx context.Context) (*TargetKindMappi
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) FirstX(ctx context.Context) *TargetKindMapping {
-	node, err := tkmq.First(ctx)
+func (_q *TargetKindMappingQuery) FirstX(ctx context.Context) *TargetKindMapping {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,9 +132,9 @@ func (tkmq *TargetKindMappingQuery) FirstX(ctx context.Context) *TargetKindMappi
 
 // FirstID returns the first TargetKindMapping ID from the query.
 // Returns a *NotFoundError when no TargetKindMapping ID was found.
-func (tkmq *TargetKindMappingQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *TargetKindMappingQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tkmq.Limit(1).IDs(setContextOp(ctx, tkmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -145,8 +145,8 @@ func (tkmq *TargetKindMappingQuery) FirstID(ctx context.Context) (id int64, err 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := tkmq.FirstID(ctx)
+func (_q *TargetKindMappingQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -156,8 +156,8 @@ func (tkmq *TargetKindMappingQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single TargetKindMapping entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one TargetKindMapping entity is found.
 // Returns a *NotFoundError when no TargetKindMapping entities are found.
-func (tkmq *TargetKindMappingQuery) Only(ctx context.Context) (*TargetKindMapping, error) {
-	nodes, err := tkmq.Limit(2).All(setContextOp(ctx, tkmq.ctx, ent.OpQueryOnly))
+func (_q *TargetKindMappingQuery) Only(ctx context.Context) (*TargetKindMapping, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (tkmq *TargetKindMappingQuery) Only(ctx context.Context) (*TargetKindMappin
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) OnlyX(ctx context.Context) *TargetKindMapping {
-	node, err := tkmq.Only(ctx)
+func (_q *TargetKindMappingQuery) OnlyX(ctx context.Context) *TargetKindMapping {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (tkmq *TargetKindMappingQuery) OnlyX(ctx context.Context) *TargetKindMappin
 // OnlyID is like Only, but returns the only TargetKindMapping ID in the query.
 // Returns a *NotSingularError when more than one TargetKindMapping ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tkmq *TargetKindMappingQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *TargetKindMappingQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tkmq.Limit(2).IDs(setContextOp(ctx, tkmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -200,8 +200,8 @@ func (tkmq *TargetKindMappingQuery) OnlyID(ctx context.Context) (id int64, err e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := tkmq.OnlyID(ctx)
+func (_q *TargetKindMappingQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -209,18 +209,18 @@ func (tkmq *TargetKindMappingQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of TargetKindMappings.
-func (tkmq *TargetKindMappingQuery) All(ctx context.Context) ([]*TargetKindMapping, error) {
-	ctx = setContextOp(ctx, tkmq.ctx, ent.OpQueryAll)
-	if err := tkmq.prepareQuery(ctx); err != nil {
+func (_q *TargetKindMappingQuery) All(ctx context.Context) ([]*TargetKindMapping, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*TargetKindMapping, *TargetKindMappingQuery]()
-	return withInterceptors[[]*TargetKindMapping](ctx, tkmq, qr, tkmq.inters)
+	return withInterceptors[[]*TargetKindMapping](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) AllX(ctx context.Context) []*TargetKindMapping {
-	nodes, err := tkmq.All(ctx)
+func (_q *TargetKindMappingQuery) AllX(ctx context.Context) []*TargetKindMapping {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,20 +228,20 @@ func (tkmq *TargetKindMappingQuery) AllX(ctx context.Context) []*TargetKindMappi
 }
 
 // IDs executes the query and returns a list of TargetKindMapping IDs.
-func (tkmq *TargetKindMappingQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if tkmq.ctx.Unique == nil && tkmq.path != nil {
-		tkmq.Unique(true)
+func (_q *TargetKindMappingQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, tkmq.ctx, ent.OpQueryIDs)
-	if err = tkmq.Select(targetkindmapping.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(targetkindmapping.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := tkmq.IDs(ctx)
+func (_q *TargetKindMappingQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,17 +249,17 @@ func (tkmq *TargetKindMappingQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (tkmq *TargetKindMappingQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tkmq.ctx, ent.OpQueryCount)
-	if err := tkmq.prepareQuery(ctx); err != nil {
+func (_q *TargetKindMappingQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, tkmq, querierCount[*TargetKindMappingQuery](), tkmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TargetKindMappingQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) CountX(ctx context.Context) int {
-	count, err := tkmq.Count(ctx)
+func (_q *TargetKindMappingQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,9 +267,9 @@ func (tkmq *TargetKindMappingQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (tkmq *TargetKindMappingQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tkmq.ctx, ent.OpQueryExist)
-	switch _, err := tkmq.FirstID(ctx); {
+func (_q *TargetKindMappingQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -280,8 +280,8 @@ func (tkmq *TargetKindMappingQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (tkmq *TargetKindMappingQuery) ExistX(ctx context.Context) bool {
-	exist, err := tkmq.Exist(ctx)
+func (_q *TargetKindMappingQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -290,44 +290,44 @@ func (tkmq *TargetKindMappingQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the TargetKindMappingQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (tkmq *TargetKindMappingQuery) Clone() *TargetKindMappingQuery {
-	if tkmq == nil {
+func (_q *TargetKindMappingQuery) Clone() *TargetKindMappingQuery {
+	if _q == nil {
 		return nil
 	}
 	return &TargetKindMappingQuery{
-		config:              tkmq.config,
-		ctx:                 tkmq.ctx.Clone(),
-		order:               append([]targetkindmapping.OrderOption{}, tkmq.order...),
-		inters:              append([]Interceptor{}, tkmq.inters...),
-		predicates:          append([]predicate.TargetKindMapping{}, tkmq.predicates...),
-		withBazelInvocation: tkmq.withBazelInvocation.Clone(),
-		withTarget:          tkmq.withTarget.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]targetkindmapping.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.TargetKindMapping{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
+		withTarget:          _q.withTarget.Clone(),
 		// clone intermediate query.
-		sql:  tkmq.sql.Clone(),
-		path: tkmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (tkmq *TargetKindMappingQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *TargetKindMappingQuery {
-	query := (&BazelInvocationClient{config: tkmq.config}).Query()
+func (_q *TargetKindMappingQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *TargetKindMappingQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tkmq.withBazelInvocation = query
-	return tkmq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // WithTarget tells the query-builder to eager-load the nodes that are connected to
 // the "target" edge. The optional arguments are used to configure the query builder of the edge.
-func (tkmq *TargetKindMappingQuery) WithTarget(opts ...func(*TargetQuery)) *TargetKindMappingQuery {
-	query := (&TargetClient{config: tkmq.config}).Query()
+func (_q *TargetKindMappingQuery) WithTarget(opts ...func(*TargetQuery)) *TargetKindMappingQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tkmq.withTarget = query
-	return tkmq
+	_q.withTarget = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -344,10 +344,10 @@ func (tkmq *TargetKindMappingQuery) WithTarget(opts ...func(*TargetQuery)) *Targ
 //		GroupBy(targetkindmapping.FieldBazelInvocationID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (tkmq *TargetKindMappingQuery) GroupBy(field string, fields ...string) *TargetKindMappingGroupBy {
-	tkmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TargetKindMappingGroupBy{build: tkmq}
-	grbuild.flds = &tkmq.ctx.Fields
+func (_q *TargetKindMappingQuery) GroupBy(field string, fields ...string) *TargetKindMappingGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &TargetKindMappingGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = targetkindmapping.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -365,96 +365,96 @@ func (tkmq *TargetKindMappingQuery) GroupBy(field string, fields ...string) *Tar
 //	client.TargetKindMapping.Query().
 //		Select(targetkindmapping.FieldBazelInvocationID).
 //		Scan(ctx, &v)
-func (tkmq *TargetKindMappingQuery) Select(fields ...string) *TargetKindMappingSelect {
-	tkmq.ctx.Fields = append(tkmq.ctx.Fields, fields...)
-	sbuild := &TargetKindMappingSelect{TargetKindMappingQuery: tkmq}
+func (_q *TargetKindMappingQuery) Select(fields ...string) *TargetKindMappingSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &TargetKindMappingSelect{TargetKindMappingQuery: _q}
 	sbuild.label = targetkindmapping.Label
-	sbuild.flds, sbuild.scan = &tkmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a TargetKindMappingSelect configured with the given aggregations.
-func (tkmq *TargetKindMappingQuery) Aggregate(fns ...AggregateFunc) *TargetKindMappingSelect {
-	return tkmq.Select().Aggregate(fns...)
+func (_q *TargetKindMappingQuery) Aggregate(fns ...AggregateFunc) *TargetKindMappingSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (tkmq *TargetKindMappingQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range tkmq.inters {
+func (_q *TargetKindMappingQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, tkmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range tkmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !targetkindmapping.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if tkmq.path != nil {
-		prev, err := tkmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		tkmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (tkmq *TargetKindMappingQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetKindMapping, error) {
+func (_q *TargetKindMappingQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetKindMapping, error) {
 	var (
 		nodes       = []*TargetKindMapping{}
-		_spec       = tkmq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			tkmq.withBazelInvocation != nil,
-			tkmq.withTarget != nil,
+			_q.withBazelInvocation != nil,
+			_q.withTarget != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetKindMapping).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &TargetKindMapping{config: tkmq.config}
+		node := &TargetKindMapping{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(tkmq.modifiers) > 0 {
-		_spec.Modifiers = tkmq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, tkmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := tkmq.withBazelInvocation; query != nil {
-		if err := tkmq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *TargetKindMapping, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := tkmq.withTarget; query != nil {
-		if err := tkmq.loadTarget(ctx, query, nodes, nil,
+	if query := _q.withTarget; query != nil {
+		if err := _q.loadTarget(ctx, query, nodes, nil,
 			func(n *TargetKindMapping, e *Target) { n.Edges.Target = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range tkmq.loadTotal {
-		if err := tkmq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (tkmq *TargetKindMappingQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*TargetKindMapping, init func(*TargetKindMapping), assign func(*TargetKindMapping, *BazelInvocation)) error {
+func (_q *TargetKindMappingQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*TargetKindMapping, init func(*TargetKindMapping), assign func(*TargetKindMapping, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*TargetKindMapping)
 	for i := range nodes {
@@ -483,7 +483,7 @@ func (tkmq *TargetKindMappingQuery) loadBazelInvocation(ctx context.Context, que
 	}
 	return nil
 }
-func (tkmq *TargetKindMappingQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*TargetKindMapping, init func(*TargetKindMapping), assign func(*TargetKindMapping, *Target)) error {
+func (_q *TargetKindMappingQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*TargetKindMapping, init func(*TargetKindMapping), assign func(*TargetKindMapping, *Target)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*TargetKindMapping)
 	for i := range nodes {
@@ -513,27 +513,27 @@ func (tkmq *TargetKindMappingQuery) loadTarget(ctx context.Context, query *Targe
 	return nil
 }
 
-func (tkmq *TargetKindMappingQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := tkmq.querySpec()
-	if len(tkmq.modifiers) > 0 {
-		_spec.Modifiers = tkmq.modifiers
+func (_q *TargetKindMappingQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = tkmq.ctx.Fields
-	if len(tkmq.ctx.Fields) > 0 {
-		_spec.Unique = tkmq.ctx.Unique != nil && *tkmq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, tkmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (tkmq *TargetKindMappingQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *TargetKindMappingQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
-	_spec.From = tkmq.sql
-	if unique := tkmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if tkmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := tkmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, targetkindmapping.FieldID)
 		for i := range fields {
@@ -541,27 +541,27 @@ func (tkmq *TargetKindMappingQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if tkmq.withBazelInvocation != nil {
+		if _q.withBazelInvocation != nil {
 			_spec.Node.AddColumnOnce(targetkindmapping.FieldBazelInvocationID)
 		}
-		if tkmq.withTarget != nil {
+		if _q.withTarget != nil {
 			_spec.Node.AddColumnOnce(targetkindmapping.FieldTargetID)
 		}
 	}
-	if ps := tkmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := tkmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := tkmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := tkmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -571,33 +571,33 @@ func (tkmq *TargetKindMappingQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (tkmq *TargetKindMappingQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(tkmq.driver.Dialect())
+func (_q *TargetKindMappingQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(targetkindmapping.Table)
-	columns := tkmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = targetkindmapping.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if tkmq.sql != nil {
-		selector = tkmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if tkmq.ctx.Unique != nil && *tkmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range tkmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range tkmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := tkmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := tkmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -610,41 +610,41 @@ type TargetKindMappingGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (tkmgb *TargetKindMappingGroupBy) Aggregate(fns ...AggregateFunc) *TargetKindMappingGroupBy {
-	tkmgb.fns = append(tkmgb.fns, fns...)
-	return tkmgb
+func (_g *TargetKindMappingGroupBy) Aggregate(fns ...AggregateFunc) *TargetKindMappingGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tkmgb *TargetKindMappingGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tkmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := tkmgb.build.prepareQuery(ctx); err != nil {
+func (_g *TargetKindMappingGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TargetKindMappingQuery, *TargetKindMappingGroupBy](ctx, tkmgb.build, tkmgb, tkmgb.build.inters, v)
+	return scanWithInterceptors[*TargetKindMappingQuery, *TargetKindMappingGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (tkmgb *TargetKindMappingGroupBy) sqlScan(ctx context.Context, root *TargetKindMappingQuery, v any) error {
+func (_g *TargetKindMappingGroupBy) sqlScan(ctx context.Context, root *TargetKindMappingQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(tkmgb.fns))
-	for _, fn := range tkmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*tkmgb.flds)+len(tkmgb.fns))
-		for _, f := range *tkmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*tkmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tkmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -658,27 +658,27 @@ type TargetKindMappingSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (tkms *TargetKindMappingSelect) Aggregate(fns ...AggregateFunc) *TargetKindMappingSelect {
-	tkms.fns = append(tkms.fns, fns...)
-	return tkms
+func (_s *TargetKindMappingSelect) Aggregate(fns ...AggregateFunc) *TargetKindMappingSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tkms *TargetKindMappingSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tkms.ctx, ent.OpQuerySelect)
-	if err := tkms.prepareQuery(ctx); err != nil {
+func (_s *TargetKindMappingSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TargetKindMappingQuery, *TargetKindMappingSelect](ctx, tkms.TargetKindMappingQuery, tkms, tkms.inters, v)
+	return scanWithInterceptors[*TargetKindMappingQuery, *TargetKindMappingSelect](ctx, _s.TargetKindMappingQuery, _s, _s.inters, v)
 }
 
-func (tkms *TargetKindMappingSelect) sqlScan(ctx context.Context, root *TargetKindMappingQuery, v any) error {
+func (_s *TargetKindMappingSelect) sqlScan(ctx context.Context, root *TargetKindMappingQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(tkms.fns))
-	for _, fn := range tkms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*tkms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -686,7 +686,7 @@ func (tkms *TargetKindMappingSelect) sqlScan(ctx context.Context, root *TargetKi
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tkms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

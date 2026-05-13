@@ -38,44 +38,44 @@ type TestSummaryQuery struct {
 }
 
 // Where adds a new predicate for the TestSummaryQuery builder.
-func (tsq *TestSummaryQuery) Where(ps ...predicate.TestSummary) *TestSummaryQuery {
-	tsq.predicates = append(tsq.predicates, ps...)
-	return tsq
+func (_q *TestSummaryQuery) Where(ps ...predicate.TestSummary) *TestSummaryQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (tsq *TestSummaryQuery) Limit(limit int) *TestSummaryQuery {
-	tsq.ctx.Limit = &limit
-	return tsq
+func (_q *TestSummaryQuery) Limit(limit int) *TestSummaryQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (tsq *TestSummaryQuery) Offset(offset int) *TestSummaryQuery {
-	tsq.ctx.Offset = &offset
-	return tsq
+func (_q *TestSummaryQuery) Offset(offset int) *TestSummaryQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (tsq *TestSummaryQuery) Unique(unique bool) *TestSummaryQuery {
-	tsq.ctx.Unique = &unique
-	return tsq
+func (_q *TestSummaryQuery) Unique(unique bool) *TestSummaryQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (tsq *TestSummaryQuery) Order(o ...testsummary.OrderOption) *TestSummaryQuery {
-	tsq.order = append(tsq.order, o...)
-	return tsq
+func (_q *TestSummaryQuery) Order(o ...testsummary.OrderOption) *TestSummaryQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryInvocationTarget chains the current query on the "invocation_target" edge.
-func (tsq *TestSummaryQuery) QueryInvocationTarget() *InvocationTargetQuery {
-	query := (&InvocationTargetClient{config: tsq.config}).Query()
+func (_q *TestSummaryQuery) QueryInvocationTarget() *InvocationTargetQuery {
+	query := (&InvocationTargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tsq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tsq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -84,20 +84,20 @@ func (tsq *TestSummaryQuery) QueryInvocationTarget() *InvocationTargetQuery {
 			sqlgraph.To(invocationtarget.Table, invocationtarget.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, testsummary.InvocationTargetTable, testsummary.InvocationTargetColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tsq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTestResults chains the current query on the "test_results" edge.
-func (tsq *TestSummaryQuery) QueryTestResults() *TestResultQuery {
-	query := (&TestResultClient{config: tsq.config}).Query()
+func (_q *TestSummaryQuery) QueryTestResults() *TestResultQuery {
+	query := (&TestResultClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tsq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tsq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -106,7 +106,7 @@ func (tsq *TestSummaryQuery) QueryTestResults() *TestResultQuery {
 			sqlgraph.To(testresult.Table, testresult.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, testsummary.TestResultsTable, testsummary.TestResultsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tsq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -114,8 +114,8 @@ func (tsq *TestSummaryQuery) QueryTestResults() *TestResultQuery {
 
 // First returns the first TestSummary entity from the query.
 // Returns a *NotFoundError when no TestSummary was found.
-func (tsq *TestSummaryQuery) First(ctx context.Context) (*TestSummary, error) {
-	nodes, err := tsq.Limit(1).All(setContextOp(ctx, tsq.ctx, ent.OpQueryFirst))
+func (_q *TestSummaryQuery) First(ctx context.Context) (*TestSummary, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -126,8 +126,8 @@ func (tsq *TestSummaryQuery) First(ctx context.Context) (*TestSummary, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (tsq *TestSummaryQuery) FirstX(ctx context.Context) *TestSummary {
-	node, err := tsq.First(ctx)
+func (_q *TestSummaryQuery) FirstX(ctx context.Context) *TestSummary {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -136,9 +136,9 @@ func (tsq *TestSummaryQuery) FirstX(ctx context.Context) *TestSummary {
 
 // FirstID returns the first TestSummary ID from the query.
 // Returns a *NotFoundError when no TestSummary ID was found.
-func (tsq *TestSummaryQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *TestSummaryQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tsq.Limit(1).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -149,8 +149,8 @@ func (tsq *TestSummaryQuery) FirstID(ctx context.Context) (id int64, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tsq *TestSummaryQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := tsq.FirstID(ctx)
+func (_q *TestSummaryQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -160,8 +160,8 @@ func (tsq *TestSummaryQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single TestSummary entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one TestSummary entity is found.
 // Returns a *NotFoundError when no TestSummary entities are found.
-func (tsq *TestSummaryQuery) Only(ctx context.Context) (*TestSummary, error) {
-	nodes, err := tsq.Limit(2).All(setContextOp(ctx, tsq.ctx, ent.OpQueryOnly))
+func (_q *TestSummaryQuery) Only(ctx context.Context) (*TestSummary, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -176,8 +176,8 @@ func (tsq *TestSummaryQuery) Only(ctx context.Context) (*TestSummary, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (tsq *TestSummaryQuery) OnlyX(ctx context.Context) *TestSummary {
-	node, err := tsq.Only(ctx)
+func (_q *TestSummaryQuery) OnlyX(ctx context.Context) *TestSummary {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -187,9 +187,9 @@ func (tsq *TestSummaryQuery) OnlyX(ctx context.Context) *TestSummary {
 // OnlyID is like Only, but returns the only TestSummary ID in the query.
 // Returns a *NotSingularError when more than one TestSummary ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tsq *TestSummaryQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *TestSummaryQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tsq.Limit(2).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -204,8 +204,8 @@ func (tsq *TestSummaryQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tsq *TestSummaryQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := tsq.OnlyID(ctx)
+func (_q *TestSummaryQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -213,18 +213,18 @@ func (tsq *TestSummaryQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of TestSummaries.
-func (tsq *TestSummaryQuery) All(ctx context.Context) ([]*TestSummary, error) {
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryAll)
-	if err := tsq.prepareQuery(ctx); err != nil {
+func (_q *TestSummaryQuery) All(ctx context.Context) ([]*TestSummary, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*TestSummary, *TestSummaryQuery]()
-	return withInterceptors[[]*TestSummary](ctx, tsq, qr, tsq.inters)
+	return withInterceptors[[]*TestSummary](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (tsq *TestSummaryQuery) AllX(ctx context.Context) []*TestSummary {
-	nodes, err := tsq.All(ctx)
+func (_q *TestSummaryQuery) AllX(ctx context.Context) []*TestSummary {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -232,20 +232,20 @@ func (tsq *TestSummaryQuery) AllX(ctx context.Context) []*TestSummary {
 }
 
 // IDs executes the query and returns a list of TestSummary IDs.
-func (tsq *TestSummaryQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if tsq.ctx.Unique == nil && tsq.path != nil {
-		tsq.Unique(true)
+func (_q *TestSummaryQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryIDs)
-	if err = tsq.Select(testsummary.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(testsummary.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tsq *TestSummaryQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := tsq.IDs(ctx)
+func (_q *TestSummaryQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -253,17 +253,17 @@ func (tsq *TestSummaryQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (tsq *TestSummaryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryCount)
-	if err := tsq.prepareQuery(ctx); err != nil {
+func (_q *TestSummaryQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, tsq, querierCount[*TestSummaryQuery](), tsq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TestSummaryQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (tsq *TestSummaryQuery) CountX(ctx context.Context) int {
-	count, err := tsq.Count(ctx)
+func (_q *TestSummaryQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -271,9 +271,9 @@ func (tsq *TestSummaryQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (tsq *TestSummaryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryExist)
-	switch _, err := tsq.FirstID(ctx); {
+func (_q *TestSummaryQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -284,8 +284,8 @@ func (tsq *TestSummaryQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (tsq *TestSummaryQuery) ExistX(ctx context.Context) bool {
-	exist, err := tsq.Exist(ctx)
+func (_q *TestSummaryQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -294,44 +294,44 @@ func (tsq *TestSummaryQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the TestSummaryQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (tsq *TestSummaryQuery) Clone() *TestSummaryQuery {
-	if tsq == nil {
+func (_q *TestSummaryQuery) Clone() *TestSummaryQuery {
+	if _q == nil {
 		return nil
 	}
 	return &TestSummaryQuery{
-		config:               tsq.config,
-		ctx:                  tsq.ctx.Clone(),
-		order:                append([]testsummary.OrderOption{}, tsq.order...),
-		inters:               append([]Interceptor{}, tsq.inters...),
-		predicates:           append([]predicate.TestSummary{}, tsq.predicates...),
-		withInvocationTarget: tsq.withInvocationTarget.Clone(),
-		withTestResults:      tsq.withTestResults.Clone(),
+		config:               _q.config,
+		ctx:                  _q.ctx.Clone(),
+		order:                append([]testsummary.OrderOption{}, _q.order...),
+		inters:               append([]Interceptor{}, _q.inters...),
+		predicates:           append([]predicate.TestSummary{}, _q.predicates...),
+		withInvocationTarget: _q.withInvocationTarget.Clone(),
+		withTestResults:      _q.withTestResults.Clone(),
 		// clone intermediate query.
-		sql:  tsq.sql.Clone(),
-		path: tsq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithInvocationTarget tells the query-builder to eager-load the nodes that are connected to
 // the "invocation_target" edge. The optional arguments are used to configure the query builder of the edge.
-func (tsq *TestSummaryQuery) WithInvocationTarget(opts ...func(*InvocationTargetQuery)) *TestSummaryQuery {
-	query := (&InvocationTargetClient{config: tsq.config}).Query()
+func (_q *TestSummaryQuery) WithInvocationTarget(opts ...func(*InvocationTargetQuery)) *TestSummaryQuery {
+	query := (&InvocationTargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tsq.withInvocationTarget = query
-	return tsq
+	_q.withInvocationTarget = query
+	return _q
 }
 
 // WithTestResults tells the query-builder to eager-load the nodes that are connected to
 // the "test_results" edge. The optional arguments are used to configure the query builder of the edge.
-func (tsq *TestSummaryQuery) WithTestResults(opts ...func(*TestResultQuery)) *TestSummaryQuery {
-	query := (&TestResultClient{config: tsq.config}).Query()
+func (_q *TestSummaryQuery) WithTestResults(opts ...func(*TestResultQuery)) *TestSummaryQuery {
+	query := (&TestResultClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tsq.withTestResults = query
-	return tsq
+	_q.withTestResults = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -348,10 +348,10 @@ func (tsq *TestSummaryQuery) WithTestResults(opts ...func(*TestResultQuery)) *Te
 //		GroupBy(testsummary.FieldOverallStatus).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (tsq *TestSummaryQuery) GroupBy(field string, fields ...string) *TestSummaryGroupBy {
-	tsq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TestSummaryGroupBy{build: tsq}
-	grbuild.flds = &tsq.ctx.Fields
+func (_q *TestSummaryQuery) GroupBy(field string, fields ...string) *TestSummaryGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &TestSummaryGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = testsummary.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -369,62 +369,62 @@ func (tsq *TestSummaryQuery) GroupBy(field string, fields ...string) *TestSummar
 //	client.TestSummary.Query().
 //		Select(testsummary.FieldOverallStatus).
 //		Scan(ctx, &v)
-func (tsq *TestSummaryQuery) Select(fields ...string) *TestSummarySelect {
-	tsq.ctx.Fields = append(tsq.ctx.Fields, fields...)
-	sbuild := &TestSummarySelect{TestSummaryQuery: tsq}
+func (_q *TestSummaryQuery) Select(fields ...string) *TestSummarySelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &TestSummarySelect{TestSummaryQuery: _q}
 	sbuild.label = testsummary.Label
-	sbuild.flds, sbuild.scan = &tsq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a TestSummarySelect configured with the given aggregations.
-func (tsq *TestSummaryQuery) Aggregate(fns ...AggregateFunc) *TestSummarySelect {
-	return tsq.Select().Aggregate(fns...)
+func (_q *TestSummaryQuery) Aggregate(fns ...AggregateFunc) *TestSummarySelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (tsq *TestSummaryQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range tsq.inters {
+func (_q *TestSummaryQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, tsq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range tsq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !testsummary.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if tsq.path != nil {
-		prev, err := tsq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		tsq.sql = prev
+		_q.sql = prev
 	}
 	if testsummary.Policy == nil {
 		return errors.New("ent: uninitialized testsummary.Policy (forgotten import ent/runtime?)")
 	}
-	if err := testsummary.Policy.EvalQuery(ctx, tsq); err != nil {
+	if err := testsummary.Policy.EvalQuery(ctx, _q); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestSummary, error) {
+func (_q *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestSummary, error) {
 	var (
 		nodes       = []*TestSummary{}
-		withFKs     = tsq.withFKs
-		_spec       = tsq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			tsq.withInvocationTarget != nil,
-			tsq.withTestResults != nil,
+			_q.withInvocationTarget != nil,
+			_q.withTestResults != nil,
 		}
 	)
-	if tsq.withInvocationTarget != nil {
+	if _q.withInvocationTarget != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -434,52 +434,52 @@ func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		return (*TestSummary).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &TestSummary{config: tsq.config}
+		node := &TestSummary{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(tsq.modifiers) > 0 {
-		_spec.Modifiers = tsq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, tsq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := tsq.withInvocationTarget; query != nil {
-		if err := tsq.loadInvocationTarget(ctx, query, nodes, nil,
+	if query := _q.withInvocationTarget; query != nil {
+		if err := _q.loadInvocationTarget(ctx, query, nodes, nil,
 			func(n *TestSummary, e *InvocationTarget) { n.Edges.InvocationTarget = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := tsq.withTestResults; query != nil {
-		if err := tsq.loadTestResults(ctx, query, nodes,
+	if query := _q.withTestResults; query != nil {
+		if err := _q.loadTestResults(ctx, query, nodes,
 			func(n *TestSummary) { n.Edges.TestResults = []*TestResult{} },
 			func(n *TestSummary, e *TestResult) { n.Edges.TestResults = append(n.Edges.TestResults, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range tsq.withNamedTestResults {
-		if err := tsq.loadTestResults(ctx, query, nodes,
+	for name, query := range _q.withNamedTestResults {
+		if err := _q.loadTestResults(ctx, query, nodes,
 			func(n *TestSummary) { n.appendNamedTestResults(name) },
 			func(n *TestSummary, e *TestResult) { n.appendNamedTestResults(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range tsq.loadTotal {
-		if err := tsq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (tsq *TestSummaryQuery) loadInvocationTarget(ctx context.Context, query *InvocationTargetQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *InvocationTarget)) error {
+func (_q *TestSummaryQuery) loadInvocationTarget(ctx context.Context, query *InvocationTargetQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *InvocationTarget)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*TestSummary)
 	for i := range nodes {
@@ -511,7 +511,7 @@ func (tsq *TestSummaryQuery) loadInvocationTarget(ctx context.Context, query *In
 	}
 	return nil
 }
-func (tsq *TestSummaryQuery) loadTestResults(ctx context.Context, query *TestResultQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *TestResult)) error {
+func (_q *TestSummaryQuery) loadTestResults(ctx context.Context, query *TestResultQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *TestResult)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*TestSummary)
 	for i := range nodes {
@@ -543,27 +543,27 @@ func (tsq *TestSummaryQuery) loadTestResults(ctx context.Context, query *TestRes
 	return nil
 }
 
-func (tsq *TestSummaryQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := tsq.querySpec()
-	if len(tsq.modifiers) > 0 {
-		_spec.Modifiers = tsq.modifiers
+func (_q *TestSummaryQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = tsq.ctx.Fields
-	if len(tsq.ctx.Fields) > 0 {
-		_spec.Unique = tsq.ctx.Unique != nil && *tsq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, tsq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (tsq *TestSummaryQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *TestSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
-	_spec.From = tsq.sql
-	if unique := tsq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if tsq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := tsq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, testsummary.FieldID)
 		for i := range fields {
@@ -572,20 +572,20 @@ func (tsq *TestSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := tsq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := tsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := tsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := tsq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -595,33 +595,33 @@ func (tsq *TestSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (tsq *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(tsq.driver.Dialect())
+func (_q *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(testsummary.Table)
-	columns := tsq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = testsummary.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if tsq.sql != nil {
-		selector = tsq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if tsq.ctx.Unique != nil && *tsq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range tsq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range tsq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := tsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := tsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -629,16 +629,16 @@ func (tsq *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedTestResults tells the query-builder to eager-load the nodes that are connected to the "test_results"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tsq *TestSummaryQuery) WithNamedTestResults(name string, opts ...func(*TestResultQuery)) *TestSummaryQuery {
-	query := (&TestResultClient{config: tsq.config}).Query()
+func (_q *TestSummaryQuery) WithNamedTestResults(name string, opts ...func(*TestResultQuery)) *TestSummaryQuery {
+	query := (&TestResultClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if tsq.withNamedTestResults == nil {
-		tsq.withNamedTestResults = make(map[string]*TestResultQuery)
+	if _q.withNamedTestResults == nil {
+		_q.withNamedTestResults = make(map[string]*TestResultQuery)
 	}
-	tsq.withNamedTestResults[name] = query
-	return tsq
+	_q.withNamedTestResults[name] = query
+	return _q
 }
 
 // TestSummaryGroupBy is the group-by builder for TestSummary entities.
@@ -648,41 +648,41 @@ type TestSummaryGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (tsgb *TestSummaryGroupBy) Aggregate(fns ...AggregateFunc) *TestSummaryGroupBy {
-	tsgb.fns = append(tsgb.fns, fns...)
-	return tsgb
+func (_g *TestSummaryGroupBy) Aggregate(fns ...AggregateFunc) *TestSummaryGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tsgb *TestSummaryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tsgb.build.ctx, ent.OpQueryGroupBy)
-	if err := tsgb.build.prepareQuery(ctx); err != nil {
+func (_g *TestSummaryGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TestSummaryQuery, *TestSummaryGroupBy](ctx, tsgb.build, tsgb, tsgb.build.inters, v)
+	return scanWithInterceptors[*TestSummaryQuery, *TestSummaryGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (tsgb *TestSummaryGroupBy) sqlScan(ctx context.Context, root *TestSummaryQuery, v any) error {
+func (_g *TestSummaryGroupBy) sqlScan(ctx context.Context, root *TestSummaryQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(tsgb.fns))
-	for _, fn := range tsgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*tsgb.flds)+len(tsgb.fns))
-		for _, f := range *tsgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*tsgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tsgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -696,27 +696,27 @@ type TestSummarySelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (tss *TestSummarySelect) Aggregate(fns ...AggregateFunc) *TestSummarySelect {
-	tss.fns = append(tss.fns, fns...)
-	return tss
+func (_s *TestSummarySelect) Aggregate(fns ...AggregateFunc) *TestSummarySelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tss *TestSummarySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tss.ctx, ent.OpQuerySelect)
-	if err := tss.prepareQuery(ctx); err != nil {
+func (_s *TestSummarySelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TestSummaryQuery, *TestSummarySelect](ctx, tss.TestSummaryQuery, tss, tss.inters, v)
+	return scanWithInterceptors[*TestSummaryQuery, *TestSummarySelect](ctx, _s.TestSummaryQuery, _s, _s.inters, v)
 }
 
-func (tss *TestSummarySelect) sqlScan(ctx context.Context, root *TestSummaryQuery, v any) error {
+func (_s *TestSummarySelect) sqlScan(ctx context.Context, root *TestSummaryQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(tss.fns))
-	for _, fn := range tss.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*tss.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -724,7 +724,7 @@ func (tss *TestSummarySelect) sqlScan(ctx context.Context, root *TestSummaryQuer
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tss.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

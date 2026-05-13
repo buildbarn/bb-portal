@@ -23,63 +23,63 @@ type MissDetailCreate struct {
 }
 
 // SetReason sets the "reason" field.
-func (mdc *MissDetailCreate) SetReason(s string) *MissDetailCreate {
-	mdc.mutation.SetReason(s)
-	return mdc
+func (_c *MissDetailCreate) SetReason(v string) *MissDetailCreate {
+	_c.mutation.SetReason(v)
+	return _c
 }
 
 // SetCount sets the "count" field.
-func (mdc *MissDetailCreate) SetCount(i int32) *MissDetailCreate {
-	mdc.mutation.SetCount(i)
-	return mdc
+func (_c *MissDetailCreate) SetCount(v int32) *MissDetailCreate {
+	_c.mutation.SetCount(v)
+	return _c
 }
 
 // SetNillableCount sets the "count" field if the given value is not nil.
-func (mdc *MissDetailCreate) SetNillableCount(i *int32) *MissDetailCreate {
-	if i != nil {
-		mdc.SetCount(*i)
+func (_c *MissDetailCreate) SetNillableCount(v *int32) *MissDetailCreate {
+	if v != nil {
+		_c.SetCount(*v)
 	}
-	return mdc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (mdc *MissDetailCreate) SetID(i int64) *MissDetailCreate {
-	mdc.mutation.SetID(i)
-	return mdc
+func (_c *MissDetailCreate) SetID(v int64) *MissDetailCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mdc *MissDetailCreate) SetActionCacheStatisticsID(id int64) *MissDetailCreate {
-	mdc.mutation.SetActionCacheStatisticsID(id)
-	return mdc
+func (_c *MissDetailCreate) SetActionCacheStatisticsID(id int64) *MissDetailCreate {
+	_c.mutation.SetActionCacheStatisticsID(id)
+	return _c
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mdc *MissDetailCreate) SetNillableActionCacheStatisticsID(id *int64) *MissDetailCreate {
+func (_c *MissDetailCreate) SetNillableActionCacheStatisticsID(id *int64) *MissDetailCreate {
 	if id != nil {
-		mdc = mdc.SetActionCacheStatisticsID(*id)
+		_c = _c.SetActionCacheStatisticsID(*id)
 	}
-	return mdc
+	return _c
 }
 
 // SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (mdc *MissDetailCreate) SetActionCacheStatistics(a *ActionCacheStatistics) *MissDetailCreate {
-	return mdc.SetActionCacheStatisticsID(a.ID)
+func (_c *MissDetailCreate) SetActionCacheStatistics(v *ActionCacheStatistics) *MissDetailCreate {
+	return _c.SetActionCacheStatisticsID(v.ID)
 }
 
 // Mutation returns the MissDetailMutation object of the builder.
-func (mdc *MissDetailCreate) Mutation() *MissDetailMutation {
-	return mdc.mutation
+func (_c *MissDetailCreate) Mutation() *MissDetailMutation {
+	return _c.mutation
 }
 
 // Save creates the MissDetail in the database.
-func (mdc *MissDetailCreate) Save(ctx context.Context) (*MissDetail, error) {
-	return withHooks(ctx, mdc.sqlSave, mdc.mutation, mdc.hooks)
+func (_c *MissDetailCreate) Save(ctx context.Context) (*MissDetail, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (mdc *MissDetailCreate) SaveX(ctx context.Context) *MissDetail {
-	v, err := mdc.Save(ctx)
+func (_c *MissDetailCreate) SaveX(ctx context.Context) *MissDetail {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -87,32 +87,32 @@ func (mdc *MissDetailCreate) SaveX(ctx context.Context) *MissDetail {
 }
 
 // Exec executes the query.
-func (mdc *MissDetailCreate) Exec(ctx context.Context) error {
-	_, err := mdc.Save(ctx)
+func (_c *MissDetailCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mdc *MissDetailCreate) ExecX(ctx context.Context) {
-	if err := mdc.Exec(ctx); err != nil {
+func (_c *MissDetailCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (mdc *MissDetailCreate) check() error {
-	if _, ok := mdc.mutation.Reason(); !ok {
+func (_c *MissDetailCreate) check() error {
+	if _, ok := _c.mutation.Reason(); !ok {
 		return &ValidationError{Name: "reason", err: errors.New(`ent: missing required field "MissDetail.reason"`)}
 	}
 	return nil
 }
 
-func (mdc *MissDetailCreate) sqlSave(ctx context.Context) (*MissDetail, error) {
-	if err := mdc.check(); err != nil {
+func (_c *MissDetailCreate) sqlSave(ctx context.Context) (*MissDetail, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := mdc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, mdc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -122,30 +122,30 @@ func (mdc *MissDetailCreate) sqlSave(ctx context.Context) (*MissDetail, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	mdc.mutation.id = &_node.ID
-	mdc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
+func (_c *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 	var (
-		_node = &MissDetail{config: mdc.config}
+		_node = &MissDetail{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(missdetail.Table, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = mdc.conflict
-	if id, ok := mdc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := mdc.mutation.Reason(); ok {
+	if value, ok := _c.mutation.Reason(); ok {
 		_spec.SetField(missdetail.FieldReason, field.TypeString, value)
 		_node.Reason = value
 	}
-	if value, ok := mdc.mutation.Count(); ok {
+	if value, ok := _c.mutation.Count(); ok {
 		_spec.SetField(missdetail.FieldCount, field.TypeInt32, value)
 		_node.Count = value
 	}
-	if nodes := mdc.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -181,10 +181,10 @@ func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 //			SetReason(v+v).
 //		}).
 //		Exec(ctx)
-func (mdc *MissDetailCreate) OnConflict(opts ...sql.ConflictOption) *MissDetailUpsertOne {
-	mdc.conflict = opts
+func (_c *MissDetailCreate) OnConflict(opts ...sql.ConflictOption) *MissDetailUpsertOne {
+	_c.conflict = opts
 	return &MissDetailUpsertOne{
-		create: mdc,
+		create: _c,
 	}
 }
 
@@ -194,10 +194,10 @@ func (mdc *MissDetailCreate) OnConflict(opts ...sql.ConflictOption) *MissDetailU
 //	client.MissDetail.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (mdc *MissDetailCreate) OnConflictColumns(columns ...string) *MissDetailUpsertOne {
-	mdc.conflict = append(mdc.conflict, sql.ConflictColumns(columns...))
+func (_c *MissDetailCreate) OnConflictColumns(columns ...string) *MissDetailUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &MissDetailUpsertOne{
-		create: mdc,
+		create: _c,
 	}
 }
 
@@ -382,16 +382,16 @@ type MissDetailCreateBulk struct {
 }
 
 // Save creates the MissDetail entities in the database.
-func (mdcb *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, error) {
-	if mdcb.err != nil {
-		return nil, mdcb.err
+func (_c *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(mdcb.builders))
-	nodes := make([]*MissDetail, len(mdcb.builders))
-	mutators := make([]Mutator, len(mdcb.builders))
-	for i := range mdcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*MissDetail, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := mdcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*MissDetailMutation)
 				if !ok {
@@ -404,12 +404,12 @@ func (mdcb *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, mdcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = mdcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, mdcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -433,7 +433,7 @@ func (mdcb *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, mdcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -441,8 +441,8 @@ func (mdcb *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mdcb *MissDetailCreateBulk) SaveX(ctx context.Context) []*MissDetail {
-	v, err := mdcb.Save(ctx)
+func (_c *MissDetailCreateBulk) SaveX(ctx context.Context) []*MissDetail {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -450,14 +450,14 @@ func (mdcb *MissDetailCreateBulk) SaveX(ctx context.Context) []*MissDetail {
 }
 
 // Exec executes the query.
-func (mdcb *MissDetailCreateBulk) Exec(ctx context.Context) error {
-	_, err := mdcb.Save(ctx)
+func (_c *MissDetailCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mdcb *MissDetailCreateBulk) ExecX(ctx context.Context) {
-	if err := mdcb.Exec(ctx); err != nil {
+func (_c *MissDetailCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -477,10 +477,10 @@ func (mdcb *MissDetailCreateBulk) ExecX(ctx context.Context) {
 //			SetReason(v+v).
 //		}).
 //		Exec(ctx)
-func (mdcb *MissDetailCreateBulk) OnConflict(opts ...sql.ConflictOption) *MissDetailUpsertBulk {
-	mdcb.conflict = opts
+func (_c *MissDetailCreateBulk) OnConflict(opts ...sql.ConflictOption) *MissDetailUpsertBulk {
+	_c.conflict = opts
 	return &MissDetailUpsertBulk{
-		create: mdcb,
+		create: _c,
 	}
 }
 
@@ -490,10 +490,10 @@ func (mdcb *MissDetailCreateBulk) OnConflict(opts ...sql.ConflictOption) *MissDe
 //	client.MissDetail.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (mdcb *MissDetailCreateBulk) OnConflictColumns(columns ...string) *MissDetailUpsertBulk {
-	mdcb.conflict = append(mdcb.conflict, sql.ConflictColumns(columns...))
+func (_c *MissDetailCreateBulk) OnConflictColumns(columns ...string) *MissDetailUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &MissDetailUpsertBulk{
-		create: mdcb,
+		create: _c,
 	}
 }
 

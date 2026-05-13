@@ -43,44 +43,44 @@ type TargetQuery struct {
 }
 
 // Where adds a new predicate for the TargetQuery builder.
-func (tq *TargetQuery) Where(ps ...predicate.Target) *TargetQuery {
-	tq.predicates = append(tq.predicates, ps...)
-	return tq
+func (_q *TargetQuery) Where(ps ...predicate.Target) *TargetQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (tq *TargetQuery) Limit(limit int) *TargetQuery {
-	tq.ctx.Limit = &limit
-	return tq
+func (_q *TargetQuery) Limit(limit int) *TargetQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (tq *TargetQuery) Offset(offset int) *TargetQuery {
-	tq.ctx.Offset = &offset
-	return tq
+func (_q *TargetQuery) Offset(offset int) *TargetQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (tq *TargetQuery) Unique(unique bool) *TargetQuery {
-	tq.ctx.Unique = &unique
-	return tq
+func (_q *TargetQuery) Unique(unique bool) *TargetQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (tq *TargetQuery) Order(o ...target.OrderOption) *TargetQuery {
-	tq.order = append(tq.order, o...)
-	return tq
+func (_q *TargetQuery) Order(o ...target.OrderOption) *TargetQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryInstanceName chains the current query on the "instance_name" edge.
-func (tq *TargetQuery) QueryInstanceName() *InstanceNameQuery {
-	query := (&InstanceNameClient{config: tq.config}).Query()
+func (_q *TargetQuery) QueryInstanceName() *InstanceNameQuery {
+	query := (&InstanceNameClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -89,20 +89,20 @@ func (tq *TargetQuery) QueryInstanceName() *InstanceNameQuery {
 			sqlgraph.To(instancename.Table, instancename.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, target.InstanceNameTable, target.InstanceNameColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryInvocationTargets chains the current query on the "invocation_targets" edge.
-func (tq *TargetQuery) QueryInvocationTargets() *InvocationTargetQuery {
-	query := (&InvocationTargetClient{config: tq.config}).Query()
+func (_q *TargetQuery) QueryInvocationTargets() *InvocationTargetQuery {
+	query := (&InvocationTargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -111,20 +111,20 @@ func (tq *TargetQuery) QueryInvocationTargets() *InvocationTargetQuery {
 			sqlgraph.To(invocationtarget.Table, invocationtarget.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, target.InvocationTargetsTable, target.InvocationTargetsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTargetKindMappings chains the current query on the "target_kind_mappings" edge.
-func (tq *TargetQuery) QueryTargetKindMappings() *TargetKindMappingQuery {
-	query := (&TargetKindMappingClient{config: tq.config}).Query()
+func (_q *TargetQuery) QueryTargetKindMappings() *TargetKindMappingQuery {
+	query := (&TargetKindMappingClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -133,20 +133,20 @@ func (tq *TargetQuery) QueryTargetKindMappings() *TargetKindMappingQuery {
 			sqlgraph.To(targetkindmapping.Table, targetkindmapping.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, target.TargetKindMappingsTable, target.TargetKindMappingsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTestTarget chains the current query on the "test_target" edge.
-func (tq *TargetQuery) QueryTestTarget() *TestTargetQuery {
-	query := (&TestTargetClient{config: tq.config}).Query()
+func (_q *TargetQuery) QueryTestTarget() *TestTargetQuery {
+	query := (&TestTargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -155,7 +155,7 @@ func (tq *TargetQuery) QueryTestTarget() *TestTargetQuery {
 			sqlgraph.To(testtarget.Table, testtarget.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, target.TestTargetTable, target.TestTargetColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -163,8 +163,8 @@ func (tq *TargetQuery) QueryTestTarget() *TestTargetQuery {
 
 // First returns the first Target entity from the query.
 // Returns a *NotFoundError when no Target was found.
-func (tq *TargetQuery) First(ctx context.Context) (*Target, error) {
-	nodes, err := tq.Limit(1).All(setContextOp(ctx, tq.ctx, ent.OpQueryFirst))
+func (_q *TargetQuery) First(ctx context.Context) (*Target, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -175,8 +175,8 @@ func (tq *TargetQuery) First(ctx context.Context) (*Target, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (tq *TargetQuery) FirstX(ctx context.Context) *Target {
-	node, err := tq.First(ctx)
+func (_q *TargetQuery) FirstX(ctx context.Context) *Target {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -185,9 +185,9 @@ func (tq *TargetQuery) FirstX(ctx context.Context) *Target {
 
 // FirstID returns the first Target ID from the query.
 // Returns a *NotFoundError when no Target ID was found.
-func (tq *TargetQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *TargetQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tq.Limit(1).IDs(setContextOp(ctx, tq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -198,8 +198,8 @@ func (tq *TargetQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tq *TargetQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := tq.FirstID(ctx)
+func (_q *TargetQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -209,8 +209,8 @@ func (tq *TargetQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single Target entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Target entity is found.
 // Returns a *NotFoundError when no Target entities are found.
-func (tq *TargetQuery) Only(ctx context.Context) (*Target, error) {
-	nodes, err := tq.Limit(2).All(setContextOp(ctx, tq.ctx, ent.OpQueryOnly))
+func (_q *TargetQuery) Only(ctx context.Context) (*Target, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -225,8 +225,8 @@ func (tq *TargetQuery) Only(ctx context.Context) (*Target, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (tq *TargetQuery) OnlyX(ctx context.Context) *Target {
-	node, err := tq.Only(ctx)
+func (_q *TargetQuery) OnlyX(ctx context.Context) *Target {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -236,9 +236,9 @@ func (tq *TargetQuery) OnlyX(ctx context.Context) *Target {
 // OnlyID is like Only, but returns the only Target ID in the query.
 // Returns a *NotSingularError when more than one Target ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tq *TargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *TargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tq.Limit(2).IDs(setContextOp(ctx, tq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -253,8 +253,8 @@ func (tq *TargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tq *TargetQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := tq.OnlyID(ctx)
+func (_q *TargetQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -262,18 +262,18 @@ func (tq *TargetQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of Targets.
-func (tq *TargetQuery) All(ctx context.Context) ([]*Target, error) {
-	ctx = setContextOp(ctx, tq.ctx, ent.OpQueryAll)
-	if err := tq.prepareQuery(ctx); err != nil {
+func (_q *TargetQuery) All(ctx context.Context) ([]*Target, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Target, *TargetQuery]()
-	return withInterceptors[[]*Target](ctx, tq, qr, tq.inters)
+	return withInterceptors[[]*Target](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (tq *TargetQuery) AllX(ctx context.Context) []*Target {
-	nodes, err := tq.All(ctx)
+func (_q *TargetQuery) AllX(ctx context.Context) []*Target {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -281,20 +281,20 @@ func (tq *TargetQuery) AllX(ctx context.Context) []*Target {
 }
 
 // IDs executes the query and returns a list of Target IDs.
-func (tq *TargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if tq.ctx.Unique == nil && tq.path != nil {
-		tq.Unique(true)
+func (_q *TargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, tq.ctx, ent.OpQueryIDs)
-	if err = tq.Select(target.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(target.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tq *TargetQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := tq.IDs(ctx)
+func (_q *TargetQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -302,17 +302,17 @@ func (tq *TargetQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (tq *TargetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tq.ctx, ent.OpQueryCount)
-	if err := tq.prepareQuery(ctx); err != nil {
+func (_q *TargetQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, tq, querierCount[*TargetQuery](), tq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TargetQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (tq *TargetQuery) CountX(ctx context.Context) int {
-	count, err := tq.Count(ctx)
+func (_q *TargetQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -320,9 +320,9 @@ func (tq *TargetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (tq *TargetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tq.ctx, ent.OpQueryExist)
-	switch _, err := tq.FirstID(ctx); {
+func (_q *TargetQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -333,8 +333,8 @@ func (tq *TargetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (tq *TargetQuery) ExistX(ctx context.Context) bool {
-	exist, err := tq.Exist(ctx)
+func (_q *TargetQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -343,68 +343,68 @@ func (tq *TargetQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the TargetQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (tq *TargetQuery) Clone() *TargetQuery {
-	if tq == nil {
+func (_q *TargetQuery) Clone() *TargetQuery {
+	if _q == nil {
 		return nil
 	}
 	return &TargetQuery{
-		config:                 tq.config,
-		ctx:                    tq.ctx.Clone(),
-		order:                  append([]target.OrderOption{}, tq.order...),
-		inters:                 append([]Interceptor{}, tq.inters...),
-		predicates:             append([]predicate.Target{}, tq.predicates...),
-		withInstanceName:       tq.withInstanceName.Clone(),
-		withInvocationTargets:  tq.withInvocationTargets.Clone(),
-		withTargetKindMappings: tq.withTargetKindMappings.Clone(),
-		withTestTarget:         tq.withTestTarget.Clone(),
+		config:                 _q.config,
+		ctx:                    _q.ctx.Clone(),
+		order:                  append([]target.OrderOption{}, _q.order...),
+		inters:                 append([]Interceptor{}, _q.inters...),
+		predicates:             append([]predicate.Target{}, _q.predicates...),
+		withInstanceName:       _q.withInstanceName.Clone(),
+		withInvocationTargets:  _q.withInvocationTargets.Clone(),
+		withTargetKindMappings: _q.withTargetKindMappings.Clone(),
+		withTestTarget:         _q.withTestTarget.Clone(),
 		// clone intermediate query.
-		sql:  tq.sql.Clone(),
-		path: tq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithInstanceName tells the query-builder to eager-load the nodes that are connected to
 // the "instance_name" edge. The optional arguments are used to configure the query builder of the edge.
-func (tq *TargetQuery) WithInstanceName(opts ...func(*InstanceNameQuery)) *TargetQuery {
-	query := (&InstanceNameClient{config: tq.config}).Query()
+func (_q *TargetQuery) WithInstanceName(opts ...func(*InstanceNameQuery)) *TargetQuery {
+	query := (&InstanceNameClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withInstanceName = query
-	return tq
+	_q.withInstanceName = query
+	return _q
 }
 
 // WithInvocationTargets tells the query-builder to eager-load the nodes that are connected to
 // the "invocation_targets" edge. The optional arguments are used to configure the query builder of the edge.
-func (tq *TargetQuery) WithInvocationTargets(opts ...func(*InvocationTargetQuery)) *TargetQuery {
-	query := (&InvocationTargetClient{config: tq.config}).Query()
+func (_q *TargetQuery) WithInvocationTargets(opts ...func(*InvocationTargetQuery)) *TargetQuery {
+	query := (&InvocationTargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withInvocationTargets = query
-	return tq
+	_q.withInvocationTargets = query
+	return _q
 }
 
 // WithTargetKindMappings tells the query-builder to eager-load the nodes that are connected to
 // the "target_kind_mappings" edge. The optional arguments are used to configure the query builder of the edge.
-func (tq *TargetQuery) WithTargetKindMappings(opts ...func(*TargetKindMappingQuery)) *TargetQuery {
-	query := (&TargetKindMappingClient{config: tq.config}).Query()
+func (_q *TargetQuery) WithTargetKindMappings(opts ...func(*TargetKindMappingQuery)) *TargetQuery {
+	query := (&TargetKindMappingClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withTargetKindMappings = query
-	return tq
+	_q.withTargetKindMappings = query
+	return _q
 }
 
 // WithTestTarget tells the query-builder to eager-load the nodes that are connected to
 // the "test_target" edge. The optional arguments are used to configure the query builder of the edge.
-func (tq *TargetQuery) WithTestTarget(opts ...func(*TestTargetQuery)) *TargetQuery {
-	query := (&TestTargetClient{config: tq.config}).Query()
+func (_q *TargetQuery) WithTestTarget(opts ...func(*TestTargetQuery)) *TargetQuery {
+	query := (&TestTargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withTestTarget = query
-	return tq
+	_q.withTestTarget = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -421,10 +421,10 @@ func (tq *TargetQuery) WithTestTarget(opts ...func(*TestTargetQuery)) *TargetQue
 //		GroupBy(target.FieldLabel).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (tq *TargetQuery) GroupBy(field string, fields ...string) *TargetGroupBy {
-	tq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TargetGroupBy{build: tq}
-	grbuild.flds = &tq.ctx.Fields
+func (_q *TargetQuery) GroupBy(field string, fields ...string) *TargetGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &TargetGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = target.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -442,64 +442,64 @@ func (tq *TargetQuery) GroupBy(field string, fields ...string) *TargetGroupBy {
 //	client.Target.Query().
 //		Select(target.FieldLabel).
 //		Scan(ctx, &v)
-func (tq *TargetQuery) Select(fields ...string) *TargetSelect {
-	tq.ctx.Fields = append(tq.ctx.Fields, fields...)
-	sbuild := &TargetSelect{TargetQuery: tq}
+func (_q *TargetQuery) Select(fields ...string) *TargetSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &TargetSelect{TargetQuery: _q}
 	sbuild.label = target.Label
-	sbuild.flds, sbuild.scan = &tq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a TargetSelect configured with the given aggregations.
-func (tq *TargetQuery) Aggregate(fns ...AggregateFunc) *TargetSelect {
-	return tq.Select().Aggregate(fns...)
+func (_q *TargetQuery) Aggregate(fns ...AggregateFunc) *TargetSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (tq *TargetQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range tq.inters {
+func (_q *TargetQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, tq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range tq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !target.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if tq.path != nil {
-		prev, err := tq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		tq.sql = prev
+		_q.sql = prev
 	}
 	if target.Policy == nil {
 		return errors.New("ent: uninitialized target.Policy (forgotten import ent/runtime?)")
 	}
-	if err := target.Policy.EvalQuery(ctx, tq); err != nil {
+	if err := target.Policy.EvalQuery(ctx, _q); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Target, error) {
+func (_q *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Target, error) {
 	var (
 		nodes       = []*Target{}
-		withFKs     = tq.withFKs
-		_spec       = tq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [4]bool{
-			tq.withInstanceName != nil,
-			tq.withInvocationTargets != nil,
-			tq.withTargetKindMappings != nil,
-			tq.withTestTarget != nil,
+			_q.withInstanceName != nil,
+			_q.withInvocationTargets != nil,
+			_q.withTargetKindMappings != nil,
+			_q.withTestTarget != nil,
 		}
 	)
-	if tq.withInstanceName != nil {
+	if _q.withInstanceName != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -509,38 +509,38 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 		return (*Target).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Target{config: tq.config}
+		node := &Target{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(tq.modifiers) > 0 {
-		_spec.Modifiers = tq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, tq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := tq.withInstanceName; query != nil {
-		if err := tq.loadInstanceName(ctx, query, nodes, nil,
+	if query := _q.withInstanceName; query != nil {
+		if err := _q.loadInstanceName(ctx, query, nodes, nil,
 			func(n *Target, e *InstanceName) { n.Edges.InstanceName = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := tq.withInvocationTargets; query != nil {
-		if err := tq.loadInvocationTargets(ctx, query, nodes,
+	if query := _q.withInvocationTargets; query != nil {
+		if err := _q.loadInvocationTargets(ctx, query, nodes,
 			func(n *Target) { n.Edges.InvocationTargets = []*InvocationTarget{} },
 			func(n *Target, e *InvocationTarget) { n.Edges.InvocationTargets = append(n.Edges.InvocationTargets, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := tq.withTargetKindMappings; query != nil {
-		if err := tq.loadTargetKindMappings(ctx, query, nodes,
+	if query := _q.withTargetKindMappings; query != nil {
+		if err := _q.loadTargetKindMappings(ctx, query, nodes,
 			func(n *Target) { n.Edges.TargetKindMappings = []*TargetKindMapping{} },
 			func(n *Target, e *TargetKindMapping) {
 				n.Edges.TargetKindMappings = append(n.Edges.TargetKindMappings, e)
@@ -548,35 +548,35 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 			return nil, err
 		}
 	}
-	if query := tq.withTestTarget; query != nil {
-		if err := tq.loadTestTarget(ctx, query, nodes, nil,
+	if query := _q.withTestTarget; query != nil {
+		if err := _q.loadTestTarget(ctx, query, nodes, nil,
 			func(n *Target, e *TestTarget) { n.Edges.TestTarget = e }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range tq.withNamedInvocationTargets {
-		if err := tq.loadInvocationTargets(ctx, query, nodes,
+	for name, query := range _q.withNamedInvocationTargets {
+		if err := _q.loadInvocationTargets(ctx, query, nodes,
 			func(n *Target) { n.appendNamedInvocationTargets(name) },
 			func(n *Target, e *InvocationTarget) { n.appendNamedInvocationTargets(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range tq.withNamedTargetKindMappings {
-		if err := tq.loadTargetKindMappings(ctx, query, nodes,
+	for name, query := range _q.withNamedTargetKindMappings {
+		if err := _q.loadTargetKindMappings(ctx, query, nodes,
 			func(n *Target) { n.appendNamedTargetKindMappings(name) },
 			func(n *Target, e *TargetKindMapping) { n.appendNamedTargetKindMappings(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range tq.loadTotal {
-		if err := tq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (tq *TargetQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Target, init func(*Target), assign func(*Target, *InstanceName)) error {
+func (_q *TargetQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Target, init func(*Target), assign func(*Target, *InstanceName)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*Target)
 	for i := range nodes {
@@ -608,7 +608,7 @@ func (tq *TargetQuery) loadInstanceName(ctx context.Context, query *InstanceName
 	}
 	return nil
 }
-func (tq *TargetQuery) loadInvocationTargets(ctx context.Context, query *InvocationTargetQuery, nodes []*Target, init func(*Target), assign func(*Target, *InvocationTarget)) error {
+func (_q *TargetQuery) loadInvocationTargets(ctx context.Context, query *InvocationTargetQuery, nodes []*Target, init func(*Target), assign func(*Target, *InvocationTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Target)
 	for i := range nodes {
@@ -639,7 +639,7 @@ func (tq *TargetQuery) loadInvocationTargets(ctx context.Context, query *Invocat
 	}
 	return nil
 }
-func (tq *TargetQuery) loadTargetKindMappings(ctx context.Context, query *TargetKindMappingQuery, nodes []*Target, init func(*Target), assign func(*Target, *TargetKindMapping)) error {
+func (_q *TargetQuery) loadTargetKindMappings(ctx context.Context, query *TargetKindMappingQuery, nodes []*Target, init func(*Target), assign func(*Target, *TargetKindMapping)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Target)
 	for i := range nodes {
@@ -669,7 +669,7 @@ func (tq *TargetQuery) loadTargetKindMappings(ctx context.Context, query *Target
 	}
 	return nil
 }
-func (tq *TargetQuery) loadTestTarget(ctx context.Context, query *TestTargetQuery, nodes []*Target, init func(*Target), assign func(*Target, *TestTarget)) error {
+func (_q *TargetQuery) loadTestTarget(ctx context.Context, query *TestTargetQuery, nodes []*Target, init func(*Target), assign func(*Target, *TestTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Target)
 	for i := range nodes {
@@ -697,27 +697,27 @@ func (tq *TargetQuery) loadTestTarget(ctx context.Context, query *TestTargetQuer
 	return nil
 }
 
-func (tq *TargetQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := tq.querySpec()
-	if len(tq.modifiers) > 0 {
-		_spec.Modifiers = tq.modifiers
+func (_q *TargetQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = tq.ctx.Fields
-	if len(tq.ctx.Fields) > 0 {
-		_spec.Unique = tq.ctx.Unique != nil && *tq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, tq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (tq *TargetQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *TargetQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
-	_spec.From = tq.sql
-	if unique := tq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if tq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := tq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, target.FieldID)
 		for i := range fields {
@@ -726,20 +726,20 @@ func (tq *TargetQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := tq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := tq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := tq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := tq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -749,33 +749,33 @@ func (tq *TargetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (tq *TargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(tq.driver.Dialect())
+func (_q *TargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(target.Table)
-	columns := tq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = target.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if tq.sql != nil {
-		selector = tq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if tq.ctx.Unique != nil && *tq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range tq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range tq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := tq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := tq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -783,30 +783,30 @@ func (tq *TargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedInvocationTargets tells the query-builder to eager-load the nodes that are connected to the "invocation_targets"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tq *TargetQuery) WithNamedInvocationTargets(name string, opts ...func(*InvocationTargetQuery)) *TargetQuery {
-	query := (&InvocationTargetClient{config: tq.config}).Query()
+func (_q *TargetQuery) WithNamedInvocationTargets(name string, opts ...func(*InvocationTargetQuery)) *TargetQuery {
+	query := (&InvocationTargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if tq.withNamedInvocationTargets == nil {
-		tq.withNamedInvocationTargets = make(map[string]*InvocationTargetQuery)
+	if _q.withNamedInvocationTargets == nil {
+		_q.withNamedInvocationTargets = make(map[string]*InvocationTargetQuery)
 	}
-	tq.withNamedInvocationTargets[name] = query
-	return tq
+	_q.withNamedInvocationTargets[name] = query
+	return _q
 }
 
 // WithNamedTargetKindMappings tells the query-builder to eager-load the nodes that are connected to the "target_kind_mappings"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tq *TargetQuery) WithNamedTargetKindMappings(name string, opts ...func(*TargetKindMappingQuery)) *TargetQuery {
-	query := (&TargetKindMappingClient{config: tq.config}).Query()
+func (_q *TargetQuery) WithNamedTargetKindMappings(name string, opts ...func(*TargetKindMappingQuery)) *TargetQuery {
+	query := (&TargetKindMappingClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if tq.withNamedTargetKindMappings == nil {
-		tq.withNamedTargetKindMappings = make(map[string]*TargetKindMappingQuery)
+	if _q.withNamedTargetKindMappings == nil {
+		_q.withNamedTargetKindMappings = make(map[string]*TargetKindMappingQuery)
 	}
-	tq.withNamedTargetKindMappings[name] = query
-	return tq
+	_q.withNamedTargetKindMappings[name] = query
+	return _q
 }
 
 // TargetGroupBy is the group-by builder for Target entities.
@@ -816,41 +816,41 @@ type TargetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (tgb *TargetGroupBy) Aggregate(fns ...AggregateFunc) *TargetGroupBy {
-	tgb.fns = append(tgb.fns, fns...)
-	return tgb
+func (_g *TargetGroupBy) Aggregate(fns ...AggregateFunc) *TargetGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tgb *TargetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tgb.build.ctx, ent.OpQueryGroupBy)
-	if err := tgb.build.prepareQuery(ctx); err != nil {
+func (_g *TargetGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TargetQuery, *TargetGroupBy](ctx, tgb.build, tgb, tgb.build.inters, v)
+	return scanWithInterceptors[*TargetQuery, *TargetGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (tgb *TargetGroupBy) sqlScan(ctx context.Context, root *TargetQuery, v any) error {
+func (_g *TargetGroupBy) sqlScan(ctx context.Context, root *TargetQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(tgb.fns))
-	for _, fn := range tgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*tgb.flds)+len(tgb.fns))
-		for _, f := range *tgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*tgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -864,27 +864,27 @@ type TargetSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ts *TargetSelect) Aggregate(fns ...AggregateFunc) *TargetSelect {
-	ts.fns = append(ts.fns, fns...)
-	return ts
+func (_s *TargetSelect) Aggregate(fns ...AggregateFunc) *TargetSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ts *TargetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ts.ctx, ent.OpQuerySelect)
-	if err := ts.prepareQuery(ctx); err != nil {
+func (_s *TargetSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TargetQuery, *TargetSelect](ctx, ts.TargetQuery, ts, ts.inters, v)
+	return scanWithInterceptors[*TargetQuery, *TargetSelect](ctx, _s.TargetQuery, _s, _s.inters, v)
 }
 
-func (ts *TargetSelect) sqlScan(ctx context.Context, root *TargetQuery, v any) error {
+func (_s *TargetSelect) sqlScan(ctx context.Context, root *TargetQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ts.fns))
-	for _, fn := range ts.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ts.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -892,7 +892,7 @@ func (ts *TargetSelect) sqlScan(ctx context.Context, root *TargetQuery, v any) e
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ts.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

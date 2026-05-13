@@ -20,56 +20,56 @@ type InvocationTargetDelete struct {
 }
 
 // Where appends a list predicates to the InvocationTargetDelete builder.
-func (itd *InvocationTargetDelete) Where(ps ...predicate.InvocationTarget) *InvocationTargetDelete {
-	itd.mutation.Where(ps...)
-	return itd
+func (_d *InvocationTargetDelete) Where(ps ...predicate.InvocationTarget) *InvocationTargetDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (itd *InvocationTargetDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, itd.sqlExec, itd.mutation, itd.hooks)
+func (_d *InvocationTargetDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itd *InvocationTargetDelete) ExecX(ctx context.Context) int {
-	n, err := itd.Exec(ctx)
+func (_d *InvocationTargetDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (itd *InvocationTargetDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *InvocationTargetDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(invocationtarget.Table, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
-	if ps := itd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, itd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	itd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // InvocationTargetDeleteOne is the builder for deleting a single InvocationTarget entity.
 type InvocationTargetDeleteOne struct {
-	itd *InvocationTargetDelete
+	_d *InvocationTargetDelete
 }
 
 // Where appends a list predicates to the InvocationTargetDelete builder.
-func (itdo *InvocationTargetDeleteOne) Where(ps ...predicate.InvocationTarget) *InvocationTargetDeleteOne {
-	itdo.itd.mutation.Where(ps...)
-	return itdo
+func (_d *InvocationTargetDeleteOne) Where(ps ...predicate.InvocationTarget) *InvocationTargetDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (itdo *InvocationTargetDeleteOne) Exec(ctx context.Context) error {
-	n, err := itdo.itd.Exec(ctx)
+func (_d *InvocationTargetDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (itdo *InvocationTargetDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itdo *InvocationTargetDeleteOne) ExecX(ctx context.Context) {
-	if err := itdo.Exec(ctx); err != nil {
+func (_d *InvocationTargetDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

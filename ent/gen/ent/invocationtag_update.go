@@ -22,24 +22,24 @@ type InvocationTagUpdate struct {
 }
 
 // Where appends a list predicates to the InvocationTagUpdate builder.
-func (itu *InvocationTagUpdate) Where(ps ...predicate.InvocationTag) *InvocationTagUpdate {
-	itu.mutation.Where(ps...)
-	return itu
+func (_u *InvocationTagUpdate) Where(ps ...predicate.InvocationTag) *InvocationTagUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Mutation returns the InvocationTagMutation object of the builder.
-func (itu *InvocationTagUpdate) Mutation() *InvocationTagMutation {
-	return itu.mutation
+func (_u *InvocationTagUpdate) Mutation() *InvocationTagMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (itu *InvocationTagUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, itu.sqlSave, itu.mutation, itu.hooks)
+func (_u *InvocationTagUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (itu *InvocationTagUpdate) SaveX(ctx context.Context) int {
-	affected, err := itu.Save(ctx)
+func (_u *InvocationTagUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -47,39 +47,39 @@ func (itu *InvocationTagUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (itu *InvocationTagUpdate) Exec(ctx context.Context) error {
-	_, err := itu.Save(ctx)
+func (_u *InvocationTagUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itu *InvocationTagUpdate) ExecX(ctx context.Context) {
-	if err := itu.Exec(ctx); err != nil {
+func (_u *InvocationTagUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (itu *InvocationTagUpdate) check() error {
-	if itu.mutation.BazelInvocationCleared() && len(itu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *InvocationTagUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationTag.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (itu *InvocationTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := itu.check(); err != nil {
-		return n, err
+func (_u *InvocationTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(invocationtag.Table, invocationtag.Columns, sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64))
-	if ps := itu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, itu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtag.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -87,8 +87,8 @@ func (itu *InvocationTagUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	itu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // InvocationTagUpdateOne is the builder for updating a single InvocationTag entity.
@@ -100,31 +100,31 @@ type InvocationTagUpdateOne struct {
 }
 
 // Mutation returns the InvocationTagMutation object of the builder.
-func (ituo *InvocationTagUpdateOne) Mutation() *InvocationTagMutation {
-	return ituo.mutation
+func (_u *InvocationTagUpdateOne) Mutation() *InvocationTagMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the InvocationTagUpdate builder.
-func (ituo *InvocationTagUpdateOne) Where(ps ...predicate.InvocationTag) *InvocationTagUpdateOne {
-	ituo.mutation.Where(ps...)
-	return ituo
+func (_u *InvocationTagUpdateOne) Where(ps ...predicate.InvocationTag) *InvocationTagUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ituo *InvocationTagUpdateOne) Select(field string, fields ...string) *InvocationTagUpdateOne {
-	ituo.fields = append([]string{field}, fields...)
-	return ituo
+func (_u *InvocationTagUpdateOne) Select(field string, fields ...string) *InvocationTagUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated InvocationTag entity.
-func (ituo *InvocationTagUpdateOne) Save(ctx context.Context) (*InvocationTag, error) {
-	return withHooks(ctx, ituo.sqlSave, ituo.mutation, ituo.hooks)
+func (_u *InvocationTagUpdateOne) Save(ctx context.Context) (*InvocationTag, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ituo *InvocationTagUpdateOne) SaveX(ctx context.Context) *InvocationTag {
-	node, err := ituo.Save(ctx)
+func (_u *InvocationTagUpdateOne) SaveX(ctx context.Context) *InvocationTag {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -132,37 +132,37 @@ func (ituo *InvocationTagUpdateOne) SaveX(ctx context.Context) *InvocationTag {
 }
 
 // Exec executes the query on the entity.
-func (ituo *InvocationTagUpdateOne) Exec(ctx context.Context) error {
-	_, err := ituo.Save(ctx)
+func (_u *InvocationTagUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ituo *InvocationTagUpdateOne) ExecX(ctx context.Context) {
-	if err := ituo.Exec(ctx); err != nil {
+func (_u *InvocationTagUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ituo *InvocationTagUpdateOne) check() error {
-	if ituo.mutation.BazelInvocationCleared() && len(ituo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *InvocationTagUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationTag.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (ituo *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTag, err error) {
-	if err := ituo.check(); err != nil {
+func (_u *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTag, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(invocationtag.Table, invocationtag.Columns, sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64))
-	id, ok := ituo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "InvocationTag.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ituo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, invocationtag.FieldID)
 		for _, f := range fields {
@@ -174,17 +174,17 @@ func (ituo *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *Invocat
 			}
 		}
 	}
-	if ps := ituo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	_node = &InvocationTag{config: ituo.config}
+	_node = &InvocationTag{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ituo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtag.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -192,6 +192,6 @@ func (ituo *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *Invocat
 		}
 		return nil, err
 	}
-	ituo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

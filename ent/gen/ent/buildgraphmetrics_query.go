@@ -33,44 +33,44 @@ type BuildGraphMetricsQuery struct {
 }
 
 // Where adds a new predicate for the BuildGraphMetricsQuery builder.
-func (bgmq *BuildGraphMetricsQuery) Where(ps ...predicate.BuildGraphMetrics) *BuildGraphMetricsQuery {
-	bgmq.predicates = append(bgmq.predicates, ps...)
-	return bgmq
+func (_q *BuildGraphMetricsQuery) Where(ps ...predicate.BuildGraphMetrics) *BuildGraphMetricsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (bgmq *BuildGraphMetricsQuery) Limit(limit int) *BuildGraphMetricsQuery {
-	bgmq.ctx.Limit = &limit
-	return bgmq
+func (_q *BuildGraphMetricsQuery) Limit(limit int) *BuildGraphMetricsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (bgmq *BuildGraphMetricsQuery) Offset(offset int) *BuildGraphMetricsQuery {
-	bgmq.ctx.Offset = &offset
-	return bgmq
+func (_q *BuildGraphMetricsQuery) Offset(offset int) *BuildGraphMetricsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (bgmq *BuildGraphMetricsQuery) Unique(unique bool) *BuildGraphMetricsQuery {
-	bgmq.ctx.Unique = &unique
-	return bgmq
+func (_q *BuildGraphMetricsQuery) Unique(unique bool) *BuildGraphMetricsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (bgmq *BuildGraphMetricsQuery) Order(o ...buildgraphmetrics.OrderOption) *BuildGraphMetricsQuery {
-	bgmq.order = append(bgmq.order, o...)
-	return bgmq
+func (_q *BuildGraphMetricsQuery) Order(o ...buildgraphmetrics.OrderOption) *BuildGraphMetricsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryMetrics chains the current query on the "metrics" edge.
-func (bgmq *BuildGraphMetricsQuery) QueryMetrics() *MetricsQuery {
-	query := (&MetricsClient{config: bgmq.config}).Query()
+func (_q *BuildGraphMetricsQuery) QueryMetrics() *MetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := bgmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := bgmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryMetrics() *MetricsQuery {
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, buildgraphmetrics.MetricsTable, buildgraphmetrics.MetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(bgmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (bgmq *BuildGraphMetricsQuery) QueryMetrics() *MetricsQuery {
 
 // First returns the first BuildGraphMetrics entity from the query.
 // Returns a *NotFoundError when no BuildGraphMetrics was found.
-func (bgmq *BuildGraphMetricsQuery) First(ctx context.Context) (*BuildGraphMetrics, error) {
-	nodes, err := bgmq.Limit(1).All(setContextOp(ctx, bgmq.ctx, ent.OpQueryFirst))
+func (_q *BuildGraphMetricsQuery) First(ctx context.Context) (*BuildGraphMetrics, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (bgmq *BuildGraphMetricsQuery) First(ctx context.Context) (*BuildGraphMetri
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) FirstX(ctx context.Context) *BuildGraphMetrics {
-	node, err := bgmq.First(ctx)
+func (_q *BuildGraphMetricsQuery) FirstX(ctx context.Context) *BuildGraphMetrics {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (bgmq *BuildGraphMetricsQuery) FirstX(ctx context.Context) *BuildGraphMetri
 
 // FirstID returns the first BuildGraphMetrics ID from the query.
 // Returns a *NotFoundError when no BuildGraphMetrics ID was found.
-func (bgmq *BuildGraphMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *BuildGraphMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = bgmq.Limit(1).IDs(setContextOp(ctx, bgmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (bgmq *BuildGraphMetricsQuery) FirstID(ctx context.Context) (id int64, err 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := bgmq.FirstID(ctx)
+func (_q *BuildGraphMetricsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (bgmq *BuildGraphMetricsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single BuildGraphMetrics entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one BuildGraphMetrics entity is found.
 // Returns a *NotFoundError when no BuildGraphMetrics entities are found.
-func (bgmq *BuildGraphMetricsQuery) Only(ctx context.Context) (*BuildGraphMetrics, error) {
-	nodes, err := bgmq.Limit(2).All(setContextOp(ctx, bgmq.ctx, ent.OpQueryOnly))
+func (_q *BuildGraphMetricsQuery) Only(ctx context.Context) (*BuildGraphMetrics, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (bgmq *BuildGraphMetricsQuery) Only(ctx context.Context) (*BuildGraphMetric
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) OnlyX(ctx context.Context) *BuildGraphMetrics {
-	node, err := bgmq.Only(ctx)
+func (_q *BuildGraphMetricsQuery) OnlyX(ctx context.Context) *BuildGraphMetrics {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (bgmq *BuildGraphMetricsQuery) OnlyX(ctx context.Context) *BuildGraphMetric
 // OnlyID is like Only, but returns the only BuildGraphMetrics ID in the query.
 // Returns a *NotSingularError when more than one BuildGraphMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (bgmq *BuildGraphMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *BuildGraphMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = bgmq.Limit(2).IDs(setContextOp(ctx, bgmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (bgmq *BuildGraphMetricsQuery) OnlyID(ctx context.Context) (id int64, err e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := bgmq.OnlyID(ctx)
+func (_q *BuildGraphMetricsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (bgmq *BuildGraphMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of BuildGraphMetricsSlice.
-func (bgmq *BuildGraphMetricsQuery) All(ctx context.Context) ([]*BuildGraphMetrics, error) {
-	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryAll)
-	if err := bgmq.prepareQuery(ctx); err != nil {
+func (_q *BuildGraphMetricsQuery) All(ctx context.Context) ([]*BuildGraphMetrics, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*BuildGraphMetrics, *BuildGraphMetricsQuery]()
-	return withInterceptors[[]*BuildGraphMetrics](ctx, bgmq, qr, bgmq.inters)
+	return withInterceptors[[]*BuildGraphMetrics](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) AllX(ctx context.Context) []*BuildGraphMetrics {
-	nodes, err := bgmq.All(ctx)
+func (_q *BuildGraphMetricsQuery) AllX(ctx context.Context) []*BuildGraphMetrics {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (bgmq *BuildGraphMetricsQuery) AllX(ctx context.Context) []*BuildGraphMetri
 }
 
 // IDs executes the query and returns a list of BuildGraphMetrics IDs.
-func (bgmq *BuildGraphMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if bgmq.ctx.Unique == nil && bgmq.path != nil {
-		bgmq.Unique(true)
+func (_q *BuildGraphMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryIDs)
-	if err = bgmq.Select(buildgraphmetrics.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(buildgraphmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := bgmq.IDs(ctx)
+func (_q *BuildGraphMetricsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (bgmq *BuildGraphMetricsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (bgmq *BuildGraphMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryCount)
-	if err := bgmq.prepareQuery(ctx); err != nil {
+func (_q *BuildGraphMetricsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, bgmq, querierCount[*BuildGraphMetricsQuery](), bgmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*BuildGraphMetricsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) CountX(ctx context.Context) int {
-	count, err := bgmq.Count(ctx)
+func (_q *BuildGraphMetricsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (bgmq *BuildGraphMetricsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (bgmq *BuildGraphMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryExist)
-	switch _, err := bgmq.FirstID(ctx); {
+func (_q *BuildGraphMetricsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (bgmq *BuildGraphMetricsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (bgmq *BuildGraphMetricsQuery) ExistX(ctx context.Context) bool {
-	exist, err := bgmq.Exist(ctx)
+func (_q *BuildGraphMetricsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (bgmq *BuildGraphMetricsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the BuildGraphMetricsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (bgmq *BuildGraphMetricsQuery) Clone() *BuildGraphMetricsQuery {
-	if bgmq == nil {
+func (_q *BuildGraphMetricsQuery) Clone() *BuildGraphMetricsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &BuildGraphMetricsQuery{
-		config:      bgmq.config,
-		ctx:         bgmq.ctx.Clone(),
-		order:       append([]buildgraphmetrics.OrderOption{}, bgmq.order...),
-		inters:      append([]Interceptor{}, bgmq.inters...),
-		predicates:  append([]predicate.BuildGraphMetrics{}, bgmq.predicates...),
-		withMetrics: bgmq.withMetrics.Clone(),
+		config:      _q.config,
+		ctx:         _q.ctx.Clone(),
+		order:       append([]buildgraphmetrics.OrderOption{}, _q.order...),
+		inters:      append([]Interceptor{}, _q.inters...),
+		predicates:  append([]predicate.BuildGraphMetrics{}, _q.predicates...),
+		withMetrics: _q.withMetrics.Clone(),
 		// clone intermediate query.
-		sql:  bgmq.sql.Clone(),
-		path: bgmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (bgmq *BuildGraphMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *BuildGraphMetricsQuery {
-	query := (&MetricsClient{config: bgmq.config}).Query()
+func (_q *BuildGraphMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *BuildGraphMetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	bgmq.withMetrics = query
-	return bgmq
+	_q.withMetrics = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (bgmq *BuildGraphMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *Bu
 //		GroupBy(buildgraphmetrics.FieldActionLookupValueCount).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (bgmq *BuildGraphMetricsQuery) GroupBy(field string, fields ...string) *BuildGraphMetricsGroupBy {
-	bgmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &BuildGraphMetricsGroupBy{build: bgmq}
-	grbuild.flds = &bgmq.ctx.Fields
+func (_q *BuildGraphMetricsQuery) GroupBy(field string, fields ...string) *BuildGraphMetricsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &BuildGraphMetricsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = buildgraphmetrics.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (bgmq *BuildGraphMetricsQuery) GroupBy(field string, fields ...string) *Bui
 //	client.BuildGraphMetrics.Query().
 //		Select(buildgraphmetrics.FieldActionLookupValueCount).
 //		Scan(ctx, &v)
-func (bgmq *BuildGraphMetricsQuery) Select(fields ...string) *BuildGraphMetricsSelect {
-	bgmq.ctx.Fields = append(bgmq.ctx.Fields, fields...)
-	sbuild := &BuildGraphMetricsSelect{BuildGraphMetricsQuery: bgmq}
+func (_q *BuildGraphMetricsQuery) Select(fields ...string) *BuildGraphMetricsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &BuildGraphMetricsSelect{BuildGraphMetricsQuery: _q}
 	sbuild.label = buildgraphmetrics.Label
-	sbuild.flds, sbuild.scan = &bgmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a BuildGraphMetricsSelect configured with the given aggregations.
-func (bgmq *BuildGraphMetricsQuery) Aggregate(fns ...AggregateFunc) *BuildGraphMetricsSelect {
-	return bgmq.Select().Aggregate(fns...)
+func (_q *BuildGraphMetricsQuery) Aggregate(fns ...AggregateFunc) *BuildGraphMetricsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (bgmq *BuildGraphMetricsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range bgmq.inters {
+func (_q *BuildGraphMetricsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, bgmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range bgmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !buildgraphmetrics.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if bgmq.path != nil {
-		prev, err := bgmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		bgmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*BuildGraphMetrics, error) {
+func (_q *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*BuildGraphMetrics, error) {
 	var (
 		nodes       = []*BuildGraphMetrics{}
-		withFKs     = bgmq.withFKs
-		_spec       = bgmq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			bgmq.withMetrics != nil,
+			_q.withMetrics != nil,
 		}
 	)
-	if bgmq.withMetrics != nil {
+	if _q.withMetrics != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHo
 		return (*BuildGraphMetrics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &BuildGraphMetrics{config: bgmq.config}
+		node := &BuildGraphMetrics{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(bgmq.modifiers) > 0 {
-		_spec.Modifiers = bgmq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, bgmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := bgmq.withMetrics; query != nil {
-		if err := bgmq.loadMetrics(ctx, query, nodes, nil,
+	if query := _q.withMetrics; query != nil {
+		if err := _q.loadMetrics(ctx, query, nodes, nil,
 			func(n *BuildGraphMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range bgmq.loadTotal {
-		if err := bgmq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (bgmq *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *Metrics)) error {
+func (_q *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *Metrics)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*BuildGraphMetrics)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (bgmq *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *Metr
 	return nil
 }
 
-func (bgmq *BuildGraphMetricsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := bgmq.querySpec()
-	if len(bgmq.modifiers) > 0 {
-		_spec.Modifiers = bgmq.modifiers
+func (_q *BuildGraphMetricsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = bgmq.ctx.Fields
-	if len(bgmq.ctx.Fields) > 0 {
-		_spec.Unique = bgmq.ctx.Unique != nil && *bgmq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, bgmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (bgmq *BuildGraphMetricsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *BuildGraphMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(buildgraphmetrics.Table, buildgraphmetrics.Columns, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
-	_spec.From = bgmq.sql
-	if unique := bgmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if bgmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := bgmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, buildgraphmetrics.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (bgmq *BuildGraphMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := bgmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := bgmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := bgmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := bgmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (bgmq *BuildGraphMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (bgmq *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(bgmq.driver.Dialect())
+func (_q *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(buildgraphmetrics.Table)
-	columns := bgmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = buildgraphmetrics.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if bgmq.sql != nil {
-		selector = bgmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if bgmq.ctx.Unique != nil && *bgmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range bgmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range bgmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := bgmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := bgmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type BuildGraphMetricsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (bgmgb *BuildGraphMetricsGroupBy) Aggregate(fns ...AggregateFunc) *BuildGraphMetricsGroupBy {
-	bgmgb.fns = append(bgmgb.fns, fns...)
-	return bgmgb
+func (_g *BuildGraphMetricsGroupBy) Aggregate(fns ...AggregateFunc) *BuildGraphMetricsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (bgmgb *BuildGraphMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bgmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := bgmgb.build.prepareQuery(ctx); err != nil {
+func (_g *BuildGraphMetricsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*BuildGraphMetricsQuery, *BuildGraphMetricsGroupBy](ctx, bgmgb.build, bgmgb, bgmgb.build.inters, v)
+	return scanWithInterceptors[*BuildGraphMetricsQuery, *BuildGraphMetricsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (bgmgb *BuildGraphMetricsGroupBy) sqlScan(ctx context.Context, root *BuildGraphMetricsQuery, v any) error {
+func (_g *BuildGraphMetricsGroupBy) sqlScan(ctx context.Context, root *BuildGraphMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(bgmgb.fns))
-	for _, fn := range bgmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*bgmgb.flds)+len(bgmgb.fns))
-		for _, f := range *bgmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*bgmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := bgmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type BuildGraphMetricsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (bgms *BuildGraphMetricsSelect) Aggregate(fns ...AggregateFunc) *BuildGraphMetricsSelect {
-	bgms.fns = append(bgms.fns, fns...)
-	return bgms
+func (_s *BuildGraphMetricsSelect) Aggregate(fns ...AggregateFunc) *BuildGraphMetricsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (bgms *BuildGraphMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bgms.ctx, ent.OpQuerySelect)
-	if err := bgms.prepareQuery(ctx); err != nil {
+func (_s *BuildGraphMetricsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*BuildGraphMetricsQuery, *BuildGraphMetricsSelect](ctx, bgms.BuildGraphMetricsQuery, bgms, bgms.inters, v)
+	return scanWithInterceptors[*BuildGraphMetricsQuery, *BuildGraphMetricsSelect](ctx, _s.BuildGraphMetricsQuery, _s, _s.inters, v)
 }
 
-func (bgms *BuildGraphMetricsSelect) sqlScan(ctx context.Context, root *BuildGraphMetricsQuery, v any) error {
+func (_s *BuildGraphMetricsSelect) sqlScan(ctx context.Context, root *BuildGraphMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(bgms.fns))
-	for _, fn := range bgms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*bgms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (bgms *BuildGraphMetricsSelect) sqlScan(ctx context.Context, root *BuildGra
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := bgms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

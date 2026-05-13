@@ -119,7 +119,7 @@ func (*Action) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Action fields.
-func (a *Action) assignValues(columns []string, values []any) error {
+func (_m *Action) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -130,48 +130,48 @@ func (a *Action) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			a.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case action.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				a.BazelInvocationID = value.Int64
+				_m.BazelInvocationID = value.Int64
 			}
 		case action.FieldConfigurationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field configuration_id", values[i])
 			} else if value.Valid {
-				a.ConfigurationID = value.Int64
+				_m.ConfigurationID = value.Int64
 			}
 		case action.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
 			} else if value.Valid {
-				a.Label = value.String
+				_m.Label = value.String
 			}
 		case action.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				a.Type = value.String
+				_m.Type = value.String
 			}
 		case action.FieldSuccess:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field success", values[i])
 			} else if value.Valid {
-				a.Success = value.Bool
+				_m.Success = value.Bool
 			}
 		case action.FieldExitCode:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field exit_code", values[i])
 			} else if value.Valid {
-				a.ExitCode = int32(value.Int64)
+				_m.ExitCode = int32(value.Int64)
 			}
 		case action.FieldCommandLine:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field command_line", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &a.CommandLine); err != nil {
+				if err := json.Unmarshal(*value, &_m.CommandLine); err != nil {
 					return fmt.Errorf("unmarshal field command_line: %w", err)
 				}
 			}
@@ -179,64 +179,64 @@ func (a *Action) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time", values[i])
 			} else if value.Valid {
-				a.StartTime = value.Time
+				_m.StartTime = value.Time
 			}
 		case action.FieldEndTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field end_time", values[i])
 			} else if value.Valid {
-				a.EndTime = value.Time
+				_m.EndTime = value.Time
 			}
 		case action.FieldFailureCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field failure_code", values[i])
 			} else if value.Valid {
-				a.FailureCode = value.String
+				_m.FailureCode = value.String
 			}
 		case action.FieldFailureMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field failure_message", values[i])
 			} else if value.Valid {
-				a.FailureMessage = value.String
+				_m.FailureMessage = value.String
 			}
 		case action.FieldStdoutHash:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field stdout_hash", values[i])
 			} else if value.Valid {
-				a.StdoutHash = value.String
+				_m.StdoutHash = value.String
 			}
 		case action.FieldStdoutSizeBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field stdout_size_bytes", values[i])
 			} else if value.Valid {
-				a.StdoutSizeBytes = value.Int64
+				_m.StdoutSizeBytes = value.Int64
 			}
 		case action.FieldStdoutHashFunction:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field stdout_hash_function", values[i])
 			} else if value.Valid {
-				a.StdoutHashFunction = value.String
+				_m.StdoutHashFunction = value.String
 			}
 		case action.FieldStderrHash:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field stderr_hash", values[i])
 			} else if value.Valid {
-				a.StderrHash = value.String
+				_m.StderrHash = value.String
 			}
 		case action.FieldStderrSizeBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field stderr_size_bytes", values[i])
 			} else if value.Valid {
-				a.StderrSizeBytes = value.Int64
+				_m.StderrSizeBytes = value.Int64
 			}
 		case action.FieldStderrHashFunction:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field stderr_hash_function", values[i])
 			} else if value.Valid {
-				a.StderrHashFunction = value.String
+				_m.StderrHashFunction = value.String
 			}
 		default:
-			a.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -244,93 +244,93 @@ func (a *Action) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Action.
 // This includes values selected through modifiers, order, etc.
-func (a *Action) Value(name string) (ent.Value, error) {
-	return a.selectValues.Get(name)
+func (_m *Action) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the Action entity.
-func (a *Action) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewActionClient(a.config).QueryBazelInvocation(a)
+func (_m *Action) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewActionClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // QueryConfiguration queries the "configuration" edge of the Action entity.
-func (a *Action) QueryConfiguration() *ConfigurationQuery {
-	return NewActionClient(a.config).QueryConfiguration(a)
+func (_m *Action) QueryConfiguration() *ConfigurationQuery {
+	return NewActionClient(_m.config).QueryConfiguration(_m)
 }
 
 // Update returns a builder for updating this Action.
 // Note that you need to call Action.Unwrap() before calling this method if this Action
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (a *Action) Update() *ActionUpdateOne {
-	return NewActionClient(a.config).UpdateOne(a)
+func (_m *Action) Update() *ActionUpdateOne {
+	return NewActionClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Action entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (a *Action) Unwrap() *Action {
-	_tx, ok := a.config.driver.(*txDriver)
+func (_m *Action) Unwrap() *Action {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Action is not a transactional entity")
 	}
-	a.config.driver = _tx.drv
-	return a
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (a *Action) String() string {
+func (_m *Action) String() string {
 	var builder strings.Builder
 	builder.WriteString("Action(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("bazel_invocation_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.BazelInvocationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BazelInvocationID))
 	builder.WriteString(", ")
 	builder.WriteString("configuration_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.ConfigurationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.ConfigurationID))
 	builder.WriteString(", ")
 	builder.WriteString("label=")
-	builder.WriteString(a.Label)
+	builder.WriteString(_m.Label)
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(a.Type)
+	builder.WriteString(_m.Type)
 	builder.WriteString(", ")
 	builder.WriteString("success=")
-	builder.WriteString(fmt.Sprintf("%v", a.Success))
+	builder.WriteString(fmt.Sprintf("%v", _m.Success))
 	builder.WriteString(", ")
 	builder.WriteString("exit_code=")
-	builder.WriteString(fmt.Sprintf("%v", a.ExitCode))
+	builder.WriteString(fmt.Sprintf("%v", _m.ExitCode))
 	builder.WriteString(", ")
 	builder.WriteString("command_line=")
-	builder.WriteString(fmt.Sprintf("%v", a.CommandLine))
+	builder.WriteString(fmt.Sprintf("%v", _m.CommandLine))
 	builder.WriteString(", ")
 	builder.WriteString("start_time=")
-	builder.WriteString(a.StartTime.Format(time.ANSIC))
+	builder.WriteString(_m.StartTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("end_time=")
-	builder.WriteString(a.EndTime.Format(time.ANSIC))
+	builder.WriteString(_m.EndTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("failure_code=")
-	builder.WriteString(a.FailureCode)
+	builder.WriteString(_m.FailureCode)
 	builder.WriteString(", ")
 	builder.WriteString("failure_message=")
-	builder.WriteString(a.FailureMessage)
+	builder.WriteString(_m.FailureMessage)
 	builder.WriteString(", ")
 	builder.WriteString("stdout_hash=")
-	builder.WriteString(a.StdoutHash)
+	builder.WriteString(_m.StdoutHash)
 	builder.WriteString(", ")
 	builder.WriteString("stdout_size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", a.StdoutSizeBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.StdoutSizeBytes))
 	builder.WriteString(", ")
 	builder.WriteString("stdout_hash_function=")
-	builder.WriteString(a.StdoutHashFunction)
+	builder.WriteString(_m.StdoutHashFunction)
 	builder.WriteString(", ")
 	builder.WriteString("stderr_hash=")
-	builder.WriteString(a.StderrHash)
+	builder.WriteString(_m.StderrHash)
 	builder.WriteString(", ")
 	builder.WriteString("stderr_size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", a.StderrSizeBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.StderrSizeBytes))
 	builder.WriteString(", ")
 	builder.WriteString("stderr_hash_function=")
-	builder.WriteString(a.StderrHashFunction)
+	builder.WriteString(_m.StderrHashFunction)
 	builder.WriteByte(')')
 	return builder.String()
 }

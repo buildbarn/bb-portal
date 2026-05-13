@@ -63,7 +63,7 @@ func (*TestTarget) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TestTarget fields.
-func (tt *TestTarget) assignValues(columns []string, values []any) error {
+func (_m *TestTarget) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -74,15 +74,15 @@ func (tt *TestTarget) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tt.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case testtarget.FieldTargetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field target_id", values[i])
 			} else if value.Valid {
-				tt.TargetID = value.Int64
+				_m.TargetID = value.Int64
 			}
 		default:
-			tt.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -90,40 +90,40 @@ func (tt *TestTarget) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TestTarget.
 // This includes values selected through modifiers, order, etc.
-func (tt *TestTarget) Value(name string) (ent.Value, error) {
-	return tt.selectValues.Get(name)
+func (_m *TestTarget) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryTarget queries the "target" edge of the TestTarget entity.
-func (tt *TestTarget) QueryTarget() *TargetQuery {
-	return NewTestTargetClient(tt.config).QueryTarget(tt)
+func (_m *TestTarget) QueryTarget() *TargetQuery {
+	return NewTestTargetClient(_m.config).QueryTarget(_m)
 }
 
 // Update returns a builder for updating this TestTarget.
 // Note that you need to call TestTarget.Unwrap() before calling this method if this TestTarget
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (tt *TestTarget) Update() *TestTargetUpdateOne {
-	return NewTestTargetClient(tt.config).UpdateOne(tt)
+func (_m *TestTarget) Update() *TestTargetUpdateOne {
+	return NewTestTargetClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TestTarget entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (tt *TestTarget) Unwrap() *TestTarget {
-	_tx, ok := tt.config.driver.(*txDriver)
+func (_m *TestTarget) Unwrap() *TestTarget {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TestTarget is not a transactional entity")
 	}
-	tt.config.driver = _tx.drv
-	return tt
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (tt *TestTarget) String() string {
+func (_m *TestTarget) String() string {
 	var builder strings.Builder
 	builder.WriteString("TestTarget(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", tt.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("target_id=")
-	builder.WriteString(fmt.Sprintf("%v", tt.TargetID))
+	builder.WriteString(fmt.Sprintf("%v", _m.TargetID))
 	builder.WriteByte(')')
 	return builder.String()
 }

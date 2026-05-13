@@ -20,56 +20,56 @@ type GarbageMetricsDelete struct {
 }
 
 // Where appends a list predicates to the GarbageMetricsDelete builder.
-func (gmd *GarbageMetricsDelete) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsDelete {
-	gmd.mutation.Where(ps...)
-	return gmd
+func (_d *GarbageMetricsDelete) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (gmd *GarbageMetricsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, gmd.sqlExec, gmd.mutation, gmd.hooks)
+func (_d *GarbageMetricsDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gmd *GarbageMetricsDelete) ExecX(ctx context.Context) int {
-	n, err := gmd.Exec(ctx)
+func (_d *GarbageMetricsDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (gmd *GarbageMetricsDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *GarbageMetricsDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(garbagemetrics.Table, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64))
-	if ps := gmd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, gmd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	gmd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // GarbageMetricsDeleteOne is the builder for deleting a single GarbageMetrics entity.
 type GarbageMetricsDeleteOne struct {
-	gmd *GarbageMetricsDelete
+	_d *GarbageMetricsDelete
 }
 
 // Where appends a list predicates to the GarbageMetricsDelete builder.
-func (gmdo *GarbageMetricsDeleteOne) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsDeleteOne {
-	gmdo.gmd.mutation.Where(ps...)
-	return gmdo
+func (_d *GarbageMetricsDeleteOne) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (gmdo *GarbageMetricsDeleteOne) Exec(ctx context.Context) error {
-	n, err := gmdo.gmd.Exec(ctx)
+func (_d *GarbageMetricsDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (gmdo *GarbageMetricsDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gmdo *GarbageMetricsDeleteOne) ExecX(ctx context.Context) {
-	if err := gmdo.Exec(ctx); err != nil {
+func (_d *GarbageMetricsDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

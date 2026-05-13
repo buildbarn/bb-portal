@@ -42,44 +42,44 @@ type ActionSummaryQuery struct {
 }
 
 // Where adds a new predicate for the ActionSummaryQuery builder.
-func (asq *ActionSummaryQuery) Where(ps ...predicate.ActionSummary) *ActionSummaryQuery {
-	asq.predicates = append(asq.predicates, ps...)
-	return asq
+func (_q *ActionSummaryQuery) Where(ps ...predicate.ActionSummary) *ActionSummaryQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (asq *ActionSummaryQuery) Limit(limit int) *ActionSummaryQuery {
-	asq.ctx.Limit = &limit
-	return asq
+func (_q *ActionSummaryQuery) Limit(limit int) *ActionSummaryQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (asq *ActionSummaryQuery) Offset(offset int) *ActionSummaryQuery {
-	asq.ctx.Offset = &offset
-	return asq
+func (_q *ActionSummaryQuery) Offset(offset int) *ActionSummaryQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (asq *ActionSummaryQuery) Unique(unique bool) *ActionSummaryQuery {
-	asq.ctx.Unique = &unique
-	return asq
+func (_q *ActionSummaryQuery) Unique(unique bool) *ActionSummaryQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (asq *ActionSummaryQuery) Order(o ...actionsummary.OrderOption) *ActionSummaryQuery {
-	asq.order = append(asq.order, o...)
-	return asq
+func (_q *ActionSummaryQuery) Order(o ...actionsummary.OrderOption) *ActionSummaryQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryMetrics chains the current query on the "metrics" edge.
-func (asq *ActionSummaryQuery) QueryMetrics() *MetricsQuery {
-	query := (&MetricsClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) QueryMetrics() *MetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := asq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := asq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -88,20 +88,20 @@ func (asq *ActionSummaryQuery) QueryMetrics() *MetricsQuery {
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, actionsummary.MetricsTable, actionsummary.MetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryActionData chains the current query on the "action_data" edge.
-func (asq *ActionSummaryQuery) QueryActionData() *ActionDataQuery {
-	query := (&ActionDataClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) QueryActionData() *ActionDataQuery {
+	query := (&ActionDataClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := asq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := asq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -110,20 +110,20 @@ func (asq *ActionSummaryQuery) QueryActionData() *ActionDataQuery {
 			sqlgraph.To(actiondata.Table, actiondata.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, actionsummary.ActionDataTable, actionsummary.ActionDataColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryRunnerCount chains the current query on the "runner_count" edge.
-func (asq *ActionSummaryQuery) QueryRunnerCount() *RunnerCountQuery {
-	query := (&RunnerCountClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) QueryRunnerCount() *RunnerCountQuery {
+	query := (&RunnerCountClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := asq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := asq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -132,20 +132,20 @@ func (asq *ActionSummaryQuery) QueryRunnerCount() *RunnerCountQuery {
 			sqlgraph.To(runnercount.Table, runnercount.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, actionsummary.RunnerCountTable, actionsummary.RunnerCountColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryActionCacheStatistics chains the current query on the "action_cache_statistics" edge.
-func (asq *ActionSummaryQuery) QueryActionCacheStatistics() *ActionCacheStatisticsQuery {
-	query := (&ActionCacheStatisticsClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) QueryActionCacheStatistics() *ActionCacheStatisticsQuery {
+	query := (&ActionCacheStatisticsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := asq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := asq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -154,7 +154,7 @@ func (asq *ActionSummaryQuery) QueryActionCacheStatistics() *ActionCacheStatisti
 			sqlgraph.To(actioncachestatistics.Table, actioncachestatistics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, actionsummary.ActionCacheStatisticsTable, actionsummary.ActionCacheStatisticsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -162,8 +162,8 @@ func (asq *ActionSummaryQuery) QueryActionCacheStatistics() *ActionCacheStatisti
 
 // First returns the first ActionSummary entity from the query.
 // Returns a *NotFoundError when no ActionSummary was found.
-func (asq *ActionSummaryQuery) First(ctx context.Context) (*ActionSummary, error) {
-	nodes, err := asq.Limit(1).All(setContextOp(ctx, asq.ctx, ent.OpQueryFirst))
+func (_q *ActionSummaryQuery) First(ctx context.Context) (*ActionSummary, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -174,8 +174,8 @@ func (asq *ActionSummaryQuery) First(ctx context.Context) (*ActionSummary, error
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (asq *ActionSummaryQuery) FirstX(ctx context.Context) *ActionSummary {
-	node, err := asq.First(ctx)
+func (_q *ActionSummaryQuery) FirstX(ctx context.Context) *ActionSummary {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -184,9 +184,9 @@ func (asq *ActionSummaryQuery) FirstX(ctx context.Context) *ActionSummary {
 
 // FirstID returns the first ActionSummary ID from the query.
 // Returns a *NotFoundError when no ActionSummary ID was found.
-func (asq *ActionSummaryQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *ActionSummaryQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = asq.Limit(1).IDs(setContextOp(ctx, asq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -197,8 +197,8 @@ func (asq *ActionSummaryQuery) FirstID(ctx context.Context) (id int64, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (asq *ActionSummaryQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := asq.FirstID(ctx)
+func (_q *ActionSummaryQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -208,8 +208,8 @@ func (asq *ActionSummaryQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single ActionSummary entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one ActionSummary entity is found.
 // Returns a *NotFoundError when no ActionSummary entities are found.
-func (asq *ActionSummaryQuery) Only(ctx context.Context) (*ActionSummary, error) {
-	nodes, err := asq.Limit(2).All(setContextOp(ctx, asq.ctx, ent.OpQueryOnly))
+func (_q *ActionSummaryQuery) Only(ctx context.Context) (*ActionSummary, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -224,8 +224,8 @@ func (asq *ActionSummaryQuery) Only(ctx context.Context) (*ActionSummary, error)
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (asq *ActionSummaryQuery) OnlyX(ctx context.Context) *ActionSummary {
-	node, err := asq.Only(ctx)
+func (_q *ActionSummaryQuery) OnlyX(ctx context.Context) *ActionSummary {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -235,9 +235,9 @@ func (asq *ActionSummaryQuery) OnlyX(ctx context.Context) *ActionSummary {
 // OnlyID is like Only, but returns the only ActionSummary ID in the query.
 // Returns a *NotSingularError when more than one ActionSummary ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (asq *ActionSummaryQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *ActionSummaryQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = asq.Limit(2).IDs(setContextOp(ctx, asq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -252,8 +252,8 @@ func (asq *ActionSummaryQuery) OnlyID(ctx context.Context) (id int64, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (asq *ActionSummaryQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := asq.OnlyID(ctx)
+func (_q *ActionSummaryQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -261,18 +261,18 @@ func (asq *ActionSummaryQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of ActionSummaries.
-func (asq *ActionSummaryQuery) All(ctx context.Context) ([]*ActionSummary, error) {
-	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryAll)
-	if err := asq.prepareQuery(ctx); err != nil {
+func (_q *ActionSummaryQuery) All(ctx context.Context) ([]*ActionSummary, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*ActionSummary, *ActionSummaryQuery]()
-	return withInterceptors[[]*ActionSummary](ctx, asq, qr, asq.inters)
+	return withInterceptors[[]*ActionSummary](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (asq *ActionSummaryQuery) AllX(ctx context.Context) []*ActionSummary {
-	nodes, err := asq.All(ctx)
+func (_q *ActionSummaryQuery) AllX(ctx context.Context) []*ActionSummary {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -280,20 +280,20 @@ func (asq *ActionSummaryQuery) AllX(ctx context.Context) []*ActionSummary {
 }
 
 // IDs executes the query and returns a list of ActionSummary IDs.
-func (asq *ActionSummaryQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if asq.ctx.Unique == nil && asq.path != nil {
-		asq.Unique(true)
+func (_q *ActionSummaryQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryIDs)
-	if err = asq.Select(actionsummary.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(actionsummary.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (asq *ActionSummaryQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := asq.IDs(ctx)
+func (_q *ActionSummaryQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -301,17 +301,17 @@ func (asq *ActionSummaryQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (asq *ActionSummaryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryCount)
-	if err := asq.prepareQuery(ctx); err != nil {
+func (_q *ActionSummaryQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, asq, querierCount[*ActionSummaryQuery](), asq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*ActionSummaryQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (asq *ActionSummaryQuery) CountX(ctx context.Context) int {
-	count, err := asq.Count(ctx)
+func (_q *ActionSummaryQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -319,9 +319,9 @@ func (asq *ActionSummaryQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (asq *ActionSummaryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryExist)
-	switch _, err := asq.FirstID(ctx); {
+func (_q *ActionSummaryQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -332,8 +332,8 @@ func (asq *ActionSummaryQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (asq *ActionSummaryQuery) ExistX(ctx context.Context) bool {
-	exist, err := asq.Exist(ctx)
+func (_q *ActionSummaryQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -342,68 +342,68 @@ func (asq *ActionSummaryQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the ActionSummaryQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (asq *ActionSummaryQuery) Clone() *ActionSummaryQuery {
-	if asq == nil {
+func (_q *ActionSummaryQuery) Clone() *ActionSummaryQuery {
+	if _q == nil {
 		return nil
 	}
 	return &ActionSummaryQuery{
-		config:                    asq.config,
-		ctx:                       asq.ctx.Clone(),
-		order:                     append([]actionsummary.OrderOption{}, asq.order...),
-		inters:                    append([]Interceptor{}, asq.inters...),
-		predicates:                append([]predicate.ActionSummary{}, asq.predicates...),
-		withMetrics:               asq.withMetrics.Clone(),
-		withActionData:            asq.withActionData.Clone(),
-		withRunnerCount:           asq.withRunnerCount.Clone(),
-		withActionCacheStatistics: asq.withActionCacheStatistics.Clone(),
+		config:                    _q.config,
+		ctx:                       _q.ctx.Clone(),
+		order:                     append([]actionsummary.OrderOption{}, _q.order...),
+		inters:                    append([]Interceptor{}, _q.inters...),
+		predicates:                append([]predicate.ActionSummary{}, _q.predicates...),
+		withMetrics:               _q.withMetrics.Clone(),
+		withActionData:            _q.withActionData.Clone(),
+		withRunnerCount:           _q.withRunnerCount.Clone(),
+		withActionCacheStatistics: _q.withActionCacheStatistics.Clone(),
 		// clone intermediate query.
-		sql:  asq.sql.Clone(),
-		path: asq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (asq *ActionSummaryQuery) WithMetrics(opts ...func(*MetricsQuery)) *ActionSummaryQuery {
-	query := (&MetricsClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) WithMetrics(opts ...func(*MetricsQuery)) *ActionSummaryQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	asq.withMetrics = query
-	return asq
+	_q.withMetrics = query
+	return _q
 }
 
 // WithActionData tells the query-builder to eager-load the nodes that are connected to
 // the "action_data" edge. The optional arguments are used to configure the query builder of the edge.
-func (asq *ActionSummaryQuery) WithActionData(opts ...func(*ActionDataQuery)) *ActionSummaryQuery {
-	query := (&ActionDataClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) WithActionData(opts ...func(*ActionDataQuery)) *ActionSummaryQuery {
+	query := (&ActionDataClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	asq.withActionData = query
-	return asq
+	_q.withActionData = query
+	return _q
 }
 
 // WithRunnerCount tells the query-builder to eager-load the nodes that are connected to
 // the "runner_count" edge. The optional arguments are used to configure the query builder of the edge.
-func (asq *ActionSummaryQuery) WithRunnerCount(opts ...func(*RunnerCountQuery)) *ActionSummaryQuery {
-	query := (&RunnerCountClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) WithRunnerCount(opts ...func(*RunnerCountQuery)) *ActionSummaryQuery {
+	query := (&RunnerCountClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	asq.withRunnerCount = query
-	return asq
+	_q.withRunnerCount = query
+	return _q
 }
 
 // WithActionCacheStatistics tells the query-builder to eager-load the nodes that are connected to
 // the "action_cache_statistics" edge. The optional arguments are used to configure the query builder of the edge.
-func (asq *ActionSummaryQuery) WithActionCacheStatistics(opts ...func(*ActionCacheStatisticsQuery)) *ActionSummaryQuery {
-	query := (&ActionCacheStatisticsClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) WithActionCacheStatistics(opts ...func(*ActionCacheStatisticsQuery)) *ActionSummaryQuery {
+	query := (&ActionCacheStatisticsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	asq.withActionCacheStatistics = query
-	return asq
+	_q.withActionCacheStatistics = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -420,10 +420,10 @@ func (asq *ActionSummaryQuery) WithActionCacheStatistics(opts ...func(*ActionCac
 //		GroupBy(actionsummary.FieldActionsCreated).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (asq *ActionSummaryQuery) GroupBy(field string, fields ...string) *ActionSummaryGroupBy {
-	asq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ActionSummaryGroupBy{build: asq}
-	grbuild.flds = &asq.ctx.Fields
+func (_q *ActionSummaryQuery) GroupBy(field string, fields ...string) *ActionSummaryGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &ActionSummaryGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = actionsummary.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -441,58 +441,58 @@ func (asq *ActionSummaryQuery) GroupBy(field string, fields ...string) *ActionSu
 //	client.ActionSummary.Query().
 //		Select(actionsummary.FieldActionsCreated).
 //		Scan(ctx, &v)
-func (asq *ActionSummaryQuery) Select(fields ...string) *ActionSummarySelect {
-	asq.ctx.Fields = append(asq.ctx.Fields, fields...)
-	sbuild := &ActionSummarySelect{ActionSummaryQuery: asq}
+func (_q *ActionSummaryQuery) Select(fields ...string) *ActionSummarySelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &ActionSummarySelect{ActionSummaryQuery: _q}
 	sbuild.label = actionsummary.Label
-	sbuild.flds, sbuild.scan = &asq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a ActionSummarySelect configured with the given aggregations.
-func (asq *ActionSummaryQuery) Aggregate(fns ...AggregateFunc) *ActionSummarySelect {
-	return asq.Select().Aggregate(fns...)
+func (_q *ActionSummaryQuery) Aggregate(fns ...AggregateFunc) *ActionSummarySelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (asq *ActionSummaryQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range asq.inters {
+func (_q *ActionSummaryQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, asq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range asq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !actionsummary.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if asq.path != nil {
-		prev, err := asq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		asq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (asq *ActionSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionSummary, error) {
+func (_q *ActionSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionSummary, error) {
 	var (
 		nodes       = []*ActionSummary{}
-		withFKs     = asq.withFKs
-		_spec       = asq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [4]bool{
-			asq.withMetrics != nil,
-			asq.withActionData != nil,
-			asq.withRunnerCount != nil,
-			asq.withActionCacheStatistics != nil,
+			_q.withMetrics != nil,
+			_q.withActionData != nil,
+			_q.withRunnerCount != nil,
+			_q.withActionCacheStatistics != nil,
 		}
 	)
-	if asq.withMetrics != nil {
+	if _q.withMetrics != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -502,72 +502,72 @@ func (asq *ActionSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		return (*ActionSummary).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &ActionSummary{config: asq.config}
+		node := &ActionSummary{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(asq.modifiers) > 0 {
-		_spec.Modifiers = asq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, asq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := asq.withMetrics; query != nil {
-		if err := asq.loadMetrics(ctx, query, nodes, nil,
+	if query := _q.withMetrics; query != nil {
+		if err := _q.loadMetrics(ctx, query, nodes, nil,
 			func(n *ActionSummary, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := asq.withActionData; query != nil {
-		if err := asq.loadActionData(ctx, query, nodes,
+	if query := _q.withActionData; query != nil {
+		if err := _q.loadActionData(ctx, query, nodes,
 			func(n *ActionSummary) { n.Edges.ActionData = []*ActionData{} },
 			func(n *ActionSummary, e *ActionData) { n.Edges.ActionData = append(n.Edges.ActionData, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := asq.withRunnerCount; query != nil {
-		if err := asq.loadRunnerCount(ctx, query, nodes,
+	if query := _q.withRunnerCount; query != nil {
+		if err := _q.loadRunnerCount(ctx, query, nodes,
 			func(n *ActionSummary) { n.Edges.RunnerCount = []*RunnerCount{} },
 			func(n *ActionSummary, e *RunnerCount) { n.Edges.RunnerCount = append(n.Edges.RunnerCount, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := asq.withActionCacheStatistics; query != nil {
-		if err := asq.loadActionCacheStatistics(ctx, query, nodes, nil,
+	if query := _q.withActionCacheStatistics; query != nil {
+		if err := _q.loadActionCacheStatistics(ctx, query, nodes, nil,
 			func(n *ActionSummary, e *ActionCacheStatistics) { n.Edges.ActionCacheStatistics = e }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range asq.withNamedActionData {
-		if err := asq.loadActionData(ctx, query, nodes,
+	for name, query := range _q.withNamedActionData {
+		if err := _q.loadActionData(ctx, query, nodes,
 			func(n *ActionSummary) { n.appendNamedActionData(name) },
 			func(n *ActionSummary, e *ActionData) { n.appendNamedActionData(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range asq.withNamedRunnerCount {
-		if err := asq.loadRunnerCount(ctx, query, nodes,
+	for name, query := range _q.withNamedRunnerCount {
+		if err := _q.loadRunnerCount(ctx, query, nodes,
 			func(n *ActionSummary) { n.appendNamedRunnerCount(name) },
 			func(n *ActionSummary, e *RunnerCount) { n.appendNamedRunnerCount(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range asq.loadTotal {
-		if err := asq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (asq *ActionSummaryQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *Metrics)) error {
+func (_q *ActionSummaryQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *Metrics)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*ActionSummary)
 	for i := range nodes {
@@ -599,7 +599,7 @@ func (asq *ActionSummaryQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	}
 	return nil
 }
-func (asq *ActionSummaryQuery) loadActionData(ctx context.Context, query *ActionDataQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *ActionData)) error {
+func (_q *ActionSummaryQuery) loadActionData(ctx context.Context, query *ActionDataQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *ActionData)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*ActionSummary)
 	for i := range nodes {
@@ -630,7 +630,7 @@ func (asq *ActionSummaryQuery) loadActionData(ctx context.Context, query *Action
 	}
 	return nil
 }
-func (asq *ActionSummaryQuery) loadRunnerCount(ctx context.Context, query *RunnerCountQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *RunnerCount)) error {
+func (_q *ActionSummaryQuery) loadRunnerCount(ctx context.Context, query *RunnerCountQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *RunnerCount)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*ActionSummary)
 	for i := range nodes {
@@ -661,7 +661,7 @@ func (asq *ActionSummaryQuery) loadRunnerCount(ctx context.Context, query *Runne
 	}
 	return nil
 }
-func (asq *ActionSummaryQuery) loadActionCacheStatistics(ctx context.Context, query *ActionCacheStatisticsQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *ActionCacheStatistics)) error {
+func (_q *ActionSummaryQuery) loadActionCacheStatistics(ctx context.Context, query *ActionCacheStatisticsQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *ActionCacheStatistics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*ActionSummary)
 	for i := range nodes {
@@ -690,27 +690,27 @@ func (asq *ActionSummaryQuery) loadActionCacheStatistics(ctx context.Context, qu
 	return nil
 }
 
-func (asq *ActionSummaryQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := asq.querySpec()
-	if len(asq.modifiers) > 0 {
-		_spec.Modifiers = asq.modifiers
+func (_q *ActionSummaryQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = asq.ctx.Fields
-	if len(asq.ctx.Fields) > 0 {
-		_spec.Unique = asq.ctx.Unique != nil && *asq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, asq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (asq *ActionSummaryQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *ActionSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
-	_spec.From = asq.sql
-	if unique := asq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if asq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := asq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, actionsummary.FieldID)
 		for i := range fields {
@@ -719,20 +719,20 @@ func (asq *ActionSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := asq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := asq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := asq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := asq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -742,33 +742,33 @@ func (asq *ActionSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (asq *ActionSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(asq.driver.Dialect())
+func (_q *ActionSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(actionsummary.Table)
-	columns := asq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = actionsummary.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if asq.sql != nil {
-		selector = asq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if asq.ctx.Unique != nil && *asq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range asq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range asq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := asq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := asq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -776,30 +776,30 @@ func (asq *ActionSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedActionData tells the query-builder to eager-load the nodes that are connected to the "action_data"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (asq *ActionSummaryQuery) WithNamedActionData(name string, opts ...func(*ActionDataQuery)) *ActionSummaryQuery {
-	query := (&ActionDataClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) WithNamedActionData(name string, opts ...func(*ActionDataQuery)) *ActionSummaryQuery {
+	query := (&ActionDataClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if asq.withNamedActionData == nil {
-		asq.withNamedActionData = make(map[string]*ActionDataQuery)
+	if _q.withNamedActionData == nil {
+		_q.withNamedActionData = make(map[string]*ActionDataQuery)
 	}
-	asq.withNamedActionData[name] = query
-	return asq
+	_q.withNamedActionData[name] = query
+	return _q
 }
 
 // WithNamedRunnerCount tells the query-builder to eager-load the nodes that are connected to the "runner_count"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (asq *ActionSummaryQuery) WithNamedRunnerCount(name string, opts ...func(*RunnerCountQuery)) *ActionSummaryQuery {
-	query := (&RunnerCountClient{config: asq.config}).Query()
+func (_q *ActionSummaryQuery) WithNamedRunnerCount(name string, opts ...func(*RunnerCountQuery)) *ActionSummaryQuery {
+	query := (&RunnerCountClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if asq.withNamedRunnerCount == nil {
-		asq.withNamedRunnerCount = make(map[string]*RunnerCountQuery)
+	if _q.withNamedRunnerCount == nil {
+		_q.withNamedRunnerCount = make(map[string]*RunnerCountQuery)
 	}
-	asq.withNamedRunnerCount[name] = query
-	return asq
+	_q.withNamedRunnerCount[name] = query
+	return _q
 }
 
 // ActionSummaryGroupBy is the group-by builder for ActionSummary entities.
@@ -809,41 +809,41 @@ type ActionSummaryGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (asgb *ActionSummaryGroupBy) Aggregate(fns ...AggregateFunc) *ActionSummaryGroupBy {
-	asgb.fns = append(asgb.fns, fns...)
-	return asgb
+func (_g *ActionSummaryGroupBy) Aggregate(fns ...AggregateFunc) *ActionSummaryGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (asgb *ActionSummaryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, asgb.build.ctx, ent.OpQueryGroupBy)
-	if err := asgb.build.prepareQuery(ctx); err != nil {
+func (_g *ActionSummaryGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionSummaryQuery, *ActionSummaryGroupBy](ctx, asgb.build, asgb, asgb.build.inters, v)
+	return scanWithInterceptors[*ActionSummaryQuery, *ActionSummaryGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (asgb *ActionSummaryGroupBy) sqlScan(ctx context.Context, root *ActionSummaryQuery, v any) error {
+func (_g *ActionSummaryGroupBy) sqlScan(ctx context.Context, root *ActionSummaryQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(asgb.fns))
-	for _, fn := range asgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*asgb.flds)+len(asgb.fns))
-		for _, f := range *asgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*asgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := asgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -857,27 +857,27 @@ type ActionSummarySelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ass *ActionSummarySelect) Aggregate(fns ...AggregateFunc) *ActionSummarySelect {
-	ass.fns = append(ass.fns, fns...)
-	return ass
+func (_s *ActionSummarySelect) Aggregate(fns ...AggregateFunc) *ActionSummarySelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ass *ActionSummarySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ass.ctx, ent.OpQuerySelect)
-	if err := ass.prepareQuery(ctx); err != nil {
+func (_s *ActionSummarySelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionSummaryQuery, *ActionSummarySelect](ctx, ass.ActionSummaryQuery, ass, ass.inters, v)
+	return scanWithInterceptors[*ActionSummaryQuery, *ActionSummarySelect](ctx, _s.ActionSummaryQuery, _s, _s.inters, v)
 }
 
-func (ass *ActionSummarySelect) sqlScan(ctx context.Context, root *ActionSummaryQuery, v any) error {
+func (_s *ActionSummarySelect) sqlScan(ctx context.Context, root *ActionSummaryQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ass.fns))
-	for _, fn := range ass.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ass.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -885,7 +885,7 @@ func (ass *ActionSummarySelect) sqlScan(ctx context.Context, root *ActionSummary
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ass.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

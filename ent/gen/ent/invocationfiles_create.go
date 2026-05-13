@@ -23,105 +23,105 @@ type InvocationFilesCreate struct {
 }
 
 // SetName sets the "name" field.
-func (ifc *InvocationFilesCreate) SetName(s string) *InvocationFilesCreate {
-	ifc.mutation.SetName(s)
-	return ifc
+func (_c *InvocationFilesCreate) SetName(v string) *InvocationFilesCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetContent sets the "content" field.
-func (ifc *InvocationFilesCreate) SetContent(s string) *InvocationFilesCreate {
-	ifc.mutation.SetContent(s)
-	return ifc
+func (_c *InvocationFilesCreate) SetContent(v string) *InvocationFilesCreate {
+	_c.mutation.SetContent(v)
+	return _c
 }
 
 // SetNillableContent sets the "content" field if the given value is not nil.
-func (ifc *InvocationFilesCreate) SetNillableContent(s *string) *InvocationFilesCreate {
-	if s != nil {
-		ifc.SetContent(*s)
+func (_c *InvocationFilesCreate) SetNillableContent(v *string) *InvocationFilesCreate {
+	if v != nil {
+		_c.SetContent(*v)
 	}
-	return ifc
+	return _c
 }
 
 // SetDigest sets the "digest" field.
-func (ifc *InvocationFilesCreate) SetDigest(s string) *InvocationFilesCreate {
-	ifc.mutation.SetDigest(s)
-	return ifc
+func (_c *InvocationFilesCreate) SetDigest(v string) *InvocationFilesCreate {
+	_c.mutation.SetDigest(v)
+	return _c
 }
 
 // SetNillableDigest sets the "digest" field if the given value is not nil.
-func (ifc *InvocationFilesCreate) SetNillableDigest(s *string) *InvocationFilesCreate {
-	if s != nil {
-		ifc.SetDigest(*s)
+func (_c *InvocationFilesCreate) SetNillableDigest(v *string) *InvocationFilesCreate {
+	if v != nil {
+		_c.SetDigest(*v)
 	}
-	return ifc
+	return _c
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (ifc *InvocationFilesCreate) SetSizeBytes(i int64) *InvocationFilesCreate {
-	ifc.mutation.SetSizeBytes(i)
-	return ifc
+func (_c *InvocationFilesCreate) SetSizeBytes(v int64) *InvocationFilesCreate {
+	_c.mutation.SetSizeBytes(v)
+	return _c
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (ifc *InvocationFilesCreate) SetNillableSizeBytes(i *int64) *InvocationFilesCreate {
-	if i != nil {
-		ifc.SetSizeBytes(*i)
+func (_c *InvocationFilesCreate) SetNillableSizeBytes(v *int64) *InvocationFilesCreate {
+	if v != nil {
+		_c.SetSizeBytes(*v)
 	}
-	return ifc
+	return _c
 }
 
 // SetDigestFunction sets the "digest_function" field.
-func (ifc *InvocationFilesCreate) SetDigestFunction(s string) *InvocationFilesCreate {
-	ifc.mutation.SetDigestFunction(s)
-	return ifc
+func (_c *InvocationFilesCreate) SetDigestFunction(v string) *InvocationFilesCreate {
+	_c.mutation.SetDigestFunction(v)
+	return _c
 }
 
 // SetNillableDigestFunction sets the "digest_function" field if the given value is not nil.
-func (ifc *InvocationFilesCreate) SetNillableDigestFunction(s *string) *InvocationFilesCreate {
-	if s != nil {
-		ifc.SetDigestFunction(*s)
+func (_c *InvocationFilesCreate) SetNillableDigestFunction(v *string) *InvocationFilesCreate {
+	if v != nil {
+		_c.SetDigestFunction(*v)
 	}
-	return ifc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ifc *InvocationFilesCreate) SetID(i int64) *InvocationFilesCreate {
-	ifc.mutation.SetID(i)
-	return ifc
+func (_c *InvocationFilesCreate) SetID(v int64) *InvocationFilesCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ifc *InvocationFilesCreate) SetBazelInvocationID(id int64) *InvocationFilesCreate {
-	ifc.mutation.SetBazelInvocationID(id)
-	return ifc
+func (_c *InvocationFilesCreate) SetBazelInvocationID(id int64) *InvocationFilesCreate {
+	_c.mutation.SetBazelInvocationID(id)
+	return _c
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (ifc *InvocationFilesCreate) SetNillableBazelInvocationID(id *int64) *InvocationFilesCreate {
+func (_c *InvocationFilesCreate) SetNillableBazelInvocationID(id *int64) *InvocationFilesCreate {
 	if id != nil {
-		ifc = ifc.SetBazelInvocationID(*id)
+		_c = _c.SetBazelInvocationID(*id)
 	}
-	return ifc
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (ifc *InvocationFilesCreate) SetBazelInvocation(b *BazelInvocation) *InvocationFilesCreate {
-	return ifc.SetBazelInvocationID(b.ID)
+func (_c *InvocationFilesCreate) SetBazelInvocation(v *BazelInvocation) *InvocationFilesCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the InvocationFilesMutation object of the builder.
-func (ifc *InvocationFilesCreate) Mutation() *InvocationFilesMutation {
-	return ifc.mutation
+func (_c *InvocationFilesCreate) Mutation() *InvocationFilesMutation {
+	return _c.mutation
 }
 
 // Save creates the InvocationFiles in the database.
-func (ifc *InvocationFilesCreate) Save(ctx context.Context) (*InvocationFiles, error) {
-	return withHooks(ctx, ifc.sqlSave, ifc.mutation, ifc.hooks)
+func (_c *InvocationFilesCreate) Save(ctx context.Context) (*InvocationFiles, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ifc *InvocationFilesCreate) SaveX(ctx context.Context) *InvocationFiles {
-	v, err := ifc.Save(ctx)
+func (_c *InvocationFilesCreate) SaveX(ctx context.Context) *InvocationFiles {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -129,32 +129,32 @@ func (ifc *InvocationFilesCreate) SaveX(ctx context.Context) *InvocationFiles {
 }
 
 // Exec executes the query.
-func (ifc *InvocationFilesCreate) Exec(ctx context.Context) error {
-	_, err := ifc.Save(ctx)
+func (_c *InvocationFilesCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ifc *InvocationFilesCreate) ExecX(ctx context.Context) {
-	if err := ifc.Exec(ctx); err != nil {
+func (_c *InvocationFilesCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ifc *InvocationFilesCreate) check() error {
-	if _, ok := ifc.mutation.Name(); !ok {
+func (_c *InvocationFilesCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "InvocationFiles.name"`)}
 	}
 	return nil
 }
 
-func (ifc *InvocationFilesCreate) sqlSave(ctx context.Context) (*InvocationFiles, error) {
-	if err := ifc.check(); err != nil {
+func (_c *InvocationFilesCreate) sqlSave(ctx context.Context) (*InvocationFiles, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ifc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ifc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -164,42 +164,42 @@ func (ifc *InvocationFilesCreate) sqlSave(ctx context.Context) (*InvocationFiles
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	ifc.mutation.id = &_node.ID
-	ifc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ifc *InvocationFilesCreate) createSpec() (*InvocationFiles, *sqlgraph.CreateSpec) {
+func (_c *InvocationFilesCreate) createSpec() (*InvocationFiles, *sqlgraph.CreateSpec) {
 	var (
-		_node = &InvocationFiles{config: ifc.config}
+		_node = &InvocationFiles{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(invocationfiles.Table, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ifc.conflict
-	if id, ok := ifc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ifc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(invocationfiles.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := ifc.mutation.Content(); ok {
+	if value, ok := _c.mutation.Content(); ok {
 		_spec.SetField(invocationfiles.FieldContent, field.TypeString, value)
 		_node.Content = value
 	}
-	if value, ok := ifc.mutation.Digest(); ok {
+	if value, ok := _c.mutation.Digest(); ok {
 		_spec.SetField(invocationfiles.FieldDigest, field.TypeString, value)
 		_node.Digest = value
 	}
-	if value, ok := ifc.mutation.SizeBytes(); ok {
+	if value, ok := _c.mutation.SizeBytes(); ok {
 		_spec.SetField(invocationfiles.FieldSizeBytes, field.TypeInt64, value)
 		_node.SizeBytes = value
 	}
-	if value, ok := ifc.mutation.DigestFunction(); ok {
+	if value, ok := _c.mutation.DigestFunction(); ok {
 		_spec.SetField(invocationfiles.FieldDigestFunction, field.TypeString, value)
 		_node.DigestFunction = value
 	}
-	if nodes := ifc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -235,10 +235,10 @@ func (ifc *InvocationFilesCreate) createSpec() (*InvocationFiles, *sqlgraph.Crea
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (ifc *InvocationFilesCreate) OnConflict(opts ...sql.ConflictOption) *InvocationFilesUpsertOne {
-	ifc.conflict = opts
+func (_c *InvocationFilesCreate) OnConflict(opts ...sql.ConflictOption) *InvocationFilesUpsertOne {
+	_c.conflict = opts
 	return &InvocationFilesUpsertOne{
-		create: ifc,
+		create: _c,
 	}
 }
 
@@ -248,10 +248,10 @@ func (ifc *InvocationFilesCreate) OnConflict(opts ...sql.ConflictOption) *Invoca
 //	client.InvocationFiles.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ifc *InvocationFilesCreate) OnConflictColumns(columns ...string) *InvocationFilesUpsertOne {
-	ifc.conflict = append(ifc.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationFilesCreate) OnConflictColumns(columns ...string) *InvocationFilesUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationFilesUpsertOne{
-		create: ifc,
+		create: _c,
 	}
 }
 
@@ -553,16 +553,16 @@ type InvocationFilesCreateBulk struct {
 }
 
 // Save creates the InvocationFiles entities in the database.
-func (ifcb *InvocationFilesCreateBulk) Save(ctx context.Context) ([]*InvocationFiles, error) {
-	if ifcb.err != nil {
-		return nil, ifcb.err
+func (_c *InvocationFilesCreateBulk) Save(ctx context.Context) ([]*InvocationFiles, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ifcb.builders))
-	nodes := make([]*InvocationFiles, len(ifcb.builders))
-	mutators := make([]Mutator, len(ifcb.builders))
-	for i := range ifcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*InvocationFiles, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ifcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*InvocationFilesMutation)
 				if !ok {
@@ -575,12 +575,12 @@ func (ifcb *InvocationFilesCreateBulk) Save(ctx context.Context) ([]*InvocationF
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ifcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ifcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ifcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -604,7 +604,7 @@ func (ifcb *InvocationFilesCreateBulk) Save(ctx context.Context) ([]*InvocationF
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ifcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -612,8 +612,8 @@ func (ifcb *InvocationFilesCreateBulk) Save(ctx context.Context) ([]*InvocationF
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ifcb *InvocationFilesCreateBulk) SaveX(ctx context.Context) []*InvocationFiles {
-	v, err := ifcb.Save(ctx)
+func (_c *InvocationFilesCreateBulk) SaveX(ctx context.Context) []*InvocationFiles {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -621,14 +621,14 @@ func (ifcb *InvocationFilesCreateBulk) SaveX(ctx context.Context) []*InvocationF
 }
 
 // Exec executes the query.
-func (ifcb *InvocationFilesCreateBulk) Exec(ctx context.Context) error {
-	_, err := ifcb.Save(ctx)
+func (_c *InvocationFilesCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ifcb *InvocationFilesCreateBulk) ExecX(ctx context.Context) {
-	if err := ifcb.Exec(ctx); err != nil {
+func (_c *InvocationFilesCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -648,10 +648,10 @@ func (ifcb *InvocationFilesCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (ifcb *InvocationFilesCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationFilesUpsertBulk {
-	ifcb.conflict = opts
+func (_c *InvocationFilesCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationFilesUpsertBulk {
+	_c.conflict = opts
 	return &InvocationFilesUpsertBulk{
-		create: ifcb,
+		create: _c,
 	}
 }
 
@@ -661,10 +661,10 @@ func (ifcb *InvocationFilesCreateBulk) OnConflict(opts ...sql.ConflictOption) *I
 //	client.InvocationFiles.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ifcb *InvocationFilesCreateBulk) OnConflictColumns(columns ...string) *InvocationFilesUpsertBulk {
-	ifcb.conflict = append(ifcb.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationFilesCreateBulk) OnConflictColumns(columns ...string) *InvocationFilesUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationFilesUpsertBulk{
-		create: ifcb,
+		create: _c,
 	}
 }
 

@@ -23,155 +23,155 @@ type SystemNetworkStatsCreate struct {
 }
 
 // SetBytesSent sets the "bytes_sent" field.
-func (snsc *SystemNetworkStatsCreate) SetBytesSent(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetBytesSent(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetBytesSent(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetBytesSent(v)
+	return _c
 }
 
 // SetNillableBytesSent sets the "bytes_sent" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillableBytesSent(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetBytesSent(*u)
+func (_c *SystemNetworkStatsCreate) SetNillableBytesSent(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetBytesSent(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetBytesRecv sets the "bytes_recv" field.
-func (snsc *SystemNetworkStatsCreate) SetBytesRecv(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetBytesRecv(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetBytesRecv(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetBytesRecv(v)
+	return _c
 }
 
 // SetNillableBytesRecv sets the "bytes_recv" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillableBytesRecv(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetBytesRecv(*u)
+func (_c *SystemNetworkStatsCreate) SetNillableBytesRecv(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetBytesRecv(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetPacketsSent sets the "packets_sent" field.
-func (snsc *SystemNetworkStatsCreate) SetPacketsSent(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetPacketsSent(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetPacketsSent(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetPacketsSent(v)
+	return _c
 }
 
 // SetNillablePacketsSent sets the "packets_sent" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillablePacketsSent(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetPacketsSent(*u)
+func (_c *SystemNetworkStatsCreate) SetNillablePacketsSent(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetPacketsSent(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetPacketsRecv sets the "packets_recv" field.
-func (snsc *SystemNetworkStatsCreate) SetPacketsRecv(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetPacketsRecv(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetPacketsRecv(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetPacketsRecv(v)
+	return _c
 }
 
 // SetNillablePacketsRecv sets the "packets_recv" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillablePacketsRecv(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetPacketsRecv(*u)
+func (_c *SystemNetworkStatsCreate) SetNillablePacketsRecv(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetPacketsRecv(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
-func (snsc *SystemNetworkStatsCreate) SetPeakBytesSentPerSec(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetPeakBytesSentPerSec(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetPeakBytesSentPerSec(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetPeakBytesSentPerSec(v)
+	return _c
 }
 
 // SetNillablePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillablePeakBytesSentPerSec(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetPeakBytesSentPerSec(*u)
+func (_c *SystemNetworkStatsCreate) SetNillablePeakBytesSentPerSec(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetPeakBytesSentPerSec(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
-func (snsc *SystemNetworkStatsCreate) SetPeakBytesRecvPerSec(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetPeakBytesRecvPerSec(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetPeakBytesRecvPerSec(v)
+	return _c
 }
 
 // SetNillablePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillablePeakBytesRecvPerSec(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetPeakBytesRecvPerSec(*u)
+func (_c *SystemNetworkStatsCreate) SetNillablePeakBytesRecvPerSec(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetPeakBytesRecvPerSec(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
-func (snsc *SystemNetworkStatsCreate) SetPeakPacketsSentPerSec(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetPeakPacketsSentPerSec(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetPeakPacketsSentPerSec(v)
+	return _c
 }
 
 // SetNillablePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillablePeakPacketsSentPerSec(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetPeakPacketsSentPerSec(*u)
+func (_c *SystemNetworkStatsCreate) SetNillablePeakPacketsSentPerSec(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetPeakPacketsSentPerSec(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
-func (snsc *SystemNetworkStatsCreate) SetPeakPacketsRecvPerSec(u uint64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetPeakPacketsRecvPerSec(u)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsCreate {
+	_c.mutation.SetPeakPacketsRecvPerSec(v)
+	return _c
 }
 
 // SetNillablePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillablePeakPacketsRecvPerSec(u *uint64) *SystemNetworkStatsCreate {
-	if u != nil {
-		snsc.SetPeakPacketsRecvPerSec(*u)
+func (_c *SystemNetworkStatsCreate) SetNillablePeakPacketsRecvPerSec(v *uint64) *SystemNetworkStatsCreate {
+	if v != nil {
+		_c.SetPeakPacketsRecvPerSec(*v)
 	}
-	return snsc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (snsc *SystemNetworkStatsCreate) SetID(i int64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetID(i)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetID(v int64) *SystemNetworkStatsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (snsc *SystemNetworkStatsCreate) SetNetworkMetricsID(id int64) *SystemNetworkStatsCreate {
-	snsc.mutation.SetNetworkMetricsID(id)
-	return snsc
+func (_c *SystemNetworkStatsCreate) SetNetworkMetricsID(id int64) *SystemNetworkStatsCreate {
+	_c.mutation.SetNetworkMetricsID(id)
+	return _c
 }
 
 // SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillableNetworkMetricsID(id *int64) *SystemNetworkStatsCreate {
+func (_c *SystemNetworkStatsCreate) SetNillableNetworkMetricsID(id *int64) *SystemNetworkStatsCreate {
 	if id != nil {
-		snsc = snsc.SetNetworkMetricsID(*id)
+		_c = _c.SetNetworkMetricsID(*id)
 	}
-	return snsc
+	return _c
 }
 
 // SetNetworkMetrics sets the "network_metrics" edge to the NetworkMetrics entity.
-func (snsc *SystemNetworkStatsCreate) SetNetworkMetrics(n *NetworkMetrics) *SystemNetworkStatsCreate {
-	return snsc.SetNetworkMetricsID(n.ID)
+func (_c *SystemNetworkStatsCreate) SetNetworkMetrics(v *NetworkMetrics) *SystemNetworkStatsCreate {
+	return _c.SetNetworkMetricsID(v.ID)
 }
 
 // Mutation returns the SystemNetworkStatsMutation object of the builder.
-func (snsc *SystemNetworkStatsCreate) Mutation() *SystemNetworkStatsMutation {
-	return snsc.mutation
+func (_c *SystemNetworkStatsCreate) Mutation() *SystemNetworkStatsMutation {
+	return _c.mutation
 }
 
 // Save creates the SystemNetworkStats in the database.
-func (snsc *SystemNetworkStatsCreate) Save(ctx context.Context) (*SystemNetworkStats, error) {
-	return withHooks(ctx, snsc.sqlSave, snsc.mutation, snsc.hooks)
+func (_c *SystemNetworkStatsCreate) Save(ctx context.Context) (*SystemNetworkStats, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (snsc *SystemNetworkStatsCreate) SaveX(ctx context.Context) *SystemNetworkStats {
-	v, err := snsc.Save(ctx)
+func (_c *SystemNetworkStatsCreate) SaveX(ctx context.Context) *SystemNetworkStats {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,29 +179,29 @@ func (snsc *SystemNetworkStatsCreate) SaveX(ctx context.Context) *SystemNetworkS
 }
 
 // Exec executes the query.
-func (snsc *SystemNetworkStatsCreate) Exec(ctx context.Context) error {
-	_, err := snsc.Save(ctx)
+func (_c *SystemNetworkStatsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snsc *SystemNetworkStatsCreate) ExecX(ctx context.Context) {
-	if err := snsc.Exec(ctx); err != nil {
+func (_c *SystemNetworkStatsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (snsc *SystemNetworkStatsCreate) check() error {
+func (_c *SystemNetworkStatsCreate) check() error {
 	return nil
 }
 
-func (snsc *SystemNetworkStatsCreate) sqlSave(ctx context.Context) (*SystemNetworkStats, error) {
-	if err := snsc.check(); err != nil {
+func (_c *SystemNetworkStatsCreate) sqlSave(ctx context.Context) (*SystemNetworkStats, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := snsc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, snsc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -211,54 +211,54 @@ func (snsc *SystemNetworkStatsCreate) sqlSave(ctx context.Context) (*SystemNetwo
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	snsc.mutation.id = &_node.ID
-	snsc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgraph.CreateSpec) {
+func (_c *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgraph.CreateSpec) {
 	var (
-		_node = &SystemNetworkStats{config: snsc.config}
+		_node = &SystemNetworkStats{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(systemnetworkstats.Table, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = snsc.conflict
-	if id, ok := snsc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := snsc.mutation.BytesSent(); ok {
+	if value, ok := _c.mutation.BytesSent(); ok {
 		_spec.SetField(systemnetworkstats.FieldBytesSent, field.TypeUint64, value)
 		_node.BytesSent = value
 	}
-	if value, ok := snsc.mutation.BytesRecv(); ok {
+	if value, ok := _c.mutation.BytesRecv(); ok {
 		_spec.SetField(systemnetworkstats.FieldBytesRecv, field.TypeUint64, value)
 		_node.BytesRecv = value
 	}
-	if value, ok := snsc.mutation.PacketsSent(); ok {
+	if value, ok := _c.mutation.PacketsSent(); ok {
 		_spec.SetField(systemnetworkstats.FieldPacketsSent, field.TypeUint64, value)
 		_node.PacketsSent = value
 	}
-	if value, ok := snsc.mutation.PacketsRecv(); ok {
+	if value, ok := _c.mutation.PacketsRecv(); ok {
 		_spec.SetField(systemnetworkstats.FieldPacketsRecv, field.TypeUint64, value)
 		_node.PacketsRecv = value
 	}
-	if value, ok := snsc.mutation.PeakBytesSentPerSec(); ok {
+	if value, ok := _c.mutation.PeakBytesSentPerSec(); ok {
 		_spec.SetField(systemnetworkstats.FieldPeakBytesSentPerSec, field.TypeUint64, value)
 		_node.PeakBytesSentPerSec = value
 	}
-	if value, ok := snsc.mutation.PeakBytesRecvPerSec(); ok {
+	if value, ok := _c.mutation.PeakBytesRecvPerSec(); ok {
 		_spec.SetField(systemnetworkstats.FieldPeakBytesRecvPerSec, field.TypeUint64, value)
 		_node.PeakBytesRecvPerSec = value
 	}
-	if value, ok := snsc.mutation.PeakPacketsSentPerSec(); ok {
+	if value, ok := _c.mutation.PeakPacketsSentPerSec(); ok {
 		_spec.SetField(systemnetworkstats.FieldPeakPacketsSentPerSec, field.TypeUint64, value)
 		_node.PeakPacketsSentPerSec = value
 	}
-	if value, ok := snsc.mutation.PeakPacketsRecvPerSec(); ok {
+	if value, ok := _c.mutation.PeakPacketsRecvPerSec(); ok {
 		_spec.SetField(systemnetworkstats.FieldPeakPacketsRecvPerSec, field.TypeUint64, value)
 		_node.PeakPacketsRecvPerSec = value
 	}
-	if nodes := snsc.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -294,10 +294,10 @@ func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgra
 //			SetBytesSent(v+v).
 //		}).
 //		Exec(ctx)
-func (snsc *SystemNetworkStatsCreate) OnConflict(opts ...sql.ConflictOption) *SystemNetworkStatsUpsertOne {
-	snsc.conflict = opts
+func (_c *SystemNetworkStatsCreate) OnConflict(opts ...sql.ConflictOption) *SystemNetworkStatsUpsertOne {
+	_c.conflict = opts
 	return &SystemNetworkStatsUpsertOne{
-		create: snsc,
+		create: _c,
 	}
 }
 
@@ -307,10 +307,10 @@ func (snsc *SystemNetworkStatsCreate) OnConflict(opts ...sql.ConflictOption) *Sy
 //	client.SystemNetworkStats.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (snsc *SystemNetworkStatsCreate) OnConflictColumns(columns ...string) *SystemNetworkStatsUpsertOne {
-	snsc.conflict = append(snsc.conflict, sql.ConflictColumns(columns...))
+func (_c *SystemNetworkStatsCreate) OnConflictColumns(columns ...string) *SystemNetworkStatsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SystemNetworkStatsUpsertOne{
-		create: snsc,
+		create: _c,
 	}
 }
 
@@ -833,16 +833,16 @@ type SystemNetworkStatsCreateBulk struct {
 }
 
 // Save creates the SystemNetworkStats entities in the database.
-func (snscb *SystemNetworkStatsCreateBulk) Save(ctx context.Context) ([]*SystemNetworkStats, error) {
-	if snscb.err != nil {
-		return nil, snscb.err
+func (_c *SystemNetworkStatsCreateBulk) Save(ctx context.Context) ([]*SystemNetworkStats, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(snscb.builders))
-	nodes := make([]*SystemNetworkStats, len(snscb.builders))
-	mutators := make([]Mutator, len(snscb.builders))
-	for i := range snscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*SystemNetworkStats, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := snscb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SystemNetworkStatsMutation)
 				if !ok {
@@ -855,12 +855,12 @@ func (snscb *SystemNetworkStatsCreateBulk) Save(ctx context.Context) ([]*SystemN
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, snscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = snscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, snscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -884,7 +884,7 @@ func (snscb *SystemNetworkStatsCreateBulk) Save(ctx context.Context) ([]*SystemN
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, snscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -892,8 +892,8 @@ func (snscb *SystemNetworkStatsCreateBulk) Save(ctx context.Context) ([]*SystemN
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (snscb *SystemNetworkStatsCreateBulk) SaveX(ctx context.Context) []*SystemNetworkStats {
-	v, err := snscb.Save(ctx)
+func (_c *SystemNetworkStatsCreateBulk) SaveX(ctx context.Context) []*SystemNetworkStats {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -901,14 +901,14 @@ func (snscb *SystemNetworkStatsCreateBulk) SaveX(ctx context.Context) []*SystemN
 }
 
 // Exec executes the query.
-func (snscb *SystemNetworkStatsCreateBulk) Exec(ctx context.Context) error {
-	_, err := snscb.Save(ctx)
+func (_c *SystemNetworkStatsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snscb *SystemNetworkStatsCreateBulk) ExecX(ctx context.Context) {
-	if err := snscb.Exec(ctx); err != nil {
+func (_c *SystemNetworkStatsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -928,10 +928,10 @@ func (snscb *SystemNetworkStatsCreateBulk) ExecX(ctx context.Context) {
 //			SetBytesSent(v+v).
 //		}).
 //		Exec(ctx)
-func (snscb *SystemNetworkStatsCreateBulk) OnConflict(opts ...sql.ConflictOption) *SystemNetworkStatsUpsertBulk {
-	snscb.conflict = opts
+func (_c *SystemNetworkStatsCreateBulk) OnConflict(opts ...sql.ConflictOption) *SystemNetworkStatsUpsertBulk {
+	_c.conflict = opts
 	return &SystemNetworkStatsUpsertBulk{
-		create: snscb,
+		create: _c,
 	}
 }
 
@@ -941,10 +941,10 @@ func (snscb *SystemNetworkStatsCreateBulk) OnConflict(opts ...sql.ConflictOption
 //	client.SystemNetworkStats.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (snscb *SystemNetworkStatsCreateBulk) OnConflictColumns(columns ...string) *SystemNetworkStatsUpsertBulk {
-	snscb.conflict = append(snscb.conflict, sql.ConflictColumns(columns...))
+func (_c *SystemNetworkStatsCreateBulk) OnConflictColumns(columns ...string) *SystemNetworkStatsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SystemNetworkStatsUpsertBulk{
-		create: snscb,
+		create: _c,
 	}
 }
 

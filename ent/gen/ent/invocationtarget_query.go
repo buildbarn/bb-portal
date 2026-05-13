@@ -41,44 +41,44 @@ type InvocationTargetQuery struct {
 }
 
 // Where adds a new predicate for the InvocationTargetQuery builder.
-func (itq *InvocationTargetQuery) Where(ps ...predicate.InvocationTarget) *InvocationTargetQuery {
-	itq.predicates = append(itq.predicates, ps...)
-	return itq
+func (_q *InvocationTargetQuery) Where(ps ...predicate.InvocationTarget) *InvocationTargetQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (itq *InvocationTargetQuery) Limit(limit int) *InvocationTargetQuery {
-	itq.ctx.Limit = &limit
-	return itq
+func (_q *InvocationTargetQuery) Limit(limit int) *InvocationTargetQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (itq *InvocationTargetQuery) Offset(offset int) *InvocationTargetQuery {
-	itq.ctx.Offset = &offset
-	return itq
+func (_q *InvocationTargetQuery) Offset(offset int) *InvocationTargetQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (itq *InvocationTargetQuery) Unique(unique bool) *InvocationTargetQuery {
-	itq.ctx.Unique = &unique
-	return itq
+func (_q *InvocationTargetQuery) Unique(unique bool) *InvocationTargetQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (itq *InvocationTargetQuery) Order(o ...invocationtarget.OrderOption) *InvocationTargetQuery {
-	itq.order = append(itq.order, o...)
-	return itq
+func (_q *InvocationTargetQuery) Order(o ...invocationtarget.OrderOption) *InvocationTargetQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (itq *InvocationTargetQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := itq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := itq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -87,20 +87,20 @@ func (itq *InvocationTargetQuery) QueryBazelInvocation() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, invocationtarget.BazelInvocationTable, invocationtarget.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTarget chains the current query on the "target" edge.
-func (itq *InvocationTargetQuery) QueryTarget() *TargetQuery {
-	query := (&TargetClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) QueryTarget() *TargetQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := itq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := itq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -109,20 +109,20 @@ func (itq *InvocationTargetQuery) QueryTarget() *TargetQuery {
 			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, invocationtarget.TargetTable, invocationtarget.TargetColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryConfiguration chains the current query on the "configuration" edge.
-func (itq *InvocationTargetQuery) QueryConfiguration() *ConfigurationQuery {
-	query := (&ConfigurationClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) QueryConfiguration() *ConfigurationQuery {
+	query := (&ConfigurationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := itq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := itq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -131,20 +131,20 @@ func (itq *InvocationTargetQuery) QueryConfiguration() *ConfigurationQuery {
 			sqlgraph.To(configuration.Table, configuration.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, invocationtarget.ConfigurationTable, invocationtarget.ConfigurationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTestSummary chains the current query on the "test_summary" edge.
-func (itq *InvocationTargetQuery) QueryTestSummary() *TestSummaryQuery {
-	query := (&TestSummaryClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) QueryTestSummary() *TestSummaryQuery {
+	query := (&TestSummaryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := itq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := itq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -153,7 +153,7 @@ func (itq *InvocationTargetQuery) QueryTestSummary() *TestSummaryQuery {
 			sqlgraph.To(testsummary.Table, testsummary.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, invocationtarget.TestSummaryTable, invocationtarget.TestSummaryColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -161,8 +161,8 @@ func (itq *InvocationTargetQuery) QueryTestSummary() *TestSummaryQuery {
 
 // First returns the first InvocationTarget entity from the query.
 // Returns a *NotFoundError when no InvocationTarget was found.
-func (itq *InvocationTargetQuery) First(ctx context.Context) (*InvocationTarget, error) {
-	nodes, err := itq.Limit(1).All(setContextOp(ctx, itq.ctx, ent.OpQueryFirst))
+func (_q *InvocationTargetQuery) First(ctx context.Context) (*InvocationTarget, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -173,8 +173,8 @@ func (itq *InvocationTargetQuery) First(ctx context.Context) (*InvocationTarget,
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (itq *InvocationTargetQuery) FirstX(ctx context.Context) *InvocationTarget {
-	node, err := itq.First(ctx)
+func (_q *InvocationTargetQuery) FirstX(ctx context.Context) *InvocationTarget {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (itq *InvocationTargetQuery) FirstX(ctx context.Context) *InvocationTarget 
 
 // FirstID returns the first InvocationTarget ID from the query.
 // Returns a *NotFoundError when no InvocationTarget ID was found.
-func (itq *InvocationTargetQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *InvocationTargetQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = itq.Limit(1).IDs(setContextOp(ctx, itq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -196,8 +196,8 @@ func (itq *InvocationTargetQuery) FirstID(ctx context.Context) (id int64, err er
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (itq *InvocationTargetQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := itq.FirstID(ctx)
+func (_q *InvocationTargetQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -207,8 +207,8 @@ func (itq *InvocationTargetQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single InvocationTarget entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one InvocationTarget entity is found.
 // Returns a *NotFoundError when no InvocationTarget entities are found.
-func (itq *InvocationTargetQuery) Only(ctx context.Context) (*InvocationTarget, error) {
-	nodes, err := itq.Limit(2).All(setContextOp(ctx, itq.ctx, ent.OpQueryOnly))
+func (_q *InvocationTargetQuery) Only(ctx context.Context) (*InvocationTarget, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -223,8 +223,8 @@ func (itq *InvocationTargetQuery) Only(ctx context.Context) (*InvocationTarget, 
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (itq *InvocationTargetQuery) OnlyX(ctx context.Context) *InvocationTarget {
-	node, err := itq.Only(ctx)
+func (_q *InvocationTargetQuery) OnlyX(ctx context.Context) *InvocationTarget {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -234,9 +234,9 @@ func (itq *InvocationTargetQuery) OnlyX(ctx context.Context) *InvocationTarget {
 // OnlyID is like Only, but returns the only InvocationTarget ID in the query.
 // Returns a *NotSingularError when more than one InvocationTarget ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (itq *InvocationTargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *InvocationTargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = itq.Limit(2).IDs(setContextOp(ctx, itq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -251,8 +251,8 @@ func (itq *InvocationTargetQuery) OnlyID(ctx context.Context) (id int64, err err
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (itq *InvocationTargetQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := itq.OnlyID(ctx)
+func (_q *InvocationTargetQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -260,18 +260,18 @@ func (itq *InvocationTargetQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of InvocationTargets.
-func (itq *InvocationTargetQuery) All(ctx context.Context) ([]*InvocationTarget, error) {
-	ctx = setContextOp(ctx, itq.ctx, ent.OpQueryAll)
-	if err := itq.prepareQuery(ctx); err != nil {
+func (_q *InvocationTargetQuery) All(ctx context.Context) ([]*InvocationTarget, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*InvocationTarget, *InvocationTargetQuery]()
-	return withInterceptors[[]*InvocationTarget](ctx, itq, qr, itq.inters)
+	return withInterceptors[[]*InvocationTarget](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (itq *InvocationTargetQuery) AllX(ctx context.Context) []*InvocationTarget {
-	nodes, err := itq.All(ctx)
+func (_q *InvocationTargetQuery) AllX(ctx context.Context) []*InvocationTarget {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -279,20 +279,20 @@ func (itq *InvocationTargetQuery) AllX(ctx context.Context) []*InvocationTarget 
 }
 
 // IDs executes the query and returns a list of InvocationTarget IDs.
-func (itq *InvocationTargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if itq.ctx.Unique == nil && itq.path != nil {
-		itq.Unique(true)
+func (_q *InvocationTargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, itq.ctx, ent.OpQueryIDs)
-	if err = itq.Select(invocationtarget.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(invocationtarget.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (itq *InvocationTargetQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := itq.IDs(ctx)
+func (_q *InvocationTargetQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -300,17 +300,17 @@ func (itq *InvocationTargetQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (itq *InvocationTargetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, itq.ctx, ent.OpQueryCount)
-	if err := itq.prepareQuery(ctx); err != nil {
+func (_q *InvocationTargetQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, itq, querierCount[*InvocationTargetQuery](), itq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*InvocationTargetQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (itq *InvocationTargetQuery) CountX(ctx context.Context) int {
-	count, err := itq.Count(ctx)
+func (_q *InvocationTargetQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -318,9 +318,9 @@ func (itq *InvocationTargetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (itq *InvocationTargetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, itq.ctx, ent.OpQueryExist)
-	switch _, err := itq.FirstID(ctx); {
+func (_q *InvocationTargetQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -331,8 +331,8 @@ func (itq *InvocationTargetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (itq *InvocationTargetQuery) ExistX(ctx context.Context) bool {
-	exist, err := itq.Exist(ctx)
+func (_q *InvocationTargetQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -341,68 +341,68 @@ func (itq *InvocationTargetQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the InvocationTargetQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (itq *InvocationTargetQuery) Clone() *InvocationTargetQuery {
-	if itq == nil {
+func (_q *InvocationTargetQuery) Clone() *InvocationTargetQuery {
+	if _q == nil {
 		return nil
 	}
 	return &InvocationTargetQuery{
-		config:              itq.config,
-		ctx:                 itq.ctx.Clone(),
-		order:               append([]invocationtarget.OrderOption{}, itq.order...),
-		inters:              append([]Interceptor{}, itq.inters...),
-		predicates:          append([]predicate.InvocationTarget{}, itq.predicates...),
-		withBazelInvocation: itq.withBazelInvocation.Clone(),
-		withTarget:          itq.withTarget.Clone(),
-		withConfiguration:   itq.withConfiguration.Clone(),
-		withTestSummary:     itq.withTestSummary.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]invocationtarget.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.InvocationTarget{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
+		withTarget:          _q.withTarget.Clone(),
+		withConfiguration:   _q.withConfiguration.Clone(),
+		withTestSummary:     _q.withTestSummary.Clone(),
 		// clone intermediate query.
-		sql:  itq.sql.Clone(),
-		path: itq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (itq *InvocationTargetQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *InvocationTargetQuery {
-	query := (&BazelInvocationClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *InvocationTargetQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	itq.withBazelInvocation = query
-	return itq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // WithTarget tells the query-builder to eager-load the nodes that are connected to
 // the "target" edge. The optional arguments are used to configure the query builder of the edge.
-func (itq *InvocationTargetQuery) WithTarget(opts ...func(*TargetQuery)) *InvocationTargetQuery {
-	query := (&TargetClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) WithTarget(opts ...func(*TargetQuery)) *InvocationTargetQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	itq.withTarget = query
-	return itq
+	_q.withTarget = query
+	return _q
 }
 
 // WithConfiguration tells the query-builder to eager-load the nodes that are connected to
 // the "configuration" edge. The optional arguments are used to configure the query builder of the edge.
-func (itq *InvocationTargetQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *InvocationTargetQuery {
-	query := (&ConfigurationClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *InvocationTargetQuery {
+	query := (&ConfigurationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	itq.withConfiguration = query
-	return itq
+	_q.withConfiguration = query
+	return _q
 }
 
 // WithTestSummary tells the query-builder to eager-load the nodes that are connected to
 // the "test_summary" edge. The optional arguments are used to configure the query builder of the edge.
-func (itq *InvocationTargetQuery) WithTestSummary(opts ...func(*TestSummaryQuery)) *InvocationTargetQuery {
-	query := (&TestSummaryClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) WithTestSummary(opts ...func(*TestSummaryQuery)) *InvocationTargetQuery {
+	query := (&TestSummaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	itq.withTestSummary = query
-	return itq
+	_q.withTestSummary = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -419,10 +419,10 @@ func (itq *InvocationTargetQuery) WithTestSummary(opts ...func(*TestSummaryQuery
 //		GroupBy(invocationtarget.FieldSuccess).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (itq *InvocationTargetQuery) GroupBy(field string, fields ...string) *InvocationTargetGroupBy {
-	itq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &InvocationTargetGroupBy{build: itq}
-	grbuild.flds = &itq.ctx.Fields
+func (_q *InvocationTargetQuery) GroupBy(field string, fields ...string) *InvocationTargetGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &InvocationTargetGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = invocationtarget.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -440,58 +440,58 @@ func (itq *InvocationTargetQuery) GroupBy(field string, fields ...string) *Invoc
 //	client.InvocationTarget.Query().
 //		Select(invocationtarget.FieldSuccess).
 //		Scan(ctx, &v)
-func (itq *InvocationTargetQuery) Select(fields ...string) *InvocationTargetSelect {
-	itq.ctx.Fields = append(itq.ctx.Fields, fields...)
-	sbuild := &InvocationTargetSelect{InvocationTargetQuery: itq}
+func (_q *InvocationTargetQuery) Select(fields ...string) *InvocationTargetSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &InvocationTargetSelect{InvocationTargetQuery: _q}
 	sbuild.label = invocationtarget.Label
-	sbuild.flds, sbuild.scan = &itq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a InvocationTargetSelect configured with the given aggregations.
-func (itq *InvocationTargetQuery) Aggregate(fns ...AggregateFunc) *InvocationTargetSelect {
-	return itq.Select().Aggregate(fns...)
+func (_q *InvocationTargetQuery) Aggregate(fns ...AggregateFunc) *InvocationTargetSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (itq *InvocationTargetQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range itq.inters {
+func (_q *InvocationTargetQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, itq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range itq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !invocationtarget.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if itq.path != nil {
-		prev, err := itq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		itq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (itq *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*InvocationTarget, error) {
+func (_q *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*InvocationTarget, error) {
 	var (
 		nodes       = []*InvocationTarget{}
-		withFKs     = itq.withFKs
-		_spec       = itq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [4]bool{
-			itq.withBazelInvocation != nil,
-			itq.withTarget != nil,
-			itq.withConfiguration != nil,
-			itq.withTestSummary != nil,
+			_q.withBazelInvocation != nil,
+			_q.withTarget != nil,
+			_q.withConfiguration != nil,
+			_q.withTestSummary != nil,
 		}
 	)
-	if itq.withBazelInvocation != nil || itq.withTarget != nil || itq.withConfiguration != nil {
+	if _q.withBazelInvocation != nil || _q.withTarget != nil || _q.withConfiguration != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -501,64 +501,64 @@ func (itq *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook
 		return (*InvocationTarget).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &InvocationTarget{config: itq.config}
+		node := &InvocationTarget{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(itq.modifiers) > 0 {
-		_spec.Modifiers = itq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, itq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := itq.withBazelInvocation; query != nil {
-		if err := itq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *InvocationTarget, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := itq.withTarget; query != nil {
-		if err := itq.loadTarget(ctx, query, nodes, nil,
+	if query := _q.withTarget; query != nil {
+		if err := _q.loadTarget(ctx, query, nodes, nil,
 			func(n *InvocationTarget, e *Target) { n.Edges.Target = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := itq.withConfiguration; query != nil {
-		if err := itq.loadConfiguration(ctx, query, nodes, nil,
+	if query := _q.withConfiguration; query != nil {
+		if err := _q.loadConfiguration(ctx, query, nodes, nil,
 			func(n *InvocationTarget, e *Configuration) { n.Edges.Configuration = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := itq.withTestSummary; query != nil {
-		if err := itq.loadTestSummary(ctx, query, nodes,
+	if query := _q.withTestSummary; query != nil {
+		if err := _q.loadTestSummary(ctx, query, nodes,
 			func(n *InvocationTarget) { n.Edges.TestSummary = []*TestSummary{} },
 			func(n *InvocationTarget, e *TestSummary) { n.Edges.TestSummary = append(n.Edges.TestSummary, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range itq.withNamedTestSummary {
-		if err := itq.loadTestSummary(ctx, query, nodes,
+	for name, query := range _q.withNamedTestSummary {
+		if err := _q.loadTestSummary(ctx, query, nodes,
 			func(n *InvocationTarget) { n.appendNamedTestSummary(name) },
 			func(n *InvocationTarget, e *TestSummary) { n.appendNamedTestSummary(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range itq.loadTotal {
-		if err := itq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (itq *InvocationTargetQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *BazelInvocation)) error {
+func (_q *InvocationTargetQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*InvocationTarget)
 	for i := range nodes {
@@ -590,7 +590,7 @@ func (itq *InvocationTargetQuery) loadBazelInvocation(ctx context.Context, query
 	}
 	return nil
 }
-func (itq *InvocationTargetQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *Target)) error {
+func (_q *InvocationTargetQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *Target)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*InvocationTarget)
 	for i := range nodes {
@@ -622,7 +622,7 @@ func (itq *InvocationTargetQuery) loadTarget(ctx context.Context, query *TargetQ
 	}
 	return nil
 }
-func (itq *InvocationTargetQuery) loadConfiguration(ctx context.Context, query *ConfigurationQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *Configuration)) error {
+func (_q *InvocationTargetQuery) loadConfiguration(ctx context.Context, query *ConfigurationQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *Configuration)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*InvocationTarget)
 	for i := range nodes {
@@ -654,7 +654,7 @@ func (itq *InvocationTargetQuery) loadConfiguration(ctx context.Context, query *
 	}
 	return nil
 }
-func (itq *InvocationTargetQuery) loadTestSummary(ctx context.Context, query *TestSummaryQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *TestSummary)) error {
+func (_q *InvocationTargetQuery) loadTestSummary(ctx context.Context, query *TestSummaryQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *TestSummary)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*InvocationTarget)
 	for i := range nodes {
@@ -686,27 +686,27 @@ func (itq *InvocationTargetQuery) loadTestSummary(ctx context.Context, query *Te
 	return nil
 }
 
-func (itq *InvocationTargetQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := itq.querySpec()
-	if len(itq.modifiers) > 0 {
-		_spec.Modifiers = itq.modifiers
+func (_q *InvocationTargetQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = itq.ctx.Fields
-	if len(itq.ctx.Fields) > 0 {
-		_spec.Unique = itq.ctx.Unique != nil && *itq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, itq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (itq *InvocationTargetQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *InvocationTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
-	_spec.From = itq.sql
-	if unique := itq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if itq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := itq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, invocationtarget.FieldID)
 		for i := range fields {
@@ -715,20 +715,20 @@ func (itq *InvocationTargetQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := itq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := itq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := itq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := itq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -738,33 +738,33 @@ func (itq *InvocationTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (itq *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(itq.driver.Dialect())
+func (_q *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(invocationtarget.Table)
-	columns := itq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = invocationtarget.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if itq.sql != nil {
-		selector = itq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if itq.ctx.Unique != nil && *itq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range itq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range itq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := itq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := itq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -772,16 +772,16 @@ func (itq *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedTestSummary tells the query-builder to eager-load the nodes that are connected to the "test_summary"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (itq *InvocationTargetQuery) WithNamedTestSummary(name string, opts ...func(*TestSummaryQuery)) *InvocationTargetQuery {
-	query := (&TestSummaryClient{config: itq.config}).Query()
+func (_q *InvocationTargetQuery) WithNamedTestSummary(name string, opts ...func(*TestSummaryQuery)) *InvocationTargetQuery {
+	query := (&TestSummaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if itq.withNamedTestSummary == nil {
-		itq.withNamedTestSummary = make(map[string]*TestSummaryQuery)
+	if _q.withNamedTestSummary == nil {
+		_q.withNamedTestSummary = make(map[string]*TestSummaryQuery)
 	}
-	itq.withNamedTestSummary[name] = query
-	return itq
+	_q.withNamedTestSummary[name] = query
+	return _q
 }
 
 // InvocationTargetGroupBy is the group-by builder for InvocationTarget entities.
@@ -791,41 +791,41 @@ type InvocationTargetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (itgb *InvocationTargetGroupBy) Aggregate(fns ...AggregateFunc) *InvocationTargetGroupBy {
-	itgb.fns = append(itgb.fns, fns...)
-	return itgb
+func (_g *InvocationTargetGroupBy) Aggregate(fns ...AggregateFunc) *InvocationTargetGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (itgb *InvocationTargetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, itgb.build.ctx, ent.OpQueryGroupBy)
-	if err := itgb.build.prepareQuery(ctx); err != nil {
+func (_g *InvocationTargetGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*InvocationTargetQuery, *InvocationTargetGroupBy](ctx, itgb.build, itgb, itgb.build.inters, v)
+	return scanWithInterceptors[*InvocationTargetQuery, *InvocationTargetGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (itgb *InvocationTargetGroupBy) sqlScan(ctx context.Context, root *InvocationTargetQuery, v any) error {
+func (_g *InvocationTargetGroupBy) sqlScan(ctx context.Context, root *InvocationTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(itgb.fns))
-	for _, fn := range itgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*itgb.flds)+len(itgb.fns))
-		for _, f := range *itgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*itgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := itgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -839,27 +839,27 @@ type InvocationTargetSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (its *InvocationTargetSelect) Aggregate(fns ...AggregateFunc) *InvocationTargetSelect {
-	its.fns = append(its.fns, fns...)
-	return its
+func (_s *InvocationTargetSelect) Aggregate(fns ...AggregateFunc) *InvocationTargetSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (its *InvocationTargetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, its.ctx, ent.OpQuerySelect)
-	if err := its.prepareQuery(ctx); err != nil {
+func (_s *InvocationTargetSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*InvocationTargetQuery, *InvocationTargetSelect](ctx, its.InvocationTargetQuery, its, its.inters, v)
+	return scanWithInterceptors[*InvocationTargetQuery, *InvocationTargetSelect](ctx, _s.InvocationTargetQuery, _s, _s.inters, v)
 }
 
-func (its *InvocationTargetSelect) sqlScan(ctx context.Context, root *InvocationTargetQuery, v any) error {
+func (_s *InvocationTargetSelect) sqlScan(ctx context.Context, root *InvocationTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(its.fns))
-	for _, fn := range its.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*its.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -867,7 +867,7 @@ func (its *InvocationTargetSelect) sqlScan(ctx context.Context, root *Invocation
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := its.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

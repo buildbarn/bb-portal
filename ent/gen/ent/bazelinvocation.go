@@ -303,7 +303,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the BazelInvocation fields.
-func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
+func (_m *BazelInvocation) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -314,85 +314,85 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			bi.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case bazelinvocation.FieldInvocationID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field invocation_id", values[i])
 			} else if value != nil {
-				bi.InvocationID = *value
+				_m.InvocationID = *value
 			}
 		case bazelinvocation.FieldCreatedTimestamp:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_timestamp", values[i])
 			} else if value.Valid {
-				bi.CreatedTimestamp = value.Time
+				_m.CreatedTimestamp = value.Time
 			}
 		case bazelinvocation.FieldStartedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field started_at", values[i])
 			} else if value.Valid {
-				bi.StartedAt = value.Time
+				_m.StartedAt = value.Time
 			}
 		case bazelinvocation.FieldEndedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field ended_at", values[i])
 			} else if value.Valid {
-				bi.EndedAt = new(time.Time)
-				*bi.EndedAt = value.Time
+				_m.EndedAt = new(time.Time)
+				*_m.EndedAt = value.Time
 			}
 		case bazelinvocation.FieldBepCompleted:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field bep_completed", values[i])
 			} else if value.Valid {
-				bi.BepCompleted = value.Bool
+				_m.BepCompleted = value.Bool
 			}
 		case bazelinvocation.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
 			} else if value.Valid {
-				bi.Username = value.String
+				_m.Username = value.String
 			}
 		case bazelinvocation.FieldHostname:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field hostname", values[i])
 			} else if value.Valid {
-				bi.Hostname = value.String
+				_m.Hostname = value.String
 			}
 		case bazelinvocation.FieldNumFetches:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field num_fetches", values[i])
 			} else if value.Valid {
-				bi.NumFetches = value.Int64
+				_m.NumFetches = value.Int64
 			}
 		case bazelinvocation.FieldProfileName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field profile_name", values[i])
 			} else if value.Valid {
-				bi.ProfileName = value.String
+				_m.ProfileName = value.String
 			}
 		case bazelinvocation.FieldBazelVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_version", values[i])
 			} else if value.Valid {
-				bi.BazelVersion = value.String
+				_m.BazelVersion = value.String
 			}
 		case bazelinvocation.FieldExitCodeName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field exit_code_name", values[i])
 			} else if value.Valid {
-				bi.ExitCodeName = value.String
+				_m.ExitCodeName = value.String
 			}
 		case bazelinvocation.FieldExitCodeCode:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field exit_code_code", values[i])
 			} else if value.Valid {
-				bi.ExitCodeCode = int32(value.Int64)
+				_m.ExitCodeCode = int32(value.Int64)
 			}
 		case bazelinvocation.FieldCanonicalCommandLine:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field canonical_command_line", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.CanonicalCommandLine); err != nil {
+				if err := json.Unmarshal(*value, &_m.CanonicalCommandLine); err != nil {
 					return fmt.Errorf("unmarshal field canonical_command_line: %w", err)
 				}
 			}
@@ -400,7 +400,7 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field original_command_line", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.OriginalCommandLine); err != nil {
+				if err := json.Unmarshal(*value, &_m.OriginalCommandLine); err != nil {
 					return fmt.Errorf("unmarshal field original_command_line: %w", err)
 				}
 			}
@@ -408,7 +408,7 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field options_parsed", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.OptionsParsed); err != nil {
+				if err := json.Unmarshal(*value, &_m.OptionsParsed); err != nil {
 					return fmt.Errorf("unmarshal field options_parsed: %w", err)
 				}
 			}
@@ -416,7 +416,7 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field environment_variables", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.EnvironmentVariables); err != nil {
+				if err := json.Unmarshal(*value, &_m.EnvironmentVariables); err != nil {
 					return fmt.Errorf("unmarshal field environment_variables: %w", err)
 				}
 			}
@@ -424,49 +424,49 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field processed_event_started", values[i])
 			} else if value.Valid {
-				bi.ProcessedEventStarted = value.Bool
+				_m.ProcessedEventStarted = value.Bool
 			}
 		case bazelinvocation.FieldProcessedEventBuildMetadata:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field processed_event_build_metadata", values[i])
 			} else if value.Valid {
-				bi.ProcessedEventBuildMetadata = value.Bool
+				_m.ProcessedEventBuildMetadata = value.Bool
 			}
 		case bazelinvocation.FieldProcessedEventBuildFinished:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field processed_event_build_finished", values[i])
 			} else if value.Valid {
-				bi.ProcessedEventBuildFinished = value.Bool
+				_m.ProcessedEventBuildFinished = value.Bool
 			}
 		case bazelinvocation.FieldProcessedEventWorkspaceStatus:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field processed_event_workspace_status", values[i])
 			} else if value.Valid {
-				bi.ProcessedEventWorkspaceStatus = value.Bool
+				_m.ProcessedEventWorkspaceStatus = value.Bool
 			}
 		case bazelinvocation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field authenticated_user_bazel_invocations", value)
 			} else if value.Valid {
-				bi.authenticated_user_bazel_invocations = new(int64)
-				*bi.authenticated_user_bazel_invocations = int64(value.Int64)
+				_m.authenticated_user_bazel_invocations = new(int64)
+				*_m.authenticated_user_bazel_invocations = int64(value.Int64)
 			}
 		case bazelinvocation.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_invocations", value)
 			} else if value.Valid {
-				bi.build_invocations = new(int64)
-				*bi.build_invocations = int64(value.Int64)
+				_m.build_invocations = new(int64)
+				*_m.build_invocations = int64(value.Int64)
 			}
 		case bazelinvocation.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_bazel_invocations", value)
 			} else if value.Valid {
-				bi.instance_name_bazel_invocations = new(int64)
-				*bi.instance_name_bazel_invocations = int64(value.Int64)
+				_m.instance_name_bazel_invocations = new(int64)
+				*_m.instance_name_bazel_invocations = int64(value.Int64)
 			}
 		default:
-			bi.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -474,386 +474,386 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the BazelInvocation.
 // This includes values selected through modifiers, order, etc.
-func (bi *BazelInvocation) Value(name string) (ent.Value, error) {
-	return bi.selectValues.Get(name)
+func (_m *BazelInvocation) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryInstanceName queries the "instance_name" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryInstanceName() *InstanceNameQuery {
-	return NewBazelInvocationClient(bi.config).QueryInstanceName(bi)
+func (_m *BazelInvocation) QueryInstanceName() *InstanceNameQuery {
+	return NewBazelInvocationClient(_m.config).QueryInstanceName(_m)
 }
 
 // QueryBuild queries the "build" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryBuild() *BuildQuery {
-	return NewBazelInvocationClient(bi.config).QueryBuild(bi)
+func (_m *BazelInvocation) QueryBuild() *BuildQuery {
+	return NewBazelInvocationClient(_m.config).QueryBuild(_m)
 }
 
 // QueryAuthenticatedUser queries the "authenticated_user" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryAuthenticatedUser() *AuthenticatedUserQuery {
-	return NewBazelInvocationClient(bi.config).QueryAuthenticatedUser(bi)
+func (_m *BazelInvocation) QueryAuthenticatedUser() *AuthenticatedUserQuery {
+	return NewBazelInvocationClient(_m.config).QueryAuthenticatedUser(_m)
 }
 
 // QueryTags queries the "tags" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryTags() *InvocationTagQuery {
-	return NewBazelInvocationClient(bi.config).QueryTags(bi)
+func (_m *BazelInvocation) QueryTags() *InvocationTagQuery {
+	return NewBazelInvocationClient(_m.config).QueryTags(_m)
 }
 
 // QueryEventMetadata queries the "event_metadata" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryEventMetadata() *EventMetadataQuery {
-	return NewBazelInvocationClient(bi.config).QueryEventMetadata(bi)
+func (_m *BazelInvocation) QueryEventMetadata() *EventMetadataQuery {
+	return NewBazelInvocationClient(_m.config).QueryEventMetadata(_m)
 }
 
 // QueryConnectionMetadata queries the "connection_metadata" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryConnectionMetadata() *ConnectionMetadataQuery {
-	return NewBazelInvocationClient(bi.config).QueryConnectionMetadata(bi)
+func (_m *BazelInvocation) QueryConnectionMetadata() *ConnectionMetadataQuery {
+	return NewBazelInvocationClient(_m.config).QueryConnectionMetadata(_m)
 }
 
 // QueryConfigurations queries the "configurations" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryConfigurations() *ConfigurationQuery {
-	return NewBazelInvocationClient(bi.config).QueryConfigurations(bi)
+func (_m *BazelInvocation) QueryConfigurations() *ConfigurationQuery {
+	return NewBazelInvocationClient(_m.config).QueryConfigurations(_m)
 }
 
 // QueryActions queries the "actions" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryActions() *ActionQuery {
-	return NewBazelInvocationClient(bi.config).QueryActions(bi)
+func (_m *BazelInvocation) QueryActions() *ActionQuery {
+	return NewBazelInvocationClient(_m.config).QueryActions(_m)
 }
 
 // QueryMetrics queries the "metrics" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryMetrics() *MetricsQuery {
-	return NewBazelInvocationClient(bi.config).QueryMetrics(bi)
+func (_m *BazelInvocation) QueryMetrics() *MetricsQuery {
+	return NewBazelInvocationClient(_m.config).QueryMetrics(_m)
 }
 
 // QueryIncompleteBuildLogs queries the "incomplete_build_logs" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryIncompleteBuildLogs() *IncompleteBuildLogQuery {
-	return NewBazelInvocationClient(bi.config).QueryIncompleteBuildLogs(bi)
+func (_m *BazelInvocation) QueryIncompleteBuildLogs() *IncompleteBuildLogQuery {
+	return NewBazelInvocationClient(_m.config).QueryIncompleteBuildLogs(_m)
 }
 
 // QueryBuildLogChunks queries the "build_log_chunks" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryBuildLogChunks() *BuildLogChunkQuery {
-	return NewBazelInvocationClient(bi.config).QueryBuildLogChunks(bi)
+func (_m *BazelInvocation) QueryBuildLogChunks() *BuildLogChunkQuery {
+	return NewBazelInvocationClient(_m.config).QueryBuildLogChunks(_m)
 }
 
 // QueryInvocationFiles queries the "invocation_files" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryInvocationFiles() *InvocationFilesQuery {
-	return NewBazelInvocationClient(bi.config).QueryInvocationFiles(bi)
+func (_m *BazelInvocation) QueryInvocationFiles() *InvocationFilesQuery {
+	return NewBazelInvocationClient(_m.config).QueryInvocationFiles(_m)
 }
 
 // QueryInvocationTargets queries the "invocation_targets" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryInvocationTargets() *InvocationTargetQuery {
-	return NewBazelInvocationClient(bi.config).QueryInvocationTargets(bi)
+func (_m *BazelInvocation) QueryInvocationTargets() *InvocationTargetQuery {
+	return NewBazelInvocationClient(_m.config).QueryInvocationTargets(_m)
 }
 
 // QueryTargetKindMappings queries the "target_kind_mappings" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryTargetKindMappings() *TargetKindMappingQuery {
-	return NewBazelInvocationClient(bi.config).QueryTargetKindMappings(bi)
+func (_m *BazelInvocation) QueryTargetKindMappings() *TargetKindMappingQuery {
+	return NewBazelInvocationClient(_m.config).QueryTargetKindMappings(_m)
 }
 
 // QuerySourceControl queries the "source_control" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QuerySourceControl() *SourceControlQuery {
-	return NewBazelInvocationClient(bi.config).QuerySourceControl(bi)
+func (_m *BazelInvocation) QuerySourceControl() *SourceControlQuery {
+	return NewBazelInvocationClient(_m.config).QuerySourceControl(_m)
 }
 
 // Update returns a builder for updating this BazelInvocation.
 // Note that you need to call BazelInvocation.Unwrap() before calling this method if this BazelInvocation
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (bi *BazelInvocation) Update() *BazelInvocationUpdateOne {
-	return NewBazelInvocationClient(bi.config).UpdateOne(bi)
+func (_m *BazelInvocation) Update() *BazelInvocationUpdateOne {
+	return NewBazelInvocationClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the BazelInvocation entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (bi *BazelInvocation) Unwrap() *BazelInvocation {
-	_tx, ok := bi.config.driver.(*txDriver)
+func (_m *BazelInvocation) Unwrap() *BazelInvocation {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: BazelInvocation is not a transactional entity")
 	}
-	bi.config.driver = _tx.drv
-	return bi
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (bi *BazelInvocation) String() string {
+func (_m *BazelInvocation) String() string {
 	var builder strings.Builder
 	builder.WriteString("BazelInvocation(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", bi.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("invocation_id=")
-	builder.WriteString(fmt.Sprintf("%v", bi.InvocationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.InvocationID))
 	builder.WriteString(", ")
 	builder.WriteString("created_timestamp=")
-	builder.WriteString(bi.CreatedTimestamp.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedTimestamp.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("started_at=")
-	builder.WriteString(bi.StartedAt.Format(time.ANSIC))
+	builder.WriteString(_m.StartedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	if v := bi.EndedAt; v != nil {
+	if v := _m.EndedAt; v != nil {
 		builder.WriteString("ended_at=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("bep_completed=")
-	builder.WriteString(fmt.Sprintf("%v", bi.BepCompleted))
+	builder.WriteString(fmt.Sprintf("%v", _m.BepCompleted))
 	builder.WriteString(", ")
 	builder.WriteString("username=")
-	builder.WriteString(bi.Username)
+	builder.WriteString(_m.Username)
 	builder.WriteString(", ")
 	builder.WriteString("hostname=")
-	builder.WriteString(bi.Hostname)
+	builder.WriteString(_m.Hostname)
 	builder.WriteString(", ")
 	builder.WriteString("num_fetches=")
-	builder.WriteString(fmt.Sprintf("%v", bi.NumFetches))
+	builder.WriteString(fmt.Sprintf("%v", _m.NumFetches))
 	builder.WriteString(", ")
 	builder.WriteString("profile_name=")
-	builder.WriteString(bi.ProfileName)
+	builder.WriteString(_m.ProfileName)
 	builder.WriteString(", ")
 	builder.WriteString("bazel_version=")
-	builder.WriteString(bi.BazelVersion)
+	builder.WriteString(_m.BazelVersion)
 	builder.WriteString(", ")
 	builder.WriteString("exit_code_name=")
-	builder.WriteString(bi.ExitCodeName)
+	builder.WriteString(_m.ExitCodeName)
 	builder.WriteString(", ")
 	builder.WriteString("exit_code_code=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ExitCodeCode))
+	builder.WriteString(fmt.Sprintf("%v", _m.ExitCodeCode))
 	builder.WriteString(", ")
 	builder.WriteString("canonical_command_line=")
-	builder.WriteString(fmt.Sprintf("%v", bi.CanonicalCommandLine))
+	builder.WriteString(fmt.Sprintf("%v", _m.CanonicalCommandLine))
 	builder.WriteString(", ")
 	builder.WriteString("original_command_line=")
-	builder.WriteString(fmt.Sprintf("%v", bi.OriginalCommandLine))
+	builder.WriteString(fmt.Sprintf("%v", _m.OriginalCommandLine))
 	builder.WriteString(", ")
 	builder.WriteString("options_parsed=")
-	builder.WriteString(fmt.Sprintf("%v", bi.OptionsParsed))
+	builder.WriteString(fmt.Sprintf("%v", _m.OptionsParsed))
 	builder.WriteString(", ")
 	builder.WriteString("environment_variables=")
-	builder.WriteString(fmt.Sprintf("%v", bi.EnvironmentVariables))
+	builder.WriteString(fmt.Sprintf("%v", _m.EnvironmentVariables))
 	builder.WriteString(", ")
 	builder.WriteString("processed_event_started=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventStarted))
+	builder.WriteString(fmt.Sprintf("%v", _m.ProcessedEventStarted))
 	builder.WriteString(", ")
 	builder.WriteString("processed_event_build_metadata=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventBuildMetadata))
+	builder.WriteString(fmt.Sprintf("%v", _m.ProcessedEventBuildMetadata))
 	builder.WriteString(", ")
 	builder.WriteString("processed_event_build_finished=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventBuildFinished))
+	builder.WriteString(fmt.Sprintf("%v", _m.ProcessedEventBuildFinished))
 	builder.WriteString(", ")
 	builder.WriteString("processed_event_workspace_status=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventWorkspaceStatus))
+	builder.WriteString(fmt.Sprintf("%v", _m.ProcessedEventWorkspaceStatus))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedTags returns the Tags named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedTags(name string) ([]*InvocationTag, error) {
-	if bi.Edges.namedTags == nil {
+func (_m *BazelInvocation) NamedTags(name string) ([]*InvocationTag, error) {
+	if _m.Edges.namedTags == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedTags[name]
+	nodes, ok := _m.Edges.namedTags[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedTags(name string, edges ...*InvocationTag) {
-	if bi.Edges.namedTags == nil {
-		bi.Edges.namedTags = make(map[string][]*InvocationTag)
+func (_m *BazelInvocation) appendNamedTags(name string, edges ...*InvocationTag) {
+	if _m.Edges.namedTags == nil {
+		_m.Edges.namedTags = make(map[string][]*InvocationTag)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedTags[name] = []*InvocationTag{}
+		_m.Edges.namedTags[name] = []*InvocationTag{}
 	} else {
-		bi.Edges.namedTags[name] = append(bi.Edges.namedTags[name], edges...)
+		_m.Edges.namedTags[name] = append(_m.Edges.namedTags[name], edges...)
 	}
 }
 
 // NamedConfigurations returns the Configurations named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedConfigurations(name string) ([]*Configuration, error) {
-	if bi.Edges.namedConfigurations == nil {
+func (_m *BazelInvocation) NamedConfigurations(name string) ([]*Configuration, error) {
+	if _m.Edges.namedConfigurations == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedConfigurations[name]
+	nodes, ok := _m.Edges.namedConfigurations[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedConfigurations(name string, edges ...*Configuration) {
-	if bi.Edges.namedConfigurations == nil {
-		bi.Edges.namedConfigurations = make(map[string][]*Configuration)
+func (_m *BazelInvocation) appendNamedConfigurations(name string, edges ...*Configuration) {
+	if _m.Edges.namedConfigurations == nil {
+		_m.Edges.namedConfigurations = make(map[string][]*Configuration)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedConfigurations[name] = []*Configuration{}
+		_m.Edges.namedConfigurations[name] = []*Configuration{}
 	} else {
-		bi.Edges.namedConfigurations[name] = append(bi.Edges.namedConfigurations[name], edges...)
+		_m.Edges.namedConfigurations[name] = append(_m.Edges.namedConfigurations[name], edges...)
 	}
 }
 
 // NamedActions returns the Actions named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedActions(name string) ([]*Action, error) {
-	if bi.Edges.namedActions == nil {
+func (_m *BazelInvocation) NamedActions(name string) ([]*Action, error) {
+	if _m.Edges.namedActions == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedActions[name]
+	nodes, ok := _m.Edges.namedActions[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedActions(name string, edges ...*Action) {
-	if bi.Edges.namedActions == nil {
-		bi.Edges.namedActions = make(map[string][]*Action)
+func (_m *BazelInvocation) appendNamedActions(name string, edges ...*Action) {
+	if _m.Edges.namedActions == nil {
+		_m.Edges.namedActions = make(map[string][]*Action)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedActions[name] = []*Action{}
+		_m.Edges.namedActions[name] = []*Action{}
 	} else {
-		bi.Edges.namedActions[name] = append(bi.Edges.namedActions[name], edges...)
+		_m.Edges.namedActions[name] = append(_m.Edges.namedActions[name], edges...)
 	}
 }
 
 // NamedIncompleteBuildLogs returns the IncompleteBuildLogs named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedIncompleteBuildLogs(name string) ([]*IncompleteBuildLog, error) {
-	if bi.Edges.namedIncompleteBuildLogs == nil {
+func (_m *BazelInvocation) NamedIncompleteBuildLogs(name string) ([]*IncompleteBuildLog, error) {
+	if _m.Edges.namedIncompleteBuildLogs == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedIncompleteBuildLogs[name]
+	nodes, ok := _m.Edges.namedIncompleteBuildLogs[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedIncompleteBuildLogs(name string, edges ...*IncompleteBuildLog) {
-	if bi.Edges.namedIncompleteBuildLogs == nil {
-		bi.Edges.namedIncompleteBuildLogs = make(map[string][]*IncompleteBuildLog)
+func (_m *BazelInvocation) appendNamedIncompleteBuildLogs(name string, edges ...*IncompleteBuildLog) {
+	if _m.Edges.namedIncompleteBuildLogs == nil {
+		_m.Edges.namedIncompleteBuildLogs = make(map[string][]*IncompleteBuildLog)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedIncompleteBuildLogs[name] = []*IncompleteBuildLog{}
+		_m.Edges.namedIncompleteBuildLogs[name] = []*IncompleteBuildLog{}
 	} else {
-		bi.Edges.namedIncompleteBuildLogs[name] = append(bi.Edges.namedIncompleteBuildLogs[name], edges...)
+		_m.Edges.namedIncompleteBuildLogs[name] = append(_m.Edges.namedIncompleteBuildLogs[name], edges...)
 	}
 }
 
 // NamedBuildLogChunks returns the BuildLogChunks named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedBuildLogChunks(name string) ([]*BuildLogChunk, error) {
-	if bi.Edges.namedBuildLogChunks == nil {
+func (_m *BazelInvocation) NamedBuildLogChunks(name string) ([]*BuildLogChunk, error) {
+	if _m.Edges.namedBuildLogChunks == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedBuildLogChunks[name]
+	nodes, ok := _m.Edges.namedBuildLogChunks[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedBuildLogChunks(name string, edges ...*BuildLogChunk) {
-	if bi.Edges.namedBuildLogChunks == nil {
-		bi.Edges.namedBuildLogChunks = make(map[string][]*BuildLogChunk)
+func (_m *BazelInvocation) appendNamedBuildLogChunks(name string, edges ...*BuildLogChunk) {
+	if _m.Edges.namedBuildLogChunks == nil {
+		_m.Edges.namedBuildLogChunks = make(map[string][]*BuildLogChunk)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedBuildLogChunks[name] = []*BuildLogChunk{}
+		_m.Edges.namedBuildLogChunks[name] = []*BuildLogChunk{}
 	} else {
-		bi.Edges.namedBuildLogChunks[name] = append(bi.Edges.namedBuildLogChunks[name], edges...)
+		_m.Edges.namedBuildLogChunks[name] = append(_m.Edges.namedBuildLogChunks[name], edges...)
 	}
 }
 
 // NamedInvocationFiles returns the InvocationFiles named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedInvocationFiles(name string) ([]*InvocationFiles, error) {
-	if bi.Edges.namedInvocationFiles == nil {
+func (_m *BazelInvocation) NamedInvocationFiles(name string) ([]*InvocationFiles, error) {
+	if _m.Edges.namedInvocationFiles == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedInvocationFiles[name]
+	nodes, ok := _m.Edges.namedInvocationFiles[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedInvocationFiles(name string, edges ...*InvocationFiles) {
-	if bi.Edges.namedInvocationFiles == nil {
-		bi.Edges.namedInvocationFiles = make(map[string][]*InvocationFiles)
+func (_m *BazelInvocation) appendNamedInvocationFiles(name string, edges ...*InvocationFiles) {
+	if _m.Edges.namedInvocationFiles == nil {
+		_m.Edges.namedInvocationFiles = make(map[string][]*InvocationFiles)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedInvocationFiles[name] = []*InvocationFiles{}
+		_m.Edges.namedInvocationFiles[name] = []*InvocationFiles{}
 	} else {
-		bi.Edges.namedInvocationFiles[name] = append(bi.Edges.namedInvocationFiles[name], edges...)
+		_m.Edges.namedInvocationFiles[name] = append(_m.Edges.namedInvocationFiles[name], edges...)
 	}
 }
 
 // NamedInvocationTargets returns the InvocationTargets named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
-	if bi.Edges.namedInvocationTargets == nil {
+func (_m *BazelInvocation) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
+	if _m.Edges.namedInvocationTargets == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedInvocationTargets[name]
+	nodes, ok := _m.Edges.namedInvocationTargets[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
-	if bi.Edges.namedInvocationTargets == nil {
-		bi.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
+func (_m *BazelInvocation) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
+	if _m.Edges.namedInvocationTargets == nil {
+		_m.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
+		_m.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
 	} else {
-		bi.Edges.namedInvocationTargets[name] = append(bi.Edges.namedInvocationTargets[name], edges...)
+		_m.Edges.namedInvocationTargets[name] = append(_m.Edges.namedInvocationTargets[name], edges...)
 	}
 }
 
 // NamedTargetKindMappings returns the TargetKindMappings named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedTargetKindMappings(name string) ([]*TargetKindMapping, error) {
-	if bi.Edges.namedTargetKindMappings == nil {
+func (_m *BazelInvocation) NamedTargetKindMappings(name string) ([]*TargetKindMapping, error) {
+	if _m.Edges.namedTargetKindMappings == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedTargetKindMappings[name]
+	nodes, ok := _m.Edges.namedTargetKindMappings[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedTargetKindMappings(name string, edges ...*TargetKindMapping) {
-	if bi.Edges.namedTargetKindMappings == nil {
-		bi.Edges.namedTargetKindMappings = make(map[string][]*TargetKindMapping)
+func (_m *BazelInvocation) appendNamedTargetKindMappings(name string, edges ...*TargetKindMapping) {
+	if _m.Edges.namedTargetKindMappings == nil {
+		_m.Edges.namedTargetKindMappings = make(map[string][]*TargetKindMapping)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedTargetKindMappings[name] = []*TargetKindMapping{}
+		_m.Edges.namedTargetKindMappings[name] = []*TargetKindMapping{}
 	} else {
-		bi.Edges.namedTargetKindMappings[name] = append(bi.Edges.namedTargetKindMappings[name], edges...)
+		_m.Edges.namedTargetKindMappings[name] = append(_m.Edges.namedTargetKindMappings[name], edges...)
 	}
 }
 
 // NamedSourceControl returns the SourceControl named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedSourceControl(name string) ([]*SourceControl, error) {
-	if bi.Edges.namedSourceControl == nil {
+func (_m *BazelInvocation) NamedSourceControl(name string) ([]*SourceControl, error) {
+	if _m.Edges.namedSourceControl == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedSourceControl[name]
+	nodes, ok := _m.Edges.namedSourceControl[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedSourceControl(name string, edges ...*SourceControl) {
-	if bi.Edges.namedSourceControl == nil {
-		bi.Edges.namedSourceControl = make(map[string][]*SourceControl)
+func (_m *BazelInvocation) appendNamedSourceControl(name string, edges ...*SourceControl) {
+	if _m.Edges.namedSourceControl == nil {
+		_m.Edges.namedSourceControl = make(map[string][]*SourceControl)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedSourceControl[name] = []*SourceControl{}
+		_m.Edges.namedSourceControl[name] = []*SourceControl{}
 	} else {
-		bi.Edges.namedSourceControl[name] = append(bi.Edges.namedSourceControl[name], edges...)
+		_m.Edges.namedSourceControl[name] = append(_m.Edges.namedSourceControl[name], edges...)
 	}
 }
 

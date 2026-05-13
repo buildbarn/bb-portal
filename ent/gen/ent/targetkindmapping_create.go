@@ -24,60 +24,60 @@ type TargetKindMappingCreate struct {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (tkmc *TargetKindMappingCreate) SetBazelInvocationID(i int64) *TargetKindMappingCreate {
-	tkmc.mutation.SetBazelInvocationID(i)
-	return tkmc
+func (_c *TargetKindMappingCreate) SetBazelInvocationID(v int64) *TargetKindMappingCreate {
+	_c.mutation.SetBazelInvocationID(v)
+	return _c
 }
 
 // SetTargetID sets the "target_id" field.
-func (tkmc *TargetKindMappingCreate) SetTargetID(i int64) *TargetKindMappingCreate {
-	tkmc.mutation.SetTargetID(i)
-	return tkmc
+func (_c *TargetKindMappingCreate) SetTargetID(v int64) *TargetKindMappingCreate {
+	_c.mutation.SetTargetID(v)
+	return _c
 }
 
 // SetStartTimeInMs sets the "start_time_in_ms" field.
-func (tkmc *TargetKindMappingCreate) SetStartTimeInMs(i int64) *TargetKindMappingCreate {
-	tkmc.mutation.SetStartTimeInMs(i)
-	return tkmc
+func (_c *TargetKindMappingCreate) SetStartTimeInMs(v int64) *TargetKindMappingCreate {
+	_c.mutation.SetStartTimeInMs(v)
+	return _c
 }
 
 // SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (tkmc *TargetKindMappingCreate) SetNillableStartTimeInMs(i *int64) *TargetKindMappingCreate {
-	if i != nil {
-		tkmc.SetStartTimeInMs(*i)
+func (_c *TargetKindMappingCreate) SetNillableStartTimeInMs(v *int64) *TargetKindMappingCreate {
+	if v != nil {
+		_c.SetStartTimeInMs(*v)
 	}
-	return tkmc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tkmc *TargetKindMappingCreate) SetID(i int64) *TargetKindMappingCreate {
-	tkmc.mutation.SetID(i)
-	return tkmc
+func (_c *TargetKindMappingCreate) SetID(v int64) *TargetKindMappingCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (tkmc *TargetKindMappingCreate) SetBazelInvocation(b *BazelInvocation) *TargetKindMappingCreate {
-	return tkmc.SetBazelInvocationID(b.ID)
+func (_c *TargetKindMappingCreate) SetBazelInvocation(v *BazelInvocation) *TargetKindMappingCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // SetTarget sets the "target" edge to the Target entity.
-func (tkmc *TargetKindMappingCreate) SetTarget(t *Target) *TargetKindMappingCreate {
-	return tkmc.SetTargetID(t.ID)
+func (_c *TargetKindMappingCreate) SetTarget(v *Target) *TargetKindMappingCreate {
+	return _c.SetTargetID(v.ID)
 }
 
 // Mutation returns the TargetKindMappingMutation object of the builder.
-func (tkmc *TargetKindMappingCreate) Mutation() *TargetKindMappingMutation {
-	return tkmc.mutation
+func (_c *TargetKindMappingCreate) Mutation() *TargetKindMappingMutation {
+	return _c.mutation
 }
 
 // Save creates the TargetKindMapping in the database.
-func (tkmc *TargetKindMappingCreate) Save(ctx context.Context) (*TargetKindMapping, error) {
-	return withHooks(ctx, tkmc.sqlSave, tkmc.mutation, tkmc.hooks)
+func (_c *TargetKindMappingCreate) Save(ctx context.Context) (*TargetKindMapping, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tkmc *TargetKindMappingCreate) SaveX(ctx context.Context) *TargetKindMapping {
-	v, err := tkmc.Save(ctx)
+func (_c *TargetKindMappingCreate) SaveX(ctx context.Context) *TargetKindMapping {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -85,41 +85,41 @@ func (tkmc *TargetKindMappingCreate) SaveX(ctx context.Context) *TargetKindMappi
 }
 
 // Exec executes the query.
-func (tkmc *TargetKindMappingCreate) Exec(ctx context.Context) error {
-	_, err := tkmc.Save(ctx)
+func (_c *TargetKindMappingCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tkmc *TargetKindMappingCreate) ExecX(ctx context.Context) {
-	if err := tkmc.Exec(ctx); err != nil {
+func (_c *TargetKindMappingCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tkmc *TargetKindMappingCreate) check() error {
-	if _, ok := tkmc.mutation.BazelInvocationID(); !ok {
+func (_c *TargetKindMappingCreate) check() error {
+	if _, ok := _c.mutation.BazelInvocationID(); !ok {
 		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "TargetKindMapping.bazel_invocation_id"`)}
 	}
-	if _, ok := tkmc.mutation.TargetID(); !ok {
+	if _, ok := _c.mutation.TargetID(); !ok {
 		return &ValidationError{Name: "target_id", err: errors.New(`ent: missing required field "TargetKindMapping.target_id"`)}
 	}
-	if len(tkmc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "TargetKindMapping.bazel_invocation"`)}
 	}
-	if len(tkmc.mutation.TargetIDs()) == 0 {
+	if len(_c.mutation.TargetIDs()) == 0 {
 		return &ValidationError{Name: "target", err: errors.New(`ent: missing required edge "TargetKindMapping.target"`)}
 	}
 	return nil
 }
 
-func (tkmc *TargetKindMappingCreate) sqlSave(ctx context.Context) (*TargetKindMapping, error) {
-	if err := tkmc.check(); err != nil {
+func (_c *TargetKindMappingCreate) sqlSave(ctx context.Context) (*TargetKindMapping, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tkmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tkmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -129,26 +129,26 @@ func (tkmc *TargetKindMappingCreate) sqlSave(ctx context.Context) (*TargetKindMa
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	tkmc.mutation.id = &_node.ID
-	tkmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph.CreateSpec) {
+func (_c *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TargetKindMapping{config: tkmc.config}
+		_node = &TargetKindMapping{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(targetkindmapping.Table, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = tkmc.conflict
-	if id, ok := tkmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := tkmc.mutation.StartTimeInMs(); ok {
+	if value, ok := _c.mutation.StartTimeInMs(); ok {
 		_spec.SetField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
 		_node.StartTimeInMs = value
 	}
-	if nodes := tkmc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -165,7 +165,7 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tkmc.mutation.TargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -201,10 +201,10 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 //			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (tkmc *TargetKindMappingCreate) OnConflict(opts ...sql.ConflictOption) *TargetKindMappingUpsertOne {
-	tkmc.conflict = opts
+func (_c *TargetKindMappingCreate) OnConflict(opts ...sql.ConflictOption) *TargetKindMappingUpsertOne {
+	_c.conflict = opts
 	return &TargetKindMappingUpsertOne{
-		create: tkmc,
+		create: _c,
 	}
 }
 
@@ -214,10 +214,10 @@ func (tkmc *TargetKindMappingCreate) OnConflict(opts ...sql.ConflictOption) *Tar
 //	client.TargetKindMapping.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tkmc *TargetKindMappingCreate) OnConflictColumns(columns ...string) *TargetKindMappingUpsertOne {
-	tkmc.conflict = append(tkmc.conflict, sql.ConflictColumns(columns...))
+func (_c *TargetKindMappingCreate) OnConflictColumns(columns ...string) *TargetKindMappingUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TargetKindMappingUpsertOne{
-		create: tkmc,
+		create: _c,
 	}
 }
 
@@ -382,16 +382,16 @@ type TargetKindMappingCreateBulk struct {
 }
 
 // Save creates the TargetKindMapping entities in the database.
-func (tkmcb *TargetKindMappingCreateBulk) Save(ctx context.Context) ([]*TargetKindMapping, error) {
-	if tkmcb.err != nil {
-		return nil, tkmcb.err
+func (_c *TargetKindMappingCreateBulk) Save(ctx context.Context) ([]*TargetKindMapping, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tkmcb.builders))
-	nodes := make([]*TargetKindMapping, len(tkmcb.builders))
-	mutators := make([]Mutator, len(tkmcb.builders))
-	for i := range tkmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TargetKindMapping, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tkmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TargetKindMappingMutation)
 				if !ok {
@@ -404,12 +404,12 @@ func (tkmcb *TargetKindMappingCreateBulk) Save(ctx context.Context) ([]*TargetKi
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tkmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tkmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tkmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -433,7 +433,7 @@ func (tkmcb *TargetKindMappingCreateBulk) Save(ctx context.Context) ([]*TargetKi
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tkmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -441,8 +441,8 @@ func (tkmcb *TargetKindMappingCreateBulk) Save(ctx context.Context) ([]*TargetKi
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tkmcb *TargetKindMappingCreateBulk) SaveX(ctx context.Context) []*TargetKindMapping {
-	v, err := tkmcb.Save(ctx)
+func (_c *TargetKindMappingCreateBulk) SaveX(ctx context.Context) []*TargetKindMapping {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -450,14 +450,14 @@ func (tkmcb *TargetKindMappingCreateBulk) SaveX(ctx context.Context) []*TargetKi
 }
 
 // Exec executes the query.
-func (tkmcb *TargetKindMappingCreateBulk) Exec(ctx context.Context) error {
-	_, err := tkmcb.Save(ctx)
+func (_c *TargetKindMappingCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tkmcb *TargetKindMappingCreateBulk) ExecX(ctx context.Context) {
-	if err := tkmcb.Exec(ctx); err != nil {
+func (_c *TargetKindMappingCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -477,10 +477,10 @@ func (tkmcb *TargetKindMappingCreateBulk) ExecX(ctx context.Context) {
 //			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (tkmcb *TargetKindMappingCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetKindMappingUpsertBulk {
-	tkmcb.conflict = opts
+func (_c *TargetKindMappingCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetKindMappingUpsertBulk {
+	_c.conflict = opts
 	return &TargetKindMappingUpsertBulk{
-		create: tkmcb,
+		create: _c,
 	}
 }
 
@@ -490,10 +490,10 @@ func (tkmcb *TargetKindMappingCreateBulk) OnConflict(opts ...sql.ConflictOption)
 //	client.TargetKindMapping.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tkmcb *TargetKindMappingCreateBulk) OnConflictColumns(columns ...string) *TargetKindMappingUpsertBulk {
-	tkmcb.conflict = append(tkmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *TargetKindMappingCreateBulk) OnConflictColumns(columns ...string) *TargetKindMappingUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TargetKindMappingUpsertBulk{
-		create: tkmcb,
+		create: _c,
 	}
 }
 

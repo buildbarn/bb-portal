@@ -20,56 +20,56 @@ type ConnectionMetadataDelete struct {
 }
 
 // Where appends a list predicates to the ConnectionMetadataDelete builder.
-func (cmd *ConnectionMetadataDelete) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataDelete {
-	cmd.mutation.Where(ps...)
-	return cmd
+func (_d *ConnectionMetadataDelete) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (cmd *ConnectionMetadataDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, cmd.sqlExec, cmd.mutation, cmd.hooks)
+func (_d *ConnectionMetadataDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cmd *ConnectionMetadataDelete) ExecX(ctx context.Context) int {
-	n, err := cmd.Exec(ctx)
+func (_d *ConnectionMetadataDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (cmd *ConnectionMetadataDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *ConnectionMetadataDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(connectionmetadata.Table, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
-	if ps := cmd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, cmd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	cmd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // ConnectionMetadataDeleteOne is the builder for deleting a single ConnectionMetadata entity.
 type ConnectionMetadataDeleteOne struct {
-	cmd *ConnectionMetadataDelete
+	_d *ConnectionMetadataDelete
 }
 
 // Where appends a list predicates to the ConnectionMetadataDelete builder.
-func (cmdo *ConnectionMetadataDeleteOne) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataDeleteOne {
-	cmdo.cmd.mutation.Where(ps...)
-	return cmdo
+func (_d *ConnectionMetadataDeleteOne) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (cmdo *ConnectionMetadataDeleteOne) Exec(ctx context.Context) error {
-	n, err := cmdo.cmd.Exec(ctx)
+func (_d *ConnectionMetadataDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (cmdo *ConnectionMetadataDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cmdo *ConnectionMetadataDeleteOne) ExecX(ctx context.Context) {
-	if err := cmdo.Exec(ctx); err != nil {
+func (_d *ConnectionMetadataDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -24,191 +24,191 @@ type TestResultCreate struct {
 }
 
 // SetRun sets the "run" field.
-func (trc *TestResultCreate) SetRun(i int32) *TestResultCreate {
-	trc.mutation.SetRun(i)
-	return trc
+func (_c *TestResultCreate) SetRun(v int32) *TestResultCreate {
+	_c.mutation.SetRun(v)
+	return _c
 }
 
 // SetShard sets the "shard" field.
-func (trc *TestResultCreate) SetShard(i int32) *TestResultCreate {
-	trc.mutation.SetShard(i)
-	return trc
+func (_c *TestResultCreate) SetShard(v int32) *TestResultCreate {
+	_c.mutation.SetShard(v)
+	return _c
 }
 
 // SetAttempt sets the "attempt" field.
-func (trc *TestResultCreate) SetAttempt(i int32) *TestResultCreate {
-	trc.mutation.SetAttempt(i)
-	return trc
+func (_c *TestResultCreate) SetAttempt(v int32) *TestResultCreate {
+	_c.mutation.SetAttempt(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (trc *TestResultCreate) SetStatus(s string) *TestResultCreate {
-	trc.mutation.SetStatus(s)
-	return trc
+func (_c *TestResultCreate) SetStatus(v string) *TestResultCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableStatus(s *string) *TestResultCreate {
-	if s != nil {
-		trc.SetStatus(*s)
+func (_c *TestResultCreate) SetNillableStatus(v *string) *TestResultCreate {
+	if v != nil {
+		_c.SetStatus(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetStatusDetails sets the "status_details" field.
-func (trc *TestResultCreate) SetStatusDetails(s string) *TestResultCreate {
-	trc.mutation.SetStatusDetails(s)
-	return trc
+func (_c *TestResultCreate) SetStatusDetails(v string) *TestResultCreate {
+	_c.mutation.SetStatusDetails(v)
+	return _c
 }
 
 // SetNillableStatusDetails sets the "status_details" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableStatusDetails(s *string) *TestResultCreate {
-	if s != nil {
-		trc.SetStatusDetails(*s)
+func (_c *TestResultCreate) SetNillableStatusDetails(v *string) *TestResultCreate {
+	if v != nil {
+		_c.SetStatusDetails(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetCachedLocally sets the "cached_locally" field.
-func (trc *TestResultCreate) SetCachedLocally(b bool) *TestResultCreate {
-	trc.mutation.SetCachedLocally(b)
-	return trc
+func (_c *TestResultCreate) SetCachedLocally(v bool) *TestResultCreate {
+	_c.mutation.SetCachedLocally(v)
+	return _c
 }
 
 // SetNillableCachedLocally sets the "cached_locally" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableCachedLocally(b *bool) *TestResultCreate {
-	if b != nil {
-		trc.SetCachedLocally(*b)
+func (_c *TestResultCreate) SetNillableCachedLocally(v *bool) *TestResultCreate {
+	if v != nil {
+		_c.SetCachedLocally(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetTestAttemptStart sets the "test_attempt_start" field.
-func (trc *TestResultCreate) SetTestAttemptStart(t time.Time) *TestResultCreate {
-	trc.mutation.SetTestAttemptStart(t)
-	return trc
+func (_c *TestResultCreate) SetTestAttemptStart(v time.Time) *TestResultCreate {
+	_c.mutation.SetTestAttemptStart(v)
+	return _c
 }
 
 // SetNillableTestAttemptStart sets the "test_attempt_start" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableTestAttemptStart(t *time.Time) *TestResultCreate {
-	if t != nil {
-		trc.SetTestAttemptStart(*t)
+func (_c *TestResultCreate) SetNillableTestAttemptStart(v *time.Time) *TestResultCreate {
+	if v != nil {
+		_c.SetTestAttemptStart(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetTestAttemptDurationInMs sets the "test_attempt_duration_in_ms" field.
-func (trc *TestResultCreate) SetTestAttemptDurationInMs(i int64) *TestResultCreate {
-	trc.mutation.SetTestAttemptDurationInMs(i)
-	return trc
+func (_c *TestResultCreate) SetTestAttemptDurationInMs(v int64) *TestResultCreate {
+	_c.mutation.SetTestAttemptDurationInMs(v)
+	return _c
 }
 
 // SetNillableTestAttemptDurationInMs sets the "test_attempt_duration_in_ms" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableTestAttemptDurationInMs(i *int64) *TestResultCreate {
-	if i != nil {
-		trc.SetTestAttemptDurationInMs(*i)
+func (_c *TestResultCreate) SetNillableTestAttemptDurationInMs(v *int64) *TestResultCreate {
+	if v != nil {
+		_c.SetTestAttemptDurationInMs(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetWarning sets the "warning" field.
-func (trc *TestResultCreate) SetWarning(s []string) *TestResultCreate {
-	trc.mutation.SetWarning(s)
-	return trc
+func (_c *TestResultCreate) SetWarning(v []string) *TestResultCreate {
+	_c.mutation.SetWarning(v)
+	return _c
 }
 
 // SetStrategy sets the "strategy" field.
-func (trc *TestResultCreate) SetStrategy(s string) *TestResultCreate {
-	trc.mutation.SetStrategy(s)
-	return trc
+func (_c *TestResultCreate) SetStrategy(v string) *TestResultCreate {
+	_c.mutation.SetStrategy(v)
+	return _c
 }
 
 // SetNillableStrategy sets the "strategy" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableStrategy(s *string) *TestResultCreate {
-	if s != nil {
-		trc.SetStrategy(*s)
+func (_c *TestResultCreate) SetNillableStrategy(v *string) *TestResultCreate {
+	if v != nil {
+		_c.SetStrategy(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetCachedRemotely sets the "cached_remotely" field.
-func (trc *TestResultCreate) SetCachedRemotely(b bool) *TestResultCreate {
-	trc.mutation.SetCachedRemotely(b)
-	return trc
+func (_c *TestResultCreate) SetCachedRemotely(v bool) *TestResultCreate {
+	_c.mutation.SetCachedRemotely(v)
+	return _c
 }
 
 // SetNillableCachedRemotely sets the "cached_remotely" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableCachedRemotely(b *bool) *TestResultCreate {
-	if b != nil {
-		trc.SetCachedRemotely(*b)
+func (_c *TestResultCreate) SetNillableCachedRemotely(v *bool) *TestResultCreate {
+	if v != nil {
+		_c.SetCachedRemotely(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetExitCode sets the "exit_code" field.
-func (trc *TestResultCreate) SetExitCode(i int32) *TestResultCreate {
-	trc.mutation.SetExitCode(i)
-	return trc
+func (_c *TestResultCreate) SetExitCode(v int32) *TestResultCreate {
+	_c.mutation.SetExitCode(v)
+	return _c
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableExitCode(i *int32) *TestResultCreate {
-	if i != nil {
-		trc.SetExitCode(*i)
+func (_c *TestResultCreate) SetNillableExitCode(v *int32) *TestResultCreate {
+	if v != nil {
+		_c.SetExitCode(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetHostname sets the "hostname" field.
-func (trc *TestResultCreate) SetHostname(s string) *TestResultCreate {
-	trc.mutation.SetHostname(s)
-	return trc
+func (_c *TestResultCreate) SetHostname(v string) *TestResultCreate {
+	_c.mutation.SetHostname(v)
+	return _c
 }
 
 // SetNillableHostname sets the "hostname" field if the given value is not nil.
-func (trc *TestResultCreate) SetNillableHostname(s *string) *TestResultCreate {
-	if s != nil {
-		trc.SetHostname(*s)
+func (_c *TestResultCreate) SetNillableHostname(v *string) *TestResultCreate {
+	if v != nil {
+		_c.SetHostname(*v)
 	}
-	return trc
+	return _c
 }
 
 // SetTimingBreakdown sets the "timing_breakdown" field.
-func (trc *TestResultCreate) SetTimingBreakdown(m map[string]interface{}) *TestResultCreate {
-	trc.mutation.SetTimingBreakdown(m)
-	return trc
+func (_c *TestResultCreate) SetTimingBreakdown(v map[string]interface{}) *TestResultCreate {
+	_c.mutation.SetTimingBreakdown(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (trc *TestResultCreate) SetID(i int64) *TestResultCreate {
-	trc.mutation.SetID(i)
-	return trc
+func (_c *TestResultCreate) SetID(v int64) *TestResultCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
-func (trc *TestResultCreate) SetTestSummaryID(id int64) *TestResultCreate {
-	trc.mutation.SetTestSummaryID(id)
-	return trc
+func (_c *TestResultCreate) SetTestSummaryID(id int64) *TestResultCreate {
+	_c.mutation.SetTestSummaryID(id)
+	return _c
 }
 
 // SetTestSummary sets the "test_summary" edge to the TestSummary entity.
-func (trc *TestResultCreate) SetTestSummary(t *TestSummary) *TestResultCreate {
-	return trc.SetTestSummaryID(t.ID)
+func (_c *TestResultCreate) SetTestSummary(v *TestSummary) *TestResultCreate {
+	return _c.SetTestSummaryID(v.ID)
 }
 
 // Mutation returns the TestResultMutation object of the builder.
-func (trc *TestResultCreate) Mutation() *TestResultMutation {
-	return trc.mutation
+func (_c *TestResultCreate) Mutation() *TestResultMutation {
+	return _c.mutation
 }
 
 // Save creates the TestResult in the database.
-func (trc *TestResultCreate) Save(ctx context.Context) (*TestResult, error) {
-	return withHooks(ctx, trc.sqlSave, trc.mutation, trc.hooks)
+func (_c *TestResultCreate) Save(ctx context.Context) (*TestResult, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (trc *TestResultCreate) SaveX(ctx context.Context) *TestResult {
-	v, err := trc.Save(ctx)
+func (_c *TestResultCreate) SaveX(ctx context.Context) *TestResult {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -216,41 +216,41 @@ func (trc *TestResultCreate) SaveX(ctx context.Context) *TestResult {
 }
 
 // Exec executes the query.
-func (trc *TestResultCreate) Exec(ctx context.Context) error {
-	_, err := trc.Save(ctx)
+func (_c *TestResultCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (trc *TestResultCreate) ExecX(ctx context.Context) {
-	if err := trc.Exec(ctx); err != nil {
+func (_c *TestResultCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (trc *TestResultCreate) check() error {
-	if _, ok := trc.mutation.Run(); !ok {
+func (_c *TestResultCreate) check() error {
+	if _, ok := _c.mutation.Run(); !ok {
 		return &ValidationError{Name: "run", err: errors.New(`ent: missing required field "TestResult.run"`)}
 	}
-	if _, ok := trc.mutation.Shard(); !ok {
+	if _, ok := _c.mutation.Shard(); !ok {
 		return &ValidationError{Name: "shard", err: errors.New(`ent: missing required field "TestResult.shard"`)}
 	}
-	if _, ok := trc.mutation.Attempt(); !ok {
+	if _, ok := _c.mutation.Attempt(); !ok {
 		return &ValidationError{Name: "attempt", err: errors.New(`ent: missing required field "TestResult.attempt"`)}
 	}
-	if len(trc.mutation.TestSummaryIDs()) == 0 {
+	if len(_c.mutation.TestSummaryIDs()) == 0 {
 		return &ValidationError{Name: "test_summary", err: errors.New(`ent: missing required edge "TestResult.test_summary"`)}
 	}
 	return nil
 }
 
-func (trc *TestResultCreate) sqlSave(ctx context.Context) (*TestResult, error) {
-	if err := trc.check(); err != nil {
+func (_c *TestResultCreate) sqlSave(ctx context.Context) (*TestResult, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := trc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, trc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -260,78 +260,78 @@ func (trc *TestResultCreate) sqlSave(ctx context.Context) (*TestResult, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	trc.mutation.id = &_node.ID
-	trc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (trc *TestResultCreate) createSpec() (*TestResult, *sqlgraph.CreateSpec) {
+func (_c *TestResultCreate) createSpec() (*TestResult, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TestResult{config: trc.config}
+		_node = &TestResult{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(testresult.Table, sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = trc.conflict
-	if id, ok := trc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := trc.mutation.Run(); ok {
+	if value, ok := _c.mutation.Run(); ok {
 		_spec.SetField(testresult.FieldRun, field.TypeInt32, value)
 		_node.Run = value
 	}
-	if value, ok := trc.mutation.Shard(); ok {
+	if value, ok := _c.mutation.Shard(); ok {
 		_spec.SetField(testresult.FieldShard, field.TypeInt32, value)
 		_node.Shard = value
 	}
-	if value, ok := trc.mutation.Attempt(); ok {
+	if value, ok := _c.mutation.Attempt(); ok {
 		_spec.SetField(testresult.FieldAttempt, field.TypeInt32, value)
 		_node.Attempt = value
 	}
-	if value, ok := trc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(testresult.FieldStatus, field.TypeString, value)
 		_node.Status = value
 	}
-	if value, ok := trc.mutation.StatusDetails(); ok {
+	if value, ok := _c.mutation.StatusDetails(); ok {
 		_spec.SetField(testresult.FieldStatusDetails, field.TypeString, value)
 		_node.StatusDetails = value
 	}
-	if value, ok := trc.mutation.CachedLocally(); ok {
+	if value, ok := _c.mutation.CachedLocally(); ok {
 		_spec.SetField(testresult.FieldCachedLocally, field.TypeBool, value)
 		_node.CachedLocally = value
 	}
-	if value, ok := trc.mutation.TestAttemptStart(); ok {
+	if value, ok := _c.mutation.TestAttemptStart(); ok {
 		_spec.SetField(testresult.FieldTestAttemptStart, field.TypeTime, value)
 		_node.TestAttemptStart = value
 	}
-	if value, ok := trc.mutation.TestAttemptDurationInMs(); ok {
+	if value, ok := _c.mutation.TestAttemptDurationInMs(); ok {
 		_spec.SetField(testresult.FieldTestAttemptDurationInMs, field.TypeInt64, value)
 		_node.TestAttemptDurationInMs = value
 	}
-	if value, ok := trc.mutation.Warning(); ok {
+	if value, ok := _c.mutation.Warning(); ok {
 		_spec.SetField(testresult.FieldWarning, field.TypeJSON, value)
 		_node.Warning = value
 	}
-	if value, ok := trc.mutation.Strategy(); ok {
+	if value, ok := _c.mutation.Strategy(); ok {
 		_spec.SetField(testresult.FieldStrategy, field.TypeString, value)
 		_node.Strategy = value
 	}
-	if value, ok := trc.mutation.CachedRemotely(); ok {
+	if value, ok := _c.mutation.CachedRemotely(); ok {
 		_spec.SetField(testresult.FieldCachedRemotely, field.TypeBool, value)
 		_node.CachedRemotely = value
 	}
-	if value, ok := trc.mutation.ExitCode(); ok {
+	if value, ok := _c.mutation.ExitCode(); ok {
 		_spec.SetField(testresult.FieldExitCode, field.TypeInt32, value)
 		_node.ExitCode = value
 	}
-	if value, ok := trc.mutation.Hostname(); ok {
+	if value, ok := _c.mutation.Hostname(); ok {
 		_spec.SetField(testresult.FieldHostname, field.TypeString, value)
 		_node.Hostname = value
 	}
-	if value, ok := trc.mutation.TimingBreakdown(); ok {
+	if value, ok := _c.mutation.TimingBreakdown(); ok {
 		_spec.SetField(testresult.FieldTimingBreakdown, field.TypeJSON, value)
 		_node.TimingBreakdown = value
 	}
-	if nodes := trc.mutation.TestSummaryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -367,10 +367,10 @@ func (trc *TestResultCreate) createSpec() (*TestResult, *sqlgraph.CreateSpec) {
 //			SetRun(v+v).
 //		}).
 //		Exec(ctx)
-func (trc *TestResultCreate) OnConflict(opts ...sql.ConflictOption) *TestResultUpsertOne {
-	trc.conflict = opts
+func (_c *TestResultCreate) OnConflict(opts ...sql.ConflictOption) *TestResultUpsertOne {
+	_c.conflict = opts
 	return &TestResultUpsertOne{
-		create: trc,
+		create: _c,
 	}
 }
 
@@ -380,10 +380,10 @@ func (trc *TestResultCreate) OnConflict(opts ...sql.ConflictOption) *TestResultU
 //	client.TestResult.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (trc *TestResultCreate) OnConflictColumns(columns ...string) *TestResultUpsertOne {
-	trc.conflict = append(trc.conflict, sql.ConflictColumns(columns...))
+func (_c *TestResultCreate) OnConflictColumns(columns ...string) *TestResultUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TestResultUpsertOne{
-		create: trc,
+		create: _c,
 	}
 }
 
@@ -954,16 +954,16 @@ type TestResultCreateBulk struct {
 }
 
 // Save creates the TestResult entities in the database.
-func (trcb *TestResultCreateBulk) Save(ctx context.Context) ([]*TestResult, error) {
-	if trcb.err != nil {
-		return nil, trcb.err
+func (_c *TestResultCreateBulk) Save(ctx context.Context) ([]*TestResult, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(trcb.builders))
-	nodes := make([]*TestResult, len(trcb.builders))
-	mutators := make([]Mutator, len(trcb.builders))
-	for i := range trcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TestResult, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := trcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TestResultMutation)
 				if !ok {
@@ -976,12 +976,12 @@ func (trcb *TestResultCreateBulk) Save(ctx context.Context) ([]*TestResult, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, trcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = trcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, trcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1005,7 +1005,7 @@ func (trcb *TestResultCreateBulk) Save(ctx context.Context) ([]*TestResult, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, trcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1013,8 +1013,8 @@ func (trcb *TestResultCreateBulk) Save(ctx context.Context) ([]*TestResult, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (trcb *TestResultCreateBulk) SaveX(ctx context.Context) []*TestResult {
-	v, err := trcb.Save(ctx)
+func (_c *TestResultCreateBulk) SaveX(ctx context.Context) []*TestResult {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1022,14 +1022,14 @@ func (trcb *TestResultCreateBulk) SaveX(ctx context.Context) []*TestResult {
 }
 
 // Exec executes the query.
-func (trcb *TestResultCreateBulk) Exec(ctx context.Context) error {
-	_, err := trcb.Save(ctx)
+func (_c *TestResultCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (trcb *TestResultCreateBulk) ExecX(ctx context.Context) {
-	if err := trcb.Exec(ctx); err != nil {
+func (_c *TestResultCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1049,10 +1049,10 @@ func (trcb *TestResultCreateBulk) ExecX(ctx context.Context) {
 //			SetRun(v+v).
 //		}).
 //		Exec(ctx)
-func (trcb *TestResultCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestResultUpsertBulk {
-	trcb.conflict = opts
+func (_c *TestResultCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestResultUpsertBulk {
+	_c.conflict = opts
 	return &TestResultUpsertBulk{
-		create: trcb,
+		create: _c,
 	}
 }
 
@@ -1062,10 +1062,10 @@ func (trcb *TestResultCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestRe
 //	client.TestResult.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (trcb *TestResultCreateBulk) OnConflictColumns(columns ...string) *TestResultUpsertBulk {
-	trcb.conflict = append(trcb.conflict, sql.ConflictColumns(columns...))
+func (_c *TestResultCreateBulk) OnConflictColumns(columns ...string) *TestResultUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TestResultUpsertBulk{
-		create: trcb,
+		create: _c,
 	}
 }
 

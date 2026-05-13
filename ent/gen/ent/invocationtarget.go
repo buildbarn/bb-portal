@@ -132,7 +132,7 @@ func (*InvocationTarget) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the InvocationTarget fields.
-func (it *InvocationTarget) assignValues(columns []string, values []any) error {
+func (_m *InvocationTarget) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -143,18 +143,18 @@ func (it *InvocationTarget) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			it.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case invocationtarget.FieldSuccess:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field success", values[i])
 			} else if value.Valid {
-				it.Success = value.Bool
+				_m.Success = value.Bool
 			}
 		case invocationtarget.FieldTags:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field tags", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &it.Tags); err != nil {
+				if err := json.Unmarshal(*value, &_m.Tags); err != nil {
 					return fmt.Errorf("unmarshal field tags: %w", err)
 				}
 			}
@@ -162,55 +162,55 @@ func (it *InvocationTarget) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time_in_ms", values[i])
 			} else if value.Valid {
-				it.StartTimeInMs = value.Int64
+				_m.StartTimeInMs = value.Int64
 			}
 		case invocationtarget.FieldEndTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field end_time_in_ms", values[i])
 			} else if value.Valid {
-				it.EndTimeInMs = value.Int64
+				_m.EndTimeInMs = value.Int64
 			}
 		case invocationtarget.FieldDurationInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field duration_in_ms", values[i])
 			} else if value.Valid {
-				it.DurationInMs = value.Int64
+				_m.DurationInMs = value.Int64
 			}
 		case invocationtarget.FieldFailureMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field failure_message", values[i])
 			} else if value.Valid {
-				it.FailureMessage = value.String
+				_m.FailureMessage = value.String
 			}
 		case invocationtarget.FieldAbortReason:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field abort_reason", values[i])
 			} else if value.Valid {
-				it.AbortReason = invocationtarget.AbortReason(value.String)
+				_m.AbortReason = invocationtarget.AbortReason(value.String)
 			}
 		case invocationtarget.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_invocation_targets", value)
 			} else if value.Valid {
-				it.bazel_invocation_invocation_targets = new(int64)
-				*it.bazel_invocation_invocation_targets = int64(value.Int64)
+				_m.bazel_invocation_invocation_targets = new(int64)
+				*_m.bazel_invocation_invocation_targets = int64(value.Int64)
 			}
 		case invocationtarget.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field invocation_target_configuration", value)
 			} else if value.Valid {
-				it.invocation_target_configuration = new(int64)
-				*it.invocation_target_configuration = int64(value.Int64)
+				_m.invocation_target_configuration = new(int64)
+				*_m.invocation_target_configuration = int64(value.Int64)
 			}
 		case invocationtarget.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field target_invocation_targets", value)
 			} else if value.Valid {
-				it.target_invocation_targets = new(int64)
-				*it.target_invocation_targets = int64(value.Int64)
+				_m.target_invocation_targets = new(int64)
+				*_m.target_invocation_targets = int64(value.Int64)
 			}
 		default:
-			it.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -218,98 +218,98 @@ func (it *InvocationTarget) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the InvocationTarget.
 // This includes values selected through modifiers, order, etc.
-func (it *InvocationTarget) Value(name string) (ent.Value, error) {
-	return it.selectValues.Get(name)
+func (_m *InvocationTarget) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the InvocationTarget entity.
-func (it *InvocationTarget) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewInvocationTargetClient(it.config).QueryBazelInvocation(it)
+func (_m *InvocationTarget) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewInvocationTargetClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // QueryTarget queries the "target" edge of the InvocationTarget entity.
-func (it *InvocationTarget) QueryTarget() *TargetQuery {
-	return NewInvocationTargetClient(it.config).QueryTarget(it)
+func (_m *InvocationTarget) QueryTarget() *TargetQuery {
+	return NewInvocationTargetClient(_m.config).QueryTarget(_m)
 }
 
 // QueryConfiguration queries the "configuration" edge of the InvocationTarget entity.
-func (it *InvocationTarget) QueryConfiguration() *ConfigurationQuery {
-	return NewInvocationTargetClient(it.config).QueryConfiguration(it)
+func (_m *InvocationTarget) QueryConfiguration() *ConfigurationQuery {
+	return NewInvocationTargetClient(_m.config).QueryConfiguration(_m)
 }
 
 // QueryTestSummary queries the "test_summary" edge of the InvocationTarget entity.
-func (it *InvocationTarget) QueryTestSummary() *TestSummaryQuery {
-	return NewInvocationTargetClient(it.config).QueryTestSummary(it)
+func (_m *InvocationTarget) QueryTestSummary() *TestSummaryQuery {
+	return NewInvocationTargetClient(_m.config).QueryTestSummary(_m)
 }
 
 // Update returns a builder for updating this InvocationTarget.
 // Note that you need to call InvocationTarget.Unwrap() before calling this method if this InvocationTarget
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (it *InvocationTarget) Update() *InvocationTargetUpdateOne {
-	return NewInvocationTargetClient(it.config).UpdateOne(it)
+func (_m *InvocationTarget) Update() *InvocationTargetUpdateOne {
+	return NewInvocationTargetClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the InvocationTarget entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (it *InvocationTarget) Unwrap() *InvocationTarget {
-	_tx, ok := it.config.driver.(*txDriver)
+func (_m *InvocationTarget) Unwrap() *InvocationTarget {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: InvocationTarget is not a transactional entity")
 	}
-	it.config.driver = _tx.drv
-	return it
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (it *InvocationTarget) String() string {
+func (_m *InvocationTarget) String() string {
 	var builder strings.Builder
 	builder.WriteString("InvocationTarget(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", it.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("success=")
-	builder.WriteString(fmt.Sprintf("%v", it.Success))
+	builder.WriteString(fmt.Sprintf("%v", _m.Success))
 	builder.WriteString(", ")
 	builder.WriteString("tags=")
-	builder.WriteString(fmt.Sprintf("%v", it.Tags))
+	builder.WriteString(fmt.Sprintf("%v", _m.Tags))
 	builder.WriteString(", ")
 	builder.WriteString("start_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", it.StartTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.StartTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("end_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", it.EndTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.EndTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("duration_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", it.DurationInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.DurationInMs))
 	builder.WriteString(", ")
 	builder.WriteString("failure_message=")
-	builder.WriteString(it.FailureMessage)
+	builder.WriteString(_m.FailureMessage)
 	builder.WriteString(", ")
 	builder.WriteString("abort_reason=")
-	builder.WriteString(fmt.Sprintf("%v", it.AbortReason))
+	builder.WriteString(fmt.Sprintf("%v", _m.AbortReason))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedTestSummary returns the TestSummary named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (it *InvocationTarget) NamedTestSummary(name string) ([]*TestSummary, error) {
-	if it.Edges.namedTestSummary == nil {
+func (_m *InvocationTarget) NamedTestSummary(name string) ([]*TestSummary, error) {
+	if _m.Edges.namedTestSummary == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := it.Edges.namedTestSummary[name]
+	nodes, ok := _m.Edges.namedTestSummary[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (it *InvocationTarget) appendNamedTestSummary(name string, edges ...*TestSummary) {
-	if it.Edges.namedTestSummary == nil {
-		it.Edges.namedTestSummary = make(map[string][]*TestSummary)
+func (_m *InvocationTarget) appendNamedTestSummary(name string, edges ...*TestSummary) {
+	if _m.Edges.namedTestSummary == nil {
+		_m.Edges.namedTestSummary = make(map[string][]*TestSummary)
 	}
 	if len(edges) == 0 {
-		it.Edges.namedTestSummary[name] = []*TestSummary{}
+		_m.Edges.namedTestSummary[name] = []*TestSummary{}
 	} else {
-		it.Edges.namedTestSummary[name] = append(it.Edges.namedTestSummary[name], edges...)
+		_m.Edges.namedTestSummary[name] = append(_m.Edges.namedTestSummary[name], edges...)
 	}
 }
 

@@ -8,99 +8,99 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-func (a *Action) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := a.Edges.BazelInvocationOrErr()
+func (_m *Action) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = a.QueryBazelInvocation().Only(ctx)
+		result, err = _m.QueryBazelInvocation().Only(ctx)
 	}
 	return result, err
 }
 
-func (a *Action) Configuration(ctx context.Context) (*Configuration, error) {
-	result, err := a.Edges.ConfigurationOrErr()
+func (_m *Action) Configuration(ctx context.Context) (*Configuration, error) {
+	result, err := _m.Edges.ConfigurationOrErr()
 	if IsNotLoaded(err) {
-		result, err = a.QueryConfiguration().Only(ctx)
+		result, err = _m.QueryConfiguration().Only(ctx)
 	}
 	return result, err
 }
 
-func (acs *ActionCacheStatistics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
-	result, err := acs.Edges.ActionSummaryOrErr()
+func (_m *ActionCacheStatistics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
+	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
-		result, err = acs.QueryActionSummary().Only(ctx)
+		result, err = _m.QueryActionSummary().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (acs *ActionCacheStatistics) MissDetails(ctx context.Context) (result []*MissDetail, err error) {
+func (_m *ActionCacheStatistics) MissDetails(ctx context.Context) (result []*MissDetail, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = acs.NamedMissDetails(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedMissDetails(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = acs.Edges.MissDetailsOrErr()
+		result, err = _m.Edges.MissDetailsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = acs.QueryMissDetails().All(ctx)
+		result, err = _m.QueryMissDetails().All(ctx)
 	}
 	return result, err
 }
 
-func (ad *ActionData) ActionSummary(ctx context.Context) (*ActionSummary, error) {
-	result, err := ad.Edges.ActionSummaryOrErr()
+func (_m *ActionData) ActionSummary(ctx context.Context) (*ActionSummary, error) {
+	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
-		result, err = ad.QueryActionSummary().Only(ctx)
+		result, err = _m.QueryActionSummary().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (as *ActionSummary) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := as.Edges.MetricsOrErr()
+func (_m *ActionSummary) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = as.QueryMetrics().Only(ctx)
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (as *ActionSummary) ActionData(ctx context.Context) (result []*ActionData, err error) {
+func (_m *ActionSummary) ActionData(ctx context.Context) (result []*ActionData, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = as.NamedActionData(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedActionData(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = as.Edges.ActionDataOrErr()
+		result, err = _m.Edges.ActionDataOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = as.QueryActionData().All(ctx)
+		result, err = _m.QueryActionData().All(ctx)
 	}
 	return result, err
 }
 
-func (as *ActionSummary) RunnerCount(ctx context.Context) (result []*RunnerCount, err error) {
+func (_m *ActionSummary) RunnerCount(ctx context.Context) (result []*RunnerCount, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = as.NamedRunnerCount(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedRunnerCount(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = as.Edges.RunnerCountOrErr()
+		result, err = _m.Edges.RunnerCountOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = as.QueryRunnerCount().All(ctx)
+		result, err = _m.QueryRunnerCount().All(ctx)
 	}
 	return result, err
 }
 
-func (as *ActionSummary) ActionCacheStatistics(ctx context.Context) (*ActionCacheStatistics, error) {
-	result, err := as.Edges.ActionCacheStatisticsOrErr()
+func (_m *ActionSummary) ActionCacheStatistics(ctx context.Context) (*ActionCacheStatistics, error) {
+	result, err := _m.Edges.ActionCacheStatisticsOrErr()
 	if IsNotLoaded(err) {
-		result, err = as.QueryActionCacheStatistics().Only(ctx)
+		result, err = _m.QueryActionCacheStatistics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (am *ArtifactMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := am.Edges.MetricsOrErr()
+func (_m *ArtifactMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = am.QueryMetrics().Only(ctx)
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (au *AuthenticatedUser) BazelInvocations(
+func (_m *AuthenticatedUser) BazelInvocations(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *BazelInvocationOrder, where *BazelInvocationWhereInput,
 ) (*BazelInvocationConnection, error) {
 	opts := []BazelInvocationPaginateOption{
@@ -108,8 +108,8 @@ func (au *AuthenticatedUser) BazelInvocations(
 		WithBazelInvocationFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := au.Edges.totalCount[0][alias]
-	if nodes, err := au.NamedBazelInvocations(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[0][alias]
+	if nodes, err := _m.NamedBazelInvocations(alias); err == nil || hasTotalCount {
 		pager, err := newBazelInvocationPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -118,34 +118,34 @@ func (au *AuthenticatedUser) BazelInvocations(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return au.QueryBazelInvocations().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryBazelInvocations().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (bi *BazelInvocation) InstanceName(ctx context.Context) (*InstanceName, error) {
-	result, err := bi.Edges.InstanceNameOrErr()
+func (_m *BazelInvocation) InstanceName(ctx context.Context) (*InstanceName, error) {
+	result, err := _m.Edges.InstanceNameOrErr()
 	if IsNotLoaded(err) {
-		result, err = bi.QueryInstanceName().Only(ctx)
+		result, err = _m.QueryInstanceName().Only(ctx)
 	}
 	return result, err
 }
 
-func (bi *BazelInvocation) Build(ctx context.Context) (*Build, error) {
-	result, err := bi.Edges.BuildOrErr()
+func (_m *BazelInvocation) Build(ctx context.Context) (*Build, error) {
+	result, err := _m.Edges.BuildOrErr()
 	if IsNotLoaded(err) {
-		result, err = bi.QueryBuild().Only(ctx)
+		result, err = _m.QueryBuild().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (bi *BazelInvocation) AuthenticatedUser(ctx context.Context) (*AuthenticatedUser, error) {
-	result, err := bi.Edges.AuthenticatedUserOrErr()
+func (_m *BazelInvocation) AuthenticatedUser(ctx context.Context) (*AuthenticatedUser, error) {
+	result, err := _m.Edges.AuthenticatedUserOrErr()
 	if IsNotLoaded(err) {
-		result, err = bi.QueryAuthenticatedUser().Only(ctx)
+		result, err = _m.QueryAuthenticatedUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (bi *BazelInvocation) Tags(
+func (_m *BazelInvocation) Tags(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTagOrder, where *InvocationTagWhereInput,
 ) (*InvocationTagConnection, error) {
 	opts := []InvocationTagPaginateOption{
@@ -153,8 +153,8 @@ func (bi *BazelInvocation) Tags(
 		WithInvocationTagFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[3][alias]
-	if nodes, err := bi.NamedTags(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[3][alias]
+	if nodes, err := _m.NamedTags(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTagPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -163,50 +163,50 @@ func (bi *BazelInvocation) Tags(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return bi.QueryTags().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryTags().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (bi *BazelInvocation) ConnectionMetadata(ctx context.Context) (*ConnectionMetadata, error) {
-	result, err := bi.Edges.ConnectionMetadataOrErr()
+func (_m *BazelInvocation) ConnectionMetadata(ctx context.Context) (*ConnectionMetadata, error) {
+	result, err := _m.Edges.ConnectionMetadataOrErr()
 	if IsNotLoaded(err) {
-		result, err = bi.QueryConnectionMetadata().Only(ctx)
+		result, err = _m.QueryConnectionMetadata().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (bi *BazelInvocation) Configurations(ctx context.Context) (result []*Configuration, err error) {
+func (_m *BazelInvocation) Configurations(ctx context.Context) (result []*Configuration, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = bi.NamedConfigurations(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedConfigurations(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = bi.Edges.ConfigurationsOrErr()
+		result, err = _m.Edges.ConfigurationsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = bi.QueryConfigurations().All(ctx)
+		result, err = _m.QueryConfigurations().All(ctx)
 	}
 	return result, err
 }
 
-func (bi *BazelInvocation) Actions(ctx context.Context) (result []*Action, err error) {
+func (_m *BazelInvocation) Actions(ctx context.Context) (result []*Action, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = bi.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = bi.Edges.ActionsOrErr()
+		result, err = _m.Edges.ActionsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = bi.QueryActions().All(ctx)
+		result, err = _m.QueryActions().All(ctx)
 	}
 	return result, err
 }
 
-func (bi *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := bi.Edges.MetricsOrErr()
+func (_m *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = bi.QueryMetrics().Only(ctx)
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (bi *BazelInvocation) InvocationTargets(
+func (_m *BazelInvocation) InvocationTargets(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTargetOrder, where *InvocationTargetWhereInput,
 ) (*InvocationTargetConnection, error) {
 	opts := []InvocationTargetPaginateOption{
@@ -214,8 +214,8 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[8][alias]
-	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[8][alias]
+	if nodes, err := _m.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -224,30 +224,30 @@ func (bi *BazelInvocation) InvocationTargets(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return bi.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (bi *BazelInvocation) SourceControl(ctx context.Context) (result []*SourceControl, err error) {
+func (_m *BazelInvocation) SourceControl(ctx context.Context) (result []*SourceControl, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = bi.NamedSourceControl(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedSourceControl(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = bi.Edges.SourceControlOrErr()
+		result, err = _m.Edges.SourceControlOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = bi.QuerySourceControl().All(ctx)
+		result, err = _m.QuerySourceControl().All(ctx)
 	}
 	return result, err
 }
 
-func (b *Build) InstanceName(ctx context.Context) (*InstanceName, error) {
-	result, err := b.Edges.InstanceNameOrErr()
+func (_m *Build) InstanceName(ctx context.Context) (*InstanceName, error) {
+	result, err := _m.Edges.InstanceNameOrErr()
 	if IsNotLoaded(err) {
-		result, err = b.QueryInstanceName().Only(ctx)
+		result, err = _m.QueryInstanceName().Only(ctx)
 	}
 	return result, err
 }
 
-func (b *Build) Invocations(
+func (_m *Build) Invocations(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *BazelInvocationOrder, where *BazelInvocationWhereInput,
 ) (*BazelInvocationConnection, error) {
 	opts := []BazelInvocationPaginateOption{
@@ -255,8 +255,8 @@ func (b *Build) Invocations(
 		WithBazelInvocationFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := b.Edges.totalCount[1][alias]
-	if nodes, err := b.NamedInvocations(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[1][alias]
+	if nodes, err := _m.NamedInvocations(alias); err == nil || hasTotalCount {
 		pager, err := newBazelInvocationPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -265,10 +265,10 @@ func (b *Build) Invocations(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return b.QueryInvocations().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryInvocations().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (b *Build) Tags(
+func (_m *Build) Tags(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *BuildTagOrder, where *BuildTagWhereInput,
 ) (*BuildTagConnection, error) {
 	opts := []BuildTagPaginateOption{
@@ -276,8 +276,8 @@ func (b *Build) Tags(
 		WithBuildTagFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := b.Edges.totalCount[2][alias]
-	if nodes, err := b.NamedTags(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[2][alias]
+	if nodes, err := _m.NamedTags(alias); err == nil || hasTotalCount {
 		pager, err := newBuildTagPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -286,294 +286,294 @@ func (b *Build) Tags(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return b.QueryTags().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryTags().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (bgm *BuildGraphMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := bgm.Edges.MetricsOrErr()
+func (_m *BuildGraphMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = bgm.QueryMetrics().Only(ctx)
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (bt *BuildTag) Build(ctx context.Context) (*Build, error) {
-	result, err := bt.Edges.BuildOrErr()
+func (_m *BuildTag) Build(ctx context.Context) (*Build, error) {
+	result, err := _m.Edges.BuildOrErr()
 	if IsNotLoaded(err) {
-		result, err = bt.QueryBuild().Only(ctx)
+		result, err = _m.QueryBuild().Only(ctx)
 	}
 	return result, err
 }
 
-func (c *Configuration) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := c.Edges.BazelInvocationOrErr()
+func (_m *Configuration) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = c.QueryBazelInvocation().Only(ctx)
+		result, err = _m.QueryBazelInvocation().Only(ctx)
 	}
 	return result, err
 }
 
-func (c *Configuration) InvocationTargets(ctx context.Context) (result []*InvocationTarget, err error) {
+func (_m *Configuration) InvocationTargets(ctx context.Context) (result []*InvocationTarget, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = c.NamedInvocationTargets(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedInvocationTargets(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = c.Edges.InvocationTargetsOrErr()
+		result, err = _m.Edges.InvocationTargetsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = c.QueryInvocationTargets().All(ctx)
+		result, err = _m.QueryInvocationTargets().All(ctx)
 	}
 	return result, err
 }
 
-func (c *Configuration) Actions(ctx context.Context) (result []*Action, err error) {
+func (_m *Configuration) Actions(ctx context.Context) (result []*Action, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = c.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = c.Edges.ActionsOrErr()
+		result, err = _m.Edges.ActionsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = c.QueryActions().All(ctx)
-	}
-	return result, err
-}
-
-func (cm *ConnectionMetadata) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := cm.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = cm.QueryBazelInvocation().Only(ctx)
+		result, err = _m.QueryActions().All(ctx)
 	}
 	return result, err
 }
 
-func (gm *GarbageMetrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, error) {
-	result, err := gm.Edges.MemoryMetricsOrErr()
+func (_m *ConnectionMetadata) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = gm.QueryMemoryMetrics().Only(ctx)
+		result, err = _m.QueryBazelInvocation().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *GarbageMetrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, error) {
+	result, err := _m.Edges.MemoryMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMemoryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (in *InstanceName) BazelInvocations(ctx context.Context) (result []*BazelInvocation, err error) {
+func (_m *InstanceName) BazelInvocations(ctx context.Context) (result []*BazelInvocation, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = in.NamedBazelInvocations(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedBazelInvocations(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = in.Edges.BazelInvocationsOrErr()
+		result, err = _m.Edges.BazelInvocationsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = in.QueryBazelInvocations().All(ctx)
+		result, err = _m.QueryBazelInvocations().All(ctx)
 	}
 	return result, err
 }
 
-func (in *InstanceName) Builds(ctx context.Context) (result []*Build, err error) {
+func (_m *InstanceName) Builds(ctx context.Context) (result []*Build, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = in.NamedBuilds(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedBuilds(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = in.Edges.BuildsOrErr()
+		result, err = _m.Edges.BuildsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = in.QueryBuilds().All(ctx)
+		result, err = _m.QueryBuilds().All(ctx)
 	}
 	return result, err
 }
 
-func (in *InstanceName) Targets(ctx context.Context) (result []*Target, err error) {
+func (_m *InstanceName) Targets(ctx context.Context) (result []*Target, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = in.NamedTargets(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedTargets(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = in.Edges.TargetsOrErr()
+		result, err = _m.Edges.TargetsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = in.QueryTargets().All(ctx)
-	}
-	return result, err
-}
-
-func (it *InvocationTag) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := it.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = it.QueryBazelInvocation().Only(ctx)
+		result, err = _m.QueryTargets().All(ctx)
 	}
 	return result, err
 }
 
-func (it *InvocationTarget) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := it.Edges.BazelInvocationOrErr()
+func (_m *InvocationTag) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = it.QueryBazelInvocation().Only(ctx)
+		result, err = _m.QueryBazelInvocation().Only(ctx)
 	}
 	return result, err
 }
 
-func (it *InvocationTarget) Target(ctx context.Context) (*Target, error) {
-	result, err := it.Edges.TargetOrErr()
+func (_m *InvocationTarget) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = it.QueryTarget().Only(ctx)
+		result, err = _m.QueryBazelInvocation().Only(ctx)
 	}
 	return result, err
 }
 
-func (it *InvocationTarget) Configuration(ctx context.Context) (*Configuration, error) {
-	result, err := it.Edges.ConfigurationOrErr()
+func (_m *InvocationTarget) Target(ctx context.Context) (*Target, error) {
+	result, err := _m.Edges.TargetOrErr()
 	if IsNotLoaded(err) {
-		result, err = it.QueryConfiguration().Only(ctx)
+		result, err = _m.QueryTarget().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *InvocationTarget) Configuration(ctx context.Context) (*Configuration, error) {
+	result, err := _m.Edges.ConfigurationOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryConfiguration().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (it *InvocationTarget) TestSummary(ctx context.Context) (result []*TestSummary, err error) {
+func (_m *InvocationTarget) TestSummary(ctx context.Context) (result []*TestSummary, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = it.NamedTestSummary(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedTestSummary(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = it.Edges.TestSummaryOrErr()
+		result, err = _m.Edges.TestSummaryOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = it.QueryTestSummary().All(ctx)
+		result, err = _m.QueryTestSummary().All(ctx)
 	}
 	return result, err
 }
 
-func (mm *MemoryMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := mm.Edges.MetricsOrErr()
+func (_m *MemoryMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = mm.QueryMetrics().Only(ctx)
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (mm *MemoryMetrics) GarbageMetrics(ctx context.Context) (result []*GarbageMetrics, err error) {
+func (_m *MemoryMetrics) GarbageMetrics(ctx context.Context) (result []*GarbageMetrics, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = mm.NamedGarbageMetrics(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedGarbageMetrics(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = mm.Edges.GarbageMetricsOrErr()
+		result, err = _m.Edges.GarbageMetricsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = mm.QueryGarbageMetrics().All(ctx)
+		result, err = _m.QueryGarbageMetrics().All(ctx)
 	}
 	return result, err
 }
 
-func (m *Metrics) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := m.Edges.BazelInvocationOrErr()
+func (_m *Metrics) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryBazelInvocation().Only(ctx)
+		result, err = _m.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
-	result, err := m.Edges.ActionSummaryOrErr()
+func (_m *Metrics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
+	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryActionSummary().Only(ctx)
+		result, err = _m.QueryActionSummary().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, error) {
-	result, err := m.Edges.MemoryMetricsOrErr()
+func (_m *Metrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, error) {
+	result, err := _m.Edges.MemoryMetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryMemoryMetrics().Only(ctx)
+		result, err = _m.QueryMemoryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) TargetMetrics(ctx context.Context) (*TargetMetrics, error) {
-	result, err := m.Edges.TargetMetricsOrErr()
+func (_m *Metrics) TargetMetrics(ctx context.Context) (*TargetMetrics, error) {
+	result, err := _m.Edges.TargetMetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryTargetMetrics().Only(ctx)
+		result, err = _m.QueryTargetMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) TimingMetrics(ctx context.Context) (*TimingMetrics, error) {
-	result, err := m.Edges.TimingMetricsOrErr()
+func (_m *Metrics) TimingMetrics(ctx context.Context) (*TimingMetrics, error) {
+	result, err := _m.Edges.TimingMetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryTimingMetrics().Only(ctx)
+		result, err = _m.QueryTimingMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) ArtifactMetrics(ctx context.Context) (*ArtifactMetrics, error) {
-	result, err := m.Edges.ArtifactMetricsOrErr()
+func (_m *Metrics) ArtifactMetrics(ctx context.Context) (*ArtifactMetrics, error) {
+	result, err := _m.Edges.ArtifactMetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryArtifactMetrics().Only(ctx)
+		result, err = _m.QueryArtifactMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) NetworkMetrics(ctx context.Context) (*NetworkMetrics, error) {
-	result, err := m.Edges.NetworkMetricsOrErr()
+func (_m *Metrics) NetworkMetrics(ctx context.Context) (*NetworkMetrics, error) {
+	result, err := _m.Edges.NetworkMetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryNetworkMetrics().Only(ctx)
+		result, err = _m.QueryNetworkMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
-	result, err := m.Edges.BuildGraphMetricsOrErr()
+func (_m *Metrics) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
+	result, err := _m.Edges.BuildGraphMetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = m.QueryBuildGraphMetrics().Only(ctx)
+		result, err = _m.QueryBuildGraphMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (md *MissDetail) ActionCacheStatistics(ctx context.Context) (*ActionCacheStatistics, error) {
-	result, err := md.Edges.ActionCacheStatisticsOrErr()
+func (_m *MissDetail) ActionCacheStatistics(ctx context.Context) (*ActionCacheStatistics, error) {
+	result, err := _m.Edges.ActionCacheStatisticsOrErr()
 	if IsNotLoaded(err) {
-		result, err = md.QueryActionCacheStatistics().Only(ctx)
+		result, err = _m.QueryActionCacheStatistics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (nm *NetworkMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := nm.Edges.MetricsOrErr()
+func (_m *NetworkMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = nm.QueryMetrics().Only(ctx)
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (nm *NetworkMetrics) SystemNetworkStats(ctx context.Context) (*SystemNetworkStats, error) {
-	result, err := nm.Edges.SystemNetworkStatsOrErr()
+func (_m *NetworkMetrics) SystemNetworkStats(ctx context.Context) (*SystemNetworkStats, error) {
+	result, err := _m.Edges.SystemNetworkStatsOrErr()
 	if IsNotLoaded(err) {
-		result, err = nm.QuerySystemNetworkStats().Only(ctx)
+		result, err = _m.QuerySystemNetworkStats().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (rc *RunnerCount) ActionSummary(ctx context.Context) (*ActionSummary, error) {
-	result, err := rc.Edges.ActionSummaryOrErr()
+func (_m *RunnerCount) ActionSummary(ctx context.Context) (*ActionSummary, error) {
+	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
-		result, err = rc.QueryActionSummary().Only(ctx)
+		result, err = _m.QueryActionSummary().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (sc *SourceControl) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := sc.Edges.BazelInvocationOrErr()
+func (_m *SourceControl) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = sc.QueryBazelInvocation().Only(ctx)
+		result, err = _m.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (sns *SystemNetworkStats) NetworkMetrics(ctx context.Context) (*NetworkMetrics, error) {
-	result, err := sns.Edges.NetworkMetricsOrErr()
+func (_m *SystemNetworkStats) NetworkMetrics(ctx context.Context) (*NetworkMetrics, error) {
+	result, err := _m.Edges.NetworkMetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = sns.QueryNetworkMetrics().Only(ctx)
+		result, err = _m.QueryNetworkMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (t *Target) InstanceName(ctx context.Context) (*InstanceName, error) {
-	result, err := t.Edges.InstanceNameOrErr()
+func (_m *Target) InstanceName(ctx context.Context) (*InstanceName, error) {
+	result, err := _m.Edges.InstanceNameOrErr()
 	if IsNotLoaded(err) {
-		result, err = t.QueryInstanceName().Only(ctx)
+		result, err = _m.QueryInstanceName().Only(ctx)
 	}
 	return result, err
 }
 
-func (t *Target) InvocationTargets(
+func (_m *Target) InvocationTargets(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTargetOrder, where *InvocationTargetWhereInput,
 ) (*InvocationTargetConnection, error) {
 	opts := []InvocationTargetPaginateOption{
@@ -581,8 +581,8 @@ func (t *Target) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := t.Edges.totalCount[1][alias]
-	if nodes, err := t.NamedInvocationTargets(alias); err == nil || hasTotalCount {
+	totalCount, hasTotalCount := _m.Edges.totalCount[1][alias]
+	if nodes, err := _m.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
 			return nil, err
@@ -591,65 +591,65 @@ func (t *Target) InvocationTargets(
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return t.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (t *Target) TestTarget(ctx context.Context) (*TestTarget, error) {
-	result, err := t.Edges.TestTargetOrErr()
+func (_m *Target) TestTarget(ctx context.Context) (*TestTarget, error) {
+	result, err := _m.Edges.TestTargetOrErr()
 	if IsNotLoaded(err) {
-		result, err = t.QueryTestTarget().Only(ctx)
+		result, err = _m.QueryTestTarget().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (tm *TargetMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := tm.Edges.MetricsOrErr()
+func (_m *TargetMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
-		result, err = tm.QueryMetrics().Only(ctx)
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
 
-func (tr *TestResult) TestSummary(ctx context.Context) (*TestSummary, error) {
-	result, err := tr.Edges.TestSummaryOrErr()
+func (_m *TestResult) TestSummary(ctx context.Context) (*TestSummary, error) {
+	result, err := _m.Edges.TestSummaryOrErr()
 	if IsNotLoaded(err) {
-		result, err = tr.QueryTestSummary().Only(ctx)
+		result, err = _m.QueryTestSummary().Only(ctx)
 	}
 	return result, err
 }
 
-func (ts *TestSummary) InvocationTarget(ctx context.Context) (*InvocationTarget, error) {
-	result, err := ts.Edges.InvocationTargetOrErr()
+func (_m *TestSummary) InvocationTarget(ctx context.Context) (*InvocationTarget, error) {
+	result, err := _m.Edges.InvocationTargetOrErr()
 	if IsNotLoaded(err) {
-		result, err = ts.QueryInvocationTarget().Only(ctx)
+		result, err = _m.QueryInvocationTarget().Only(ctx)
 	}
 	return result, err
 }
 
-func (ts *TestSummary) TestResults(ctx context.Context) (result []*TestResult, err error) {
+func (_m *TestSummary) TestResults(ctx context.Context) (result []*TestResult, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = ts.NamedTestResults(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedTestResults(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = ts.Edges.TestResultsOrErr()
+		result, err = _m.Edges.TestResultsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = ts.QueryTestResults().All(ctx)
-	}
-	return result, err
-}
-
-func (tt *TestTarget) Target(ctx context.Context) (*Target, error) {
-	result, err := tt.Edges.TargetOrErr()
-	if IsNotLoaded(err) {
-		result, err = tt.QueryTarget().Only(ctx)
+		result, err = _m.QueryTestResults().All(ctx)
 	}
 	return result, err
 }
 
-func (tm *TimingMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := tm.Edges.MetricsOrErr()
+func (_m *TestTarget) Target(ctx context.Context) (*Target, error) {
+	result, err := _m.Edges.TargetOrErr()
 	if IsNotLoaded(err) {
-		result, err = tm.QueryMetrics().Only(ctx)
+		result, err = _m.QueryTarget().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *TimingMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

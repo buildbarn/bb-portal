@@ -20,56 +20,56 @@ type TimingMetricsDelete struct {
 }
 
 // Where appends a list predicates to the TimingMetricsDelete builder.
-func (tmd *TimingMetricsDelete) Where(ps ...predicate.TimingMetrics) *TimingMetricsDelete {
-	tmd.mutation.Where(ps...)
-	return tmd
+func (_d *TimingMetricsDelete) Where(ps ...predicate.TimingMetrics) *TimingMetricsDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (tmd *TimingMetricsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, tmd.sqlExec, tmd.mutation, tmd.hooks)
+func (_d *TimingMetricsDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmd *TimingMetricsDelete) ExecX(ctx context.Context) int {
-	n, err := tmd.Exec(ctx)
+func (_d *TimingMetricsDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (tmd *TimingMetricsDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *TimingMetricsDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(timingmetrics.Table, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
-	if ps := tmd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, tmd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	tmd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // TimingMetricsDeleteOne is the builder for deleting a single TimingMetrics entity.
 type TimingMetricsDeleteOne struct {
-	tmd *TimingMetricsDelete
+	_d *TimingMetricsDelete
 }
 
 // Where appends a list predicates to the TimingMetricsDelete builder.
-func (tmdo *TimingMetricsDeleteOne) Where(ps ...predicate.TimingMetrics) *TimingMetricsDeleteOne {
-	tmdo.tmd.mutation.Where(ps...)
-	return tmdo
+func (_d *TimingMetricsDeleteOne) Where(ps ...predicate.TimingMetrics) *TimingMetricsDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (tmdo *TimingMetricsDeleteOne) Exec(ctx context.Context) error {
-	n, err := tmdo.tmd.Exec(ctx)
+func (_d *TimingMetricsDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (tmdo *TimingMetricsDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmdo *TimingMetricsDeleteOne) ExecX(ctx context.Context) {
-	if err := tmdo.Exec(ctx); err != nil {
+func (_d *TimingMetricsDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

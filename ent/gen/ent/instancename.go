@@ -88,7 +88,7 @@ func (*InstanceName) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the InstanceName fields.
-func (in *InstanceName) assignValues(columns []string, values []any) error {
+func (_m *InstanceName) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -99,15 +99,15 @@ func (in *InstanceName) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			in.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case instancename.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				in.Name = value.String
+				_m.Name = value.String
 			}
 		default:
-			in.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -115,123 +115,123 @@ func (in *InstanceName) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the InstanceName.
 // This includes values selected through modifiers, order, etc.
-func (in *InstanceName) Value(name string) (ent.Value, error) {
-	return in.selectValues.Get(name)
+func (_m *InstanceName) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocations queries the "bazel_invocations" edge of the InstanceName entity.
-func (in *InstanceName) QueryBazelInvocations() *BazelInvocationQuery {
-	return NewInstanceNameClient(in.config).QueryBazelInvocations(in)
+func (_m *InstanceName) QueryBazelInvocations() *BazelInvocationQuery {
+	return NewInstanceNameClient(_m.config).QueryBazelInvocations(_m)
 }
 
 // QueryBuilds queries the "builds" edge of the InstanceName entity.
-func (in *InstanceName) QueryBuilds() *BuildQuery {
-	return NewInstanceNameClient(in.config).QueryBuilds(in)
+func (_m *InstanceName) QueryBuilds() *BuildQuery {
+	return NewInstanceNameClient(_m.config).QueryBuilds(_m)
 }
 
 // QueryTargets queries the "targets" edge of the InstanceName entity.
-func (in *InstanceName) QueryTargets() *TargetQuery {
-	return NewInstanceNameClient(in.config).QueryTargets(in)
+func (_m *InstanceName) QueryTargets() *TargetQuery {
+	return NewInstanceNameClient(_m.config).QueryTargets(_m)
 }
 
 // Update returns a builder for updating this InstanceName.
 // Note that you need to call InstanceName.Unwrap() before calling this method if this InstanceName
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (in *InstanceName) Update() *InstanceNameUpdateOne {
-	return NewInstanceNameClient(in.config).UpdateOne(in)
+func (_m *InstanceName) Update() *InstanceNameUpdateOne {
+	return NewInstanceNameClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the InstanceName entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (in *InstanceName) Unwrap() *InstanceName {
-	_tx, ok := in.config.driver.(*txDriver)
+func (_m *InstanceName) Unwrap() *InstanceName {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: InstanceName is not a transactional entity")
 	}
-	in.config.driver = _tx.drv
-	return in
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (in *InstanceName) String() string {
+func (_m *InstanceName) String() string {
 	var builder strings.Builder
 	builder.WriteString("InstanceName(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", in.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(in.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedBazelInvocations returns the BazelInvocations named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (in *InstanceName) NamedBazelInvocations(name string) ([]*BazelInvocation, error) {
-	if in.Edges.namedBazelInvocations == nil {
+func (_m *InstanceName) NamedBazelInvocations(name string) ([]*BazelInvocation, error) {
+	if _m.Edges.namedBazelInvocations == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := in.Edges.namedBazelInvocations[name]
+	nodes, ok := _m.Edges.namedBazelInvocations[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (in *InstanceName) appendNamedBazelInvocations(name string, edges ...*BazelInvocation) {
-	if in.Edges.namedBazelInvocations == nil {
-		in.Edges.namedBazelInvocations = make(map[string][]*BazelInvocation)
+func (_m *InstanceName) appendNamedBazelInvocations(name string, edges ...*BazelInvocation) {
+	if _m.Edges.namedBazelInvocations == nil {
+		_m.Edges.namedBazelInvocations = make(map[string][]*BazelInvocation)
 	}
 	if len(edges) == 0 {
-		in.Edges.namedBazelInvocations[name] = []*BazelInvocation{}
+		_m.Edges.namedBazelInvocations[name] = []*BazelInvocation{}
 	} else {
-		in.Edges.namedBazelInvocations[name] = append(in.Edges.namedBazelInvocations[name], edges...)
+		_m.Edges.namedBazelInvocations[name] = append(_m.Edges.namedBazelInvocations[name], edges...)
 	}
 }
 
 // NamedBuilds returns the Builds named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (in *InstanceName) NamedBuilds(name string) ([]*Build, error) {
-	if in.Edges.namedBuilds == nil {
+func (_m *InstanceName) NamedBuilds(name string) ([]*Build, error) {
+	if _m.Edges.namedBuilds == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := in.Edges.namedBuilds[name]
+	nodes, ok := _m.Edges.namedBuilds[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (in *InstanceName) appendNamedBuilds(name string, edges ...*Build) {
-	if in.Edges.namedBuilds == nil {
-		in.Edges.namedBuilds = make(map[string][]*Build)
+func (_m *InstanceName) appendNamedBuilds(name string, edges ...*Build) {
+	if _m.Edges.namedBuilds == nil {
+		_m.Edges.namedBuilds = make(map[string][]*Build)
 	}
 	if len(edges) == 0 {
-		in.Edges.namedBuilds[name] = []*Build{}
+		_m.Edges.namedBuilds[name] = []*Build{}
 	} else {
-		in.Edges.namedBuilds[name] = append(in.Edges.namedBuilds[name], edges...)
+		_m.Edges.namedBuilds[name] = append(_m.Edges.namedBuilds[name], edges...)
 	}
 }
 
 // NamedTargets returns the Targets named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (in *InstanceName) NamedTargets(name string) ([]*Target, error) {
-	if in.Edges.namedTargets == nil {
+func (_m *InstanceName) NamedTargets(name string) ([]*Target, error) {
+	if _m.Edges.namedTargets == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := in.Edges.namedTargets[name]
+	nodes, ok := _m.Edges.namedTargets[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (in *InstanceName) appendNamedTargets(name string, edges ...*Target) {
-	if in.Edges.namedTargets == nil {
-		in.Edges.namedTargets = make(map[string][]*Target)
+func (_m *InstanceName) appendNamedTargets(name string, edges ...*Target) {
+	if _m.Edges.namedTargets == nil {
+		_m.Edges.namedTargets = make(map[string][]*Target)
 	}
 	if len(edges) == 0 {
-		in.Edges.namedTargets[name] = []*Target{}
+		_m.Edges.namedTargets[name] = []*Target{}
 	} else {
-		in.Edges.namedTargets[name] = append(in.Edges.namedTargets[name], edges...)
+		_m.Edges.namedTargets[name] = append(_m.Edges.namedTargets[name], edges...)
 	}
 }
 

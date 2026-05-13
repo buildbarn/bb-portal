@@ -20,6 +20,7 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/proto/fsac",
         "@com_github_buildbarn_bb_storage//pkg/proto/iscc",
         "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_buildbarn_bb_storage//pkg/zstd",
         "@com_github_gorilla_mux//:mux",
         "@com_github_improbable_eng_grpc_web//go/grpcweb",
         "@org_golang_google_genproto_googleapis_bytestream//:bytestream",

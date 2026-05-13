@@ -32,44 +32,44 @@ type EventMetadataQuery struct {
 }
 
 // Where adds a new predicate for the EventMetadataQuery builder.
-func (emq *EventMetadataQuery) Where(ps ...predicate.EventMetadata) *EventMetadataQuery {
-	emq.predicates = append(emq.predicates, ps...)
-	return emq
+func (_q *EventMetadataQuery) Where(ps ...predicate.EventMetadata) *EventMetadataQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (emq *EventMetadataQuery) Limit(limit int) *EventMetadataQuery {
-	emq.ctx.Limit = &limit
-	return emq
+func (_q *EventMetadataQuery) Limit(limit int) *EventMetadataQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (emq *EventMetadataQuery) Offset(offset int) *EventMetadataQuery {
-	emq.ctx.Offset = &offset
-	return emq
+func (_q *EventMetadataQuery) Offset(offset int) *EventMetadataQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (emq *EventMetadataQuery) Unique(unique bool) *EventMetadataQuery {
-	emq.ctx.Unique = &unique
-	return emq
+func (_q *EventMetadataQuery) Unique(unique bool) *EventMetadataQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (emq *EventMetadataQuery) Order(o ...eventmetadata.OrderOption) *EventMetadataQuery {
-	emq.order = append(emq.order, o...)
-	return emq
+func (_q *EventMetadataQuery) Order(o ...eventmetadata.OrderOption) *EventMetadataQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (emq *EventMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: emq.config}).Query()
+func (_q *EventMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := emq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := emq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -78,7 +78,7 @@ func (emq *EventMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, eventmetadata.BazelInvocationTable, eventmetadata.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(emq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -86,8 +86,8 @@ func (emq *EventMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery {
 
 // First returns the first EventMetadata entity from the query.
 // Returns a *NotFoundError when no EventMetadata was found.
-func (emq *EventMetadataQuery) First(ctx context.Context) (*EventMetadata, error) {
-	nodes, err := emq.Limit(1).All(setContextOp(ctx, emq.ctx, ent.OpQueryFirst))
+func (_q *EventMetadataQuery) First(ctx context.Context) (*EventMetadata, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +98,8 @@ func (emq *EventMetadataQuery) First(ctx context.Context) (*EventMetadata, error
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (emq *EventMetadataQuery) FirstX(ctx context.Context) *EventMetadata {
-	node, err := emq.First(ctx)
+func (_q *EventMetadataQuery) FirstX(ctx context.Context) *EventMetadata {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -108,9 +108,9 @@ func (emq *EventMetadataQuery) FirstX(ctx context.Context) *EventMetadata {
 
 // FirstID returns the first EventMetadata ID from the query.
 // Returns a *NotFoundError when no EventMetadata ID was found.
-func (emq *EventMetadataQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *EventMetadataQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = emq.Limit(1).IDs(setContextOp(ctx, emq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -121,8 +121,8 @@ func (emq *EventMetadataQuery) FirstID(ctx context.Context) (id int64, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (emq *EventMetadataQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := emq.FirstID(ctx)
+func (_q *EventMetadataQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,8 +132,8 @@ func (emq *EventMetadataQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single EventMetadata entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one EventMetadata entity is found.
 // Returns a *NotFoundError when no EventMetadata entities are found.
-func (emq *EventMetadataQuery) Only(ctx context.Context) (*EventMetadata, error) {
-	nodes, err := emq.Limit(2).All(setContextOp(ctx, emq.ctx, ent.OpQueryOnly))
+func (_q *EventMetadataQuery) Only(ctx context.Context) (*EventMetadata, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -148,8 +148,8 @@ func (emq *EventMetadataQuery) Only(ctx context.Context) (*EventMetadata, error)
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (emq *EventMetadataQuery) OnlyX(ctx context.Context) *EventMetadata {
-	node, err := emq.Only(ctx)
+func (_q *EventMetadataQuery) OnlyX(ctx context.Context) *EventMetadata {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -159,9 +159,9 @@ func (emq *EventMetadataQuery) OnlyX(ctx context.Context) *EventMetadata {
 // OnlyID is like Only, but returns the only EventMetadata ID in the query.
 // Returns a *NotSingularError when more than one EventMetadata ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (emq *EventMetadataQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *EventMetadataQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = emq.Limit(2).IDs(setContextOp(ctx, emq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -176,8 +176,8 @@ func (emq *EventMetadataQuery) OnlyID(ctx context.Context) (id int64, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (emq *EventMetadataQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := emq.OnlyID(ctx)
+func (_q *EventMetadataQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -185,18 +185,18 @@ func (emq *EventMetadataQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of EventMetadataSlice.
-func (emq *EventMetadataQuery) All(ctx context.Context) ([]*EventMetadata, error) {
-	ctx = setContextOp(ctx, emq.ctx, ent.OpQueryAll)
-	if err := emq.prepareQuery(ctx); err != nil {
+func (_q *EventMetadataQuery) All(ctx context.Context) ([]*EventMetadata, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*EventMetadata, *EventMetadataQuery]()
-	return withInterceptors[[]*EventMetadata](ctx, emq, qr, emq.inters)
+	return withInterceptors[[]*EventMetadata](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (emq *EventMetadataQuery) AllX(ctx context.Context) []*EventMetadata {
-	nodes, err := emq.All(ctx)
+func (_q *EventMetadataQuery) AllX(ctx context.Context) []*EventMetadata {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -204,20 +204,20 @@ func (emq *EventMetadataQuery) AllX(ctx context.Context) []*EventMetadata {
 }
 
 // IDs executes the query and returns a list of EventMetadata IDs.
-func (emq *EventMetadataQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if emq.ctx.Unique == nil && emq.path != nil {
-		emq.Unique(true)
+func (_q *EventMetadataQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, emq.ctx, ent.OpQueryIDs)
-	if err = emq.Select(eventmetadata.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(eventmetadata.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (emq *EventMetadataQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := emq.IDs(ctx)
+func (_q *EventMetadataQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -225,17 +225,17 @@ func (emq *EventMetadataQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (emq *EventMetadataQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, emq.ctx, ent.OpQueryCount)
-	if err := emq.prepareQuery(ctx); err != nil {
+func (_q *EventMetadataQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, emq, querierCount[*EventMetadataQuery](), emq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*EventMetadataQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (emq *EventMetadataQuery) CountX(ctx context.Context) int {
-	count, err := emq.Count(ctx)
+func (_q *EventMetadataQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -243,9 +243,9 @@ func (emq *EventMetadataQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (emq *EventMetadataQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, emq.ctx, ent.OpQueryExist)
-	switch _, err := emq.FirstID(ctx); {
+func (_q *EventMetadataQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -256,8 +256,8 @@ func (emq *EventMetadataQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (emq *EventMetadataQuery) ExistX(ctx context.Context) bool {
-	exist, err := emq.Exist(ctx)
+func (_q *EventMetadataQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -266,32 +266,32 @@ func (emq *EventMetadataQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the EventMetadataQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (emq *EventMetadataQuery) Clone() *EventMetadataQuery {
-	if emq == nil {
+func (_q *EventMetadataQuery) Clone() *EventMetadataQuery {
+	if _q == nil {
 		return nil
 	}
 	return &EventMetadataQuery{
-		config:              emq.config,
-		ctx:                 emq.ctx.Clone(),
-		order:               append([]eventmetadata.OrderOption{}, emq.order...),
-		inters:              append([]Interceptor{}, emq.inters...),
-		predicates:          append([]predicate.EventMetadata{}, emq.predicates...),
-		withBazelInvocation: emq.withBazelInvocation.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]eventmetadata.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.EventMetadata{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  emq.sql.Clone(),
-		path: emq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (emq *EventMetadataQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *EventMetadataQuery {
-	query := (&BazelInvocationClient{config: emq.config}).Query()
+func (_q *EventMetadataQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *EventMetadataQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	emq.withBazelInvocation = query
-	return emq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -308,10 +308,10 @@ func (emq *EventMetadataQuery) WithBazelInvocation(opts ...func(*BazelInvocation
 //		GroupBy(eventmetadata.FieldHandled).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (emq *EventMetadataQuery) GroupBy(field string, fields ...string) *EventMetadataGroupBy {
-	emq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &EventMetadataGroupBy{build: emq}
-	grbuild.flds = &emq.ctx.Fields
+func (_q *EventMetadataQuery) GroupBy(field string, fields ...string) *EventMetadataGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &EventMetadataGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = eventmetadata.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -329,89 +329,89 @@ func (emq *EventMetadataQuery) GroupBy(field string, fields ...string) *EventMet
 //	client.EventMetadata.Query().
 //		Select(eventmetadata.FieldHandled).
 //		Scan(ctx, &v)
-func (emq *EventMetadataQuery) Select(fields ...string) *EventMetadataSelect {
-	emq.ctx.Fields = append(emq.ctx.Fields, fields...)
-	sbuild := &EventMetadataSelect{EventMetadataQuery: emq}
+func (_q *EventMetadataQuery) Select(fields ...string) *EventMetadataSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &EventMetadataSelect{EventMetadataQuery: _q}
 	sbuild.label = eventmetadata.Label
-	sbuild.flds, sbuild.scan = &emq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a EventMetadataSelect configured with the given aggregations.
-func (emq *EventMetadataQuery) Aggregate(fns ...AggregateFunc) *EventMetadataSelect {
-	return emq.Select().Aggregate(fns...)
+func (_q *EventMetadataQuery) Aggregate(fns ...AggregateFunc) *EventMetadataSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (emq *EventMetadataQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range emq.inters {
+func (_q *EventMetadataQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, emq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range emq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !eventmetadata.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if emq.path != nil {
-		prev, err := emq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		emq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (emq *EventMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*EventMetadata, error) {
+func (_q *EventMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*EventMetadata, error) {
 	var (
 		nodes       = []*EventMetadata{}
-		_spec       = emq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			emq.withBazelInvocation != nil,
+			_q.withBazelInvocation != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*EventMetadata).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &EventMetadata{config: emq.config}
+		node := &EventMetadata{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(emq.modifiers) > 0 {
-		_spec.Modifiers = emq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, emq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := emq.withBazelInvocation; query != nil {
-		if err := emq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *EventMetadata, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range emq.loadTotal {
-		if err := emq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (emq *EventMetadataQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*EventMetadata, init func(*EventMetadata), assign func(*EventMetadata, *BazelInvocation)) error {
+func (_q *EventMetadataQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*EventMetadata, init func(*EventMetadata), assign func(*EventMetadata, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*EventMetadata)
 	for i := range nodes {
@@ -441,27 +441,27 @@ func (emq *EventMetadataQuery) loadBazelInvocation(ctx context.Context, query *B
 	return nil
 }
 
-func (emq *EventMetadataQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := emq.querySpec()
-	if len(emq.modifiers) > 0 {
-		_spec.Modifiers = emq.modifiers
+func (_q *EventMetadataQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = emq.ctx.Fields
-	if len(emq.ctx.Fields) > 0 {
-		_spec.Unique = emq.ctx.Unique != nil && *emq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, emq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (emq *EventMetadataQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *EventMetadataQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
-	_spec.From = emq.sql
-	if unique := emq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if emq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := emq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, eventmetadata.FieldID)
 		for i := range fields {
@@ -469,24 +469,24 @@ func (emq *EventMetadataQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if emq.withBazelInvocation != nil {
+		if _q.withBazelInvocation != nil {
 			_spec.Node.AddColumnOnce(eventmetadata.FieldBazelInvocationID)
 		}
 	}
-	if ps := emq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := emq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := emq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := emq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -496,33 +496,33 @@ func (emq *EventMetadataQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (emq *EventMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(emq.driver.Dialect())
+func (_q *EventMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(eventmetadata.Table)
-	columns := emq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = eventmetadata.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if emq.sql != nil {
-		selector = emq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if emq.ctx.Unique != nil && *emq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range emq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range emq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := emq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := emq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -535,41 +535,41 @@ type EventMetadataGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (emgb *EventMetadataGroupBy) Aggregate(fns ...AggregateFunc) *EventMetadataGroupBy {
-	emgb.fns = append(emgb.fns, fns...)
-	return emgb
+func (_g *EventMetadataGroupBy) Aggregate(fns ...AggregateFunc) *EventMetadataGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (emgb *EventMetadataGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, emgb.build.ctx, ent.OpQueryGroupBy)
-	if err := emgb.build.prepareQuery(ctx); err != nil {
+func (_g *EventMetadataGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*EventMetadataQuery, *EventMetadataGroupBy](ctx, emgb.build, emgb, emgb.build.inters, v)
+	return scanWithInterceptors[*EventMetadataQuery, *EventMetadataGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (emgb *EventMetadataGroupBy) sqlScan(ctx context.Context, root *EventMetadataQuery, v any) error {
+func (_g *EventMetadataGroupBy) sqlScan(ctx context.Context, root *EventMetadataQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(emgb.fns))
-	for _, fn := range emgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*emgb.flds)+len(emgb.fns))
-		for _, f := range *emgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*emgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := emgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -583,27 +583,27 @@ type EventMetadataSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ems *EventMetadataSelect) Aggregate(fns ...AggregateFunc) *EventMetadataSelect {
-	ems.fns = append(ems.fns, fns...)
-	return ems
+func (_s *EventMetadataSelect) Aggregate(fns ...AggregateFunc) *EventMetadataSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ems *EventMetadataSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ems.ctx, ent.OpQuerySelect)
-	if err := ems.prepareQuery(ctx); err != nil {
+func (_s *EventMetadataSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*EventMetadataQuery, *EventMetadataSelect](ctx, ems.EventMetadataQuery, ems, ems.inters, v)
+	return scanWithInterceptors[*EventMetadataQuery, *EventMetadataSelect](ctx, _s.EventMetadataQuery, _s, _s.inters, v)
 }
 
-func (ems *EventMetadataSelect) sqlScan(ctx context.Context, root *EventMetadataQuery, v any) error {
+func (_s *EventMetadataSelect) sqlScan(ctx context.Context, root *EventMetadataQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ems.fns))
-	for _, fn := range ems.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ems.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -611,7 +611,7 @@ func (ems *EventMetadataSelect) sqlScan(ctx context.Context, root *EventMetadata
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ems.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

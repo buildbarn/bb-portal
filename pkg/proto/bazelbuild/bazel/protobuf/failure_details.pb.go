@@ -208,6 +208,7 @@ const (
 	ExternalRepository_CREDENTIALS_INIT_FAILURE                ExternalRepository_Code = 4
 	ExternalRepository_BAD_REPO_CONTENTS_CACHE                 ExternalRepository_Code = 5
 	ExternalRepository_UNKNOWN_REGISTRY                        ExternalRepository_Code = 6
+	ExternalRepository_SYMLINKING_FAILED                       ExternalRepository_Code = 7
 )
 
 // Enum value maps for ExternalRepository_Code.
@@ -220,6 +221,7 @@ var (
 		4: "CREDENTIALS_INIT_FAILURE",
 		5: "BAD_REPO_CONTENTS_CACHE",
 		6: "UNKNOWN_REGISTRY",
+		7: "SYMLINKING_FAILED",
 	}
 	ExternalRepository_Code_value = map[string]int32{
 		"EXTERNAL_REPOSITORY_UNKNOWN":             0,
@@ -229,6 +231,7 @@ var (
 		"CREDENTIALS_INIT_FAILURE":                4,
 		"BAD_REPO_CONTENTS_CACHE":                 5,
 		"UNKNOWN_REGISTRY":                        6,
+		"SYMLINKING_FAILED":                       7,
 	}
 )
 
@@ -8548,9 +8551,9 @@ const file_src_main_protobuf_failure_details_proto_rawDesc = "" +
 	"\x1dUNSPECIFIED_EXECUTION_FAILURE\x10\f\x1a\x05\xb2C\x02\b\x01\x12\x1a\n" +
 	"\x0fFORBIDDEN_INPUT\x10\r\x1a\x05\xb2C\x02\b\x01\x12\x1f\n" +
 	"\x14REMOTE_CACHE_EVICTED\x10\x0e\x1a\x05\xb2C\x02\b'\x12!\n" +
-	"\x16SPAWN_LOG_IO_EXCEPTION\x10\x0f\x1a\x05\xb2C\x02\b$\"\xf0\x02\n" +
+	"\x16SPAWN_LOG_IO_EXCEPTION\x10\x0f\x1a\x05\xb2C\x02\b$\"\x8e\x03\n" +
 	"\x12ExternalRepository\x12<\n" +
-	"\x04code\x18\x01 \x01(\x0e2(.failure_details.ExternalRepository.CodeR\x04code\"\x9b\x02\n" +
+	"\x04code\x18\x01 \x01(\x0e2(.failure_details.ExternalRepository.CodeR\x04code\"\xb9\x02\n" +
 	"\x04Code\x12&\n" +
 	"\x1bEXTERNAL_REPOSITORY_UNKNOWN\x10\x00\x1a\x05\xb2C\x02\b%\x122\n" +
 	"'OVERRIDE_DISALLOWED_MANAGED_DIRECTORIES\x10\x01\x1a\x05\xb2C\x02\b\x02\x12 \n" +
@@ -8558,7 +8561,8 @@ const file_src_main_protobuf_failure_details_proto_rawDesc = "" +
 	"$REPOSITORY_MAPPING_RESOLUTION_FAILED\x10\x03\x1a\x05\xb2C\x02\b%\x12#\n" +
 	"\x18CREDENTIALS_INIT_FAILURE\x10\x04\x1a\x05\xb2C\x02\b\x02\x12\"\n" +
 	"\x17BAD_REPO_CONTENTS_CACHE\x10\x05\x1a\x05\xb2C\x02\b\x02\x12\x1b\n" +
-	"\x10UNKNOWN_REGISTRY\x10\x06\x1a\x05\xb2C\x02\b\x02\"\xb3\x06\n" +
+	"\x10UNKNOWN_REGISTRY\x10\x06\x1a\x05\xb2C\x02\b\x02\x12\x1c\n" +
+	"\x11SYMLINKING_FAILED\x10\a\x1a\x05\xb2C\x02\b\x02\"\xb3\x06\n" +
 	"\rBuildProgress\x127\n" +
 	"\x04code\x18\x01 \x01(\x0e2#.failure_details.BuildProgress.CodeR\x04code\"\xe8\x05\n" +
 	"\x04Code\x12!\n" +

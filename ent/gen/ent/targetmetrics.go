@@ -70,7 +70,7 @@ func (*TargetMetrics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TargetMetrics fields.
-func (tm *TargetMetrics) assignValues(columns []string, values []any) error {
+func (_m *TargetMetrics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -81,34 +81,34 @@ func (tm *TargetMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tm.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case targetmetrics.FieldTargetsLoaded:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field targets_loaded", values[i])
 			} else if value.Valid {
-				tm.TargetsLoaded = value.Int64
+				_m.TargetsLoaded = value.Int64
 			}
 		case targetmetrics.FieldTargetsConfigured:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field targets_configured", values[i])
 			} else if value.Valid {
-				tm.TargetsConfigured = value.Int64
+				_m.TargetsConfigured = value.Int64
 			}
 		case targetmetrics.FieldTargetsConfiguredNotIncludingAspects:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field targets_configured_not_including_aspects", values[i])
 			} else if value.Valid {
-				tm.TargetsConfiguredNotIncludingAspects = value.Int64
+				_m.TargetsConfiguredNotIncludingAspects = value.Int64
 			}
 		case targetmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_target_metrics", value)
 			} else if value.Valid {
-				tm.metrics_target_metrics = new(int64)
-				*tm.metrics_target_metrics = int64(value.Int64)
+				_m.metrics_target_metrics = new(int64)
+				*_m.metrics_target_metrics = int64(value.Int64)
 			}
 		default:
-			tm.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -116,46 +116,46 @@ func (tm *TargetMetrics) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TargetMetrics.
 // This includes values selected through modifiers, order, etc.
-func (tm *TargetMetrics) Value(name string) (ent.Value, error) {
-	return tm.selectValues.Get(name)
+func (_m *TargetMetrics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMetrics queries the "metrics" edge of the TargetMetrics entity.
-func (tm *TargetMetrics) QueryMetrics() *MetricsQuery {
-	return NewTargetMetricsClient(tm.config).QueryMetrics(tm)
+func (_m *TargetMetrics) QueryMetrics() *MetricsQuery {
+	return NewTargetMetricsClient(_m.config).QueryMetrics(_m)
 }
 
 // Update returns a builder for updating this TargetMetrics.
 // Note that you need to call TargetMetrics.Unwrap() before calling this method if this TargetMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (tm *TargetMetrics) Update() *TargetMetricsUpdateOne {
-	return NewTargetMetricsClient(tm.config).UpdateOne(tm)
+func (_m *TargetMetrics) Update() *TargetMetricsUpdateOne {
+	return NewTargetMetricsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TargetMetrics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (tm *TargetMetrics) Unwrap() *TargetMetrics {
-	_tx, ok := tm.config.driver.(*txDriver)
+func (_m *TargetMetrics) Unwrap() *TargetMetrics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TargetMetrics is not a transactional entity")
 	}
-	tm.config.driver = _tx.drv
-	return tm
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (tm *TargetMetrics) String() string {
+func (_m *TargetMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("TargetMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", tm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("targets_loaded=")
-	builder.WriteString(fmt.Sprintf("%v", tm.TargetsLoaded))
+	builder.WriteString(fmt.Sprintf("%v", _m.TargetsLoaded))
 	builder.WriteString(", ")
 	builder.WriteString("targets_configured=")
-	builder.WriteString(fmt.Sprintf("%v", tm.TargetsConfigured))
+	builder.WriteString(fmt.Sprintf("%v", _m.TargetsConfigured))
 	builder.WriteString(", ")
 	builder.WriteString("targets_configured_not_including_aspects=")
-	builder.WriteString(fmt.Sprintf("%v", tm.TargetsConfiguredNotIncludingAspects))
+	builder.WriteString(fmt.Sprintf("%v", _m.TargetsConfiguredNotIncludingAspects))
 	builder.WriteByte(')')
 	return builder.String()
 }
