@@ -15,6 +15,7 @@ proto_library(
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc:grpc_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/http/server:server_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath:jmespath_proto",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/zstd:zstd_proto",
         "@protobuf//:duration_proto",
         "@protobuf//:empty_proto",
     ],
@@ -33,6 +34,7 @@ go_proto_library(
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/http/server",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/zstd",
     ],
 )
 
