@@ -41,7 +41,7 @@ func NewBlobstoreService(
 	denyAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return false })
 
 	// Create a process-wide ZSTD compression pool.
-	zstdPool := bb_zstd.NewPoolFromConfiguration(nil)
+	zstdPool := bb_zstd.NewPoolFromConfiguration(configuration.ZstdPool)
 
 	grpcServer := go_grpc.NewServer()
 	grpcWebServer := grpcweb.WrapServer(grpcServer)

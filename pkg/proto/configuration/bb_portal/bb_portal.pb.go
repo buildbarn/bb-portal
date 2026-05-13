@@ -14,6 +14,7 @@ import (
 	grpc "github.com/buildbarn/bb-storage/pkg/proto/configuration/grpc"
 	server "github.com/buildbarn/bb-storage/pkg/proto/configuration/http/server"
 	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
+	zstd "github.com/buildbarn/bb-storage/pkg/proto/configuration/zstd"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
@@ -449,6 +450,7 @@ type ApplicationConfiguration struct {
 	ActionCache                   *blobstore.BlobAccessConfiguration `protobuf:"bytes,12,opt,name=action_cache,json=actionCache,proto3" json:"action_cache,omitempty"`
 	InitialSizeClassCache         *blobstore.BlobAccessConfiguration `protobuf:"bytes,13,opt,name=initial_size_class_cache,json=initialSizeClassCache,proto3" json:"initial_size_class_cache,omitempty"`
 	FileSystemAccessCache         *blobstore.BlobAccessConfiguration `protobuf:"bytes,14,opt,name=file_system_access_cache,json=fileSystemAccessCache,proto3" json:"file_system_access_cache,omitempty"`
+	ZstdPool                      *zstd.PoolConfiguration            `protobuf:"bytes,15,opt,name=zstd_pool,json=zstdPool,proto3" json:"zstd_pool,omitempty"`
 	unknownFields                 protoimpl.UnknownFields
 	sizeCache                     protoimpl.SizeCache
 }
@@ -556,6 +558,13 @@ func (x *ApplicationConfiguration) GetInitialSizeClassCache() *blobstore.BlobAcc
 func (x *ApplicationConfiguration) GetFileSystemAccessCache() *blobstore.BlobAccessConfiguration {
 	if x != nil {
 		return x.FileSystemAccessCache
+	}
+	return nil
+}
+
+func (x *ApplicationConfiguration) GetZstdPool() *zstd.PoolConfiguration {
+	if x != nil {
+		return x.ZstdPool
 	}
 	return nil
 }
@@ -857,7 +866,7 @@ var File_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_por
 
 const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc = "" +
 	"\n" +
-	"Pgithub.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal/bb_portal.proto\x12!buildbarn.configuration.bb_portal\x1a\x1egoogle/protobuf/duration.proto\x1a\x1bgoogle/protobuf/empty.proto\x1aNgithub.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto\x1aGgithub.com/buildbarn/bb-storage/pkg/proto/configuration/auth/auth.proto\x1aQgithub.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobstore.proto\x1aKgithub.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto\x1aGgithub.com/buildbarn/bb-storage/pkg/proto/configuration/grpc/grpc.proto\x1aPgithub.com/buildbarn/bb-storage/pkg/proto/configuration/http/server/server.proto\x1aOgithub.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath/jmespath.proto\"=\n" +
+	"Pgithub.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal/bb_portal.proto\x12!buildbarn.configuration.bb_portal\x1a\x1egoogle/protobuf/duration.proto\x1a\x1bgoogle/protobuf/empty.proto\x1aNgithub.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto\x1aGgithub.com/buildbarn/bb-storage/pkg/proto/configuration/auth/auth.proto\x1aQgithub.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobstore.proto\x1aKgithub.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto\x1aGgithub.com/buildbarn/bb-storage/pkg/proto/configuration/grpc/grpc.proto\x1aPgithub.com/buildbarn/bb-storage/pkg/proto/configuration/http/server/server.proto\x1aOgithub.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath/jmespath.proto\x1aGgithub.com/buildbarn/bb-storage/pkg/proto/configuration/zstd/zstd.proto\"=\n" +
 	"\x0ePostgresSource\x12+\n" +
 	"\x11connection_string\x18\x01 \x01(\tR\x10connectionString\"\xb4\x04\n" +
 	"\bDatabase\x12O\n" +
@@ -904,7 +913,7 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_p
 	"\x0eFrontendSource\x124\n" +
 	"\bembedded\x18\x01 \x01(\v2\x16.google.protobuf.EmptyH\x00R\bembedded\x12\x16\n" +
 	"\x05proxy\x18\x02 \x01(\tH\x00R\x05proxyB\b\n" +
-	"\x06source\"\xac\t\n" +
+	"\x06source\"\xfa\t\n" +
 	"\x18ApplicationConfiguration\x12U\n" +
 	"\fhttp_servers\x18\x01 \x03(\v22.buildbarn.configuration.http.server.ConfigurationR\vhttpServers\x12E\n" +
 	"\x06global\x18\x02 \x01(\v2-.buildbarn.configuration.global.ConfigurationR\x06global\x12v\n" +
@@ -917,7 +926,8 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_p
 	"\x1bcontent_addressable_storage\x18\v \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x19contentAddressableStorage\x12]\n" +
 	"\faction_cache\x18\f \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\vactionCache\x12s\n" +
 	"\x18initial_size_class_cache\x18\r \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x15initialSizeClassCache\x12s\n" +
-	"\x18file_system_access_cache\x18\x0e \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x15fileSystemAccessCacheJ\x04\b\x04\x10\x05J\x04\b\b\x10\tJ\x04\b\t\x10\n" +
+	"\x18file_system_access_cache\x18\x0e \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x15fileSystemAccessCache\x12L\n" +
+	"\tzstd_pool\x18\x0f \x01(\v2/.buildbarn.configuration.zstd.PoolConfigurationR\bzstdPoolJ\x04\b\x04\x10\x05J\x04\b\b\x10\tJ\x04\b\t\x10\n" +
 	"BBZ@github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portalb\x06proto3"
 
 var (
@@ -954,7 +964,8 @@ var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_por
 	(*server.Configuration)(nil),                                 // 17: buildbarn.configuration.http.server.Configuration
 	(*global.Configuration)(nil),                                 // 18: buildbarn.configuration.global.Configuration
 	(*blobstore.BlobAccessConfiguration)(nil),                    // 19: buildbarn.configuration.blobstore.BlobAccessConfiguration
-	(*emptypb.Empty)(nil),                                        // 20: google.protobuf.Empty
+	(*zstd.PoolConfiguration)(nil),                               // 20: buildbarn.configuration.zstd.PoolConfiguration
+	(*emptypb.Empty)(nil),                                        // 21: google.protobuf.Empty
 }
 var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_depIdxs = []int32{
 	0,  // 0: buildbarn.configuration.bb_portal.Database.postgres:type_name -> buildbarn.configuration.bb_portal.PostgresSource
@@ -983,19 +994,20 @@ var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_por
 	19, // 23: buildbarn.configuration.bb_portal.ApplicationConfiguration.action_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
 	19, // 24: buildbarn.configuration.bb_portal.ApplicationConfiguration.initial_size_class_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
 	19, // 25: buildbarn.configuration.bb_portal.ApplicationConfiguration.file_system_access_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
-	13, // 26: buildbarn.configuration.bb_portal.Database.DatabaseConnectionPoolConfiguration.connection_max_lifetime:type_name -> google.protobuf.Duration
-	13, // 27: buildbarn.configuration.bb_portal.Database.DatabaseConnectionPoolConfiguration.connection_max_idle_time:type_name -> google.protobuf.Duration
-	20, // 28: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveDataLevel.basic:type_name -> google.protobuf.Empty
-	20, // 29: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveDataLevel.basic_and_target:type_name -> google.protobuf.Empty
-	13, // 30: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.cleanup_interval:type_name -> google.protobuf.Duration
-	13, // 31: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_message_timeout:type_name -> google.protobuf.Duration
-	13, // 32: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_retention:type_name -> google.protobuf.Duration
-	20, // 33: buildbarn.configuration.bb_portal.FrontendService.FrontendSource.embedded:type_name -> google.protobuf.Empty
-	34, // [34:34] is the sub-list for method output_type
-	34, // [34:34] is the sub-list for method input_type
-	34, // [34:34] is the sub-list for extension type_name
-	34, // [34:34] is the sub-list for extension extendee
-	0,  // [0:34] is the sub-list for field type_name
+	20, // 26: buildbarn.configuration.bb_portal.ApplicationConfiguration.zstd_pool:type_name -> buildbarn.configuration.zstd.PoolConfiguration
+	13, // 27: buildbarn.configuration.bb_portal.Database.DatabaseConnectionPoolConfiguration.connection_max_lifetime:type_name -> google.protobuf.Duration
+	13, // 28: buildbarn.configuration.bb_portal.Database.DatabaseConnectionPoolConfiguration.connection_max_idle_time:type_name -> google.protobuf.Duration
+	21, // 29: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveDataLevel.basic:type_name -> google.protobuf.Empty
+	21, // 30: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveDataLevel.basic_and_target:type_name -> google.protobuf.Empty
+	13, // 31: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.cleanup_interval:type_name -> google.protobuf.Duration
+	13, // 32: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_message_timeout:type_name -> google.protobuf.Duration
+	13, // 33: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_retention:type_name -> google.protobuf.Duration
+	21, // 34: buildbarn.configuration.bb_portal.FrontendService.FrontendSource.embedded:type_name -> google.protobuf.Empty
+	35, // [35:35] is the sub-list for method output_type
+	35, // [35:35] is the sub-list for method input_type
+	35, // [35:35] is the sub-list for extension type_name
+	35, // [35:35] is the sub-list for extension extendee
+	0,  // [0:35] is the sub-list for field type_name
 }
 
 func init() {
