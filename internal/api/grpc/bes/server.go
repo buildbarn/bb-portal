@@ -18,7 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
-	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
+	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
@@ -35,21 +35,15 @@ type BuildEventServer struct {
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BuildEventServer, error) {
-	if configuration.InstanceNameAuthorizer == nil {
-		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
-	}
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
-	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
-	}
-
-	besConfiguration := configuration.BesServiceConfiguration
-	if besConfiguration == nil {
-		return nil, fmt.Errorf("No BesServiceConfiguration configured")
-	}
-
-	saveDataLevel := besConfiguration.SaveDataLevel
+func NewBuildEventServer(
+	db database.Client,
+	configuration *bb_portal.BuildEventStreamService,
+	instanceNameAuthorizer auth.Authorizer,
+	dependenciesGroup program.Group,
+	grpcClientFactory bb_grpc.ClientFactory,
+	tracerProvider trace.TracerProvider,
+) (*BuildEventServer, error) {
+	saveDataLevel := configuration.SaveDataLevel
 	if saveDataLevel == nil || saveDataLevel.Level == nil {
 		return nil, fmt.Errorf("No saveDataLevel configured")
 	}
@@ -59,14 +53,14 @@ func NewBuildEventServer(db database.Client, configuration *bb_portal.Applicatio
 		InvocationMetadataExtractor: nil,
 	}
 
-	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
+	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(configuration.AuthMetadataKeyConfiguration, dependenciesGroup)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
 	}
 	dataExtractors.AuthMetadataExtractors = authMetadataExtractors
 
-	if configuration.BesServiceConfiguration.InvocationMetadataExtractor != nil {
-		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.BesServiceConfiguration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
+	if configuration.InvocationMetadataExtractor != nil {
+		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
 		if err != nil {
 			return nil, util.StatusWrap(err, "Failed to create InvocationMetadataExtractor")
 		}
@@ -85,14 +79,14 @@ func NewBuildEventServer(db database.Client, configuration *bb_portal.Applicatio
 				invocationID,
 				true, /* isRealTime */
 				dataExtractors,
-				configuration.BesServiceConfiguration.BuildKey,
+				configuration.BuildKey,
 			)
 			if err != nil {
 				return nil, err
 			}
 			return buildeventrecorder.NewMinDurationBuildEventRecorder(
 				buildeventrecorder.NewMetricsBuildEventRecorder(recorder),
-				besConfiguration.MinEventBatchDuration.AsDuration(),
+				configuration.MinEventBatchDuration.AsDuration(),
 			), nil
 		},
 	}, nil

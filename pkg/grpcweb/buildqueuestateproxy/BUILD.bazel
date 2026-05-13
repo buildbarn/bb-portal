@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "buildqueuestateproxy",
     srcs = ["server.go"],
-    importpath = "github.com/buildbarn/bb-portal/internal/api/grpcweb/buildqueuestateproxy",
+    importpath = "github.com/buildbarn/bb-portal/pkg/grpcweb/buildqueuestateproxy",
     visibility = ["//:__subpackages__"],
     deps = [
         "//internal/api/common",

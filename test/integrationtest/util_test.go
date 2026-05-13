@@ -14,7 +14,8 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
-	"github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
+	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/digest"
 	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -43,18 +44,15 @@ func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *
 		invocationExtractor = testCase.dataExtractors.invocationMetadataExtractor
 	}
 
-	config := &bb_portal.ApplicationConfiguration{
-		InstanceNameAuthorizer: &auth.AuthorizerConfiguration{
-			Policy: &auth.AuthorizerConfiguration_Allow{},
-		},
-		BesServiceConfiguration: &bb_portal.BuildEventStreamService{
-			SaveDataLevel:                testCase.saveDataLevel,
-			AuthMetadataKeyConfiguration: authExtractors,
-			InvocationMetadataExtractor:  invocationExtractor,
-			BuildKey:                     testCase.buildKey,
-		},
+	authorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
+	besConfig := &bb_portal.BuildEventStreamService{
+		SaveDataLevel:                testCase.saveDataLevel,
+		AuthMetadataKeyConfiguration: authExtractors,
+		InvocationMetadataExtractor:  invocationExtractor,
+		BuildKey:                     testCase.buildKey,
 	}
-	bepUploader, err := bepuploader.NewBepUploader(db, config, nil, nil, noop.NewTracerProvider())
+
+	bepUploader, err := bepuploader.NewBepUploader(db, besConfig, authorizer, nil, nil, noop.NewTracerProvider())
 	require.NoError(t, err)
 	return bepUploader
 }

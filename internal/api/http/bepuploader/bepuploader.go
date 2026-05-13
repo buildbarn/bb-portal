@@ -15,7 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
-	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
+	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
@@ -39,21 +39,15 @@ type BepUploader struct {
 }
 
 // NewBepUploader creates a new BepUploader
-func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BepUploader, error) {
-	if configuration.InstanceNameAuthorizer == nil {
-		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
-	}
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
-	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
-	}
-
-	besConfiguration := configuration.BesServiceConfiguration
-	if besConfiguration == nil {
-		return nil, fmt.Errorf("No BesServiceConfiguration configured")
-	}
-
-	saveDataLevel := besConfiguration.SaveDataLevel
+func NewBepUploader(
+	db database.Client,
+	configuration *bb_portal.BuildEventStreamService,
+	instanceNameAuthorizer auth.Authorizer,
+	dependenciesGroup program.Group,
+	grpcClientFactory bb_grpc.ClientFactory,
+	tracerProvider trace.TracerProvider,
+) (*BepUploader, error) {
+	saveDataLevel := configuration.SaveDataLevel
 	if saveDataLevel == nil || saveDataLevel.Level == nil {
 		return nil, fmt.Errorf("No saveDataLevel configured")
 	}
@@ -63,14 +57,14 @@ func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConf
 		InvocationMetadataExtractor: nil,
 	}
 
-	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
+	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(configuration.AuthMetadataKeyConfiguration, dependenciesGroup)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
 	}
 	dataExtractors.AuthMetadataExtractors = authMetadataExtractors
 
-	if configuration.BesServiceConfiguration.InvocationMetadataExtractor != nil {
-		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.BesServiceConfiguration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
+	if configuration.InvocationMetadataExtractor != nil {
+		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
 		if err != nil {
 			return nil, util.StatusWrap(err, "Failed to create InvocationMetadataExtractor")
 		}
@@ -89,7 +83,7 @@ func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConf
 				invocationID,
 				false, /* isRealTime */
 				dataExtractors,
-				configuration.BesServiceConfiguration.BuildKey,
+				configuration.BuildKey,
 			)
 			if err != nil {
 				return nil, err

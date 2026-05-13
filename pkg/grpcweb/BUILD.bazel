@@ -1,0 +1,8 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "grpcweb",
+    srcs = ["common.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/grpcweb",
+    visibility = ["//visibility:public"],
+)
