@@ -2,48 +2,28 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"reflect"
 	"time"
 
-	_ "net/http/pprof"
-
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 
-	gqlgen "github.com/99designs/gqlgen/graphql"
-	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gorilla/mux"
-
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
-
-	build "google.golang.org/genproto/googleapis/devtools/build/v1"
-	go_grpc "google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
-	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
-	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
-	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
-	"github.com/buildbarn/bb-portal/internal/api/http/loghandler"
-	"github.com/buildbarn/bb-portal/internal/database"
-	"github.com/buildbarn/bb-portal/internal/database/common"
-	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
-	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
-	"github.com/buildbarn/bb-portal/internal/graphql"
+	"github.com/buildbarn/bb-portal/internal/bep"
 	"github.com/buildbarn/bb-portal/pkg/frontend"
-	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
+	"github.com/buildbarn/bb-portal/pkg/grpcweb/blobstoreservice"
+	"github.com/buildbarn/bb-portal/pkg/grpcweb/schedulerservice"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
-	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/global"
-	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	http_server "github.com/buildbarn/bb-storage/pkg/http/server"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/gorilla/mux"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
+	"go.opentelemetry.io/otel"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -70,21 +50,58 @@ func main() {
 		if tracerProvider == nil || reflect.ValueOf(tracerProvider).IsNil() {
 			return status.Error(codes.Internal, "Otel tracer provider is nil")
 		}
+
+		if configuration.InstanceNameAuthorizer == nil {
+			return status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
+		}
+		instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(
+			configuration.InstanceNameAuthorizer,
+			dependenciesGroup,
+			grpcClientFactory,
+		)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
+		}
+
 		router := mux.NewRouter()
 		router.Use(otelmux.Middleware("bb-portal-http", otelmux.WithTracerProvider(tracerProvider)))
 
-		err = NewGrpcWebSchedulerService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create gRPC-Web Scheduler service")
+		if err = blobstoreservice.NewBlobstoreService(
+			&configuration,
+			siblingsGroup,
+			dependenciesGroup,
+			grpcClientFactory,
+			instanceNameAuthorizer,
+			router,
+		); err != nil {
+			return util.StatusWrap(err, "Failed to create Blobstore service")
 		}
-		err = NewGrpcWebBrowserService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create gRPC-Web Browser service")
+		if configuration.SchedulerServiceConfiguration != nil {
+			if err = schedulerservice.NewSchedulerService(
+				configuration.SchedulerServiceConfiguration,
+				siblingsGroup,
+				dependenciesGroup,
+				grpcClientFactory,
+				instanceNameAuthorizer,
+				router,
+			); err != nil {
+				return util.StatusWrap(err, "Failed to create Scheduler service")
+			}
 		}
-		err = newBuildEventStreamService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router, tracerProvider)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create BES service")
+		if configuration.BesServiceConfiguration != nil {
+			if err = bep.NewBuildEventProtocolService(
+				configuration.BesServiceConfiguration,
+				siblingsGroup,
+				dependenciesGroup,
+				grpcClientFactory,
+				instanceNameAuthorizer,
+				router,
+				tracerProvider,
+			); err != nil {
+				return util.StatusWrap(err, "Failed to create BES service")
+			}
 		}
+
 		// This must be the last service created for the router, as it will
 		// handle all unmatched requests.
 		err = frontend.ServeFrontend(configuration.FrontendServiceConfiguration, router)
@@ -102,122 +119,4 @@ func main() {
 		lifecycleState.MarkReadyAndWait(siblingsGroup)
 		return nil
 	})
-}
-
-func newBuildEventStreamService(
-	configuration *bb_portal.ApplicationConfiguration,
-	siblingsGroup program.Group,
-	dependenciesGroup program.Group,
-	grpcClientFactory bb_grpc.ClientFactory,
-	router *mux.Router,
-	tracerProvider trace.TracerProvider,
-) error {
-	besConfiguration := configuration.BesServiceConfiguration
-	if besConfiguration == nil {
-		log.Printf("Did not start BuildEventStream service because buildEventStreamConfiguration is not configured")
-		return nil
-	}
-
-	dialect, connection, err := common.NewSQLConnectionFromConfiguration(besConfiguration.Database, tracerProvider)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to connect to database for BuildEventStreamService")
-	}
-
-	dbClient, err := database.New(dialect, connection)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to create database client from connection")
-	}
-
-	// Attempt to migrate towards ents model.
-	if err = dbClient.Ent().Schema.Create(context.Background(), migrate.WithDropIndex(true)); err != nil {
-		return util.StatusWrap(err, "Could not automatically migrate to desired schema")
-	}
-
-	prometheusmetrics.SyncMetrics(dbClient.Ent())
-
-	// Configure the database cleanup service.
-	cleanupConfiguration := besConfiguration.DatabaseCleanupConfiguration
-	if cleanupConfiguration == nil {
-		return status.Error(codes.InvalidArgument, "No databaseCleanupConfiguration configured for BuildEventStreamService")
-	}
-
-	databaseCleanerService, err := dbcleanupservice.NewDbCleanupService(
-		dbClient,
-		clock.SystemClock,
-		cleanupConfiguration,
-		tracerProvider,
-	)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to create DatabaseCleanupService")
-	}
-
-	databaseCleanerService.StartDbCleanupService(context.Background(), dependenciesGroup)
-
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
-	}
-	dbAuthService := dbauthservice.NewDbAuthService(dbClient.Ent(), clock.SystemClock, instanceNameAuthorizer, time.Second*5)
-
-	err = addGraphqlHandler(configuration, besConfiguration, dbAuthService, dependenciesGroup, grpcClientFactory, router, dbClient, tracerProvider)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to add GraphQL handler for BuildEventStreamService")
-	}
-
-	// Handle log requests.
-	logHandler, err := loghandler.NewLogHandler(dbClient.Ent(), dbAuthService, tracerProvider)
-	router.Path("/api/v1/invocations/{invocation_id}/log").Methods("GET").Handler(logHandler)
-
-	// Handle BEP file uploads over HTTP.
-	if besConfiguration.EnableBepFileUpload {
-		bepUploader, err := bepuploader.NewBepUploader(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create BEP file upload handler")
-		}
-		router.Path("/api/v1/bep/upload").Methods("POST").Handler(bepUploader)
-	}
-
-	// Handle the build event stream gRPC strem.
-	buildEventServer, err := bes.NewBuildEventServer(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to create BuildEventServer")
-	}
-	if err := bb_grpc.NewServersFromConfigurationAndServe(
-		besConfiguration.GrpcServers,
-		func(s go_grpc.ServiceRegistrar) {
-			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), buildEventServer)
-		},
-		siblingsGroup,
-		grpcClientFactory,
-	); err != nil {
-		return util.StatusWrap(err, "gRPC server failure")
-	}
-	return nil
-}
-
-func addGraphqlHandler(
-	configuration *bb_portal.ApplicationConfiguration,
-	besConfiguration *bb_portal.BuildEventStreamService,
-	dbAuthService *dbauthservice.DbAuthService,
-	dependenciesGroup program.Group,
-	grpcClientFactory bb_grpc.ClientFactory,
-	router *mux.Router,
-	dbClient database.Client,
-	tracerProvider trace.TracerProvider,
-) error {
-	srv := graphql.NewGraphqlHandler(dbClient, tracerProvider)
-
-	if configuration.InstanceNameAuthorizer == nil {
-		return status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
-	}
-
-	srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
-		return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService))
-	})
-
-	router.PathPrefix("/graphql").Handler(srv)
-	if besConfiguration.EnableGraphqlPlayground {
-		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
-	}
-	return nil
 }
