@@ -23,265 +23,265 @@ type ArtifactMetricsUpdate struct {
 }
 
 // Where appends a list predicates to the ArtifactMetricsUpdate builder.
-func (amu *ArtifactMetricsUpdate) Where(ps ...predicate.ArtifactMetrics) *ArtifactMetricsUpdate {
-	amu.mutation.Where(ps...)
-	return amu
+func (_u *ArtifactMetricsUpdate) Where(ps ...predicate.ArtifactMetrics) *ArtifactMetricsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) SetSourceArtifactsReadSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.ResetSourceArtifactsReadSizeInBytes()
-	amu.mutation.SetSourceArtifactsReadSizeInBytes(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.ResetSourceArtifactsReadSizeInBytes()
+	_u.mutation.SetSourceArtifactsReadSizeInBytes(v)
+	return _u
 }
 
 // SetNillableSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableSourceArtifactsReadSizeInBytes(i *int64) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetSourceArtifactsReadSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableSourceArtifactsReadSizeInBytes(v *int64) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetSourceArtifactsReadSizeInBytes(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddSourceArtifactsReadSizeInBytes adds i to the "source_artifacts_read_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) AddSourceArtifactsReadSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.AddSourceArtifactsReadSizeInBytes(i)
-	return amu
+// AddSourceArtifactsReadSizeInBytes adds value to the "source_artifacts_read_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdate) AddSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.AddSourceArtifactsReadSizeInBytes(v)
+	return _u
 }
 
 // ClearSourceArtifactsReadSizeInBytes clears the value of the "source_artifacts_read_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) ClearSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpdate {
-	amu.mutation.ClearSourceArtifactsReadSizeInBytes()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpdate {
+	_u.mutation.ClearSourceArtifactsReadSizeInBytes()
+	return _u
 }
 
 // SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
-func (amu *ArtifactMetricsUpdate) SetSourceArtifactsReadCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.ResetSourceArtifactsReadCount()
-	amu.mutation.SetSourceArtifactsReadCount(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetSourceArtifactsReadCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.ResetSourceArtifactsReadCount()
+	_u.mutation.SetSourceArtifactsReadCount(v)
+	return _u
 }
 
 // SetNillableSourceArtifactsReadCount sets the "source_artifacts_read_count" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableSourceArtifactsReadCount(i *int32) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetSourceArtifactsReadCount(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableSourceArtifactsReadCount(v *int32) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetSourceArtifactsReadCount(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddSourceArtifactsReadCount adds i to the "source_artifacts_read_count" field.
-func (amu *ArtifactMetricsUpdate) AddSourceArtifactsReadCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.AddSourceArtifactsReadCount(i)
-	return amu
+// AddSourceArtifactsReadCount adds value to the "source_artifacts_read_count" field.
+func (_u *ArtifactMetricsUpdate) AddSourceArtifactsReadCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.AddSourceArtifactsReadCount(v)
+	return _u
 }
 
 // ClearSourceArtifactsReadCount clears the value of the "source_artifacts_read_count" field.
-func (amu *ArtifactMetricsUpdate) ClearSourceArtifactsReadCount() *ArtifactMetricsUpdate {
-	amu.mutation.ClearSourceArtifactsReadCount()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearSourceArtifactsReadCount() *ArtifactMetricsUpdate {
+	_u.mutation.ClearSourceArtifactsReadCount()
+	return _u
 }
 
 // SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) SetOutputArtifactsSeenSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.ResetOutputArtifactsSeenSizeInBytes()
-	amu.mutation.SetOutputArtifactsSeenSizeInBytes(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.ResetOutputArtifactsSeenSizeInBytes()
+	_u.mutation.SetOutputArtifactsSeenSizeInBytes(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableOutputArtifactsSeenSizeInBytes(i *int64) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetOutputArtifactsSeenSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableOutputArtifactsSeenSizeInBytes(v *int64) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetOutputArtifactsSeenSizeInBytes(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddOutputArtifactsSeenSizeInBytes adds i to the "output_artifacts_seen_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsSeenSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.AddOutputArtifactsSeenSizeInBytes(i)
-	return amu
+// AddOutputArtifactsSeenSizeInBytes adds value to the "output_artifacts_seen_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdate) AddOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.AddOutputArtifactsSeenSizeInBytes(v)
+	return _u
 }
 
 // ClearOutputArtifactsSeenSizeInBytes clears the value of the "output_artifacts_seen_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) ClearOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpdate {
-	amu.mutation.ClearOutputArtifactsSeenSizeInBytes()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpdate {
+	_u.mutation.ClearOutputArtifactsSeenSizeInBytes()
+	return _u
 }
 
 // SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
-func (amu *ArtifactMetricsUpdate) SetOutputArtifactsSeenCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.ResetOutputArtifactsSeenCount()
-	amu.mutation.SetOutputArtifactsSeenCount(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.ResetOutputArtifactsSeenCount()
+	_u.mutation.SetOutputArtifactsSeenCount(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableOutputArtifactsSeenCount(i *int32) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetOutputArtifactsSeenCount(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableOutputArtifactsSeenCount(v *int32) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetOutputArtifactsSeenCount(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddOutputArtifactsSeenCount adds i to the "output_artifacts_seen_count" field.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsSeenCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.AddOutputArtifactsSeenCount(i)
-	return amu
+// AddOutputArtifactsSeenCount adds value to the "output_artifacts_seen_count" field.
+func (_u *ArtifactMetricsUpdate) AddOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.AddOutputArtifactsSeenCount(v)
+	return _u
 }
 
 // ClearOutputArtifactsSeenCount clears the value of the "output_artifacts_seen_count" field.
-func (amu *ArtifactMetricsUpdate) ClearOutputArtifactsSeenCount() *ArtifactMetricsUpdate {
-	amu.mutation.ClearOutputArtifactsSeenCount()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearOutputArtifactsSeenCount() *ArtifactMetricsUpdate {
+	_u.mutation.ClearOutputArtifactsSeenCount()
+	return _u
 }
 
 // SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) SetOutputArtifactsFromActionCacheSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.ResetOutputArtifactsFromActionCacheSizeInBytes()
-	amu.mutation.SetOutputArtifactsFromActionCacheSizeInBytes(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.ResetOutputArtifactsFromActionCacheSizeInBytes()
+	_u.mutation.SetOutputArtifactsFromActionCacheSizeInBytes(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableOutputArtifactsFromActionCacheSizeInBytes(i *int64) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetOutputArtifactsFromActionCacheSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableOutputArtifactsFromActionCacheSizeInBytes(v *int64) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetOutputArtifactsFromActionCacheSizeInBytes(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddOutputArtifactsFromActionCacheSizeInBytes adds i to the "output_artifacts_from_action_cache_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsFromActionCacheSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.AddOutputArtifactsFromActionCacheSizeInBytes(i)
-	return amu
+// AddOutputArtifactsFromActionCacheSizeInBytes adds value to the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdate) AddOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.AddOutputArtifactsFromActionCacheSizeInBytes(v)
+	return _u
 }
 
 // ClearOutputArtifactsFromActionCacheSizeInBytes clears the value of the "output_artifacts_from_action_cache_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) ClearOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpdate {
-	amu.mutation.ClearOutputArtifactsFromActionCacheSizeInBytes()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpdate {
+	_u.mutation.ClearOutputArtifactsFromActionCacheSizeInBytes()
+	return _u
 }
 
 // SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
-func (amu *ArtifactMetricsUpdate) SetOutputArtifactsFromActionCacheCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.ResetOutputArtifactsFromActionCacheCount()
-	amu.mutation.SetOutputArtifactsFromActionCacheCount(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.ResetOutputArtifactsFromActionCacheCount()
+	_u.mutation.SetOutputArtifactsFromActionCacheCount(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableOutputArtifactsFromActionCacheCount(i *int32) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetOutputArtifactsFromActionCacheCount(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableOutputArtifactsFromActionCacheCount(v *int32) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetOutputArtifactsFromActionCacheCount(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddOutputArtifactsFromActionCacheCount adds i to the "output_artifacts_from_action_cache_count" field.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsFromActionCacheCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.AddOutputArtifactsFromActionCacheCount(i)
-	return amu
+// AddOutputArtifactsFromActionCacheCount adds value to the "output_artifacts_from_action_cache_count" field.
+func (_u *ArtifactMetricsUpdate) AddOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.AddOutputArtifactsFromActionCacheCount(v)
+	return _u
 }
 
 // ClearOutputArtifactsFromActionCacheCount clears the value of the "output_artifacts_from_action_cache_count" field.
-func (amu *ArtifactMetricsUpdate) ClearOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpdate {
-	amu.mutation.ClearOutputArtifactsFromActionCacheCount()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpdate {
+	_u.mutation.ClearOutputArtifactsFromActionCacheCount()
+	return _u
 }
 
 // SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) SetTopLevelArtifactsSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.ResetTopLevelArtifactsSizeInBytes()
-	amu.mutation.SetTopLevelArtifactsSizeInBytes(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.ResetTopLevelArtifactsSizeInBytes()
+	_u.mutation.SetTopLevelArtifactsSizeInBytes(v)
+	return _u
 }
 
 // SetNillableTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableTopLevelArtifactsSizeInBytes(i *int64) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetTopLevelArtifactsSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableTopLevelArtifactsSizeInBytes(v *int64) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetTopLevelArtifactsSizeInBytes(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddTopLevelArtifactsSizeInBytes adds i to the "top_level_artifacts_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) AddTopLevelArtifactsSizeInBytes(i int64) *ArtifactMetricsUpdate {
-	amu.mutation.AddTopLevelArtifactsSizeInBytes(i)
-	return amu
+// AddTopLevelArtifactsSizeInBytes adds value to the "top_level_artifacts_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdate) AddTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpdate {
+	_u.mutation.AddTopLevelArtifactsSizeInBytes(v)
+	return _u
 }
 
 // ClearTopLevelArtifactsSizeInBytes clears the value of the "top_level_artifacts_size_in_bytes" field.
-func (amu *ArtifactMetricsUpdate) ClearTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpdate {
-	amu.mutation.ClearTopLevelArtifactsSizeInBytes()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpdate {
+	_u.mutation.ClearTopLevelArtifactsSizeInBytes()
+	return _u
 }
 
 // SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
-func (amu *ArtifactMetricsUpdate) SetTopLevelArtifactsCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.ResetTopLevelArtifactsCount()
-	amu.mutation.SetTopLevelArtifactsCount(i)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetTopLevelArtifactsCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.ResetTopLevelArtifactsCount()
+	_u.mutation.SetTopLevelArtifactsCount(v)
+	return _u
 }
 
 // SetNillableTopLevelArtifactsCount sets the "top_level_artifacts_count" field if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableTopLevelArtifactsCount(i *int32) *ArtifactMetricsUpdate {
-	if i != nil {
-		amu.SetTopLevelArtifactsCount(*i)
+func (_u *ArtifactMetricsUpdate) SetNillableTopLevelArtifactsCount(v *int32) *ArtifactMetricsUpdate {
+	if v != nil {
+		_u.SetTopLevelArtifactsCount(*v)
 	}
-	return amu
+	return _u
 }
 
-// AddTopLevelArtifactsCount adds i to the "top_level_artifacts_count" field.
-func (amu *ArtifactMetricsUpdate) AddTopLevelArtifactsCount(i int32) *ArtifactMetricsUpdate {
-	amu.mutation.AddTopLevelArtifactsCount(i)
-	return amu
+// AddTopLevelArtifactsCount adds value to the "top_level_artifacts_count" field.
+func (_u *ArtifactMetricsUpdate) AddTopLevelArtifactsCount(v int32) *ArtifactMetricsUpdate {
+	_u.mutation.AddTopLevelArtifactsCount(v)
+	return _u
 }
 
 // ClearTopLevelArtifactsCount clears the value of the "top_level_artifacts_count" field.
-func (amu *ArtifactMetricsUpdate) ClearTopLevelArtifactsCount() *ArtifactMetricsUpdate {
-	amu.mutation.ClearTopLevelArtifactsCount()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearTopLevelArtifactsCount() *ArtifactMetricsUpdate {
+	_u.mutation.ClearTopLevelArtifactsCount()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amu *ArtifactMetricsUpdate) SetMetricsID(id int64) *ArtifactMetricsUpdate {
-	amu.mutation.SetMetricsID(id)
-	return amu
+func (_u *ArtifactMetricsUpdate) SetMetricsID(id int64) *ArtifactMetricsUpdate {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableMetricsID(id *int64) *ArtifactMetricsUpdate {
+func (_u *ArtifactMetricsUpdate) SetNillableMetricsID(id *int64) *ArtifactMetricsUpdate {
 	if id != nil {
-		amu = amu.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return amu
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (amu *ArtifactMetricsUpdate) SetMetrics(m *Metrics) *ArtifactMetricsUpdate {
-	return amu.SetMetricsID(m.ID)
+func (_u *ArtifactMetricsUpdate) SetMetrics(v *Metrics) *ArtifactMetricsUpdate {
+	return _u.SetMetricsID(v.ID)
 }
 
 // Mutation returns the ArtifactMetricsMutation object of the builder.
-func (amu *ArtifactMetricsUpdate) Mutation() *ArtifactMetricsMutation {
-	return amu.mutation
+func (_u *ArtifactMetricsUpdate) Mutation() *ArtifactMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (amu *ArtifactMetricsUpdate) ClearMetrics() *ArtifactMetricsUpdate {
-	amu.mutation.ClearMetrics()
-	return amu
+func (_u *ArtifactMetricsUpdate) ClearMetrics() *ArtifactMetricsUpdate {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (amu *ArtifactMetricsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, amu.sqlSave, amu.mutation, amu.hooks)
+func (_u *ArtifactMetricsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (amu *ArtifactMetricsUpdate) SaveX(ctx context.Context) int {
-	affected, err := amu.Save(ctx)
+func (_u *ArtifactMetricsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -289,100 +289,100 @@ func (amu *ArtifactMetricsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (amu *ArtifactMetricsUpdate) Exec(ctx context.Context) error {
-	_, err := amu.Save(ctx)
+func (_u *ArtifactMetricsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amu *ArtifactMetricsUpdate) ExecX(ctx context.Context) {
-	if err := amu.Exec(ctx); err != nil {
+func (_u *ArtifactMetricsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
-	if ps := amu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := amu.mutation.SourceArtifactsReadSizeInBytes(); ok {
+	if value, ok := _u.mutation.SourceArtifactsReadSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amu.mutation.AddedSourceArtifactsReadSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedSourceArtifactsReadSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64, value)
 	}
-	if amu.mutation.SourceArtifactsReadSizeInBytesCleared() {
+	if _u.mutation.SourceArtifactsReadSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amu.mutation.SourceArtifactsReadCount(); ok {
+	if value, ok := _u.mutation.SourceArtifactsReadCount(); ok {
 		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32, value)
 	}
-	if value, ok := amu.mutation.AddedSourceArtifactsReadCount(); ok {
+	if value, ok := _u.mutation.AddedSourceArtifactsReadCount(); ok {
 		_spec.AddField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32, value)
 	}
-	if amu.mutation.SourceArtifactsReadCountCleared() {
+	if _u.mutation.SourceArtifactsReadCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32)
 	}
-	if value, ok := amu.mutation.OutputArtifactsSeenSizeInBytes(); ok {
+	if value, ok := _u.mutation.OutputArtifactsSeenSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amu.mutation.AddedOutputArtifactsSeenSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsSeenSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64, value)
 	}
-	if amu.mutation.OutputArtifactsSeenSizeInBytesCleared() {
+	if _u.mutation.OutputArtifactsSeenSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amu.mutation.OutputArtifactsSeenCount(); ok {
+	if value, ok := _u.mutation.OutputArtifactsSeenCount(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32, value)
 	}
-	if value, ok := amu.mutation.AddedOutputArtifactsSeenCount(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsSeenCount(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32, value)
 	}
-	if amu.mutation.OutputArtifactsSeenCountCleared() {
+	if _u.mutation.OutputArtifactsSeenCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32)
 	}
-	if value, ok := amu.mutation.OutputArtifactsFromActionCacheSizeInBytes(); ok {
+	if value, ok := _u.mutation.OutputArtifactsFromActionCacheSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amu.mutation.AddedOutputArtifactsFromActionCacheSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsFromActionCacheSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64, value)
 	}
-	if amu.mutation.OutputArtifactsFromActionCacheSizeInBytesCleared() {
+	if _u.mutation.OutputArtifactsFromActionCacheSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amu.mutation.OutputArtifactsFromActionCacheCount(); ok {
+	if value, ok := _u.mutation.OutputArtifactsFromActionCacheCount(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32, value)
 	}
-	if value, ok := amu.mutation.AddedOutputArtifactsFromActionCacheCount(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsFromActionCacheCount(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32, value)
 	}
-	if amu.mutation.OutputArtifactsFromActionCacheCountCleared() {
+	if _u.mutation.OutputArtifactsFromActionCacheCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32)
 	}
-	if value, ok := amu.mutation.TopLevelArtifactsSizeInBytes(); ok {
+	if value, ok := _u.mutation.TopLevelArtifactsSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amu.mutation.AddedTopLevelArtifactsSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedTopLevelArtifactsSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64, value)
 	}
-	if amu.mutation.TopLevelArtifactsSizeInBytesCleared() {
+	if _u.mutation.TopLevelArtifactsSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amu.mutation.TopLevelArtifactsCount(); ok {
+	if value, ok := _u.mutation.TopLevelArtifactsCount(); ok {
 		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32, value)
 	}
-	if value, ok := amu.mutation.AddedTopLevelArtifactsCount(); ok {
+	if value, ok := _u.mutation.AddedTopLevelArtifactsCount(); ok {
 		_spec.AddField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32, value)
 	}
-	if amu.mutation.TopLevelArtifactsCountCleared() {
+	if _u.mutation.TopLevelArtifactsCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32)
 	}
-	if amu.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -395,7 +395,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amu.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -411,7 +411,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, amu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{artifactmetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -419,8 +419,8 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		return 0, err
 	}
-	amu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ArtifactMetricsUpdateOne is the builder for updating a single ArtifactMetrics entity.
@@ -432,272 +432,272 @@ type ArtifactMetricsUpdateOne struct {
 }
 
 // SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) SetSourceArtifactsReadSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetSourceArtifactsReadSizeInBytes()
-	amuo.mutation.SetSourceArtifactsReadSizeInBytes(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetSourceArtifactsReadSizeInBytes()
+	_u.mutation.SetSourceArtifactsReadSizeInBytes(v)
+	return _u
 }
 
 // SetNillableSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableSourceArtifactsReadSizeInBytes(i *int64) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetSourceArtifactsReadSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableSourceArtifactsReadSizeInBytes(v *int64) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetSourceArtifactsReadSizeInBytes(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddSourceArtifactsReadSizeInBytes adds i to the "source_artifacts_read_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) AddSourceArtifactsReadSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddSourceArtifactsReadSizeInBytes(i)
-	return amuo
+// AddSourceArtifactsReadSizeInBytes adds value to the "source_artifacts_read_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdateOne) AddSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddSourceArtifactsReadSizeInBytes(v)
+	return _u
 }
 
 // ClearSourceArtifactsReadSizeInBytes clears the value of the "source_artifacts_read_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearSourceArtifactsReadSizeInBytes()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearSourceArtifactsReadSizeInBytes()
+	return _u
 }
 
 // SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
-func (amuo *ArtifactMetricsUpdateOne) SetSourceArtifactsReadCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetSourceArtifactsReadCount()
-	amuo.mutation.SetSourceArtifactsReadCount(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetSourceArtifactsReadCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetSourceArtifactsReadCount()
+	_u.mutation.SetSourceArtifactsReadCount(v)
+	return _u
 }
 
 // SetNillableSourceArtifactsReadCount sets the "source_artifacts_read_count" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableSourceArtifactsReadCount(i *int32) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetSourceArtifactsReadCount(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableSourceArtifactsReadCount(v *int32) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetSourceArtifactsReadCount(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddSourceArtifactsReadCount adds i to the "source_artifacts_read_count" field.
-func (amuo *ArtifactMetricsUpdateOne) AddSourceArtifactsReadCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddSourceArtifactsReadCount(i)
-	return amuo
+// AddSourceArtifactsReadCount adds value to the "source_artifacts_read_count" field.
+func (_u *ArtifactMetricsUpdateOne) AddSourceArtifactsReadCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddSourceArtifactsReadCount(v)
+	return _u
 }
 
 // ClearSourceArtifactsReadCount clears the value of the "source_artifacts_read_count" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearSourceArtifactsReadCount() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearSourceArtifactsReadCount()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearSourceArtifactsReadCount() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearSourceArtifactsReadCount()
+	return _u
 }
 
 // SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsSeenSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetOutputArtifactsSeenSizeInBytes()
-	amuo.mutation.SetOutputArtifactsSeenSizeInBytes(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetOutputArtifactsSeenSizeInBytes()
+	_u.mutation.SetOutputArtifactsSeenSizeInBytes(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsSeenSizeInBytes(i *int64) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetOutputArtifactsSeenSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsSeenSizeInBytes(v *int64) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetOutputArtifactsSeenSizeInBytes(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddOutputArtifactsSeenSizeInBytes adds i to the "output_artifacts_seen_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsSeenSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddOutputArtifactsSeenSizeInBytes(i)
-	return amuo
+// AddOutputArtifactsSeenSizeInBytes adds value to the "output_artifacts_seen_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdateOne) AddOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddOutputArtifactsSeenSizeInBytes(v)
+	return _u
 }
 
 // ClearOutputArtifactsSeenSizeInBytes clears the value of the "output_artifacts_seen_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearOutputArtifactsSeenSizeInBytes()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearOutputArtifactsSeenSizeInBytes()
+	return _u
 }
 
 // SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
-func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsSeenCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetOutputArtifactsSeenCount()
-	amuo.mutation.SetOutputArtifactsSeenCount(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetOutputArtifactsSeenCount()
+	_u.mutation.SetOutputArtifactsSeenCount(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsSeenCount(i *int32) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetOutputArtifactsSeenCount(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsSeenCount(v *int32) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetOutputArtifactsSeenCount(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddOutputArtifactsSeenCount adds i to the "output_artifacts_seen_count" field.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsSeenCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddOutputArtifactsSeenCount(i)
-	return amuo
+// AddOutputArtifactsSeenCount adds value to the "output_artifacts_seen_count" field.
+func (_u *ArtifactMetricsUpdateOne) AddOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddOutputArtifactsSeenCount(v)
+	return _u
 }
 
 // ClearOutputArtifactsSeenCount clears the value of the "output_artifacts_seen_count" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearOutputArtifactsSeenCount() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearOutputArtifactsSeenCount()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearOutputArtifactsSeenCount() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearOutputArtifactsSeenCount()
+	return _u
 }
 
 // SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsFromActionCacheSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetOutputArtifactsFromActionCacheSizeInBytes()
-	amuo.mutation.SetOutputArtifactsFromActionCacheSizeInBytes(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetOutputArtifactsFromActionCacheSizeInBytes()
+	_u.mutation.SetOutputArtifactsFromActionCacheSizeInBytes(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsFromActionCacheSizeInBytes(i *int64) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetOutputArtifactsFromActionCacheSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsFromActionCacheSizeInBytes(v *int64) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetOutputArtifactsFromActionCacheSizeInBytes(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddOutputArtifactsFromActionCacheSizeInBytes adds i to the "output_artifacts_from_action_cache_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsFromActionCacheSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddOutputArtifactsFromActionCacheSizeInBytes(i)
-	return amuo
+// AddOutputArtifactsFromActionCacheSizeInBytes adds value to the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdateOne) AddOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddOutputArtifactsFromActionCacheSizeInBytes(v)
+	return _u
 }
 
 // ClearOutputArtifactsFromActionCacheSizeInBytes clears the value of the "output_artifacts_from_action_cache_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearOutputArtifactsFromActionCacheSizeInBytes()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearOutputArtifactsFromActionCacheSizeInBytes()
+	return _u
 }
 
 // SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
-func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsFromActionCacheCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetOutputArtifactsFromActionCacheCount()
-	amuo.mutation.SetOutputArtifactsFromActionCacheCount(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetOutputArtifactsFromActionCacheCount()
+	_u.mutation.SetOutputArtifactsFromActionCacheCount(v)
+	return _u
 }
 
 // SetNillableOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsFromActionCacheCount(i *int32) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetOutputArtifactsFromActionCacheCount(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsFromActionCacheCount(v *int32) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetOutputArtifactsFromActionCacheCount(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddOutputArtifactsFromActionCacheCount adds i to the "output_artifacts_from_action_cache_count" field.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsFromActionCacheCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddOutputArtifactsFromActionCacheCount(i)
-	return amuo
+// AddOutputArtifactsFromActionCacheCount adds value to the "output_artifacts_from_action_cache_count" field.
+func (_u *ArtifactMetricsUpdateOne) AddOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddOutputArtifactsFromActionCacheCount(v)
+	return _u
 }
 
 // ClearOutputArtifactsFromActionCacheCount clears the value of the "output_artifacts_from_action_cache_count" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearOutputArtifactsFromActionCacheCount()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearOutputArtifactsFromActionCacheCount()
+	return _u
 }
 
 // SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) SetTopLevelArtifactsSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetTopLevelArtifactsSizeInBytes()
-	amuo.mutation.SetTopLevelArtifactsSizeInBytes(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetTopLevelArtifactsSizeInBytes()
+	_u.mutation.SetTopLevelArtifactsSizeInBytes(v)
+	return _u
 }
 
 // SetNillableTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableTopLevelArtifactsSizeInBytes(i *int64) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetTopLevelArtifactsSizeInBytes(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableTopLevelArtifactsSizeInBytes(v *int64) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetTopLevelArtifactsSizeInBytes(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddTopLevelArtifactsSizeInBytes adds i to the "top_level_artifacts_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) AddTopLevelArtifactsSizeInBytes(i int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddTopLevelArtifactsSizeInBytes(i)
-	return amuo
+// AddTopLevelArtifactsSizeInBytes adds value to the "top_level_artifacts_size_in_bytes" field.
+func (_u *ArtifactMetricsUpdateOne) AddTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddTopLevelArtifactsSizeInBytes(v)
+	return _u
 }
 
 // ClearTopLevelArtifactsSizeInBytes clears the value of the "top_level_artifacts_size_in_bytes" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearTopLevelArtifactsSizeInBytes()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearTopLevelArtifactsSizeInBytes()
+	return _u
 }
 
 // SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
-func (amuo *ArtifactMetricsUpdateOne) SetTopLevelArtifactsCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.ResetTopLevelArtifactsCount()
-	amuo.mutation.SetTopLevelArtifactsCount(i)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetTopLevelArtifactsCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.ResetTopLevelArtifactsCount()
+	_u.mutation.SetTopLevelArtifactsCount(v)
+	return _u
 }
 
 // SetNillableTopLevelArtifactsCount sets the "top_level_artifacts_count" field if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableTopLevelArtifactsCount(i *int32) *ArtifactMetricsUpdateOne {
-	if i != nil {
-		amuo.SetTopLevelArtifactsCount(*i)
+func (_u *ArtifactMetricsUpdateOne) SetNillableTopLevelArtifactsCount(v *int32) *ArtifactMetricsUpdateOne {
+	if v != nil {
+		_u.SetTopLevelArtifactsCount(*v)
 	}
-	return amuo
+	return _u
 }
 
-// AddTopLevelArtifactsCount adds i to the "top_level_artifacts_count" field.
-func (amuo *ArtifactMetricsUpdateOne) AddTopLevelArtifactsCount(i int32) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddTopLevelArtifactsCount(i)
-	return amuo
+// AddTopLevelArtifactsCount adds value to the "top_level_artifacts_count" field.
+func (_u *ArtifactMetricsUpdateOne) AddTopLevelArtifactsCount(v int32) *ArtifactMetricsUpdateOne {
+	_u.mutation.AddTopLevelArtifactsCount(v)
+	return _u
 }
 
 // ClearTopLevelArtifactsCount clears the value of the "top_level_artifacts_count" field.
-func (amuo *ArtifactMetricsUpdateOne) ClearTopLevelArtifactsCount() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearTopLevelArtifactsCount()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearTopLevelArtifactsCount() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearTopLevelArtifactsCount()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amuo *ArtifactMetricsUpdateOne) SetMetricsID(id int64) *ArtifactMetricsUpdateOne {
-	amuo.mutation.SetMetricsID(id)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) SetMetricsID(id int64) *ArtifactMetricsUpdateOne {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableMetricsID(id *int64) *ArtifactMetricsUpdateOne {
+func (_u *ArtifactMetricsUpdateOne) SetNillableMetricsID(id *int64) *ArtifactMetricsUpdateOne {
 	if id != nil {
-		amuo = amuo.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return amuo
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (amuo *ArtifactMetricsUpdateOne) SetMetrics(m *Metrics) *ArtifactMetricsUpdateOne {
-	return amuo.SetMetricsID(m.ID)
+func (_u *ArtifactMetricsUpdateOne) SetMetrics(v *Metrics) *ArtifactMetricsUpdateOne {
+	return _u.SetMetricsID(v.ID)
 }
 
 // Mutation returns the ArtifactMetricsMutation object of the builder.
-func (amuo *ArtifactMetricsUpdateOne) Mutation() *ArtifactMetricsMutation {
-	return amuo.mutation
+func (_u *ArtifactMetricsUpdateOne) Mutation() *ArtifactMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (amuo *ArtifactMetricsUpdateOne) ClearMetrics() *ArtifactMetricsUpdateOne {
-	amuo.mutation.ClearMetrics()
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) ClearMetrics() *ArtifactMetricsUpdateOne {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // Where appends a list predicates to the ArtifactMetricsUpdate builder.
-func (amuo *ArtifactMetricsUpdateOne) Where(ps ...predicate.ArtifactMetrics) *ArtifactMetricsUpdateOne {
-	amuo.mutation.Where(ps...)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) Where(ps ...predicate.ArtifactMetrics) *ArtifactMetricsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (amuo *ArtifactMetricsUpdateOne) Select(field string, fields ...string) *ArtifactMetricsUpdateOne {
-	amuo.fields = append([]string{field}, fields...)
-	return amuo
+func (_u *ArtifactMetricsUpdateOne) Select(field string, fields ...string) *ArtifactMetricsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated ArtifactMetrics entity.
-func (amuo *ArtifactMetricsUpdateOne) Save(ctx context.Context) (*ArtifactMetrics, error) {
-	return withHooks(ctx, amuo.sqlSave, amuo.mutation, amuo.hooks)
+func (_u *ArtifactMetricsUpdateOne) Save(ctx context.Context) (*ArtifactMetrics, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (amuo *ArtifactMetricsUpdateOne) SaveX(ctx context.Context) *ArtifactMetrics {
-	node, err := amuo.Save(ctx)
+func (_u *ArtifactMetricsUpdateOne) SaveX(ctx context.Context) *ArtifactMetrics {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -705,26 +705,26 @@ func (amuo *ArtifactMetricsUpdateOne) SaveX(ctx context.Context) *ArtifactMetric
 }
 
 // Exec executes the query on the entity.
-func (amuo *ArtifactMetricsUpdateOne) Exec(ctx context.Context) error {
-	_, err := amuo.Save(ctx)
+func (_u *ArtifactMetricsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amuo *ArtifactMetricsUpdateOne) ExecX(ctx context.Context) {
-	if err := amuo.Exec(ctx); err != nil {
+func (_u *ArtifactMetricsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *ArtifactMetrics, err error) {
+func (_u *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *ArtifactMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
-	id, ok := amuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ArtifactMetrics.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := amuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, artifactmetrics.FieldID)
 		for _, f := range fields {
@@ -736,86 +736,86 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 			}
 		}
 	}
-	if ps := amuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := amuo.mutation.SourceArtifactsReadSizeInBytes(); ok {
+	if value, ok := _u.mutation.SourceArtifactsReadSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amuo.mutation.AddedSourceArtifactsReadSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedSourceArtifactsReadSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64, value)
 	}
-	if amuo.mutation.SourceArtifactsReadSizeInBytesCleared() {
+	if _u.mutation.SourceArtifactsReadSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amuo.mutation.SourceArtifactsReadCount(); ok {
+	if value, ok := _u.mutation.SourceArtifactsReadCount(); ok {
 		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32, value)
 	}
-	if value, ok := amuo.mutation.AddedSourceArtifactsReadCount(); ok {
+	if value, ok := _u.mutation.AddedSourceArtifactsReadCount(); ok {
 		_spec.AddField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32, value)
 	}
-	if amuo.mutation.SourceArtifactsReadCountCleared() {
+	if _u.mutation.SourceArtifactsReadCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32)
 	}
-	if value, ok := amuo.mutation.OutputArtifactsSeenSizeInBytes(); ok {
+	if value, ok := _u.mutation.OutputArtifactsSeenSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amuo.mutation.AddedOutputArtifactsSeenSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsSeenSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64, value)
 	}
-	if amuo.mutation.OutputArtifactsSeenSizeInBytesCleared() {
+	if _u.mutation.OutputArtifactsSeenSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amuo.mutation.OutputArtifactsSeenCount(); ok {
+	if value, ok := _u.mutation.OutputArtifactsSeenCount(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32, value)
 	}
-	if value, ok := amuo.mutation.AddedOutputArtifactsSeenCount(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsSeenCount(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32, value)
 	}
-	if amuo.mutation.OutputArtifactsSeenCountCleared() {
+	if _u.mutation.OutputArtifactsSeenCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32)
 	}
-	if value, ok := amuo.mutation.OutputArtifactsFromActionCacheSizeInBytes(); ok {
+	if value, ok := _u.mutation.OutputArtifactsFromActionCacheSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amuo.mutation.AddedOutputArtifactsFromActionCacheSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsFromActionCacheSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64, value)
 	}
-	if amuo.mutation.OutputArtifactsFromActionCacheSizeInBytesCleared() {
+	if _u.mutation.OutputArtifactsFromActionCacheSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amuo.mutation.OutputArtifactsFromActionCacheCount(); ok {
+	if value, ok := _u.mutation.OutputArtifactsFromActionCacheCount(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32, value)
 	}
-	if value, ok := amuo.mutation.AddedOutputArtifactsFromActionCacheCount(); ok {
+	if value, ok := _u.mutation.AddedOutputArtifactsFromActionCacheCount(); ok {
 		_spec.AddField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32, value)
 	}
-	if amuo.mutation.OutputArtifactsFromActionCacheCountCleared() {
+	if _u.mutation.OutputArtifactsFromActionCacheCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32)
 	}
-	if value, ok := amuo.mutation.TopLevelArtifactsSizeInBytes(); ok {
+	if value, ok := _u.mutation.TopLevelArtifactsSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64, value)
 	}
-	if value, ok := amuo.mutation.AddedTopLevelArtifactsSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedTopLevelArtifactsSizeInBytes(); ok {
 		_spec.AddField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64, value)
 	}
-	if amuo.mutation.TopLevelArtifactsSizeInBytesCleared() {
+	if _u.mutation.TopLevelArtifactsSizeInBytesCleared() {
 		_spec.ClearField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64)
 	}
-	if value, ok := amuo.mutation.TopLevelArtifactsCount(); ok {
+	if value, ok := _u.mutation.TopLevelArtifactsCount(); ok {
 		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32, value)
 	}
-	if value, ok := amuo.mutation.AddedTopLevelArtifactsCount(); ok {
+	if value, ok := _u.mutation.AddedTopLevelArtifactsCount(); ok {
 		_spec.AddField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32, value)
 	}
-	if amuo.mutation.TopLevelArtifactsCountCleared() {
+	if _u.mutation.TopLevelArtifactsCountCleared() {
 		_spec.ClearField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32)
 	}
-	if amuo.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -828,7 +828,7 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := amuo.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -844,10 +844,10 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &ArtifactMetrics{config: amuo.config}
+	_node = &ArtifactMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, amuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{artifactmetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -855,6 +855,6 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 		}
 		return nil, err
 	}
-	amuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

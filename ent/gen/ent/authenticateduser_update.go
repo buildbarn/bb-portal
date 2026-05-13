@@ -23,92 +23,92 @@ type AuthenticatedUserUpdate struct {
 }
 
 // Where appends a list predicates to the AuthenticatedUserUpdate builder.
-func (auu *AuthenticatedUserUpdate) Where(ps ...predicate.AuthenticatedUser) *AuthenticatedUserUpdate {
-	auu.mutation.Where(ps...)
-	return auu
+func (_u *AuthenticatedUserUpdate) Where(ps ...predicate.AuthenticatedUser) *AuthenticatedUserUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetDisplayName sets the "display_name" field.
-func (auu *AuthenticatedUserUpdate) SetDisplayName(s string) *AuthenticatedUserUpdate {
-	auu.mutation.SetDisplayName(s)
-	return auu
+func (_u *AuthenticatedUserUpdate) SetDisplayName(v string) *AuthenticatedUserUpdate {
+	_u.mutation.SetDisplayName(v)
+	return _u
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (auu *AuthenticatedUserUpdate) SetNillableDisplayName(s *string) *AuthenticatedUserUpdate {
-	if s != nil {
-		auu.SetDisplayName(*s)
+func (_u *AuthenticatedUserUpdate) SetNillableDisplayName(v *string) *AuthenticatedUserUpdate {
+	if v != nil {
+		_u.SetDisplayName(*v)
 	}
-	return auu
+	return _u
 }
 
 // ClearDisplayName clears the value of the "display_name" field.
-func (auu *AuthenticatedUserUpdate) ClearDisplayName() *AuthenticatedUserUpdate {
-	auu.mutation.ClearDisplayName()
-	return auu
+func (_u *AuthenticatedUserUpdate) ClearDisplayName() *AuthenticatedUserUpdate {
+	_u.mutation.ClearDisplayName()
+	return _u
 }
 
 // SetUserInfo sets the "user_info" field.
-func (auu *AuthenticatedUserUpdate) SetUserInfo(m map[string]interface{}) *AuthenticatedUserUpdate {
-	auu.mutation.SetUserInfo(m)
-	return auu
+func (_u *AuthenticatedUserUpdate) SetUserInfo(v map[string]interface{}) *AuthenticatedUserUpdate {
+	_u.mutation.SetUserInfo(v)
+	return _u
 }
 
 // ClearUserInfo clears the value of the "user_info" field.
-func (auu *AuthenticatedUserUpdate) ClearUserInfo() *AuthenticatedUserUpdate {
-	auu.mutation.ClearUserInfo()
-	return auu
+func (_u *AuthenticatedUserUpdate) ClearUserInfo() *AuthenticatedUserUpdate {
+	_u.mutation.ClearUserInfo()
+	return _u
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (auu *AuthenticatedUserUpdate) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdate {
-	auu.mutation.AddBazelInvocationIDs(ids...)
-	return auu
+func (_u *AuthenticatedUserUpdate) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdate {
+	_u.mutation.AddBazelInvocationIDs(ids...)
+	return _u
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
-func (auu *AuthenticatedUserUpdate) AddBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *AuthenticatedUserUpdate) AddBazelInvocations(v ...*BazelInvocation) *AuthenticatedUserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auu.AddBazelInvocationIDs(ids...)
+	return _u.AddBazelInvocationIDs(ids...)
 }
 
 // Mutation returns the AuthenticatedUserMutation object of the builder.
-func (auu *AuthenticatedUserUpdate) Mutation() *AuthenticatedUserMutation {
-	return auu.mutation
+func (_u *AuthenticatedUserUpdate) Mutation() *AuthenticatedUserMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocations clears all "bazel_invocations" edges to the BazelInvocation entity.
-func (auu *AuthenticatedUserUpdate) ClearBazelInvocations() *AuthenticatedUserUpdate {
-	auu.mutation.ClearBazelInvocations()
-	return auu
+func (_u *AuthenticatedUserUpdate) ClearBazelInvocations() *AuthenticatedUserUpdate {
+	_u.mutation.ClearBazelInvocations()
+	return _u
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to BazelInvocation entities by IDs.
-func (auu *AuthenticatedUserUpdate) RemoveBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdate {
-	auu.mutation.RemoveBazelInvocationIDs(ids...)
-	return auu
+func (_u *AuthenticatedUserUpdate) RemoveBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdate {
+	_u.mutation.RemoveBazelInvocationIDs(ids...)
+	return _u
 }
 
 // RemoveBazelInvocations removes "bazel_invocations" edges to BazelInvocation entities.
-func (auu *AuthenticatedUserUpdate) RemoveBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *AuthenticatedUserUpdate) RemoveBazelInvocations(v ...*BazelInvocation) *AuthenticatedUserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auu.RemoveBazelInvocationIDs(ids...)
+	return _u.RemoveBazelInvocationIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (auu *AuthenticatedUserUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, auu.sqlSave, auu.mutation, auu.hooks)
+func (_u *AuthenticatedUserUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auu *AuthenticatedUserUpdate) SaveX(ctx context.Context) int {
-	affected, err := auu.Save(ctx)
+func (_u *AuthenticatedUserUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -116,40 +116,40 @@ func (auu *AuthenticatedUserUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (auu *AuthenticatedUserUpdate) Exec(ctx context.Context) error {
-	_, err := auu.Save(ctx)
+func (_u *AuthenticatedUserUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auu *AuthenticatedUserUpdate) ExecX(ctx context.Context) {
-	if err := auu.Exec(ctx); err != nil {
+func (_u *AuthenticatedUserUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
-	if ps := auu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := auu.mutation.DisplayName(); ok {
+	if value, ok := _u.mutation.DisplayName(); ok {
 		_spec.SetField(authenticateduser.FieldDisplayName, field.TypeString, value)
 	}
-	if auu.mutation.DisplayNameCleared() {
+	if _u.mutation.DisplayNameCleared() {
 		_spec.ClearField(authenticateduser.FieldDisplayName, field.TypeString)
 	}
-	if value, ok := auu.mutation.UserInfo(); ok {
+	if value, ok := _u.mutation.UserInfo(); ok {
 		_spec.SetField(authenticateduser.FieldUserInfo, field.TypeJSON, value)
 	}
-	if auu.mutation.UserInfoCleared() {
+	if _u.mutation.UserInfoCleared() {
 		_spec.ClearField(authenticateduser.FieldUserInfo, field.TypeJSON)
 	}
-	if auu.mutation.BazelInvocationsCleared() {
+	if _u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -162,7 +162,7 @@ func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auu.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !auu.mutation.BazelInvocationsCleared() {
+	if nodes := _u.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !_u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -178,7 +178,7 @@ func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auu.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -194,7 +194,7 @@ func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, auu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{authenticateduser.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -202,8 +202,8 @@ func (auu *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		return 0, err
 	}
-	auu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AuthenticatedUserUpdateOne is the builder for updating a single AuthenticatedUser entity.
@@ -215,99 +215,99 @@ type AuthenticatedUserUpdateOne struct {
 }
 
 // SetDisplayName sets the "display_name" field.
-func (auuo *AuthenticatedUserUpdateOne) SetDisplayName(s string) *AuthenticatedUserUpdateOne {
-	auuo.mutation.SetDisplayName(s)
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) SetDisplayName(v string) *AuthenticatedUserUpdateOne {
+	_u.mutation.SetDisplayName(v)
+	return _u
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (auuo *AuthenticatedUserUpdateOne) SetNillableDisplayName(s *string) *AuthenticatedUserUpdateOne {
-	if s != nil {
-		auuo.SetDisplayName(*s)
+func (_u *AuthenticatedUserUpdateOne) SetNillableDisplayName(v *string) *AuthenticatedUserUpdateOne {
+	if v != nil {
+		_u.SetDisplayName(*v)
 	}
-	return auuo
+	return _u
 }
 
 // ClearDisplayName clears the value of the "display_name" field.
-func (auuo *AuthenticatedUserUpdateOne) ClearDisplayName() *AuthenticatedUserUpdateOne {
-	auuo.mutation.ClearDisplayName()
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) ClearDisplayName() *AuthenticatedUserUpdateOne {
+	_u.mutation.ClearDisplayName()
+	return _u
 }
 
 // SetUserInfo sets the "user_info" field.
-func (auuo *AuthenticatedUserUpdateOne) SetUserInfo(m map[string]interface{}) *AuthenticatedUserUpdateOne {
-	auuo.mutation.SetUserInfo(m)
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) SetUserInfo(v map[string]interface{}) *AuthenticatedUserUpdateOne {
+	_u.mutation.SetUserInfo(v)
+	return _u
 }
 
 // ClearUserInfo clears the value of the "user_info" field.
-func (auuo *AuthenticatedUserUpdateOne) ClearUserInfo() *AuthenticatedUserUpdateOne {
-	auuo.mutation.ClearUserInfo()
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) ClearUserInfo() *AuthenticatedUserUpdateOne {
+	_u.mutation.ClearUserInfo()
+	return _u
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (auuo *AuthenticatedUserUpdateOne) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdateOne {
-	auuo.mutation.AddBazelInvocationIDs(ids...)
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdateOne {
+	_u.mutation.AddBazelInvocationIDs(ids...)
+	return _u
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
-func (auuo *AuthenticatedUserUpdateOne) AddBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *AuthenticatedUserUpdateOne) AddBazelInvocations(v ...*BazelInvocation) *AuthenticatedUserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auuo.AddBazelInvocationIDs(ids...)
+	return _u.AddBazelInvocationIDs(ids...)
 }
 
 // Mutation returns the AuthenticatedUserMutation object of the builder.
-func (auuo *AuthenticatedUserUpdateOne) Mutation() *AuthenticatedUserMutation {
-	return auuo.mutation
+func (_u *AuthenticatedUserUpdateOne) Mutation() *AuthenticatedUserMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocations clears all "bazel_invocations" edges to the BazelInvocation entity.
-func (auuo *AuthenticatedUserUpdateOne) ClearBazelInvocations() *AuthenticatedUserUpdateOne {
-	auuo.mutation.ClearBazelInvocations()
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) ClearBazelInvocations() *AuthenticatedUserUpdateOne {
+	_u.mutation.ClearBazelInvocations()
+	return _u
 }
 
 // RemoveBazelInvocationIDs removes the "bazel_invocations" edge to BazelInvocation entities by IDs.
-func (auuo *AuthenticatedUserUpdateOne) RemoveBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdateOne {
-	auuo.mutation.RemoveBazelInvocationIDs(ids...)
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) RemoveBazelInvocationIDs(ids ...int64) *AuthenticatedUserUpdateOne {
+	_u.mutation.RemoveBazelInvocationIDs(ids...)
+	return _u
 }
 
 // RemoveBazelInvocations removes "bazel_invocations" edges to BazelInvocation entities.
-func (auuo *AuthenticatedUserUpdateOne) RemoveBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_u *AuthenticatedUserUpdateOne) RemoveBazelInvocations(v ...*BazelInvocation) *AuthenticatedUserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auuo.RemoveBazelInvocationIDs(ids...)
+	return _u.RemoveBazelInvocationIDs(ids...)
 }
 
 // Where appends a list predicates to the AuthenticatedUserUpdate builder.
-func (auuo *AuthenticatedUserUpdateOne) Where(ps ...predicate.AuthenticatedUser) *AuthenticatedUserUpdateOne {
-	auuo.mutation.Where(ps...)
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) Where(ps ...predicate.AuthenticatedUser) *AuthenticatedUserUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (auuo *AuthenticatedUserUpdateOne) Select(field string, fields ...string) *AuthenticatedUserUpdateOne {
-	auuo.fields = append([]string{field}, fields...)
-	return auuo
+func (_u *AuthenticatedUserUpdateOne) Select(field string, fields ...string) *AuthenticatedUserUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AuthenticatedUser entity.
-func (auuo *AuthenticatedUserUpdateOne) Save(ctx context.Context) (*AuthenticatedUser, error) {
-	return withHooks(ctx, auuo.sqlSave, auuo.mutation, auuo.hooks)
+func (_u *AuthenticatedUserUpdateOne) Save(ctx context.Context) (*AuthenticatedUser, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auuo *AuthenticatedUserUpdateOne) SaveX(ctx context.Context) *AuthenticatedUser {
-	node, err := auuo.Save(ctx)
+func (_u *AuthenticatedUserUpdateOne) SaveX(ctx context.Context) *AuthenticatedUser {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -315,26 +315,26 @@ func (auuo *AuthenticatedUserUpdateOne) SaveX(ctx context.Context) *Authenticate
 }
 
 // Exec executes the query on the entity.
-func (auuo *AuthenticatedUserUpdateOne) Exec(ctx context.Context) error {
-	_, err := auuo.Save(ctx)
+func (_u *AuthenticatedUserUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auuo *AuthenticatedUserUpdateOne) ExecX(ctx context.Context) {
-	if err := auuo.Exec(ctx); err != nil {
+func (_u *AuthenticatedUserUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *AuthenticatedUser, err error) {
+func (_u *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *AuthenticatedUser, err error) {
 	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
-	id, ok := auuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AuthenticatedUser.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := auuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, authenticateduser.FieldID)
 		for _, f := range fields {
@@ -346,26 +346,26 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 			}
 		}
 	}
-	if ps := auuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := auuo.mutation.DisplayName(); ok {
+	if value, ok := _u.mutation.DisplayName(); ok {
 		_spec.SetField(authenticateduser.FieldDisplayName, field.TypeString, value)
 	}
-	if auuo.mutation.DisplayNameCleared() {
+	if _u.mutation.DisplayNameCleared() {
 		_spec.ClearField(authenticateduser.FieldDisplayName, field.TypeString)
 	}
-	if value, ok := auuo.mutation.UserInfo(); ok {
+	if value, ok := _u.mutation.UserInfo(); ok {
 		_spec.SetField(authenticateduser.FieldUserInfo, field.TypeJSON, value)
 	}
-	if auuo.mutation.UserInfoCleared() {
+	if _u.mutation.UserInfoCleared() {
 		_spec.ClearField(authenticateduser.FieldUserInfo, field.TypeJSON)
 	}
-	if auuo.mutation.BazelInvocationsCleared() {
+	if _u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -378,7 +378,7 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auuo.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !auuo.mutation.BazelInvocationsCleared() {
+	if nodes := _u.mutation.RemovedBazelInvocationsIDs(); len(nodes) > 0 && !_u.mutation.BazelInvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -394,7 +394,7 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auuo.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -410,10 +410,10 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AuthenticatedUser{config: auuo.config}
+	_node = &AuthenticatedUser{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, auuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{authenticateduser.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -421,6 +421,6 @@ func (auuo *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Aut
 		}
 		return nil, err
 	}
-	auuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

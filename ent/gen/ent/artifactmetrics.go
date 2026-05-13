@@ -80,7 +80,7 @@ func (*ArtifactMetrics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the ArtifactMetrics fields.
-func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
+func (_m *ArtifactMetrics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -91,64 +91,64 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			am.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field source_artifacts_read_size_in_bytes", values[i])
 			} else if value.Valid {
-				am.SourceArtifactsReadSizeInBytes = value.Int64
+				_m.SourceArtifactsReadSizeInBytes = value.Int64
 			}
 		case artifactmetrics.FieldSourceArtifactsReadCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field source_artifacts_read_count", values[i])
 			} else if value.Valid {
-				am.SourceArtifactsReadCount = int32(value.Int64)
+				_m.SourceArtifactsReadCount = int32(value.Int64)
 			}
 		case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field output_artifacts_seen_size_in_bytes", values[i])
 			} else if value.Valid {
-				am.OutputArtifactsSeenSizeInBytes = value.Int64
+				_m.OutputArtifactsSeenSizeInBytes = value.Int64
 			}
 		case artifactmetrics.FieldOutputArtifactsSeenCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field output_artifacts_seen_count", values[i])
 			} else if value.Valid {
-				am.OutputArtifactsSeenCount = int32(value.Int64)
+				_m.OutputArtifactsSeenCount = int32(value.Int64)
 			}
 		case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field output_artifacts_from_action_cache_size_in_bytes", values[i])
 			} else if value.Valid {
-				am.OutputArtifactsFromActionCacheSizeInBytes = value.Int64
+				_m.OutputArtifactsFromActionCacheSizeInBytes = value.Int64
 			}
 		case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field output_artifacts_from_action_cache_count", values[i])
 			} else if value.Valid {
-				am.OutputArtifactsFromActionCacheCount = int32(value.Int64)
+				_m.OutputArtifactsFromActionCacheCount = int32(value.Int64)
 			}
 		case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field top_level_artifacts_size_in_bytes", values[i])
 			} else if value.Valid {
-				am.TopLevelArtifactsSizeInBytes = value.Int64
+				_m.TopLevelArtifactsSizeInBytes = value.Int64
 			}
 		case artifactmetrics.FieldTopLevelArtifactsCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field top_level_artifacts_count", values[i])
 			} else if value.Valid {
-				am.TopLevelArtifactsCount = int32(value.Int64)
+				_m.TopLevelArtifactsCount = int32(value.Int64)
 			}
 		case artifactmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_artifact_metrics", value)
 			} else if value.Valid {
-				am.metrics_artifact_metrics = new(int64)
-				*am.metrics_artifact_metrics = int64(value.Int64)
+				_m.metrics_artifact_metrics = new(int64)
+				*_m.metrics_artifact_metrics = int64(value.Int64)
 			}
 		default:
-			am.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -156,61 +156,61 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the ArtifactMetrics.
 // This includes values selected through modifiers, order, etc.
-func (am *ArtifactMetrics) Value(name string) (ent.Value, error) {
-	return am.selectValues.Get(name)
+func (_m *ArtifactMetrics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMetrics queries the "metrics" edge of the ArtifactMetrics entity.
-func (am *ArtifactMetrics) QueryMetrics() *MetricsQuery {
-	return NewArtifactMetricsClient(am.config).QueryMetrics(am)
+func (_m *ArtifactMetrics) QueryMetrics() *MetricsQuery {
+	return NewArtifactMetricsClient(_m.config).QueryMetrics(_m)
 }
 
 // Update returns a builder for updating this ArtifactMetrics.
 // Note that you need to call ArtifactMetrics.Unwrap() before calling this method if this ArtifactMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (am *ArtifactMetrics) Update() *ArtifactMetricsUpdateOne {
-	return NewArtifactMetricsClient(am.config).UpdateOne(am)
+func (_m *ArtifactMetrics) Update() *ArtifactMetricsUpdateOne {
+	return NewArtifactMetricsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the ArtifactMetrics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (am *ArtifactMetrics) Unwrap() *ArtifactMetrics {
-	_tx, ok := am.config.driver.(*txDriver)
+func (_m *ArtifactMetrics) Unwrap() *ArtifactMetrics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: ArtifactMetrics is not a transactional entity")
 	}
-	am.config.driver = _tx.drv
-	return am
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (am *ArtifactMetrics) String() string {
+func (_m *ArtifactMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("ArtifactMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", am.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("source_artifacts_read_size_in_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", am.SourceArtifactsReadSizeInBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.SourceArtifactsReadSizeInBytes))
 	builder.WriteString(", ")
 	builder.WriteString("source_artifacts_read_count=")
-	builder.WriteString(fmt.Sprintf("%v", am.SourceArtifactsReadCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.SourceArtifactsReadCount))
 	builder.WriteString(", ")
 	builder.WriteString("output_artifacts_seen_size_in_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsSeenSizeInBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.OutputArtifactsSeenSizeInBytes))
 	builder.WriteString(", ")
 	builder.WriteString("output_artifacts_seen_count=")
-	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsSeenCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.OutputArtifactsSeenCount))
 	builder.WriteString(", ")
 	builder.WriteString("output_artifacts_from_action_cache_size_in_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsFromActionCacheSizeInBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.OutputArtifactsFromActionCacheSizeInBytes))
 	builder.WriteString(", ")
 	builder.WriteString("output_artifacts_from_action_cache_count=")
-	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsFromActionCacheCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.OutputArtifactsFromActionCacheCount))
 	builder.WriteString(", ")
 	builder.WriteString("top_level_artifacts_size_in_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", am.TopLevelArtifactsSizeInBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.TopLevelArtifactsSizeInBytes))
 	builder.WriteString(", ")
 	builder.WriteString("top_level_artifacts_count=")
-	builder.WriteString(fmt.Sprintf("%v", am.TopLevelArtifactsCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.TopLevelArtifactsCount))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -22,24 +22,24 @@ type TestTargetUpdate struct {
 }
 
 // Where appends a list predicates to the TestTargetUpdate builder.
-func (ttu *TestTargetUpdate) Where(ps ...predicate.TestTarget) *TestTargetUpdate {
-	ttu.mutation.Where(ps...)
-	return ttu
+func (_u *TestTargetUpdate) Where(ps ...predicate.TestTarget) *TestTargetUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Mutation returns the TestTargetMutation object of the builder.
-func (ttu *TestTargetUpdate) Mutation() *TestTargetMutation {
-	return ttu.mutation
+func (_u *TestTargetUpdate) Mutation() *TestTargetMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ttu *TestTargetUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ttu.sqlSave, ttu.mutation, ttu.hooks)
+func (_u *TestTargetUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ttu *TestTargetUpdate) SaveX(ctx context.Context) int {
-	affected, err := ttu.Save(ctx)
+func (_u *TestTargetUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -47,39 +47,39 @@ func (ttu *TestTargetUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ttu *TestTargetUpdate) Exec(ctx context.Context) error {
-	_, err := ttu.Save(ctx)
+func (_u *TestTargetUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ttu *TestTargetUpdate) ExecX(ctx context.Context) {
-	if err := ttu.Exec(ctx); err != nil {
+func (_u *TestTargetUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ttu *TestTargetUpdate) check() error {
-	if ttu.mutation.TargetCleared() && len(ttu.mutation.TargetIDs()) > 0 {
+func (_u *TestTargetUpdate) check() error {
+	if _u.mutation.TargetCleared() && len(_u.mutation.TargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TestTarget.target"`)
 	}
 	return nil
 }
 
-func (ttu *TestTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ttu.check(); err != nil {
-		return n, err
+func (_u *TestTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(testtarget.Table, testtarget.Columns, sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64))
-	if ps := ttu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ttu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testtarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -87,8 +87,8 @@ func (ttu *TestTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ttu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TestTargetUpdateOne is the builder for updating a single TestTarget entity.
@@ -100,31 +100,31 @@ type TestTargetUpdateOne struct {
 }
 
 // Mutation returns the TestTargetMutation object of the builder.
-func (ttuo *TestTargetUpdateOne) Mutation() *TestTargetMutation {
-	return ttuo.mutation
+func (_u *TestTargetUpdateOne) Mutation() *TestTargetMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the TestTargetUpdate builder.
-func (ttuo *TestTargetUpdateOne) Where(ps ...predicate.TestTarget) *TestTargetUpdateOne {
-	ttuo.mutation.Where(ps...)
-	return ttuo
+func (_u *TestTargetUpdateOne) Where(ps ...predicate.TestTarget) *TestTargetUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ttuo *TestTargetUpdateOne) Select(field string, fields ...string) *TestTargetUpdateOne {
-	ttuo.fields = append([]string{field}, fields...)
-	return ttuo
+func (_u *TestTargetUpdateOne) Select(field string, fields ...string) *TestTargetUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TestTarget entity.
-func (ttuo *TestTargetUpdateOne) Save(ctx context.Context) (*TestTarget, error) {
-	return withHooks(ctx, ttuo.sqlSave, ttuo.mutation, ttuo.hooks)
+func (_u *TestTargetUpdateOne) Save(ctx context.Context) (*TestTarget, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ttuo *TestTargetUpdateOne) SaveX(ctx context.Context) *TestTarget {
-	node, err := ttuo.Save(ctx)
+func (_u *TestTargetUpdateOne) SaveX(ctx context.Context) *TestTarget {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -132,37 +132,37 @@ func (ttuo *TestTargetUpdateOne) SaveX(ctx context.Context) *TestTarget {
 }
 
 // Exec executes the query on the entity.
-func (ttuo *TestTargetUpdateOne) Exec(ctx context.Context) error {
-	_, err := ttuo.Save(ctx)
+func (_u *TestTargetUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ttuo *TestTargetUpdateOne) ExecX(ctx context.Context) {
-	if err := ttuo.Exec(ctx); err != nil {
+func (_u *TestTargetUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ttuo *TestTargetUpdateOne) check() error {
-	if ttuo.mutation.TargetCleared() && len(ttuo.mutation.TargetIDs()) > 0 {
+func (_u *TestTargetUpdateOne) check() error {
+	if _u.mutation.TargetCleared() && len(_u.mutation.TargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TestTarget.target"`)
 	}
 	return nil
 }
 
-func (ttuo *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget, err error) {
-	if err := ttuo.check(); err != nil {
+func (_u *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(testtarget.Table, testtarget.Columns, sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64))
-	id, ok := ttuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TestTarget.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ttuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, testtarget.FieldID)
 		for _, f := range fields {
@@ -174,17 +174,17 @@ func (ttuo *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget
 			}
 		}
 	}
-	if ps := ttuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	_node = &TestTarget{config: ttuo.config}
+	_node = &TestTarget{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ttuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testtarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -192,6 +192,6 @@ func (ttuo *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget
 		}
 		return nil, err
 	}
-	ttuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

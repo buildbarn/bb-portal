@@ -22,51 +22,51 @@ type TargetKindMappingUpdate struct {
 }
 
 // Where appends a list predicates to the TargetKindMappingUpdate builder.
-func (tkmu *TargetKindMappingUpdate) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingUpdate {
-	tkmu.mutation.Where(ps...)
-	return tkmu
+func (_u *TargetKindMappingUpdate) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetStartTimeInMs sets the "start_time_in_ms" field.
-func (tkmu *TargetKindMappingUpdate) SetStartTimeInMs(i int64) *TargetKindMappingUpdate {
-	tkmu.mutation.ResetStartTimeInMs()
-	tkmu.mutation.SetStartTimeInMs(i)
-	return tkmu
+func (_u *TargetKindMappingUpdate) SetStartTimeInMs(v int64) *TargetKindMappingUpdate {
+	_u.mutation.ResetStartTimeInMs()
+	_u.mutation.SetStartTimeInMs(v)
+	return _u
 }
 
 // SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (tkmu *TargetKindMappingUpdate) SetNillableStartTimeInMs(i *int64) *TargetKindMappingUpdate {
-	if i != nil {
-		tkmu.SetStartTimeInMs(*i)
+func (_u *TargetKindMappingUpdate) SetNillableStartTimeInMs(v *int64) *TargetKindMappingUpdate {
+	if v != nil {
+		_u.SetStartTimeInMs(*v)
 	}
-	return tkmu
+	return _u
 }
 
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (tkmu *TargetKindMappingUpdate) AddStartTimeInMs(i int64) *TargetKindMappingUpdate {
-	tkmu.mutation.AddStartTimeInMs(i)
-	return tkmu
+// AddStartTimeInMs adds value to the "start_time_in_ms" field.
+func (_u *TargetKindMappingUpdate) AddStartTimeInMs(v int64) *TargetKindMappingUpdate {
+	_u.mutation.AddStartTimeInMs(v)
+	return _u
 }
 
 // ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (tkmu *TargetKindMappingUpdate) ClearStartTimeInMs() *TargetKindMappingUpdate {
-	tkmu.mutation.ClearStartTimeInMs()
-	return tkmu
+func (_u *TargetKindMappingUpdate) ClearStartTimeInMs() *TargetKindMappingUpdate {
+	_u.mutation.ClearStartTimeInMs()
+	return _u
 }
 
 // Mutation returns the TargetKindMappingMutation object of the builder.
-func (tkmu *TargetKindMappingUpdate) Mutation() *TargetKindMappingMutation {
-	return tkmu.mutation
+func (_u *TargetKindMappingUpdate) Mutation() *TargetKindMappingMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tkmu *TargetKindMappingUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tkmu.sqlSave, tkmu.mutation, tkmu.hooks)
+func (_u *TargetKindMappingUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tkmu *TargetKindMappingUpdate) SaveX(ctx context.Context) int {
-	affected, err := tkmu.Save(ctx)
+func (_u *TargetKindMappingUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -74,51 +74,51 @@ func (tkmu *TargetKindMappingUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tkmu *TargetKindMappingUpdate) Exec(ctx context.Context) error {
-	_, err := tkmu.Save(ctx)
+func (_u *TargetKindMappingUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tkmu *TargetKindMappingUpdate) ExecX(ctx context.Context) {
-	if err := tkmu.Exec(ctx); err != nil {
+func (_u *TargetKindMappingUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tkmu *TargetKindMappingUpdate) check() error {
-	if tkmu.mutation.BazelInvocationCleared() && len(tkmu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *TargetKindMappingUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TargetKindMapping.bazel_invocation"`)
 	}
-	if tkmu.mutation.TargetCleared() && len(tkmu.mutation.TargetIDs()) > 0 {
+	if _u.mutation.TargetCleared() && len(_u.mutation.TargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TargetKindMapping.target"`)
 	}
 	return nil
 }
 
-func (tkmu *TargetKindMappingUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := tkmu.check(); err != nil {
-		return n, err
+func (_u *TargetKindMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
-	if ps := tkmu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tkmu.mutation.StartTimeInMs(); ok {
+	if value, ok := _u.mutation.StartTimeInMs(); ok {
 		_spec.SetField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tkmu.mutation.AddedStartTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
 		_spec.AddField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if tkmu.mutation.StartTimeInMsCleared() {
+	if _u.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tkmu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetkindmapping.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -126,8 +126,8 @@ func (tkmu *TargetKindMappingUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		return 0, err
 	}
-	tkmu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TargetKindMappingUpdateOne is the builder for updating a single TargetKindMapping entity.
@@ -139,58 +139,58 @@ type TargetKindMappingUpdateOne struct {
 }
 
 // SetStartTimeInMs sets the "start_time_in_ms" field.
-func (tkmuo *TargetKindMappingUpdateOne) SetStartTimeInMs(i int64) *TargetKindMappingUpdateOne {
-	tkmuo.mutation.ResetStartTimeInMs()
-	tkmuo.mutation.SetStartTimeInMs(i)
-	return tkmuo
+func (_u *TargetKindMappingUpdateOne) SetStartTimeInMs(v int64) *TargetKindMappingUpdateOne {
+	_u.mutation.ResetStartTimeInMs()
+	_u.mutation.SetStartTimeInMs(v)
+	return _u
 }
 
 // SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (tkmuo *TargetKindMappingUpdateOne) SetNillableStartTimeInMs(i *int64) *TargetKindMappingUpdateOne {
-	if i != nil {
-		tkmuo.SetStartTimeInMs(*i)
+func (_u *TargetKindMappingUpdateOne) SetNillableStartTimeInMs(v *int64) *TargetKindMappingUpdateOne {
+	if v != nil {
+		_u.SetStartTimeInMs(*v)
 	}
-	return tkmuo
+	return _u
 }
 
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (tkmuo *TargetKindMappingUpdateOne) AddStartTimeInMs(i int64) *TargetKindMappingUpdateOne {
-	tkmuo.mutation.AddStartTimeInMs(i)
-	return tkmuo
+// AddStartTimeInMs adds value to the "start_time_in_ms" field.
+func (_u *TargetKindMappingUpdateOne) AddStartTimeInMs(v int64) *TargetKindMappingUpdateOne {
+	_u.mutation.AddStartTimeInMs(v)
+	return _u
 }
 
 // ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (tkmuo *TargetKindMappingUpdateOne) ClearStartTimeInMs() *TargetKindMappingUpdateOne {
-	tkmuo.mutation.ClearStartTimeInMs()
-	return tkmuo
+func (_u *TargetKindMappingUpdateOne) ClearStartTimeInMs() *TargetKindMappingUpdateOne {
+	_u.mutation.ClearStartTimeInMs()
+	return _u
 }
 
 // Mutation returns the TargetKindMappingMutation object of the builder.
-func (tkmuo *TargetKindMappingUpdateOne) Mutation() *TargetKindMappingMutation {
-	return tkmuo.mutation
+func (_u *TargetKindMappingUpdateOne) Mutation() *TargetKindMappingMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the TargetKindMappingUpdate builder.
-func (tkmuo *TargetKindMappingUpdateOne) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingUpdateOne {
-	tkmuo.mutation.Where(ps...)
-	return tkmuo
+func (_u *TargetKindMappingUpdateOne) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tkmuo *TargetKindMappingUpdateOne) Select(field string, fields ...string) *TargetKindMappingUpdateOne {
-	tkmuo.fields = append([]string{field}, fields...)
-	return tkmuo
+func (_u *TargetKindMappingUpdateOne) Select(field string, fields ...string) *TargetKindMappingUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TargetKindMapping entity.
-func (tkmuo *TargetKindMappingUpdateOne) Save(ctx context.Context) (*TargetKindMapping, error) {
-	return withHooks(ctx, tkmuo.sqlSave, tkmuo.mutation, tkmuo.hooks)
+func (_u *TargetKindMappingUpdateOne) Save(ctx context.Context) (*TargetKindMapping, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tkmuo *TargetKindMappingUpdateOne) SaveX(ctx context.Context) *TargetKindMapping {
-	node, err := tkmuo.Save(ctx)
+func (_u *TargetKindMappingUpdateOne) SaveX(ctx context.Context) *TargetKindMapping {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -198,40 +198,40 @@ func (tkmuo *TargetKindMappingUpdateOne) SaveX(ctx context.Context) *TargetKindM
 }
 
 // Exec executes the query on the entity.
-func (tkmuo *TargetKindMappingUpdateOne) Exec(ctx context.Context) error {
-	_, err := tkmuo.Save(ctx)
+func (_u *TargetKindMappingUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tkmuo *TargetKindMappingUpdateOne) ExecX(ctx context.Context) {
-	if err := tkmuo.Exec(ctx); err != nil {
+func (_u *TargetKindMappingUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tkmuo *TargetKindMappingUpdateOne) check() error {
-	if tkmuo.mutation.BazelInvocationCleared() && len(tkmuo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *TargetKindMappingUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TargetKindMapping.bazel_invocation"`)
 	}
-	if tkmuo.mutation.TargetCleared() && len(tkmuo.mutation.TargetIDs()) > 0 {
+	if _u.mutation.TargetCleared() && len(_u.mutation.TargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TargetKindMapping.target"`)
 	}
 	return nil
 }
 
-func (tkmuo *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *TargetKindMapping, err error) {
-	if err := tkmuo.check(); err != nil {
+func (_u *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *TargetKindMapping, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(targetkindmapping.Table, targetkindmapping.Columns, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
-	id, ok := tkmuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TargetKindMapping.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tkmuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, targetkindmapping.FieldID)
 		for _, f := range fields {
@@ -243,26 +243,26 @@ func (tkmuo *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *Ta
 			}
 		}
 	}
-	if ps := tkmuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tkmuo.mutation.StartTimeInMs(); ok {
+	if value, ok := _u.mutation.StartTimeInMs(); ok {
 		_spec.SetField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tkmuo.mutation.AddedStartTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
 		_spec.AddField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if tkmuo.mutation.StartTimeInMsCleared() {
+	if _u.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
 	}
-	_node = &TargetKindMapping{config: tkmuo.config}
+	_node = &TargetKindMapping{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tkmuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetkindmapping.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -270,6 +270,6 @@ func (tkmuo *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *Ta
 		}
 		return nil, err
 	}
-	tkmuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

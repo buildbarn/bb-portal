@@ -69,7 +69,7 @@ func (*BuildTag) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the BuildTag fields.
-func (bt *BuildTag) assignValues(columns []string, values []any) error {
+func (_m *BuildTag) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -80,27 +80,27 @@ func (bt *BuildTag) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			bt.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case buildtag.FieldBuildID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field build_id", values[i])
 			} else if value.Valid {
-				bt.BuildID = value.Int64
+				_m.BuildID = value.Int64
 			}
 		case buildtag.FieldKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field key", values[i])
 			} else if value.Valid {
-				bt.Key = value.String
+				_m.Key = value.String
 			}
 		case buildtag.FieldValue:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value.Valid {
-				bt.Value = value.String
+				_m.Value = value.String
 			}
 		default:
-			bt.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -108,46 +108,46 @@ func (bt *BuildTag) assignValues(columns []string, values []any) error {
 
 // GetValue returns the ent.Value that was dynamically selected and assigned to the BuildTag.
 // This includes values selected through modifiers, order, etc.
-func (bt *BuildTag) GetValue(name string) (ent.Value, error) {
-	return bt.selectValues.Get(name)
+func (_m *BuildTag) GetValue(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBuild queries the "build" edge of the BuildTag entity.
-func (bt *BuildTag) QueryBuild() *BuildQuery {
-	return NewBuildTagClient(bt.config).QueryBuild(bt)
+func (_m *BuildTag) QueryBuild() *BuildQuery {
+	return NewBuildTagClient(_m.config).QueryBuild(_m)
 }
 
 // Update returns a builder for updating this BuildTag.
 // Note that you need to call BuildTag.Unwrap() before calling this method if this BuildTag
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (bt *BuildTag) Update() *BuildTagUpdateOne {
-	return NewBuildTagClient(bt.config).UpdateOne(bt)
+func (_m *BuildTag) Update() *BuildTagUpdateOne {
+	return NewBuildTagClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the BuildTag entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (bt *BuildTag) Unwrap() *BuildTag {
-	_tx, ok := bt.config.driver.(*txDriver)
+func (_m *BuildTag) Unwrap() *BuildTag {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: BuildTag is not a transactional entity")
 	}
-	bt.config.driver = _tx.drv
-	return bt
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (bt *BuildTag) String() string {
+func (_m *BuildTag) String() string {
 	var builder strings.Builder
 	builder.WriteString("BuildTag(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", bt.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("build_id=")
-	builder.WriteString(fmt.Sprintf("%v", bt.BuildID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BuildID))
 	builder.WriteString(", ")
 	builder.WriteString("key=")
-	builder.WriteString(bt.Key)
+	builder.WriteString(_m.Key)
 	builder.WriteString(", ")
 	builder.WriteString("value=")
-	builder.WriteString(bt.Value)
+	builder.WriteString(_m.Value)
 	builder.WriteByte(')')
 	return builder.String()
 }

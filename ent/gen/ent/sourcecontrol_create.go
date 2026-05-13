@@ -23,127 +23,127 @@ type SourceControlCreate struct {
 }
 
 // SetRepo sets the "repo" field.
-func (scc *SourceControlCreate) SetRepo(s string) *SourceControlCreate {
-	scc.mutation.SetRepo(s)
-	return scc
+func (_c *SourceControlCreate) SetRepo(v string) *SourceControlCreate {
+	_c.mutation.SetRepo(v)
+	return _c
 }
 
 // SetNillableRepo sets the "repo" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRepo(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRepo(*s)
+func (_c *SourceControlCreate) SetNillableRepo(v *string) *SourceControlCreate {
+	if v != nil {
+		_c.SetRepo(*v)
 	}
-	return scc
+	return _c
 }
 
 // SetRepoURL sets the "repo_url" field.
-func (scc *SourceControlCreate) SetRepoURL(s string) *SourceControlCreate {
-	scc.mutation.SetRepoURL(s)
-	return scc
+func (_c *SourceControlCreate) SetRepoURL(v string) *SourceControlCreate {
+	_c.mutation.SetRepoURL(v)
+	return _c
 }
 
 // SetNillableRepoURL sets the "repo_url" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRepoURL(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRepoURL(*s)
+func (_c *SourceControlCreate) SetNillableRepoURL(v *string) *SourceControlCreate {
+	if v != nil {
+		_c.SetRepoURL(*v)
 	}
-	return scc
+	return _c
 }
 
 // SetRef sets the "ref" field.
-func (scc *SourceControlCreate) SetRef(s string) *SourceControlCreate {
-	scc.mutation.SetRef(s)
-	return scc
+func (_c *SourceControlCreate) SetRef(v string) *SourceControlCreate {
+	_c.mutation.SetRef(v)
+	return _c
 }
 
 // SetNillableRef sets the "ref" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRef(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRef(*s)
+func (_c *SourceControlCreate) SetNillableRef(v *string) *SourceControlCreate {
+	if v != nil {
+		_c.SetRef(*v)
 	}
-	return scc
+	return _c
 }
 
 // SetRefURL sets the "ref_url" field.
-func (scc *SourceControlCreate) SetRefURL(s string) *SourceControlCreate {
-	scc.mutation.SetRefURL(s)
-	return scc
+func (_c *SourceControlCreate) SetRefURL(v string) *SourceControlCreate {
+	_c.mutation.SetRefURL(v)
+	return _c
 }
 
 // SetNillableRefURL sets the "ref_url" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRefURL(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRefURL(*s)
+func (_c *SourceControlCreate) SetNillableRefURL(v *string) *SourceControlCreate {
+	if v != nil {
+		_c.SetRefURL(*v)
 	}
-	return scc
+	return _c
 }
 
 // SetCommit sets the "commit" field.
-func (scc *SourceControlCreate) SetCommit(s string) *SourceControlCreate {
-	scc.mutation.SetCommit(s)
-	return scc
+func (_c *SourceControlCreate) SetCommit(v string) *SourceControlCreate {
+	_c.mutation.SetCommit(v)
+	return _c
 }
 
 // SetNillableCommit sets the "commit" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableCommit(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetCommit(*s)
+func (_c *SourceControlCreate) SetNillableCommit(v *string) *SourceControlCreate {
+	if v != nil {
+		_c.SetCommit(*v)
 	}
-	return scc
+	return _c
 }
 
 // SetCommitURL sets the "commit_url" field.
-func (scc *SourceControlCreate) SetCommitURL(s string) *SourceControlCreate {
-	scc.mutation.SetCommitURL(s)
-	return scc
+func (_c *SourceControlCreate) SetCommitURL(v string) *SourceControlCreate {
+	_c.mutation.SetCommitURL(v)
+	return _c
 }
 
 // SetNillableCommitURL sets the "commit_url" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableCommitURL(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetCommitURL(*s)
+func (_c *SourceControlCreate) SetNillableCommitURL(v *string) *SourceControlCreate {
+	if v != nil {
+		_c.SetCommitURL(*v)
 	}
-	return scc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (scc *SourceControlCreate) SetID(i int64) *SourceControlCreate {
-	scc.mutation.SetID(i)
-	return scc
+func (_c *SourceControlCreate) SetID(v int64) *SourceControlCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scc *SourceControlCreate) SetBazelInvocationID(id int64) *SourceControlCreate {
-	scc.mutation.SetBazelInvocationID(id)
-	return scc
+func (_c *SourceControlCreate) SetBazelInvocationID(id int64) *SourceControlCreate {
+	_c.mutation.SetBazelInvocationID(id)
+	return _c
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableBazelInvocationID(id *int64) *SourceControlCreate {
+func (_c *SourceControlCreate) SetNillableBazelInvocationID(id *int64) *SourceControlCreate {
 	if id != nil {
-		scc = scc.SetBazelInvocationID(*id)
+		_c = _c.SetBazelInvocationID(*id)
 	}
-	return scc
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (scc *SourceControlCreate) SetBazelInvocation(b *BazelInvocation) *SourceControlCreate {
-	return scc.SetBazelInvocationID(b.ID)
+func (_c *SourceControlCreate) SetBazelInvocation(v *BazelInvocation) *SourceControlCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the SourceControlMutation object of the builder.
-func (scc *SourceControlCreate) Mutation() *SourceControlMutation {
-	return scc.mutation
+func (_c *SourceControlCreate) Mutation() *SourceControlMutation {
+	return _c.mutation
 }
 
 // Save creates the SourceControl in the database.
-func (scc *SourceControlCreate) Save(ctx context.Context) (*SourceControl, error) {
-	return withHooks(ctx, scc.sqlSave, scc.mutation, scc.hooks)
+func (_c *SourceControlCreate) Save(ctx context.Context) (*SourceControl, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (scc *SourceControlCreate) SaveX(ctx context.Context) *SourceControl {
-	v, err := scc.Save(ctx)
+func (_c *SourceControlCreate) SaveX(ctx context.Context) *SourceControl {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -151,29 +151,29 @@ func (scc *SourceControlCreate) SaveX(ctx context.Context) *SourceControl {
 }
 
 // Exec executes the query.
-func (scc *SourceControlCreate) Exec(ctx context.Context) error {
-	_, err := scc.Save(ctx)
+func (_c *SourceControlCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (scc *SourceControlCreate) ExecX(ctx context.Context) {
-	if err := scc.Exec(ctx); err != nil {
+func (_c *SourceControlCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (scc *SourceControlCreate) check() error {
+func (_c *SourceControlCreate) check() error {
 	return nil
 }
 
-func (scc *SourceControlCreate) sqlSave(ctx context.Context) (*SourceControl, error) {
-	if err := scc.check(); err != nil {
+func (_c *SourceControlCreate) sqlSave(ctx context.Context) (*SourceControl, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := scc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, scc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -183,46 +183,46 @@ func (scc *SourceControlCreate) sqlSave(ctx context.Context) (*SourceControl, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	scc.mutation.id = &_node.ID
-	scc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSpec) {
+func (_c *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSpec) {
 	var (
-		_node = &SourceControl{config: scc.config}
+		_node = &SourceControl{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(sourcecontrol.Table, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = scc.conflict
-	if id, ok := scc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := scc.mutation.Repo(); ok {
+	if value, ok := _c.mutation.Repo(); ok {
 		_spec.SetField(sourcecontrol.FieldRepo, field.TypeString, value)
 		_node.Repo = value
 	}
-	if value, ok := scc.mutation.RepoURL(); ok {
+	if value, ok := _c.mutation.RepoURL(); ok {
 		_spec.SetField(sourcecontrol.FieldRepoURL, field.TypeString, value)
 		_node.RepoURL = value
 	}
-	if value, ok := scc.mutation.Ref(); ok {
+	if value, ok := _c.mutation.Ref(); ok {
 		_spec.SetField(sourcecontrol.FieldRef, field.TypeString, value)
 		_node.Ref = value
 	}
-	if value, ok := scc.mutation.RefURL(); ok {
+	if value, ok := _c.mutation.RefURL(); ok {
 		_spec.SetField(sourcecontrol.FieldRefURL, field.TypeString, value)
 		_node.RefURL = value
 	}
-	if value, ok := scc.mutation.Commit(); ok {
+	if value, ok := _c.mutation.Commit(); ok {
 		_spec.SetField(sourcecontrol.FieldCommit, field.TypeString, value)
 		_node.Commit = value
 	}
-	if value, ok := scc.mutation.CommitURL(); ok {
+	if value, ok := _c.mutation.CommitURL(); ok {
 		_spec.SetField(sourcecontrol.FieldCommitURL, field.TypeString, value)
 		_node.CommitURL = value
 	}
-	if nodes := scc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -258,10 +258,10 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 //			SetRepo(v+v).
 //		}).
 //		Exec(ctx)
-func (scc *SourceControlCreate) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertOne {
-	scc.conflict = opts
+func (_c *SourceControlCreate) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertOne {
+	_c.conflict = opts
 	return &SourceControlUpsertOne{
-		create: scc,
+		create: _c,
 	}
 }
 
@@ -271,10 +271,10 @@ func (scc *SourceControlCreate) OnConflict(opts ...sql.ConflictOption) *SourceCo
 //	client.SourceControl.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (scc *SourceControlCreate) OnConflictColumns(columns ...string) *SourceControlUpsertOne {
-	scc.conflict = append(scc.conflict, sql.ConflictColumns(columns...))
+func (_c *SourceControlCreate) OnConflictColumns(columns ...string) *SourceControlUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SourceControlUpsertOne{
-		create: scc,
+		create: _c,
 	}
 }
 
@@ -615,16 +615,16 @@ type SourceControlCreateBulk struct {
 }
 
 // Save creates the SourceControl entities in the database.
-func (sccb *SourceControlCreateBulk) Save(ctx context.Context) ([]*SourceControl, error) {
-	if sccb.err != nil {
-		return nil, sccb.err
+func (_c *SourceControlCreateBulk) Save(ctx context.Context) ([]*SourceControl, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(sccb.builders))
-	nodes := make([]*SourceControl, len(sccb.builders))
-	mutators := make([]Mutator, len(sccb.builders))
-	for i := range sccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*SourceControl, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := sccb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SourceControlMutation)
 				if !ok {
@@ -637,12 +637,12 @@ func (sccb *SourceControlCreateBulk) Save(ctx context.Context) ([]*SourceControl
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, sccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = sccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, sccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -666,7 +666,7 @@ func (sccb *SourceControlCreateBulk) Save(ctx context.Context) ([]*SourceControl
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, sccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -674,8 +674,8 @@ func (sccb *SourceControlCreateBulk) Save(ctx context.Context) ([]*SourceControl
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sccb *SourceControlCreateBulk) SaveX(ctx context.Context) []*SourceControl {
-	v, err := sccb.Save(ctx)
+func (_c *SourceControlCreateBulk) SaveX(ctx context.Context) []*SourceControl {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -683,14 +683,14 @@ func (sccb *SourceControlCreateBulk) SaveX(ctx context.Context) []*SourceControl
 }
 
 // Exec executes the query.
-func (sccb *SourceControlCreateBulk) Exec(ctx context.Context) error {
-	_, err := sccb.Save(ctx)
+func (_c *SourceControlCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sccb *SourceControlCreateBulk) ExecX(ctx context.Context) {
-	if err := sccb.Exec(ctx); err != nil {
+func (_c *SourceControlCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -710,10 +710,10 @@ func (sccb *SourceControlCreateBulk) ExecX(ctx context.Context) {
 //			SetRepo(v+v).
 //		}).
 //		Exec(ctx)
-func (sccb *SourceControlCreateBulk) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertBulk {
-	sccb.conflict = opts
+func (_c *SourceControlCreateBulk) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertBulk {
+	_c.conflict = opts
 	return &SourceControlUpsertBulk{
-		create: sccb,
+		create: _c,
 	}
 }
 
@@ -723,10 +723,10 @@ func (sccb *SourceControlCreateBulk) OnConflict(opts ...sql.ConflictOption) *Sou
 //	client.SourceControl.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sccb *SourceControlCreateBulk) OnConflictColumns(columns ...string) *SourceControlUpsertBulk {
-	sccb.conflict = append(sccb.conflict, sql.ConflictColumns(columns...))
+func (_c *SourceControlCreateBulk) OnConflictColumns(columns ...string) *SourceControlUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SourceControlUpsertBulk{
-		create: sccb,
+		create: _c,
 	}
 }
 

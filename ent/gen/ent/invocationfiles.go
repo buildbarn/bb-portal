@@ -76,7 +76,7 @@ func (*InvocationFiles) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the InvocationFiles fields.
-func (_if *InvocationFiles) assignValues(columns []string, values []any) error {
+func (_m *InvocationFiles) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -87,46 +87,46 @@ func (_if *InvocationFiles) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			_if.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case invocationfiles.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				_if.Name = value.String
+				_m.Name = value.String
 			}
 		case invocationfiles.FieldContent:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field content", values[i])
 			} else if value.Valid {
-				_if.Content = value.String
+				_m.Content = value.String
 			}
 		case invocationfiles.FieldDigest:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field digest", values[i])
 			} else if value.Valid {
-				_if.Digest = value.String
+				_m.Digest = value.String
 			}
 		case invocationfiles.FieldSizeBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field size_bytes", values[i])
 			} else if value.Valid {
-				_if.SizeBytes = value.Int64
+				_m.SizeBytes = value.Int64
 			}
 		case invocationfiles.FieldDigestFunction:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field digest_function", values[i])
 			} else if value.Valid {
-				_if.DigestFunction = value.String
+				_m.DigestFunction = value.String
 			}
 		case invocationfiles.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_invocation_files", value)
 			} else if value.Valid {
-				_if.bazel_invocation_invocation_files = new(int64)
-				*_if.bazel_invocation_invocation_files = int64(value.Int64)
+				_m.bazel_invocation_invocation_files = new(int64)
+				*_m.bazel_invocation_invocation_files = int64(value.Int64)
 			}
 		default:
-			_if.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -134,52 +134,52 @@ func (_if *InvocationFiles) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the InvocationFiles.
 // This includes values selected through modifiers, order, etc.
-func (_if *InvocationFiles) Value(name string) (ent.Value, error) {
-	return _if.selectValues.Get(name)
+func (_m *InvocationFiles) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the InvocationFiles entity.
-func (_if *InvocationFiles) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewInvocationFilesClient(_if.config).QueryBazelInvocation(_if)
+func (_m *InvocationFiles) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewInvocationFilesClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // Update returns a builder for updating this InvocationFiles.
 // Note that you need to call InvocationFiles.Unwrap() before calling this method if this InvocationFiles
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_if *InvocationFiles) Update() *InvocationFilesUpdateOne {
-	return NewInvocationFilesClient(_if.config).UpdateOne(_if)
+func (_m *InvocationFiles) Update() *InvocationFilesUpdateOne {
+	return NewInvocationFilesClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the InvocationFiles entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_if *InvocationFiles) Unwrap() *InvocationFiles {
-	_tx, ok := _if.config.driver.(*txDriver)
+func (_m *InvocationFiles) Unwrap() *InvocationFiles {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: InvocationFiles is not a transactional entity")
 	}
-	_if.config.driver = _tx.drv
-	return _if
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_if *InvocationFiles) String() string {
+func (_m *InvocationFiles) String() string {
 	var builder strings.Builder
 	builder.WriteString("InvocationFiles(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", _if.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(_if.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("content=")
-	builder.WriteString(_if.Content)
+	builder.WriteString(_m.Content)
 	builder.WriteString(", ")
 	builder.WriteString("digest=")
-	builder.WriteString(_if.Digest)
+	builder.WriteString(_m.Digest)
 	builder.WriteString(", ")
 	builder.WriteString("size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", _if.SizeBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.SizeBytes))
 	builder.WriteString(", ")
 	builder.WriteString("digest_function=")
-	builder.WriteString(_if.DigestFunction)
+	builder.WriteString(_m.DigestFunction)
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -33,44 +33,44 @@ type ConnectionMetadataQuery struct {
 }
 
 // Where adds a new predicate for the ConnectionMetadataQuery builder.
-func (cmq *ConnectionMetadataQuery) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataQuery {
-	cmq.predicates = append(cmq.predicates, ps...)
-	return cmq
+func (_q *ConnectionMetadataQuery) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (cmq *ConnectionMetadataQuery) Limit(limit int) *ConnectionMetadataQuery {
-	cmq.ctx.Limit = &limit
-	return cmq
+func (_q *ConnectionMetadataQuery) Limit(limit int) *ConnectionMetadataQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (cmq *ConnectionMetadataQuery) Offset(offset int) *ConnectionMetadataQuery {
-	cmq.ctx.Offset = &offset
-	return cmq
+func (_q *ConnectionMetadataQuery) Offset(offset int) *ConnectionMetadataQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (cmq *ConnectionMetadataQuery) Unique(unique bool) *ConnectionMetadataQuery {
-	cmq.ctx.Unique = &unique
-	return cmq
+func (_q *ConnectionMetadataQuery) Unique(unique bool) *ConnectionMetadataQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (cmq *ConnectionMetadataQuery) Order(o ...connectionmetadata.OrderOption) *ConnectionMetadataQuery {
-	cmq.order = append(cmq.order, o...)
-	return cmq
+func (_q *ConnectionMetadataQuery) Order(o ...connectionmetadata.OrderOption) *ConnectionMetadataQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (cmq *ConnectionMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: cmq.config}).Query()
+func (_q *ConnectionMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := cmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := cmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (cmq *ConnectionMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, connectionmetadata.BazelInvocationTable, connectionmetadata.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(cmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (cmq *ConnectionMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery
 
 // First returns the first ConnectionMetadata entity from the query.
 // Returns a *NotFoundError when no ConnectionMetadata was found.
-func (cmq *ConnectionMetadataQuery) First(ctx context.Context) (*ConnectionMetadata, error) {
-	nodes, err := cmq.Limit(1).All(setContextOp(ctx, cmq.ctx, ent.OpQueryFirst))
+func (_q *ConnectionMetadataQuery) First(ctx context.Context) (*ConnectionMetadata, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (cmq *ConnectionMetadataQuery) First(ctx context.Context) (*ConnectionMetad
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) FirstX(ctx context.Context) *ConnectionMetadata {
-	node, err := cmq.First(ctx)
+func (_q *ConnectionMetadataQuery) FirstX(ctx context.Context) *ConnectionMetadata {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (cmq *ConnectionMetadataQuery) FirstX(ctx context.Context) *ConnectionMetad
 
 // FirstID returns the first ConnectionMetadata ID from the query.
 // Returns a *NotFoundError when no ConnectionMetadata ID was found.
-func (cmq *ConnectionMetadataQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *ConnectionMetadataQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = cmq.Limit(1).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (cmq *ConnectionMetadataQuery) FirstID(ctx context.Context) (id int64, err 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := cmq.FirstID(ctx)
+func (_q *ConnectionMetadataQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (cmq *ConnectionMetadataQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single ConnectionMetadata entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one ConnectionMetadata entity is found.
 // Returns a *NotFoundError when no ConnectionMetadata entities are found.
-func (cmq *ConnectionMetadataQuery) Only(ctx context.Context) (*ConnectionMetadata, error) {
-	nodes, err := cmq.Limit(2).All(setContextOp(ctx, cmq.ctx, ent.OpQueryOnly))
+func (_q *ConnectionMetadataQuery) Only(ctx context.Context) (*ConnectionMetadata, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (cmq *ConnectionMetadataQuery) Only(ctx context.Context) (*ConnectionMetada
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) OnlyX(ctx context.Context) *ConnectionMetadata {
-	node, err := cmq.Only(ctx)
+func (_q *ConnectionMetadataQuery) OnlyX(ctx context.Context) *ConnectionMetadata {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (cmq *ConnectionMetadataQuery) OnlyX(ctx context.Context) *ConnectionMetada
 // OnlyID is like Only, but returns the only ConnectionMetadata ID in the query.
 // Returns a *NotSingularError when more than one ConnectionMetadata ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (cmq *ConnectionMetadataQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *ConnectionMetadataQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = cmq.Limit(2).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (cmq *ConnectionMetadataQuery) OnlyID(ctx context.Context) (id int64, err e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := cmq.OnlyID(ctx)
+func (_q *ConnectionMetadataQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (cmq *ConnectionMetadataQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of ConnectionMetadataSlice.
-func (cmq *ConnectionMetadataQuery) All(ctx context.Context) ([]*ConnectionMetadata, error) {
-	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryAll)
-	if err := cmq.prepareQuery(ctx); err != nil {
+func (_q *ConnectionMetadataQuery) All(ctx context.Context) ([]*ConnectionMetadata, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*ConnectionMetadata, *ConnectionMetadataQuery]()
-	return withInterceptors[[]*ConnectionMetadata](ctx, cmq, qr, cmq.inters)
+	return withInterceptors[[]*ConnectionMetadata](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) AllX(ctx context.Context) []*ConnectionMetadata {
-	nodes, err := cmq.All(ctx)
+func (_q *ConnectionMetadataQuery) AllX(ctx context.Context) []*ConnectionMetadata {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (cmq *ConnectionMetadataQuery) AllX(ctx context.Context) []*ConnectionMetad
 }
 
 // IDs executes the query and returns a list of ConnectionMetadata IDs.
-func (cmq *ConnectionMetadataQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if cmq.ctx.Unique == nil && cmq.path != nil {
-		cmq.Unique(true)
+func (_q *ConnectionMetadataQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryIDs)
-	if err = cmq.Select(connectionmetadata.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(connectionmetadata.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := cmq.IDs(ctx)
+func (_q *ConnectionMetadataQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (cmq *ConnectionMetadataQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (cmq *ConnectionMetadataQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryCount)
-	if err := cmq.prepareQuery(ctx); err != nil {
+func (_q *ConnectionMetadataQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, cmq, querierCount[*ConnectionMetadataQuery](), cmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*ConnectionMetadataQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) CountX(ctx context.Context) int {
-	count, err := cmq.Count(ctx)
+func (_q *ConnectionMetadataQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (cmq *ConnectionMetadataQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (cmq *ConnectionMetadataQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryExist)
-	switch _, err := cmq.FirstID(ctx); {
+func (_q *ConnectionMetadataQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (cmq *ConnectionMetadataQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (cmq *ConnectionMetadataQuery) ExistX(ctx context.Context) bool {
-	exist, err := cmq.Exist(ctx)
+func (_q *ConnectionMetadataQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (cmq *ConnectionMetadataQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the ConnectionMetadataQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (cmq *ConnectionMetadataQuery) Clone() *ConnectionMetadataQuery {
-	if cmq == nil {
+func (_q *ConnectionMetadataQuery) Clone() *ConnectionMetadataQuery {
+	if _q == nil {
 		return nil
 	}
 	return &ConnectionMetadataQuery{
-		config:              cmq.config,
-		ctx:                 cmq.ctx.Clone(),
-		order:               append([]connectionmetadata.OrderOption{}, cmq.order...),
-		inters:              append([]Interceptor{}, cmq.inters...),
-		predicates:          append([]predicate.ConnectionMetadata{}, cmq.predicates...),
-		withBazelInvocation: cmq.withBazelInvocation.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]connectionmetadata.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.ConnectionMetadata{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  cmq.sql.Clone(),
-		path: cmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (cmq *ConnectionMetadataQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *ConnectionMetadataQuery {
-	query := (&BazelInvocationClient{config: cmq.config}).Query()
+func (_q *ConnectionMetadataQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *ConnectionMetadataQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	cmq.withBazelInvocation = query
-	return cmq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (cmq *ConnectionMetadataQuery) WithBazelInvocation(opts ...func(*BazelInvoc
 //		GroupBy(connectionmetadata.FieldConnectionLastOpenAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (cmq *ConnectionMetadataQuery) GroupBy(field string, fields ...string) *ConnectionMetadataGroupBy {
-	cmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ConnectionMetadataGroupBy{build: cmq}
-	grbuild.flds = &cmq.ctx.Fields
+func (_q *ConnectionMetadataQuery) GroupBy(field string, fields ...string) *ConnectionMetadataGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &ConnectionMetadataGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = connectionmetadata.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (cmq *ConnectionMetadataQuery) GroupBy(field string, fields ...string) *Con
 //	client.ConnectionMetadata.Query().
 //		Select(connectionmetadata.FieldConnectionLastOpenAt).
 //		Scan(ctx, &v)
-func (cmq *ConnectionMetadataQuery) Select(fields ...string) *ConnectionMetadataSelect {
-	cmq.ctx.Fields = append(cmq.ctx.Fields, fields...)
-	sbuild := &ConnectionMetadataSelect{ConnectionMetadataQuery: cmq}
+func (_q *ConnectionMetadataQuery) Select(fields ...string) *ConnectionMetadataSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &ConnectionMetadataSelect{ConnectionMetadataQuery: _q}
 	sbuild.label = connectionmetadata.Label
-	sbuild.flds, sbuild.scan = &cmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a ConnectionMetadataSelect configured with the given aggregations.
-func (cmq *ConnectionMetadataQuery) Aggregate(fns ...AggregateFunc) *ConnectionMetadataSelect {
-	return cmq.Select().Aggregate(fns...)
+func (_q *ConnectionMetadataQuery) Aggregate(fns ...AggregateFunc) *ConnectionMetadataSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (cmq *ConnectionMetadataQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range cmq.inters {
+func (_q *ConnectionMetadataQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, cmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range cmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !connectionmetadata.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if cmq.path != nil {
-		prev, err := cmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		cmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (cmq *ConnectionMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ConnectionMetadata, error) {
+func (_q *ConnectionMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ConnectionMetadata, error) {
 	var (
 		nodes       = []*ConnectionMetadata{}
-		withFKs     = cmq.withFKs
-		_spec       = cmq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			cmq.withBazelInvocation != nil,
+			_q.withBazelInvocation != nil,
 		}
 	)
-	if cmq.withBazelInvocation != nil {
+	if _q.withBazelInvocation != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (cmq *ConnectionMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHo
 		return (*ConnectionMetadata).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &ConnectionMetadata{config: cmq.config}
+		node := &ConnectionMetadata{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(cmq.modifiers) > 0 {
-		_spec.Modifiers = cmq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, cmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := cmq.withBazelInvocation; query != nil {
-		if err := cmq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *ConnectionMetadata, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range cmq.loadTotal {
-		if err := cmq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (cmq *ConnectionMetadataQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*ConnectionMetadata, init func(*ConnectionMetadata), assign func(*ConnectionMetadata, *BazelInvocation)) error {
+func (_q *ConnectionMetadataQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*ConnectionMetadata, init func(*ConnectionMetadata), assign func(*ConnectionMetadata, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*ConnectionMetadata)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (cmq *ConnectionMetadataQuery) loadBazelInvocation(ctx context.Context, que
 	return nil
 }
 
-func (cmq *ConnectionMetadataQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := cmq.querySpec()
-	if len(cmq.modifiers) > 0 {
-		_spec.Modifiers = cmq.modifiers
+func (_q *ConnectionMetadataQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = cmq.ctx.Fields
-	if len(cmq.ctx.Fields) > 0 {
-		_spec.Unique = cmq.ctx.Unique != nil && *cmq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, cmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (cmq *ConnectionMetadataQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *ConnectionMetadataQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
-	_spec.From = cmq.sql
-	if unique := cmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if cmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := cmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, connectionmetadata.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (cmq *ConnectionMetadataQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := cmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := cmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := cmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := cmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (cmq *ConnectionMetadataQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (cmq *ConnectionMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(cmq.driver.Dialect())
+func (_q *ConnectionMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(connectionmetadata.Table)
-	columns := cmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = connectionmetadata.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if cmq.sql != nil {
-		selector = cmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if cmq.ctx.Unique != nil && *cmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range cmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range cmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := cmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := cmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type ConnectionMetadataGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (cmgb *ConnectionMetadataGroupBy) Aggregate(fns ...AggregateFunc) *ConnectionMetadataGroupBy {
-	cmgb.fns = append(cmgb.fns, fns...)
-	return cmgb
+func (_g *ConnectionMetadataGroupBy) Aggregate(fns ...AggregateFunc) *ConnectionMetadataGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (cmgb *ConnectionMetadataGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := cmgb.build.prepareQuery(ctx); err != nil {
+func (_g *ConnectionMetadataGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ConnectionMetadataQuery, *ConnectionMetadataGroupBy](ctx, cmgb.build, cmgb, cmgb.build.inters, v)
+	return scanWithInterceptors[*ConnectionMetadataQuery, *ConnectionMetadataGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (cmgb *ConnectionMetadataGroupBy) sqlScan(ctx context.Context, root *ConnectionMetadataQuery, v any) error {
+func (_g *ConnectionMetadataGroupBy) sqlScan(ctx context.Context, root *ConnectionMetadataQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(cmgb.fns))
-	for _, fn := range cmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*cmgb.flds)+len(cmgb.fns))
-		for _, f := range *cmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*cmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := cmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type ConnectionMetadataSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (cms *ConnectionMetadataSelect) Aggregate(fns ...AggregateFunc) *ConnectionMetadataSelect {
-	cms.fns = append(cms.fns, fns...)
-	return cms
+func (_s *ConnectionMetadataSelect) Aggregate(fns ...AggregateFunc) *ConnectionMetadataSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (cms *ConnectionMetadataSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cms.ctx, ent.OpQuerySelect)
-	if err := cms.prepareQuery(ctx); err != nil {
+func (_s *ConnectionMetadataSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ConnectionMetadataQuery, *ConnectionMetadataSelect](ctx, cms.ConnectionMetadataQuery, cms, cms.inters, v)
+	return scanWithInterceptors[*ConnectionMetadataQuery, *ConnectionMetadataSelect](ctx, _s.ConnectionMetadataQuery, _s, _s.inters, v)
 }
 
-func (cms *ConnectionMetadataSelect) sqlScan(ctx context.Context, root *ConnectionMetadataQuery, v any) error {
+func (_s *ConnectionMetadataSelect) sqlScan(ctx context.Context, root *ConnectionMetadataQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(cms.fns))
-	for _, fn := range cms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*cms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (cms *ConnectionMetadataSelect) sqlScan(ctx context.Context, root *Connecti
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := cms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

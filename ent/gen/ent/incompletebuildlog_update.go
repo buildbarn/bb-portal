@@ -22,24 +22,24 @@ type IncompleteBuildLogUpdate struct {
 }
 
 // Where appends a list predicates to the IncompleteBuildLogUpdate builder.
-func (iblu *IncompleteBuildLogUpdate) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogUpdate {
-	iblu.mutation.Where(ps...)
-	return iblu
+func (_u *IncompleteBuildLogUpdate) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Mutation returns the IncompleteBuildLogMutation object of the builder.
-func (iblu *IncompleteBuildLogUpdate) Mutation() *IncompleteBuildLogMutation {
-	return iblu.mutation
+func (_u *IncompleteBuildLogUpdate) Mutation() *IncompleteBuildLogMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (iblu *IncompleteBuildLogUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, iblu.sqlSave, iblu.mutation, iblu.hooks)
+func (_u *IncompleteBuildLogUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iblu *IncompleteBuildLogUpdate) SaveX(ctx context.Context) int {
-	affected, err := iblu.Save(ctx)
+func (_u *IncompleteBuildLogUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -47,39 +47,39 @@ func (iblu *IncompleteBuildLogUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (iblu *IncompleteBuildLogUpdate) Exec(ctx context.Context) error {
-	_, err := iblu.Save(ctx)
+func (_u *IncompleteBuildLogUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iblu *IncompleteBuildLogUpdate) ExecX(ctx context.Context) {
-	if err := iblu.Exec(ctx); err != nil {
+func (_u *IncompleteBuildLogUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iblu *IncompleteBuildLogUpdate) check() error {
-	if iblu.mutation.BazelInvocationCleared() && len(iblu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *IncompleteBuildLogUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "IncompleteBuildLog.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := iblu.check(); err != nil {
-		return n, err
+func (_u *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
-	if ps := iblu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, iblu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{incompletebuildlog.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -87,8 +87,8 @@ func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		return 0, err
 	}
-	iblu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // IncompleteBuildLogUpdateOne is the builder for updating a single IncompleteBuildLog entity.
@@ -100,31 +100,31 @@ type IncompleteBuildLogUpdateOne struct {
 }
 
 // Mutation returns the IncompleteBuildLogMutation object of the builder.
-func (ibluo *IncompleteBuildLogUpdateOne) Mutation() *IncompleteBuildLogMutation {
-	return ibluo.mutation
+func (_u *IncompleteBuildLogUpdateOne) Mutation() *IncompleteBuildLogMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the IncompleteBuildLogUpdate builder.
-func (ibluo *IncompleteBuildLogUpdateOne) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogUpdateOne {
-	ibluo.mutation.Where(ps...)
-	return ibluo
+func (_u *IncompleteBuildLogUpdateOne) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ibluo *IncompleteBuildLogUpdateOne) Select(field string, fields ...string) *IncompleteBuildLogUpdateOne {
-	ibluo.fields = append([]string{field}, fields...)
-	return ibluo
+func (_u *IncompleteBuildLogUpdateOne) Select(field string, fields ...string) *IncompleteBuildLogUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated IncompleteBuildLog entity.
-func (ibluo *IncompleteBuildLogUpdateOne) Save(ctx context.Context) (*IncompleteBuildLog, error) {
-	return withHooks(ctx, ibluo.sqlSave, ibluo.mutation, ibluo.hooks)
+func (_u *IncompleteBuildLogUpdateOne) Save(ctx context.Context) (*IncompleteBuildLog, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ibluo *IncompleteBuildLogUpdateOne) SaveX(ctx context.Context) *IncompleteBuildLog {
-	node, err := ibluo.Save(ctx)
+func (_u *IncompleteBuildLogUpdateOne) SaveX(ctx context.Context) *IncompleteBuildLog {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -132,37 +132,37 @@ func (ibluo *IncompleteBuildLogUpdateOne) SaveX(ctx context.Context) *Incomplete
 }
 
 // Exec executes the query on the entity.
-func (ibluo *IncompleteBuildLogUpdateOne) Exec(ctx context.Context) error {
-	_, err := ibluo.Save(ctx)
+func (_u *IncompleteBuildLogUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ibluo *IncompleteBuildLogUpdateOne) ExecX(ctx context.Context) {
-	if err := ibluo.Exec(ctx); err != nil {
+func (_u *IncompleteBuildLogUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ibluo *IncompleteBuildLogUpdateOne) check() error {
-	if ibluo.mutation.BazelInvocationCleared() && len(ibluo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *IncompleteBuildLogUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "IncompleteBuildLog.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *IncompleteBuildLog, err error) {
-	if err := ibluo.check(); err != nil {
+func (_u *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *IncompleteBuildLog, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
-	id, ok := ibluo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "IncompleteBuildLog.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ibluo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, incompletebuildlog.FieldID)
 		for _, f := range fields {
@@ -174,17 +174,17 @@ func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *I
 			}
 		}
 	}
-	if ps := ibluo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	_node = &IncompleteBuildLog{config: ibluo.config}
+	_node = &IncompleteBuildLog{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ibluo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{incompletebuildlog.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -192,6 +192,6 @@ func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *I
 		}
 		return nil, err
 	}
-	ibluo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

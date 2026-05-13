@@ -1,2 +1,4 @@
+common --@com_google_protobuf//bazel/toolchains:prefer_prebuilt_protoc
+
 import %workspace%/../../.common.bazelrc
 try-import %workspace%/../../.user.bazelrc

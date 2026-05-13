@@ -23,85 +23,85 @@ type RunnerCountCreate struct {
 }
 
 // SetName sets the "name" field.
-func (rcc *RunnerCountCreate) SetName(s string) *RunnerCountCreate {
-	rcc.mutation.SetName(s)
-	return rcc
+func (_c *RunnerCountCreate) SetName(v string) *RunnerCountCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (rcc *RunnerCountCreate) SetNillableName(s *string) *RunnerCountCreate {
-	if s != nil {
-		rcc.SetName(*s)
+func (_c *RunnerCountCreate) SetNillableName(v *string) *RunnerCountCreate {
+	if v != nil {
+		_c.SetName(*v)
 	}
-	return rcc
+	return _c
 }
 
 // SetExecKind sets the "exec_kind" field.
-func (rcc *RunnerCountCreate) SetExecKind(s string) *RunnerCountCreate {
-	rcc.mutation.SetExecKind(s)
-	return rcc
+func (_c *RunnerCountCreate) SetExecKind(v string) *RunnerCountCreate {
+	_c.mutation.SetExecKind(v)
+	return _c
 }
 
 // SetNillableExecKind sets the "exec_kind" field if the given value is not nil.
-func (rcc *RunnerCountCreate) SetNillableExecKind(s *string) *RunnerCountCreate {
-	if s != nil {
-		rcc.SetExecKind(*s)
+func (_c *RunnerCountCreate) SetNillableExecKind(v *string) *RunnerCountCreate {
+	if v != nil {
+		_c.SetExecKind(*v)
 	}
-	return rcc
+	return _c
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (rcc *RunnerCountCreate) SetActionsExecuted(i int64) *RunnerCountCreate {
-	rcc.mutation.SetActionsExecuted(i)
-	return rcc
+func (_c *RunnerCountCreate) SetActionsExecuted(v int64) *RunnerCountCreate {
+	_c.mutation.SetActionsExecuted(v)
+	return _c
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (rcc *RunnerCountCreate) SetNillableActionsExecuted(i *int64) *RunnerCountCreate {
-	if i != nil {
-		rcc.SetActionsExecuted(*i)
+func (_c *RunnerCountCreate) SetNillableActionsExecuted(v *int64) *RunnerCountCreate {
+	if v != nil {
+		_c.SetActionsExecuted(*v)
 	}
-	return rcc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (rcc *RunnerCountCreate) SetID(i int64) *RunnerCountCreate {
-	rcc.mutation.SetID(i)
-	return rcc
+func (_c *RunnerCountCreate) SetID(v int64) *RunnerCountCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcc *RunnerCountCreate) SetActionSummaryID(id int64) *RunnerCountCreate {
-	rcc.mutation.SetActionSummaryID(id)
-	return rcc
+func (_c *RunnerCountCreate) SetActionSummaryID(id int64) *RunnerCountCreate {
+	_c.mutation.SetActionSummaryID(id)
+	return _c
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcc *RunnerCountCreate) SetNillableActionSummaryID(id *int64) *RunnerCountCreate {
+func (_c *RunnerCountCreate) SetNillableActionSummaryID(id *int64) *RunnerCountCreate {
 	if id != nil {
-		rcc = rcc.SetActionSummaryID(*id)
+		_c = _c.SetActionSummaryID(*id)
 	}
-	return rcc
+	return _c
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (rcc *RunnerCountCreate) SetActionSummary(a *ActionSummary) *RunnerCountCreate {
-	return rcc.SetActionSummaryID(a.ID)
+func (_c *RunnerCountCreate) SetActionSummary(v *ActionSummary) *RunnerCountCreate {
+	return _c.SetActionSummaryID(v.ID)
 }
 
 // Mutation returns the RunnerCountMutation object of the builder.
-func (rcc *RunnerCountCreate) Mutation() *RunnerCountMutation {
-	return rcc.mutation
+func (_c *RunnerCountCreate) Mutation() *RunnerCountMutation {
+	return _c.mutation
 }
 
 // Save creates the RunnerCount in the database.
-func (rcc *RunnerCountCreate) Save(ctx context.Context) (*RunnerCount, error) {
-	return withHooks(ctx, rcc.sqlSave, rcc.mutation, rcc.hooks)
+func (_c *RunnerCountCreate) Save(ctx context.Context) (*RunnerCount, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (rcc *RunnerCountCreate) SaveX(ctx context.Context) *RunnerCount {
-	v, err := rcc.Save(ctx)
+func (_c *RunnerCountCreate) SaveX(ctx context.Context) *RunnerCount {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -109,29 +109,29 @@ func (rcc *RunnerCountCreate) SaveX(ctx context.Context) *RunnerCount {
 }
 
 // Exec executes the query.
-func (rcc *RunnerCountCreate) Exec(ctx context.Context) error {
-	_, err := rcc.Save(ctx)
+func (_c *RunnerCountCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcc *RunnerCountCreate) ExecX(ctx context.Context) {
-	if err := rcc.Exec(ctx); err != nil {
+func (_c *RunnerCountCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (rcc *RunnerCountCreate) check() error {
+func (_c *RunnerCountCreate) check() error {
 	return nil
 }
 
-func (rcc *RunnerCountCreate) sqlSave(ctx context.Context) (*RunnerCount, error) {
-	if err := rcc.check(); err != nil {
+func (_c *RunnerCountCreate) sqlSave(ctx context.Context) (*RunnerCount, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := rcc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, rcc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -141,34 +141,34 @@ func (rcc *RunnerCountCreate) sqlSave(ctx context.Context) (*RunnerCount, error)
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	rcc.mutation.id = &_node.ID
-	rcc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) {
+func (_c *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) {
 	var (
-		_node = &RunnerCount{config: rcc.config}
+		_node = &RunnerCount{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(runnercount.Table, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = rcc.conflict
-	if id, ok := rcc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := rcc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(runnercount.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := rcc.mutation.ExecKind(); ok {
+	if value, ok := _c.mutation.ExecKind(); ok {
 		_spec.SetField(runnercount.FieldExecKind, field.TypeString, value)
 		_node.ExecKind = value
 	}
-	if value, ok := rcc.mutation.ActionsExecuted(); ok {
+	if value, ok := _c.mutation.ActionsExecuted(); ok {
 		_spec.SetField(runnercount.FieldActionsExecuted, field.TypeInt64, value)
 		_node.ActionsExecuted = value
 	}
-	if nodes := rcc.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -204,10 +204,10 @@ func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) 
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (rcc *RunnerCountCreate) OnConflict(opts ...sql.ConflictOption) *RunnerCountUpsertOne {
-	rcc.conflict = opts
+func (_c *RunnerCountCreate) OnConflict(opts ...sql.ConflictOption) *RunnerCountUpsertOne {
+	_c.conflict = opts
 	return &RunnerCountUpsertOne{
-		create: rcc,
+		create: _c,
 	}
 }
 
@@ -217,10 +217,10 @@ func (rcc *RunnerCountCreate) OnConflict(opts ...sql.ConflictOption) *RunnerCoun
 //	client.RunnerCount.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (rcc *RunnerCountCreate) OnConflictColumns(columns ...string) *RunnerCountUpsertOne {
-	rcc.conflict = append(rcc.conflict, sql.ConflictColumns(columns...))
+func (_c *RunnerCountCreate) OnConflictColumns(columns ...string) *RunnerCountUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &RunnerCountUpsertOne{
-		create: rcc,
+		create: _c,
 	}
 }
 
@@ -457,16 +457,16 @@ type RunnerCountCreateBulk struct {
 }
 
 // Save creates the RunnerCount entities in the database.
-func (rccb *RunnerCountCreateBulk) Save(ctx context.Context) ([]*RunnerCount, error) {
-	if rccb.err != nil {
-		return nil, rccb.err
+func (_c *RunnerCountCreateBulk) Save(ctx context.Context) ([]*RunnerCount, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(rccb.builders))
-	nodes := make([]*RunnerCount, len(rccb.builders))
-	mutators := make([]Mutator, len(rccb.builders))
-	for i := range rccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*RunnerCount, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := rccb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*RunnerCountMutation)
 				if !ok {
@@ -479,12 +479,12 @@ func (rccb *RunnerCountCreateBulk) Save(ctx context.Context) ([]*RunnerCount, er
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, rccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = rccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, rccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -508,7 +508,7 @@ func (rccb *RunnerCountCreateBulk) Save(ctx context.Context) ([]*RunnerCount, er
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, rccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -516,8 +516,8 @@ func (rccb *RunnerCountCreateBulk) Save(ctx context.Context) ([]*RunnerCount, er
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rccb *RunnerCountCreateBulk) SaveX(ctx context.Context) []*RunnerCount {
-	v, err := rccb.Save(ctx)
+func (_c *RunnerCountCreateBulk) SaveX(ctx context.Context) []*RunnerCount {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -525,14 +525,14 @@ func (rccb *RunnerCountCreateBulk) SaveX(ctx context.Context) []*RunnerCount {
 }
 
 // Exec executes the query.
-func (rccb *RunnerCountCreateBulk) Exec(ctx context.Context) error {
-	_, err := rccb.Save(ctx)
+func (_c *RunnerCountCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rccb *RunnerCountCreateBulk) ExecX(ctx context.Context) {
-	if err := rccb.Exec(ctx); err != nil {
+func (_c *RunnerCountCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -552,10 +552,10 @@ func (rccb *RunnerCountCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (rccb *RunnerCountCreateBulk) OnConflict(opts ...sql.ConflictOption) *RunnerCountUpsertBulk {
-	rccb.conflict = opts
+func (_c *RunnerCountCreateBulk) OnConflict(opts ...sql.ConflictOption) *RunnerCountUpsertBulk {
+	_c.conflict = opts
 	return &RunnerCountUpsertBulk{
-		create: rccb,
+		create: _c,
 	}
 }
 
@@ -565,10 +565,10 @@ func (rccb *RunnerCountCreateBulk) OnConflict(opts ...sql.ConflictOption) *Runne
 //	client.RunnerCount.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (rccb *RunnerCountCreateBulk) OnConflictColumns(columns ...string) *RunnerCountUpsertBulk {
-	rccb.conflict = append(rccb.conflict, sql.ConflictColumns(columns...))
+func (_c *RunnerCountCreateBulk) OnConflictColumns(columns ...string) *RunnerCountUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &RunnerCountUpsertBulk{
-		create: rccb,
+		create: _c,
 	}
 }
 

@@ -192,7 +192,8 @@ func FindOrCreateAuthenticatedUser(
 		}
 	}
 
-	authenticatedUserDb, err := db.Sqlc().CreateAuthenticatedUser(ctx,
+	authenticatedUserDb, err := db.Sqlc().CreateAuthenticatedUser(
+		ctx,
 		sqlc.CreateAuthenticatedUserParams{
 			UserUuid:    uuid.NewSHA1(uuid.NameSpaceURL, []byte(userSummary.ExternalID)),
 			ExternalID:  userSummary.ExternalID,
@@ -247,7 +248,8 @@ func FindOrCreateInvocation(
 	})
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return 0, status.Errorf(codes.FailedPrecondition,
+			return 0, status.Errorf(
+				codes.FailedPrecondition,
 				"Failed to create invocation with id %s. The id may refer to a invocation that is locked for writing",
 				invocationUUID,
 			)

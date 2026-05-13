@@ -33,44 +33,44 @@ type SystemNetworkStatsQuery struct {
 }
 
 // Where adds a new predicate for the SystemNetworkStatsQuery builder.
-func (snsq *SystemNetworkStatsQuery) Where(ps ...predicate.SystemNetworkStats) *SystemNetworkStatsQuery {
-	snsq.predicates = append(snsq.predicates, ps...)
-	return snsq
+func (_q *SystemNetworkStatsQuery) Where(ps ...predicate.SystemNetworkStats) *SystemNetworkStatsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (snsq *SystemNetworkStatsQuery) Limit(limit int) *SystemNetworkStatsQuery {
-	snsq.ctx.Limit = &limit
-	return snsq
+func (_q *SystemNetworkStatsQuery) Limit(limit int) *SystemNetworkStatsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (snsq *SystemNetworkStatsQuery) Offset(offset int) *SystemNetworkStatsQuery {
-	snsq.ctx.Offset = &offset
-	return snsq
+func (_q *SystemNetworkStatsQuery) Offset(offset int) *SystemNetworkStatsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (snsq *SystemNetworkStatsQuery) Unique(unique bool) *SystemNetworkStatsQuery {
-	snsq.ctx.Unique = &unique
-	return snsq
+func (_q *SystemNetworkStatsQuery) Unique(unique bool) *SystemNetworkStatsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (snsq *SystemNetworkStatsQuery) Order(o ...systemnetworkstats.OrderOption) *SystemNetworkStatsQuery {
-	snsq.order = append(snsq.order, o...)
-	return snsq
+func (_q *SystemNetworkStatsQuery) Order(o ...systemnetworkstats.OrderOption) *SystemNetworkStatsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryNetworkMetrics chains the current query on the "network_metrics" edge.
-func (snsq *SystemNetworkStatsQuery) QueryNetworkMetrics() *NetworkMetricsQuery {
-	query := (&NetworkMetricsClient{config: snsq.config}).Query()
+func (_q *SystemNetworkStatsQuery) QueryNetworkMetrics() *NetworkMetricsQuery {
+	query := (&NetworkMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := snsq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := snsq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (snsq *SystemNetworkStatsQuery) QueryNetworkMetrics() *NetworkMetricsQuery 
 			sqlgraph.To(networkmetrics.Table, networkmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, systemnetworkstats.NetworkMetricsTable, systemnetworkstats.NetworkMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(snsq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (snsq *SystemNetworkStatsQuery) QueryNetworkMetrics() *NetworkMetricsQuery 
 
 // First returns the first SystemNetworkStats entity from the query.
 // Returns a *NotFoundError when no SystemNetworkStats was found.
-func (snsq *SystemNetworkStatsQuery) First(ctx context.Context) (*SystemNetworkStats, error) {
-	nodes, err := snsq.Limit(1).All(setContextOp(ctx, snsq.ctx, ent.OpQueryFirst))
+func (_q *SystemNetworkStatsQuery) First(ctx context.Context) (*SystemNetworkStats, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (snsq *SystemNetworkStatsQuery) First(ctx context.Context) (*SystemNetworkS
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) FirstX(ctx context.Context) *SystemNetworkStats {
-	node, err := snsq.First(ctx)
+func (_q *SystemNetworkStatsQuery) FirstX(ctx context.Context) *SystemNetworkStats {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (snsq *SystemNetworkStatsQuery) FirstX(ctx context.Context) *SystemNetworkS
 
 // FirstID returns the first SystemNetworkStats ID from the query.
 // Returns a *NotFoundError when no SystemNetworkStats ID was found.
-func (snsq *SystemNetworkStatsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *SystemNetworkStatsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = snsq.Limit(1).IDs(setContextOp(ctx, snsq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (snsq *SystemNetworkStatsQuery) FirstID(ctx context.Context) (id int64, err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := snsq.FirstID(ctx)
+func (_q *SystemNetworkStatsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (snsq *SystemNetworkStatsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single SystemNetworkStats entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one SystemNetworkStats entity is found.
 // Returns a *NotFoundError when no SystemNetworkStats entities are found.
-func (snsq *SystemNetworkStatsQuery) Only(ctx context.Context) (*SystemNetworkStats, error) {
-	nodes, err := snsq.Limit(2).All(setContextOp(ctx, snsq.ctx, ent.OpQueryOnly))
+func (_q *SystemNetworkStatsQuery) Only(ctx context.Context) (*SystemNetworkStats, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (snsq *SystemNetworkStatsQuery) Only(ctx context.Context) (*SystemNetworkSt
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) OnlyX(ctx context.Context) *SystemNetworkStats {
-	node, err := snsq.Only(ctx)
+func (_q *SystemNetworkStatsQuery) OnlyX(ctx context.Context) *SystemNetworkStats {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (snsq *SystemNetworkStatsQuery) OnlyX(ctx context.Context) *SystemNetworkSt
 // OnlyID is like Only, but returns the only SystemNetworkStats ID in the query.
 // Returns a *NotSingularError when more than one SystemNetworkStats ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (snsq *SystemNetworkStatsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *SystemNetworkStatsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = snsq.Limit(2).IDs(setContextOp(ctx, snsq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (snsq *SystemNetworkStatsQuery) OnlyID(ctx context.Context) (id int64, err 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := snsq.OnlyID(ctx)
+func (_q *SystemNetworkStatsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (snsq *SystemNetworkStatsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of SystemNetworkStatsSlice.
-func (snsq *SystemNetworkStatsQuery) All(ctx context.Context) ([]*SystemNetworkStats, error) {
-	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryAll)
-	if err := snsq.prepareQuery(ctx); err != nil {
+func (_q *SystemNetworkStatsQuery) All(ctx context.Context) ([]*SystemNetworkStats, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*SystemNetworkStats, *SystemNetworkStatsQuery]()
-	return withInterceptors[[]*SystemNetworkStats](ctx, snsq, qr, snsq.inters)
+	return withInterceptors[[]*SystemNetworkStats](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) AllX(ctx context.Context) []*SystemNetworkStats {
-	nodes, err := snsq.All(ctx)
+func (_q *SystemNetworkStatsQuery) AllX(ctx context.Context) []*SystemNetworkStats {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (snsq *SystemNetworkStatsQuery) AllX(ctx context.Context) []*SystemNetworkS
 }
 
 // IDs executes the query and returns a list of SystemNetworkStats IDs.
-func (snsq *SystemNetworkStatsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if snsq.ctx.Unique == nil && snsq.path != nil {
-		snsq.Unique(true)
+func (_q *SystemNetworkStatsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryIDs)
-	if err = snsq.Select(systemnetworkstats.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(systemnetworkstats.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := snsq.IDs(ctx)
+func (_q *SystemNetworkStatsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (snsq *SystemNetworkStatsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (snsq *SystemNetworkStatsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryCount)
-	if err := snsq.prepareQuery(ctx); err != nil {
+func (_q *SystemNetworkStatsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, snsq, querierCount[*SystemNetworkStatsQuery](), snsq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*SystemNetworkStatsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) CountX(ctx context.Context) int {
-	count, err := snsq.Count(ctx)
+func (_q *SystemNetworkStatsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (snsq *SystemNetworkStatsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (snsq *SystemNetworkStatsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryExist)
-	switch _, err := snsq.FirstID(ctx); {
+func (_q *SystemNetworkStatsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (snsq *SystemNetworkStatsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (snsq *SystemNetworkStatsQuery) ExistX(ctx context.Context) bool {
-	exist, err := snsq.Exist(ctx)
+func (_q *SystemNetworkStatsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (snsq *SystemNetworkStatsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the SystemNetworkStatsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (snsq *SystemNetworkStatsQuery) Clone() *SystemNetworkStatsQuery {
-	if snsq == nil {
+func (_q *SystemNetworkStatsQuery) Clone() *SystemNetworkStatsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &SystemNetworkStatsQuery{
-		config:             snsq.config,
-		ctx:                snsq.ctx.Clone(),
-		order:              append([]systemnetworkstats.OrderOption{}, snsq.order...),
-		inters:             append([]Interceptor{}, snsq.inters...),
-		predicates:         append([]predicate.SystemNetworkStats{}, snsq.predicates...),
-		withNetworkMetrics: snsq.withNetworkMetrics.Clone(),
+		config:             _q.config,
+		ctx:                _q.ctx.Clone(),
+		order:              append([]systemnetworkstats.OrderOption{}, _q.order...),
+		inters:             append([]Interceptor{}, _q.inters...),
+		predicates:         append([]predicate.SystemNetworkStats{}, _q.predicates...),
+		withNetworkMetrics: _q.withNetworkMetrics.Clone(),
 		// clone intermediate query.
-		sql:  snsq.sql.Clone(),
-		path: snsq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithNetworkMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "network_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (snsq *SystemNetworkStatsQuery) WithNetworkMetrics(opts ...func(*NetworkMetricsQuery)) *SystemNetworkStatsQuery {
-	query := (&NetworkMetricsClient{config: snsq.config}).Query()
+func (_q *SystemNetworkStatsQuery) WithNetworkMetrics(opts ...func(*NetworkMetricsQuery)) *SystemNetworkStatsQuery {
+	query := (&NetworkMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	snsq.withNetworkMetrics = query
-	return snsq
+	_q.withNetworkMetrics = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (snsq *SystemNetworkStatsQuery) WithNetworkMetrics(opts ...func(*NetworkMet
 //		GroupBy(systemnetworkstats.FieldBytesSent).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (snsq *SystemNetworkStatsQuery) GroupBy(field string, fields ...string) *SystemNetworkStatsGroupBy {
-	snsq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &SystemNetworkStatsGroupBy{build: snsq}
-	grbuild.flds = &snsq.ctx.Fields
+func (_q *SystemNetworkStatsQuery) GroupBy(field string, fields ...string) *SystemNetworkStatsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &SystemNetworkStatsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = systemnetworkstats.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (snsq *SystemNetworkStatsQuery) GroupBy(field string, fields ...string) *Sy
 //	client.SystemNetworkStats.Query().
 //		Select(systemnetworkstats.FieldBytesSent).
 //		Scan(ctx, &v)
-func (snsq *SystemNetworkStatsQuery) Select(fields ...string) *SystemNetworkStatsSelect {
-	snsq.ctx.Fields = append(snsq.ctx.Fields, fields...)
-	sbuild := &SystemNetworkStatsSelect{SystemNetworkStatsQuery: snsq}
+func (_q *SystemNetworkStatsQuery) Select(fields ...string) *SystemNetworkStatsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &SystemNetworkStatsSelect{SystemNetworkStatsQuery: _q}
 	sbuild.label = systemnetworkstats.Label
-	sbuild.flds, sbuild.scan = &snsq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a SystemNetworkStatsSelect configured with the given aggregations.
-func (snsq *SystemNetworkStatsQuery) Aggregate(fns ...AggregateFunc) *SystemNetworkStatsSelect {
-	return snsq.Select().Aggregate(fns...)
+func (_q *SystemNetworkStatsQuery) Aggregate(fns ...AggregateFunc) *SystemNetworkStatsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (snsq *SystemNetworkStatsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range snsq.inters {
+func (_q *SystemNetworkStatsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, snsq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range snsq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !systemnetworkstats.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if snsq.path != nil {
-		prev, err := snsq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		snsq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (snsq *SystemNetworkStatsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SystemNetworkStats, error) {
+func (_q *SystemNetworkStatsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SystemNetworkStats, error) {
 	var (
 		nodes       = []*SystemNetworkStats{}
-		withFKs     = snsq.withFKs
-		_spec       = snsq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			snsq.withNetworkMetrics != nil,
+			_q.withNetworkMetrics != nil,
 		}
 	)
-	if snsq.withNetworkMetrics != nil {
+	if _q.withNetworkMetrics != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (snsq *SystemNetworkStatsQuery) sqlAll(ctx context.Context, hooks ...queryH
 		return (*SystemNetworkStats).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &SystemNetworkStats{config: snsq.config}
+		node := &SystemNetworkStats{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(snsq.modifiers) > 0 {
-		_spec.Modifiers = snsq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, snsq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := snsq.withNetworkMetrics; query != nil {
-		if err := snsq.loadNetworkMetrics(ctx, query, nodes, nil,
+	if query := _q.withNetworkMetrics; query != nil {
+		if err := _q.loadNetworkMetrics(ctx, query, nodes, nil,
 			func(n *SystemNetworkStats, e *NetworkMetrics) { n.Edges.NetworkMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range snsq.loadTotal {
-		if err := snsq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (snsq *SystemNetworkStatsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMetricsQuery, nodes []*SystemNetworkStats, init func(*SystemNetworkStats), assign func(*SystemNetworkStats, *NetworkMetrics)) error {
+func (_q *SystemNetworkStatsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMetricsQuery, nodes []*SystemNetworkStats, init func(*SystemNetworkStats), assign func(*SystemNetworkStats, *NetworkMetrics)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*SystemNetworkStats)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (snsq *SystemNetworkStatsQuery) loadNetworkMetrics(ctx context.Context, que
 	return nil
 }
 
-func (snsq *SystemNetworkStatsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := snsq.querySpec()
-	if len(snsq.modifiers) > 0 {
-		_spec.Modifiers = snsq.modifiers
+func (_q *SystemNetworkStatsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = snsq.ctx.Fields
-	if len(snsq.ctx.Fields) > 0 {
-		_spec.Unique = snsq.ctx.Unique != nil && *snsq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, snsq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (snsq *SystemNetworkStatsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *SystemNetworkStatsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
-	_spec.From = snsq.sql
-	if unique := snsq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if snsq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := snsq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, systemnetworkstats.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (snsq *SystemNetworkStatsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := snsq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := snsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := snsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := snsq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (snsq *SystemNetworkStatsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (snsq *SystemNetworkStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(snsq.driver.Dialect())
+func (_q *SystemNetworkStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(systemnetworkstats.Table)
-	columns := snsq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = systemnetworkstats.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if snsq.sql != nil {
-		selector = snsq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if snsq.ctx.Unique != nil && *snsq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range snsq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range snsq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := snsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := snsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type SystemNetworkStatsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (snsgb *SystemNetworkStatsGroupBy) Aggregate(fns ...AggregateFunc) *SystemNetworkStatsGroupBy {
-	snsgb.fns = append(snsgb.fns, fns...)
-	return snsgb
+func (_g *SystemNetworkStatsGroupBy) Aggregate(fns ...AggregateFunc) *SystemNetworkStatsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (snsgb *SystemNetworkStatsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, snsgb.build.ctx, ent.OpQueryGroupBy)
-	if err := snsgb.build.prepareQuery(ctx); err != nil {
+func (_g *SystemNetworkStatsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SystemNetworkStatsQuery, *SystemNetworkStatsGroupBy](ctx, snsgb.build, snsgb, snsgb.build.inters, v)
+	return scanWithInterceptors[*SystemNetworkStatsQuery, *SystemNetworkStatsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (snsgb *SystemNetworkStatsGroupBy) sqlScan(ctx context.Context, root *SystemNetworkStatsQuery, v any) error {
+func (_g *SystemNetworkStatsGroupBy) sqlScan(ctx context.Context, root *SystemNetworkStatsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(snsgb.fns))
-	for _, fn := range snsgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*snsgb.flds)+len(snsgb.fns))
-		for _, f := range *snsgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*snsgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := snsgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type SystemNetworkStatsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (snss *SystemNetworkStatsSelect) Aggregate(fns ...AggregateFunc) *SystemNetworkStatsSelect {
-	snss.fns = append(snss.fns, fns...)
-	return snss
+func (_s *SystemNetworkStatsSelect) Aggregate(fns ...AggregateFunc) *SystemNetworkStatsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (snss *SystemNetworkStatsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, snss.ctx, ent.OpQuerySelect)
-	if err := snss.prepareQuery(ctx); err != nil {
+func (_s *SystemNetworkStatsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SystemNetworkStatsQuery, *SystemNetworkStatsSelect](ctx, snss.SystemNetworkStatsQuery, snss, snss.inters, v)
+	return scanWithInterceptors[*SystemNetworkStatsQuery, *SystemNetworkStatsSelect](ctx, _s.SystemNetworkStatsQuery, _s, _s.inters, v)
 }
 
-func (snss *SystemNetworkStatsSelect) sqlScan(ctx context.Context, root *SystemNetworkStatsQuery, v any) error {
+func (_s *SystemNetworkStatsSelect) sqlScan(ctx context.Context, root *SystemNetworkStatsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(snss.fns))
-	for _, fn := range snss.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*snss.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (snss *SystemNetworkStatsSelect) sqlScan(ctx context.Context, root *SystemN
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := snss.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

@@ -81,7 +81,7 @@ func (*TargetKindMapping) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TargetKindMapping fields.
-func (tkm *TargetKindMapping) assignValues(columns []string, values []any) error {
+func (_m *TargetKindMapping) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -92,27 +92,27 @@ func (tkm *TargetKindMapping) assignValues(columns []string, values []any) error
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tkm.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case targetkindmapping.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				tkm.BazelInvocationID = value.Int64
+				_m.BazelInvocationID = value.Int64
 			}
 		case targetkindmapping.FieldTargetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field target_id", values[i])
 			} else if value.Valid {
-				tkm.TargetID = value.Int64
+				_m.TargetID = value.Int64
 			}
 		case targetkindmapping.FieldStartTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time_in_ms", values[i])
 			} else if value.Valid {
-				tkm.StartTimeInMs = value.Int64
+				_m.StartTimeInMs = value.Int64
 			}
 		default:
-			tkm.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -120,51 +120,51 @@ func (tkm *TargetKindMapping) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TargetKindMapping.
 // This includes values selected through modifiers, order, etc.
-func (tkm *TargetKindMapping) Value(name string) (ent.Value, error) {
-	return tkm.selectValues.Get(name)
+func (_m *TargetKindMapping) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the TargetKindMapping entity.
-func (tkm *TargetKindMapping) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewTargetKindMappingClient(tkm.config).QueryBazelInvocation(tkm)
+func (_m *TargetKindMapping) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewTargetKindMappingClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // QueryTarget queries the "target" edge of the TargetKindMapping entity.
-func (tkm *TargetKindMapping) QueryTarget() *TargetQuery {
-	return NewTargetKindMappingClient(tkm.config).QueryTarget(tkm)
+func (_m *TargetKindMapping) QueryTarget() *TargetQuery {
+	return NewTargetKindMappingClient(_m.config).QueryTarget(_m)
 }
 
 // Update returns a builder for updating this TargetKindMapping.
 // Note that you need to call TargetKindMapping.Unwrap() before calling this method if this TargetKindMapping
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (tkm *TargetKindMapping) Update() *TargetKindMappingUpdateOne {
-	return NewTargetKindMappingClient(tkm.config).UpdateOne(tkm)
+func (_m *TargetKindMapping) Update() *TargetKindMappingUpdateOne {
+	return NewTargetKindMappingClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TargetKindMapping entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (tkm *TargetKindMapping) Unwrap() *TargetKindMapping {
-	_tx, ok := tkm.config.driver.(*txDriver)
+func (_m *TargetKindMapping) Unwrap() *TargetKindMapping {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TargetKindMapping is not a transactional entity")
 	}
-	tkm.config.driver = _tx.drv
-	return tkm
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (tkm *TargetKindMapping) String() string {
+func (_m *TargetKindMapping) String() string {
 	var builder strings.Builder
 	builder.WriteString("TargetKindMapping(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", tkm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("bazel_invocation_id=")
-	builder.WriteString(fmt.Sprintf("%v", tkm.BazelInvocationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BazelInvocationID))
 	builder.WriteString(", ")
 	builder.WriteString("target_id=")
-	builder.WriteString(fmt.Sprintf("%v", tkm.TargetID))
+	builder.WriteString(fmt.Sprintf("%v", _m.TargetID))
 	builder.WriteString(", ")
 	builder.WriteString("start_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", tkm.StartTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.StartTimeInMs))
 	builder.WriteByte(')')
 	return builder.String()
 }

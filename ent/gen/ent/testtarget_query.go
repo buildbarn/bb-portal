@@ -33,44 +33,44 @@ type TestTargetQuery struct {
 }
 
 // Where adds a new predicate for the TestTargetQuery builder.
-func (ttq *TestTargetQuery) Where(ps ...predicate.TestTarget) *TestTargetQuery {
-	ttq.predicates = append(ttq.predicates, ps...)
-	return ttq
+func (_q *TestTargetQuery) Where(ps ...predicate.TestTarget) *TestTargetQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (ttq *TestTargetQuery) Limit(limit int) *TestTargetQuery {
-	ttq.ctx.Limit = &limit
-	return ttq
+func (_q *TestTargetQuery) Limit(limit int) *TestTargetQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (ttq *TestTargetQuery) Offset(offset int) *TestTargetQuery {
-	ttq.ctx.Offset = &offset
-	return ttq
+func (_q *TestTargetQuery) Offset(offset int) *TestTargetQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (ttq *TestTargetQuery) Unique(unique bool) *TestTargetQuery {
-	ttq.ctx.Unique = &unique
-	return ttq
+func (_q *TestTargetQuery) Unique(unique bool) *TestTargetQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (ttq *TestTargetQuery) Order(o ...testtarget.OrderOption) *TestTargetQuery {
-	ttq.order = append(ttq.order, o...)
-	return ttq
+func (_q *TestTargetQuery) Order(o ...testtarget.OrderOption) *TestTargetQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryTarget chains the current query on the "target" edge.
-func (ttq *TestTargetQuery) QueryTarget() *TargetQuery {
-	query := (&TargetClient{config: ttq.config}).Query()
+func (_q *TestTargetQuery) QueryTarget() *TargetQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ttq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ttq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (ttq *TestTargetQuery) QueryTarget() *TargetQuery {
 			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, testtarget.TargetTable, testtarget.TargetColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ttq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (ttq *TestTargetQuery) QueryTarget() *TargetQuery {
 
 // First returns the first TestTarget entity from the query.
 // Returns a *NotFoundError when no TestTarget was found.
-func (ttq *TestTargetQuery) First(ctx context.Context) (*TestTarget, error) {
-	nodes, err := ttq.Limit(1).All(setContextOp(ctx, ttq.ctx, ent.OpQueryFirst))
+func (_q *TestTargetQuery) First(ctx context.Context) (*TestTarget, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (ttq *TestTargetQuery) First(ctx context.Context) (*TestTarget, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (ttq *TestTargetQuery) FirstX(ctx context.Context) *TestTarget {
-	node, err := ttq.First(ctx)
+func (_q *TestTargetQuery) FirstX(ctx context.Context) *TestTarget {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (ttq *TestTargetQuery) FirstX(ctx context.Context) *TestTarget {
 
 // FirstID returns the first TestTarget ID from the query.
 // Returns a *NotFoundError when no TestTarget ID was found.
-func (ttq *TestTargetQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *TestTargetQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = ttq.Limit(1).IDs(setContextOp(ctx, ttq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (ttq *TestTargetQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ttq *TestTargetQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := ttq.FirstID(ctx)
+func (_q *TestTargetQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (ttq *TestTargetQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single TestTarget entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one TestTarget entity is found.
 // Returns a *NotFoundError when no TestTarget entities are found.
-func (ttq *TestTargetQuery) Only(ctx context.Context) (*TestTarget, error) {
-	nodes, err := ttq.Limit(2).All(setContextOp(ctx, ttq.ctx, ent.OpQueryOnly))
+func (_q *TestTargetQuery) Only(ctx context.Context) (*TestTarget, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (ttq *TestTargetQuery) Only(ctx context.Context) (*TestTarget, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (ttq *TestTargetQuery) OnlyX(ctx context.Context) *TestTarget {
-	node, err := ttq.Only(ctx)
+func (_q *TestTargetQuery) OnlyX(ctx context.Context) *TestTarget {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (ttq *TestTargetQuery) OnlyX(ctx context.Context) *TestTarget {
 // OnlyID is like Only, but returns the only TestTarget ID in the query.
 // Returns a *NotSingularError when more than one TestTarget ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ttq *TestTargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *TestTargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = ttq.Limit(2).IDs(setContextOp(ctx, ttq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (ttq *TestTargetQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ttq *TestTargetQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := ttq.OnlyID(ctx)
+func (_q *TestTargetQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (ttq *TestTargetQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of TestTargets.
-func (ttq *TestTargetQuery) All(ctx context.Context) ([]*TestTarget, error) {
-	ctx = setContextOp(ctx, ttq.ctx, ent.OpQueryAll)
-	if err := ttq.prepareQuery(ctx); err != nil {
+func (_q *TestTargetQuery) All(ctx context.Context) ([]*TestTarget, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*TestTarget, *TestTargetQuery]()
-	return withInterceptors[[]*TestTarget](ctx, ttq, qr, ttq.inters)
+	return withInterceptors[[]*TestTarget](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (ttq *TestTargetQuery) AllX(ctx context.Context) []*TestTarget {
-	nodes, err := ttq.All(ctx)
+func (_q *TestTargetQuery) AllX(ctx context.Context) []*TestTarget {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (ttq *TestTargetQuery) AllX(ctx context.Context) []*TestTarget {
 }
 
 // IDs executes the query and returns a list of TestTarget IDs.
-func (ttq *TestTargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if ttq.ctx.Unique == nil && ttq.path != nil {
-		ttq.Unique(true)
+func (_q *TestTargetQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, ttq.ctx, ent.OpQueryIDs)
-	if err = ttq.Select(testtarget.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(testtarget.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ttq *TestTargetQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := ttq.IDs(ctx)
+func (_q *TestTargetQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (ttq *TestTargetQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (ttq *TestTargetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ttq.ctx, ent.OpQueryCount)
-	if err := ttq.prepareQuery(ctx); err != nil {
+func (_q *TestTargetQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, ttq, querierCount[*TestTargetQuery](), ttq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TestTargetQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (ttq *TestTargetQuery) CountX(ctx context.Context) int {
-	count, err := ttq.Count(ctx)
+func (_q *TestTargetQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (ttq *TestTargetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (ttq *TestTargetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ttq.ctx, ent.OpQueryExist)
-	switch _, err := ttq.FirstID(ctx); {
+func (_q *TestTargetQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (ttq *TestTargetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (ttq *TestTargetQuery) ExistX(ctx context.Context) bool {
-	exist, err := ttq.Exist(ctx)
+func (_q *TestTargetQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (ttq *TestTargetQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the TestTargetQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (ttq *TestTargetQuery) Clone() *TestTargetQuery {
-	if ttq == nil {
+func (_q *TestTargetQuery) Clone() *TestTargetQuery {
+	if _q == nil {
 		return nil
 	}
 	return &TestTargetQuery{
-		config:     ttq.config,
-		ctx:        ttq.ctx.Clone(),
-		order:      append([]testtarget.OrderOption{}, ttq.order...),
-		inters:     append([]Interceptor{}, ttq.inters...),
-		predicates: append([]predicate.TestTarget{}, ttq.predicates...),
-		withTarget: ttq.withTarget.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]testtarget.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.TestTarget{}, _q.predicates...),
+		withTarget: _q.withTarget.Clone(),
 		// clone intermediate query.
-		sql:  ttq.sql.Clone(),
-		path: ttq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithTarget tells the query-builder to eager-load the nodes that are connected to
 // the "target" edge. The optional arguments are used to configure the query builder of the edge.
-func (ttq *TestTargetQuery) WithTarget(opts ...func(*TargetQuery)) *TestTargetQuery {
-	query := (&TargetClient{config: ttq.config}).Query()
+func (_q *TestTargetQuery) WithTarget(opts ...func(*TargetQuery)) *TestTargetQuery {
+	query := (&TargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ttq.withTarget = query
-	return ttq
+	_q.withTarget = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (ttq *TestTargetQuery) WithTarget(opts ...func(*TargetQuery)) *TestTargetQu
 //		GroupBy(testtarget.FieldTargetID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (ttq *TestTargetQuery) GroupBy(field string, fields ...string) *TestTargetGroupBy {
-	ttq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TestTargetGroupBy{build: ttq}
-	grbuild.flds = &ttq.ctx.Fields
+func (_q *TestTargetQuery) GroupBy(field string, fields ...string) *TestTargetGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &TestTargetGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = testtarget.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,95 +330,95 @@ func (ttq *TestTargetQuery) GroupBy(field string, fields ...string) *TestTargetG
 //	client.TestTarget.Query().
 //		Select(testtarget.FieldTargetID).
 //		Scan(ctx, &v)
-func (ttq *TestTargetQuery) Select(fields ...string) *TestTargetSelect {
-	ttq.ctx.Fields = append(ttq.ctx.Fields, fields...)
-	sbuild := &TestTargetSelect{TestTargetQuery: ttq}
+func (_q *TestTargetQuery) Select(fields ...string) *TestTargetSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &TestTargetSelect{TestTargetQuery: _q}
 	sbuild.label = testtarget.Label
-	sbuild.flds, sbuild.scan = &ttq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a TestTargetSelect configured with the given aggregations.
-func (ttq *TestTargetQuery) Aggregate(fns ...AggregateFunc) *TestTargetSelect {
-	return ttq.Select().Aggregate(fns...)
+func (_q *TestTargetQuery) Aggregate(fns ...AggregateFunc) *TestTargetSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (ttq *TestTargetQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range ttq.inters {
+func (_q *TestTargetQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, ttq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range ttq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !testtarget.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if ttq.path != nil {
-		prev, err := ttq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		ttq.sql = prev
+		_q.sql = prev
 	}
 	if testtarget.Policy == nil {
 		return errors.New("ent: uninitialized testtarget.Policy (forgotten import ent/runtime?)")
 	}
-	if err := testtarget.Policy.EvalQuery(ctx, ttq); err != nil {
+	if err := testtarget.Policy.EvalQuery(ctx, _q); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (ttq *TestTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestTarget, error) {
+func (_q *TestTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestTarget, error) {
 	var (
 		nodes       = []*TestTarget{}
-		_spec       = ttq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			ttq.withTarget != nil,
+			_q.withTarget != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TestTarget).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &TestTarget{config: ttq.config}
+		node := &TestTarget{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(ttq.modifiers) > 0 {
-		_spec.Modifiers = ttq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, ttq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := ttq.withTarget; query != nil {
-		if err := ttq.loadTarget(ctx, query, nodes, nil,
+	if query := _q.withTarget; query != nil {
+		if err := _q.loadTarget(ctx, query, nodes, nil,
 			func(n *TestTarget, e *Target) { n.Edges.Target = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range ttq.loadTotal {
-		if err := ttq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (ttq *TestTargetQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*TestTarget, init func(*TestTarget), assign func(*TestTarget, *Target)) error {
+func (_q *TestTargetQuery) loadTarget(ctx context.Context, query *TargetQuery, nodes []*TestTarget, init func(*TestTarget), assign func(*TestTarget, *Target)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*TestTarget)
 	for i := range nodes {
@@ -448,27 +448,27 @@ func (ttq *TestTargetQuery) loadTarget(ctx context.Context, query *TargetQuery, 
 	return nil
 }
 
-func (ttq *TestTargetQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := ttq.querySpec()
-	if len(ttq.modifiers) > 0 {
-		_spec.Modifiers = ttq.modifiers
+func (_q *TestTargetQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = ttq.ctx.Fields
-	if len(ttq.ctx.Fields) > 0 {
-		_spec.Unique = ttq.ctx.Unique != nil && *ttq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, ttq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (ttq *TestTargetQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *TestTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(testtarget.Table, testtarget.Columns, sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64))
-	_spec.From = ttq.sql
-	if unique := ttq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if ttq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := ttq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, testtarget.FieldID)
 		for i := range fields {
@@ -476,24 +476,24 @@ func (ttq *TestTargetQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if ttq.withTarget != nil {
+		if _q.withTarget != nil {
 			_spec.Node.AddColumnOnce(testtarget.FieldTargetID)
 		}
 	}
-	if ps := ttq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := ttq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := ttq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := ttq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -503,33 +503,33 @@ func (ttq *TestTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (ttq *TestTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(ttq.driver.Dialect())
+func (_q *TestTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(testtarget.Table)
-	columns := ttq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = testtarget.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if ttq.sql != nil {
-		selector = ttq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if ttq.ctx.Unique != nil && *ttq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range ttq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range ttq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := ttq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := ttq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -542,41 +542,41 @@ type TestTargetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ttgb *TestTargetGroupBy) Aggregate(fns ...AggregateFunc) *TestTargetGroupBy {
-	ttgb.fns = append(ttgb.fns, fns...)
-	return ttgb
+func (_g *TestTargetGroupBy) Aggregate(fns ...AggregateFunc) *TestTargetGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ttgb *TestTargetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ttgb.build.ctx, ent.OpQueryGroupBy)
-	if err := ttgb.build.prepareQuery(ctx); err != nil {
+func (_g *TestTargetGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TestTargetQuery, *TestTargetGroupBy](ctx, ttgb.build, ttgb, ttgb.build.inters, v)
+	return scanWithInterceptors[*TestTargetQuery, *TestTargetGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ttgb *TestTargetGroupBy) sqlScan(ctx context.Context, root *TestTargetQuery, v any) error {
+func (_g *TestTargetGroupBy) sqlScan(ctx context.Context, root *TestTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ttgb.fns))
-	for _, fn := range ttgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ttgb.flds)+len(ttgb.fns))
-		for _, f := range *ttgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ttgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ttgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -590,27 +590,27 @@ type TestTargetSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (tts *TestTargetSelect) Aggregate(fns ...AggregateFunc) *TestTargetSelect {
-	tts.fns = append(tts.fns, fns...)
-	return tts
+func (_s *TestTargetSelect) Aggregate(fns ...AggregateFunc) *TestTargetSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tts *TestTargetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tts.ctx, ent.OpQuerySelect)
-	if err := tts.prepareQuery(ctx); err != nil {
+func (_s *TestTargetSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TestTargetQuery, *TestTargetSelect](ctx, tts.TestTargetQuery, tts, tts.inters, v)
+	return scanWithInterceptors[*TestTargetQuery, *TestTargetSelect](ctx, _s.TestTargetQuery, _s, _s.inters, v)
 }
 
-func (tts *TestTargetSelect) sqlScan(ctx context.Context, root *TestTargetQuery, v any) error {
+func (_s *TestTargetSelect) sqlScan(ctx context.Context, root *TestTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(tts.fns))
-	for _, fn := range tts.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*tts.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -618,7 +618,7 @@ func (tts *TestTargetSelect) sqlScan(ctx context.Context, root *TestTargetQuery,
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tts.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

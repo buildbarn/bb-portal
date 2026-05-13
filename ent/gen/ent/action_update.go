@@ -24,337 +24,337 @@ type ActionUpdate struct {
 }
 
 // Where appends a list predicates to the ActionUpdate builder.
-func (au *ActionUpdate) Where(ps ...predicate.Action) *ActionUpdate {
-	au.mutation.Where(ps...)
-	return au
+func (_u *ActionUpdate) Where(ps ...predicate.Action) *ActionUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetLabel sets the "label" field.
-func (au *ActionUpdate) SetLabel(s string) *ActionUpdate {
-	au.mutation.SetLabel(s)
-	return au
+func (_u *ActionUpdate) SetLabel(v string) *ActionUpdate {
+	_u.mutation.SetLabel(v)
+	return _u
 }
 
 // SetNillableLabel sets the "label" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableLabel(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetLabel(*s)
+func (_u *ActionUpdate) SetNillableLabel(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetLabel(*v)
 	}
-	return au
+	return _u
 }
 
 // SetType sets the "type" field.
-func (au *ActionUpdate) SetType(s string) *ActionUpdate {
-	au.mutation.SetType(s)
-	return au
+func (_u *ActionUpdate) SetType(v string) *ActionUpdate {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableType(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetType(*s)
+func (_u *ActionUpdate) SetNillableType(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearType clears the value of the "type" field.
-func (au *ActionUpdate) ClearType() *ActionUpdate {
-	au.mutation.ClearType()
-	return au
+func (_u *ActionUpdate) ClearType() *ActionUpdate {
+	_u.mutation.ClearType()
+	return _u
 }
 
 // SetSuccess sets the "success" field.
-func (au *ActionUpdate) SetSuccess(b bool) *ActionUpdate {
-	au.mutation.SetSuccess(b)
-	return au
+func (_u *ActionUpdate) SetSuccess(v bool) *ActionUpdate {
+	_u.mutation.SetSuccess(v)
+	return _u
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableSuccess(b *bool) *ActionUpdate {
-	if b != nil {
-		au.SetSuccess(*b)
+func (_u *ActionUpdate) SetNillableSuccess(v *bool) *ActionUpdate {
+	if v != nil {
+		_u.SetSuccess(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearSuccess clears the value of the "success" field.
-func (au *ActionUpdate) ClearSuccess() *ActionUpdate {
-	au.mutation.ClearSuccess()
-	return au
+func (_u *ActionUpdate) ClearSuccess() *ActionUpdate {
+	_u.mutation.ClearSuccess()
+	return _u
 }
 
 // SetExitCode sets the "exit_code" field.
-func (au *ActionUpdate) SetExitCode(i int32) *ActionUpdate {
-	au.mutation.ResetExitCode()
-	au.mutation.SetExitCode(i)
-	return au
+func (_u *ActionUpdate) SetExitCode(v int32) *ActionUpdate {
+	_u.mutation.ResetExitCode()
+	_u.mutation.SetExitCode(v)
+	return _u
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableExitCode(i *int32) *ActionUpdate {
-	if i != nil {
-		au.SetExitCode(*i)
+func (_u *ActionUpdate) SetNillableExitCode(v *int32) *ActionUpdate {
+	if v != nil {
+		_u.SetExitCode(*v)
 	}
-	return au
+	return _u
 }
 
-// AddExitCode adds i to the "exit_code" field.
-func (au *ActionUpdate) AddExitCode(i int32) *ActionUpdate {
-	au.mutation.AddExitCode(i)
-	return au
+// AddExitCode adds value to the "exit_code" field.
+func (_u *ActionUpdate) AddExitCode(v int32) *ActionUpdate {
+	_u.mutation.AddExitCode(v)
+	return _u
 }
 
 // ClearExitCode clears the value of the "exit_code" field.
-func (au *ActionUpdate) ClearExitCode() *ActionUpdate {
-	au.mutation.ClearExitCode()
-	return au
+func (_u *ActionUpdate) ClearExitCode() *ActionUpdate {
+	_u.mutation.ClearExitCode()
+	return _u
 }
 
 // SetCommandLine sets the "command_line" field.
-func (au *ActionUpdate) SetCommandLine(s []string) *ActionUpdate {
-	au.mutation.SetCommandLine(s)
-	return au
+func (_u *ActionUpdate) SetCommandLine(v []string) *ActionUpdate {
+	_u.mutation.SetCommandLine(v)
+	return _u
 }
 
-// AppendCommandLine appends s to the "command_line" field.
-func (au *ActionUpdate) AppendCommandLine(s []string) *ActionUpdate {
-	au.mutation.AppendCommandLine(s)
-	return au
+// AppendCommandLine appends value to the "command_line" field.
+func (_u *ActionUpdate) AppendCommandLine(v []string) *ActionUpdate {
+	_u.mutation.AppendCommandLine(v)
+	return _u
 }
 
 // ClearCommandLine clears the value of the "command_line" field.
-func (au *ActionUpdate) ClearCommandLine() *ActionUpdate {
-	au.mutation.ClearCommandLine()
-	return au
+func (_u *ActionUpdate) ClearCommandLine() *ActionUpdate {
+	_u.mutation.ClearCommandLine()
+	return _u
 }
 
 // SetStartTime sets the "start_time" field.
-func (au *ActionUpdate) SetStartTime(t time.Time) *ActionUpdate {
-	au.mutation.SetStartTime(t)
-	return au
+func (_u *ActionUpdate) SetStartTime(v time.Time) *ActionUpdate {
+	_u.mutation.SetStartTime(v)
+	return _u
 }
 
 // SetNillableStartTime sets the "start_time" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableStartTime(t *time.Time) *ActionUpdate {
-	if t != nil {
-		au.SetStartTime(*t)
+func (_u *ActionUpdate) SetNillableStartTime(v *time.Time) *ActionUpdate {
+	if v != nil {
+		_u.SetStartTime(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearStartTime clears the value of the "start_time" field.
-func (au *ActionUpdate) ClearStartTime() *ActionUpdate {
-	au.mutation.ClearStartTime()
-	return au
+func (_u *ActionUpdate) ClearStartTime() *ActionUpdate {
+	_u.mutation.ClearStartTime()
+	return _u
 }
 
 // SetEndTime sets the "end_time" field.
-func (au *ActionUpdate) SetEndTime(t time.Time) *ActionUpdate {
-	au.mutation.SetEndTime(t)
-	return au
+func (_u *ActionUpdate) SetEndTime(v time.Time) *ActionUpdate {
+	_u.mutation.SetEndTime(v)
+	return _u
 }
 
 // SetNillableEndTime sets the "end_time" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableEndTime(t *time.Time) *ActionUpdate {
-	if t != nil {
-		au.SetEndTime(*t)
+func (_u *ActionUpdate) SetNillableEndTime(v *time.Time) *ActionUpdate {
+	if v != nil {
+		_u.SetEndTime(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearEndTime clears the value of the "end_time" field.
-func (au *ActionUpdate) ClearEndTime() *ActionUpdate {
-	au.mutation.ClearEndTime()
-	return au
+func (_u *ActionUpdate) ClearEndTime() *ActionUpdate {
+	_u.mutation.ClearEndTime()
+	return _u
 }
 
 // SetFailureCode sets the "failure_code" field.
-func (au *ActionUpdate) SetFailureCode(s string) *ActionUpdate {
-	au.mutation.SetFailureCode(s)
-	return au
+func (_u *ActionUpdate) SetFailureCode(v string) *ActionUpdate {
+	_u.mutation.SetFailureCode(v)
+	return _u
 }
 
 // SetNillableFailureCode sets the "failure_code" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableFailureCode(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetFailureCode(*s)
+func (_u *ActionUpdate) SetNillableFailureCode(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetFailureCode(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearFailureCode clears the value of the "failure_code" field.
-func (au *ActionUpdate) ClearFailureCode() *ActionUpdate {
-	au.mutation.ClearFailureCode()
-	return au
+func (_u *ActionUpdate) ClearFailureCode() *ActionUpdate {
+	_u.mutation.ClearFailureCode()
+	return _u
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (au *ActionUpdate) SetFailureMessage(s string) *ActionUpdate {
-	au.mutation.SetFailureMessage(s)
-	return au
+func (_u *ActionUpdate) SetFailureMessage(v string) *ActionUpdate {
+	_u.mutation.SetFailureMessage(v)
+	return _u
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableFailureMessage(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetFailureMessage(*s)
+func (_u *ActionUpdate) SetNillableFailureMessage(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetFailureMessage(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearFailureMessage clears the value of the "failure_message" field.
-func (au *ActionUpdate) ClearFailureMessage() *ActionUpdate {
-	au.mutation.ClearFailureMessage()
-	return au
+func (_u *ActionUpdate) ClearFailureMessage() *ActionUpdate {
+	_u.mutation.ClearFailureMessage()
+	return _u
 }
 
 // SetStdoutHash sets the "stdout_hash" field.
-func (au *ActionUpdate) SetStdoutHash(s string) *ActionUpdate {
-	au.mutation.SetStdoutHash(s)
-	return au
+func (_u *ActionUpdate) SetStdoutHash(v string) *ActionUpdate {
+	_u.mutation.SetStdoutHash(v)
+	return _u
 }
 
 // SetNillableStdoutHash sets the "stdout_hash" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableStdoutHash(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetStdoutHash(*s)
+func (_u *ActionUpdate) SetNillableStdoutHash(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStdoutHash(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearStdoutHash clears the value of the "stdout_hash" field.
-func (au *ActionUpdate) ClearStdoutHash() *ActionUpdate {
-	au.mutation.ClearStdoutHash()
-	return au
+func (_u *ActionUpdate) ClearStdoutHash() *ActionUpdate {
+	_u.mutation.ClearStdoutHash()
+	return _u
 }
 
 // SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (au *ActionUpdate) SetStdoutSizeBytes(i int64) *ActionUpdate {
-	au.mutation.ResetStdoutSizeBytes()
-	au.mutation.SetStdoutSizeBytes(i)
-	return au
+func (_u *ActionUpdate) SetStdoutSizeBytes(v int64) *ActionUpdate {
+	_u.mutation.ResetStdoutSizeBytes()
+	_u.mutation.SetStdoutSizeBytes(v)
+	return _u
 }
 
 // SetNillableStdoutSizeBytes sets the "stdout_size_bytes" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableStdoutSizeBytes(i *int64) *ActionUpdate {
-	if i != nil {
-		au.SetStdoutSizeBytes(*i)
+func (_u *ActionUpdate) SetNillableStdoutSizeBytes(v *int64) *ActionUpdate {
+	if v != nil {
+		_u.SetStdoutSizeBytes(*v)
 	}
-	return au
+	return _u
 }
 
-// AddStdoutSizeBytes adds i to the "stdout_size_bytes" field.
-func (au *ActionUpdate) AddStdoutSizeBytes(i int64) *ActionUpdate {
-	au.mutation.AddStdoutSizeBytes(i)
-	return au
+// AddStdoutSizeBytes adds value to the "stdout_size_bytes" field.
+func (_u *ActionUpdate) AddStdoutSizeBytes(v int64) *ActionUpdate {
+	_u.mutation.AddStdoutSizeBytes(v)
+	return _u
 }
 
 // ClearStdoutSizeBytes clears the value of the "stdout_size_bytes" field.
-func (au *ActionUpdate) ClearStdoutSizeBytes() *ActionUpdate {
-	au.mutation.ClearStdoutSizeBytes()
-	return au
+func (_u *ActionUpdate) ClearStdoutSizeBytes() *ActionUpdate {
+	_u.mutation.ClearStdoutSizeBytes()
+	return _u
 }
 
 // SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (au *ActionUpdate) SetStdoutHashFunction(s string) *ActionUpdate {
-	au.mutation.SetStdoutHashFunction(s)
-	return au
+func (_u *ActionUpdate) SetStdoutHashFunction(v string) *ActionUpdate {
+	_u.mutation.SetStdoutHashFunction(v)
+	return _u
 }
 
 // SetNillableStdoutHashFunction sets the "stdout_hash_function" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableStdoutHashFunction(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetStdoutHashFunction(*s)
+func (_u *ActionUpdate) SetNillableStdoutHashFunction(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStdoutHashFunction(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearStdoutHashFunction clears the value of the "stdout_hash_function" field.
-func (au *ActionUpdate) ClearStdoutHashFunction() *ActionUpdate {
-	au.mutation.ClearStdoutHashFunction()
-	return au
+func (_u *ActionUpdate) ClearStdoutHashFunction() *ActionUpdate {
+	_u.mutation.ClearStdoutHashFunction()
+	return _u
 }
 
 // SetStderrHash sets the "stderr_hash" field.
-func (au *ActionUpdate) SetStderrHash(s string) *ActionUpdate {
-	au.mutation.SetStderrHash(s)
-	return au
+func (_u *ActionUpdate) SetStderrHash(v string) *ActionUpdate {
+	_u.mutation.SetStderrHash(v)
+	return _u
 }
 
 // SetNillableStderrHash sets the "stderr_hash" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableStderrHash(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetStderrHash(*s)
+func (_u *ActionUpdate) SetNillableStderrHash(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStderrHash(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearStderrHash clears the value of the "stderr_hash" field.
-func (au *ActionUpdate) ClearStderrHash() *ActionUpdate {
-	au.mutation.ClearStderrHash()
-	return au
+func (_u *ActionUpdate) ClearStderrHash() *ActionUpdate {
+	_u.mutation.ClearStderrHash()
+	return _u
 }
 
 // SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (au *ActionUpdate) SetStderrSizeBytes(i int64) *ActionUpdate {
-	au.mutation.ResetStderrSizeBytes()
-	au.mutation.SetStderrSizeBytes(i)
-	return au
+func (_u *ActionUpdate) SetStderrSizeBytes(v int64) *ActionUpdate {
+	_u.mutation.ResetStderrSizeBytes()
+	_u.mutation.SetStderrSizeBytes(v)
+	return _u
 }
 
 // SetNillableStderrSizeBytes sets the "stderr_size_bytes" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableStderrSizeBytes(i *int64) *ActionUpdate {
-	if i != nil {
-		au.SetStderrSizeBytes(*i)
+func (_u *ActionUpdate) SetNillableStderrSizeBytes(v *int64) *ActionUpdate {
+	if v != nil {
+		_u.SetStderrSizeBytes(*v)
 	}
-	return au
+	return _u
 }
 
-// AddStderrSizeBytes adds i to the "stderr_size_bytes" field.
-func (au *ActionUpdate) AddStderrSizeBytes(i int64) *ActionUpdate {
-	au.mutation.AddStderrSizeBytes(i)
-	return au
+// AddStderrSizeBytes adds value to the "stderr_size_bytes" field.
+func (_u *ActionUpdate) AddStderrSizeBytes(v int64) *ActionUpdate {
+	_u.mutation.AddStderrSizeBytes(v)
+	return _u
 }
 
 // ClearStderrSizeBytes clears the value of the "stderr_size_bytes" field.
-func (au *ActionUpdate) ClearStderrSizeBytes() *ActionUpdate {
-	au.mutation.ClearStderrSizeBytes()
-	return au
+func (_u *ActionUpdate) ClearStderrSizeBytes() *ActionUpdate {
+	_u.mutation.ClearStderrSizeBytes()
+	return _u
 }
 
 // SetStderrHashFunction sets the "stderr_hash_function" field.
-func (au *ActionUpdate) SetStderrHashFunction(s string) *ActionUpdate {
-	au.mutation.SetStderrHashFunction(s)
-	return au
+func (_u *ActionUpdate) SetStderrHashFunction(v string) *ActionUpdate {
+	_u.mutation.SetStderrHashFunction(v)
+	return _u
 }
 
 // SetNillableStderrHashFunction sets the "stderr_hash_function" field if the given value is not nil.
-func (au *ActionUpdate) SetNillableStderrHashFunction(s *string) *ActionUpdate {
-	if s != nil {
-		au.SetStderrHashFunction(*s)
+func (_u *ActionUpdate) SetNillableStderrHashFunction(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStderrHashFunction(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearStderrHashFunction clears the value of the "stderr_hash_function" field.
-func (au *ActionUpdate) ClearStderrHashFunction() *ActionUpdate {
-	au.mutation.ClearStderrHashFunction()
-	return au
+func (_u *ActionUpdate) ClearStderrHashFunction() *ActionUpdate {
+	_u.mutation.ClearStderrHashFunction()
+	return _u
 }
 
 // Mutation returns the ActionMutation object of the builder.
-func (au *ActionUpdate) Mutation() *ActionMutation {
-	return au.mutation
+func (_u *ActionUpdate) Mutation() *ActionMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (au *ActionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, au.sqlSave, au.mutation, au.hooks)
+func (_u *ActionUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (au *ActionUpdate) SaveX(ctx context.Context) int {
-	affected, err := au.Save(ctx)
+func (_u *ActionUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -362,143 +362,143 @@ func (au *ActionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (au *ActionUpdate) Exec(ctx context.Context) error {
-	_, err := au.Save(ctx)
+func (_u *ActionUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (au *ActionUpdate) ExecX(ctx context.Context) {
-	if err := au.Exec(ctx); err != nil {
+func (_u *ActionUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (au *ActionUpdate) check() error {
-	if au.mutation.BazelInvocationCleared() && len(au.mutation.BazelInvocationIDs()) > 0 {
+func (_u *ActionUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
 	}
-	if au.mutation.ConfigurationCleared() && len(au.mutation.ConfigurationIDs()) > 0 {
+	if _u.mutation.ConfigurationCleared() && len(_u.mutation.ConfigurationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.configuration"`)
 	}
 	return nil
 }
 
-func (au *ActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := au.check(); err != nil {
-		return n, err
+func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(action.Table, action.Columns, sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64))
-	if ps := au.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := au.mutation.Label(); ok {
+	if value, ok := _u.mutation.Label(); ok {
 		_spec.SetField(action.FieldLabel, field.TypeString, value)
 	}
-	if value, ok := au.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(action.FieldType, field.TypeString, value)
 	}
-	if au.mutation.TypeCleared() {
+	if _u.mutation.TypeCleared() {
 		_spec.ClearField(action.FieldType, field.TypeString)
 	}
-	if value, ok := au.mutation.Success(); ok {
+	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
 	}
-	if au.mutation.SuccessCleared() {
+	if _u.mutation.SuccessCleared() {
 		_spec.ClearField(action.FieldSuccess, field.TypeBool)
 	}
-	if value, ok := au.mutation.ExitCode(); ok {
+	if value, ok := _u.mutation.ExitCode(); ok {
 		_spec.SetField(action.FieldExitCode, field.TypeInt32, value)
 	}
-	if value, ok := au.mutation.AddedExitCode(); ok {
+	if value, ok := _u.mutation.AddedExitCode(); ok {
 		_spec.AddField(action.FieldExitCode, field.TypeInt32, value)
 	}
-	if au.mutation.ExitCodeCleared() {
+	if _u.mutation.ExitCodeCleared() {
 		_spec.ClearField(action.FieldExitCode, field.TypeInt32)
 	}
-	if value, ok := au.mutation.CommandLine(); ok {
+	if value, ok := _u.mutation.CommandLine(); ok {
 		_spec.SetField(action.FieldCommandLine, field.TypeJSON, value)
 	}
-	if value, ok := au.mutation.AppendedCommandLine(); ok {
+	if value, ok := _u.mutation.AppendedCommandLine(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, action.FieldCommandLine, value)
 		})
 	}
-	if au.mutation.CommandLineCleared() {
+	if _u.mutation.CommandLineCleared() {
 		_spec.ClearField(action.FieldCommandLine, field.TypeJSON)
 	}
-	if value, ok := au.mutation.StartTime(); ok {
+	if value, ok := _u.mutation.StartTime(); ok {
 		_spec.SetField(action.FieldStartTime, field.TypeTime, value)
 	}
-	if au.mutation.StartTimeCleared() {
+	if _u.mutation.StartTimeCleared() {
 		_spec.ClearField(action.FieldStartTime, field.TypeTime)
 	}
-	if value, ok := au.mutation.EndTime(); ok {
+	if value, ok := _u.mutation.EndTime(); ok {
 		_spec.SetField(action.FieldEndTime, field.TypeTime, value)
 	}
-	if au.mutation.EndTimeCleared() {
+	if _u.mutation.EndTimeCleared() {
 		_spec.ClearField(action.FieldEndTime, field.TypeTime)
 	}
-	if value, ok := au.mutation.FailureCode(); ok {
+	if value, ok := _u.mutation.FailureCode(); ok {
 		_spec.SetField(action.FieldFailureCode, field.TypeString, value)
 	}
-	if au.mutation.FailureCodeCleared() {
+	if _u.mutation.FailureCodeCleared() {
 		_spec.ClearField(action.FieldFailureCode, field.TypeString)
 	}
-	if value, ok := au.mutation.FailureMessage(); ok {
+	if value, ok := _u.mutation.FailureMessage(); ok {
 		_spec.SetField(action.FieldFailureMessage, field.TypeString, value)
 	}
-	if au.mutation.FailureMessageCleared() {
+	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
 	}
-	if value, ok := au.mutation.StdoutHash(); ok {
+	if value, ok := _u.mutation.StdoutHash(); ok {
 		_spec.SetField(action.FieldStdoutHash, field.TypeString, value)
 	}
-	if au.mutation.StdoutHashCleared() {
+	if _u.mutation.StdoutHashCleared() {
 		_spec.ClearField(action.FieldStdoutHash, field.TypeString)
 	}
-	if value, ok := au.mutation.StdoutSizeBytes(); ok {
+	if value, ok := _u.mutation.StdoutSizeBytes(); ok {
 		_spec.SetField(action.FieldStdoutSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.AddedStdoutSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedStdoutSizeBytes(); ok {
 		_spec.AddField(action.FieldStdoutSizeBytes, field.TypeInt64, value)
 	}
-	if au.mutation.StdoutSizeBytesCleared() {
+	if _u.mutation.StdoutSizeBytesCleared() {
 		_spec.ClearField(action.FieldStdoutSizeBytes, field.TypeInt64)
 	}
-	if value, ok := au.mutation.StdoutHashFunction(); ok {
+	if value, ok := _u.mutation.StdoutHashFunction(); ok {
 		_spec.SetField(action.FieldStdoutHashFunction, field.TypeString, value)
 	}
-	if au.mutation.StdoutHashFunctionCleared() {
+	if _u.mutation.StdoutHashFunctionCleared() {
 		_spec.ClearField(action.FieldStdoutHashFunction, field.TypeString)
 	}
-	if value, ok := au.mutation.StderrHash(); ok {
+	if value, ok := _u.mutation.StderrHash(); ok {
 		_spec.SetField(action.FieldStderrHash, field.TypeString, value)
 	}
-	if au.mutation.StderrHashCleared() {
+	if _u.mutation.StderrHashCleared() {
 		_spec.ClearField(action.FieldStderrHash, field.TypeString)
 	}
-	if value, ok := au.mutation.StderrSizeBytes(); ok {
+	if value, ok := _u.mutation.StderrSizeBytes(); ok {
 		_spec.SetField(action.FieldStderrSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.AddedStderrSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedStderrSizeBytes(); ok {
 		_spec.AddField(action.FieldStderrSizeBytes, field.TypeInt64, value)
 	}
-	if au.mutation.StderrSizeBytesCleared() {
+	if _u.mutation.StderrSizeBytesCleared() {
 		_spec.ClearField(action.FieldStderrSizeBytes, field.TypeInt64)
 	}
-	if value, ok := au.mutation.StderrHashFunction(); ok {
+	if value, ok := _u.mutation.StderrHashFunction(); ok {
 		_spec.SetField(action.FieldStderrHashFunction, field.TypeString, value)
 	}
-	if au.mutation.StderrHashFunctionCleared() {
+	if _u.mutation.StderrHashFunctionCleared() {
 		_spec.ClearField(action.FieldStderrHashFunction, field.TypeString)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{action.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -506,8 +506,8 @@ func (au *ActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	au.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ActionUpdateOne is the builder for updating a single Action entity.
@@ -519,344 +519,344 @@ type ActionUpdateOne struct {
 }
 
 // SetLabel sets the "label" field.
-func (auo *ActionUpdateOne) SetLabel(s string) *ActionUpdateOne {
-	auo.mutation.SetLabel(s)
-	return auo
+func (_u *ActionUpdateOne) SetLabel(v string) *ActionUpdateOne {
+	_u.mutation.SetLabel(v)
+	return _u
 }
 
 // SetNillableLabel sets the "label" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableLabel(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetLabel(*s)
+func (_u *ActionUpdateOne) SetNillableLabel(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetLabel(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetType sets the "type" field.
-func (auo *ActionUpdateOne) SetType(s string) *ActionUpdateOne {
-	auo.mutation.SetType(s)
-	return auo
+func (_u *ActionUpdateOne) SetType(v string) *ActionUpdateOne {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableType(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetType(*s)
+func (_u *ActionUpdateOne) SetNillableType(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearType clears the value of the "type" field.
-func (auo *ActionUpdateOne) ClearType() *ActionUpdateOne {
-	auo.mutation.ClearType()
-	return auo
+func (_u *ActionUpdateOne) ClearType() *ActionUpdateOne {
+	_u.mutation.ClearType()
+	return _u
 }
 
 // SetSuccess sets the "success" field.
-func (auo *ActionUpdateOne) SetSuccess(b bool) *ActionUpdateOne {
-	auo.mutation.SetSuccess(b)
-	return auo
+func (_u *ActionUpdateOne) SetSuccess(v bool) *ActionUpdateOne {
+	_u.mutation.SetSuccess(v)
+	return _u
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableSuccess(b *bool) *ActionUpdateOne {
-	if b != nil {
-		auo.SetSuccess(*b)
+func (_u *ActionUpdateOne) SetNillableSuccess(v *bool) *ActionUpdateOne {
+	if v != nil {
+		_u.SetSuccess(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearSuccess clears the value of the "success" field.
-func (auo *ActionUpdateOne) ClearSuccess() *ActionUpdateOne {
-	auo.mutation.ClearSuccess()
-	return auo
+func (_u *ActionUpdateOne) ClearSuccess() *ActionUpdateOne {
+	_u.mutation.ClearSuccess()
+	return _u
 }
 
 // SetExitCode sets the "exit_code" field.
-func (auo *ActionUpdateOne) SetExitCode(i int32) *ActionUpdateOne {
-	auo.mutation.ResetExitCode()
-	auo.mutation.SetExitCode(i)
-	return auo
+func (_u *ActionUpdateOne) SetExitCode(v int32) *ActionUpdateOne {
+	_u.mutation.ResetExitCode()
+	_u.mutation.SetExitCode(v)
+	return _u
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableExitCode(i *int32) *ActionUpdateOne {
-	if i != nil {
-		auo.SetExitCode(*i)
+func (_u *ActionUpdateOne) SetNillableExitCode(v *int32) *ActionUpdateOne {
+	if v != nil {
+		_u.SetExitCode(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddExitCode adds i to the "exit_code" field.
-func (auo *ActionUpdateOne) AddExitCode(i int32) *ActionUpdateOne {
-	auo.mutation.AddExitCode(i)
-	return auo
+// AddExitCode adds value to the "exit_code" field.
+func (_u *ActionUpdateOne) AddExitCode(v int32) *ActionUpdateOne {
+	_u.mutation.AddExitCode(v)
+	return _u
 }
 
 // ClearExitCode clears the value of the "exit_code" field.
-func (auo *ActionUpdateOne) ClearExitCode() *ActionUpdateOne {
-	auo.mutation.ClearExitCode()
-	return auo
+func (_u *ActionUpdateOne) ClearExitCode() *ActionUpdateOne {
+	_u.mutation.ClearExitCode()
+	return _u
 }
 
 // SetCommandLine sets the "command_line" field.
-func (auo *ActionUpdateOne) SetCommandLine(s []string) *ActionUpdateOne {
-	auo.mutation.SetCommandLine(s)
-	return auo
+func (_u *ActionUpdateOne) SetCommandLine(v []string) *ActionUpdateOne {
+	_u.mutation.SetCommandLine(v)
+	return _u
 }
 
-// AppendCommandLine appends s to the "command_line" field.
-func (auo *ActionUpdateOne) AppendCommandLine(s []string) *ActionUpdateOne {
-	auo.mutation.AppendCommandLine(s)
-	return auo
+// AppendCommandLine appends value to the "command_line" field.
+func (_u *ActionUpdateOne) AppendCommandLine(v []string) *ActionUpdateOne {
+	_u.mutation.AppendCommandLine(v)
+	return _u
 }
 
 // ClearCommandLine clears the value of the "command_line" field.
-func (auo *ActionUpdateOne) ClearCommandLine() *ActionUpdateOne {
-	auo.mutation.ClearCommandLine()
-	return auo
+func (_u *ActionUpdateOne) ClearCommandLine() *ActionUpdateOne {
+	_u.mutation.ClearCommandLine()
+	return _u
 }
 
 // SetStartTime sets the "start_time" field.
-func (auo *ActionUpdateOne) SetStartTime(t time.Time) *ActionUpdateOne {
-	auo.mutation.SetStartTime(t)
-	return auo
+func (_u *ActionUpdateOne) SetStartTime(v time.Time) *ActionUpdateOne {
+	_u.mutation.SetStartTime(v)
+	return _u
 }
 
 // SetNillableStartTime sets the "start_time" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableStartTime(t *time.Time) *ActionUpdateOne {
-	if t != nil {
-		auo.SetStartTime(*t)
+func (_u *ActionUpdateOne) SetNillableStartTime(v *time.Time) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStartTime(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearStartTime clears the value of the "start_time" field.
-func (auo *ActionUpdateOne) ClearStartTime() *ActionUpdateOne {
-	auo.mutation.ClearStartTime()
-	return auo
+func (_u *ActionUpdateOne) ClearStartTime() *ActionUpdateOne {
+	_u.mutation.ClearStartTime()
+	return _u
 }
 
 // SetEndTime sets the "end_time" field.
-func (auo *ActionUpdateOne) SetEndTime(t time.Time) *ActionUpdateOne {
-	auo.mutation.SetEndTime(t)
-	return auo
+func (_u *ActionUpdateOne) SetEndTime(v time.Time) *ActionUpdateOne {
+	_u.mutation.SetEndTime(v)
+	return _u
 }
 
 // SetNillableEndTime sets the "end_time" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableEndTime(t *time.Time) *ActionUpdateOne {
-	if t != nil {
-		auo.SetEndTime(*t)
+func (_u *ActionUpdateOne) SetNillableEndTime(v *time.Time) *ActionUpdateOne {
+	if v != nil {
+		_u.SetEndTime(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearEndTime clears the value of the "end_time" field.
-func (auo *ActionUpdateOne) ClearEndTime() *ActionUpdateOne {
-	auo.mutation.ClearEndTime()
-	return auo
+func (_u *ActionUpdateOne) ClearEndTime() *ActionUpdateOne {
+	_u.mutation.ClearEndTime()
+	return _u
 }
 
 // SetFailureCode sets the "failure_code" field.
-func (auo *ActionUpdateOne) SetFailureCode(s string) *ActionUpdateOne {
-	auo.mutation.SetFailureCode(s)
-	return auo
+func (_u *ActionUpdateOne) SetFailureCode(v string) *ActionUpdateOne {
+	_u.mutation.SetFailureCode(v)
+	return _u
 }
 
 // SetNillableFailureCode sets the "failure_code" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableFailureCode(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetFailureCode(*s)
+func (_u *ActionUpdateOne) SetNillableFailureCode(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetFailureCode(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearFailureCode clears the value of the "failure_code" field.
-func (auo *ActionUpdateOne) ClearFailureCode() *ActionUpdateOne {
-	auo.mutation.ClearFailureCode()
-	return auo
+func (_u *ActionUpdateOne) ClearFailureCode() *ActionUpdateOne {
+	_u.mutation.ClearFailureCode()
+	return _u
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (auo *ActionUpdateOne) SetFailureMessage(s string) *ActionUpdateOne {
-	auo.mutation.SetFailureMessage(s)
-	return auo
+func (_u *ActionUpdateOne) SetFailureMessage(v string) *ActionUpdateOne {
+	_u.mutation.SetFailureMessage(v)
+	return _u
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableFailureMessage(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetFailureMessage(*s)
+func (_u *ActionUpdateOne) SetNillableFailureMessage(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetFailureMessage(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearFailureMessage clears the value of the "failure_message" field.
-func (auo *ActionUpdateOne) ClearFailureMessage() *ActionUpdateOne {
-	auo.mutation.ClearFailureMessage()
-	return auo
+func (_u *ActionUpdateOne) ClearFailureMessage() *ActionUpdateOne {
+	_u.mutation.ClearFailureMessage()
+	return _u
 }
 
 // SetStdoutHash sets the "stdout_hash" field.
-func (auo *ActionUpdateOne) SetStdoutHash(s string) *ActionUpdateOne {
-	auo.mutation.SetStdoutHash(s)
-	return auo
+func (_u *ActionUpdateOne) SetStdoutHash(v string) *ActionUpdateOne {
+	_u.mutation.SetStdoutHash(v)
+	return _u
 }
 
 // SetNillableStdoutHash sets the "stdout_hash" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableStdoutHash(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetStdoutHash(*s)
+func (_u *ActionUpdateOne) SetNillableStdoutHash(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStdoutHash(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearStdoutHash clears the value of the "stdout_hash" field.
-func (auo *ActionUpdateOne) ClearStdoutHash() *ActionUpdateOne {
-	auo.mutation.ClearStdoutHash()
-	return auo
+func (_u *ActionUpdateOne) ClearStdoutHash() *ActionUpdateOne {
+	_u.mutation.ClearStdoutHash()
+	return _u
 }
 
 // SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (auo *ActionUpdateOne) SetStdoutSizeBytes(i int64) *ActionUpdateOne {
-	auo.mutation.ResetStdoutSizeBytes()
-	auo.mutation.SetStdoutSizeBytes(i)
-	return auo
+func (_u *ActionUpdateOne) SetStdoutSizeBytes(v int64) *ActionUpdateOne {
+	_u.mutation.ResetStdoutSizeBytes()
+	_u.mutation.SetStdoutSizeBytes(v)
+	return _u
 }
 
 // SetNillableStdoutSizeBytes sets the "stdout_size_bytes" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableStdoutSizeBytes(i *int64) *ActionUpdateOne {
-	if i != nil {
-		auo.SetStdoutSizeBytes(*i)
+func (_u *ActionUpdateOne) SetNillableStdoutSizeBytes(v *int64) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStdoutSizeBytes(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddStdoutSizeBytes adds i to the "stdout_size_bytes" field.
-func (auo *ActionUpdateOne) AddStdoutSizeBytes(i int64) *ActionUpdateOne {
-	auo.mutation.AddStdoutSizeBytes(i)
-	return auo
+// AddStdoutSizeBytes adds value to the "stdout_size_bytes" field.
+func (_u *ActionUpdateOne) AddStdoutSizeBytes(v int64) *ActionUpdateOne {
+	_u.mutation.AddStdoutSizeBytes(v)
+	return _u
 }
 
 // ClearStdoutSizeBytes clears the value of the "stdout_size_bytes" field.
-func (auo *ActionUpdateOne) ClearStdoutSizeBytes() *ActionUpdateOne {
-	auo.mutation.ClearStdoutSizeBytes()
-	return auo
+func (_u *ActionUpdateOne) ClearStdoutSizeBytes() *ActionUpdateOne {
+	_u.mutation.ClearStdoutSizeBytes()
+	return _u
 }
 
 // SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (auo *ActionUpdateOne) SetStdoutHashFunction(s string) *ActionUpdateOne {
-	auo.mutation.SetStdoutHashFunction(s)
-	return auo
+func (_u *ActionUpdateOne) SetStdoutHashFunction(v string) *ActionUpdateOne {
+	_u.mutation.SetStdoutHashFunction(v)
+	return _u
 }
 
 // SetNillableStdoutHashFunction sets the "stdout_hash_function" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableStdoutHashFunction(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetStdoutHashFunction(*s)
+func (_u *ActionUpdateOne) SetNillableStdoutHashFunction(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStdoutHashFunction(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearStdoutHashFunction clears the value of the "stdout_hash_function" field.
-func (auo *ActionUpdateOne) ClearStdoutHashFunction() *ActionUpdateOne {
-	auo.mutation.ClearStdoutHashFunction()
-	return auo
+func (_u *ActionUpdateOne) ClearStdoutHashFunction() *ActionUpdateOne {
+	_u.mutation.ClearStdoutHashFunction()
+	return _u
 }
 
 // SetStderrHash sets the "stderr_hash" field.
-func (auo *ActionUpdateOne) SetStderrHash(s string) *ActionUpdateOne {
-	auo.mutation.SetStderrHash(s)
-	return auo
+func (_u *ActionUpdateOne) SetStderrHash(v string) *ActionUpdateOne {
+	_u.mutation.SetStderrHash(v)
+	return _u
 }
 
 // SetNillableStderrHash sets the "stderr_hash" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableStderrHash(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetStderrHash(*s)
+func (_u *ActionUpdateOne) SetNillableStderrHash(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStderrHash(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearStderrHash clears the value of the "stderr_hash" field.
-func (auo *ActionUpdateOne) ClearStderrHash() *ActionUpdateOne {
-	auo.mutation.ClearStderrHash()
-	return auo
+func (_u *ActionUpdateOne) ClearStderrHash() *ActionUpdateOne {
+	_u.mutation.ClearStderrHash()
+	return _u
 }
 
 // SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (auo *ActionUpdateOne) SetStderrSizeBytes(i int64) *ActionUpdateOne {
-	auo.mutation.ResetStderrSizeBytes()
-	auo.mutation.SetStderrSizeBytes(i)
-	return auo
+func (_u *ActionUpdateOne) SetStderrSizeBytes(v int64) *ActionUpdateOne {
+	_u.mutation.ResetStderrSizeBytes()
+	_u.mutation.SetStderrSizeBytes(v)
+	return _u
 }
 
 // SetNillableStderrSizeBytes sets the "stderr_size_bytes" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableStderrSizeBytes(i *int64) *ActionUpdateOne {
-	if i != nil {
-		auo.SetStderrSizeBytes(*i)
+func (_u *ActionUpdateOne) SetNillableStderrSizeBytes(v *int64) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStderrSizeBytes(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddStderrSizeBytes adds i to the "stderr_size_bytes" field.
-func (auo *ActionUpdateOne) AddStderrSizeBytes(i int64) *ActionUpdateOne {
-	auo.mutation.AddStderrSizeBytes(i)
-	return auo
+// AddStderrSizeBytes adds value to the "stderr_size_bytes" field.
+func (_u *ActionUpdateOne) AddStderrSizeBytes(v int64) *ActionUpdateOne {
+	_u.mutation.AddStderrSizeBytes(v)
+	return _u
 }
 
 // ClearStderrSizeBytes clears the value of the "stderr_size_bytes" field.
-func (auo *ActionUpdateOne) ClearStderrSizeBytes() *ActionUpdateOne {
-	auo.mutation.ClearStderrSizeBytes()
-	return auo
+func (_u *ActionUpdateOne) ClearStderrSizeBytes() *ActionUpdateOne {
+	_u.mutation.ClearStderrSizeBytes()
+	return _u
 }
 
 // SetStderrHashFunction sets the "stderr_hash_function" field.
-func (auo *ActionUpdateOne) SetStderrHashFunction(s string) *ActionUpdateOne {
-	auo.mutation.SetStderrHashFunction(s)
-	return auo
+func (_u *ActionUpdateOne) SetStderrHashFunction(v string) *ActionUpdateOne {
+	_u.mutation.SetStderrHashFunction(v)
+	return _u
 }
 
 // SetNillableStderrHashFunction sets the "stderr_hash_function" field if the given value is not nil.
-func (auo *ActionUpdateOne) SetNillableStderrHashFunction(s *string) *ActionUpdateOne {
-	if s != nil {
-		auo.SetStderrHashFunction(*s)
+func (_u *ActionUpdateOne) SetNillableStderrHashFunction(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStderrHashFunction(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearStderrHashFunction clears the value of the "stderr_hash_function" field.
-func (auo *ActionUpdateOne) ClearStderrHashFunction() *ActionUpdateOne {
-	auo.mutation.ClearStderrHashFunction()
-	return auo
+func (_u *ActionUpdateOne) ClearStderrHashFunction() *ActionUpdateOne {
+	_u.mutation.ClearStderrHashFunction()
+	return _u
 }
 
 // Mutation returns the ActionMutation object of the builder.
-func (auo *ActionUpdateOne) Mutation() *ActionMutation {
-	return auo.mutation
+func (_u *ActionUpdateOne) Mutation() *ActionMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the ActionUpdate builder.
-func (auo *ActionUpdateOne) Where(ps ...predicate.Action) *ActionUpdateOne {
-	auo.mutation.Where(ps...)
-	return auo
+func (_u *ActionUpdateOne) Where(ps ...predicate.Action) *ActionUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (auo *ActionUpdateOne) Select(field string, fields ...string) *ActionUpdateOne {
-	auo.fields = append([]string{field}, fields...)
-	return auo
+func (_u *ActionUpdateOne) Select(field string, fields ...string) *ActionUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Action entity.
-func (auo *ActionUpdateOne) Save(ctx context.Context) (*Action, error) {
-	return withHooks(ctx, auo.sqlSave, auo.mutation, auo.hooks)
+func (_u *ActionUpdateOne) Save(ctx context.Context) (*Action, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auo *ActionUpdateOne) SaveX(ctx context.Context) *Action {
-	node, err := auo.Save(ctx)
+func (_u *ActionUpdateOne) SaveX(ctx context.Context) *Action {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -864,40 +864,40 @@ func (auo *ActionUpdateOne) SaveX(ctx context.Context) *Action {
 }
 
 // Exec executes the query on the entity.
-func (auo *ActionUpdateOne) Exec(ctx context.Context) error {
-	_, err := auo.Save(ctx)
+func (_u *ActionUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auo *ActionUpdateOne) ExecX(ctx context.Context) {
-	if err := auo.Exec(ctx); err != nil {
+func (_u *ActionUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (auo *ActionUpdateOne) check() error {
-	if auo.mutation.BazelInvocationCleared() && len(auo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *ActionUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
 	}
-	if auo.mutation.ConfigurationCleared() && len(auo.mutation.ConfigurationIDs()) > 0 {
+	if _u.mutation.ConfigurationCleared() && len(_u.mutation.ConfigurationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.configuration"`)
 	}
 	return nil
 }
 
-func (auo *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err error) {
-	if err := auo.check(); err != nil {
+func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(action.Table, action.Columns, sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64))
-	id, ok := auo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Action.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := auo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, action.FieldID)
 		for _, f := range fields {
@@ -909,118 +909,118 @@ func (auo *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err err
 			}
 		}
 	}
-	if ps := auo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := auo.mutation.Label(); ok {
+	if value, ok := _u.mutation.Label(); ok {
 		_spec.SetField(action.FieldLabel, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(action.FieldType, field.TypeString, value)
 	}
-	if auo.mutation.TypeCleared() {
+	if _u.mutation.TypeCleared() {
 		_spec.ClearField(action.FieldType, field.TypeString)
 	}
-	if value, ok := auo.mutation.Success(); ok {
+	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
 	}
-	if auo.mutation.SuccessCleared() {
+	if _u.mutation.SuccessCleared() {
 		_spec.ClearField(action.FieldSuccess, field.TypeBool)
 	}
-	if value, ok := auo.mutation.ExitCode(); ok {
+	if value, ok := _u.mutation.ExitCode(); ok {
 		_spec.SetField(action.FieldExitCode, field.TypeInt32, value)
 	}
-	if value, ok := auo.mutation.AddedExitCode(); ok {
+	if value, ok := _u.mutation.AddedExitCode(); ok {
 		_spec.AddField(action.FieldExitCode, field.TypeInt32, value)
 	}
-	if auo.mutation.ExitCodeCleared() {
+	if _u.mutation.ExitCodeCleared() {
 		_spec.ClearField(action.FieldExitCode, field.TypeInt32)
 	}
-	if value, ok := auo.mutation.CommandLine(); ok {
+	if value, ok := _u.mutation.CommandLine(); ok {
 		_spec.SetField(action.FieldCommandLine, field.TypeJSON, value)
 	}
-	if value, ok := auo.mutation.AppendedCommandLine(); ok {
+	if value, ok := _u.mutation.AppendedCommandLine(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, action.FieldCommandLine, value)
 		})
 	}
-	if auo.mutation.CommandLineCleared() {
+	if _u.mutation.CommandLineCleared() {
 		_spec.ClearField(action.FieldCommandLine, field.TypeJSON)
 	}
-	if value, ok := auo.mutation.StartTime(); ok {
+	if value, ok := _u.mutation.StartTime(); ok {
 		_spec.SetField(action.FieldStartTime, field.TypeTime, value)
 	}
-	if auo.mutation.StartTimeCleared() {
+	if _u.mutation.StartTimeCleared() {
 		_spec.ClearField(action.FieldStartTime, field.TypeTime)
 	}
-	if value, ok := auo.mutation.EndTime(); ok {
+	if value, ok := _u.mutation.EndTime(); ok {
 		_spec.SetField(action.FieldEndTime, field.TypeTime, value)
 	}
-	if auo.mutation.EndTimeCleared() {
+	if _u.mutation.EndTimeCleared() {
 		_spec.ClearField(action.FieldEndTime, field.TypeTime)
 	}
-	if value, ok := auo.mutation.FailureCode(); ok {
+	if value, ok := _u.mutation.FailureCode(); ok {
 		_spec.SetField(action.FieldFailureCode, field.TypeString, value)
 	}
-	if auo.mutation.FailureCodeCleared() {
+	if _u.mutation.FailureCodeCleared() {
 		_spec.ClearField(action.FieldFailureCode, field.TypeString)
 	}
-	if value, ok := auo.mutation.FailureMessage(); ok {
+	if value, ok := _u.mutation.FailureMessage(); ok {
 		_spec.SetField(action.FieldFailureMessage, field.TypeString, value)
 	}
-	if auo.mutation.FailureMessageCleared() {
+	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
 	}
-	if value, ok := auo.mutation.StdoutHash(); ok {
+	if value, ok := _u.mutation.StdoutHash(); ok {
 		_spec.SetField(action.FieldStdoutHash, field.TypeString, value)
 	}
-	if auo.mutation.StdoutHashCleared() {
+	if _u.mutation.StdoutHashCleared() {
 		_spec.ClearField(action.FieldStdoutHash, field.TypeString)
 	}
-	if value, ok := auo.mutation.StdoutSizeBytes(); ok {
+	if value, ok := _u.mutation.StdoutSizeBytes(); ok {
 		_spec.SetField(action.FieldStdoutSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.AddedStdoutSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedStdoutSizeBytes(); ok {
 		_spec.AddField(action.FieldStdoutSizeBytes, field.TypeInt64, value)
 	}
-	if auo.mutation.StdoutSizeBytesCleared() {
+	if _u.mutation.StdoutSizeBytesCleared() {
 		_spec.ClearField(action.FieldStdoutSizeBytes, field.TypeInt64)
 	}
-	if value, ok := auo.mutation.StdoutHashFunction(); ok {
+	if value, ok := _u.mutation.StdoutHashFunction(); ok {
 		_spec.SetField(action.FieldStdoutHashFunction, field.TypeString, value)
 	}
-	if auo.mutation.StdoutHashFunctionCleared() {
+	if _u.mutation.StdoutHashFunctionCleared() {
 		_spec.ClearField(action.FieldStdoutHashFunction, field.TypeString)
 	}
-	if value, ok := auo.mutation.StderrHash(); ok {
+	if value, ok := _u.mutation.StderrHash(); ok {
 		_spec.SetField(action.FieldStderrHash, field.TypeString, value)
 	}
-	if auo.mutation.StderrHashCleared() {
+	if _u.mutation.StderrHashCleared() {
 		_spec.ClearField(action.FieldStderrHash, field.TypeString)
 	}
-	if value, ok := auo.mutation.StderrSizeBytes(); ok {
+	if value, ok := _u.mutation.StderrSizeBytes(); ok {
 		_spec.SetField(action.FieldStderrSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.AddedStderrSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedStderrSizeBytes(); ok {
 		_spec.AddField(action.FieldStderrSizeBytes, field.TypeInt64, value)
 	}
-	if auo.mutation.StderrSizeBytesCleared() {
+	if _u.mutation.StderrSizeBytesCleared() {
 		_spec.ClearField(action.FieldStderrSizeBytes, field.TypeInt64)
 	}
-	if value, ok := auo.mutation.StderrHashFunction(); ok {
+	if value, ok := _u.mutation.StderrHashFunction(); ok {
 		_spec.SetField(action.FieldStderrHashFunction, field.TypeString, value)
 	}
-	if auo.mutation.StderrHashFunctionCleared() {
+	if _u.mutation.StderrHashFunctionCleared() {
 		_spec.ClearField(action.FieldStderrHashFunction, field.TypeString)
 	}
-	_node = &Action{config: auo.config}
+	_node = &Action{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, auo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{action.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1028,6 +1028,6 @@ func (auo *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err err
 		}
 		return nil, err
 	}
-	auo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

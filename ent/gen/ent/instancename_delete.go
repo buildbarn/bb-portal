@@ -20,56 +20,56 @@ type InstanceNameDelete struct {
 }
 
 // Where appends a list predicates to the InstanceNameDelete builder.
-func (ind *InstanceNameDelete) Where(ps ...predicate.InstanceName) *InstanceNameDelete {
-	ind.mutation.Where(ps...)
-	return ind
+func (_d *InstanceNameDelete) Where(ps ...predicate.InstanceName) *InstanceNameDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ind *InstanceNameDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, ind.sqlExec, ind.mutation, ind.hooks)
+func (_d *InstanceNameDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ind *InstanceNameDelete) ExecX(ctx context.Context) int {
-	n, err := ind.Exec(ctx)
+func (_d *InstanceNameDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (ind *InstanceNameDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *InstanceNameDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(instancename.Table, sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt64))
-	if ps := ind.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, ind.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	ind.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // InstanceNameDeleteOne is the builder for deleting a single InstanceName entity.
 type InstanceNameDeleteOne struct {
-	ind *InstanceNameDelete
+	_d *InstanceNameDelete
 }
 
 // Where appends a list predicates to the InstanceNameDelete builder.
-func (indo *InstanceNameDeleteOne) Where(ps ...predicate.InstanceName) *InstanceNameDeleteOne {
-	indo.ind.mutation.Where(ps...)
-	return indo
+func (_d *InstanceNameDeleteOne) Where(ps ...predicate.InstanceName) *InstanceNameDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (indo *InstanceNameDeleteOne) Exec(ctx context.Context) error {
-	n, err := indo.ind.Exec(ctx)
+func (_d *InstanceNameDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (indo *InstanceNameDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (indo *InstanceNameDeleteOne) ExecX(ctx context.Context) {
-	if err := indo.Exec(ctx); err != nil {
+func (_d *InstanceNameDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

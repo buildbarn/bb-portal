@@ -23,150 +23,150 @@ type InvocationFilesUpdate struct {
 }
 
 // Where appends a list predicates to the InvocationFilesUpdate builder.
-func (ifu *InvocationFilesUpdate) Where(ps ...predicate.InvocationFiles) *InvocationFilesUpdate {
-	ifu.mutation.Where(ps...)
-	return ifu
+func (_u *InvocationFilesUpdate) Where(ps ...predicate.InvocationFiles) *InvocationFilesUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ifu *InvocationFilesUpdate) SetName(s string) *InvocationFilesUpdate {
-	ifu.mutation.SetName(s)
-	return ifu
+func (_u *InvocationFilesUpdate) SetName(v string) *InvocationFilesUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ifu *InvocationFilesUpdate) SetNillableName(s *string) *InvocationFilesUpdate {
-	if s != nil {
-		ifu.SetName(*s)
+func (_u *InvocationFilesUpdate) SetNillableName(v *string) *InvocationFilesUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ifu
+	return _u
 }
 
 // SetContent sets the "content" field.
-func (ifu *InvocationFilesUpdate) SetContent(s string) *InvocationFilesUpdate {
-	ifu.mutation.SetContent(s)
-	return ifu
+func (_u *InvocationFilesUpdate) SetContent(v string) *InvocationFilesUpdate {
+	_u.mutation.SetContent(v)
+	return _u
 }
 
 // SetNillableContent sets the "content" field if the given value is not nil.
-func (ifu *InvocationFilesUpdate) SetNillableContent(s *string) *InvocationFilesUpdate {
-	if s != nil {
-		ifu.SetContent(*s)
+func (_u *InvocationFilesUpdate) SetNillableContent(v *string) *InvocationFilesUpdate {
+	if v != nil {
+		_u.SetContent(*v)
 	}
-	return ifu
+	return _u
 }
 
 // ClearContent clears the value of the "content" field.
-func (ifu *InvocationFilesUpdate) ClearContent() *InvocationFilesUpdate {
-	ifu.mutation.ClearContent()
-	return ifu
+func (_u *InvocationFilesUpdate) ClearContent() *InvocationFilesUpdate {
+	_u.mutation.ClearContent()
+	return _u
 }
 
 // SetDigest sets the "digest" field.
-func (ifu *InvocationFilesUpdate) SetDigest(s string) *InvocationFilesUpdate {
-	ifu.mutation.SetDigest(s)
-	return ifu
+func (_u *InvocationFilesUpdate) SetDigest(v string) *InvocationFilesUpdate {
+	_u.mutation.SetDigest(v)
+	return _u
 }
 
 // SetNillableDigest sets the "digest" field if the given value is not nil.
-func (ifu *InvocationFilesUpdate) SetNillableDigest(s *string) *InvocationFilesUpdate {
-	if s != nil {
-		ifu.SetDigest(*s)
+func (_u *InvocationFilesUpdate) SetNillableDigest(v *string) *InvocationFilesUpdate {
+	if v != nil {
+		_u.SetDigest(*v)
 	}
-	return ifu
+	return _u
 }
 
 // ClearDigest clears the value of the "digest" field.
-func (ifu *InvocationFilesUpdate) ClearDigest() *InvocationFilesUpdate {
-	ifu.mutation.ClearDigest()
-	return ifu
+func (_u *InvocationFilesUpdate) ClearDigest() *InvocationFilesUpdate {
+	_u.mutation.ClearDigest()
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (ifu *InvocationFilesUpdate) SetSizeBytes(i int64) *InvocationFilesUpdate {
-	ifu.mutation.ResetSizeBytes()
-	ifu.mutation.SetSizeBytes(i)
-	return ifu
+func (_u *InvocationFilesUpdate) SetSizeBytes(v int64) *InvocationFilesUpdate {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (ifu *InvocationFilesUpdate) SetNillableSizeBytes(i *int64) *InvocationFilesUpdate {
-	if i != nil {
-		ifu.SetSizeBytes(*i)
+func (_u *InvocationFilesUpdate) SetNillableSizeBytes(v *int64) *InvocationFilesUpdate {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return ifu
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (ifu *InvocationFilesUpdate) AddSizeBytes(i int64) *InvocationFilesUpdate {
-	ifu.mutation.AddSizeBytes(i)
-	return ifu
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *InvocationFilesUpdate) AddSizeBytes(v int64) *InvocationFilesUpdate {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // ClearSizeBytes clears the value of the "size_bytes" field.
-func (ifu *InvocationFilesUpdate) ClearSizeBytes() *InvocationFilesUpdate {
-	ifu.mutation.ClearSizeBytes()
-	return ifu
+func (_u *InvocationFilesUpdate) ClearSizeBytes() *InvocationFilesUpdate {
+	_u.mutation.ClearSizeBytes()
+	return _u
 }
 
 // SetDigestFunction sets the "digest_function" field.
-func (ifu *InvocationFilesUpdate) SetDigestFunction(s string) *InvocationFilesUpdate {
-	ifu.mutation.SetDigestFunction(s)
-	return ifu
+func (_u *InvocationFilesUpdate) SetDigestFunction(v string) *InvocationFilesUpdate {
+	_u.mutation.SetDigestFunction(v)
+	return _u
 }
 
 // SetNillableDigestFunction sets the "digest_function" field if the given value is not nil.
-func (ifu *InvocationFilesUpdate) SetNillableDigestFunction(s *string) *InvocationFilesUpdate {
-	if s != nil {
-		ifu.SetDigestFunction(*s)
+func (_u *InvocationFilesUpdate) SetNillableDigestFunction(v *string) *InvocationFilesUpdate {
+	if v != nil {
+		_u.SetDigestFunction(*v)
 	}
-	return ifu
+	return _u
 }
 
 // ClearDigestFunction clears the value of the "digest_function" field.
-func (ifu *InvocationFilesUpdate) ClearDigestFunction() *InvocationFilesUpdate {
-	ifu.mutation.ClearDigestFunction()
-	return ifu
+func (_u *InvocationFilesUpdate) ClearDigestFunction() *InvocationFilesUpdate {
+	_u.mutation.ClearDigestFunction()
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ifu *InvocationFilesUpdate) SetBazelInvocationID(id int64) *InvocationFilesUpdate {
-	ifu.mutation.SetBazelInvocationID(id)
-	return ifu
+func (_u *InvocationFilesUpdate) SetBazelInvocationID(id int64) *InvocationFilesUpdate {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (ifu *InvocationFilesUpdate) SetNillableBazelInvocationID(id *int64) *InvocationFilesUpdate {
+func (_u *InvocationFilesUpdate) SetNillableBazelInvocationID(id *int64) *InvocationFilesUpdate {
 	if id != nil {
-		ifu = ifu.SetBazelInvocationID(*id)
+		_u = _u.SetBazelInvocationID(*id)
 	}
-	return ifu
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (ifu *InvocationFilesUpdate) SetBazelInvocation(b *BazelInvocation) *InvocationFilesUpdate {
-	return ifu.SetBazelInvocationID(b.ID)
+func (_u *InvocationFilesUpdate) SetBazelInvocation(v *BazelInvocation) *InvocationFilesUpdate {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the InvocationFilesMutation object of the builder.
-func (ifu *InvocationFilesUpdate) Mutation() *InvocationFilesMutation {
-	return ifu.mutation
+func (_u *InvocationFilesUpdate) Mutation() *InvocationFilesMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (ifu *InvocationFilesUpdate) ClearBazelInvocation() *InvocationFilesUpdate {
-	ifu.mutation.ClearBazelInvocation()
-	return ifu
+func (_u *InvocationFilesUpdate) ClearBazelInvocation() *InvocationFilesUpdate {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ifu *InvocationFilesUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ifu.sqlSave, ifu.mutation, ifu.hooks)
+func (_u *InvocationFilesUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ifu *InvocationFilesUpdate) SaveX(ctx context.Context) int {
-	affected, err := ifu.Save(ctx)
+func (_u *InvocationFilesUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -174,58 +174,58 @@ func (ifu *InvocationFilesUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ifu *InvocationFilesUpdate) Exec(ctx context.Context) error {
-	_, err := ifu.Save(ctx)
+func (_u *InvocationFilesUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ifu *InvocationFilesUpdate) ExecX(ctx context.Context) {
-	if err := ifu.Exec(ctx); err != nil {
+func (_u *InvocationFilesUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *InvocationFilesUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
-	if ps := ifu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ifu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(invocationfiles.FieldName, field.TypeString, value)
 	}
-	if value, ok := ifu.mutation.Content(); ok {
+	if value, ok := _u.mutation.Content(); ok {
 		_spec.SetField(invocationfiles.FieldContent, field.TypeString, value)
 	}
-	if ifu.mutation.ContentCleared() {
+	if _u.mutation.ContentCleared() {
 		_spec.ClearField(invocationfiles.FieldContent, field.TypeString)
 	}
-	if value, ok := ifu.mutation.Digest(); ok {
+	if value, ok := _u.mutation.Digest(); ok {
 		_spec.SetField(invocationfiles.FieldDigest, field.TypeString, value)
 	}
-	if ifu.mutation.DigestCleared() {
+	if _u.mutation.DigestCleared() {
 		_spec.ClearField(invocationfiles.FieldDigest, field.TypeString)
 	}
-	if value, ok := ifu.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(invocationfiles.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := ifu.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(invocationfiles.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if ifu.mutation.SizeBytesCleared() {
+	if _u.mutation.SizeBytesCleared() {
 		_spec.ClearField(invocationfiles.FieldSizeBytes, field.TypeInt64)
 	}
-	if value, ok := ifu.mutation.DigestFunction(); ok {
+	if value, ok := _u.mutation.DigestFunction(); ok {
 		_spec.SetField(invocationfiles.FieldDigestFunction, field.TypeString, value)
 	}
-	if ifu.mutation.DigestFunctionCleared() {
+	if _u.mutation.DigestFunctionCleared() {
 		_spec.ClearField(invocationfiles.FieldDigestFunction, field.TypeString)
 	}
-	if ifu.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -238,7 +238,7 @@ func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ifu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -254,7 +254,7 @@ func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ifu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationfiles.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -262,8 +262,8 @@ func (ifu *InvocationFilesUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		return 0, err
 	}
-	ifu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // InvocationFilesUpdateOne is the builder for updating a single InvocationFiles entity.
@@ -275,157 +275,157 @@ type InvocationFilesUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (ifuo *InvocationFilesUpdateOne) SetName(s string) *InvocationFilesUpdateOne {
-	ifuo.mutation.SetName(s)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) SetName(v string) *InvocationFilesUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ifuo *InvocationFilesUpdateOne) SetNillableName(s *string) *InvocationFilesUpdateOne {
-	if s != nil {
-		ifuo.SetName(*s)
+func (_u *InvocationFilesUpdateOne) SetNillableName(v *string) *InvocationFilesUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ifuo
+	return _u
 }
 
 // SetContent sets the "content" field.
-func (ifuo *InvocationFilesUpdateOne) SetContent(s string) *InvocationFilesUpdateOne {
-	ifuo.mutation.SetContent(s)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) SetContent(v string) *InvocationFilesUpdateOne {
+	_u.mutation.SetContent(v)
+	return _u
 }
 
 // SetNillableContent sets the "content" field if the given value is not nil.
-func (ifuo *InvocationFilesUpdateOne) SetNillableContent(s *string) *InvocationFilesUpdateOne {
-	if s != nil {
-		ifuo.SetContent(*s)
+func (_u *InvocationFilesUpdateOne) SetNillableContent(v *string) *InvocationFilesUpdateOne {
+	if v != nil {
+		_u.SetContent(*v)
 	}
-	return ifuo
+	return _u
 }
 
 // ClearContent clears the value of the "content" field.
-func (ifuo *InvocationFilesUpdateOne) ClearContent() *InvocationFilesUpdateOne {
-	ifuo.mutation.ClearContent()
-	return ifuo
+func (_u *InvocationFilesUpdateOne) ClearContent() *InvocationFilesUpdateOne {
+	_u.mutation.ClearContent()
+	return _u
 }
 
 // SetDigest sets the "digest" field.
-func (ifuo *InvocationFilesUpdateOne) SetDigest(s string) *InvocationFilesUpdateOne {
-	ifuo.mutation.SetDigest(s)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) SetDigest(v string) *InvocationFilesUpdateOne {
+	_u.mutation.SetDigest(v)
+	return _u
 }
 
 // SetNillableDigest sets the "digest" field if the given value is not nil.
-func (ifuo *InvocationFilesUpdateOne) SetNillableDigest(s *string) *InvocationFilesUpdateOne {
-	if s != nil {
-		ifuo.SetDigest(*s)
+func (_u *InvocationFilesUpdateOne) SetNillableDigest(v *string) *InvocationFilesUpdateOne {
+	if v != nil {
+		_u.SetDigest(*v)
 	}
-	return ifuo
+	return _u
 }
 
 // ClearDigest clears the value of the "digest" field.
-func (ifuo *InvocationFilesUpdateOne) ClearDigest() *InvocationFilesUpdateOne {
-	ifuo.mutation.ClearDigest()
-	return ifuo
+func (_u *InvocationFilesUpdateOne) ClearDigest() *InvocationFilesUpdateOne {
+	_u.mutation.ClearDigest()
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (ifuo *InvocationFilesUpdateOne) SetSizeBytes(i int64) *InvocationFilesUpdateOne {
-	ifuo.mutation.ResetSizeBytes()
-	ifuo.mutation.SetSizeBytes(i)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) SetSizeBytes(v int64) *InvocationFilesUpdateOne {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (ifuo *InvocationFilesUpdateOne) SetNillableSizeBytes(i *int64) *InvocationFilesUpdateOne {
-	if i != nil {
-		ifuo.SetSizeBytes(*i)
+func (_u *InvocationFilesUpdateOne) SetNillableSizeBytes(v *int64) *InvocationFilesUpdateOne {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return ifuo
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (ifuo *InvocationFilesUpdateOne) AddSizeBytes(i int64) *InvocationFilesUpdateOne {
-	ifuo.mutation.AddSizeBytes(i)
-	return ifuo
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *InvocationFilesUpdateOne) AddSizeBytes(v int64) *InvocationFilesUpdateOne {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // ClearSizeBytes clears the value of the "size_bytes" field.
-func (ifuo *InvocationFilesUpdateOne) ClearSizeBytes() *InvocationFilesUpdateOne {
-	ifuo.mutation.ClearSizeBytes()
-	return ifuo
+func (_u *InvocationFilesUpdateOne) ClearSizeBytes() *InvocationFilesUpdateOne {
+	_u.mutation.ClearSizeBytes()
+	return _u
 }
 
 // SetDigestFunction sets the "digest_function" field.
-func (ifuo *InvocationFilesUpdateOne) SetDigestFunction(s string) *InvocationFilesUpdateOne {
-	ifuo.mutation.SetDigestFunction(s)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) SetDigestFunction(v string) *InvocationFilesUpdateOne {
+	_u.mutation.SetDigestFunction(v)
+	return _u
 }
 
 // SetNillableDigestFunction sets the "digest_function" field if the given value is not nil.
-func (ifuo *InvocationFilesUpdateOne) SetNillableDigestFunction(s *string) *InvocationFilesUpdateOne {
-	if s != nil {
-		ifuo.SetDigestFunction(*s)
+func (_u *InvocationFilesUpdateOne) SetNillableDigestFunction(v *string) *InvocationFilesUpdateOne {
+	if v != nil {
+		_u.SetDigestFunction(*v)
 	}
-	return ifuo
+	return _u
 }
 
 // ClearDigestFunction clears the value of the "digest_function" field.
-func (ifuo *InvocationFilesUpdateOne) ClearDigestFunction() *InvocationFilesUpdateOne {
-	ifuo.mutation.ClearDigestFunction()
-	return ifuo
+func (_u *InvocationFilesUpdateOne) ClearDigestFunction() *InvocationFilesUpdateOne {
+	_u.mutation.ClearDigestFunction()
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ifuo *InvocationFilesUpdateOne) SetBazelInvocationID(id int64) *InvocationFilesUpdateOne {
-	ifuo.mutation.SetBazelInvocationID(id)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) SetBazelInvocationID(id int64) *InvocationFilesUpdateOne {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (ifuo *InvocationFilesUpdateOne) SetNillableBazelInvocationID(id *int64) *InvocationFilesUpdateOne {
+func (_u *InvocationFilesUpdateOne) SetNillableBazelInvocationID(id *int64) *InvocationFilesUpdateOne {
 	if id != nil {
-		ifuo = ifuo.SetBazelInvocationID(*id)
+		_u = _u.SetBazelInvocationID(*id)
 	}
-	return ifuo
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (ifuo *InvocationFilesUpdateOne) SetBazelInvocation(b *BazelInvocation) *InvocationFilesUpdateOne {
-	return ifuo.SetBazelInvocationID(b.ID)
+func (_u *InvocationFilesUpdateOne) SetBazelInvocation(v *BazelInvocation) *InvocationFilesUpdateOne {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the InvocationFilesMutation object of the builder.
-func (ifuo *InvocationFilesUpdateOne) Mutation() *InvocationFilesMutation {
-	return ifuo.mutation
+func (_u *InvocationFilesUpdateOne) Mutation() *InvocationFilesMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (ifuo *InvocationFilesUpdateOne) ClearBazelInvocation() *InvocationFilesUpdateOne {
-	ifuo.mutation.ClearBazelInvocation()
-	return ifuo
+func (_u *InvocationFilesUpdateOne) ClearBazelInvocation() *InvocationFilesUpdateOne {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Where appends a list predicates to the InvocationFilesUpdate builder.
-func (ifuo *InvocationFilesUpdateOne) Where(ps ...predicate.InvocationFiles) *InvocationFilesUpdateOne {
-	ifuo.mutation.Where(ps...)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) Where(ps ...predicate.InvocationFiles) *InvocationFilesUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ifuo *InvocationFilesUpdateOne) Select(field string, fields ...string) *InvocationFilesUpdateOne {
-	ifuo.fields = append([]string{field}, fields...)
-	return ifuo
+func (_u *InvocationFilesUpdateOne) Select(field string, fields ...string) *InvocationFilesUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated InvocationFiles entity.
-func (ifuo *InvocationFilesUpdateOne) Save(ctx context.Context) (*InvocationFiles, error) {
-	return withHooks(ctx, ifuo.sqlSave, ifuo.mutation, ifuo.hooks)
+func (_u *InvocationFilesUpdateOne) Save(ctx context.Context) (*InvocationFiles, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ifuo *InvocationFilesUpdateOne) SaveX(ctx context.Context) *InvocationFiles {
-	node, err := ifuo.Save(ctx)
+func (_u *InvocationFilesUpdateOne) SaveX(ctx context.Context) *InvocationFiles {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -433,26 +433,26 @@ func (ifuo *InvocationFilesUpdateOne) SaveX(ctx context.Context) *InvocationFile
 }
 
 // Exec executes the query on the entity.
-func (ifuo *InvocationFilesUpdateOne) Exec(ctx context.Context) error {
-	_, err := ifuo.Save(ctx)
+func (_u *InvocationFilesUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ifuo *InvocationFilesUpdateOne) ExecX(ctx context.Context) {
-	if err := ifuo.Exec(ctx); err != nil {
+func (_u *InvocationFilesUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *InvocationFiles, err error) {
+func (_u *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *InvocationFiles, err error) {
 	_spec := sqlgraph.NewUpdateSpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
-	id, ok := ifuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "InvocationFiles.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ifuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, invocationfiles.FieldID)
 		for _, f := range fields {
@@ -464,44 +464,44 @@ func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *Invoc
 			}
 		}
 	}
-	if ps := ifuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ifuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(invocationfiles.FieldName, field.TypeString, value)
 	}
-	if value, ok := ifuo.mutation.Content(); ok {
+	if value, ok := _u.mutation.Content(); ok {
 		_spec.SetField(invocationfiles.FieldContent, field.TypeString, value)
 	}
-	if ifuo.mutation.ContentCleared() {
+	if _u.mutation.ContentCleared() {
 		_spec.ClearField(invocationfiles.FieldContent, field.TypeString)
 	}
-	if value, ok := ifuo.mutation.Digest(); ok {
+	if value, ok := _u.mutation.Digest(); ok {
 		_spec.SetField(invocationfiles.FieldDigest, field.TypeString, value)
 	}
-	if ifuo.mutation.DigestCleared() {
+	if _u.mutation.DigestCleared() {
 		_spec.ClearField(invocationfiles.FieldDigest, field.TypeString)
 	}
-	if value, ok := ifuo.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(invocationfiles.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := ifuo.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(invocationfiles.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if ifuo.mutation.SizeBytesCleared() {
+	if _u.mutation.SizeBytesCleared() {
 		_spec.ClearField(invocationfiles.FieldSizeBytes, field.TypeInt64)
 	}
-	if value, ok := ifuo.mutation.DigestFunction(); ok {
+	if value, ok := _u.mutation.DigestFunction(); ok {
 		_spec.SetField(invocationfiles.FieldDigestFunction, field.TypeString, value)
 	}
-	if ifuo.mutation.DigestFunctionCleared() {
+	if _u.mutation.DigestFunctionCleared() {
 		_spec.ClearField(invocationfiles.FieldDigestFunction, field.TypeString)
 	}
-	if ifuo.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -514,7 +514,7 @@ func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *Invoc
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ifuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -530,10 +530,10 @@ func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *Invoc
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &InvocationFiles{config: ifuo.config}
+	_node = &InvocationFiles{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ifuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationfiles.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -541,6 +541,6 @@ func (ifuo *InvocationFilesUpdateOne) sqlSave(ctx context.Context) (_node *Invoc
 		}
 		return nil, err
 	}
-	ifuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

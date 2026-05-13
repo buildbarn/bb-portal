@@ -26,180 +26,180 @@ type TargetUpdate struct {
 }
 
 // Where appends a list predicates to the TargetUpdate builder.
-func (tu *TargetUpdate) Where(ps ...predicate.Target) *TargetUpdate {
-	tu.mutation.Where(ps...)
-	return tu
+func (_u *TargetUpdate) Where(ps ...predicate.Target) *TargetUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetLabel sets the "label" field.
-func (tu *TargetUpdate) SetLabel(s string) *TargetUpdate {
-	tu.mutation.SetLabel(s)
-	return tu
+func (_u *TargetUpdate) SetLabel(v string) *TargetUpdate {
+	_u.mutation.SetLabel(v)
+	return _u
 }
 
 // SetNillableLabel sets the "label" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableLabel(s *string) *TargetUpdate {
-	if s != nil {
-		tu.SetLabel(*s)
+func (_u *TargetUpdate) SetNillableLabel(v *string) *TargetUpdate {
+	if v != nil {
+		_u.SetLabel(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetAspect sets the "aspect" field.
-func (tu *TargetUpdate) SetAspect(s string) *TargetUpdate {
-	tu.mutation.SetAspect(s)
-	return tu
+func (_u *TargetUpdate) SetAspect(v string) *TargetUpdate {
+	_u.mutation.SetAspect(v)
+	return _u
 }
 
 // SetNillableAspect sets the "aspect" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableAspect(s *string) *TargetUpdate {
-	if s != nil {
-		tu.SetAspect(*s)
+func (_u *TargetUpdate) SetNillableAspect(v *string) *TargetUpdate {
+	if v != nil {
+		_u.SetAspect(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetTargetKind sets the "target_kind" field.
-func (tu *TargetUpdate) SetTargetKind(s string) *TargetUpdate {
-	tu.mutation.SetTargetKind(s)
-	return tu
+func (_u *TargetUpdate) SetTargetKind(v string) *TargetUpdate {
+	_u.mutation.SetTargetKind(v)
+	return _u
 }
 
 // SetNillableTargetKind sets the "target_kind" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableTargetKind(s *string) *TargetUpdate {
-	if s != nil {
-		tu.SetTargetKind(*s)
+func (_u *TargetUpdate) SetNillableTargetKind(v *string) *TargetUpdate {
+	if v != nil {
+		_u.SetTargetKind(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (tu *TargetUpdate) SetInstanceNameID(id int64) *TargetUpdate {
-	tu.mutation.SetInstanceNameID(id)
-	return tu
+func (_u *TargetUpdate) SetInstanceNameID(id int64) *TargetUpdate {
+	_u.mutation.SetInstanceNameID(id)
+	return _u
 }
 
 // SetInstanceName sets the "instance_name" edge to the InstanceName entity.
-func (tu *TargetUpdate) SetInstanceName(i *InstanceName) *TargetUpdate {
-	return tu.SetInstanceNameID(i.ID)
+func (_u *TargetUpdate) SetInstanceName(v *InstanceName) *TargetUpdate {
+	return _u.SetInstanceNameID(v.ID)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (tu *TargetUpdate) AddInvocationTargetIDs(ids ...int64) *TargetUpdate {
-	tu.mutation.AddInvocationTargetIDs(ids...)
-	return tu
+func (_u *TargetUpdate) AddInvocationTargetIDs(ids ...int64) *TargetUpdate {
+	_u.mutation.AddInvocationTargetIDs(ids...)
+	return _u
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
-func (tu *TargetUpdate) AddInvocationTargets(i ...*InvocationTarget) *TargetUpdate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *TargetUpdate) AddInvocationTargets(v ...*InvocationTarget) *TargetUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tu.AddInvocationTargetIDs(ids...)
+	return _u.AddInvocationTargetIDs(ids...)
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (tu *TargetUpdate) AddTargetKindMappingIDs(ids ...int64) *TargetUpdate {
-	tu.mutation.AddTargetKindMappingIDs(ids...)
-	return tu
+func (_u *TargetUpdate) AddTargetKindMappingIDs(ids ...int64) *TargetUpdate {
+	_u.mutation.AddTargetKindMappingIDs(ids...)
+	return _u
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
-func (tu *TargetUpdate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TargetUpdate) AddTargetKindMappings(v ...*TargetKindMapping) *TargetUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tu.AddTargetKindMappingIDs(ids...)
+	return _u.AddTargetKindMappingIDs(ids...)
 }
 
 // SetTestTargetID sets the "test_target" edge to the TestTarget entity by ID.
-func (tu *TargetUpdate) SetTestTargetID(id int64) *TargetUpdate {
-	tu.mutation.SetTestTargetID(id)
-	return tu
+func (_u *TargetUpdate) SetTestTargetID(id int64) *TargetUpdate {
+	_u.mutation.SetTestTargetID(id)
+	return _u
 }
 
 // SetNillableTestTargetID sets the "test_target" edge to the TestTarget entity by ID if the given value is not nil.
-func (tu *TargetUpdate) SetNillableTestTargetID(id *int64) *TargetUpdate {
+func (_u *TargetUpdate) SetNillableTestTargetID(id *int64) *TargetUpdate {
 	if id != nil {
-		tu = tu.SetTestTargetID(*id)
+		_u = _u.SetTestTargetID(*id)
 	}
-	return tu
+	return _u
 }
 
 // SetTestTarget sets the "test_target" edge to the TestTarget entity.
-func (tu *TargetUpdate) SetTestTarget(t *TestTarget) *TargetUpdate {
-	return tu.SetTestTargetID(t.ID)
+func (_u *TargetUpdate) SetTestTarget(v *TestTarget) *TargetUpdate {
+	return _u.SetTestTargetID(v.ID)
 }
 
 // Mutation returns the TargetMutation object of the builder.
-func (tu *TargetUpdate) Mutation() *TargetMutation {
-	return tu.mutation
+func (_u *TargetUpdate) Mutation() *TargetMutation {
+	return _u.mutation
 }
 
 // ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
-func (tu *TargetUpdate) ClearInstanceName() *TargetUpdate {
-	tu.mutation.ClearInstanceName()
-	return tu
+func (_u *TargetUpdate) ClearInstanceName() *TargetUpdate {
+	_u.mutation.ClearInstanceName()
+	return _u
 }
 
 // ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
-func (tu *TargetUpdate) ClearInvocationTargets() *TargetUpdate {
-	tu.mutation.ClearInvocationTargets()
-	return tu
+func (_u *TargetUpdate) ClearInvocationTargets() *TargetUpdate {
+	_u.mutation.ClearInvocationTargets()
+	return _u
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
-func (tu *TargetUpdate) RemoveInvocationTargetIDs(ids ...int64) *TargetUpdate {
-	tu.mutation.RemoveInvocationTargetIDs(ids...)
-	return tu
+func (_u *TargetUpdate) RemoveInvocationTargetIDs(ids ...int64) *TargetUpdate {
+	_u.mutation.RemoveInvocationTargetIDs(ids...)
+	return _u
 }
 
 // RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
-func (tu *TargetUpdate) RemoveInvocationTargets(i ...*InvocationTarget) *TargetUpdate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *TargetUpdate) RemoveInvocationTargets(v ...*InvocationTarget) *TargetUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tu.RemoveInvocationTargetIDs(ids...)
+	return _u.RemoveInvocationTargetIDs(ids...)
 }
 
 // ClearTargetKindMappings clears all "target_kind_mappings" edges to the TargetKindMapping entity.
-func (tu *TargetUpdate) ClearTargetKindMappings() *TargetUpdate {
-	tu.mutation.ClearTargetKindMappings()
-	return tu
+func (_u *TargetUpdate) ClearTargetKindMappings() *TargetUpdate {
+	_u.mutation.ClearTargetKindMappings()
+	return _u
 }
 
 // RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to TargetKindMapping entities by IDs.
-func (tu *TargetUpdate) RemoveTargetKindMappingIDs(ids ...int64) *TargetUpdate {
-	tu.mutation.RemoveTargetKindMappingIDs(ids...)
-	return tu
+func (_u *TargetUpdate) RemoveTargetKindMappingIDs(ids ...int64) *TargetUpdate {
+	_u.mutation.RemoveTargetKindMappingIDs(ids...)
+	return _u
 }
 
 // RemoveTargetKindMappings removes "target_kind_mappings" edges to TargetKindMapping entities.
-func (tu *TargetUpdate) RemoveTargetKindMappings(t ...*TargetKindMapping) *TargetUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TargetUpdate) RemoveTargetKindMappings(v ...*TargetKindMapping) *TargetUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tu.RemoveTargetKindMappingIDs(ids...)
+	return _u.RemoveTargetKindMappingIDs(ids...)
 }
 
 // ClearTestTarget clears the "test_target" edge to the TestTarget entity.
-func (tu *TargetUpdate) ClearTestTarget() *TargetUpdate {
-	tu.mutation.ClearTestTarget()
-	return tu
+func (_u *TargetUpdate) ClearTestTarget() *TargetUpdate {
+	_u.mutation.ClearTestTarget()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tu *TargetUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tu.sqlSave, tu.mutation, tu.hooks)
+func (_u *TargetUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tu *TargetUpdate) SaveX(ctx context.Context) int {
-	affected, err := tu.Save(ctx)
+func (_u *TargetUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -207,48 +207,48 @@ func (tu *TargetUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tu *TargetUpdate) Exec(ctx context.Context) error {
-	_, err := tu.Save(ctx)
+func (_u *TargetUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tu *TargetUpdate) ExecX(ctx context.Context) {
-	if err := tu.Exec(ctx); err != nil {
+func (_u *TargetUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tu *TargetUpdate) check() error {
-	if tu.mutation.InstanceNameCleared() && len(tu.mutation.InstanceNameIDs()) > 0 {
+func (_u *TargetUpdate) check() error {
+	if _u.mutation.InstanceNameCleared() && len(_u.mutation.InstanceNameIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Target.instance_name"`)
 	}
 	return nil
 }
 
-func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := tu.check(); err != nil {
-		return n, err
+func (_u *TargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
-	if ps := tu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tu.mutation.Label(); ok {
+	if value, ok := _u.mutation.Label(); ok {
 		_spec.SetField(target.FieldLabel, field.TypeString, value)
 	}
-	if value, ok := tu.mutation.Aspect(); ok {
+	if value, ok := _u.mutation.Aspect(); ok {
 		_spec.SetField(target.FieldAspect, field.TypeString, value)
 	}
-	if value, ok := tu.mutation.TargetKind(); ok {
+	if value, ok := _u.mutation.TargetKind(); ok {
 		_spec.SetField(target.FieldTargetKind, field.TypeString, value)
 	}
-	if tu.mutation.InstanceNameCleared() {
+	if _u.mutation.InstanceNameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -261,7 +261,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.InstanceNameIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -277,7 +277,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tu.mutation.InvocationTargetsCleared() {
+	if _u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -290,7 +290,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !tu.mutation.InvocationTargetsCleared() {
+	if nodes := _u.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !_u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -306,7 +306,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -322,7 +322,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tu.mutation.TargetKindMappingsCleared() {
+	if _u.mutation.TargetKindMappingsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -335,7 +335,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.RemovedTargetKindMappingsIDs(); len(nodes) > 0 && !tu.mutation.TargetKindMappingsCleared() {
+	if nodes := _u.mutation.RemovedTargetKindMappingsIDs(); len(nodes) > 0 && !_u.mutation.TargetKindMappingsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -351,7 +351,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -367,7 +367,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tu.mutation.TestTargetCleared() {
+	if _u.mutation.TestTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -380,7 +380,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.TestTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -396,7 +396,7 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{target.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -404,8 +404,8 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	tu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TargetUpdateOne is the builder for updating a single Target entity.
@@ -417,187 +417,187 @@ type TargetUpdateOne struct {
 }
 
 // SetLabel sets the "label" field.
-func (tuo *TargetUpdateOne) SetLabel(s string) *TargetUpdateOne {
-	tuo.mutation.SetLabel(s)
-	return tuo
+func (_u *TargetUpdateOne) SetLabel(v string) *TargetUpdateOne {
+	_u.mutation.SetLabel(v)
+	return _u
 }
 
 // SetNillableLabel sets the "label" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableLabel(s *string) *TargetUpdateOne {
-	if s != nil {
-		tuo.SetLabel(*s)
+func (_u *TargetUpdateOne) SetNillableLabel(v *string) *TargetUpdateOne {
+	if v != nil {
+		_u.SetLabel(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetAspect sets the "aspect" field.
-func (tuo *TargetUpdateOne) SetAspect(s string) *TargetUpdateOne {
-	tuo.mutation.SetAspect(s)
-	return tuo
+func (_u *TargetUpdateOne) SetAspect(v string) *TargetUpdateOne {
+	_u.mutation.SetAspect(v)
+	return _u
 }
 
 // SetNillableAspect sets the "aspect" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableAspect(s *string) *TargetUpdateOne {
-	if s != nil {
-		tuo.SetAspect(*s)
+func (_u *TargetUpdateOne) SetNillableAspect(v *string) *TargetUpdateOne {
+	if v != nil {
+		_u.SetAspect(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetTargetKind sets the "target_kind" field.
-func (tuo *TargetUpdateOne) SetTargetKind(s string) *TargetUpdateOne {
-	tuo.mutation.SetTargetKind(s)
-	return tuo
+func (_u *TargetUpdateOne) SetTargetKind(v string) *TargetUpdateOne {
+	_u.mutation.SetTargetKind(v)
+	return _u
 }
 
 // SetNillableTargetKind sets the "target_kind" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableTargetKind(s *string) *TargetUpdateOne {
-	if s != nil {
-		tuo.SetTargetKind(*s)
+func (_u *TargetUpdateOne) SetNillableTargetKind(v *string) *TargetUpdateOne {
+	if v != nil {
+		_u.SetTargetKind(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (tuo *TargetUpdateOne) SetInstanceNameID(id int64) *TargetUpdateOne {
-	tuo.mutation.SetInstanceNameID(id)
-	return tuo
+func (_u *TargetUpdateOne) SetInstanceNameID(id int64) *TargetUpdateOne {
+	_u.mutation.SetInstanceNameID(id)
+	return _u
 }
 
 // SetInstanceName sets the "instance_name" edge to the InstanceName entity.
-func (tuo *TargetUpdateOne) SetInstanceName(i *InstanceName) *TargetUpdateOne {
-	return tuo.SetInstanceNameID(i.ID)
+func (_u *TargetUpdateOne) SetInstanceName(v *InstanceName) *TargetUpdateOne {
+	return _u.SetInstanceNameID(v.ID)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (tuo *TargetUpdateOne) AddInvocationTargetIDs(ids ...int64) *TargetUpdateOne {
-	tuo.mutation.AddInvocationTargetIDs(ids...)
-	return tuo
+func (_u *TargetUpdateOne) AddInvocationTargetIDs(ids ...int64) *TargetUpdateOne {
+	_u.mutation.AddInvocationTargetIDs(ids...)
+	return _u
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
-func (tuo *TargetUpdateOne) AddInvocationTargets(i ...*InvocationTarget) *TargetUpdateOne {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *TargetUpdateOne) AddInvocationTargets(v ...*InvocationTarget) *TargetUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tuo.AddInvocationTargetIDs(ids...)
+	return _u.AddInvocationTargetIDs(ids...)
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (tuo *TargetUpdateOne) AddTargetKindMappingIDs(ids ...int64) *TargetUpdateOne {
-	tuo.mutation.AddTargetKindMappingIDs(ids...)
-	return tuo
+func (_u *TargetUpdateOne) AddTargetKindMappingIDs(ids ...int64) *TargetUpdateOne {
+	_u.mutation.AddTargetKindMappingIDs(ids...)
+	return _u
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
-func (tuo *TargetUpdateOne) AddTargetKindMappings(t ...*TargetKindMapping) *TargetUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TargetUpdateOne) AddTargetKindMappings(v ...*TargetKindMapping) *TargetUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tuo.AddTargetKindMappingIDs(ids...)
+	return _u.AddTargetKindMappingIDs(ids...)
 }
 
 // SetTestTargetID sets the "test_target" edge to the TestTarget entity by ID.
-func (tuo *TargetUpdateOne) SetTestTargetID(id int64) *TargetUpdateOne {
-	tuo.mutation.SetTestTargetID(id)
-	return tuo
+func (_u *TargetUpdateOne) SetTestTargetID(id int64) *TargetUpdateOne {
+	_u.mutation.SetTestTargetID(id)
+	return _u
 }
 
 // SetNillableTestTargetID sets the "test_target" edge to the TestTarget entity by ID if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableTestTargetID(id *int64) *TargetUpdateOne {
+func (_u *TargetUpdateOne) SetNillableTestTargetID(id *int64) *TargetUpdateOne {
 	if id != nil {
-		tuo = tuo.SetTestTargetID(*id)
+		_u = _u.SetTestTargetID(*id)
 	}
-	return tuo
+	return _u
 }
 
 // SetTestTarget sets the "test_target" edge to the TestTarget entity.
-func (tuo *TargetUpdateOne) SetTestTarget(t *TestTarget) *TargetUpdateOne {
-	return tuo.SetTestTargetID(t.ID)
+func (_u *TargetUpdateOne) SetTestTarget(v *TestTarget) *TargetUpdateOne {
+	return _u.SetTestTargetID(v.ID)
 }
 
 // Mutation returns the TargetMutation object of the builder.
-func (tuo *TargetUpdateOne) Mutation() *TargetMutation {
-	return tuo.mutation
+func (_u *TargetUpdateOne) Mutation() *TargetMutation {
+	return _u.mutation
 }
 
 // ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
-func (tuo *TargetUpdateOne) ClearInstanceName() *TargetUpdateOne {
-	tuo.mutation.ClearInstanceName()
-	return tuo
+func (_u *TargetUpdateOne) ClearInstanceName() *TargetUpdateOne {
+	_u.mutation.ClearInstanceName()
+	return _u
 }
 
 // ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
-func (tuo *TargetUpdateOne) ClearInvocationTargets() *TargetUpdateOne {
-	tuo.mutation.ClearInvocationTargets()
-	return tuo
+func (_u *TargetUpdateOne) ClearInvocationTargets() *TargetUpdateOne {
+	_u.mutation.ClearInvocationTargets()
+	return _u
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
-func (tuo *TargetUpdateOne) RemoveInvocationTargetIDs(ids ...int64) *TargetUpdateOne {
-	tuo.mutation.RemoveInvocationTargetIDs(ids...)
-	return tuo
+func (_u *TargetUpdateOne) RemoveInvocationTargetIDs(ids ...int64) *TargetUpdateOne {
+	_u.mutation.RemoveInvocationTargetIDs(ids...)
+	return _u
 }
 
 // RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
-func (tuo *TargetUpdateOne) RemoveInvocationTargets(i ...*InvocationTarget) *TargetUpdateOne {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *TargetUpdateOne) RemoveInvocationTargets(v ...*InvocationTarget) *TargetUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tuo.RemoveInvocationTargetIDs(ids...)
+	return _u.RemoveInvocationTargetIDs(ids...)
 }
 
 // ClearTargetKindMappings clears all "target_kind_mappings" edges to the TargetKindMapping entity.
-func (tuo *TargetUpdateOne) ClearTargetKindMappings() *TargetUpdateOne {
-	tuo.mutation.ClearTargetKindMappings()
-	return tuo
+func (_u *TargetUpdateOne) ClearTargetKindMappings() *TargetUpdateOne {
+	_u.mutation.ClearTargetKindMappings()
+	return _u
 }
 
 // RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to TargetKindMapping entities by IDs.
-func (tuo *TargetUpdateOne) RemoveTargetKindMappingIDs(ids ...int64) *TargetUpdateOne {
-	tuo.mutation.RemoveTargetKindMappingIDs(ids...)
-	return tuo
+func (_u *TargetUpdateOne) RemoveTargetKindMappingIDs(ids ...int64) *TargetUpdateOne {
+	_u.mutation.RemoveTargetKindMappingIDs(ids...)
+	return _u
 }
 
 // RemoveTargetKindMappings removes "target_kind_mappings" edges to TargetKindMapping entities.
-func (tuo *TargetUpdateOne) RemoveTargetKindMappings(t ...*TargetKindMapping) *TargetUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TargetUpdateOne) RemoveTargetKindMappings(v ...*TargetKindMapping) *TargetUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tuo.RemoveTargetKindMappingIDs(ids...)
+	return _u.RemoveTargetKindMappingIDs(ids...)
 }
 
 // ClearTestTarget clears the "test_target" edge to the TestTarget entity.
-func (tuo *TargetUpdateOne) ClearTestTarget() *TargetUpdateOne {
-	tuo.mutation.ClearTestTarget()
-	return tuo
+func (_u *TargetUpdateOne) ClearTestTarget() *TargetUpdateOne {
+	_u.mutation.ClearTestTarget()
+	return _u
 }
 
 // Where appends a list predicates to the TargetUpdate builder.
-func (tuo *TargetUpdateOne) Where(ps ...predicate.Target) *TargetUpdateOne {
-	tuo.mutation.Where(ps...)
-	return tuo
+func (_u *TargetUpdateOne) Where(ps ...predicate.Target) *TargetUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tuo *TargetUpdateOne) Select(field string, fields ...string) *TargetUpdateOne {
-	tuo.fields = append([]string{field}, fields...)
-	return tuo
+func (_u *TargetUpdateOne) Select(field string, fields ...string) *TargetUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Target entity.
-func (tuo *TargetUpdateOne) Save(ctx context.Context) (*Target, error) {
-	return withHooks(ctx, tuo.sqlSave, tuo.mutation, tuo.hooks)
+func (_u *TargetUpdateOne) Save(ctx context.Context) (*Target, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tuo *TargetUpdateOne) SaveX(ctx context.Context) *Target {
-	node, err := tuo.Save(ctx)
+func (_u *TargetUpdateOne) SaveX(ctx context.Context) *Target {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -605,37 +605,37 @@ func (tuo *TargetUpdateOne) SaveX(ctx context.Context) *Target {
 }
 
 // Exec executes the query on the entity.
-func (tuo *TargetUpdateOne) Exec(ctx context.Context) error {
-	_, err := tuo.Save(ctx)
+func (_u *TargetUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tuo *TargetUpdateOne) ExecX(ctx context.Context) {
-	if err := tuo.Exec(ctx); err != nil {
+func (_u *TargetUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tuo *TargetUpdateOne) check() error {
-	if tuo.mutation.InstanceNameCleared() && len(tuo.mutation.InstanceNameIDs()) > 0 {
+func (_u *TargetUpdateOne) check() error {
+	if _u.mutation.InstanceNameCleared() && len(_u.mutation.InstanceNameIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Target.instance_name"`)
 	}
 	return nil
 }
 
-func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err error) {
-	if err := tuo.check(); err != nil {
+func (_u *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(target.Table, target.Columns, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
-	id, ok := tuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Target.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, target.FieldID)
 		for _, f := range fields {
@@ -647,23 +647,23 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 			}
 		}
 	}
-	if ps := tuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tuo.mutation.Label(); ok {
+	if value, ok := _u.mutation.Label(); ok {
 		_spec.SetField(target.FieldLabel, field.TypeString, value)
 	}
-	if value, ok := tuo.mutation.Aspect(); ok {
+	if value, ok := _u.mutation.Aspect(); ok {
 		_spec.SetField(target.FieldAspect, field.TypeString, value)
 	}
-	if value, ok := tuo.mutation.TargetKind(); ok {
+	if value, ok := _u.mutation.TargetKind(); ok {
 		_spec.SetField(target.FieldTargetKind, field.TypeString, value)
 	}
-	if tuo.mutation.InstanceNameCleared() {
+	if _u.mutation.InstanceNameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -676,7 +676,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.InstanceNameIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -692,7 +692,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tuo.mutation.InvocationTargetsCleared() {
+	if _u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -705,7 +705,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !tuo.mutation.InvocationTargetsCleared() {
+	if nodes := _u.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !_u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -721,7 +721,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -737,7 +737,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tuo.mutation.TargetKindMappingsCleared() {
+	if _u.mutation.TargetKindMappingsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -750,7 +750,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.RemovedTargetKindMappingsIDs(); len(nodes) > 0 && !tuo.mutation.TargetKindMappingsCleared() {
+	if nodes := _u.mutation.RemovedTargetKindMappingsIDs(); len(nodes) > 0 && !_u.mutation.TargetKindMappingsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -766,7 +766,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -782,7 +782,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tuo.mutation.TestTargetCleared() {
+	if _u.mutation.TestTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -795,7 +795,7 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.TestTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -811,10 +811,10 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Target{config: tuo.config}
+	_node = &Target{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{target.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -822,6 +822,6 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 		}
 		return nil, err
 	}
-	tuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

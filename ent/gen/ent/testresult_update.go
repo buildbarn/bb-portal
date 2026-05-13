@@ -25,265 +25,265 @@ type TestResultUpdate struct {
 }
 
 // Where appends a list predicates to the TestResultUpdate builder.
-func (tru *TestResultUpdate) Where(ps ...predicate.TestResult) *TestResultUpdate {
-	tru.mutation.Where(ps...)
-	return tru
+func (_u *TestResultUpdate) Where(ps ...predicate.TestResult) *TestResultUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (tru *TestResultUpdate) SetStatus(s string) *TestResultUpdate {
-	tru.mutation.SetStatus(s)
-	return tru
+func (_u *TestResultUpdate) SetStatus(v string) *TestResultUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableStatus(s *string) *TestResultUpdate {
-	if s != nil {
-		tru.SetStatus(*s)
+func (_u *TestResultUpdate) SetNillableStatus(v *string) *TestResultUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return tru
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (tru *TestResultUpdate) ClearStatus() *TestResultUpdate {
-	tru.mutation.ClearStatus()
-	return tru
+func (_u *TestResultUpdate) ClearStatus() *TestResultUpdate {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetStatusDetails sets the "status_details" field.
-func (tru *TestResultUpdate) SetStatusDetails(s string) *TestResultUpdate {
-	tru.mutation.SetStatusDetails(s)
-	return tru
+func (_u *TestResultUpdate) SetStatusDetails(v string) *TestResultUpdate {
+	_u.mutation.SetStatusDetails(v)
+	return _u
 }
 
 // SetNillableStatusDetails sets the "status_details" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableStatusDetails(s *string) *TestResultUpdate {
-	if s != nil {
-		tru.SetStatusDetails(*s)
+func (_u *TestResultUpdate) SetNillableStatusDetails(v *string) *TestResultUpdate {
+	if v != nil {
+		_u.SetStatusDetails(*v)
 	}
-	return tru
+	return _u
 }
 
 // ClearStatusDetails clears the value of the "status_details" field.
-func (tru *TestResultUpdate) ClearStatusDetails() *TestResultUpdate {
-	tru.mutation.ClearStatusDetails()
-	return tru
+func (_u *TestResultUpdate) ClearStatusDetails() *TestResultUpdate {
+	_u.mutation.ClearStatusDetails()
+	return _u
 }
 
 // SetCachedLocally sets the "cached_locally" field.
-func (tru *TestResultUpdate) SetCachedLocally(b bool) *TestResultUpdate {
-	tru.mutation.SetCachedLocally(b)
-	return tru
+func (_u *TestResultUpdate) SetCachedLocally(v bool) *TestResultUpdate {
+	_u.mutation.SetCachedLocally(v)
+	return _u
 }
 
 // SetNillableCachedLocally sets the "cached_locally" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableCachedLocally(b *bool) *TestResultUpdate {
-	if b != nil {
-		tru.SetCachedLocally(*b)
+func (_u *TestResultUpdate) SetNillableCachedLocally(v *bool) *TestResultUpdate {
+	if v != nil {
+		_u.SetCachedLocally(*v)
 	}
-	return tru
+	return _u
 }
 
 // ClearCachedLocally clears the value of the "cached_locally" field.
-func (tru *TestResultUpdate) ClearCachedLocally() *TestResultUpdate {
-	tru.mutation.ClearCachedLocally()
-	return tru
+func (_u *TestResultUpdate) ClearCachedLocally() *TestResultUpdate {
+	_u.mutation.ClearCachedLocally()
+	return _u
 }
 
 // SetTestAttemptStart sets the "test_attempt_start" field.
-func (tru *TestResultUpdate) SetTestAttemptStart(t time.Time) *TestResultUpdate {
-	tru.mutation.SetTestAttemptStart(t)
-	return tru
+func (_u *TestResultUpdate) SetTestAttemptStart(v time.Time) *TestResultUpdate {
+	_u.mutation.SetTestAttemptStart(v)
+	return _u
 }
 
 // SetNillableTestAttemptStart sets the "test_attempt_start" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableTestAttemptStart(t *time.Time) *TestResultUpdate {
-	if t != nil {
-		tru.SetTestAttemptStart(*t)
+func (_u *TestResultUpdate) SetNillableTestAttemptStart(v *time.Time) *TestResultUpdate {
+	if v != nil {
+		_u.SetTestAttemptStart(*v)
 	}
-	return tru
+	return _u
 }
 
 // ClearTestAttemptStart clears the value of the "test_attempt_start" field.
-func (tru *TestResultUpdate) ClearTestAttemptStart() *TestResultUpdate {
-	tru.mutation.ClearTestAttemptStart()
-	return tru
+func (_u *TestResultUpdate) ClearTestAttemptStart() *TestResultUpdate {
+	_u.mutation.ClearTestAttemptStart()
+	return _u
 }
 
 // SetTestAttemptDurationInMs sets the "test_attempt_duration_in_ms" field.
-func (tru *TestResultUpdate) SetTestAttemptDurationInMs(i int64) *TestResultUpdate {
-	tru.mutation.ResetTestAttemptDurationInMs()
-	tru.mutation.SetTestAttemptDurationInMs(i)
-	return tru
+func (_u *TestResultUpdate) SetTestAttemptDurationInMs(v int64) *TestResultUpdate {
+	_u.mutation.ResetTestAttemptDurationInMs()
+	_u.mutation.SetTestAttemptDurationInMs(v)
+	return _u
 }
 
 // SetNillableTestAttemptDurationInMs sets the "test_attempt_duration_in_ms" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableTestAttemptDurationInMs(i *int64) *TestResultUpdate {
-	if i != nil {
-		tru.SetTestAttemptDurationInMs(*i)
+func (_u *TestResultUpdate) SetNillableTestAttemptDurationInMs(v *int64) *TestResultUpdate {
+	if v != nil {
+		_u.SetTestAttemptDurationInMs(*v)
 	}
-	return tru
+	return _u
 }
 
-// AddTestAttemptDurationInMs adds i to the "test_attempt_duration_in_ms" field.
-func (tru *TestResultUpdate) AddTestAttemptDurationInMs(i int64) *TestResultUpdate {
-	tru.mutation.AddTestAttemptDurationInMs(i)
-	return tru
+// AddTestAttemptDurationInMs adds value to the "test_attempt_duration_in_ms" field.
+func (_u *TestResultUpdate) AddTestAttemptDurationInMs(v int64) *TestResultUpdate {
+	_u.mutation.AddTestAttemptDurationInMs(v)
+	return _u
 }
 
 // ClearTestAttemptDurationInMs clears the value of the "test_attempt_duration_in_ms" field.
-func (tru *TestResultUpdate) ClearTestAttemptDurationInMs() *TestResultUpdate {
-	tru.mutation.ClearTestAttemptDurationInMs()
-	return tru
+func (_u *TestResultUpdate) ClearTestAttemptDurationInMs() *TestResultUpdate {
+	_u.mutation.ClearTestAttemptDurationInMs()
+	return _u
 }
 
 // SetWarning sets the "warning" field.
-func (tru *TestResultUpdate) SetWarning(s []string) *TestResultUpdate {
-	tru.mutation.SetWarning(s)
-	return tru
+func (_u *TestResultUpdate) SetWarning(v []string) *TestResultUpdate {
+	_u.mutation.SetWarning(v)
+	return _u
 }
 
-// AppendWarning appends s to the "warning" field.
-func (tru *TestResultUpdate) AppendWarning(s []string) *TestResultUpdate {
-	tru.mutation.AppendWarning(s)
-	return tru
+// AppendWarning appends value to the "warning" field.
+func (_u *TestResultUpdate) AppendWarning(v []string) *TestResultUpdate {
+	_u.mutation.AppendWarning(v)
+	return _u
 }
 
 // ClearWarning clears the value of the "warning" field.
-func (tru *TestResultUpdate) ClearWarning() *TestResultUpdate {
-	tru.mutation.ClearWarning()
-	return tru
+func (_u *TestResultUpdate) ClearWarning() *TestResultUpdate {
+	_u.mutation.ClearWarning()
+	return _u
 }
 
 // SetStrategy sets the "strategy" field.
-func (tru *TestResultUpdate) SetStrategy(s string) *TestResultUpdate {
-	tru.mutation.SetStrategy(s)
-	return tru
+func (_u *TestResultUpdate) SetStrategy(v string) *TestResultUpdate {
+	_u.mutation.SetStrategy(v)
+	return _u
 }
 
 // SetNillableStrategy sets the "strategy" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableStrategy(s *string) *TestResultUpdate {
-	if s != nil {
-		tru.SetStrategy(*s)
+func (_u *TestResultUpdate) SetNillableStrategy(v *string) *TestResultUpdate {
+	if v != nil {
+		_u.SetStrategy(*v)
 	}
-	return tru
+	return _u
 }
 
 // ClearStrategy clears the value of the "strategy" field.
-func (tru *TestResultUpdate) ClearStrategy() *TestResultUpdate {
-	tru.mutation.ClearStrategy()
-	return tru
+func (_u *TestResultUpdate) ClearStrategy() *TestResultUpdate {
+	_u.mutation.ClearStrategy()
+	return _u
 }
 
 // SetCachedRemotely sets the "cached_remotely" field.
-func (tru *TestResultUpdate) SetCachedRemotely(b bool) *TestResultUpdate {
-	tru.mutation.SetCachedRemotely(b)
-	return tru
+func (_u *TestResultUpdate) SetCachedRemotely(v bool) *TestResultUpdate {
+	_u.mutation.SetCachedRemotely(v)
+	return _u
 }
 
 // SetNillableCachedRemotely sets the "cached_remotely" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableCachedRemotely(b *bool) *TestResultUpdate {
-	if b != nil {
-		tru.SetCachedRemotely(*b)
+func (_u *TestResultUpdate) SetNillableCachedRemotely(v *bool) *TestResultUpdate {
+	if v != nil {
+		_u.SetCachedRemotely(*v)
 	}
-	return tru
+	return _u
 }
 
 // ClearCachedRemotely clears the value of the "cached_remotely" field.
-func (tru *TestResultUpdate) ClearCachedRemotely() *TestResultUpdate {
-	tru.mutation.ClearCachedRemotely()
-	return tru
+func (_u *TestResultUpdate) ClearCachedRemotely() *TestResultUpdate {
+	_u.mutation.ClearCachedRemotely()
+	return _u
 }
 
 // SetExitCode sets the "exit_code" field.
-func (tru *TestResultUpdate) SetExitCode(i int32) *TestResultUpdate {
-	tru.mutation.ResetExitCode()
-	tru.mutation.SetExitCode(i)
-	return tru
+func (_u *TestResultUpdate) SetExitCode(v int32) *TestResultUpdate {
+	_u.mutation.ResetExitCode()
+	_u.mutation.SetExitCode(v)
+	return _u
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableExitCode(i *int32) *TestResultUpdate {
-	if i != nil {
-		tru.SetExitCode(*i)
+func (_u *TestResultUpdate) SetNillableExitCode(v *int32) *TestResultUpdate {
+	if v != nil {
+		_u.SetExitCode(*v)
 	}
-	return tru
+	return _u
 }
 
-// AddExitCode adds i to the "exit_code" field.
-func (tru *TestResultUpdate) AddExitCode(i int32) *TestResultUpdate {
-	tru.mutation.AddExitCode(i)
-	return tru
+// AddExitCode adds value to the "exit_code" field.
+func (_u *TestResultUpdate) AddExitCode(v int32) *TestResultUpdate {
+	_u.mutation.AddExitCode(v)
+	return _u
 }
 
 // ClearExitCode clears the value of the "exit_code" field.
-func (tru *TestResultUpdate) ClearExitCode() *TestResultUpdate {
-	tru.mutation.ClearExitCode()
-	return tru
+func (_u *TestResultUpdate) ClearExitCode() *TestResultUpdate {
+	_u.mutation.ClearExitCode()
+	return _u
 }
 
 // SetHostname sets the "hostname" field.
-func (tru *TestResultUpdate) SetHostname(s string) *TestResultUpdate {
-	tru.mutation.SetHostname(s)
-	return tru
+func (_u *TestResultUpdate) SetHostname(v string) *TestResultUpdate {
+	_u.mutation.SetHostname(v)
+	return _u
 }
 
 // SetNillableHostname sets the "hostname" field if the given value is not nil.
-func (tru *TestResultUpdate) SetNillableHostname(s *string) *TestResultUpdate {
-	if s != nil {
-		tru.SetHostname(*s)
+func (_u *TestResultUpdate) SetNillableHostname(v *string) *TestResultUpdate {
+	if v != nil {
+		_u.SetHostname(*v)
 	}
-	return tru
+	return _u
 }
 
 // ClearHostname clears the value of the "hostname" field.
-func (tru *TestResultUpdate) ClearHostname() *TestResultUpdate {
-	tru.mutation.ClearHostname()
-	return tru
+func (_u *TestResultUpdate) ClearHostname() *TestResultUpdate {
+	_u.mutation.ClearHostname()
+	return _u
 }
 
 // SetTimingBreakdown sets the "timing_breakdown" field.
-func (tru *TestResultUpdate) SetTimingBreakdown(m map[string]interface{}) *TestResultUpdate {
-	tru.mutation.SetTimingBreakdown(m)
-	return tru
+func (_u *TestResultUpdate) SetTimingBreakdown(v map[string]interface{}) *TestResultUpdate {
+	_u.mutation.SetTimingBreakdown(v)
+	return _u
 }
 
 // ClearTimingBreakdown clears the value of the "timing_breakdown" field.
-func (tru *TestResultUpdate) ClearTimingBreakdown() *TestResultUpdate {
-	tru.mutation.ClearTimingBreakdown()
-	return tru
+func (_u *TestResultUpdate) ClearTimingBreakdown() *TestResultUpdate {
+	_u.mutation.ClearTimingBreakdown()
+	return _u
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
-func (tru *TestResultUpdate) SetTestSummaryID(id int64) *TestResultUpdate {
-	tru.mutation.SetTestSummaryID(id)
-	return tru
+func (_u *TestResultUpdate) SetTestSummaryID(id int64) *TestResultUpdate {
+	_u.mutation.SetTestSummaryID(id)
+	return _u
 }
 
 // SetTestSummary sets the "test_summary" edge to the TestSummary entity.
-func (tru *TestResultUpdate) SetTestSummary(t *TestSummary) *TestResultUpdate {
-	return tru.SetTestSummaryID(t.ID)
+func (_u *TestResultUpdate) SetTestSummary(v *TestSummary) *TestResultUpdate {
+	return _u.SetTestSummaryID(v.ID)
 }
 
 // Mutation returns the TestResultMutation object of the builder.
-func (tru *TestResultUpdate) Mutation() *TestResultMutation {
-	return tru.mutation
+func (_u *TestResultUpdate) Mutation() *TestResultMutation {
+	return _u.mutation
 }
 
 // ClearTestSummary clears the "test_summary" edge to the TestSummary entity.
-func (tru *TestResultUpdate) ClearTestSummary() *TestResultUpdate {
-	tru.mutation.ClearTestSummary()
-	return tru
+func (_u *TestResultUpdate) ClearTestSummary() *TestResultUpdate {
+	_u.mutation.ClearTestSummary()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tru *TestResultUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tru.sqlSave, tru.mutation, tru.hooks)
+func (_u *TestResultUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tru *TestResultUpdate) SaveX(ctx context.Context) int {
-	affected, err := tru.Save(ctx)
+func (_u *TestResultUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -291,116 +291,116 @@ func (tru *TestResultUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tru *TestResultUpdate) Exec(ctx context.Context) error {
-	_, err := tru.Save(ctx)
+func (_u *TestResultUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tru *TestResultUpdate) ExecX(ctx context.Context) {
-	if err := tru.Exec(ctx); err != nil {
+func (_u *TestResultUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tru *TestResultUpdate) check() error {
-	if tru.mutation.TestSummaryCleared() && len(tru.mutation.TestSummaryIDs()) > 0 {
+func (_u *TestResultUpdate) check() error {
+	if _u.mutation.TestSummaryCleared() && len(_u.mutation.TestSummaryIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TestResult.test_summary"`)
 	}
 	return nil
 }
 
-func (tru *TestResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := tru.check(); err != nil {
-		return n, err
+func (_u *TestResultUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(testresult.Table, testresult.Columns, sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64))
-	if ps := tru.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tru.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(testresult.FieldStatus, field.TypeString, value)
 	}
-	if tru.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(testresult.FieldStatus, field.TypeString)
 	}
-	if value, ok := tru.mutation.StatusDetails(); ok {
+	if value, ok := _u.mutation.StatusDetails(); ok {
 		_spec.SetField(testresult.FieldStatusDetails, field.TypeString, value)
 	}
-	if tru.mutation.StatusDetailsCleared() {
+	if _u.mutation.StatusDetailsCleared() {
 		_spec.ClearField(testresult.FieldStatusDetails, field.TypeString)
 	}
-	if value, ok := tru.mutation.CachedLocally(); ok {
+	if value, ok := _u.mutation.CachedLocally(); ok {
 		_spec.SetField(testresult.FieldCachedLocally, field.TypeBool, value)
 	}
-	if tru.mutation.CachedLocallyCleared() {
+	if _u.mutation.CachedLocallyCleared() {
 		_spec.ClearField(testresult.FieldCachedLocally, field.TypeBool)
 	}
-	if value, ok := tru.mutation.TestAttemptStart(); ok {
+	if value, ok := _u.mutation.TestAttemptStart(); ok {
 		_spec.SetField(testresult.FieldTestAttemptStart, field.TypeTime, value)
 	}
-	if tru.mutation.TestAttemptStartCleared() {
+	if _u.mutation.TestAttemptStartCleared() {
 		_spec.ClearField(testresult.FieldTestAttemptStart, field.TypeTime)
 	}
-	if value, ok := tru.mutation.TestAttemptDurationInMs(); ok {
+	if value, ok := _u.mutation.TestAttemptDurationInMs(); ok {
 		_spec.SetField(testresult.FieldTestAttemptDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := tru.mutation.AddedTestAttemptDurationInMs(); ok {
+	if value, ok := _u.mutation.AddedTestAttemptDurationInMs(); ok {
 		_spec.AddField(testresult.FieldTestAttemptDurationInMs, field.TypeInt64, value)
 	}
-	if tru.mutation.TestAttemptDurationInMsCleared() {
+	if _u.mutation.TestAttemptDurationInMsCleared() {
 		_spec.ClearField(testresult.FieldTestAttemptDurationInMs, field.TypeInt64)
 	}
-	if value, ok := tru.mutation.Warning(); ok {
+	if value, ok := _u.mutation.Warning(); ok {
 		_spec.SetField(testresult.FieldWarning, field.TypeJSON, value)
 	}
-	if value, ok := tru.mutation.AppendedWarning(); ok {
+	if value, ok := _u.mutation.AppendedWarning(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, testresult.FieldWarning, value)
 		})
 	}
-	if tru.mutation.WarningCleared() {
+	if _u.mutation.WarningCleared() {
 		_spec.ClearField(testresult.FieldWarning, field.TypeJSON)
 	}
-	if value, ok := tru.mutation.Strategy(); ok {
+	if value, ok := _u.mutation.Strategy(); ok {
 		_spec.SetField(testresult.FieldStrategy, field.TypeString, value)
 	}
-	if tru.mutation.StrategyCleared() {
+	if _u.mutation.StrategyCleared() {
 		_spec.ClearField(testresult.FieldStrategy, field.TypeString)
 	}
-	if value, ok := tru.mutation.CachedRemotely(); ok {
+	if value, ok := _u.mutation.CachedRemotely(); ok {
 		_spec.SetField(testresult.FieldCachedRemotely, field.TypeBool, value)
 	}
-	if tru.mutation.CachedRemotelyCleared() {
+	if _u.mutation.CachedRemotelyCleared() {
 		_spec.ClearField(testresult.FieldCachedRemotely, field.TypeBool)
 	}
-	if value, ok := tru.mutation.ExitCode(); ok {
+	if value, ok := _u.mutation.ExitCode(); ok {
 		_spec.SetField(testresult.FieldExitCode, field.TypeInt32, value)
 	}
-	if value, ok := tru.mutation.AddedExitCode(); ok {
+	if value, ok := _u.mutation.AddedExitCode(); ok {
 		_spec.AddField(testresult.FieldExitCode, field.TypeInt32, value)
 	}
-	if tru.mutation.ExitCodeCleared() {
+	if _u.mutation.ExitCodeCleared() {
 		_spec.ClearField(testresult.FieldExitCode, field.TypeInt32)
 	}
-	if value, ok := tru.mutation.Hostname(); ok {
+	if value, ok := _u.mutation.Hostname(); ok {
 		_spec.SetField(testresult.FieldHostname, field.TypeString, value)
 	}
-	if tru.mutation.HostnameCleared() {
+	if _u.mutation.HostnameCleared() {
 		_spec.ClearField(testresult.FieldHostname, field.TypeString)
 	}
-	if value, ok := tru.mutation.TimingBreakdown(); ok {
+	if value, ok := _u.mutation.TimingBreakdown(); ok {
 		_spec.SetField(testresult.FieldTimingBreakdown, field.TypeJSON, value)
 	}
-	if tru.mutation.TimingBreakdownCleared() {
+	if _u.mutation.TimingBreakdownCleared() {
 		_spec.ClearField(testresult.FieldTimingBreakdown, field.TypeJSON)
 	}
-	if tru.mutation.TestSummaryCleared() {
+	if _u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -413,7 +413,7 @@ func (tru *TestResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tru.mutation.TestSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -429,7 +429,7 @@ func (tru *TestResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tru.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testresult.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -437,8 +437,8 @@ func (tru *TestResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	tru.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TestResultUpdateOne is the builder for updating a single TestResult entity.
@@ -450,272 +450,272 @@ type TestResultUpdateOne struct {
 }
 
 // SetStatus sets the "status" field.
-func (truo *TestResultUpdateOne) SetStatus(s string) *TestResultUpdateOne {
-	truo.mutation.SetStatus(s)
-	return truo
+func (_u *TestResultUpdateOne) SetStatus(v string) *TestResultUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableStatus(s *string) *TestResultUpdateOne {
-	if s != nil {
-		truo.SetStatus(*s)
+func (_u *TestResultUpdateOne) SetNillableStatus(v *string) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return truo
+	return _u
 }
 
 // ClearStatus clears the value of the "status" field.
-func (truo *TestResultUpdateOne) ClearStatus() *TestResultUpdateOne {
-	truo.mutation.ClearStatus()
-	return truo
+func (_u *TestResultUpdateOne) ClearStatus() *TestResultUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
 }
 
 // SetStatusDetails sets the "status_details" field.
-func (truo *TestResultUpdateOne) SetStatusDetails(s string) *TestResultUpdateOne {
-	truo.mutation.SetStatusDetails(s)
-	return truo
+func (_u *TestResultUpdateOne) SetStatusDetails(v string) *TestResultUpdateOne {
+	_u.mutation.SetStatusDetails(v)
+	return _u
 }
 
 // SetNillableStatusDetails sets the "status_details" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableStatusDetails(s *string) *TestResultUpdateOne {
-	if s != nil {
-		truo.SetStatusDetails(*s)
+func (_u *TestResultUpdateOne) SetNillableStatusDetails(v *string) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetStatusDetails(*v)
 	}
-	return truo
+	return _u
 }
 
 // ClearStatusDetails clears the value of the "status_details" field.
-func (truo *TestResultUpdateOne) ClearStatusDetails() *TestResultUpdateOne {
-	truo.mutation.ClearStatusDetails()
-	return truo
+func (_u *TestResultUpdateOne) ClearStatusDetails() *TestResultUpdateOne {
+	_u.mutation.ClearStatusDetails()
+	return _u
 }
 
 // SetCachedLocally sets the "cached_locally" field.
-func (truo *TestResultUpdateOne) SetCachedLocally(b bool) *TestResultUpdateOne {
-	truo.mutation.SetCachedLocally(b)
-	return truo
+func (_u *TestResultUpdateOne) SetCachedLocally(v bool) *TestResultUpdateOne {
+	_u.mutation.SetCachedLocally(v)
+	return _u
 }
 
 // SetNillableCachedLocally sets the "cached_locally" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableCachedLocally(b *bool) *TestResultUpdateOne {
-	if b != nil {
-		truo.SetCachedLocally(*b)
+func (_u *TestResultUpdateOne) SetNillableCachedLocally(v *bool) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetCachedLocally(*v)
 	}
-	return truo
+	return _u
 }
 
 // ClearCachedLocally clears the value of the "cached_locally" field.
-func (truo *TestResultUpdateOne) ClearCachedLocally() *TestResultUpdateOne {
-	truo.mutation.ClearCachedLocally()
-	return truo
+func (_u *TestResultUpdateOne) ClearCachedLocally() *TestResultUpdateOne {
+	_u.mutation.ClearCachedLocally()
+	return _u
 }
 
 // SetTestAttemptStart sets the "test_attempt_start" field.
-func (truo *TestResultUpdateOne) SetTestAttemptStart(t time.Time) *TestResultUpdateOne {
-	truo.mutation.SetTestAttemptStart(t)
-	return truo
+func (_u *TestResultUpdateOne) SetTestAttemptStart(v time.Time) *TestResultUpdateOne {
+	_u.mutation.SetTestAttemptStart(v)
+	return _u
 }
 
 // SetNillableTestAttemptStart sets the "test_attempt_start" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableTestAttemptStart(t *time.Time) *TestResultUpdateOne {
-	if t != nil {
-		truo.SetTestAttemptStart(*t)
+func (_u *TestResultUpdateOne) SetNillableTestAttemptStart(v *time.Time) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetTestAttemptStart(*v)
 	}
-	return truo
+	return _u
 }
 
 // ClearTestAttemptStart clears the value of the "test_attempt_start" field.
-func (truo *TestResultUpdateOne) ClearTestAttemptStart() *TestResultUpdateOne {
-	truo.mutation.ClearTestAttemptStart()
-	return truo
+func (_u *TestResultUpdateOne) ClearTestAttemptStart() *TestResultUpdateOne {
+	_u.mutation.ClearTestAttemptStart()
+	return _u
 }
 
 // SetTestAttemptDurationInMs sets the "test_attempt_duration_in_ms" field.
-func (truo *TestResultUpdateOne) SetTestAttemptDurationInMs(i int64) *TestResultUpdateOne {
-	truo.mutation.ResetTestAttemptDurationInMs()
-	truo.mutation.SetTestAttemptDurationInMs(i)
-	return truo
+func (_u *TestResultUpdateOne) SetTestAttemptDurationInMs(v int64) *TestResultUpdateOne {
+	_u.mutation.ResetTestAttemptDurationInMs()
+	_u.mutation.SetTestAttemptDurationInMs(v)
+	return _u
 }
 
 // SetNillableTestAttemptDurationInMs sets the "test_attempt_duration_in_ms" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableTestAttemptDurationInMs(i *int64) *TestResultUpdateOne {
-	if i != nil {
-		truo.SetTestAttemptDurationInMs(*i)
+func (_u *TestResultUpdateOne) SetNillableTestAttemptDurationInMs(v *int64) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetTestAttemptDurationInMs(*v)
 	}
-	return truo
+	return _u
 }
 
-// AddTestAttemptDurationInMs adds i to the "test_attempt_duration_in_ms" field.
-func (truo *TestResultUpdateOne) AddTestAttemptDurationInMs(i int64) *TestResultUpdateOne {
-	truo.mutation.AddTestAttemptDurationInMs(i)
-	return truo
+// AddTestAttemptDurationInMs adds value to the "test_attempt_duration_in_ms" field.
+func (_u *TestResultUpdateOne) AddTestAttemptDurationInMs(v int64) *TestResultUpdateOne {
+	_u.mutation.AddTestAttemptDurationInMs(v)
+	return _u
 }
 
 // ClearTestAttemptDurationInMs clears the value of the "test_attempt_duration_in_ms" field.
-func (truo *TestResultUpdateOne) ClearTestAttemptDurationInMs() *TestResultUpdateOne {
-	truo.mutation.ClearTestAttemptDurationInMs()
-	return truo
+func (_u *TestResultUpdateOne) ClearTestAttemptDurationInMs() *TestResultUpdateOne {
+	_u.mutation.ClearTestAttemptDurationInMs()
+	return _u
 }
 
 // SetWarning sets the "warning" field.
-func (truo *TestResultUpdateOne) SetWarning(s []string) *TestResultUpdateOne {
-	truo.mutation.SetWarning(s)
-	return truo
+func (_u *TestResultUpdateOne) SetWarning(v []string) *TestResultUpdateOne {
+	_u.mutation.SetWarning(v)
+	return _u
 }
 
-// AppendWarning appends s to the "warning" field.
-func (truo *TestResultUpdateOne) AppendWarning(s []string) *TestResultUpdateOne {
-	truo.mutation.AppendWarning(s)
-	return truo
+// AppendWarning appends value to the "warning" field.
+func (_u *TestResultUpdateOne) AppendWarning(v []string) *TestResultUpdateOne {
+	_u.mutation.AppendWarning(v)
+	return _u
 }
 
 // ClearWarning clears the value of the "warning" field.
-func (truo *TestResultUpdateOne) ClearWarning() *TestResultUpdateOne {
-	truo.mutation.ClearWarning()
-	return truo
+func (_u *TestResultUpdateOne) ClearWarning() *TestResultUpdateOne {
+	_u.mutation.ClearWarning()
+	return _u
 }
 
 // SetStrategy sets the "strategy" field.
-func (truo *TestResultUpdateOne) SetStrategy(s string) *TestResultUpdateOne {
-	truo.mutation.SetStrategy(s)
-	return truo
+func (_u *TestResultUpdateOne) SetStrategy(v string) *TestResultUpdateOne {
+	_u.mutation.SetStrategy(v)
+	return _u
 }
 
 // SetNillableStrategy sets the "strategy" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableStrategy(s *string) *TestResultUpdateOne {
-	if s != nil {
-		truo.SetStrategy(*s)
+func (_u *TestResultUpdateOne) SetNillableStrategy(v *string) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetStrategy(*v)
 	}
-	return truo
+	return _u
 }
 
 // ClearStrategy clears the value of the "strategy" field.
-func (truo *TestResultUpdateOne) ClearStrategy() *TestResultUpdateOne {
-	truo.mutation.ClearStrategy()
-	return truo
+func (_u *TestResultUpdateOne) ClearStrategy() *TestResultUpdateOne {
+	_u.mutation.ClearStrategy()
+	return _u
 }
 
 // SetCachedRemotely sets the "cached_remotely" field.
-func (truo *TestResultUpdateOne) SetCachedRemotely(b bool) *TestResultUpdateOne {
-	truo.mutation.SetCachedRemotely(b)
-	return truo
+func (_u *TestResultUpdateOne) SetCachedRemotely(v bool) *TestResultUpdateOne {
+	_u.mutation.SetCachedRemotely(v)
+	return _u
 }
 
 // SetNillableCachedRemotely sets the "cached_remotely" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableCachedRemotely(b *bool) *TestResultUpdateOne {
-	if b != nil {
-		truo.SetCachedRemotely(*b)
+func (_u *TestResultUpdateOne) SetNillableCachedRemotely(v *bool) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetCachedRemotely(*v)
 	}
-	return truo
+	return _u
 }
 
 // ClearCachedRemotely clears the value of the "cached_remotely" field.
-func (truo *TestResultUpdateOne) ClearCachedRemotely() *TestResultUpdateOne {
-	truo.mutation.ClearCachedRemotely()
-	return truo
+func (_u *TestResultUpdateOne) ClearCachedRemotely() *TestResultUpdateOne {
+	_u.mutation.ClearCachedRemotely()
+	return _u
 }
 
 // SetExitCode sets the "exit_code" field.
-func (truo *TestResultUpdateOne) SetExitCode(i int32) *TestResultUpdateOne {
-	truo.mutation.ResetExitCode()
-	truo.mutation.SetExitCode(i)
-	return truo
+func (_u *TestResultUpdateOne) SetExitCode(v int32) *TestResultUpdateOne {
+	_u.mutation.ResetExitCode()
+	_u.mutation.SetExitCode(v)
+	return _u
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableExitCode(i *int32) *TestResultUpdateOne {
-	if i != nil {
-		truo.SetExitCode(*i)
+func (_u *TestResultUpdateOne) SetNillableExitCode(v *int32) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetExitCode(*v)
 	}
-	return truo
+	return _u
 }
 
-// AddExitCode adds i to the "exit_code" field.
-func (truo *TestResultUpdateOne) AddExitCode(i int32) *TestResultUpdateOne {
-	truo.mutation.AddExitCode(i)
-	return truo
+// AddExitCode adds value to the "exit_code" field.
+func (_u *TestResultUpdateOne) AddExitCode(v int32) *TestResultUpdateOne {
+	_u.mutation.AddExitCode(v)
+	return _u
 }
 
 // ClearExitCode clears the value of the "exit_code" field.
-func (truo *TestResultUpdateOne) ClearExitCode() *TestResultUpdateOne {
-	truo.mutation.ClearExitCode()
-	return truo
+func (_u *TestResultUpdateOne) ClearExitCode() *TestResultUpdateOne {
+	_u.mutation.ClearExitCode()
+	return _u
 }
 
 // SetHostname sets the "hostname" field.
-func (truo *TestResultUpdateOne) SetHostname(s string) *TestResultUpdateOne {
-	truo.mutation.SetHostname(s)
-	return truo
+func (_u *TestResultUpdateOne) SetHostname(v string) *TestResultUpdateOne {
+	_u.mutation.SetHostname(v)
+	return _u
 }
 
 // SetNillableHostname sets the "hostname" field if the given value is not nil.
-func (truo *TestResultUpdateOne) SetNillableHostname(s *string) *TestResultUpdateOne {
-	if s != nil {
-		truo.SetHostname(*s)
+func (_u *TestResultUpdateOne) SetNillableHostname(v *string) *TestResultUpdateOne {
+	if v != nil {
+		_u.SetHostname(*v)
 	}
-	return truo
+	return _u
 }
 
 // ClearHostname clears the value of the "hostname" field.
-func (truo *TestResultUpdateOne) ClearHostname() *TestResultUpdateOne {
-	truo.mutation.ClearHostname()
-	return truo
+func (_u *TestResultUpdateOne) ClearHostname() *TestResultUpdateOne {
+	_u.mutation.ClearHostname()
+	return _u
 }
 
 // SetTimingBreakdown sets the "timing_breakdown" field.
-func (truo *TestResultUpdateOne) SetTimingBreakdown(m map[string]interface{}) *TestResultUpdateOne {
-	truo.mutation.SetTimingBreakdown(m)
-	return truo
+func (_u *TestResultUpdateOne) SetTimingBreakdown(v map[string]interface{}) *TestResultUpdateOne {
+	_u.mutation.SetTimingBreakdown(v)
+	return _u
 }
 
 // ClearTimingBreakdown clears the value of the "timing_breakdown" field.
-func (truo *TestResultUpdateOne) ClearTimingBreakdown() *TestResultUpdateOne {
-	truo.mutation.ClearTimingBreakdown()
-	return truo
+func (_u *TestResultUpdateOne) ClearTimingBreakdown() *TestResultUpdateOne {
+	_u.mutation.ClearTimingBreakdown()
+	return _u
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
-func (truo *TestResultUpdateOne) SetTestSummaryID(id int64) *TestResultUpdateOne {
-	truo.mutation.SetTestSummaryID(id)
-	return truo
+func (_u *TestResultUpdateOne) SetTestSummaryID(id int64) *TestResultUpdateOne {
+	_u.mutation.SetTestSummaryID(id)
+	return _u
 }
 
 // SetTestSummary sets the "test_summary" edge to the TestSummary entity.
-func (truo *TestResultUpdateOne) SetTestSummary(t *TestSummary) *TestResultUpdateOne {
-	return truo.SetTestSummaryID(t.ID)
+func (_u *TestResultUpdateOne) SetTestSummary(v *TestSummary) *TestResultUpdateOne {
+	return _u.SetTestSummaryID(v.ID)
 }
 
 // Mutation returns the TestResultMutation object of the builder.
-func (truo *TestResultUpdateOne) Mutation() *TestResultMutation {
-	return truo.mutation
+func (_u *TestResultUpdateOne) Mutation() *TestResultMutation {
+	return _u.mutation
 }
 
 // ClearTestSummary clears the "test_summary" edge to the TestSummary entity.
-func (truo *TestResultUpdateOne) ClearTestSummary() *TestResultUpdateOne {
-	truo.mutation.ClearTestSummary()
-	return truo
+func (_u *TestResultUpdateOne) ClearTestSummary() *TestResultUpdateOne {
+	_u.mutation.ClearTestSummary()
+	return _u
 }
 
 // Where appends a list predicates to the TestResultUpdate builder.
-func (truo *TestResultUpdateOne) Where(ps ...predicate.TestResult) *TestResultUpdateOne {
-	truo.mutation.Where(ps...)
-	return truo
+func (_u *TestResultUpdateOne) Where(ps ...predicate.TestResult) *TestResultUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (truo *TestResultUpdateOne) Select(field string, fields ...string) *TestResultUpdateOne {
-	truo.fields = append([]string{field}, fields...)
-	return truo
+func (_u *TestResultUpdateOne) Select(field string, fields ...string) *TestResultUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TestResult entity.
-func (truo *TestResultUpdateOne) Save(ctx context.Context) (*TestResult, error) {
-	return withHooks(ctx, truo.sqlSave, truo.mutation, truo.hooks)
+func (_u *TestResultUpdateOne) Save(ctx context.Context) (*TestResult, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (truo *TestResultUpdateOne) SaveX(ctx context.Context) *TestResult {
-	node, err := truo.Save(ctx)
+func (_u *TestResultUpdateOne) SaveX(ctx context.Context) *TestResult {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -723,37 +723,37 @@ func (truo *TestResultUpdateOne) SaveX(ctx context.Context) *TestResult {
 }
 
 // Exec executes the query on the entity.
-func (truo *TestResultUpdateOne) Exec(ctx context.Context) error {
-	_, err := truo.Save(ctx)
+func (_u *TestResultUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (truo *TestResultUpdateOne) ExecX(ctx context.Context) {
-	if err := truo.Exec(ctx); err != nil {
+func (_u *TestResultUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (truo *TestResultUpdateOne) check() error {
-	if truo.mutation.TestSummaryCleared() && len(truo.mutation.TestSummaryIDs()) > 0 {
+func (_u *TestResultUpdateOne) check() error {
+	if _u.mutation.TestSummaryCleared() && len(_u.mutation.TestSummaryIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TestResult.test_summary"`)
 	}
 	return nil
 }
 
-func (truo *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult, err error) {
-	if err := truo.check(); err != nil {
+func (_u *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(testresult.Table, testresult.Columns, sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64))
-	id, ok := truo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TestResult.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := truo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, testresult.FieldID)
 		for _, f := range fields {
@@ -765,91 +765,91 @@ func (truo *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult
 			}
 		}
 	}
-	if ps := truo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := truo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(testresult.FieldStatus, field.TypeString, value)
 	}
-	if truo.mutation.StatusCleared() {
+	if _u.mutation.StatusCleared() {
 		_spec.ClearField(testresult.FieldStatus, field.TypeString)
 	}
-	if value, ok := truo.mutation.StatusDetails(); ok {
+	if value, ok := _u.mutation.StatusDetails(); ok {
 		_spec.SetField(testresult.FieldStatusDetails, field.TypeString, value)
 	}
-	if truo.mutation.StatusDetailsCleared() {
+	if _u.mutation.StatusDetailsCleared() {
 		_spec.ClearField(testresult.FieldStatusDetails, field.TypeString)
 	}
-	if value, ok := truo.mutation.CachedLocally(); ok {
+	if value, ok := _u.mutation.CachedLocally(); ok {
 		_spec.SetField(testresult.FieldCachedLocally, field.TypeBool, value)
 	}
-	if truo.mutation.CachedLocallyCleared() {
+	if _u.mutation.CachedLocallyCleared() {
 		_spec.ClearField(testresult.FieldCachedLocally, field.TypeBool)
 	}
-	if value, ok := truo.mutation.TestAttemptStart(); ok {
+	if value, ok := _u.mutation.TestAttemptStart(); ok {
 		_spec.SetField(testresult.FieldTestAttemptStart, field.TypeTime, value)
 	}
-	if truo.mutation.TestAttemptStartCleared() {
+	if _u.mutation.TestAttemptStartCleared() {
 		_spec.ClearField(testresult.FieldTestAttemptStart, field.TypeTime)
 	}
-	if value, ok := truo.mutation.TestAttemptDurationInMs(); ok {
+	if value, ok := _u.mutation.TestAttemptDurationInMs(); ok {
 		_spec.SetField(testresult.FieldTestAttemptDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := truo.mutation.AddedTestAttemptDurationInMs(); ok {
+	if value, ok := _u.mutation.AddedTestAttemptDurationInMs(); ok {
 		_spec.AddField(testresult.FieldTestAttemptDurationInMs, field.TypeInt64, value)
 	}
-	if truo.mutation.TestAttemptDurationInMsCleared() {
+	if _u.mutation.TestAttemptDurationInMsCleared() {
 		_spec.ClearField(testresult.FieldTestAttemptDurationInMs, field.TypeInt64)
 	}
-	if value, ok := truo.mutation.Warning(); ok {
+	if value, ok := _u.mutation.Warning(); ok {
 		_spec.SetField(testresult.FieldWarning, field.TypeJSON, value)
 	}
-	if value, ok := truo.mutation.AppendedWarning(); ok {
+	if value, ok := _u.mutation.AppendedWarning(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, testresult.FieldWarning, value)
 		})
 	}
-	if truo.mutation.WarningCleared() {
+	if _u.mutation.WarningCleared() {
 		_spec.ClearField(testresult.FieldWarning, field.TypeJSON)
 	}
-	if value, ok := truo.mutation.Strategy(); ok {
+	if value, ok := _u.mutation.Strategy(); ok {
 		_spec.SetField(testresult.FieldStrategy, field.TypeString, value)
 	}
-	if truo.mutation.StrategyCleared() {
+	if _u.mutation.StrategyCleared() {
 		_spec.ClearField(testresult.FieldStrategy, field.TypeString)
 	}
-	if value, ok := truo.mutation.CachedRemotely(); ok {
+	if value, ok := _u.mutation.CachedRemotely(); ok {
 		_spec.SetField(testresult.FieldCachedRemotely, field.TypeBool, value)
 	}
-	if truo.mutation.CachedRemotelyCleared() {
+	if _u.mutation.CachedRemotelyCleared() {
 		_spec.ClearField(testresult.FieldCachedRemotely, field.TypeBool)
 	}
-	if value, ok := truo.mutation.ExitCode(); ok {
+	if value, ok := _u.mutation.ExitCode(); ok {
 		_spec.SetField(testresult.FieldExitCode, field.TypeInt32, value)
 	}
-	if value, ok := truo.mutation.AddedExitCode(); ok {
+	if value, ok := _u.mutation.AddedExitCode(); ok {
 		_spec.AddField(testresult.FieldExitCode, field.TypeInt32, value)
 	}
-	if truo.mutation.ExitCodeCleared() {
+	if _u.mutation.ExitCodeCleared() {
 		_spec.ClearField(testresult.FieldExitCode, field.TypeInt32)
 	}
-	if value, ok := truo.mutation.Hostname(); ok {
+	if value, ok := _u.mutation.Hostname(); ok {
 		_spec.SetField(testresult.FieldHostname, field.TypeString, value)
 	}
-	if truo.mutation.HostnameCleared() {
+	if _u.mutation.HostnameCleared() {
 		_spec.ClearField(testresult.FieldHostname, field.TypeString)
 	}
-	if value, ok := truo.mutation.TimingBreakdown(); ok {
+	if value, ok := _u.mutation.TimingBreakdown(); ok {
 		_spec.SetField(testresult.FieldTimingBreakdown, field.TypeJSON, value)
 	}
-	if truo.mutation.TimingBreakdownCleared() {
+	if _u.mutation.TimingBreakdownCleared() {
 		_spec.ClearField(testresult.FieldTimingBreakdown, field.TypeJSON)
 	}
-	if truo.mutation.TestSummaryCleared() {
+	if _u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -862,7 +862,7 @@ func (truo *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := truo.mutation.TestSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -878,10 +878,10 @@ func (truo *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &TestResult{config: truo.config}
+	_node = &TestResult{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, truo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testresult.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -889,6 +889,6 @@ func (truo *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult
 		}
 		return nil, err
 	}
-	truo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

@@ -74,7 +74,7 @@ func (*EventMetadata) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the EventMetadata fields.
-func (em *EventMetadata) assignValues(columns []string, values []any) error {
+func (_m *EventMetadata) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -85,33 +85,33 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			em.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case eventmetadata.FieldHandled:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field handled", values[i])
 			} else if value != nil {
-				em.Handled = *value
+				_m.Handled = *value
 			}
 		case eventmetadata.FieldEventReceivedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field event_received_at", values[i])
 			} else if value.Valid {
-				em.EventReceivedAt = value.Time
+				_m.EventReceivedAt = value.Time
 			}
 		case eventmetadata.FieldVersion:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field version", values[i])
 			} else if value.Valid {
-				em.Version = value.Int64
+				_m.Version = value.Int64
 			}
 		case eventmetadata.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				em.BazelInvocationID = value.Int64
+				_m.BazelInvocationID = value.Int64
 			}
 		default:
-			em.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -119,49 +119,49 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the EventMetadata.
 // This includes values selected through modifiers, order, etc.
-func (em *EventMetadata) Value(name string) (ent.Value, error) {
-	return em.selectValues.Get(name)
+func (_m *EventMetadata) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the EventMetadata entity.
-func (em *EventMetadata) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewEventMetadataClient(em.config).QueryBazelInvocation(em)
+func (_m *EventMetadata) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewEventMetadataClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // Update returns a builder for updating this EventMetadata.
 // Note that you need to call EventMetadata.Unwrap() before calling this method if this EventMetadata
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (em *EventMetadata) Update() *EventMetadataUpdateOne {
-	return NewEventMetadataClient(em.config).UpdateOne(em)
+func (_m *EventMetadata) Update() *EventMetadataUpdateOne {
+	return NewEventMetadataClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the EventMetadata entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (em *EventMetadata) Unwrap() *EventMetadata {
-	_tx, ok := em.config.driver.(*txDriver)
+func (_m *EventMetadata) Unwrap() *EventMetadata {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: EventMetadata is not a transactional entity")
 	}
-	em.config.driver = _tx.drv
-	return em
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (em *EventMetadata) String() string {
+func (_m *EventMetadata) String() string {
 	var builder strings.Builder
 	builder.WriteString("EventMetadata(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", em.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("handled=")
-	builder.WriteString(fmt.Sprintf("%v", em.Handled))
+	builder.WriteString(fmt.Sprintf("%v", _m.Handled))
 	builder.WriteString(", ")
 	builder.WriteString("event_received_at=")
-	builder.WriteString(em.EventReceivedAt.Format(time.ANSIC))
+	builder.WriteString(_m.EventReceivedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("version=")
-	builder.WriteString(fmt.Sprintf("%v", em.Version))
+	builder.WriteString(fmt.Sprintf("%v", _m.Version))
 	builder.WriteString(", ")
 	builder.WriteString("bazel_invocation_id=")
-	builder.WriteString(fmt.Sprintf("%v", em.BazelInvocationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

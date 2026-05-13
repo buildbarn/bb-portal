@@ -24,62 +24,62 @@ type NetworkMetricsCreate struct {
 }
 
 // SetID sets the "id" field.
-func (nmc *NetworkMetricsCreate) SetID(i int64) *NetworkMetricsCreate {
-	nmc.mutation.SetID(i)
-	return nmc
+func (_c *NetworkMetricsCreate) SetID(v int64) *NetworkMetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (nmc *NetworkMetricsCreate) SetMetricsID(id int64) *NetworkMetricsCreate {
-	nmc.mutation.SetMetricsID(id)
-	return nmc
+func (_c *NetworkMetricsCreate) SetMetricsID(id int64) *NetworkMetricsCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (nmc *NetworkMetricsCreate) SetNillableMetricsID(id *int64) *NetworkMetricsCreate {
+func (_c *NetworkMetricsCreate) SetNillableMetricsID(id *int64) *NetworkMetricsCreate {
 	if id != nil {
-		nmc = nmc.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return nmc
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (nmc *NetworkMetricsCreate) SetMetrics(m *Metrics) *NetworkMetricsCreate {
-	return nmc.SetMetricsID(m.ID)
+func (_c *NetworkMetricsCreate) SetMetrics(v *Metrics) *NetworkMetricsCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID.
-func (nmc *NetworkMetricsCreate) SetSystemNetworkStatsID(id int64) *NetworkMetricsCreate {
-	nmc.mutation.SetSystemNetworkStatsID(id)
-	return nmc
+func (_c *NetworkMetricsCreate) SetSystemNetworkStatsID(id int64) *NetworkMetricsCreate {
+	_c.mutation.SetSystemNetworkStatsID(id)
+	return _c
 }
 
 // SetNillableSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID if the given value is not nil.
-func (nmc *NetworkMetricsCreate) SetNillableSystemNetworkStatsID(id *int64) *NetworkMetricsCreate {
+func (_c *NetworkMetricsCreate) SetNillableSystemNetworkStatsID(id *int64) *NetworkMetricsCreate {
 	if id != nil {
-		nmc = nmc.SetSystemNetworkStatsID(*id)
+		_c = _c.SetSystemNetworkStatsID(*id)
 	}
-	return nmc
+	return _c
 }
 
 // SetSystemNetworkStats sets the "system_network_stats" edge to the SystemNetworkStats entity.
-func (nmc *NetworkMetricsCreate) SetSystemNetworkStats(s *SystemNetworkStats) *NetworkMetricsCreate {
-	return nmc.SetSystemNetworkStatsID(s.ID)
+func (_c *NetworkMetricsCreate) SetSystemNetworkStats(v *SystemNetworkStats) *NetworkMetricsCreate {
+	return _c.SetSystemNetworkStatsID(v.ID)
 }
 
 // Mutation returns the NetworkMetricsMutation object of the builder.
-func (nmc *NetworkMetricsCreate) Mutation() *NetworkMetricsMutation {
-	return nmc.mutation
+func (_c *NetworkMetricsCreate) Mutation() *NetworkMetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the NetworkMetrics in the database.
-func (nmc *NetworkMetricsCreate) Save(ctx context.Context) (*NetworkMetrics, error) {
-	return withHooks(ctx, nmc.sqlSave, nmc.mutation, nmc.hooks)
+func (_c *NetworkMetricsCreate) Save(ctx context.Context) (*NetworkMetrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (nmc *NetworkMetricsCreate) SaveX(ctx context.Context) *NetworkMetrics {
-	v, err := nmc.Save(ctx)
+func (_c *NetworkMetricsCreate) SaveX(ctx context.Context) *NetworkMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -87,29 +87,29 @@ func (nmc *NetworkMetricsCreate) SaveX(ctx context.Context) *NetworkMetrics {
 }
 
 // Exec executes the query.
-func (nmc *NetworkMetricsCreate) Exec(ctx context.Context) error {
-	_, err := nmc.Save(ctx)
+func (_c *NetworkMetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nmc *NetworkMetricsCreate) ExecX(ctx context.Context) {
-	if err := nmc.Exec(ctx); err != nil {
+func (_c *NetworkMetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nmc *NetworkMetricsCreate) check() error {
+func (_c *NetworkMetricsCreate) check() error {
 	return nil
 }
 
-func (nmc *NetworkMetricsCreate) sqlSave(ctx context.Context) (*NetworkMetrics, error) {
-	if err := nmc.check(); err != nil {
+func (_c *NetworkMetricsCreate) sqlSave(ctx context.Context) (*NetworkMetrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := nmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, nmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -119,22 +119,22 @@ func (nmc *NetworkMetricsCreate) sqlSave(ctx context.Context) (*NetworkMetrics, 
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	nmc.mutation.id = &_node.ID
-	nmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (nmc *NetworkMetricsCreate) createSpec() (*NetworkMetrics, *sqlgraph.CreateSpec) {
+func (_c *NetworkMetricsCreate) createSpec() (*NetworkMetrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &NetworkMetrics{config: nmc.config}
+		_node = &NetworkMetrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(networkmetrics.Table, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = nmc.conflict
-	if id, ok := nmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if nodes := nmc.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -151,7 +151,7 @@ func (nmc *NetworkMetricsCreate) createSpec() (*NetworkMetrics, *sqlgraph.Create
 		_node.metrics_network_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nmc.mutation.SystemNetworkStatsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SystemNetworkStatsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -180,10 +180,10 @@ func (nmc *NetworkMetricsCreate) createSpec() (*NetworkMetrics, *sqlgraph.Create
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-func (nmc *NetworkMetricsCreate) OnConflict(opts ...sql.ConflictOption) *NetworkMetricsUpsertOne {
-	nmc.conflict = opts
+func (_c *NetworkMetricsCreate) OnConflict(opts ...sql.ConflictOption) *NetworkMetricsUpsertOne {
+	_c.conflict = opts
 	return &NetworkMetricsUpsertOne{
-		create: nmc,
+		create: _c,
 	}
 }
 
@@ -193,10 +193,10 @@ func (nmc *NetworkMetricsCreate) OnConflict(opts ...sql.ConflictOption) *Network
 //	client.NetworkMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nmc *NetworkMetricsCreate) OnConflictColumns(columns ...string) *NetworkMetricsUpsertOne {
-	nmc.conflict = append(nmc.conflict, sql.ConflictColumns(columns...))
+func (_c *NetworkMetricsCreate) OnConflictColumns(columns ...string) *NetworkMetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NetworkMetricsUpsertOne{
-		create: nmc,
+		create: _c,
 	}
 }
 
@@ -303,16 +303,16 @@ type NetworkMetricsCreateBulk struct {
 }
 
 // Save creates the NetworkMetrics entities in the database.
-func (nmcb *NetworkMetricsCreateBulk) Save(ctx context.Context) ([]*NetworkMetrics, error) {
-	if nmcb.err != nil {
-		return nil, nmcb.err
+func (_c *NetworkMetricsCreateBulk) Save(ctx context.Context) ([]*NetworkMetrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(nmcb.builders))
-	nodes := make([]*NetworkMetrics, len(nmcb.builders))
-	mutators := make([]Mutator, len(nmcb.builders))
-	for i := range nmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*NetworkMetrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := nmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*NetworkMetricsMutation)
 				if !ok {
@@ -325,12 +325,12 @@ func (nmcb *NetworkMetricsCreateBulk) Save(ctx context.Context) ([]*NetworkMetri
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, nmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = nmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, nmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -354,7 +354,7 @@ func (nmcb *NetworkMetricsCreateBulk) Save(ctx context.Context) ([]*NetworkMetri
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, nmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -362,8 +362,8 @@ func (nmcb *NetworkMetricsCreateBulk) Save(ctx context.Context) ([]*NetworkMetri
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nmcb *NetworkMetricsCreateBulk) SaveX(ctx context.Context) []*NetworkMetrics {
-	v, err := nmcb.Save(ctx)
+func (_c *NetworkMetricsCreateBulk) SaveX(ctx context.Context) []*NetworkMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -371,14 +371,14 @@ func (nmcb *NetworkMetricsCreateBulk) SaveX(ctx context.Context) []*NetworkMetri
 }
 
 // Exec executes the query.
-func (nmcb *NetworkMetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := nmcb.Save(ctx)
+func (_c *NetworkMetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nmcb *NetworkMetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := nmcb.Exec(ctx); err != nil {
+func (_c *NetworkMetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -393,10 +393,10 @@ func (nmcb *NetworkMetricsCreateBulk) ExecX(ctx context.Context) {
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-func (nmcb *NetworkMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *NetworkMetricsUpsertBulk {
-	nmcb.conflict = opts
+func (_c *NetworkMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *NetworkMetricsUpsertBulk {
+	_c.conflict = opts
 	return &NetworkMetricsUpsertBulk{
-		create: nmcb,
+		create: _c,
 	}
 }
 
@@ -406,10 +406,10 @@ func (nmcb *NetworkMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *Ne
 //	client.NetworkMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nmcb *NetworkMetricsCreateBulk) OnConflictColumns(columns ...string) *NetworkMetricsUpsertBulk {
-	nmcb.conflict = append(nmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *NetworkMetricsCreateBulk) OnConflictColumns(columns ...string) *NetworkMetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NetworkMetricsUpsertBulk{
-		create: nmcb,
+		create: _c,
 	}
 }
 

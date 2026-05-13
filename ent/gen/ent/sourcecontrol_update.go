@@ -23,169 +23,169 @@ type SourceControlUpdate struct {
 }
 
 // Where appends a list predicates to the SourceControlUpdate builder.
-func (scu *SourceControlUpdate) Where(ps ...predicate.SourceControl) *SourceControlUpdate {
-	scu.mutation.Where(ps...)
-	return scu
+func (_u *SourceControlUpdate) Where(ps ...predicate.SourceControl) *SourceControlUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetRepo sets the "repo" field.
-func (scu *SourceControlUpdate) SetRepo(s string) *SourceControlUpdate {
-	scu.mutation.SetRepo(s)
-	return scu
+func (_u *SourceControlUpdate) SetRepo(v string) *SourceControlUpdate {
+	_u.mutation.SetRepo(v)
+	return _u
 }
 
 // SetNillableRepo sets the "repo" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRepo(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRepo(*s)
+func (_u *SourceControlUpdate) SetNillableRepo(v *string) *SourceControlUpdate {
+	if v != nil {
+		_u.SetRepo(*v)
 	}
-	return scu
+	return _u
 }
 
 // ClearRepo clears the value of the "repo" field.
-func (scu *SourceControlUpdate) ClearRepo() *SourceControlUpdate {
-	scu.mutation.ClearRepo()
-	return scu
+func (_u *SourceControlUpdate) ClearRepo() *SourceControlUpdate {
+	_u.mutation.ClearRepo()
+	return _u
 }
 
 // SetRepoURL sets the "repo_url" field.
-func (scu *SourceControlUpdate) SetRepoURL(s string) *SourceControlUpdate {
-	scu.mutation.SetRepoURL(s)
-	return scu
+func (_u *SourceControlUpdate) SetRepoURL(v string) *SourceControlUpdate {
+	_u.mutation.SetRepoURL(v)
+	return _u
 }
 
 // SetNillableRepoURL sets the "repo_url" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRepoURL(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRepoURL(*s)
+func (_u *SourceControlUpdate) SetNillableRepoURL(v *string) *SourceControlUpdate {
+	if v != nil {
+		_u.SetRepoURL(*v)
 	}
-	return scu
+	return _u
 }
 
 // ClearRepoURL clears the value of the "repo_url" field.
-func (scu *SourceControlUpdate) ClearRepoURL() *SourceControlUpdate {
-	scu.mutation.ClearRepoURL()
-	return scu
+func (_u *SourceControlUpdate) ClearRepoURL() *SourceControlUpdate {
+	_u.mutation.ClearRepoURL()
+	return _u
 }
 
 // SetRef sets the "ref" field.
-func (scu *SourceControlUpdate) SetRef(s string) *SourceControlUpdate {
-	scu.mutation.SetRef(s)
-	return scu
+func (_u *SourceControlUpdate) SetRef(v string) *SourceControlUpdate {
+	_u.mutation.SetRef(v)
+	return _u
 }
 
 // SetNillableRef sets the "ref" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRef(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRef(*s)
+func (_u *SourceControlUpdate) SetNillableRef(v *string) *SourceControlUpdate {
+	if v != nil {
+		_u.SetRef(*v)
 	}
-	return scu
+	return _u
 }
 
 // ClearRef clears the value of the "ref" field.
-func (scu *SourceControlUpdate) ClearRef() *SourceControlUpdate {
-	scu.mutation.ClearRef()
-	return scu
+func (_u *SourceControlUpdate) ClearRef() *SourceControlUpdate {
+	_u.mutation.ClearRef()
+	return _u
 }
 
 // SetRefURL sets the "ref_url" field.
-func (scu *SourceControlUpdate) SetRefURL(s string) *SourceControlUpdate {
-	scu.mutation.SetRefURL(s)
-	return scu
+func (_u *SourceControlUpdate) SetRefURL(v string) *SourceControlUpdate {
+	_u.mutation.SetRefURL(v)
+	return _u
 }
 
 // SetNillableRefURL sets the "ref_url" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableRefURL(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetRefURL(*s)
+func (_u *SourceControlUpdate) SetNillableRefURL(v *string) *SourceControlUpdate {
+	if v != nil {
+		_u.SetRefURL(*v)
 	}
-	return scu
+	return _u
 }
 
 // ClearRefURL clears the value of the "ref_url" field.
-func (scu *SourceControlUpdate) ClearRefURL() *SourceControlUpdate {
-	scu.mutation.ClearRefURL()
-	return scu
+func (_u *SourceControlUpdate) ClearRefURL() *SourceControlUpdate {
+	_u.mutation.ClearRefURL()
+	return _u
 }
 
 // SetCommit sets the "commit" field.
-func (scu *SourceControlUpdate) SetCommit(s string) *SourceControlUpdate {
-	scu.mutation.SetCommit(s)
-	return scu
+func (_u *SourceControlUpdate) SetCommit(v string) *SourceControlUpdate {
+	_u.mutation.SetCommit(v)
+	return _u
 }
 
 // SetNillableCommit sets the "commit" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableCommit(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetCommit(*s)
+func (_u *SourceControlUpdate) SetNillableCommit(v *string) *SourceControlUpdate {
+	if v != nil {
+		_u.SetCommit(*v)
 	}
-	return scu
+	return _u
 }
 
 // ClearCommit clears the value of the "commit" field.
-func (scu *SourceControlUpdate) ClearCommit() *SourceControlUpdate {
-	scu.mutation.ClearCommit()
-	return scu
+func (_u *SourceControlUpdate) ClearCommit() *SourceControlUpdate {
+	_u.mutation.ClearCommit()
+	return _u
 }
 
 // SetCommitURL sets the "commit_url" field.
-func (scu *SourceControlUpdate) SetCommitURL(s string) *SourceControlUpdate {
-	scu.mutation.SetCommitURL(s)
-	return scu
+func (_u *SourceControlUpdate) SetCommitURL(v string) *SourceControlUpdate {
+	_u.mutation.SetCommitURL(v)
+	return _u
 }
 
 // SetNillableCommitURL sets the "commit_url" field if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableCommitURL(s *string) *SourceControlUpdate {
-	if s != nil {
-		scu.SetCommitURL(*s)
+func (_u *SourceControlUpdate) SetNillableCommitURL(v *string) *SourceControlUpdate {
+	if v != nil {
+		_u.SetCommitURL(*v)
 	}
-	return scu
+	return _u
 }
 
 // ClearCommitURL clears the value of the "commit_url" field.
-func (scu *SourceControlUpdate) ClearCommitURL() *SourceControlUpdate {
-	scu.mutation.ClearCommitURL()
-	return scu
+func (_u *SourceControlUpdate) ClearCommitURL() *SourceControlUpdate {
+	_u.mutation.ClearCommitURL()
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scu *SourceControlUpdate) SetBazelInvocationID(id int64) *SourceControlUpdate {
-	scu.mutation.SetBazelInvocationID(id)
-	return scu
+func (_u *SourceControlUpdate) SetBazelInvocationID(id int64) *SourceControlUpdate {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableBazelInvocationID(id *int64) *SourceControlUpdate {
+func (_u *SourceControlUpdate) SetNillableBazelInvocationID(id *int64) *SourceControlUpdate {
 	if id != nil {
-		scu = scu.SetBazelInvocationID(*id)
+		_u = _u.SetBazelInvocationID(*id)
 	}
-	return scu
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (scu *SourceControlUpdate) SetBazelInvocation(b *BazelInvocation) *SourceControlUpdate {
-	return scu.SetBazelInvocationID(b.ID)
+func (_u *SourceControlUpdate) SetBazelInvocation(v *BazelInvocation) *SourceControlUpdate {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the SourceControlMutation object of the builder.
-func (scu *SourceControlUpdate) Mutation() *SourceControlMutation {
-	return scu.mutation
+func (_u *SourceControlUpdate) Mutation() *SourceControlMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (scu *SourceControlUpdate) ClearBazelInvocation() *SourceControlUpdate {
-	scu.mutation.ClearBazelInvocation()
-	return scu
+func (_u *SourceControlUpdate) ClearBazelInvocation() *SourceControlUpdate {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (scu *SourceControlUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, scu.sqlSave, scu.mutation, scu.hooks)
+func (_u *SourceControlUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (scu *SourceControlUpdate) SaveX(ctx context.Context) int {
-	affected, err := scu.Save(ctx)
+func (_u *SourceControlUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -193,64 +193,64 @@ func (scu *SourceControlUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (scu *SourceControlUpdate) Exec(ctx context.Context) error {
-	_, err := scu.Save(ctx)
+func (_u *SourceControlUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (scu *SourceControlUpdate) ExecX(ctx context.Context) {
-	if err := scu.Exec(ctx); err != nil {
+func (_u *SourceControlUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *SourceControlUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
-	if ps := scu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := scu.mutation.Repo(); ok {
+	if value, ok := _u.mutation.Repo(); ok {
 		_spec.SetField(sourcecontrol.FieldRepo, field.TypeString, value)
 	}
-	if scu.mutation.RepoCleared() {
+	if _u.mutation.RepoCleared() {
 		_spec.ClearField(sourcecontrol.FieldRepo, field.TypeString)
 	}
-	if value, ok := scu.mutation.RepoURL(); ok {
+	if value, ok := _u.mutation.RepoURL(); ok {
 		_spec.SetField(sourcecontrol.FieldRepoURL, field.TypeString, value)
 	}
-	if scu.mutation.RepoURLCleared() {
+	if _u.mutation.RepoURLCleared() {
 		_spec.ClearField(sourcecontrol.FieldRepoURL, field.TypeString)
 	}
-	if value, ok := scu.mutation.Ref(); ok {
+	if value, ok := _u.mutation.Ref(); ok {
 		_spec.SetField(sourcecontrol.FieldRef, field.TypeString, value)
 	}
-	if scu.mutation.RefCleared() {
+	if _u.mutation.RefCleared() {
 		_spec.ClearField(sourcecontrol.FieldRef, field.TypeString)
 	}
-	if value, ok := scu.mutation.RefURL(); ok {
+	if value, ok := _u.mutation.RefURL(); ok {
 		_spec.SetField(sourcecontrol.FieldRefURL, field.TypeString, value)
 	}
-	if scu.mutation.RefURLCleared() {
+	if _u.mutation.RefURLCleared() {
 		_spec.ClearField(sourcecontrol.FieldRefURL, field.TypeString)
 	}
-	if value, ok := scu.mutation.Commit(); ok {
+	if value, ok := _u.mutation.Commit(); ok {
 		_spec.SetField(sourcecontrol.FieldCommit, field.TypeString, value)
 	}
-	if scu.mutation.CommitCleared() {
+	if _u.mutation.CommitCleared() {
 		_spec.ClearField(sourcecontrol.FieldCommit, field.TypeString)
 	}
-	if value, ok := scu.mutation.CommitURL(); ok {
+	if value, ok := _u.mutation.CommitURL(); ok {
 		_spec.SetField(sourcecontrol.FieldCommitURL, field.TypeString, value)
 	}
-	if scu.mutation.CommitURLCleared() {
+	if _u.mutation.CommitURLCleared() {
 		_spec.ClearField(sourcecontrol.FieldCommitURL, field.TypeString)
 	}
-	if scu.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -263,7 +263,7 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := scu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -279,7 +279,7 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, scu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sourcecontrol.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -287,8 +287,8 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	scu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SourceControlUpdateOne is the builder for updating a single SourceControl entity.
@@ -300,176 +300,176 @@ type SourceControlUpdateOne struct {
 }
 
 // SetRepo sets the "repo" field.
-func (scuo *SourceControlUpdateOne) SetRepo(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRepo(s)
-	return scuo
+func (_u *SourceControlUpdateOne) SetRepo(v string) *SourceControlUpdateOne {
+	_u.mutation.SetRepo(v)
+	return _u
 }
 
 // SetNillableRepo sets the "repo" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRepo(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRepo(*s)
+func (_u *SourceControlUpdateOne) SetNillableRepo(v *string) *SourceControlUpdateOne {
+	if v != nil {
+		_u.SetRepo(*v)
 	}
-	return scuo
+	return _u
 }
 
 // ClearRepo clears the value of the "repo" field.
-func (scuo *SourceControlUpdateOne) ClearRepo() *SourceControlUpdateOne {
-	scuo.mutation.ClearRepo()
-	return scuo
+func (_u *SourceControlUpdateOne) ClearRepo() *SourceControlUpdateOne {
+	_u.mutation.ClearRepo()
+	return _u
 }
 
 // SetRepoURL sets the "repo_url" field.
-func (scuo *SourceControlUpdateOne) SetRepoURL(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRepoURL(s)
-	return scuo
+func (_u *SourceControlUpdateOne) SetRepoURL(v string) *SourceControlUpdateOne {
+	_u.mutation.SetRepoURL(v)
+	return _u
 }
 
 // SetNillableRepoURL sets the "repo_url" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRepoURL(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRepoURL(*s)
+func (_u *SourceControlUpdateOne) SetNillableRepoURL(v *string) *SourceControlUpdateOne {
+	if v != nil {
+		_u.SetRepoURL(*v)
 	}
-	return scuo
+	return _u
 }
 
 // ClearRepoURL clears the value of the "repo_url" field.
-func (scuo *SourceControlUpdateOne) ClearRepoURL() *SourceControlUpdateOne {
-	scuo.mutation.ClearRepoURL()
-	return scuo
+func (_u *SourceControlUpdateOne) ClearRepoURL() *SourceControlUpdateOne {
+	_u.mutation.ClearRepoURL()
+	return _u
 }
 
 // SetRef sets the "ref" field.
-func (scuo *SourceControlUpdateOne) SetRef(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRef(s)
-	return scuo
+func (_u *SourceControlUpdateOne) SetRef(v string) *SourceControlUpdateOne {
+	_u.mutation.SetRef(v)
+	return _u
 }
 
 // SetNillableRef sets the "ref" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRef(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRef(*s)
+func (_u *SourceControlUpdateOne) SetNillableRef(v *string) *SourceControlUpdateOne {
+	if v != nil {
+		_u.SetRef(*v)
 	}
-	return scuo
+	return _u
 }
 
 // ClearRef clears the value of the "ref" field.
-func (scuo *SourceControlUpdateOne) ClearRef() *SourceControlUpdateOne {
-	scuo.mutation.ClearRef()
-	return scuo
+func (_u *SourceControlUpdateOne) ClearRef() *SourceControlUpdateOne {
+	_u.mutation.ClearRef()
+	return _u
 }
 
 // SetRefURL sets the "ref_url" field.
-func (scuo *SourceControlUpdateOne) SetRefURL(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetRefURL(s)
-	return scuo
+func (_u *SourceControlUpdateOne) SetRefURL(v string) *SourceControlUpdateOne {
+	_u.mutation.SetRefURL(v)
+	return _u
 }
 
 // SetNillableRefURL sets the "ref_url" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableRefURL(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetRefURL(*s)
+func (_u *SourceControlUpdateOne) SetNillableRefURL(v *string) *SourceControlUpdateOne {
+	if v != nil {
+		_u.SetRefURL(*v)
 	}
-	return scuo
+	return _u
 }
 
 // ClearRefURL clears the value of the "ref_url" field.
-func (scuo *SourceControlUpdateOne) ClearRefURL() *SourceControlUpdateOne {
-	scuo.mutation.ClearRefURL()
-	return scuo
+func (_u *SourceControlUpdateOne) ClearRefURL() *SourceControlUpdateOne {
+	_u.mutation.ClearRefURL()
+	return _u
 }
 
 // SetCommit sets the "commit" field.
-func (scuo *SourceControlUpdateOne) SetCommit(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetCommit(s)
-	return scuo
+func (_u *SourceControlUpdateOne) SetCommit(v string) *SourceControlUpdateOne {
+	_u.mutation.SetCommit(v)
+	return _u
 }
 
 // SetNillableCommit sets the "commit" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableCommit(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetCommit(*s)
+func (_u *SourceControlUpdateOne) SetNillableCommit(v *string) *SourceControlUpdateOne {
+	if v != nil {
+		_u.SetCommit(*v)
 	}
-	return scuo
+	return _u
 }
 
 // ClearCommit clears the value of the "commit" field.
-func (scuo *SourceControlUpdateOne) ClearCommit() *SourceControlUpdateOne {
-	scuo.mutation.ClearCommit()
-	return scuo
+func (_u *SourceControlUpdateOne) ClearCommit() *SourceControlUpdateOne {
+	_u.mutation.ClearCommit()
+	return _u
 }
 
 // SetCommitURL sets the "commit_url" field.
-func (scuo *SourceControlUpdateOne) SetCommitURL(s string) *SourceControlUpdateOne {
-	scuo.mutation.SetCommitURL(s)
-	return scuo
+func (_u *SourceControlUpdateOne) SetCommitURL(v string) *SourceControlUpdateOne {
+	_u.mutation.SetCommitURL(v)
+	return _u
 }
 
 // SetNillableCommitURL sets the "commit_url" field if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableCommitURL(s *string) *SourceControlUpdateOne {
-	if s != nil {
-		scuo.SetCommitURL(*s)
+func (_u *SourceControlUpdateOne) SetNillableCommitURL(v *string) *SourceControlUpdateOne {
+	if v != nil {
+		_u.SetCommitURL(*v)
 	}
-	return scuo
+	return _u
 }
 
 // ClearCommitURL clears the value of the "commit_url" field.
-func (scuo *SourceControlUpdateOne) ClearCommitURL() *SourceControlUpdateOne {
-	scuo.mutation.ClearCommitURL()
-	return scuo
+func (_u *SourceControlUpdateOne) ClearCommitURL() *SourceControlUpdateOne {
+	_u.mutation.ClearCommitURL()
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scuo *SourceControlUpdateOne) SetBazelInvocationID(id int64) *SourceControlUpdateOne {
-	scuo.mutation.SetBazelInvocationID(id)
-	return scuo
+func (_u *SourceControlUpdateOne) SetBazelInvocationID(id int64) *SourceControlUpdateOne {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableBazelInvocationID(id *int64) *SourceControlUpdateOne {
+func (_u *SourceControlUpdateOne) SetNillableBazelInvocationID(id *int64) *SourceControlUpdateOne {
 	if id != nil {
-		scuo = scuo.SetBazelInvocationID(*id)
+		_u = _u.SetBazelInvocationID(*id)
 	}
-	return scuo
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (scuo *SourceControlUpdateOne) SetBazelInvocation(b *BazelInvocation) *SourceControlUpdateOne {
-	return scuo.SetBazelInvocationID(b.ID)
+func (_u *SourceControlUpdateOne) SetBazelInvocation(v *BazelInvocation) *SourceControlUpdateOne {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the SourceControlMutation object of the builder.
-func (scuo *SourceControlUpdateOne) Mutation() *SourceControlMutation {
-	return scuo.mutation
+func (_u *SourceControlUpdateOne) Mutation() *SourceControlMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (scuo *SourceControlUpdateOne) ClearBazelInvocation() *SourceControlUpdateOne {
-	scuo.mutation.ClearBazelInvocation()
-	return scuo
+func (_u *SourceControlUpdateOne) ClearBazelInvocation() *SourceControlUpdateOne {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Where appends a list predicates to the SourceControlUpdate builder.
-func (scuo *SourceControlUpdateOne) Where(ps ...predicate.SourceControl) *SourceControlUpdateOne {
-	scuo.mutation.Where(ps...)
-	return scuo
+func (_u *SourceControlUpdateOne) Where(ps ...predicate.SourceControl) *SourceControlUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (scuo *SourceControlUpdateOne) Select(field string, fields ...string) *SourceControlUpdateOne {
-	scuo.fields = append([]string{field}, fields...)
-	return scuo
+func (_u *SourceControlUpdateOne) Select(field string, fields ...string) *SourceControlUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated SourceControl entity.
-func (scuo *SourceControlUpdateOne) Save(ctx context.Context) (*SourceControl, error) {
-	return withHooks(ctx, scuo.sqlSave, scuo.mutation, scuo.hooks)
+func (_u *SourceControlUpdateOne) Save(ctx context.Context) (*SourceControl, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (scuo *SourceControlUpdateOne) SaveX(ctx context.Context) *SourceControl {
-	node, err := scuo.Save(ctx)
+func (_u *SourceControlUpdateOne) SaveX(ctx context.Context) *SourceControl {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -477,26 +477,26 @@ func (scuo *SourceControlUpdateOne) SaveX(ctx context.Context) *SourceControl {
 }
 
 // Exec executes the query on the entity.
-func (scuo *SourceControlUpdateOne) Exec(ctx context.Context) error {
-	_, err := scuo.Save(ctx)
+func (_u *SourceControlUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (scuo *SourceControlUpdateOne) ExecX(ctx context.Context) {
-	if err := scuo.Exec(ctx); err != nil {
+func (_u *SourceControlUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceControl, err error) {
+func (_u *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceControl, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sourcecontrol.Table, sourcecontrol.Columns, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64))
-	id, ok := scuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SourceControl.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := scuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sourcecontrol.FieldID)
 		for _, f := range fields {
@@ -508,50 +508,50 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 			}
 		}
 	}
-	if ps := scuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := scuo.mutation.Repo(); ok {
+	if value, ok := _u.mutation.Repo(); ok {
 		_spec.SetField(sourcecontrol.FieldRepo, field.TypeString, value)
 	}
-	if scuo.mutation.RepoCleared() {
+	if _u.mutation.RepoCleared() {
 		_spec.ClearField(sourcecontrol.FieldRepo, field.TypeString)
 	}
-	if value, ok := scuo.mutation.RepoURL(); ok {
+	if value, ok := _u.mutation.RepoURL(); ok {
 		_spec.SetField(sourcecontrol.FieldRepoURL, field.TypeString, value)
 	}
-	if scuo.mutation.RepoURLCleared() {
+	if _u.mutation.RepoURLCleared() {
 		_spec.ClearField(sourcecontrol.FieldRepoURL, field.TypeString)
 	}
-	if value, ok := scuo.mutation.Ref(); ok {
+	if value, ok := _u.mutation.Ref(); ok {
 		_spec.SetField(sourcecontrol.FieldRef, field.TypeString, value)
 	}
-	if scuo.mutation.RefCleared() {
+	if _u.mutation.RefCleared() {
 		_spec.ClearField(sourcecontrol.FieldRef, field.TypeString)
 	}
-	if value, ok := scuo.mutation.RefURL(); ok {
+	if value, ok := _u.mutation.RefURL(); ok {
 		_spec.SetField(sourcecontrol.FieldRefURL, field.TypeString, value)
 	}
-	if scuo.mutation.RefURLCleared() {
+	if _u.mutation.RefURLCleared() {
 		_spec.ClearField(sourcecontrol.FieldRefURL, field.TypeString)
 	}
-	if value, ok := scuo.mutation.Commit(); ok {
+	if value, ok := _u.mutation.Commit(); ok {
 		_spec.SetField(sourcecontrol.FieldCommit, field.TypeString, value)
 	}
-	if scuo.mutation.CommitCleared() {
+	if _u.mutation.CommitCleared() {
 		_spec.ClearField(sourcecontrol.FieldCommit, field.TypeString)
 	}
-	if value, ok := scuo.mutation.CommitURL(); ok {
+	if value, ok := _u.mutation.CommitURL(); ok {
 		_spec.SetField(sourcecontrol.FieldCommitURL, field.TypeString, value)
 	}
-	if scuo.mutation.CommitURLCleared() {
+	if _u.mutation.CommitURLCleared() {
 		_spec.ClearField(sourcecontrol.FieldCommitURL, field.TypeString)
 	}
-	if scuo.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -564,7 +564,7 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := scuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -580,10 +580,10 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &SourceControl{config: scuo.config}
+	_node = &SourceControl{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, scuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sourcecontrol.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -591,6 +591,6 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 		}
 		return nil, err
 	}
-	scuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

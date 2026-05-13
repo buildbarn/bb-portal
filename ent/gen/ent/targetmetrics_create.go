@@ -23,85 +23,85 @@ type TargetMetricsCreate struct {
 }
 
 // SetTargetsLoaded sets the "targets_loaded" field.
-func (tmc *TargetMetricsCreate) SetTargetsLoaded(i int64) *TargetMetricsCreate {
-	tmc.mutation.SetTargetsLoaded(i)
-	return tmc
+func (_c *TargetMetricsCreate) SetTargetsLoaded(v int64) *TargetMetricsCreate {
+	_c.mutation.SetTargetsLoaded(v)
+	return _c
 }
 
 // SetNillableTargetsLoaded sets the "targets_loaded" field if the given value is not nil.
-func (tmc *TargetMetricsCreate) SetNillableTargetsLoaded(i *int64) *TargetMetricsCreate {
-	if i != nil {
-		tmc.SetTargetsLoaded(*i)
+func (_c *TargetMetricsCreate) SetNillableTargetsLoaded(v *int64) *TargetMetricsCreate {
+	if v != nil {
+		_c.SetTargetsLoaded(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetTargetsConfigured sets the "targets_configured" field.
-func (tmc *TargetMetricsCreate) SetTargetsConfigured(i int64) *TargetMetricsCreate {
-	tmc.mutation.SetTargetsConfigured(i)
-	return tmc
+func (_c *TargetMetricsCreate) SetTargetsConfigured(v int64) *TargetMetricsCreate {
+	_c.mutation.SetTargetsConfigured(v)
+	return _c
 }
 
 // SetNillableTargetsConfigured sets the "targets_configured" field if the given value is not nil.
-func (tmc *TargetMetricsCreate) SetNillableTargetsConfigured(i *int64) *TargetMetricsCreate {
-	if i != nil {
-		tmc.SetTargetsConfigured(*i)
+func (_c *TargetMetricsCreate) SetNillableTargetsConfigured(v *int64) *TargetMetricsCreate {
+	if v != nil {
+		_c.SetTargetsConfigured(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field.
-func (tmc *TargetMetricsCreate) SetTargetsConfiguredNotIncludingAspects(i int64) *TargetMetricsCreate {
-	tmc.mutation.SetTargetsConfiguredNotIncludingAspects(i)
-	return tmc
+func (_c *TargetMetricsCreate) SetTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsCreate {
+	_c.mutation.SetTargetsConfiguredNotIncludingAspects(v)
+	return _c
 }
 
 // SetNillableTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field if the given value is not nil.
-func (tmc *TargetMetricsCreate) SetNillableTargetsConfiguredNotIncludingAspects(i *int64) *TargetMetricsCreate {
-	if i != nil {
-		tmc.SetTargetsConfiguredNotIncludingAspects(*i)
+func (_c *TargetMetricsCreate) SetNillableTargetsConfiguredNotIncludingAspects(v *int64) *TargetMetricsCreate {
+	if v != nil {
+		_c.SetTargetsConfiguredNotIncludingAspects(*v)
 	}
-	return tmc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tmc *TargetMetricsCreate) SetID(i int64) *TargetMetricsCreate {
-	tmc.mutation.SetID(i)
-	return tmc
+func (_c *TargetMetricsCreate) SetID(v int64) *TargetMetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmc *TargetMetricsCreate) SetMetricsID(id int64) *TargetMetricsCreate {
-	tmc.mutation.SetMetricsID(id)
-	return tmc
+func (_c *TargetMetricsCreate) SetMetricsID(id int64) *TargetMetricsCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmc *TargetMetricsCreate) SetNillableMetricsID(id *int64) *TargetMetricsCreate {
+func (_c *TargetMetricsCreate) SetNillableMetricsID(id *int64) *TargetMetricsCreate {
 	if id != nil {
-		tmc = tmc.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return tmc
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (tmc *TargetMetricsCreate) SetMetrics(m *Metrics) *TargetMetricsCreate {
-	return tmc.SetMetricsID(m.ID)
+func (_c *TargetMetricsCreate) SetMetrics(v *Metrics) *TargetMetricsCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // Mutation returns the TargetMetricsMutation object of the builder.
-func (tmc *TargetMetricsCreate) Mutation() *TargetMetricsMutation {
-	return tmc.mutation
+func (_c *TargetMetricsCreate) Mutation() *TargetMetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the TargetMetrics in the database.
-func (tmc *TargetMetricsCreate) Save(ctx context.Context) (*TargetMetrics, error) {
-	return withHooks(ctx, tmc.sqlSave, tmc.mutation, tmc.hooks)
+func (_c *TargetMetricsCreate) Save(ctx context.Context) (*TargetMetrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tmc *TargetMetricsCreate) SaveX(ctx context.Context) *TargetMetrics {
-	v, err := tmc.Save(ctx)
+func (_c *TargetMetricsCreate) SaveX(ctx context.Context) *TargetMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -109,29 +109,29 @@ func (tmc *TargetMetricsCreate) SaveX(ctx context.Context) *TargetMetrics {
 }
 
 // Exec executes the query.
-func (tmc *TargetMetricsCreate) Exec(ctx context.Context) error {
-	_, err := tmc.Save(ctx)
+func (_c *TargetMetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmc *TargetMetricsCreate) ExecX(ctx context.Context) {
-	if err := tmc.Exec(ctx); err != nil {
+func (_c *TargetMetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tmc *TargetMetricsCreate) check() error {
+func (_c *TargetMetricsCreate) check() error {
 	return nil
 }
 
-func (tmc *TargetMetricsCreate) sqlSave(ctx context.Context) (*TargetMetrics, error) {
-	if err := tmc.check(); err != nil {
+func (_c *TargetMetricsCreate) sqlSave(ctx context.Context) (*TargetMetrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -141,34 +141,34 @@ func (tmc *TargetMetricsCreate) sqlSave(ctx context.Context) (*TargetMetrics, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	tmc.mutation.id = &_node.ID
-	tmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tmc *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSpec) {
+func (_c *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TargetMetrics{config: tmc.config}
+		_node = &TargetMetrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(targetmetrics.Table, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = tmc.conflict
-	if id, ok := tmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := tmc.mutation.TargetsLoaded(); ok {
+	if value, ok := _c.mutation.TargetsLoaded(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsLoaded, field.TypeInt64, value)
 		_node.TargetsLoaded = value
 	}
-	if value, ok := tmc.mutation.TargetsConfigured(); ok {
+	if value, ok := _c.mutation.TargetsConfigured(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsConfigured, field.TypeInt64, value)
 		_node.TargetsConfigured = value
 	}
-	if value, ok := tmc.mutation.TargetsConfiguredNotIncludingAspects(); ok {
+	if value, ok := _c.mutation.TargetsConfiguredNotIncludingAspects(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, field.TypeInt64, value)
 		_node.TargetsConfiguredNotIncludingAspects = value
 	}
-	if nodes := tmc.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -204,10 +204,10 @@ func (tmc *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSp
 //			SetTargetsLoaded(v+v).
 //		}).
 //		Exec(ctx)
-func (tmc *TargetMetricsCreate) OnConflict(opts ...sql.ConflictOption) *TargetMetricsUpsertOne {
-	tmc.conflict = opts
+func (_c *TargetMetricsCreate) OnConflict(opts ...sql.ConflictOption) *TargetMetricsUpsertOne {
+	_c.conflict = opts
 	return &TargetMetricsUpsertOne{
-		create: tmc,
+		create: _c,
 	}
 }
 
@@ -217,10 +217,10 @@ func (tmc *TargetMetricsCreate) OnConflict(opts ...sql.ConflictOption) *TargetMe
 //	client.TargetMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tmc *TargetMetricsCreate) OnConflictColumns(columns ...string) *TargetMetricsUpsertOne {
-	tmc.conflict = append(tmc.conflict, sql.ConflictColumns(columns...))
+func (_c *TargetMetricsCreate) OnConflictColumns(columns ...string) *TargetMetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TargetMetricsUpsertOne{
-		create: tmc,
+		create: _c,
 	}
 }
 
@@ -483,16 +483,16 @@ type TargetMetricsCreateBulk struct {
 }
 
 // Save creates the TargetMetrics entities in the database.
-func (tmcb *TargetMetricsCreateBulk) Save(ctx context.Context) ([]*TargetMetrics, error) {
-	if tmcb.err != nil {
-		return nil, tmcb.err
+func (_c *TargetMetricsCreateBulk) Save(ctx context.Context) ([]*TargetMetrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tmcb.builders))
-	nodes := make([]*TargetMetrics, len(tmcb.builders))
-	mutators := make([]Mutator, len(tmcb.builders))
-	for i := range tmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TargetMetrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TargetMetricsMutation)
 				if !ok {
@@ -505,12 +505,12 @@ func (tmcb *TargetMetricsCreateBulk) Save(ctx context.Context) ([]*TargetMetrics
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -534,7 +534,7 @@ func (tmcb *TargetMetricsCreateBulk) Save(ctx context.Context) ([]*TargetMetrics
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -542,8 +542,8 @@ func (tmcb *TargetMetricsCreateBulk) Save(ctx context.Context) ([]*TargetMetrics
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tmcb *TargetMetricsCreateBulk) SaveX(ctx context.Context) []*TargetMetrics {
-	v, err := tmcb.Save(ctx)
+func (_c *TargetMetricsCreateBulk) SaveX(ctx context.Context) []*TargetMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -551,14 +551,14 @@ func (tmcb *TargetMetricsCreateBulk) SaveX(ctx context.Context) []*TargetMetrics
 }
 
 // Exec executes the query.
-func (tmcb *TargetMetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := tmcb.Save(ctx)
+func (_c *TargetMetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmcb *TargetMetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := tmcb.Exec(ctx); err != nil {
+func (_c *TargetMetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -578,10 +578,10 @@ func (tmcb *TargetMetricsCreateBulk) ExecX(ctx context.Context) {
 //			SetTargetsLoaded(v+v).
 //		}).
 //		Exec(ctx)
-func (tmcb *TargetMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetMetricsUpsertBulk {
-	tmcb.conflict = opts
+func (_c *TargetMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetMetricsUpsertBulk {
+	_c.conflict = opts
 	return &TargetMetricsUpsertBulk{
-		create: tmcb,
+		create: _c,
 	}
 }
 
@@ -591,10 +591,10 @@ func (tmcb *TargetMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *Tar
 //	client.TargetMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tmcb *TargetMetricsCreateBulk) OnConflictColumns(columns ...string) *TargetMetricsUpsertBulk {
-	tmcb.conflict = append(tmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *TargetMetricsCreateBulk) OnConflictColumns(columns ...string) *TargetMetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TargetMetricsUpsertBulk{
-		create: tmcb,
+		create: _c,
 	}
 }
 

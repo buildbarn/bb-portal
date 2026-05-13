@@ -20,56 +20,56 @@ type BuildTagDelete struct {
 }
 
 // Where appends a list predicates to the BuildTagDelete builder.
-func (btd *BuildTagDelete) Where(ps ...predicate.BuildTag) *BuildTagDelete {
-	btd.mutation.Where(ps...)
-	return btd
+func (_d *BuildTagDelete) Where(ps ...predicate.BuildTag) *BuildTagDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (btd *BuildTagDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, btd.sqlExec, btd.mutation, btd.hooks)
+func (_d *BuildTagDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (btd *BuildTagDelete) ExecX(ctx context.Context) int {
-	n, err := btd.Exec(ctx)
+func (_d *BuildTagDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (btd *BuildTagDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *BuildTagDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(buildtag.Table, sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64))
-	if ps := btd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, btd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	btd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // BuildTagDeleteOne is the builder for deleting a single BuildTag entity.
 type BuildTagDeleteOne struct {
-	btd *BuildTagDelete
+	_d *BuildTagDelete
 }
 
 // Where appends a list predicates to the BuildTagDelete builder.
-func (btdo *BuildTagDeleteOne) Where(ps ...predicate.BuildTag) *BuildTagDeleteOne {
-	btdo.btd.mutation.Where(ps...)
-	return btdo
+func (_d *BuildTagDeleteOne) Where(ps ...predicate.BuildTag) *BuildTagDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (btdo *BuildTagDeleteOne) Exec(ctx context.Context) error {
-	n, err := btdo.btd.Exec(ctx)
+func (_d *BuildTagDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (btdo *BuildTagDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (btdo *BuildTagDeleteOne) ExecX(ctx context.Context) {
-	if err := btdo.Exec(ctx); err != nil {
+func (_d *BuildTagDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

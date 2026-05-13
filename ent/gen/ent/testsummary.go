@@ -100,7 +100,7 @@ func (*TestSummary) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TestSummary fields.
-func (ts *TestSummary) assignValues(columns []string, values []any) error {
+func (_m *TestSummary) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -111,71 +111,71 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ts.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case testsummary.FieldOverallStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field overall_status", values[i])
 			} else if value.Valid {
-				ts.OverallStatus = value.String
+				_m.OverallStatus = value.String
 			}
 		case testsummary.FieldTotalRunCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field total_run_count", values[i])
 			} else if value.Valid {
-				ts.TotalRunCount = int32(value.Int64)
+				_m.TotalRunCount = int32(value.Int64)
 			}
 		case testsummary.FieldRunCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field run_count", values[i])
 			} else if value.Valid {
-				ts.RunCount = int32(value.Int64)
+				_m.RunCount = int32(value.Int64)
 			}
 		case testsummary.FieldAttemptCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field attempt_count", values[i])
 			} else if value.Valid {
-				ts.AttemptCount = int32(value.Int64)
+				_m.AttemptCount = int32(value.Int64)
 			}
 		case testsummary.FieldShardCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field shard_count", values[i])
 			} else if value.Valid {
-				ts.ShardCount = int32(value.Int64)
+				_m.ShardCount = int32(value.Int64)
 			}
 		case testsummary.FieldTotalNumCached:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field total_num_cached", values[i])
 			} else if value.Valid {
-				ts.TotalNumCached = int32(value.Int64)
+				_m.TotalNumCached = int32(value.Int64)
 			}
 		case testsummary.FieldFirstStartTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field first_start_time", values[i])
 			} else if value.Valid {
-				ts.FirstStartTime = value.Time
+				_m.FirstStartTime = value.Time
 			}
 		case testsummary.FieldLastStopTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_stop_time", values[i])
 			} else if value.Valid {
-				ts.LastStopTime = value.Time
+				_m.LastStopTime = value.Time
 			}
 		case testsummary.FieldTotalRunDurationInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field total_run_duration_in_ms", values[i])
 			} else if value.Valid {
-				ts.TotalRunDurationInMs = new(int64)
-				*ts.TotalRunDurationInMs = value.Int64
+				_m.TotalRunDurationInMs = new(int64)
+				*_m.TotalRunDurationInMs = value.Int64
 			}
 		case testsummary.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field invocation_target_test_summary", value)
 			} else if value.Valid {
-				ts.invocation_target_test_summary = new(int64)
-				*ts.invocation_target_test_summary = int64(value.Int64)
+				_m.invocation_target_test_summary = new(int64)
+				*_m.invocation_target_test_summary = int64(value.Int64)
 			}
 		default:
-			ts.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -183,68 +183,68 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TestSummary.
 // This includes values selected through modifiers, order, etc.
-func (ts *TestSummary) Value(name string) (ent.Value, error) {
-	return ts.selectValues.Get(name)
+func (_m *TestSummary) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryInvocationTarget queries the "invocation_target" edge of the TestSummary entity.
-func (ts *TestSummary) QueryInvocationTarget() *InvocationTargetQuery {
-	return NewTestSummaryClient(ts.config).QueryInvocationTarget(ts)
+func (_m *TestSummary) QueryInvocationTarget() *InvocationTargetQuery {
+	return NewTestSummaryClient(_m.config).QueryInvocationTarget(_m)
 }
 
 // QueryTestResults queries the "test_results" edge of the TestSummary entity.
-func (ts *TestSummary) QueryTestResults() *TestResultQuery {
-	return NewTestSummaryClient(ts.config).QueryTestResults(ts)
+func (_m *TestSummary) QueryTestResults() *TestResultQuery {
+	return NewTestSummaryClient(_m.config).QueryTestResults(_m)
 }
 
 // Update returns a builder for updating this TestSummary.
 // Note that you need to call TestSummary.Unwrap() before calling this method if this TestSummary
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ts *TestSummary) Update() *TestSummaryUpdateOne {
-	return NewTestSummaryClient(ts.config).UpdateOne(ts)
+func (_m *TestSummary) Update() *TestSummaryUpdateOne {
+	return NewTestSummaryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TestSummary entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ts *TestSummary) Unwrap() *TestSummary {
-	_tx, ok := ts.config.driver.(*txDriver)
+func (_m *TestSummary) Unwrap() *TestSummary {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TestSummary is not a transactional entity")
 	}
-	ts.config.driver = _tx.drv
-	return ts
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ts *TestSummary) String() string {
+func (_m *TestSummary) String() string {
 	var builder strings.Builder
 	builder.WriteString("TestSummary(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ts.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("overall_status=")
-	builder.WriteString(ts.OverallStatus)
+	builder.WriteString(_m.OverallStatus)
 	builder.WriteString(", ")
 	builder.WriteString("total_run_count=")
-	builder.WriteString(fmt.Sprintf("%v", ts.TotalRunCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.TotalRunCount))
 	builder.WriteString(", ")
 	builder.WriteString("run_count=")
-	builder.WriteString(fmt.Sprintf("%v", ts.RunCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.RunCount))
 	builder.WriteString(", ")
 	builder.WriteString("attempt_count=")
-	builder.WriteString(fmt.Sprintf("%v", ts.AttemptCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.AttemptCount))
 	builder.WriteString(", ")
 	builder.WriteString("shard_count=")
-	builder.WriteString(fmt.Sprintf("%v", ts.ShardCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.ShardCount))
 	builder.WriteString(", ")
 	builder.WriteString("total_num_cached=")
-	builder.WriteString(fmt.Sprintf("%v", ts.TotalNumCached))
+	builder.WriteString(fmt.Sprintf("%v", _m.TotalNumCached))
 	builder.WriteString(", ")
 	builder.WriteString("first_start_time=")
-	builder.WriteString(ts.FirstStartTime.Format(time.ANSIC))
+	builder.WriteString(_m.FirstStartTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("last_stop_time=")
-	builder.WriteString(ts.LastStopTime.Format(time.ANSIC))
+	builder.WriteString(_m.LastStopTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	if v := ts.TotalRunDurationInMs; v != nil {
+	if v := _m.TotalRunDurationInMs; v != nil {
 		builder.WriteString("total_run_duration_in_ms=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
@@ -254,25 +254,25 @@ func (ts *TestSummary) String() string {
 
 // NamedTestResults returns the TestResults named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (ts *TestSummary) NamedTestResults(name string) ([]*TestResult, error) {
-	if ts.Edges.namedTestResults == nil {
+func (_m *TestSummary) NamedTestResults(name string) ([]*TestResult, error) {
+	if _m.Edges.namedTestResults == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := ts.Edges.namedTestResults[name]
+	nodes, ok := _m.Edges.namedTestResults[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (ts *TestSummary) appendNamedTestResults(name string, edges ...*TestResult) {
-	if ts.Edges.namedTestResults == nil {
-		ts.Edges.namedTestResults = make(map[string][]*TestResult)
+func (_m *TestSummary) appendNamedTestResults(name string, edges ...*TestResult) {
+	if _m.Edges.namedTestResults == nil {
+		_m.Edges.namedTestResults = make(map[string][]*TestResult)
 	}
 	if len(edges) == 0 {
-		ts.Edges.namedTestResults[name] = []*TestResult{}
+		_m.Edges.namedTestResults[name] = []*TestResult{}
 	} else {
-		ts.Edges.namedTestResults[name] = append(ts.Edges.namedTestResults[name], edges...)
+		_m.Edges.namedTestResults[name] = append(_m.Edges.namedTestResults[name], edges...)
 	}
 }
 

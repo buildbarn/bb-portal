@@ -26,163 +26,163 @@ type InvocationTargetCreate struct {
 }
 
 // SetSuccess sets the "success" field.
-func (itc *InvocationTargetCreate) SetSuccess(b bool) *InvocationTargetCreate {
-	itc.mutation.SetSuccess(b)
-	return itc
+func (_c *InvocationTargetCreate) SetSuccess(v bool) *InvocationTargetCreate {
+	_c.mutation.SetSuccess(v)
+	return _c
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (itc *InvocationTargetCreate) SetNillableSuccess(b *bool) *InvocationTargetCreate {
-	if b != nil {
-		itc.SetSuccess(*b)
+func (_c *InvocationTargetCreate) SetNillableSuccess(v *bool) *InvocationTargetCreate {
+	if v != nil {
+		_c.SetSuccess(*v)
 	}
-	return itc
+	return _c
 }
 
 // SetTags sets the "tags" field.
-func (itc *InvocationTargetCreate) SetTags(s []string) *InvocationTargetCreate {
-	itc.mutation.SetTags(s)
-	return itc
+func (_c *InvocationTargetCreate) SetTags(v []string) *InvocationTargetCreate {
+	_c.mutation.SetTags(v)
+	return _c
 }
 
 // SetStartTimeInMs sets the "start_time_in_ms" field.
-func (itc *InvocationTargetCreate) SetStartTimeInMs(i int64) *InvocationTargetCreate {
-	itc.mutation.SetStartTimeInMs(i)
-	return itc
+func (_c *InvocationTargetCreate) SetStartTimeInMs(v int64) *InvocationTargetCreate {
+	_c.mutation.SetStartTimeInMs(v)
+	return _c
 }
 
 // SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (itc *InvocationTargetCreate) SetNillableStartTimeInMs(i *int64) *InvocationTargetCreate {
-	if i != nil {
-		itc.SetStartTimeInMs(*i)
+func (_c *InvocationTargetCreate) SetNillableStartTimeInMs(v *int64) *InvocationTargetCreate {
+	if v != nil {
+		_c.SetStartTimeInMs(*v)
 	}
-	return itc
+	return _c
 }
 
 // SetEndTimeInMs sets the "end_time_in_ms" field.
-func (itc *InvocationTargetCreate) SetEndTimeInMs(i int64) *InvocationTargetCreate {
-	itc.mutation.SetEndTimeInMs(i)
-	return itc
+func (_c *InvocationTargetCreate) SetEndTimeInMs(v int64) *InvocationTargetCreate {
+	_c.mutation.SetEndTimeInMs(v)
+	return _c
 }
 
 // SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (itc *InvocationTargetCreate) SetNillableEndTimeInMs(i *int64) *InvocationTargetCreate {
-	if i != nil {
-		itc.SetEndTimeInMs(*i)
+func (_c *InvocationTargetCreate) SetNillableEndTimeInMs(v *int64) *InvocationTargetCreate {
+	if v != nil {
+		_c.SetEndTimeInMs(*v)
 	}
-	return itc
+	return _c
 }
 
 // SetDurationInMs sets the "duration_in_ms" field.
-func (itc *InvocationTargetCreate) SetDurationInMs(i int64) *InvocationTargetCreate {
-	itc.mutation.SetDurationInMs(i)
-	return itc
+func (_c *InvocationTargetCreate) SetDurationInMs(v int64) *InvocationTargetCreate {
+	_c.mutation.SetDurationInMs(v)
+	return _c
 }
 
 // SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (itc *InvocationTargetCreate) SetNillableDurationInMs(i *int64) *InvocationTargetCreate {
-	if i != nil {
-		itc.SetDurationInMs(*i)
+func (_c *InvocationTargetCreate) SetNillableDurationInMs(v *int64) *InvocationTargetCreate {
+	if v != nil {
+		_c.SetDurationInMs(*v)
 	}
-	return itc
+	return _c
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (itc *InvocationTargetCreate) SetFailureMessage(s string) *InvocationTargetCreate {
-	itc.mutation.SetFailureMessage(s)
-	return itc
+func (_c *InvocationTargetCreate) SetFailureMessage(v string) *InvocationTargetCreate {
+	_c.mutation.SetFailureMessage(v)
+	return _c
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (itc *InvocationTargetCreate) SetNillableFailureMessage(s *string) *InvocationTargetCreate {
-	if s != nil {
-		itc.SetFailureMessage(*s)
+func (_c *InvocationTargetCreate) SetNillableFailureMessage(v *string) *InvocationTargetCreate {
+	if v != nil {
+		_c.SetFailureMessage(*v)
 	}
-	return itc
+	return _c
 }
 
 // SetAbortReason sets the "abort_reason" field.
-func (itc *InvocationTargetCreate) SetAbortReason(ir invocationtarget.AbortReason) *InvocationTargetCreate {
-	itc.mutation.SetAbortReason(ir)
-	return itc
+func (_c *InvocationTargetCreate) SetAbortReason(v invocationtarget.AbortReason) *InvocationTargetCreate {
+	_c.mutation.SetAbortReason(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (itc *InvocationTargetCreate) SetID(i int64) *InvocationTargetCreate {
-	itc.mutation.SetID(i)
-	return itc
+func (_c *InvocationTargetCreate) SetID(v int64) *InvocationTargetCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (itc *InvocationTargetCreate) SetBazelInvocationID(id int64) *InvocationTargetCreate {
-	itc.mutation.SetBazelInvocationID(id)
-	return itc
+func (_c *InvocationTargetCreate) SetBazelInvocationID(id int64) *InvocationTargetCreate {
+	_c.mutation.SetBazelInvocationID(id)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (itc *InvocationTargetCreate) SetBazelInvocation(b *BazelInvocation) *InvocationTargetCreate {
-	return itc.SetBazelInvocationID(b.ID)
+func (_c *InvocationTargetCreate) SetBazelInvocation(v *BazelInvocation) *InvocationTargetCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // SetTargetID sets the "target" edge to the Target entity by ID.
-func (itc *InvocationTargetCreate) SetTargetID(id int64) *InvocationTargetCreate {
-	itc.mutation.SetTargetID(id)
-	return itc
+func (_c *InvocationTargetCreate) SetTargetID(id int64) *InvocationTargetCreate {
+	_c.mutation.SetTargetID(id)
+	return _c
 }
 
 // SetTarget sets the "target" edge to the Target entity.
-func (itc *InvocationTargetCreate) SetTarget(t *Target) *InvocationTargetCreate {
-	return itc.SetTargetID(t.ID)
+func (_c *InvocationTargetCreate) SetTarget(v *Target) *InvocationTargetCreate {
+	return _c.SetTargetID(v.ID)
 }
 
 // SetConfigurationID sets the "configuration" edge to the Configuration entity by ID.
-func (itc *InvocationTargetCreate) SetConfigurationID(id int64) *InvocationTargetCreate {
-	itc.mutation.SetConfigurationID(id)
-	return itc
+func (_c *InvocationTargetCreate) SetConfigurationID(id int64) *InvocationTargetCreate {
+	_c.mutation.SetConfigurationID(id)
+	return _c
 }
 
 // SetNillableConfigurationID sets the "configuration" edge to the Configuration entity by ID if the given value is not nil.
-func (itc *InvocationTargetCreate) SetNillableConfigurationID(id *int64) *InvocationTargetCreate {
+func (_c *InvocationTargetCreate) SetNillableConfigurationID(id *int64) *InvocationTargetCreate {
 	if id != nil {
-		itc = itc.SetConfigurationID(*id)
+		_c = _c.SetConfigurationID(*id)
 	}
-	return itc
+	return _c
 }
 
 // SetConfiguration sets the "configuration" edge to the Configuration entity.
-func (itc *InvocationTargetCreate) SetConfiguration(c *Configuration) *InvocationTargetCreate {
-	return itc.SetConfigurationID(c.ID)
+func (_c *InvocationTargetCreate) SetConfiguration(v *Configuration) *InvocationTargetCreate {
+	return _c.SetConfigurationID(v.ID)
 }
 
 // AddTestSummaryIDs adds the "test_summary" edge to the TestSummary entity by IDs.
-func (itc *InvocationTargetCreate) AddTestSummaryIDs(ids ...int64) *InvocationTargetCreate {
-	itc.mutation.AddTestSummaryIDs(ids...)
-	return itc
+func (_c *InvocationTargetCreate) AddTestSummaryIDs(ids ...int64) *InvocationTargetCreate {
+	_c.mutation.AddTestSummaryIDs(ids...)
+	return _c
 }
 
 // AddTestSummary adds the "test_summary" edges to the TestSummary entity.
-func (itc *InvocationTargetCreate) AddTestSummary(t ...*TestSummary) *InvocationTargetCreate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_c *InvocationTargetCreate) AddTestSummary(v ...*TestSummary) *InvocationTargetCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return itc.AddTestSummaryIDs(ids...)
+	return _c.AddTestSummaryIDs(ids...)
 }
 
 // Mutation returns the InvocationTargetMutation object of the builder.
-func (itc *InvocationTargetCreate) Mutation() *InvocationTargetMutation {
-	return itc.mutation
+func (_c *InvocationTargetCreate) Mutation() *InvocationTargetMutation {
+	return _c.mutation
 }
 
 // Save creates the InvocationTarget in the database.
-func (itc *InvocationTargetCreate) Save(ctx context.Context) (*InvocationTarget, error) {
-	itc.defaults()
-	return withHooks(ctx, itc.sqlSave, itc.mutation, itc.hooks)
+func (_c *InvocationTargetCreate) Save(ctx context.Context) (*InvocationTarget, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (itc *InvocationTargetCreate) SaveX(ctx context.Context) *InvocationTarget {
-	v, err := itc.Save(ctx)
+func (_c *InvocationTargetCreate) SaveX(ctx context.Context) *InvocationTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -190,54 +190,54 @@ func (itc *InvocationTargetCreate) SaveX(ctx context.Context) *InvocationTarget 
 }
 
 // Exec executes the query.
-func (itc *InvocationTargetCreate) Exec(ctx context.Context) error {
-	_, err := itc.Save(ctx)
+func (_c *InvocationTargetCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itc *InvocationTargetCreate) ExecX(ctx context.Context) {
-	if err := itc.Exec(ctx); err != nil {
+func (_c *InvocationTargetCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (itc *InvocationTargetCreate) defaults() {
-	if _, ok := itc.mutation.Success(); !ok {
+func (_c *InvocationTargetCreate) defaults() {
+	if _, ok := _c.mutation.Success(); !ok {
 		v := invocationtarget.DefaultSuccess
-		itc.mutation.SetSuccess(v)
+		_c.mutation.SetSuccess(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (itc *InvocationTargetCreate) check() error {
-	if _, ok := itc.mutation.Success(); !ok {
+func (_c *InvocationTargetCreate) check() error {
+	if _, ok := _c.mutation.Success(); !ok {
 		return &ValidationError{Name: "success", err: errors.New(`ent: missing required field "InvocationTarget.success"`)}
 	}
-	if _, ok := itc.mutation.AbortReason(); !ok {
+	if _, ok := _c.mutation.AbortReason(); !ok {
 		return &ValidationError{Name: "abort_reason", err: errors.New(`ent: missing required field "InvocationTarget.abort_reason"`)}
 	}
-	if v, ok := itc.mutation.AbortReason(); ok {
+	if v, ok := _c.mutation.AbortReason(); ok {
 		if err := invocationtarget.AbortReasonValidator(v); err != nil {
 			return &ValidationError{Name: "abort_reason", err: fmt.Errorf(`ent: validator failed for field "InvocationTarget.abort_reason": %w`, err)}
 		}
 	}
-	if len(itc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "InvocationTarget.bazel_invocation"`)}
 	}
-	if len(itc.mutation.TargetIDs()) == 0 {
+	if len(_c.mutation.TargetIDs()) == 0 {
 		return &ValidationError{Name: "target", err: errors.New(`ent: missing required edge "InvocationTarget.target"`)}
 	}
 	return nil
 }
 
-func (itc *InvocationTargetCreate) sqlSave(ctx context.Context) (*InvocationTarget, error) {
-	if err := itc.check(); err != nil {
+func (_c *InvocationTargetCreate) sqlSave(ctx context.Context) (*InvocationTarget, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := itc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, itc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -247,50 +247,50 @@ func (itc *InvocationTargetCreate) sqlSave(ctx context.Context) (*InvocationTarg
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	itc.mutation.id = &_node.ID
-	itc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (itc *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.CreateSpec) {
+func (_c *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.CreateSpec) {
 	var (
-		_node = &InvocationTarget{config: itc.config}
+		_node = &InvocationTarget{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(invocationtarget.Table, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = itc.conflict
-	if id, ok := itc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := itc.mutation.Success(); ok {
+	if value, ok := _c.mutation.Success(); ok {
 		_spec.SetField(invocationtarget.FieldSuccess, field.TypeBool, value)
 		_node.Success = value
 	}
-	if value, ok := itc.mutation.Tags(); ok {
+	if value, ok := _c.mutation.Tags(); ok {
 		_spec.SetField(invocationtarget.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
 	}
-	if value, ok := itc.mutation.StartTimeInMs(); ok {
+	if value, ok := _c.mutation.StartTimeInMs(); ok {
 		_spec.SetField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
 		_node.StartTimeInMs = value
 	}
-	if value, ok := itc.mutation.EndTimeInMs(); ok {
+	if value, ok := _c.mutation.EndTimeInMs(); ok {
 		_spec.SetField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
 		_node.EndTimeInMs = value
 	}
-	if value, ok := itc.mutation.DurationInMs(); ok {
+	if value, ok := _c.mutation.DurationInMs(); ok {
 		_spec.SetField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
 		_node.DurationInMs = value
 	}
-	if value, ok := itc.mutation.FailureMessage(); ok {
+	if value, ok := _c.mutation.FailureMessage(); ok {
 		_spec.SetField(invocationtarget.FieldFailureMessage, field.TypeString, value)
 		_node.FailureMessage = value
 	}
-	if value, ok := itc.mutation.AbortReason(); ok {
+	if value, ok := _c.mutation.AbortReason(); ok {
 		_spec.SetField(invocationtarget.FieldAbortReason, field.TypeEnum, value)
 		_node.AbortReason = value
 	}
-	if nodes := itc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -307,7 +307,7 @@ func (itc *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.Cr
 		_node.bazel_invocation_invocation_targets = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := itc.mutation.TargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -324,7 +324,7 @@ func (itc *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.Cr
 		_node.target_invocation_targets = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := itc.mutation.ConfigurationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ConfigurationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -341,7 +341,7 @@ func (itc *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.Cr
 		_node.invocation_target_configuration = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := itc.mutation.TestSummaryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -376,10 +376,10 @@ func (itc *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.Cr
 //			SetSuccess(v+v).
 //		}).
 //		Exec(ctx)
-func (itc *InvocationTargetCreate) OnConflict(opts ...sql.ConflictOption) *InvocationTargetUpsertOne {
-	itc.conflict = opts
+func (_c *InvocationTargetCreate) OnConflict(opts ...sql.ConflictOption) *InvocationTargetUpsertOne {
+	_c.conflict = opts
 	return &InvocationTargetUpsertOne{
-		create: itc,
+		create: _c,
 	}
 }
 
@@ -389,10 +389,10 @@ func (itc *InvocationTargetCreate) OnConflict(opts ...sql.ConflictOption) *Invoc
 //	client.InvocationTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (itc *InvocationTargetCreate) OnConflictColumns(columns ...string) *InvocationTargetUpsertOne {
-	itc.conflict = append(itc.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationTargetCreate) OnConflictColumns(columns ...string) *InvocationTargetUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationTargetUpsertOne{
-		create: itc,
+		create: _c,
 	}
 }
 
@@ -785,16 +785,16 @@ type InvocationTargetCreateBulk struct {
 }
 
 // Save creates the InvocationTarget entities in the database.
-func (itcb *InvocationTargetCreateBulk) Save(ctx context.Context) ([]*InvocationTarget, error) {
-	if itcb.err != nil {
-		return nil, itcb.err
+func (_c *InvocationTargetCreateBulk) Save(ctx context.Context) ([]*InvocationTarget, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(itcb.builders))
-	nodes := make([]*InvocationTarget, len(itcb.builders))
-	mutators := make([]Mutator, len(itcb.builders))
-	for i := range itcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*InvocationTarget, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := itcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*InvocationTargetMutation)
@@ -808,12 +808,12 @@ func (itcb *InvocationTargetCreateBulk) Save(ctx context.Context) ([]*Invocation
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, itcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = itcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, itcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -837,7 +837,7 @@ func (itcb *InvocationTargetCreateBulk) Save(ctx context.Context) ([]*Invocation
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, itcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -845,8 +845,8 @@ func (itcb *InvocationTargetCreateBulk) Save(ctx context.Context) ([]*Invocation
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (itcb *InvocationTargetCreateBulk) SaveX(ctx context.Context) []*InvocationTarget {
-	v, err := itcb.Save(ctx)
+func (_c *InvocationTargetCreateBulk) SaveX(ctx context.Context) []*InvocationTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -854,14 +854,14 @@ func (itcb *InvocationTargetCreateBulk) SaveX(ctx context.Context) []*Invocation
 }
 
 // Exec executes the query.
-func (itcb *InvocationTargetCreateBulk) Exec(ctx context.Context) error {
-	_, err := itcb.Save(ctx)
+func (_c *InvocationTargetCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itcb *InvocationTargetCreateBulk) ExecX(ctx context.Context) {
-	if err := itcb.Exec(ctx); err != nil {
+func (_c *InvocationTargetCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -881,10 +881,10 @@ func (itcb *InvocationTargetCreateBulk) ExecX(ctx context.Context) {
 //			SetSuccess(v+v).
 //		}).
 //		Exec(ctx)
-func (itcb *InvocationTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationTargetUpsertBulk {
-	itcb.conflict = opts
+func (_c *InvocationTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationTargetUpsertBulk {
+	_c.conflict = opts
 	return &InvocationTargetUpsertBulk{
-		create: itcb,
+		create: _c,
 	}
 }
 
@@ -894,10 +894,10 @@ func (itcb *InvocationTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *
 //	client.InvocationTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (itcb *InvocationTargetCreateBulk) OnConflictColumns(columns ...string) *InvocationTargetUpsertBulk {
-	itcb.conflict = append(itcb.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationTargetCreateBulk) OnConflictColumns(columns ...string) *InvocationTargetUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationTargetUpsertBulk{
-		create: itcb,
+		create: _c,
 	}
 }
 

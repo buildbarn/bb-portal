@@ -23,47 +23,47 @@ type InvocationTagCreate struct {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (itc *InvocationTagCreate) SetBazelInvocationID(i int64) *InvocationTagCreate {
-	itc.mutation.SetBazelInvocationID(i)
-	return itc
+func (_c *InvocationTagCreate) SetBazelInvocationID(v int64) *InvocationTagCreate {
+	_c.mutation.SetBazelInvocationID(v)
+	return _c
 }
 
 // SetKey sets the "key" field.
-func (itc *InvocationTagCreate) SetKey(s string) *InvocationTagCreate {
-	itc.mutation.SetKey(s)
-	return itc
+func (_c *InvocationTagCreate) SetKey(v string) *InvocationTagCreate {
+	_c.mutation.SetKey(v)
+	return _c
 }
 
 // SetValue sets the "value" field.
-func (itc *InvocationTagCreate) SetValue(s string) *InvocationTagCreate {
-	itc.mutation.SetValue(s)
-	return itc
+func (_c *InvocationTagCreate) SetValue(v string) *InvocationTagCreate {
+	_c.mutation.SetValue(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (itc *InvocationTagCreate) SetID(i int64) *InvocationTagCreate {
-	itc.mutation.SetID(i)
-	return itc
+func (_c *InvocationTagCreate) SetID(v int64) *InvocationTagCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (itc *InvocationTagCreate) SetBazelInvocation(b *BazelInvocation) *InvocationTagCreate {
-	return itc.SetBazelInvocationID(b.ID)
+func (_c *InvocationTagCreate) SetBazelInvocation(v *BazelInvocation) *InvocationTagCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the InvocationTagMutation object of the builder.
-func (itc *InvocationTagCreate) Mutation() *InvocationTagMutation {
-	return itc.mutation
+func (_c *InvocationTagCreate) Mutation() *InvocationTagMutation {
+	return _c.mutation
 }
 
 // Save creates the InvocationTag in the database.
-func (itc *InvocationTagCreate) Save(ctx context.Context) (*InvocationTag, error) {
-	return withHooks(ctx, itc.sqlSave, itc.mutation, itc.hooks)
+func (_c *InvocationTagCreate) Save(ctx context.Context) (*InvocationTag, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (itc *InvocationTagCreate) SaveX(ctx context.Context) *InvocationTag {
-	v, err := itc.Save(ctx)
+func (_c *InvocationTagCreate) SaveX(ctx context.Context) *InvocationTag {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -71,41 +71,41 @@ func (itc *InvocationTagCreate) SaveX(ctx context.Context) *InvocationTag {
 }
 
 // Exec executes the query.
-func (itc *InvocationTagCreate) Exec(ctx context.Context) error {
-	_, err := itc.Save(ctx)
+func (_c *InvocationTagCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itc *InvocationTagCreate) ExecX(ctx context.Context) {
-	if err := itc.Exec(ctx); err != nil {
+func (_c *InvocationTagCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (itc *InvocationTagCreate) check() error {
-	if _, ok := itc.mutation.BazelInvocationID(); !ok {
+func (_c *InvocationTagCreate) check() error {
+	if _, ok := _c.mutation.BazelInvocationID(); !ok {
 		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "InvocationTag.bazel_invocation_id"`)}
 	}
-	if _, ok := itc.mutation.Key(); !ok {
+	if _, ok := _c.mutation.Key(); !ok {
 		return &ValidationError{Name: "key", err: errors.New(`ent: missing required field "InvocationTag.key"`)}
 	}
-	if _, ok := itc.mutation.Value(); !ok {
+	if _, ok := _c.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "InvocationTag.value"`)}
 	}
-	if len(itc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "InvocationTag.bazel_invocation"`)}
 	}
 	return nil
 }
 
-func (itc *InvocationTagCreate) sqlSave(ctx context.Context) (*InvocationTag, error) {
-	if err := itc.check(); err != nil {
+func (_c *InvocationTagCreate) sqlSave(ctx context.Context) (*InvocationTag, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := itc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, itc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -115,30 +115,30 @@ func (itc *InvocationTagCreate) sqlSave(ctx context.Context) (*InvocationTag, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	itc.mutation.id = &_node.ID
-	itc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (itc *InvocationTagCreate) createSpec() (*InvocationTag, *sqlgraph.CreateSpec) {
+func (_c *InvocationTagCreate) createSpec() (*InvocationTag, *sqlgraph.CreateSpec) {
 	var (
-		_node = &InvocationTag{config: itc.config}
+		_node = &InvocationTag{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(invocationtag.Table, sqlgraph.NewFieldSpec(invocationtag.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = itc.conflict
-	if id, ok := itc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := itc.mutation.Key(); ok {
+	if value, ok := _c.mutation.Key(); ok {
 		_spec.SetField(invocationtag.FieldKey, field.TypeString, value)
 		_node.Key = value
 	}
-	if value, ok := itc.mutation.Value(); ok {
+	if value, ok := _c.mutation.Value(); ok {
 		_spec.SetField(invocationtag.FieldValue, field.TypeString, value)
 		_node.Value = value
 	}
-	if nodes := itc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -174,10 +174,10 @@ func (itc *InvocationTagCreate) createSpec() (*InvocationTag, *sqlgraph.CreateSp
 //			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (itc *InvocationTagCreate) OnConflict(opts ...sql.ConflictOption) *InvocationTagUpsertOne {
-	itc.conflict = opts
+func (_c *InvocationTagCreate) OnConflict(opts ...sql.ConflictOption) *InvocationTagUpsertOne {
+	_c.conflict = opts
 	return &InvocationTagUpsertOne{
-		create: itc,
+		create: _c,
 	}
 }
 
@@ -187,10 +187,10 @@ func (itc *InvocationTagCreate) OnConflict(opts ...sql.ConflictOption) *Invocati
 //	client.InvocationTag.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (itc *InvocationTagCreate) OnConflictColumns(columns ...string) *InvocationTagUpsertOne {
-	itc.conflict = append(itc.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationTagCreate) OnConflictColumns(columns ...string) *InvocationTagUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationTagUpsertOne{
-		create: itc,
+		create: _c,
 	}
 }
 
@@ -306,16 +306,16 @@ type InvocationTagCreateBulk struct {
 }
 
 // Save creates the InvocationTag entities in the database.
-func (itcb *InvocationTagCreateBulk) Save(ctx context.Context) ([]*InvocationTag, error) {
-	if itcb.err != nil {
-		return nil, itcb.err
+func (_c *InvocationTagCreateBulk) Save(ctx context.Context) ([]*InvocationTag, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(itcb.builders))
-	nodes := make([]*InvocationTag, len(itcb.builders))
-	mutators := make([]Mutator, len(itcb.builders))
-	for i := range itcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*InvocationTag, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := itcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*InvocationTagMutation)
 				if !ok {
@@ -328,12 +328,12 @@ func (itcb *InvocationTagCreateBulk) Save(ctx context.Context) ([]*InvocationTag
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, itcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = itcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, itcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -357,7 +357,7 @@ func (itcb *InvocationTagCreateBulk) Save(ctx context.Context) ([]*InvocationTag
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, itcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -365,8 +365,8 @@ func (itcb *InvocationTagCreateBulk) Save(ctx context.Context) ([]*InvocationTag
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (itcb *InvocationTagCreateBulk) SaveX(ctx context.Context) []*InvocationTag {
-	v, err := itcb.Save(ctx)
+func (_c *InvocationTagCreateBulk) SaveX(ctx context.Context) []*InvocationTag {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -374,14 +374,14 @@ func (itcb *InvocationTagCreateBulk) SaveX(ctx context.Context) []*InvocationTag
 }
 
 // Exec executes the query.
-func (itcb *InvocationTagCreateBulk) Exec(ctx context.Context) error {
-	_, err := itcb.Save(ctx)
+func (_c *InvocationTagCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itcb *InvocationTagCreateBulk) ExecX(ctx context.Context) {
-	if err := itcb.Exec(ctx); err != nil {
+func (_c *InvocationTagCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -401,10 +401,10 @@ func (itcb *InvocationTagCreateBulk) ExecX(ctx context.Context) {
 //			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (itcb *InvocationTagCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationTagUpsertBulk {
-	itcb.conflict = opts
+func (_c *InvocationTagCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationTagUpsertBulk {
+	_c.conflict = opts
 	return &InvocationTagUpsertBulk{
-		create: itcb,
+		create: _c,
 	}
 }
 
@@ -414,10 +414,10 @@ func (itcb *InvocationTagCreateBulk) OnConflict(opts ...sql.ConflictOption) *Inv
 //	client.InvocationTag.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (itcb *InvocationTagCreateBulk) OnConflictColumns(columns ...string) *InvocationTagUpsertBulk {
-	itcb.conflict = append(itcb.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationTagCreateBulk) OnConflictColumns(columns ...string) *InvocationTagUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationTagUpsertBulk{
-		create: itcb,
+		create: _c,
 	}
 }
 

@@ -30,176 +30,176 @@ type MetricsCreate struct {
 }
 
 // SetID sets the "id" field.
-func (mc *MetricsCreate) SetID(i int64) *MetricsCreate {
-	mc.mutation.SetID(i)
-	return mc
+func (_c *MetricsCreate) SetID(v int64) *MetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (mc *MetricsCreate) SetBazelInvocationID(id int64) *MetricsCreate {
-	mc.mutation.SetBazelInvocationID(id)
-	return mc
+func (_c *MetricsCreate) SetBazelInvocationID(id int64) *MetricsCreate {
+	_c.mutation.SetBazelInvocationID(id)
+	return _c
 }
 
 // SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableBazelInvocationID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableBazelInvocationID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetBazelInvocationID(*id)
+		_c = _c.SetBazelInvocationID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (mc *MetricsCreate) SetBazelInvocation(b *BazelInvocation) *MetricsCreate {
-	return mc.SetBazelInvocationID(b.ID)
+func (_c *MetricsCreate) SetBazelInvocation(v *BazelInvocation) *MetricsCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (mc *MetricsCreate) SetActionSummaryID(id int64) *MetricsCreate {
-	mc.mutation.SetActionSummaryID(id)
-	return mc
+func (_c *MetricsCreate) SetActionSummaryID(id int64) *MetricsCreate {
+	_c.mutation.SetActionSummaryID(id)
+	return _c
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableActionSummaryID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableActionSummaryID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetActionSummaryID(*id)
+		_c = _c.SetActionSummaryID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (mc *MetricsCreate) SetActionSummary(a *ActionSummary) *MetricsCreate {
-	return mc.SetActionSummaryID(a.ID)
+func (_c *MetricsCreate) SetActionSummary(v *ActionSummary) *MetricsCreate {
+	return _c.SetActionSummaryID(v.ID)
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (mc *MetricsCreate) SetMemoryMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetMemoryMetricsID(id)
-	return mc
+func (_c *MetricsCreate) SetMemoryMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetMemoryMetricsID(id)
+	return _c
 }
 
 // SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableMemoryMetricsID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableMemoryMetricsID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetMemoryMetricsID(*id)
+		_c = _c.SetMemoryMetricsID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
-func (mc *MetricsCreate) SetMemoryMetrics(m *MemoryMetrics) *MetricsCreate {
-	return mc.SetMemoryMetricsID(m.ID)
+func (_c *MetricsCreate) SetMemoryMetrics(v *MemoryMetrics) *MetricsCreate {
+	return _c.SetMemoryMetricsID(v.ID)
 }
 
 // SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID.
-func (mc *MetricsCreate) SetTargetMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetTargetMetricsID(id)
-	return mc
+func (_c *MetricsCreate) SetTargetMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetTargetMetricsID(id)
+	return _c
 }
 
 // SetNillableTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableTargetMetricsID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableTargetMetricsID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetTargetMetricsID(*id)
+		_c = _c.SetTargetMetricsID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetTargetMetrics sets the "target_metrics" edge to the TargetMetrics entity.
-func (mc *MetricsCreate) SetTargetMetrics(t *TargetMetrics) *MetricsCreate {
-	return mc.SetTargetMetricsID(t.ID)
+func (_c *MetricsCreate) SetTargetMetrics(v *TargetMetrics) *MetricsCreate {
+	return _c.SetTargetMetricsID(v.ID)
 }
 
 // SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID.
-func (mc *MetricsCreate) SetTimingMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetTimingMetricsID(id)
-	return mc
+func (_c *MetricsCreate) SetTimingMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetTimingMetricsID(id)
+	return _c
 }
 
 // SetNillableTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableTimingMetricsID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableTimingMetricsID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetTimingMetricsID(*id)
+		_c = _c.SetTimingMetricsID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetTimingMetrics sets the "timing_metrics" edge to the TimingMetrics entity.
-func (mc *MetricsCreate) SetTimingMetrics(t *TimingMetrics) *MetricsCreate {
-	return mc.SetTimingMetricsID(t.ID)
+func (_c *MetricsCreate) SetTimingMetrics(v *TimingMetrics) *MetricsCreate {
+	return _c.SetTimingMetricsID(v.ID)
 }
 
 // SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
-func (mc *MetricsCreate) SetArtifactMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetArtifactMetricsID(id)
-	return mc
+func (_c *MetricsCreate) SetArtifactMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetArtifactMetricsID(id)
+	return _c
 }
 
 // SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableArtifactMetricsID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableArtifactMetricsID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetArtifactMetricsID(*id)
+		_c = _c.SetArtifactMetricsID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetArtifactMetrics sets the "artifact_metrics" edge to the ArtifactMetrics entity.
-func (mc *MetricsCreate) SetArtifactMetrics(a *ArtifactMetrics) *MetricsCreate {
-	return mc.SetArtifactMetricsID(a.ID)
+func (_c *MetricsCreate) SetArtifactMetrics(v *ArtifactMetrics) *MetricsCreate {
+	return _c.SetArtifactMetricsID(v.ID)
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (mc *MetricsCreate) SetNetworkMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetNetworkMetricsID(id)
-	return mc
+func (_c *MetricsCreate) SetNetworkMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetNetworkMetricsID(id)
+	return _c
 }
 
 // SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableNetworkMetricsID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableNetworkMetricsID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetNetworkMetricsID(*id)
+		_c = _c.SetNetworkMetricsID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetNetworkMetrics sets the "network_metrics" edge to the NetworkMetrics entity.
-func (mc *MetricsCreate) SetNetworkMetrics(n *NetworkMetrics) *MetricsCreate {
-	return mc.SetNetworkMetricsID(n.ID)
+func (_c *MetricsCreate) SetNetworkMetrics(v *NetworkMetrics) *MetricsCreate {
+	return _c.SetNetworkMetricsID(v.ID)
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (mc *MetricsCreate) SetBuildGraphMetricsID(id int64) *MetricsCreate {
-	mc.mutation.SetBuildGraphMetricsID(id)
-	return mc
+func (_c *MetricsCreate) SetBuildGraphMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetBuildGraphMetricsID(id)
+	return _c
 }
 
 // SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableBuildGraphMetricsID(id *int64) *MetricsCreate {
+func (_c *MetricsCreate) SetNillableBuildGraphMetricsID(id *int64) *MetricsCreate {
 	if id != nil {
-		mc = mc.SetBuildGraphMetricsID(*id)
+		_c = _c.SetBuildGraphMetricsID(*id)
 	}
-	return mc
+	return _c
 }
 
 // SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
-func (mc *MetricsCreate) SetBuildGraphMetrics(b *BuildGraphMetrics) *MetricsCreate {
-	return mc.SetBuildGraphMetricsID(b.ID)
+func (_c *MetricsCreate) SetBuildGraphMetrics(v *BuildGraphMetrics) *MetricsCreate {
+	return _c.SetBuildGraphMetricsID(v.ID)
 }
 
 // Mutation returns the MetricsMutation object of the builder.
-func (mc *MetricsCreate) Mutation() *MetricsMutation {
-	return mc.mutation
+func (_c *MetricsCreate) Mutation() *MetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the Metrics in the database.
-func (mc *MetricsCreate) Save(ctx context.Context) (*Metrics, error) {
-	return withHooks(ctx, mc.sqlSave, mc.mutation, mc.hooks)
+func (_c *MetricsCreate) Save(ctx context.Context) (*Metrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (mc *MetricsCreate) SaveX(ctx context.Context) *Metrics {
-	v, err := mc.Save(ctx)
+func (_c *MetricsCreate) SaveX(ctx context.Context) *Metrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -207,29 +207,29 @@ func (mc *MetricsCreate) SaveX(ctx context.Context) *Metrics {
 }
 
 // Exec executes the query.
-func (mc *MetricsCreate) Exec(ctx context.Context) error {
-	_, err := mc.Save(ctx)
+func (_c *MetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mc *MetricsCreate) ExecX(ctx context.Context) {
-	if err := mc.Exec(ctx); err != nil {
+func (_c *MetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (mc *MetricsCreate) check() error {
+func (_c *MetricsCreate) check() error {
 	return nil
 }
 
-func (mc *MetricsCreate) sqlSave(ctx context.Context) (*Metrics, error) {
-	if err := mc.check(); err != nil {
+func (_c *MetricsCreate) sqlSave(ctx context.Context) (*Metrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := mc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, mc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -239,22 +239,22 @@ func (mc *MetricsCreate) sqlSave(ctx context.Context) (*Metrics, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	mc.mutation.id = &_node.ID
-	mc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
+func (_c *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Metrics{config: mc.config}
+		_node = &Metrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(metrics.Table, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = mc.conflict
-	if id, ok := mc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if nodes := mc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -271,7 +271,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		_node.bazel_invocation_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -287,7 +287,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -303,7 +303,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.TargetMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TargetMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -319,7 +319,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.TimingMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TimingMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -335,7 +335,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -351,7 +351,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -367,7 +367,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mc.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -396,10 +396,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-func (mc *MetricsCreate) OnConflict(opts ...sql.ConflictOption) *MetricsUpsertOne {
-	mc.conflict = opts
+func (_c *MetricsCreate) OnConflict(opts ...sql.ConflictOption) *MetricsUpsertOne {
+	_c.conflict = opts
 	return &MetricsUpsertOne{
-		create: mc,
+		create: _c,
 	}
 }
 
@@ -409,10 +409,10 @@ func (mc *MetricsCreate) OnConflict(opts ...sql.ConflictOption) *MetricsUpsertOn
 //	client.Metrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (mc *MetricsCreate) OnConflictColumns(columns ...string) *MetricsUpsertOne {
-	mc.conflict = append(mc.conflict, sql.ConflictColumns(columns...))
+func (_c *MetricsCreate) OnConflictColumns(columns ...string) *MetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &MetricsUpsertOne{
-		create: mc,
+		create: _c,
 	}
 }
 
@@ -519,16 +519,16 @@ type MetricsCreateBulk struct {
 }
 
 // Save creates the Metrics entities in the database.
-func (mcb *MetricsCreateBulk) Save(ctx context.Context) ([]*Metrics, error) {
-	if mcb.err != nil {
-		return nil, mcb.err
+func (_c *MetricsCreateBulk) Save(ctx context.Context) ([]*Metrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(mcb.builders))
-	nodes := make([]*Metrics, len(mcb.builders))
-	mutators := make([]Mutator, len(mcb.builders))
-	for i := range mcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Metrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := mcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*MetricsMutation)
 				if !ok {
@@ -541,12 +541,12 @@ func (mcb *MetricsCreateBulk) Save(ctx context.Context) ([]*Metrics, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, mcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = mcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, mcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -570,7 +570,7 @@ func (mcb *MetricsCreateBulk) Save(ctx context.Context) ([]*Metrics, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, mcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -578,8 +578,8 @@ func (mcb *MetricsCreateBulk) Save(ctx context.Context) ([]*Metrics, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mcb *MetricsCreateBulk) SaveX(ctx context.Context) []*Metrics {
-	v, err := mcb.Save(ctx)
+func (_c *MetricsCreateBulk) SaveX(ctx context.Context) []*Metrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -587,14 +587,14 @@ func (mcb *MetricsCreateBulk) SaveX(ctx context.Context) []*Metrics {
 }
 
 // Exec executes the query.
-func (mcb *MetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := mcb.Save(ctx)
+func (_c *MetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mcb *MetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := mcb.Exec(ctx); err != nil {
+func (_c *MetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -609,10 +609,10 @@ func (mcb *MetricsCreateBulk) ExecX(ctx context.Context) {
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-func (mcb *MetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *MetricsUpsertBulk {
-	mcb.conflict = opts
+func (_c *MetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *MetricsUpsertBulk {
+	_c.conflict = opts
 	return &MetricsUpsertBulk{
-		create: mcb,
+		create: _c,
 	}
 }
 
@@ -622,10 +622,10 @@ func (mcb *MetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *MetricsUps
 //	client.Metrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (mcb *MetricsCreateBulk) OnConflictColumns(columns ...string) *MetricsUpsertBulk {
-	mcb.conflict = append(mcb.conflict, sql.ConflictColumns(columns...))
+func (_c *MetricsCreateBulk) OnConflictColumns(columns ...string) *MetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &MetricsUpsertBulk{
-		create: mcb,
+		create: _c,
 	}
 }
 

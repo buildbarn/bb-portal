@@ -25,240 +25,240 @@ type ActionCreate struct {
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (ac *ActionCreate) SetBazelInvocationID(i int64) *ActionCreate {
-	ac.mutation.SetBazelInvocationID(i)
-	return ac
+func (_c *ActionCreate) SetBazelInvocationID(v int64) *ActionCreate {
+	_c.mutation.SetBazelInvocationID(v)
+	return _c
 }
 
 // SetConfigurationID sets the "configuration_id" field.
-func (ac *ActionCreate) SetConfigurationID(i int64) *ActionCreate {
-	ac.mutation.SetConfigurationID(i)
-	return ac
+func (_c *ActionCreate) SetConfigurationID(v int64) *ActionCreate {
+	_c.mutation.SetConfigurationID(v)
+	return _c
 }
 
 // SetLabel sets the "label" field.
-func (ac *ActionCreate) SetLabel(s string) *ActionCreate {
-	ac.mutation.SetLabel(s)
-	return ac
+func (_c *ActionCreate) SetLabel(v string) *ActionCreate {
+	_c.mutation.SetLabel(v)
+	return _c
 }
 
 // SetType sets the "type" field.
-func (ac *ActionCreate) SetType(s string) *ActionCreate {
-	ac.mutation.SetType(s)
-	return ac
+func (_c *ActionCreate) SetType(v string) *ActionCreate {
+	_c.mutation.SetType(v)
+	return _c
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableType(s *string) *ActionCreate {
-	if s != nil {
-		ac.SetType(*s)
+func (_c *ActionCreate) SetNillableType(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetType(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetSuccess sets the "success" field.
-func (ac *ActionCreate) SetSuccess(b bool) *ActionCreate {
-	ac.mutation.SetSuccess(b)
-	return ac
+func (_c *ActionCreate) SetSuccess(v bool) *ActionCreate {
+	_c.mutation.SetSuccess(v)
+	return _c
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableSuccess(b *bool) *ActionCreate {
-	if b != nil {
-		ac.SetSuccess(*b)
+func (_c *ActionCreate) SetNillableSuccess(v *bool) *ActionCreate {
+	if v != nil {
+		_c.SetSuccess(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetExitCode sets the "exit_code" field.
-func (ac *ActionCreate) SetExitCode(i int32) *ActionCreate {
-	ac.mutation.SetExitCode(i)
-	return ac
+func (_c *ActionCreate) SetExitCode(v int32) *ActionCreate {
+	_c.mutation.SetExitCode(v)
+	return _c
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableExitCode(i *int32) *ActionCreate {
-	if i != nil {
-		ac.SetExitCode(*i)
+func (_c *ActionCreate) SetNillableExitCode(v *int32) *ActionCreate {
+	if v != nil {
+		_c.SetExitCode(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetCommandLine sets the "command_line" field.
-func (ac *ActionCreate) SetCommandLine(s []string) *ActionCreate {
-	ac.mutation.SetCommandLine(s)
-	return ac
+func (_c *ActionCreate) SetCommandLine(v []string) *ActionCreate {
+	_c.mutation.SetCommandLine(v)
+	return _c
 }
 
 // SetStartTime sets the "start_time" field.
-func (ac *ActionCreate) SetStartTime(t time.Time) *ActionCreate {
-	ac.mutation.SetStartTime(t)
-	return ac
+func (_c *ActionCreate) SetStartTime(v time.Time) *ActionCreate {
+	_c.mutation.SetStartTime(v)
+	return _c
 }
 
 // SetNillableStartTime sets the "start_time" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableStartTime(t *time.Time) *ActionCreate {
-	if t != nil {
-		ac.SetStartTime(*t)
+func (_c *ActionCreate) SetNillableStartTime(v *time.Time) *ActionCreate {
+	if v != nil {
+		_c.SetStartTime(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetEndTime sets the "end_time" field.
-func (ac *ActionCreate) SetEndTime(t time.Time) *ActionCreate {
-	ac.mutation.SetEndTime(t)
-	return ac
+func (_c *ActionCreate) SetEndTime(v time.Time) *ActionCreate {
+	_c.mutation.SetEndTime(v)
+	return _c
 }
 
 // SetNillableEndTime sets the "end_time" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableEndTime(t *time.Time) *ActionCreate {
-	if t != nil {
-		ac.SetEndTime(*t)
+func (_c *ActionCreate) SetNillableEndTime(v *time.Time) *ActionCreate {
+	if v != nil {
+		_c.SetEndTime(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetFailureCode sets the "failure_code" field.
-func (ac *ActionCreate) SetFailureCode(s string) *ActionCreate {
-	ac.mutation.SetFailureCode(s)
-	return ac
+func (_c *ActionCreate) SetFailureCode(v string) *ActionCreate {
+	_c.mutation.SetFailureCode(v)
+	return _c
 }
 
 // SetNillableFailureCode sets the "failure_code" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableFailureCode(s *string) *ActionCreate {
-	if s != nil {
-		ac.SetFailureCode(*s)
+func (_c *ActionCreate) SetNillableFailureCode(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetFailureCode(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (ac *ActionCreate) SetFailureMessage(s string) *ActionCreate {
-	ac.mutation.SetFailureMessage(s)
-	return ac
+func (_c *ActionCreate) SetFailureMessage(v string) *ActionCreate {
+	_c.mutation.SetFailureMessage(v)
+	return _c
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableFailureMessage(s *string) *ActionCreate {
-	if s != nil {
-		ac.SetFailureMessage(*s)
+func (_c *ActionCreate) SetNillableFailureMessage(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetFailureMessage(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStdoutHash sets the "stdout_hash" field.
-func (ac *ActionCreate) SetStdoutHash(s string) *ActionCreate {
-	ac.mutation.SetStdoutHash(s)
-	return ac
+func (_c *ActionCreate) SetStdoutHash(v string) *ActionCreate {
+	_c.mutation.SetStdoutHash(v)
+	return _c
 }
 
 // SetNillableStdoutHash sets the "stdout_hash" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableStdoutHash(s *string) *ActionCreate {
-	if s != nil {
-		ac.SetStdoutHash(*s)
+func (_c *ActionCreate) SetNillableStdoutHash(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetStdoutHash(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (ac *ActionCreate) SetStdoutSizeBytes(i int64) *ActionCreate {
-	ac.mutation.SetStdoutSizeBytes(i)
-	return ac
+func (_c *ActionCreate) SetStdoutSizeBytes(v int64) *ActionCreate {
+	_c.mutation.SetStdoutSizeBytes(v)
+	return _c
 }
 
 // SetNillableStdoutSizeBytes sets the "stdout_size_bytes" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableStdoutSizeBytes(i *int64) *ActionCreate {
-	if i != nil {
-		ac.SetStdoutSizeBytes(*i)
+func (_c *ActionCreate) SetNillableStdoutSizeBytes(v *int64) *ActionCreate {
+	if v != nil {
+		_c.SetStdoutSizeBytes(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (ac *ActionCreate) SetStdoutHashFunction(s string) *ActionCreate {
-	ac.mutation.SetStdoutHashFunction(s)
-	return ac
+func (_c *ActionCreate) SetStdoutHashFunction(v string) *ActionCreate {
+	_c.mutation.SetStdoutHashFunction(v)
+	return _c
 }
 
 // SetNillableStdoutHashFunction sets the "stdout_hash_function" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableStdoutHashFunction(s *string) *ActionCreate {
-	if s != nil {
-		ac.SetStdoutHashFunction(*s)
+func (_c *ActionCreate) SetNillableStdoutHashFunction(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetStdoutHashFunction(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStderrHash sets the "stderr_hash" field.
-func (ac *ActionCreate) SetStderrHash(s string) *ActionCreate {
-	ac.mutation.SetStderrHash(s)
-	return ac
+func (_c *ActionCreate) SetStderrHash(v string) *ActionCreate {
+	_c.mutation.SetStderrHash(v)
+	return _c
 }
 
 // SetNillableStderrHash sets the "stderr_hash" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableStderrHash(s *string) *ActionCreate {
-	if s != nil {
-		ac.SetStderrHash(*s)
+func (_c *ActionCreate) SetNillableStderrHash(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetStderrHash(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (ac *ActionCreate) SetStderrSizeBytes(i int64) *ActionCreate {
-	ac.mutation.SetStderrSizeBytes(i)
-	return ac
+func (_c *ActionCreate) SetStderrSizeBytes(v int64) *ActionCreate {
+	_c.mutation.SetStderrSizeBytes(v)
+	return _c
 }
 
 // SetNillableStderrSizeBytes sets the "stderr_size_bytes" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableStderrSizeBytes(i *int64) *ActionCreate {
-	if i != nil {
-		ac.SetStderrSizeBytes(*i)
+func (_c *ActionCreate) SetNillableStderrSizeBytes(v *int64) *ActionCreate {
+	if v != nil {
+		_c.SetStderrSizeBytes(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStderrHashFunction sets the "stderr_hash_function" field.
-func (ac *ActionCreate) SetStderrHashFunction(s string) *ActionCreate {
-	ac.mutation.SetStderrHashFunction(s)
-	return ac
+func (_c *ActionCreate) SetStderrHashFunction(v string) *ActionCreate {
+	_c.mutation.SetStderrHashFunction(v)
+	return _c
 }
 
 // SetNillableStderrHashFunction sets the "stderr_hash_function" field if the given value is not nil.
-func (ac *ActionCreate) SetNillableStderrHashFunction(s *string) *ActionCreate {
-	if s != nil {
-		ac.SetStderrHashFunction(*s)
+func (_c *ActionCreate) SetNillableStderrHashFunction(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetStderrHashFunction(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ac *ActionCreate) SetID(i int64) *ActionCreate {
-	ac.mutation.SetID(i)
-	return ac
+func (_c *ActionCreate) SetID(v int64) *ActionCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (ac *ActionCreate) SetBazelInvocation(b *BazelInvocation) *ActionCreate {
-	return ac.SetBazelInvocationID(b.ID)
+func (_c *ActionCreate) SetBazelInvocation(v *BazelInvocation) *ActionCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // SetConfiguration sets the "configuration" edge to the Configuration entity.
-func (ac *ActionCreate) SetConfiguration(c *Configuration) *ActionCreate {
-	return ac.SetConfigurationID(c.ID)
+func (_c *ActionCreate) SetConfiguration(v *Configuration) *ActionCreate {
+	return _c.SetConfigurationID(v.ID)
 }
 
 // Mutation returns the ActionMutation object of the builder.
-func (ac *ActionCreate) Mutation() *ActionMutation {
-	return ac.mutation
+func (_c *ActionCreate) Mutation() *ActionMutation {
+	return _c.mutation
 }
 
 // Save creates the Action in the database.
-func (ac *ActionCreate) Save(ctx context.Context) (*Action, error) {
-	return withHooks(ctx, ac.sqlSave, ac.mutation, ac.hooks)
+func (_c *ActionCreate) Save(ctx context.Context) (*Action, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ac *ActionCreate) SaveX(ctx context.Context) *Action {
-	v, err := ac.Save(ctx)
+func (_c *ActionCreate) SaveX(ctx context.Context) *Action {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -266,44 +266,44 @@ func (ac *ActionCreate) SaveX(ctx context.Context) *Action {
 }
 
 // Exec executes the query.
-func (ac *ActionCreate) Exec(ctx context.Context) error {
-	_, err := ac.Save(ctx)
+func (_c *ActionCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ac *ActionCreate) ExecX(ctx context.Context) {
-	if err := ac.Exec(ctx); err != nil {
+func (_c *ActionCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ac *ActionCreate) check() error {
-	if _, ok := ac.mutation.BazelInvocationID(); !ok {
+func (_c *ActionCreate) check() error {
+	if _, ok := _c.mutation.BazelInvocationID(); !ok {
 		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "Action.bazel_invocation_id"`)}
 	}
-	if _, ok := ac.mutation.ConfigurationID(); !ok {
+	if _, ok := _c.mutation.ConfigurationID(); !ok {
 		return &ValidationError{Name: "configuration_id", err: errors.New(`ent: missing required field "Action.configuration_id"`)}
 	}
-	if _, ok := ac.mutation.Label(); !ok {
+	if _, ok := _c.mutation.Label(); !ok {
 		return &ValidationError{Name: "label", err: errors.New(`ent: missing required field "Action.label"`)}
 	}
-	if len(ac.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "Action.bazel_invocation"`)}
 	}
-	if len(ac.mutation.ConfigurationIDs()) == 0 {
+	if len(_c.mutation.ConfigurationIDs()) == 0 {
 		return &ValidationError{Name: "configuration", err: errors.New(`ent: missing required edge "Action.configuration"`)}
 	}
 	return nil
 }
 
-func (ac *ActionCreate) sqlSave(ctx context.Context) (*Action, error) {
-	if err := ac.check(); err != nil {
+func (_c *ActionCreate) sqlSave(ctx context.Context) (*Action, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ac.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ac.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -313,82 +313,82 @@ func (ac *ActionCreate) sqlSave(ctx context.Context) (*Action, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	ac.mutation.id = &_node.ID
-	ac.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ac *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
+func (_c *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Action{config: ac.config}
+		_node = &Action{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(action.Table, sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ac.conflict
-	if id, ok := ac.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ac.mutation.Label(); ok {
+	if value, ok := _c.mutation.Label(); ok {
 		_spec.SetField(action.FieldLabel, field.TypeString, value)
 		_node.Label = value
 	}
-	if value, ok := ac.mutation.GetType(); ok {
+	if value, ok := _c.mutation.GetType(); ok {
 		_spec.SetField(action.FieldType, field.TypeString, value)
 		_node.Type = value
 	}
-	if value, ok := ac.mutation.Success(); ok {
+	if value, ok := _c.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
 		_node.Success = value
 	}
-	if value, ok := ac.mutation.ExitCode(); ok {
+	if value, ok := _c.mutation.ExitCode(); ok {
 		_spec.SetField(action.FieldExitCode, field.TypeInt32, value)
 		_node.ExitCode = value
 	}
-	if value, ok := ac.mutation.CommandLine(); ok {
+	if value, ok := _c.mutation.CommandLine(); ok {
 		_spec.SetField(action.FieldCommandLine, field.TypeJSON, value)
 		_node.CommandLine = value
 	}
-	if value, ok := ac.mutation.StartTime(); ok {
+	if value, ok := _c.mutation.StartTime(); ok {
 		_spec.SetField(action.FieldStartTime, field.TypeTime, value)
 		_node.StartTime = value
 	}
-	if value, ok := ac.mutation.EndTime(); ok {
+	if value, ok := _c.mutation.EndTime(); ok {
 		_spec.SetField(action.FieldEndTime, field.TypeTime, value)
 		_node.EndTime = value
 	}
-	if value, ok := ac.mutation.FailureCode(); ok {
+	if value, ok := _c.mutation.FailureCode(); ok {
 		_spec.SetField(action.FieldFailureCode, field.TypeString, value)
 		_node.FailureCode = value
 	}
-	if value, ok := ac.mutation.FailureMessage(); ok {
+	if value, ok := _c.mutation.FailureMessage(); ok {
 		_spec.SetField(action.FieldFailureMessage, field.TypeString, value)
 		_node.FailureMessage = value
 	}
-	if value, ok := ac.mutation.StdoutHash(); ok {
+	if value, ok := _c.mutation.StdoutHash(); ok {
 		_spec.SetField(action.FieldStdoutHash, field.TypeString, value)
 		_node.StdoutHash = value
 	}
-	if value, ok := ac.mutation.StdoutSizeBytes(); ok {
+	if value, ok := _c.mutation.StdoutSizeBytes(); ok {
 		_spec.SetField(action.FieldStdoutSizeBytes, field.TypeInt64, value)
 		_node.StdoutSizeBytes = value
 	}
-	if value, ok := ac.mutation.StdoutHashFunction(); ok {
+	if value, ok := _c.mutation.StdoutHashFunction(); ok {
 		_spec.SetField(action.FieldStdoutHashFunction, field.TypeString, value)
 		_node.StdoutHashFunction = value
 	}
-	if value, ok := ac.mutation.StderrHash(); ok {
+	if value, ok := _c.mutation.StderrHash(); ok {
 		_spec.SetField(action.FieldStderrHash, field.TypeString, value)
 		_node.StderrHash = value
 	}
-	if value, ok := ac.mutation.StderrSizeBytes(); ok {
+	if value, ok := _c.mutation.StderrSizeBytes(); ok {
 		_spec.SetField(action.FieldStderrSizeBytes, field.TypeInt64, value)
 		_node.StderrSizeBytes = value
 	}
-	if value, ok := ac.mutation.StderrHashFunction(); ok {
+	if value, ok := _c.mutation.StderrHashFunction(); ok {
 		_spec.SetField(action.FieldStderrHashFunction, field.TypeString, value)
 		_node.StderrHashFunction = value
 	}
-	if nodes := ac.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -405,7 +405,7 @@ func (ac *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.ConfigurationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ConfigurationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -441,10 +441,10 @@ func (ac *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 //			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (ac *ActionCreate) OnConflict(opts ...sql.ConflictOption) *ActionUpsertOne {
-	ac.conflict = opts
+func (_c *ActionCreate) OnConflict(opts ...sql.ConflictOption) *ActionUpsertOne {
+	_c.conflict = opts
 	return &ActionUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -454,10 +454,10 @@ func (ac *ActionCreate) OnConflict(opts ...sql.ConflictOption) *ActionUpsertOne 
 //	client.Action.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ac *ActionCreate) OnConflictColumns(columns ...string) *ActionUpsertOne {
-	ac.conflict = append(ac.conflict, sql.ConflictColumns(columns...))
+func (_c *ActionCreate) OnConflictColumns(columns ...string) *ActionUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ActionUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -1181,16 +1181,16 @@ type ActionCreateBulk struct {
 }
 
 // Save creates the Action entities in the database.
-func (acb *ActionCreateBulk) Save(ctx context.Context) ([]*Action, error) {
-	if acb.err != nil {
-		return nil, acb.err
+func (_c *ActionCreateBulk) Save(ctx context.Context) ([]*Action, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(acb.builders))
-	nodes := make([]*Action, len(acb.builders))
-	mutators := make([]Mutator, len(acb.builders))
-	for i := range acb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Action, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := acb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ActionMutation)
 				if !ok {
@@ -1203,12 +1203,12 @@ func (acb *ActionCreateBulk) Save(ctx context.Context) ([]*Action, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, acb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = acb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, acb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1232,7 +1232,7 @@ func (acb *ActionCreateBulk) Save(ctx context.Context) ([]*Action, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, acb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1240,8 +1240,8 @@ func (acb *ActionCreateBulk) Save(ctx context.Context) ([]*Action, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acb *ActionCreateBulk) SaveX(ctx context.Context) []*Action {
-	v, err := acb.Save(ctx)
+func (_c *ActionCreateBulk) SaveX(ctx context.Context) []*Action {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1249,14 +1249,14 @@ func (acb *ActionCreateBulk) SaveX(ctx context.Context) []*Action {
 }
 
 // Exec executes the query.
-func (acb *ActionCreateBulk) Exec(ctx context.Context) error {
-	_, err := acb.Save(ctx)
+func (_c *ActionCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acb *ActionCreateBulk) ExecX(ctx context.Context) {
-	if err := acb.Exec(ctx); err != nil {
+func (_c *ActionCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1276,10 +1276,10 @@ func (acb *ActionCreateBulk) ExecX(ctx context.Context) {
 //			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (acb *ActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionUpsertBulk {
-	acb.conflict = opts
+func (_c *ActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionUpsertBulk {
+	_c.conflict = opts
 	return &ActionUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 
@@ -1289,10 +1289,10 @@ func (acb *ActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionUpser
 //	client.Action.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (acb *ActionCreateBulk) OnConflictColumns(columns ...string) *ActionUpsertBulk {
-	acb.conflict = append(acb.conflict, sql.ConflictColumns(columns...))
+func (_c *ActionCreateBulk) OnConflictColumns(columns ...string) *ActionUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ActionUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 

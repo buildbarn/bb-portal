@@ -33,44 +33,44 @@ type RunnerCountQuery struct {
 }
 
 // Where adds a new predicate for the RunnerCountQuery builder.
-func (rcq *RunnerCountQuery) Where(ps ...predicate.RunnerCount) *RunnerCountQuery {
-	rcq.predicates = append(rcq.predicates, ps...)
-	return rcq
+func (_q *RunnerCountQuery) Where(ps ...predicate.RunnerCount) *RunnerCountQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (rcq *RunnerCountQuery) Limit(limit int) *RunnerCountQuery {
-	rcq.ctx.Limit = &limit
-	return rcq
+func (_q *RunnerCountQuery) Limit(limit int) *RunnerCountQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (rcq *RunnerCountQuery) Offset(offset int) *RunnerCountQuery {
-	rcq.ctx.Offset = &offset
-	return rcq
+func (_q *RunnerCountQuery) Offset(offset int) *RunnerCountQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (rcq *RunnerCountQuery) Unique(unique bool) *RunnerCountQuery {
-	rcq.ctx.Unique = &unique
-	return rcq
+func (_q *RunnerCountQuery) Unique(unique bool) *RunnerCountQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (rcq *RunnerCountQuery) Order(o ...runnercount.OrderOption) *RunnerCountQuery {
-	rcq.order = append(rcq.order, o...)
-	return rcq
+func (_q *RunnerCountQuery) Order(o ...runnercount.OrderOption) *RunnerCountQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryActionSummary chains the current query on the "action_summary" edge.
-func (rcq *RunnerCountQuery) QueryActionSummary() *ActionSummaryQuery {
-	query := (&ActionSummaryClient{config: rcq.config}).Query()
+func (_q *RunnerCountQuery) QueryActionSummary() *ActionSummaryQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := rcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := rcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (rcq *RunnerCountQuery) QueryActionSummary() *ActionSummaryQuery {
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, runnercount.ActionSummaryTable, runnercount.ActionSummaryColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(rcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (rcq *RunnerCountQuery) QueryActionSummary() *ActionSummaryQuery {
 
 // First returns the first RunnerCount entity from the query.
 // Returns a *NotFoundError when no RunnerCount was found.
-func (rcq *RunnerCountQuery) First(ctx context.Context) (*RunnerCount, error) {
-	nodes, err := rcq.Limit(1).All(setContextOp(ctx, rcq.ctx, ent.OpQueryFirst))
+func (_q *RunnerCountQuery) First(ctx context.Context) (*RunnerCount, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (rcq *RunnerCountQuery) First(ctx context.Context) (*RunnerCount, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (rcq *RunnerCountQuery) FirstX(ctx context.Context) *RunnerCount {
-	node, err := rcq.First(ctx)
+func (_q *RunnerCountQuery) FirstX(ctx context.Context) *RunnerCount {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (rcq *RunnerCountQuery) FirstX(ctx context.Context) *RunnerCount {
 
 // FirstID returns the first RunnerCount ID from the query.
 // Returns a *NotFoundError when no RunnerCount ID was found.
-func (rcq *RunnerCountQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *RunnerCountQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = rcq.Limit(1).IDs(setContextOp(ctx, rcq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (rcq *RunnerCountQuery) FirstID(ctx context.Context) (id int64, err error) 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (rcq *RunnerCountQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := rcq.FirstID(ctx)
+func (_q *RunnerCountQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (rcq *RunnerCountQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single RunnerCount entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one RunnerCount entity is found.
 // Returns a *NotFoundError when no RunnerCount entities are found.
-func (rcq *RunnerCountQuery) Only(ctx context.Context) (*RunnerCount, error) {
-	nodes, err := rcq.Limit(2).All(setContextOp(ctx, rcq.ctx, ent.OpQueryOnly))
+func (_q *RunnerCountQuery) Only(ctx context.Context) (*RunnerCount, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (rcq *RunnerCountQuery) Only(ctx context.Context) (*RunnerCount, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (rcq *RunnerCountQuery) OnlyX(ctx context.Context) *RunnerCount {
-	node, err := rcq.Only(ctx)
+func (_q *RunnerCountQuery) OnlyX(ctx context.Context) *RunnerCount {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (rcq *RunnerCountQuery) OnlyX(ctx context.Context) *RunnerCount {
 // OnlyID is like Only, but returns the only RunnerCount ID in the query.
 // Returns a *NotSingularError when more than one RunnerCount ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (rcq *RunnerCountQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *RunnerCountQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = rcq.Limit(2).IDs(setContextOp(ctx, rcq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (rcq *RunnerCountQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (rcq *RunnerCountQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := rcq.OnlyID(ctx)
+func (_q *RunnerCountQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (rcq *RunnerCountQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of RunnerCounts.
-func (rcq *RunnerCountQuery) All(ctx context.Context) ([]*RunnerCount, error) {
-	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryAll)
-	if err := rcq.prepareQuery(ctx); err != nil {
+func (_q *RunnerCountQuery) All(ctx context.Context) ([]*RunnerCount, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*RunnerCount, *RunnerCountQuery]()
-	return withInterceptors[[]*RunnerCount](ctx, rcq, qr, rcq.inters)
+	return withInterceptors[[]*RunnerCount](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (rcq *RunnerCountQuery) AllX(ctx context.Context) []*RunnerCount {
-	nodes, err := rcq.All(ctx)
+func (_q *RunnerCountQuery) AllX(ctx context.Context) []*RunnerCount {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (rcq *RunnerCountQuery) AllX(ctx context.Context) []*RunnerCount {
 }
 
 // IDs executes the query and returns a list of RunnerCount IDs.
-func (rcq *RunnerCountQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if rcq.ctx.Unique == nil && rcq.path != nil {
-		rcq.Unique(true)
+func (_q *RunnerCountQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryIDs)
-	if err = rcq.Select(runnercount.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(runnercount.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (rcq *RunnerCountQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := rcq.IDs(ctx)
+func (_q *RunnerCountQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (rcq *RunnerCountQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (rcq *RunnerCountQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryCount)
-	if err := rcq.prepareQuery(ctx); err != nil {
+func (_q *RunnerCountQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, rcq, querierCount[*RunnerCountQuery](), rcq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*RunnerCountQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (rcq *RunnerCountQuery) CountX(ctx context.Context) int {
-	count, err := rcq.Count(ctx)
+func (_q *RunnerCountQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (rcq *RunnerCountQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (rcq *RunnerCountQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryExist)
-	switch _, err := rcq.FirstID(ctx); {
+func (_q *RunnerCountQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (rcq *RunnerCountQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (rcq *RunnerCountQuery) ExistX(ctx context.Context) bool {
-	exist, err := rcq.Exist(ctx)
+func (_q *RunnerCountQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (rcq *RunnerCountQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the RunnerCountQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (rcq *RunnerCountQuery) Clone() *RunnerCountQuery {
-	if rcq == nil {
+func (_q *RunnerCountQuery) Clone() *RunnerCountQuery {
+	if _q == nil {
 		return nil
 	}
 	return &RunnerCountQuery{
-		config:            rcq.config,
-		ctx:               rcq.ctx.Clone(),
-		order:             append([]runnercount.OrderOption{}, rcq.order...),
-		inters:            append([]Interceptor{}, rcq.inters...),
-		predicates:        append([]predicate.RunnerCount{}, rcq.predicates...),
-		withActionSummary: rcq.withActionSummary.Clone(),
+		config:            _q.config,
+		ctx:               _q.ctx.Clone(),
+		order:             append([]runnercount.OrderOption{}, _q.order...),
+		inters:            append([]Interceptor{}, _q.inters...),
+		predicates:        append([]predicate.RunnerCount{}, _q.predicates...),
+		withActionSummary: _q.withActionSummary.Clone(),
 		// clone intermediate query.
-		sql:  rcq.sql.Clone(),
-		path: rcq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithActionSummary tells the query-builder to eager-load the nodes that are connected to
 // the "action_summary" edge. The optional arguments are used to configure the query builder of the edge.
-func (rcq *RunnerCountQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *RunnerCountQuery {
-	query := (&ActionSummaryClient{config: rcq.config}).Query()
+func (_q *RunnerCountQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *RunnerCountQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	rcq.withActionSummary = query
-	return rcq
+	_q.withActionSummary = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (rcq *RunnerCountQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)
 //		GroupBy(runnercount.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (rcq *RunnerCountQuery) GroupBy(field string, fields ...string) *RunnerCountGroupBy {
-	rcq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &RunnerCountGroupBy{build: rcq}
-	grbuild.flds = &rcq.ctx.Fields
+func (_q *RunnerCountQuery) GroupBy(field string, fields ...string) *RunnerCountGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &RunnerCountGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = runnercount.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (rcq *RunnerCountQuery) GroupBy(field string, fields ...string) *RunnerCoun
 //	client.RunnerCount.Query().
 //		Select(runnercount.FieldName).
 //		Scan(ctx, &v)
-func (rcq *RunnerCountQuery) Select(fields ...string) *RunnerCountSelect {
-	rcq.ctx.Fields = append(rcq.ctx.Fields, fields...)
-	sbuild := &RunnerCountSelect{RunnerCountQuery: rcq}
+func (_q *RunnerCountQuery) Select(fields ...string) *RunnerCountSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &RunnerCountSelect{RunnerCountQuery: _q}
 	sbuild.label = runnercount.Label
-	sbuild.flds, sbuild.scan = &rcq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a RunnerCountSelect configured with the given aggregations.
-func (rcq *RunnerCountQuery) Aggregate(fns ...AggregateFunc) *RunnerCountSelect {
-	return rcq.Select().Aggregate(fns...)
+func (_q *RunnerCountQuery) Aggregate(fns ...AggregateFunc) *RunnerCountSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (rcq *RunnerCountQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range rcq.inters {
+func (_q *RunnerCountQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, rcq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range rcq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !runnercount.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if rcq.path != nil {
-		prev, err := rcq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		rcq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (rcq *RunnerCountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RunnerCount, error) {
+func (_q *RunnerCountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RunnerCount, error) {
 	var (
 		nodes       = []*RunnerCount{}
-		withFKs     = rcq.withFKs
-		_spec       = rcq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			rcq.withActionSummary != nil,
+			_q.withActionSummary != nil,
 		}
 	)
-	if rcq.withActionSummary != nil {
+	if _q.withActionSummary != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (rcq *RunnerCountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		return (*RunnerCount).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &RunnerCount{config: rcq.config}
+		node := &RunnerCount{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(rcq.modifiers) > 0 {
-		_spec.Modifiers = rcq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, rcq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := rcq.withActionSummary; query != nil {
-		if err := rcq.loadActionSummary(ctx, query, nodes, nil,
+	if query := _q.withActionSummary; query != nil {
+		if err := _q.loadActionSummary(ctx, query, nodes, nil,
 			func(n *RunnerCount, e *ActionSummary) { n.Edges.ActionSummary = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range rcq.loadTotal {
-		if err := rcq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (rcq *RunnerCountQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*RunnerCount, init func(*RunnerCount), assign func(*RunnerCount, *ActionSummary)) error {
+func (_q *RunnerCountQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*RunnerCount, init func(*RunnerCount), assign func(*RunnerCount, *ActionSummary)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*RunnerCount)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (rcq *RunnerCountQuery) loadActionSummary(ctx context.Context, query *Actio
 	return nil
 }
 
-func (rcq *RunnerCountQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := rcq.querySpec()
-	if len(rcq.modifiers) > 0 {
-		_spec.Modifiers = rcq.modifiers
+func (_q *RunnerCountQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = rcq.ctx.Fields
-	if len(rcq.ctx.Fields) > 0 {
-		_spec.Unique = rcq.ctx.Unique != nil && *rcq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, rcq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (rcq *RunnerCountQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *RunnerCountQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
-	_spec.From = rcq.sql
-	if unique := rcq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if rcq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := rcq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, runnercount.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (rcq *RunnerCountQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := rcq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := rcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := rcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := rcq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (rcq *RunnerCountQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (rcq *RunnerCountQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(rcq.driver.Dialect())
+func (_q *RunnerCountQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(runnercount.Table)
-	columns := rcq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = runnercount.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if rcq.sql != nil {
-		selector = rcq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if rcq.ctx.Unique != nil && *rcq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range rcq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range rcq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := rcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := rcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type RunnerCountGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (rcgb *RunnerCountGroupBy) Aggregate(fns ...AggregateFunc) *RunnerCountGroupBy {
-	rcgb.fns = append(rcgb.fns, fns...)
-	return rcgb
+func (_g *RunnerCountGroupBy) Aggregate(fns ...AggregateFunc) *RunnerCountGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (rcgb *RunnerCountGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rcgb.build.ctx, ent.OpQueryGroupBy)
-	if err := rcgb.build.prepareQuery(ctx); err != nil {
+func (_g *RunnerCountGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*RunnerCountQuery, *RunnerCountGroupBy](ctx, rcgb.build, rcgb, rcgb.build.inters, v)
+	return scanWithInterceptors[*RunnerCountQuery, *RunnerCountGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (rcgb *RunnerCountGroupBy) sqlScan(ctx context.Context, root *RunnerCountQuery, v any) error {
+func (_g *RunnerCountGroupBy) sqlScan(ctx context.Context, root *RunnerCountQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(rcgb.fns))
-	for _, fn := range rcgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*rcgb.flds)+len(rcgb.fns))
-		for _, f := range *rcgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*rcgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := rcgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type RunnerCountSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (rcs *RunnerCountSelect) Aggregate(fns ...AggregateFunc) *RunnerCountSelect {
-	rcs.fns = append(rcs.fns, fns...)
-	return rcs
+func (_s *RunnerCountSelect) Aggregate(fns ...AggregateFunc) *RunnerCountSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (rcs *RunnerCountSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rcs.ctx, ent.OpQuerySelect)
-	if err := rcs.prepareQuery(ctx); err != nil {
+func (_s *RunnerCountSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*RunnerCountQuery, *RunnerCountSelect](ctx, rcs.RunnerCountQuery, rcs, rcs.inters, v)
+	return scanWithInterceptors[*RunnerCountQuery, *RunnerCountSelect](ctx, _s.RunnerCountQuery, _s, _s.inters, v)
 }
 
-func (rcs *RunnerCountSelect) sqlScan(ctx context.Context, root *RunnerCountQuery, v any) error {
+func (_s *RunnerCountSelect) sqlScan(ctx context.Context, root *RunnerCountQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(rcs.fns))
-	for _, fn := range rcs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*rcs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (rcs *RunnerCountSelect) sqlScan(ctx context.Context, root *RunnerCountQuer
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := rcs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

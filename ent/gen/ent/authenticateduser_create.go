@@ -24,71 +24,71 @@ type AuthenticatedUserCreate struct {
 }
 
 // SetUserUUID sets the "user_uuid" field.
-func (auc *AuthenticatedUserCreate) SetUserUUID(u uuid.UUID) *AuthenticatedUserCreate {
-	auc.mutation.SetUserUUID(u)
-	return auc
+func (_c *AuthenticatedUserCreate) SetUserUUID(v uuid.UUID) *AuthenticatedUserCreate {
+	_c.mutation.SetUserUUID(v)
+	return _c
 }
 
 // SetExternalID sets the "external_id" field.
-func (auc *AuthenticatedUserCreate) SetExternalID(s string) *AuthenticatedUserCreate {
-	auc.mutation.SetExternalID(s)
-	return auc
+func (_c *AuthenticatedUserCreate) SetExternalID(v string) *AuthenticatedUserCreate {
+	_c.mutation.SetExternalID(v)
+	return _c
 }
 
 // SetDisplayName sets the "display_name" field.
-func (auc *AuthenticatedUserCreate) SetDisplayName(s string) *AuthenticatedUserCreate {
-	auc.mutation.SetDisplayName(s)
-	return auc
+func (_c *AuthenticatedUserCreate) SetDisplayName(v string) *AuthenticatedUserCreate {
+	_c.mutation.SetDisplayName(v)
+	return _c
 }
 
 // SetNillableDisplayName sets the "display_name" field if the given value is not nil.
-func (auc *AuthenticatedUserCreate) SetNillableDisplayName(s *string) *AuthenticatedUserCreate {
-	if s != nil {
-		auc.SetDisplayName(*s)
+func (_c *AuthenticatedUserCreate) SetNillableDisplayName(v *string) *AuthenticatedUserCreate {
+	if v != nil {
+		_c.SetDisplayName(*v)
 	}
-	return auc
+	return _c
 }
 
 // SetUserInfo sets the "user_info" field.
-func (auc *AuthenticatedUserCreate) SetUserInfo(m map[string]interface{}) *AuthenticatedUserCreate {
-	auc.mutation.SetUserInfo(m)
-	return auc
+func (_c *AuthenticatedUserCreate) SetUserInfo(v map[string]interface{}) *AuthenticatedUserCreate {
+	_c.mutation.SetUserInfo(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (auc *AuthenticatedUserCreate) SetID(i int64) *AuthenticatedUserCreate {
-	auc.mutation.SetID(i)
-	return auc
+func (_c *AuthenticatedUserCreate) SetID(v int64) *AuthenticatedUserCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by IDs.
-func (auc *AuthenticatedUserCreate) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserCreate {
-	auc.mutation.AddBazelInvocationIDs(ids...)
-	return auc
+func (_c *AuthenticatedUserCreate) AddBazelInvocationIDs(ids ...int64) *AuthenticatedUserCreate {
+	_c.mutation.AddBazelInvocationIDs(ids...)
+	return _c
 }
 
 // AddBazelInvocations adds the "bazel_invocations" edges to the BazelInvocation entity.
-func (auc *AuthenticatedUserCreate) AddBazelInvocations(b ...*BazelInvocation) *AuthenticatedUserCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_c *AuthenticatedUserCreate) AddBazelInvocations(v ...*BazelInvocation) *AuthenticatedUserCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auc.AddBazelInvocationIDs(ids...)
+	return _c.AddBazelInvocationIDs(ids...)
 }
 
 // Mutation returns the AuthenticatedUserMutation object of the builder.
-func (auc *AuthenticatedUserCreate) Mutation() *AuthenticatedUserMutation {
-	return auc.mutation
+func (_c *AuthenticatedUserCreate) Mutation() *AuthenticatedUserMutation {
+	return _c.mutation
 }
 
 // Save creates the AuthenticatedUser in the database.
-func (auc *AuthenticatedUserCreate) Save(ctx context.Context) (*AuthenticatedUser, error) {
-	return withHooks(ctx, auc.sqlSave, auc.mutation, auc.hooks)
+func (_c *AuthenticatedUserCreate) Save(ctx context.Context) (*AuthenticatedUser, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (auc *AuthenticatedUserCreate) SaveX(ctx context.Context) *AuthenticatedUser {
-	v, err := auc.Save(ctx)
+func (_c *AuthenticatedUserCreate) SaveX(ctx context.Context) *AuthenticatedUser {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -96,35 +96,35 @@ func (auc *AuthenticatedUserCreate) SaveX(ctx context.Context) *AuthenticatedUse
 }
 
 // Exec executes the query.
-func (auc *AuthenticatedUserCreate) Exec(ctx context.Context) error {
-	_, err := auc.Save(ctx)
+func (_c *AuthenticatedUserCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auc *AuthenticatedUserCreate) ExecX(ctx context.Context) {
-	if err := auc.Exec(ctx); err != nil {
+func (_c *AuthenticatedUserCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (auc *AuthenticatedUserCreate) check() error {
-	if _, ok := auc.mutation.UserUUID(); !ok {
+func (_c *AuthenticatedUserCreate) check() error {
+	if _, ok := _c.mutation.UserUUID(); !ok {
 		return &ValidationError{Name: "user_uuid", err: errors.New(`ent: missing required field "AuthenticatedUser.user_uuid"`)}
 	}
-	if _, ok := auc.mutation.ExternalID(); !ok {
+	if _, ok := _c.mutation.ExternalID(); !ok {
 		return &ValidationError{Name: "external_id", err: errors.New(`ent: missing required field "AuthenticatedUser.external_id"`)}
 	}
 	return nil
 }
 
-func (auc *AuthenticatedUserCreate) sqlSave(ctx context.Context) (*AuthenticatedUser, error) {
-	if err := auc.check(); err != nil {
+func (_c *AuthenticatedUserCreate) sqlSave(ctx context.Context) (*AuthenticatedUser, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := auc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, auc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -134,38 +134,38 @@ func (auc *AuthenticatedUserCreate) sqlSave(ctx context.Context) (*Authenticated
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	auc.mutation.id = &_node.ID
-	auc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (auc *AuthenticatedUserCreate) createSpec() (*AuthenticatedUser, *sqlgraph.CreateSpec) {
+func (_c *AuthenticatedUserCreate) createSpec() (*AuthenticatedUser, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AuthenticatedUser{config: auc.config}
+		_node = &AuthenticatedUser{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(authenticateduser.Table, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = auc.conflict
-	if id, ok := auc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := auc.mutation.UserUUID(); ok {
+	if value, ok := _c.mutation.UserUUID(); ok {
 		_spec.SetField(authenticateduser.FieldUserUUID, field.TypeUUID, value)
 		_node.UserUUID = value
 	}
-	if value, ok := auc.mutation.ExternalID(); ok {
+	if value, ok := _c.mutation.ExternalID(); ok {
 		_spec.SetField(authenticateduser.FieldExternalID, field.TypeString, value)
 		_node.ExternalID = value
 	}
-	if value, ok := auc.mutation.DisplayName(); ok {
+	if value, ok := _c.mutation.DisplayName(); ok {
 		_spec.SetField(authenticateduser.FieldDisplayName, field.TypeString, value)
 		_node.DisplayName = value
 	}
-	if value, ok := auc.mutation.UserInfo(); ok {
+	if value, ok := _c.mutation.UserInfo(); ok {
 		_spec.SetField(authenticateduser.FieldUserInfo, field.TypeJSON, value)
 		_node.UserInfo = value
 	}
-	if nodes := auc.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -200,10 +200,10 @@ func (auc *AuthenticatedUserCreate) createSpec() (*AuthenticatedUser, *sqlgraph.
 //			SetUserUUID(v+v).
 //		}).
 //		Exec(ctx)
-func (auc *AuthenticatedUserCreate) OnConflict(opts ...sql.ConflictOption) *AuthenticatedUserUpsertOne {
-	auc.conflict = opts
+func (_c *AuthenticatedUserCreate) OnConflict(opts ...sql.ConflictOption) *AuthenticatedUserUpsertOne {
+	_c.conflict = opts
 	return &AuthenticatedUserUpsertOne{
-		create: auc,
+		create: _c,
 	}
 }
 
@@ -213,10 +213,10 @@ func (auc *AuthenticatedUserCreate) OnConflict(opts ...sql.ConflictOption) *Auth
 //	client.AuthenticatedUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (auc *AuthenticatedUserCreate) OnConflictColumns(columns ...string) *AuthenticatedUserUpsertOne {
-	auc.conflict = append(auc.conflict, sql.ConflictColumns(columns...))
+func (_c *AuthenticatedUserCreate) OnConflictColumns(columns ...string) *AuthenticatedUserUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AuthenticatedUserUpsertOne{
-		create: auc,
+		create: _c,
 	}
 }
 
@@ -407,16 +407,16 @@ type AuthenticatedUserCreateBulk struct {
 }
 
 // Save creates the AuthenticatedUser entities in the database.
-func (aucb *AuthenticatedUserCreateBulk) Save(ctx context.Context) ([]*AuthenticatedUser, error) {
-	if aucb.err != nil {
-		return nil, aucb.err
+func (_c *AuthenticatedUserCreateBulk) Save(ctx context.Context) ([]*AuthenticatedUser, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(aucb.builders))
-	nodes := make([]*AuthenticatedUser, len(aucb.builders))
-	mutators := make([]Mutator, len(aucb.builders))
-	for i := range aucb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AuthenticatedUser, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := aucb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AuthenticatedUserMutation)
 				if !ok {
@@ -429,12 +429,12 @@ func (aucb *AuthenticatedUserCreateBulk) Save(ctx context.Context) ([]*Authentic
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, aucb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = aucb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, aucb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -458,7 +458,7 @@ func (aucb *AuthenticatedUserCreateBulk) Save(ctx context.Context) ([]*Authentic
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, aucb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -466,8 +466,8 @@ func (aucb *AuthenticatedUserCreateBulk) Save(ctx context.Context) ([]*Authentic
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aucb *AuthenticatedUserCreateBulk) SaveX(ctx context.Context) []*AuthenticatedUser {
-	v, err := aucb.Save(ctx)
+func (_c *AuthenticatedUserCreateBulk) SaveX(ctx context.Context) []*AuthenticatedUser {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -475,14 +475,14 @@ func (aucb *AuthenticatedUserCreateBulk) SaveX(ctx context.Context) []*Authentic
 }
 
 // Exec executes the query.
-func (aucb *AuthenticatedUserCreateBulk) Exec(ctx context.Context) error {
-	_, err := aucb.Save(ctx)
+func (_c *AuthenticatedUserCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aucb *AuthenticatedUserCreateBulk) ExecX(ctx context.Context) {
-	if err := aucb.Exec(ctx); err != nil {
+func (_c *AuthenticatedUserCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -502,10 +502,10 @@ func (aucb *AuthenticatedUserCreateBulk) ExecX(ctx context.Context) {
 //			SetUserUUID(v+v).
 //		}).
 //		Exec(ctx)
-func (aucb *AuthenticatedUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *AuthenticatedUserUpsertBulk {
-	aucb.conflict = opts
+func (_c *AuthenticatedUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *AuthenticatedUserUpsertBulk {
+	_c.conflict = opts
 	return &AuthenticatedUserUpsertBulk{
-		create: aucb,
+		create: _c,
 	}
 }
 
@@ -515,10 +515,10 @@ func (aucb *AuthenticatedUserCreateBulk) OnConflict(opts ...sql.ConflictOption) 
 //	client.AuthenticatedUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (aucb *AuthenticatedUserCreateBulk) OnConflictColumns(columns ...string) *AuthenticatedUserUpsertBulk {
-	aucb.conflict = append(aucb.conflict, sql.ConflictColumns(columns...))
+func (_c *AuthenticatedUserCreateBulk) OnConflictColumns(columns ...string) *AuthenticatedUserUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AuthenticatedUserUpsertBulk{
-		create: aucb,
+		create: _c,
 	}
 }
 

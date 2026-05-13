@@ -23,155 +23,155 @@ type ArtifactMetricsCreate struct {
 }
 
 // SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
-func (amc *ArtifactMetricsCreate) SetSourceArtifactsReadSizeInBytes(i int64) *ArtifactMetricsCreate {
-	amc.mutation.SetSourceArtifactsReadSizeInBytes(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsCreate {
+	_c.mutation.SetSourceArtifactsReadSizeInBytes(v)
+	return _c
 }
 
 // SetNillableSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableSourceArtifactsReadSizeInBytes(i *int64) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetSourceArtifactsReadSizeInBytes(*i)
+func (_c *ArtifactMetricsCreate) SetNillableSourceArtifactsReadSizeInBytes(v *int64) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetSourceArtifactsReadSizeInBytes(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
-func (amc *ArtifactMetricsCreate) SetSourceArtifactsReadCount(i int32) *ArtifactMetricsCreate {
-	amc.mutation.SetSourceArtifactsReadCount(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetSourceArtifactsReadCount(v int32) *ArtifactMetricsCreate {
+	_c.mutation.SetSourceArtifactsReadCount(v)
+	return _c
 }
 
 // SetNillableSourceArtifactsReadCount sets the "source_artifacts_read_count" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableSourceArtifactsReadCount(i *int32) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetSourceArtifactsReadCount(*i)
+func (_c *ArtifactMetricsCreate) SetNillableSourceArtifactsReadCount(v *int32) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetSourceArtifactsReadCount(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeenSizeInBytes(i int64) *ArtifactMetricsCreate {
-	amc.mutation.SetOutputArtifactsSeenSizeInBytes(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsCreate {
+	_c.mutation.SetOutputArtifactsSeenSizeInBytes(v)
+	return _c
 }
 
 // SetNillableOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenSizeInBytes(i *int64) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetOutputArtifactsSeenSizeInBytes(*i)
+func (_c *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenSizeInBytes(v *int64) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetOutputArtifactsSeenSizeInBytes(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeenCount(i int32) *ArtifactMetricsCreate {
-	amc.mutation.SetOutputArtifactsSeenCount(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetOutputArtifactsSeenCount(v int32) *ArtifactMetricsCreate {
+	_c.mutation.SetOutputArtifactsSeenCount(v)
+	return _c
 }
 
 // SetNillableOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenCount(i *int32) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetOutputArtifactsSeenCount(*i)
+func (_c *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenCount(v *int32) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetOutputArtifactsSeenCount(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheSizeInBytes(i int64) *ArtifactMetricsCreate {
-	amc.mutation.SetOutputArtifactsFromActionCacheSizeInBytes(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsCreate {
+	_c.mutation.SetOutputArtifactsFromActionCacheSizeInBytes(v)
+	return _c
 }
 
 // SetNillableOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheSizeInBytes(i *int64) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetOutputArtifactsFromActionCacheSizeInBytes(*i)
+func (_c *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheSizeInBytes(v *int64) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetOutputArtifactsFromActionCacheSizeInBytes(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheCount(i int32) *ArtifactMetricsCreate {
-	amc.mutation.SetOutputArtifactsFromActionCacheCount(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsCreate {
+	_c.mutation.SetOutputArtifactsFromActionCacheCount(v)
+	return _c
 }
 
 // SetNillableOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheCount(i *int32) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetOutputArtifactsFromActionCacheCount(*i)
+func (_c *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheCount(v *int32) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetOutputArtifactsFromActionCacheCount(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
-func (amc *ArtifactMetricsCreate) SetTopLevelArtifactsSizeInBytes(i int64) *ArtifactMetricsCreate {
-	amc.mutation.SetTopLevelArtifactsSizeInBytes(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsCreate {
+	_c.mutation.SetTopLevelArtifactsSizeInBytes(v)
+	return _c
 }
 
 // SetNillableTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableTopLevelArtifactsSizeInBytes(i *int64) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetTopLevelArtifactsSizeInBytes(*i)
+func (_c *ArtifactMetricsCreate) SetNillableTopLevelArtifactsSizeInBytes(v *int64) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetTopLevelArtifactsSizeInBytes(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
-func (amc *ArtifactMetricsCreate) SetTopLevelArtifactsCount(i int32) *ArtifactMetricsCreate {
-	amc.mutation.SetTopLevelArtifactsCount(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetTopLevelArtifactsCount(v int32) *ArtifactMetricsCreate {
+	_c.mutation.SetTopLevelArtifactsCount(v)
+	return _c
 }
 
 // SetNillableTopLevelArtifactsCount sets the "top_level_artifacts_count" field if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableTopLevelArtifactsCount(i *int32) *ArtifactMetricsCreate {
-	if i != nil {
-		amc.SetTopLevelArtifactsCount(*i)
+func (_c *ArtifactMetricsCreate) SetNillableTopLevelArtifactsCount(v *int32) *ArtifactMetricsCreate {
+	if v != nil {
+		_c.SetTopLevelArtifactsCount(*v)
 	}
-	return amc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (amc *ArtifactMetricsCreate) SetID(i int64) *ArtifactMetricsCreate {
-	amc.mutation.SetID(i)
-	return amc
+func (_c *ArtifactMetricsCreate) SetID(v int64) *ArtifactMetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amc *ArtifactMetricsCreate) SetMetricsID(id int64) *ArtifactMetricsCreate {
-	amc.mutation.SetMetricsID(id)
-	return amc
+func (_c *ArtifactMetricsCreate) SetMetricsID(id int64) *ArtifactMetricsCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableMetricsID(id *int64) *ArtifactMetricsCreate {
+func (_c *ArtifactMetricsCreate) SetNillableMetricsID(id *int64) *ArtifactMetricsCreate {
 	if id != nil {
-		amc = amc.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return amc
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (amc *ArtifactMetricsCreate) SetMetrics(m *Metrics) *ArtifactMetricsCreate {
-	return amc.SetMetricsID(m.ID)
+func (_c *ArtifactMetricsCreate) SetMetrics(v *Metrics) *ArtifactMetricsCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // Mutation returns the ArtifactMetricsMutation object of the builder.
-func (amc *ArtifactMetricsCreate) Mutation() *ArtifactMetricsMutation {
-	return amc.mutation
+func (_c *ArtifactMetricsCreate) Mutation() *ArtifactMetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the ArtifactMetrics in the database.
-func (amc *ArtifactMetricsCreate) Save(ctx context.Context) (*ArtifactMetrics, error) {
-	return withHooks(ctx, amc.sqlSave, amc.mutation, amc.hooks)
+func (_c *ArtifactMetricsCreate) Save(ctx context.Context) (*ArtifactMetrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (amc *ArtifactMetricsCreate) SaveX(ctx context.Context) *ArtifactMetrics {
-	v, err := amc.Save(ctx)
+func (_c *ArtifactMetricsCreate) SaveX(ctx context.Context) *ArtifactMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,29 +179,29 @@ func (amc *ArtifactMetricsCreate) SaveX(ctx context.Context) *ArtifactMetrics {
 }
 
 // Exec executes the query.
-func (amc *ArtifactMetricsCreate) Exec(ctx context.Context) error {
-	_, err := amc.Save(ctx)
+func (_c *ArtifactMetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amc *ArtifactMetricsCreate) ExecX(ctx context.Context) {
-	if err := amc.Exec(ctx); err != nil {
+func (_c *ArtifactMetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (amc *ArtifactMetricsCreate) check() error {
+func (_c *ArtifactMetricsCreate) check() error {
 	return nil
 }
 
-func (amc *ArtifactMetricsCreate) sqlSave(ctx context.Context) (*ArtifactMetrics, error) {
-	if err := amc.check(); err != nil {
+func (_c *ArtifactMetricsCreate) sqlSave(ctx context.Context) (*ArtifactMetrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := amc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, amc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -211,54 +211,54 @@ func (amc *ArtifactMetricsCreate) sqlSave(ctx context.Context) (*ArtifactMetrics
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	amc.mutation.id = &_node.ID
-	amc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.CreateSpec) {
+func (_c *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &ArtifactMetrics{config: amc.config}
+		_node = &ArtifactMetrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(artifactmetrics.Table, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = amc.conflict
-	if id, ok := amc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := amc.mutation.SourceArtifactsReadSizeInBytes(); ok {
+	if value, ok := _c.mutation.SourceArtifactsReadSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64, value)
 		_node.SourceArtifactsReadSizeInBytes = value
 	}
-	if value, ok := amc.mutation.SourceArtifactsReadCount(); ok {
+	if value, ok := _c.mutation.SourceArtifactsReadCount(); ok {
 		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32, value)
 		_node.SourceArtifactsReadCount = value
 	}
-	if value, ok := amc.mutation.OutputArtifactsSeenSizeInBytes(); ok {
+	if value, ok := _c.mutation.OutputArtifactsSeenSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64, value)
 		_node.OutputArtifactsSeenSizeInBytes = value
 	}
-	if value, ok := amc.mutation.OutputArtifactsSeenCount(); ok {
+	if value, ok := _c.mutation.OutputArtifactsSeenCount(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32, value)
 		_node.OutputArtifactsSeenCount = value
 	}
-	if value, ok := amc.mutation.OutputArtifactsFromActionCacheSizeInBytes(); ok {
+	if value, ok := _c.mutation.OutputArtifactsFromActionCacheSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64, value)
 		_node.OutputArtifactsFromActionCacheSizeInBytes = value
 	}
-	if value, ok := amc.mutation.OutputArtifactsFromActionCacheCount(); ok {
+	if value, ok := _c.mutation.OutputArtifactsFromActionCacheCount(); ok {
 		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32, value)
 		_node.OutputArtifactsFromActionCacheCount = value
 	}
-	if value, ok := amc.mutation.TopLevelArtifactsSizeInBytes(); ok {
+	if value, ok := _c.mutation.TopLevelArtifactsSizeInBytes(); ok {
 		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64, value)
 		_node.TopLevelArtifactsSizeInBytes = value
 	}
-	if value, ok := amc.mutation.TopLevelArtifactsCount(); ok {
+	if value, ok := _c.mutation.TopLevelArtifactsCount(); ok {
 		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32, value)
 		_node.TopLevelArtifactsCount = value
 	}
-	if nodes := amc.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -294,10 +294,10 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 //			SetSourceArtifactsReadSizeInBytes(v+v).
 //		}).
 //		Exec(ctx)
-func (amc *ArtifactMetricsCreate) OnConflict(opts ...sql.ConflictOption) *ArtifactMetricsUpsertOne {
-	amc.conflict = opts
+func (_c *ArtifactMetricsCreate) OnConflict(opts ...sql.ConflictOption) *ArtifactMetricsUpsertOne {
+	_c.conflict = opts
 	return &ArtifactMetricsUpsertOne{
-		create: amc,
+		create: _c,
 	}
 }
 
@@ -307,10 +307,10 @@ func (amc *ArtifactMetricsCreate) OnConflict(opts ...sql.ConflictOption) *Artifa
 //	client.ArtifactMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (amc *ArtifactMetricsCreate) OnConflictColumns(columns ...string) *ArtifactMetricsUpsertOne {
-	amc.conflict = append(amc.conflict, sql.ConflictColumns(columns...))
+func (_c *ArtifactMetricsCreate) OnConflictColumns(columns ...string) *ArtifactMetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ArtifactMetricsUpsertOne{
-		create: amc,
+		create: _c,
 	}
 }
 
@@ -833,16 +833,16 @@ type ArtifactMetricsCreateBulk struct {
 }
 
 // Save creates the ArtifactMetrics entities in the database.
-func (amcb *ArtifactMetricsCreateBulk) Save(ctx context.Context) ([]*ArtifactMetrics, error) {
-	if amcb.err != nil {
-		return nil, amcb.err
+func (_c *ArtifactMetricsCreateBulk) Save(ctx context.Context) ([]*ArtifactMetrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(amcb.builders))
-	nodes := make([]*ArtifactMetrics, len(amcb.builders))
-	mutators := make([]Mutator, len(amcb.builders))
-	for i := range amcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*ArtifactMetrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := amcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ArtifactMetricsMutation)
 				if !ok {
@@ -855,12 +855,12 @@ func (amcb *ArtifactMetricsCreateBulk) Save(ctx context.Context) ([]*ArtifactMet
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, amcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = amcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, amcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -884,7 +884,7 @@ func (amcb *ArtifactMetricsCreateBulk) Save(ctx context.Context) ([]*ArtifactMet
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, amcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -892,8 +892,8 @@ func (amcb *ArtifactMetricsCreateBulk) Save(ctx context.Context) ([]*ArtifactMet
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (amcb *ArtifactMetricsCreateBulk) SaveX(ctx context.Context) []*ArtifactMetrics {
-	v, err := amcb.Save(ctx)
+func (_c *ArtifactMetricsCreateBulk) SaveX(ctx context.Context) []*ArtifactMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -901,14 +901,14 @@ func (amcb *ArtifactMetricsCreateBulk) SaveX(ctx context.Context) []*ArtifactMet
 }
 
 // Exec executes the query.
-func (amcb *ArtifactMetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := amcb.Save(ctx)
+func (_c *ArtifactMetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (amcb *ArtifactMetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := amcb.Exec(ctx); err != nil {
+func (_c *ArtifactMetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -928,10 +928,10 @@ func (amcb *ArtifactMetricsCreateBulk) ExecX(ctx context.Context) {
 //			SetSourceArtifactsReadSizeInBytes(v+v).
 //		}).
 //		Exec(ctx)
-func (amcb *ArtifactMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *ArtifactMetricsUpsertBulk {
-	amcb.conflict = opts
+func (_c *ArtifactMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *ArtifactMetricsUpsertBulk {
+	_c.conflict = opts
 	return &ArtifactMetricsUpsertBulk{
-		create: amcb,
+		create: _c,
 	}
 }
 
@@ -941,10 +941,10 @@ func (amcb *ArtifactMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *A
 //	client.ArtifactMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (amcb *ArtifactMetricsCreateBulk) OnConflictColumns(columns ...string) *ArtifactMetricsUpsertBulk {
-	amcb.conflict = append(amcb.conflict, sql.ConflictColumns(columns...))
+func (_c *ArtifactMetricsCreateBulk) OnConflictColumns(columns ...string) *ArtifactMetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ArtifactMetricsUpsertBulk{
-		create: amcb,
+		create: _c,
 	}
 }
 

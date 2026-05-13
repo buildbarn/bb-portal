@@ -27,266 +27,266 @@ type InvocationTargetUpdate struct {
 }
 
 // Where appends a list predicates to the InvocationTargetUpdate builder.
-func (itu *InvocationTargetUpdate) Where(ps ...predicate.InvocationTarget) *InvocationTargetUpdate {
-	itu.mutation.Where(ps...)
-	return itu
+func (_u *InvocationTargetUpdate) Where(ps ...predicate.InvocationTarget) *InvocationTargetUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSuccess sets the "success" field.
-func (itu *InvocationTargetUpdate) SetSuccess(b bool) *InvocationTargetUpdate {
-	itu.mutation.SetSuccess(b)
-	return itu
+func (_u *InvocationTargetUpdate) SetSuccess(v bool) *InvocationTargetUpdate {
+	_u.mutation.SetSuccess(v)
+	return _u
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (itu *InvocationTargetUpdate) SetNillableSuccess(b *bool) *InvocationTargetUpdate {
-	if b != nil {
-		itu.SetSuccess(*b)
+func (_u *InvocationTargetUpdate) SetNillableSuccess(v *bool) *InvocationTargetUpdate {
+	if v != nil {
+		_u.SetSuccess(*v)
 	}
-	return itu
+	return _u
 }
 
 // SetTags sets the "tags" field.
-func (itu *InvocationTargetUpdate) SetTags(s []string) *InvocationTargetUpdate {
-	itu.mutation.SetTags(s)
-	return itu
+func (_u *InvocationTargetUpdate) SetTags(v []string) *InvocationTargetUpdate {
+	_u.mutation.SetTags(v)
+	return _u
 }
 
-// AppendTags appends s to the "tags" field.
-func (itu *InvocationTargetUpdate) AppendTags(s []string) *InvocationTargetUpdate {
-	itu.mutation.AppendTags(s)
-	return itu
+// AppendTags appends value to the "tags" field.
+func (_u *InvocationTargetUpdate) AppendTags(v []string) *InvocationTargetUpdate {
+	_u.mutation.AppendTags(v)
+	return _u
 }
 
 // ClearTags clears the value of the "tags" field.
-func (itu *InvocationTargetUpdate) ClearTags() *InvocationTargetUpdate {
-	itu.mutation.ClearTags()
-	return itu
+func (_u *InvocationTargetUpdate) ClearTags() *InvocationTargetUpdate {
+	_u.mutation.ClearTags()
+	return _u
 }
 
 // SetStartTimeInMs sets the "start_time_in_ms" field.
-func (itu *InvocationTargetUpdate) SetStartTimeInMs(i int64) *InvocationTargetUpdate {
-	itu.mutation.ResetStartTimeInMs()
-	itu.mutation.SetStartTimeInMs(i)
-	return itu
+func (_u *InvocationTargetUpdate) SetStartTimeInMs(v int64) *InvocationTargetUpdate {
+	_u.mutation.ResetStartTimeInMs()
+	_u.mutation.SetStartTimeInMs(v)
+	return _u
 }
 
 // SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (itu *InvocationTargetUpdate) SetNillableStartTimeInMs(i *int64) *InvocationTargetUpdate {
-	if i != nil {
-		itu.SetStartTimeInMs(*i)
+func (_u *InvocationTargetUpdate) SetNillableStartTimeInMs(v *int64) *InvocationTargetUpdate {
+	if v != nil {
+		_u.SetStartTimeInMs(*v)
 	}
-	return itu
+	return _u
 }
 
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (itu *InvocationTargetUpdate) AddStartTimeInMs(i int64) *InvocationTargetUpdate {
-	itu.mutation.AddStartTimeInMs(i)
-	return itu
+// AddStartTimeInMs adds value to the "start_time_in_ms" field.
+func (_u *InvocationTargetUpdate) AddStartTimeInMs(v int64) *InvocationTargetUpdate {
+	_u.mutation.AddStartTimeInMs(v)
+	return _u
 }
 
 // ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (itu *InvocationTargetUpdate) ClearStartTimeInMs() *InvocationTargetUpdate {
-	itu.mutation.ClearStartTimeInMs()
-	return itu
+func (_u *InvocationTargetUpdate) ClearStartTimeInMs() *InvocationTargetUpdate {
+	_u.mutation.ClearStartTimeInMs()
+	return _u
 }
 
 // SetEndTimeInMs sets the "end_time_in_ms" field.
-func (itu *InvocationTargetUpdate) SetEndTimeInMs(i int64) *InvocationTargetUpdate {
-	itu.mutation.ResetEndTimeInMs()
-	itu.mutation.SetEndTimeInMs(i)
-	return itu
+func (_u *InvocationTargetUpdate) SetEndTimeInMs(v int64) *InvocationTargetUpdate {
+	_u.mutation.ResetEndTimeInMs()
+	_u.mutation.SetEndTimeInMs(v)
+	return _u
 }
 
 // SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (itu *InvocationTargetUpdate) SetNillableEndTimeInMs(i *int64) *InvocationTargetUpdate {
-	if i != nil {
-		itu.SetEndTimeInMs(*i)
+func (_u *InvocationTargetUpdate) SetNillableEndTimeInMs(v *int64) *InvocationTargetUpdate {
+	if v != nil {
+		_u.SetEndTimeInMs(*v)
 	}
-	return itu
+	return _u
 }
 
-// AddEndTimeInMs adds i to the "end_time_in_ms" field.
-func (itu *InvocationTargetUpdate) AddEndTimeInMs(i int64) *InvocationTargetUpdate {
-	itu.mutation.AddEndTimeInMs(i)
-	return itu
+// AddEndTimeInMs adds value to the "end_time_in_ms" field.
+func (_u *InvocationTargetUpdate) AddEndTimeInMs(v int64) *InvocationTargetUpdate {
+	_u.mutation.AddEndTimeInMs(v)
+	return _u
 }
 
 // ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (itu *InvocationTargetUpdate) ClearEndTimeInMs() *InvocationTargetUpdate {
-	itu.mutation.ClearEndTimeInMs()
-	return itu
+func (_u *InvocationTargetUpdate) ClearEndTimeInMs() *InvocationTargetUpdate {
+	_u.mutation.ClearEndTimeInMs()
+	return _u
 }
 
 // SetDurationInMs sets the "duration_in_ms" field.
-func (itu *InvocationTargetUpdate) SetDurationInMs(i int64) *InvocationTargetUpdate {
-	itu.mutation.ResetDurationInMs()
-	itu.mutation.SetDurationInMs(i)
-	return itu
+func (_u *InvocationTargetUpdate) SetDurationInMs(v int64) *InvocationTargetUpdate {
+	_u.mutation.ResetDurationInMs()
+	_u.mutation.SetDurationInMs(v)
+	return _u
 }
 
 // SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (itu *InvocationTargetUpdate) SetNillableDurationInMs(i *int64) *InvocationTargetUpdate {
-	if i != nil {
-		itu.SetDurationInMs(*i)
+func (_u *InvocationTargetUpdate) SetNillableDurationInMs(v *int64) *InvocationTargetUpdate {
+	if v != nil {
+		_u.SetDurationInMs(*v)
 	}
-	return itu
+	return _u
 }
 
-// AddDurationInMs adds i to the "duration_in_ms" field.
-func (itu *InvocationTargetUpdate) AddDurationInMs(i int64) *InvocationTargetUpdate {
-	itu.mutation.AddDurationInMs(i)
-	return itu
+// AddDurationInMs adds value to the "duration_in_ms" field.
+func (_u *InvocationTargetUpdate) AddDurationInMs(v int64) *InvocationTargetUpdate {
+	_u.mutation.AddDurationInMs(v)
+	return _u
 }
 
 // ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (itu *InvocationTargetUpdate) ClearDurationInMs() *InvocationTargetUpdate {
-	itu.mutation.ClearDurationInMs()
-	return itu
+func (_u *InvocationTargetUpdate) ClearDurationInMs() *InvocationTargetUpdate {
+	_u.mutation.ClearDurationInMs()
+	return _u
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (itu *InvocationTargetUpdate) SetFailureMessage(s string) *InvocationTargetUpdate {
-	itu.mutation.SetFailureMessage(s)
-	return itu
+func (_u *InvocationTargetUpdate) SetFailureMessage(v string) *InvocationTargetUpdate {
+	_u.mutation.SetFailureMessage(v)
+	return _u
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (itu *InvocationTargetUpdate) SetNillableFailureMessage(s *string) *InvocationTargetUpdate {
-	if s != nil {
-		itu.SetFailureMessage(*s)
+func (_u *InvocationTargetUpdate) SetNillableFailureMessage(v *string) *InvocationTargetUpdate {
+	if v != nil {
+		_u.SetFailureMessage(*v)
 	}
-	return itu
+	return _u
 }
 
 // ClearFailureMessage clears the value of the "failure_message" field.
-func (itu *InvocationTargetUpdate) ClearFailureMessage() *InvocationTargetUpdate {
-	itu.mutation.ClearFailureMessage()
-	return itu
+func (_u *InvocationTargetUpdate) ClearFailureMessage() *InvocationTargetUpdate {
+	_u.mutation.ClearFailureMessage()
+	return _u
 }
 
 // SetAbortReason sets the "abort_reason" field.
-func (itu *InvocationTargetUpdate) SetAbortReason(ir invocationtarget.AbortReason) *InvocationTargetUpdate {
-	itu.mutation.SetAbortReason(ir)
-	return itu
+func (_u *InvocationTargetUpdate) SetAbortReason(v invocationtarget.AbortReason) *InvocationTargetUpdate {
+	_u.mutation.SetAbortReason(v)
+	return _u
 }
 
 // SetNillableAbortReason sets the "abort_reason" field if the given value is not nil.
-func (itu *InvocationTargetUpdate) SetNillableAbortReason(ir *invocationtarget.AbortReason) *InvocationTargetUpdate {
-	if ir != nil {
-		itu.SetAbortReason(*ir)
+func (_u *InvocationTargetUpdate) SetNillableAbortReason(v *invocationtarget.AbortReason) *InvocationTargetUpdate {
+	if v != nil {
+		_u.SetAbortReason(*v)
 	}
-	return itu
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (itu *InvocationTargetUpdate) SetBazelInvocationID(id int64) *InvocationTargetUpdate {
-	itu.mutation.SetBazelInvocationID(id)
-	return itu
+func (_u *InvocationTargetUpdate) SetBazelInvocationID(id int64) *InvocationTargetUpdate {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (itu *InvocationTargetUpdate) SetBazelInvocation(b *BazelInvocation) *InvocationTargetUpdate {
-	return itu.SetBazelInvocationID(b.ID)
+func (_u *InvocationTargetUpdate) SetBazelInvocation(v *BazelInvocation) *InvocationTargetUpdate {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // SetTargetID sets the "target" edge to the Target entity by ID.
-func (itu *InvocationTargetUpdate) SetTargetID(id int64) *InvocationTargetUpdate {
-	itu.mutation.SetTargetID(id)
-	return itu
+func (_u *InvocationTargetUpdate) SetTargetID(id int64) *InvocationTargetUpdate {
+	_u.mutation.SetTargetID(id)
+	return _u
 }
 
 // SetTarget sets the "target" edge to the Target entity.
-func (itu *InvocationTargetUpdate) SetTarget(t *Target) *InvocationTargetUpdate {
-	return itu.SetTargetID(t.ID)
+func (_u *InvocationTargetUpdate) SetTarget(v *Target) *InvocationTargetUpdate {
+	return _u.SetTargetID(v.ID)
 }
 
 // SetConfigurationID sets the "configuration" edge to the Configuration entity by ID.
-func (itu *InvocationTargetUpdate) SetConfigurationID(id int64) *InvocationTargetUpdate {
-	itu.mutation.SetConfigurationID(id)
-	return itu
+func (_u *InvocationTargetUpdate) SetConfigurationID(id int64) *InvocationTargetUpdate {
+	_u.mutation.SetConfigurationID(id)
+	return _u
 }
 
 // SetNillableConfigurationID sets the "configuration" edge to the Configuration entity by ID if the given value is not nil.
-func (itu *InvocationTargetUpdate) SetNillableConfigurationID(id *int64) *InvocationTargetUpdate {
+func (_u *InvocationTargetUpdate) SetNillableConfigurationID(id *int64) *InvocationTargetUpdate {
 	if id != nil {
-		itu = itu.SetConfigurationID(*id)
+		_u = _u.SetConfigurationID(*id)
 	}
-	return itu
+	return _u
 }
 
 // SetConfiguration sets the "configuration" edge to the Configuration entity.
-func (itu *InvocationTargetUpdate) SetConfiguration(c *Configuration) *InvocationTargetUpdate {
-	return itu.SetConfigurationID(c.ID)
+func (_u *InvocationTargetUpdate) SetConfiguration(v *Configuration) *InvocationTargetUpdate {
+	return _u.SetConfigurationID(v.ID)
 }
 
 // AddTestSummaryIDs adds the "test_summary" edge to the TestSummary entity by IDs.
-func (itu *InvocationTargetUpdate) AddTestSummaryIDs(ids ...int64) *InvocationTargetUpdate {
-	itu.mutation.AddTestSummaryIDs(ids...)
-	return itu
+func (_u *InvocationTargetUpdate) AddTestSummaryIDs(ids ...int64) *InvocationTargetUpdate {
+	_u.mutation.AddTestSummaryIDs(ids...)
+	return _u
 }
 
 // AddTestSummary adds the "test_summary" edges to the TestSummary entity.
-func (itu *InvocationTargetUpdate) AddTestSummary(t ...*TestSummary) *InvocationTargetUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InvocationTargetUpdate) AddTestSummary(v ...*TestSummary) *InvocationTargetUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return itu.AddTestSummaryIDs(ids...)
+	return _u.AddTestSummaryIDs(ids...)
 }
 
 // Mutation returns the InvocationTargetMutation object of the builder.
-func (itu *InvocationTargetUpdate) Mutation() *InvocationTargetMutation {
-	return itu.mutation
+func (_u *InvocationTargetUpdate) Mutation() *InvocationTargetMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (itu *InvocationTargetUpdate) ClearBazelInvocation() *InvocationTargetUpdate {
-	itu.mutation.ClearBazelInvocation()
-	return itu
+func (_u *InvocationTargetUpdate) ClearBazelInvocation() *InvocationTargetUpdate {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // ClearTarget clears the "target" edge to the Target entity.
-func (itu *InvocationTargetUpdate) ClearTarget() *InvocationTargetUpdate {
-	itu.mutation.ClearTarget()
-	return itu
+func (_u *InvocationTargetUpdate) ClearTarget() *InvocationTargetUpdate {
+	_u.mutation.ClearTarget()
+	return _u
 }
 
 // ClearConfiguration clears the "configuration" edge to the Configuration entity.
-func (itu *InvocationTargetUpdate) ClearConfiguration() *InvocationTargetUpdate {
-	itu.mutation.ClearConfiguration()
-	return itu
+func (_u *InvocationTargetUpdate) ClearConfiguration() *InvocationTargetUpdate {
+	_u.mutation.ClearConfiguration()
+	return _u
 }
 
 // ClearTestSummary clears all "test_summary" edges to the TestSummary entity.
-func (itu *InvocationTargetUpdate) ClearTestSummary() *InvocationTargetUpdate {
-	itu.mutation.ClearTestSummary()
-	return itu
+func (_u *InvocationTargetUpdate) ClearTestSummary() *InvocationTargetUpdate {
+	_u.mutation.ClearTestSummary()
+	return _u
 }
 
 // RemoveTestSummaryIDs removes the "test_summary" edge to TestSummary entities by IDs.
-func (itu *InvocationTargetUpdate) RemoveTestSummaryIDs(ids ...int64) *InvocationTargetUpdate {
-	itu.mutation.RemoveTestSummaryIDs(ids...)
-	return itu
+func (_u *InvocationTargetUpdate) RemoveTestSummaryIDs(ids ...int64) *InvocationTargetUpdate {
+	_u.mutation.RemoveTestSummaryIDs(ids...)
+	return _u
 }
 
 // RemoveTestSummary removes "test_summary" edges to TestSummary entities.
-func (itu *InvocationTargetUpdate) RemoveTestSummary(t ...*TestSummary) *InvocationTargetUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InvocationTargetUpdate) RemoveTestSummary(v ...*TestSummary) *InvocationTargetUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return itu.RemoveTestSummaryIDs(ids...)
+	return _u.RemoveTestSummaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (itu *InvocationTargetUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, itu.sqlSave, itu.mutation, itu.hooks)
+func (_u *InvocationTargetUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (itu *InvocationTargetUpdate) SaveX(ctx context.Context) int {
-	affected, err := itu.Save(ctx)
+func (_u *InvocationTargetUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -294,97 +294,97 @@ func (itu *InvocationTargetUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (itu *InvocationTargetUpdate) Exec(ctx context.Context) error {
-	_, err := itu.Save(ctx)
+func (_u *InvocationTargetUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (itu *InvocationTargetUpdate) ExecX(ctx context.Context) {
-	if err := itu.Exec(ctx); err != nil {
+func (_u *InvocationTargetUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (itu *InvocationTargetUpdate) check() error {
-	if v, ok := itu.mutation.AbortReason(); ok {
+func (_u *InvocationTargetUpdate) check() error {
+	if v, ok := _u.mutation.AbortReason(); ok {
 		if err := invocationtarget.AbortReasonValidator(v); err != nil {
 			return &ValidationError{Name: "abort_reason", err: fmt.Errorf(`ent: validator failed for field "InvocationTarget.abort_reason": %w`, err)}
 		}
 	}
-	if itu.mutation.BazelInvocationCleared() && len(itu.mutation.BazelInvocationIDs()) > 0 {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationTarget.bazel_invocation"`)
 	}
-	if itu.mutation.TargetCleared() && len(itu.mutation.TargetIDs()) > 0 {
+	if _u.mutation.TargetCleared() && len(_u.mutation.TargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationTarget.target"`)
 	}
 	return nil
 }
 
-func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := itu.check(); err != nil {
-		return n, err
+func (_u *InvocationTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
-	if ps := itu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := itu.mutation.Success(); ok {
+	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(invocationtarget.FieldSuccess, field.TypeBool, value)
 	}
-	if value, ok := itu.mutation.Tags(); ok {
+	if value, ok := _u.mutation.Tags(); ok {
 		_spec.SetField(invocationtarget.FieldTags, field.TypeJSON, value)
 	}
-	if value, ok := itu.mutation.AppendedTags(); ok {
+	if value, ok := _u.mutation.AppendedTags(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, invocationtarget.FieldTags, value)
 		})
 	}
-	if itu.mutation.TagsCleared() {
+	if _u.mutation.TagsCleared() {
 		_spec.ClearField(invocationtarget.FieldTags, field.TypeJSON)
 	}
-	if value, ok := itu.mutation.StartTimeInMs(); ok {
+	if value, ok := _u.mutation.StartTimeInMs(); ok {
 		_spec.SetField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := itu.mutation.AddedStartTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
 		_spec.AddField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if itu.mutation.StartTimeInMsCleared() {
+	if _u.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(invocationtarget.FieldStartTimeInMs, field.TypeInt64)
 	}
-	if value, ok := itu.mutation.EndTimeInMs(); ok {
+	if value, ok := _u.mutation.EndTimeInMs(); ok {
 		_spec.SetField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := itu.mutation.AddedEndTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedEndTimeInMs(); ok {
 		_spec.AddField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
 	}
-	if itu.mutation.EndTimeInMsCleared() {
+	if _u.mutation.EndTimeInMsCleared() {
 		_spec.ClearField(invocationtarget.FieldEndTimeInMs, field.TypeInt64)
 	}
-	if value, ok := itu.mutation.DurationInMs(); ok {
+	if value, ok := _u.mutation.DurationInMs(); ok {
 		_spec.SetField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := itu.mutation.AddedDurationInMs(); ok {
+	if value, ok := _u.mutation.AddedDurationInMs(); ok {
 		_spec.AddField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
 	}
-	if itu.mutation.DurationInMsCleared() {
+	if _u.mutation.DurationInMsCleared() {
 		_spec.ClearField(invocationtarget.FieldDurationInMs, field.TypeInt64)
 	}
-	if value, ok := itu.mutation.FailureMessage(); ok {
+	if value, ok := _u.mutation.FailureMessage(); ok {
 		_spec.SetField(invocationtarget.FieldFailureMessage, field.TypeString, value)
 	}
-	if itu.mutation.FailureMessageCleared() {
+	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(invocationtarget.FieldFailureMessage, field.TypeString)
 	}
-	if value, ok := itu.mutation.AbortReason(); ok {
+	if value, ok := _u.mutation.AbortReason(); ok {
 		_spec.SetField(invocationtarget.FieldAbortReason, field.TypeEnum, value)
 	}
-	if itu.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -397,7 +397,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := itu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -413,7 +413,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if itu.mutation.TargetCleared() {
+	if _u.mutation.TargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -426,7 +426,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := itu.mutation.TargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -442,7 +442,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if itu.mutation.ConfigurationCleared() {
+	if _u.mutation.ConfigurationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -455,7 +455,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := itu.mutation.ConfigurationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ConfigurationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -471,7 +471,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if itu.mutation.TestSummaryCleared() {
+	if _u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -484,7 +484,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := itu.mutation.RemovedTestSummaryIDs(); len(nodes) > 0 && !itu.mutation.TestSummaryCleared() {
+	if nodes := _u.mutation.RemovedTestSummaryIDs(); len(nodes) > 0 && !_u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -500,7 +500,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := itu.mutation.TestSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -516,7 +516,7 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, itu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -524,8 +524,8 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		return 0, err
 	}
-	itu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // InvocationTargetUpdateOne is the builder for updating a single InvocationTarget entity.
@@ -537,273 +537,273 @@ type InvocationTargetUpdateOne struct {
 }
 
 // SetSuccess sets the "success" field.
-func (ituo *InvocationTargetUpdateOne) SetSuccess(b bool) *InvocationTargetUpdateOne {
-	ituo.mutation.SetSuccess(b)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetSuccess(v bool) *InvocationTargetUpdateOne {
+	_u.mutation.SetSuccess(v)
+	return _u
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (ituo *InvocationTargetUpdateOne) SetNillableSuccess(b *bool) *InvocationTargetUpdateOne {
-	if b != nil {
-		ituo.SetSuccess(*b)
+func (_u *InvocationTargetUpdateOne) SetNillableSuccess(v *bool) *InvocationTargetUpdateOne {
+	if v != nil {
+		_u.SetSuccess(*v)
 	}
-	return ituo
+	return _u
 }
 
 // SetTags sets the "tags" field.
-func (ituo *InvocationTargetUpdateOne) SetTags(s []string) *InvocationTargetUpdateOne {
-	ituo.mutation.SetTags(s)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetTags(v []string) *InvocationTargetUpdateOne {
+	_u.mutation.SetTags(v)
+	return _u
 }
 
-// AppendTags appends s to the "tags" field.
-func (ituo *InvocationTargetUpdateOne) AppendTags(s []string) *InvocationTargetUpdateOne {
-	ituo.mutation.AppendTags(s)
-	return ituo
+// AppendTags appends value to the "tags" field.
+func (_u *InvocationTargetUpdateOne) AppendTags(v []string) *InvocationTargetUpdateOne {
+	_u.mutation.AppendTags(v)
+	return _u
 }
 
 // ClearTags clears the value of the "tags" field.
-func (ituo *InvocationTargetUpdateOne) ClearTags() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearTags()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearTags() *InvocationTargetUpdateOne {
+	_u.mutation.ClearTags()
+	return _u
 }
 
 // SetStartTimeInMs sets the "start_time_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) SetStartTimeInMs(i int64) *InvocationTargetUpdateOne {
-	ituo.mutation.ResetStartTimeInMs()
-	ituo.mutation.SetStartTimeInMs(i)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetStartTimeInMs(v int64) *InvocationTargetUpdateOne {
+	_u.mutation.ResetStartTimeInMs()
+	_u.mutation.SetStartTimeInMs(v)
+	return _u
 }
 
 // SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (ituo *InvocationTargetUpdateOne) SetNillableStartTimeInMs(i *int64) *InvocationTargetUpdateOne {
-	if i != nil {
-		ituo.SetStartTimeInMs(*i)
+func (_u *InvocationTargetUpdateOne) SetNillableStartTimeInMs(v *int64) *InvocationTargetUpdateOne {
+	if v != nil {
+		_u.SetStartTimeInMs(*v)
 	}
-	return ituo
+	return _u
 }
 
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) AddStartTimeInMs(i int64) *InvocationTargetUpdateOne {
-	ituo.mutation.AddStartTimeInMs(i)
-	return ituo
+// AddStartTimeInMs adds value to the "start_time_in_ms" field.
+func (_u *InvocationTargetUpdateOne) AddStartTimeInMs(v int64) *InvocationTargetUpdateOne {
+	_u.mutation.AddStartTimeInMs(v)
+	return _u
 }
 
 // ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) ClearStartTimeInMs() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearStartTimeInMs()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearStartTimeInMs() *InvocationTargetUpdateOne {
+	_u.mutation.ClearStartTimeInMs()
+	return _u
 }
 
 // SetEndTimeInMs sets the "end_time_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) SetEndTimeInMs(i int64) *InvocationTargetUpdateOne {
-	ituo.mutation.ResetEndTimeInMs()
-	ituo.mutation.SetEndTimeInMs(i)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetEndTimeInMs(v int64) *InvocationTargetUpdateOne {
+	_u.mutation.ResetEndTimeInMs()
+	_u.mutation.SetEndTimeInMs(v)
+	return _u
 }
 
 // SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (ituo *InvocationTargetUpdateOne) SetNillableEndTimeInMs(i *int64) *InvocationTargetUpdateOne {
-	if i != nil {
-		ituo.SetEndTimeInMs(*i)
+func (_u *InvocationTargetUpdateOne) SetNillableEndTimeInMs(v *int64) *InvocationTargetUpdateOne {
+	if v != nil {
+		_u.SetEndTimeInMs(*v)
 	}
-	return ituo
+	return _u
 }
 
-// AddEndTimeInMs adds i to the "end_time_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) AddEndTimeInMs(i int64) *InvocationTargetUpdateOne {
-	ituo.mutation.AddEndTimeInMs(i)
-	return ituo
+// AddEndTimeInMs adds value to the "end_time_in_ms" field.
+func (_u *InvocationTargetUpdateOne) AddEndTimeInMs(v int64) *InvocationTargetUpdateOne {
+	_u.mutation.AddEndTimeInMs(v)
+	return _u
 }
 
 // ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) ClearEndTimeInMs() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearEndTimeInMs()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearEndTimeInMs() *InvocationTargetUpdateOne {
+	_u.mutation.ClearEndTimeInMs()
+	return _u
 }
 
 // SetDurationInMs sets the "duration_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) SetDurationInMs(i int64) *InvocationTargetUpdateOne {
-	ituo.mutation.ResetDurationInMs()
-	ituo.mutation.SetDurationInMs(i)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetDurationInMs(v int64) *InvocationTargetUpdateOne {
+	_u.mutation.ResetDurationInMs()
+	_u.mutation.SetDurationInMs(v)
+	return _u
 }
 
 // SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (ituo *InvocationTargetUpdateOne) SetNillableDurationInMs(i *int64) *InvocationTargetUpdateOne {
-	if i != nil {
-		ituo.SetDurationInMs(*i)
+func (_u *InvocationTargetUpdateOne) SetNillableDurationInMs(v *int64) *InvocationTargetUpdateOne {
+	if v != nil {
+		_u.SetDurationInMs(*v)
 	}
-	return ituo
+	return _u
 }
 
-// AddDurationInMs adds i to the "duration_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) AddDurationInMs(i int64) *InvocationTargetUpdateOne {
-	ituo.mutation.AddDurationInMs(i)
-	return ituo
+// AddDurationInMs adds value to the "duration_in_ms" field.
+func (_u *InvocationTargetUpdateOne) AddDurationInMs(v int64) *InvocationTargetUpdateOne {
+	_u.mutation.AddDurationInMs(v)
+	return _u
 }
 
 // ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (ituo *InvocationTargetUpdateOne) ClearDurationInMs() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearDurationInMs()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearDurationInMs() *InvocationTargetUpdateOne {
+	_u.mutation.ClearDurationInMs()
+	return _u
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (ituo *InvocationTargetUpdateOne) SetFailureMessage(s string) *InvocationTargetUpdateOne {
-	ituo.mutation.SetFailureMessage(s)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetFailureMessage(v string) *InvocationTargetUpdateOne {
+	_u.mutation.SetFailureMessage(v)
+	return _u
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (ituo *InvocationTargetUpdateOne) SetNillableFailureMessage(s *string) *InvocationTargetUpdateOne {
-	if s != nil {
-		ituo.SetFailureMessage(*s)
+func (_u *InvocationTargetUpdateOne) SetNillableFailureMessage(v *string) *InvocationTargetUpdateOne {
+	if v != nil {
+		_u.SetFailureMessage(*v)
 	}
-	return ituo
+	return _u
 }
 
 // ClearFailureMessage clears the value of the "failure_message" field.
-func (ituo *InvocationTargetUpdateOne) ClearFailureMessage() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearFailureMessage()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearFailureMessage() *InvocationTargetUpdateOne {
+	_u.mutation.ClearFailureMessage()
+	return _u
 }
 
 // SetAbortReason sets the "abort_reason" field.
-func (ituo *InvocationTargetUpdateOne) SetAbortReason(ir invocationtarget.AbortReason) *InvocationTargetUpdateOne {
-	ituo.mutation.SetAbortReason(ir)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetAbortReason(v invocationtarget.AbortReason) *InvocationTargetUpdateOne {
+	_u.mutation.SetAbortReason(v)
+	return _u
 }
 
 // SetNillableAbortReason sets the "abort_reason" field if the given value is not nil.
-func (ituo *InvocationTargetUpdateOne) SetNillableAbortReason(ir *invocationtarget.AbortReason) *InvocationTargetUpdateOne {
-	if ir != nil {
-		ituo.SetAbortReason(*ir)
+func (_u *InvocationTargetUpdateOne) SetNillableAbortReason(v *invocationtarget.AbortReason) *InvocationTargetUpdateOne {
+	if v != nil {
+		_u.SetAbortReason(*v)
 	}
-	return ituo
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ituo *InvocationTargetUpdateOne) SetBazelInvocationID(id int64) *InvocationTargetUpdateOne {
-	ituo.mutation.SetBazelInvocationID(id)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetBazelInvocationID(id int64) *InvocationTargetUpdateOne {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (ituo *InvocationTargetUpdateOne) SetBazelInvocation(b *BazelInvocation) *InvocationTargetUpdateOne {
-	return ituo.SetBazelInvocationID(b.ID)
+func (_u *InvocationTargetUpdateOne) SetBazelInvocation(v *BazelInvocation) *InvocationTargetUpdateOne {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // SetTargetID sets the "target" edge to the Target entity by ID.
-func (ituo *InvocationTargetUpdateOne) SetTargetID(id int64) *InvocationTargetUpdateOne {
-	ituo.mutation.SetTargetID(id)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetTargetID(id int64) *InvocationTargetUpdateOne {
+	_u.mutation.SetTargetID(id)
+	return _u
 }
 
 // SetTarget sets the "target" edge to the Target entity.
-func (ituo *InvocationTargetUpdateOne) SetTarget(t *Target) *InvocationTargetUpdateOne {
-	return ituo.SetTargetID(t.ID)
+func (_u *InvocationTargetUpdateOne) SetTarget(v *Target) *InvocationTargetUpdateOne {
+	return _u.SetTargetID(v.ID)
 }
 
 // SetConfigurationID sets the "configuration" edge to the Configuration entity by ID.
-func (ituo *InvocationTargetUpdateOne) SetConfigurationID(id int64) *InvocationTargetUpdateOne {
-	ituo.mutation.SetConfigurationID(id)
-	return ituo
+func (_u *InvocationTargetUpdateOne) SetConfigurationID(id int64) *InvocationTargetUpdateOne {
+	_u.mutation.SetConfigurationID(id)
+	return _u
 }
 
 // SetNillableConfigurationID sets the "configuration" edge to the Configuration entity by ID if the given value is not nil.
-func (ituo *InvocationTargetUpdateOne) SetNillableConfigurationID(id *int64) *InvocationTargetUpdateOne {
+func (_u *InvocationTargetUpdateOne) SetNillableConfigurationID(id *int64) *InvocationTargetUpdateOne {
 	if id != nil {
-		ituo = ituo.SetConfigurationID(*id)
+		_u = _u.SetConfigurationID(*id)
 	}
-	return ituo
+	return _u
 }
 
 // SetConfiguration sets the "configuration" edge to the Configuration entity.
-func (ituo *InvocationTargetUpdateOne) SetConfiguration(c *Configuration) *InvocationTargetUpdateOne {
-	return ituo.SetConfigurationID(c.ID)
+func (_u *InvocationTargetUpdateOne) SetConfiguration(v *Configuration) *InvocationTargetUpdateOne {
+	return _u.SetConfigurationID(v.ID)
 }
 
 // AddTestSummaryIDs adds the "test_summary" edge to the TestSummary entity by IDs.
-func (ituo *InvocationTargetUpdateOne) AddTestSummaryIDs(ids ...int64) *InvocationTargetUpdateOne {
-	ituo.mutation.AddTestSummaryIDs(ids...)
-	return ituo
+func (_u *InvocationTargetUpdateOne) AddTestSummaryIDs(ids ...int64) *InvocationTargetUpdateOne {
+	_u.mutation.AddTestSummaryIDs(ids...)
+	return _u
 }
 
 // AddTestSummary adds the "test_summary" edges to the TestSummary entity.
-func (ituo *InvocationTargetUpdateOne) AddTestSummary(t ...*TestSummary) *InvocationTargetUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InvocationTargetUpdateOne) AddTestSummary(v ...*TestSummary) *InvocationTargetUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ituo.AddTestSummaryIDs(ids...)
+	return _u.AddTestSummaryIDs(ids...)
 }
 
 // Mutation returns the InvocationTargetMutation object of the builder.
-func (ituo *InvocationTargetUpdateOne) Mutation() *InvocationTargetMutation {
-	return ituo.mutation
+func (_u *InvocationTargetUpdateOne) Mutation() *InvocationTargetMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (ituo *InvocationTargetUpdateOne) ClearBazelInvocation() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearBazelInvocation()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearBazelInvocation() *InvocationTargetUpdateOne {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // ClearTarget clears the "target" edge to the Target entity.
-func (ituo *InvocationTargetUpdateOne) ClearTarget() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearTarget()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearTarget() *InvocationTargetUpdateOne {
+	_u.mutation.ClearTarget()
+	return _u
 }
 
 // ClearConfiguration clears the "configuration" edge to the Configuration entity.
-func (ituo *InvocationTargetUpdateOne) ClearConfiguration() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearConfiguration()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearConfiguration() *InvocationTargetUpdateOne {
+	_u.mutation.ClearConfiguration()
+	return _u
 }
 
 // ClearTestSummary clears all "test_summary" edges to the TestSummary entity.
-func (ituo *InvocationTargetUpdateOne) ClearTestSummary() *InvocationTargetUpdateOne {
-	ituo.mutation.ClearTestSummary()
-	return ituo
+func (_u *InvocationTargetUpdateOne) ClearTestSummary() *InvocationTargetUpdateOne {
+	_u.mutation.ClearTestSummary()
+	return _u
 }
 
 // RemoveTestSummaryIDs removes the "test_summary" edge to TestSummary entities by IDs.
-func (ituo *InvocationTargetUpdateOne) RemoveTestSummaryIDs(ids ...int64) *InvocationTargetUpdateOne {
-	ituo.mutation.RemoveTestSummaryIDs(ids...)
-	return ituo
+func (_u *InvocationTargetUpdateOne) RemoveTestSummaryIDs(ids ...int64) *InvocationTargetUpdateOne {
+	_u.mutation.RemoveTestSummaryIDs(ids...)
+	return _u
 }
 
 // RemoveTestSummary removes "test_summary" edges to TestSummary entities.
-func (ituo *InvocationTargetUpdateOne) RemoveTestSummary(t ...*TestSummary) *InvocationTargetUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *InvocationTargetUpdateOne) RemoveTestSummary(v ...*TestSummary) *InvocationTargetUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ituo.RemoveTestSummaryIDs(ids...)
+	return _u.RemoveTestSummaryIDs(ids...)
 }
 
 // Where appends a list predicates to the InvocationTargetUpdate builder.
-func (ituo *InvocationTargetUpdateOne) Where(ps ...predicate.InvocationTarget) *InvocationTargetUpdateOne {
-	ituo.mutation.Where(ps...)
-	return ituo
+func (_u *InvocationTargetUpdateOne) Where(ps ...predicate.InvocationTarget) *InvocationTargetUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ituo *InvocationTargetUpdateOne) Select(field string, fields ...string) *InvocationTargetUpdateOne {
-	ituo.fields = append([]string{field}, fields...)
-	return ituo
+func (_u *InvocationTargetUpdateOne) Select(field string, fields ...string) *InvocationTargetUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated InvocationTarget entity.
-func (ituo *InvocationTargetUpdateOne) Save(ctx context.Context) (*InvocationTarget, error) {
-	return withHooks(ctx, ituo.sqlSave, ituo.mutation, ituo.hooks)
+func (_u *InvocationTargetUpdateOne) Save(ctx context.Context) (*InvocationTarget, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ituo *InvocationTargetUpdateOne) SaveX(ctx context.Context) *InvocationTarget {
-	node, err := ituo.Save(ctx)
+func (_u *InvocationTargetUpdateOne) SaveX(ctx context.Context) *InvocationTarget {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -811,45 +811,45 @@ func (ituo *InvocationTargetUpdateOne) SaveX(ctx context.Context) *InvocationTar
 }
 
 // Exec executes the query on the entity.
-func (ituo *InvocationTargetUpdateOne) Exec(ctx context.Context) error {
-	_, err := ituo.Save(ctx)
+func (_u *InvocationTargetUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ituo *InvocationTargetUpdateOne) ExecX(ctx context.Context) {
-	if err := ituo.Exec(ctx); err != nil {
+func (_u *InvocationTargetUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ituo *InvocationTargetUpdateOne) check() error {
-	if v, ok := ituo.mutation.AbortReason(); ok {
+func (_u *InvocationTargetUpdateOne) check() error {
+	if v, ok := _u.mutation.AbortReason(); ok {
 		if err := invocationtarget.AbortReasonValidator(v); err != nil {
 			return &ValidationError{Name: "abort_reason", err: fmt.Errorf(`ent: validator failed for field "InvocationTarget.abort_reason": %w`, err)}
 		}
 	}
-	if ituo.mutation.BazelInvocationCleared() && len(ituo.mutation.BazelInvocationIDs()) > 0 {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationTarget.bazel_invocation"`)
 	}
-	if ituo.mutation.TargetCleared() && len(ituo.mutation.TargetIDs()) > 0 {
+	if _u.mutation.TargetCleared() && len(_u.mutation.TargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationTarget.target"`)
 	}
 	return nil
 }
 
-func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTarget, err error) {
-	if err := ituo.check(); err != nil {
+func (_u *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTarget, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(invocationtarget.Table, invocationtarget.Columns, sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64))
-	id, ok := ituo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "InvocationTarget.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ituo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, invocationtarget.FieldID)
 		for _, f := range fields {
@@ -861,64 +861,64 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 			}
 		}
 	}
-	if ps := ituo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ituo.mutation.Success(); ok {
+	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(invocationtarget.FieldSuccess, field.TypeBool, value)
 	}
-	if value, ok := ituo.mutation.Tags(); ok {
+	if value, ok := _u.mutation.Tags(); ok {
 		_spec.SetField(invocationtarget.FieldTags, field.TypeJSON, value)
 	}
-	if value, ok := ituo.mutation.AppendedTags(); ok {
+	if value, ok := _u.mutation.AppendedTags(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, invocationtarget.FieldTags, value)
 		})
 	}
-	if ituo.mutation.TagsCleared() {
+	if _u.mutation.TagsCleared() {
 		_spec.ClearField(invocationtarget.FieldTags, field.TypeJSON)
 	}
-	if value, ok := ituo.mutation.StartTimeInMs(); ok {
+	if value, ok := _u.mutation.StartTimeInMs(); ok {
 		_spec.SetField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := ituo.mutation.AddedStartTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
 		_spec.AddField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
 	}
-	if ituo.mutation.StartTimeInMsCleared() {
+	if _u.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(invocationtarget.FieldStartTimeInMs, field.TypeInt64)
 	}
-	if value, ok := ituo.mutation.EndTimeInMs(); ok {
+	if value, ok := _u.mutation.EndTimeInMs(); ok {
 		_spec.SetField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := ituo.mutation.AddedEndTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedEndTimeInMs(); ok {
 		_spec.AddField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
 	}
-	if ituo.mutation.EndTimeInMsCleared() {
+	if _u.mutation.EndTimeInMsCleared() {
 		_spec.ClearField(invocationtarget.FieldEndTimeInMs, field.TypeInt64)
 	}
-	if value, ok := ituo.mutation.DurationInMs(); ok {
+	if value, ok := _u.mutation.DurationInMs(); ok {
 		_spec.SetField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := ituo.mutation.AddedDurationInMs(); ok {
+	if value, ok := _u.mutation.AddedDurationInMs(); ok {
 		_spec.AddField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
 	}
-	if ituo.mutation.DurationInMsCleared() {
+	if _u.mutation.DurationInMsCleared() {
 		_spec.ClearField(invocationtarget.FieldDurationInMs, field.TypeInt64)
 	}
-	if value, ok := ituo.mutation.FailureMessage(); ok {
+	if value, ok := _u.mutation.FailureMessage(); ok {
 		_spec.SetField(invocationtarget.FieldFailureMessage, field.TypeString, value)
 	}
-	if ituo.mutation.FailureMessageCleared() {
+	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(invocationtarget.FieldFailureMessage, field.TypeString)
 	}
-	if value, ok := ituo.mutation.AbortReason(); ok {
+	if value, ok := _u.mutation.AbortReason(); ok {
 		_spec.SetField(invocationtarget.FieldAbortReason, field.TypeEnum, value)
 	}
-	if ituo.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -931,7 +931,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ituo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -947,7 +947,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ituo.mutation.TargetCleared() {
+	if _u.mutation.TargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -960,7 +960,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ituo.mutation.TargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -976,7 +976,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ituo.mutation.ConfigurationCleared() {
+	if _u.mutation.ConfigurationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -989,7 +989,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ituo.mutation.ConfigurationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ConfigurationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -1005,7 +1005,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ituo.mutation.TestSummaryCleared() {
+	if _u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1018,7 +1018,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ituo.mutation.RemovedTestSummaryIDs(); len(nodes) > 0 && !ituo.mutation.TestSummaryCleared() {
+	if nodes := _u.mutation.RemovedTestSummaryIDs(); len(nodes) > 0 && !_u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1034,7 +1034,7 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ituo.mutation.TestSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1050,10 +1050,10 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &InvocationTarget{config: ituo.config}
+	_node = &InvocationTarget{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ituo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1061,6 +1061,6 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 		}
 		return nil, err
 	}
-	ituo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

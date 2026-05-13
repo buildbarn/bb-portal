@@ -1586,13 +1586,13 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (aq *ActionQuery) addPredicate(pred func(s *sql.Selector)) {
-	aq.predicates = append(aq.predicates, pred)
+func (_q *ActionQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionQuery builder.
-func (aq *ActionQuery) Filter() *ActionFilter {
-	return &ActionFilter{config: aq.config, predicateAdder: aq}
+func (_q *ActionQuery) Filter() *ActionFilter {
+	return &ActionFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -1739,13 +1739,13 @@ func (f *ActionFilter) WhereHasConfigurationWith(preds ...predicate.Configuratio
 }
 
 // addPredicate implements the predicateAdder interface.
-func (acsq *ActionCacheStatisticsQuery) addPredicate(pred func(s *sql.Selector)) {
-	acsq.predicates = append(acsq.predicates, pred)
+func (_q *ActionCacheStatisticsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionCacheStatisticsQuery builder.
-func (acsq *ActionCacheStatisticsQuery) Filter() *ActionCacheStatisticsFilter {
-	return &ActionCacheStatisticsFilter{config: acsq.config, predicateAdder: acsq}
+func (_q *ActionCacheStatisticsQuery) Filter() *ActionCacheStatisticsFilter {
+	return &ActionCacheStatisticsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -1832,13 +1832,13 @@ func (f *ActionCacheStatisticsFilter) WhereHasMissDetailsWith(preds ...predicate
 }
 
 // addPredicate implements the predicateAdder interface.
-func (adq *ActionDataQuery) addPredicate(pred func(s *sql.Selector)) {
-	adq.predicates = append(adq.predicates, pred)
+func (_q *ActionDataQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionDataQuery builder.
-func (adq *ActionDataQuery) Filter() *ActionDataFilter {
-	return &ActionDataFilter{config: adq.config, predicateAdder: adq}
+func (_q *ActionDataQuery) Filter() *ActionDataFilter {
+	return &ActionDataFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -1921,13 +1921,13 @@ func (f *ActionDataFilter) WhereHasActionSummaryWith(preds ...predicate.ActionSu
 }
 
 // addPredicate implements the predicateAdder interface.
-func (asq *ActionSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
-	asq.predicates = append(asq.predicates, pred)
+func (_q *ActionSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionSummaryQuery builder.
-func (asq *ActionSummaryQuery) Filter() *ActionSummaryFilter {
-	return &ActionSummaryFilter{config: asq.config, predicateAdder: asq}
+func (_q *ActionSummaryQuery) Filter() *ActionSummaryFilter {
+	return &ActionSummaryFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2037,13 +2037,13 @@ func (f *ActionSummaryFilter) WhereHasActionCacheStatisticsWith(preds ...predica
 }
 
 // addPredicate implements the predicateAdder interface.
-func (amq *ArtifactMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	amq.predicates = append(amq.predicates, pred)
+func (_q *ArtifactMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ArtifactMetricsQuery builder.
-func (amq *ArtifactMetricsQuery) Filter() *ArtifactMetricsFilter {
-	return &ArtifactMetricsFilter{config: amq.config, predicateAdder: amq}
+func (_q *ArtifactMetricsQuery) Filter() *ArtifactMetricsFilter {
+	return &ArtifactMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2131,13 +2131,13 @@ func (f *ArtifactMetricsFilter) WhereHasMetricsWith(preds ...predicate.Metrics) 
 }
 
 // addPredicate implements the predicateAdder interface.
-func (auq *AuthenticatedUserQuery) addPredicate(pred func(s *sql.Selector)) {
-	auq.predicates = append(auq.predicates, pred)
+func (_q *AuthenticatedUserQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the AuthenticatedUserQuery builder.
-func (auq *AuthenticatedUserQuery) Filter() *AuthenticatedUserFilter {
-	return &AuthenticatedUserFilter{config: auq.config, predicateAdder: auq}
+func (_q *AuthenticatedUserQuery) Filter() *AuthenticatedUserFilter {
+	return &AuthenticatedUserFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2205,13 +2205,13 @@ func (f *AuthenticatedUserFilter) WhereHasBazelInvocationsWith(preds ...predicat
 }
 
 // addPredicate implements the predicateAdder interface.
-func (biq *BazelInvocationQuery) addPredicate(pred func(s *sql.Selector)) {
-	biq.predicates = append(biq.predicates, pred)
+func (_q *BazelInvocationQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BazelInvocationQuery builder.
-func (biq *BazelInvocationQuery) Filter() *BazelInvocationFilter {
-	return &BazelInvocationFilter{config: biq.config, predicateAdder: biq}
+func (_q *BazelInvocationQuery) Filter() *BazelInvocationFilter {
+	return &BazelInvocationFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2555,13 +2555,13 @@ func (f *BazelInvocationFilter) WhereHasSourceControlWith(preds ...predicate.Sou
 }
 
 // addPredicate implements the predicateAdder interface.
-func (bq *BuildQuery) addPredicate(pred func(s *sql.Selector)) {
-	bq.predicates = append(bq.predicates, pred)
+func (_q *BuildQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildQuery builder.
-func (bq *BuildQuery) Filter() *BuildFilter {
-	return &BuildFilter{config: bq.config, predicateAdder: bq}
+func (_q *BuildQuery) Filter() *BuildFilter {
+	return &BuildFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2647,13 +2647,13 @@ func (f *BuildFilter) WhereHasTagsWith(preds ...predicate.BuildTag) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (bgmq *BuildGraphMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	bgmq.predicates = append(bgmq.predicates, pred)
+func (_q *BuildGraphMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildGraphMetricsQuery builder.
-func (bgmq *BuildGraphMetricsQuery) Filter() *BuildGraphMetricsFilter {
-	return &BuildGraphMetricsFilter{config: bgmq.config, predicateAdder: bgmq}
+func (_q *BuildGraphMetricsQuery) Filter() *BuildGraphMetricsFilter {
+	return &BuildGraphMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2746,13 +2746,13 @@ func (f *BuildGraphMetricsFilter) WhereHasMetricsWith(preds ...predicate.Metrics
 }
 
 // addPredicate implements the predicateAdder interface.
-func (blcq *BuildLogChunkQuery) addPredicate(pred func(s *sql.Selector)) {
-	blcq.predicates = append(blcq.predicates, pred)
+func (_q *BuildLogChunkQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildLogChunkQuery builder.
-func (blcq *BuildLogChunkQuery) Filter() *BuildLogChunkFilter {
-	return &BuildLogChunkFilter{config: blcq.config, predicateAdder: blcq}
+func (_q *BuildLogChunkQuery) Filter() *BuildLogChunkFilter {
+	return &BuildLogChunkFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2820,13 +2820,13 @@ func (f *BuildLogChunkFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (btq *BuildTagQuery) addPredicate(pred func(s *sql.Selector)) {
-	btq.predicates = append(btq.predicates, pred)
+func (_q *BuildTagQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildTagQuery builder.
-func (btq *BuildTagQuery) Filter() *BuildTagFilter {
-	return &BuildTagFilter{config: btq.config, predicateAdder: btq}
+func (_q *BuildTagQuery) Filter() *BuildTagFilter {
+	return &BuildTagFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2889,13 +2889,13 @@ func (f *BuildTagFilter) WhereHasBuildWith(preds ...predicate.Build) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (cq *ConfigurationQuery) addPredicate(pred func(s *sql.Selector)) {
-	cq.predicates = append(cq.predicates, pred)
+func (_q *ConfigurationQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ConfigurationQuery builder.
-func (cq *ConfigurationQuery) Filter() *ConfigurationFilter {
-	return &ConfigurationFilter{config: cq.config, predicateAdder: cq}
+func (_q *ConfigurationQuery) Filter() *ConfigurationFilter {
+	return &ConfigurationFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3006,13 +3006,13 @@ func (f *ConfigurationFilter) WhereHasActionsWith(preds ...predicate.Action) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (cmq *ConnectionMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
-	cmq.predicates = append(cmq.predicates, pred)
+func (_q *ConnectionMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ConnectionMetadataQuery builder.
-func (cmq *ConnectionMetadataQuery) Filter() *ConnectionMetadataFilter {
-	return &ConnectionMetadataFilter{config: cmq.config, predicateAdder: cmq}
+func (_q *ConnectionMetadataQuery) Filter() *ConnectionMetadataFilter {
+	return &ConnectionMetadataFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3065,13 +3065,13 @@ func (f *ConnectionMetadataFilter) WhereHasBazelInvocationWith(preds ...predicat
 }
 
 // addPredicate implements the predicateAdder interface.
-func (emq *EventMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
-	emq.predicates = append(emq.predicates, pred)
+func (_q *EventMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the EventMetadataQuery builder.
-func (emq *EventMetadataQuery) Filter() *EventMetadataFilter {
-	return &EventMetadataFilter{config: emq.config, predicateAdder: emq}
+func (_q *EventMetadataQuery) Filter() *EventMetadataFilter {
+	return &EventMetadataFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3139,13 +3139,13 @@ func (f *EventMetadataFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (gmq *GarbageMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	gmq.predicates = append(gmq.predicates, pred)
+func (_q *GarbageMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the GarbageMetricsQuery builder.
-func (gmq *GarbageMetricsQuery) Filter() *GarbageMetricsFilter {
-	return &GarbageMetricsFilter{config: gmq.config, predicateAdder: gmq}
+func (_q *GarbageMetricsQuery) Filter() *GarbageMetricsFilter {
+	return &GarbageMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3203,13 +3203,13 @@ func (f *GarbageMetricsFilter) WhereHasMemoryMetricsWith(preds ...predicate.Memo
 }
 
 // addPredicate implements the predicateAdder interface.
-func (iblq *IncompleteBuildLogQuery) addPredicate(pred func(s *sql.Selector)) {
-	iblq.predicates = append(iblq.predicates, pred)
+func (_q *IncompleteBuildLogQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the IncompleteBuildLogQuery builder.
-func (iblq *IncompleteBuildLogQuery) Filter() *IncompleteBuildLogFilter {
-	return &IncompleteBuildLogFilter{config: iblq.config, predicateAdder: iblq}
+func (_q *IncompleteBuildLogQuery) Filter() *IncompleteBuildLogFilter {
+	return &IncompleteBuildLogFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3272,13 +3272,13 @@ func (f *IncompleteBuildLogFilter) WhereHasBazelInvocationWith(preds ...predicat
 }
 
 // addPredicate implements the predicateAdder interface.
-func (inq *InstanceNameQuery) addPredicate(pred func(s *sql.Selector)) {
-	inq.predicates = append(inq.predicates, pred)
+func (_q *InstanceNameQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the InstanceNameQuery builder.
-func (inq *InstanceNameQuery) Filter() *InstanceNameFilter {
-	return &InstanceNameFilter{config: inq.config, predicateAdder: inq}
+func (_q *InstanceNameQuery) Filter() *InstanceNameFilter {
+	return &InstanceNameFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3359,13 +3359,13 @@ func (f *InstanceNameFilter) WhereHasTargetsWith(preds ...predicate.Target) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (ifq *InvocationFilesQuery) addPredicate(pred func(s *sql.Selector)) {
-	ifq.predicates = append(ifq.predicates, pred)
+func (_q *InvocationFilesQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the InvocationFilesQuery builder.
-func (ifq *InvocationFilesQuery) Filter() *InvocationFilesFilter {
-	return &InvocationFilesFilter{config: ifq.config, predicateAdder: ifq}
+func (_q *InvocationFilesQuery) Filter() *InvocationFilesFilter {
+	return &InvocationFilesFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3438,13 +3438,13 @@ func (f *InvocationFilesFilter) WhereHasBazelInvocationWith(preds ...predicate.B
 }
 
 // addPredicate implements the predicateAdder interface.
-func (itq *InvocationTagQuery) addPredicate(pred func(s *sql.Selector)) {
-	itq.predicates = append(itq.predicates, pred)
+func (_q *InvocationTagQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the InvocationTagQuery builder.
-func (itq *InvocationTagQuery) Filter() *InvocationTagFilter {
-	return &InvocationTagFilter{config: itq.config, predicateAdder: itq}
+func (_q *InvocationTagQuery) Filter() *InvocationTagFilter {
+	return &InvocationTagFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3507,13 +3507,13 @@ func (f *InvocationTagFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (itq *InvocationTargetQuery) addPredicate(pred func(s *sql.Selector)) {
-	itq.predicates = append(itq.predicates, pred)
+func (_q *InvocationTargetQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the InvocationTargetQuery builder.
-func (itq *InvocationTargetQuery) Filter() *InvocationTargetFilter {
-	return &InvocationTargetFilter{config: itq.config, predicateAdder: itq}
+func (_q *InvocationTargetQuery) Filter() *InvocationTargetFilter {
+	return &InvocationTargetFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3638,13 +3638,13 @@ func (f *InvocationTargetFilter) WhereHasTestSummaryWith(preds ...predicate.Test
 }
 
 // addPredicate implements the predicateAdder interface.
-func (mmq *MemoryMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	mmq.predicates = append(mmq.predicates, pred)
+func (_q *MemoryMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the MemoryMetricsQuery builder.
-func (mmq *MemoryMetricsQuery) Filter() *MemoryMetricsFilter {
-	return &MemoryMetricsFilter{config: mmq.config, predicateAdder: mmq}
+func (_q *MemoryMetricsQuery) Filter() *MemoryMetricsFilter {
+	return &MemoryMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3721,13 +3721,13 @@ func (f *MemoryMetricsFilter) WhereHasGarbageMetricsWith(preds ...predicate.Garb
 }
 
 // addPredicate implements the predicateAdder interface.
-func (mq *MetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	mq.predicates = append(mq.predicates, pred)
+func (_q *MetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the MetricsQuery builder.
-func (mq *MetricsQuery) Filter() *MetricsFilter {
-	return &MetricsFilter{config: mq.config, predicateAdder: mq}
+func (_q *MetricsQuery) Filter() *MetricsFilter {
+	return &MetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3873,13 +3873,13 @@ func (f *MetricsFilter) WhereHasBuildGraphMetricsWith(preds ...predicate.BuildGr
 }
 
 // addPredicate implements the predicateAdder interface.
-func (mdq *MissDetailQuery) addPredicate(pred func(s *sql.Selector)) {
-	mdq.predicates = append(mdq.predicates, pred)
+func (_q *MissDetailQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the MissDetailQuery builder.
-func (mdq *MissDetailQuery) Filter() *MissDetailFilter {
-	return &MissDetailFilter{config: mdq.config, predicateAdder: mdq}
+func (_q *MissDetailQuery) Filter() *MissDetailFilter {
+	return &MissDetailFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3937,13 +3937,13 @@ func (f *MissDetailFilter) WhereHasActionCacheStatisticsWith(preds ...predicate.
 }
 
 // addPredicate implements the predicateAdder interface.
-func (nmq *NetworkMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	nmq.predicates = append(nmq.predicates, pred)
+func (_q *NetworkMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the NetworkMetricsQuery builder.
-func (nmq *NetworkMetricsQuery) Filter() *NetworkMetricsFilter {
-	return &NetworkMetricsFilter{config: nmq.config, predicateAdder: nmq}
+func (_q *NetworkMetricsQuery) Filter() *NetworkMetricsFilter {
+	return &NetworkMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4005,13 +4005,13 @@ func (f *NetworkMetricsFilter) WhereHasSystemNetworkStatsWith(preds ...predicate
 }
 
 // addPredicate implements the predicateAdder interface.
-func (rcq *RunnerCountQuery) addPredicate(pred func(s *sql.Selector)) {
-	rcq.predicates = append(rcq.predicates, pred)
+func (_q *RunnerCountQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the RunnerCountQuery builder.
-func (rcq *RunnerCountQuery) Filter() *RunnerCountFilter {
-	return &RunnerCountFilter{config: rcq.config, predicateAdder: rcq}
+func (_q *RunnerCountQuery) Filter() *RunnerCountFilter {
+	return &RunnerCountFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4074,13 +4074,13 @@ func (f *RunnerCountFilter) WhereHasActionSummaryWith(preds ...predicate.ActionS
 }
 
 // addPredicate implements the predicateAdder interface.
-func (scq *SourceControlQuery) addPredicate(pred func(s *sql.Selector)) {
-	scq.predicates = append(scq.predicates, pred)
+func (_q *SourceControlQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the SourceControlQuery builder.
-func (scq *SourceControlQuery) Filter() *SourceControlFilter {
-	return &SourceControlFilter{config: scq.config, predicateAdder: scq}
+func (_q *SourceControlQuery) Filter() *SourceControlFilter {
+	return &SourceControlFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4158,13 +4158,13 @@ func (f *SourceControlFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (snsq *SystemNetworkStatsQuery) addPredicate(pred func(s *sql.Selector)) {
-	snsq.predicates = append(snsq.predicates, pred)
+func (_q *SystemNetworkStatsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the SystemNetworkStatsQuery builder.
-func (snsq *SystemNetworkStatsQuery) Filter() *SystemNetworkStatsFilter {
-	return &SystemNetworkStatsFilter{config: snsq.config, predicateAdder: snsq}
+func (_q *SystemNetworkStatsQuery) Filter() *SystemNetworkStatsFilter {
+	return &SystemNetworkStatsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4252,13 +4252,13 @@ func (f *SystemNetworkStatsFilter) WhereHasNetworkMetricsWith(preds ...predicate
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tq *TargetQuery) addPredicate(pred func(s *sql.Selector)) {
-	tq.predicates = append(tq.predicates, pred)
+func (_q *TargetQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TargetQuery builder.
-func (tq *TargetQuery) Filter() *TargetFilter {
-	return &TargetFilter{config: tq.config, predicateAdder: tq}
+func (_q *TargetQuery) Filter() *TargetFilter {
+	return &TargetFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4363,13 +4363,13 @@ func (f *TargetFilter) WhereHasTestTargetWith(preds ...predicate.TestTarget) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tkmq *TargetKindMappingQuery) addPredicate(pred func(s *sql.Selector)) {
-	tkmq.predicates = append(tkmq.predicates, pred)
+func (_q *TargetKindMappingQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TargetKindMappingQuery builder.
-func (tkmq *TargetKindMappingQuery) Filter() *TargetKindMappingFilter {
-	return &TargetKindMappingFilter{config: tkmq.config, predicateAdder: tkmq}
+func (_q *TargetKindMappingQuery) Filter() *TargetKindMappingFilter {
+	return &TargetKindMappingFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4446,13 +4446,13 @@ func (f *TargetKindMappingFilter) WhereHasTargetWith(preds ...predicate.Target) 
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tmq *TargetMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	tmq.predicates = append(tmq.predicates, pred)
+func (_q *TargetMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TargetMetricsQuery builder.
-func (tmq *TargetMetricsQuery) Filter() *TargetMetricsFilter {
-	return &TargetMetricsFilter{config: tmq.config, predicateAdder: tmq}
+func (_q *TargetMetricsQuery) Filter() *TargetMetricsFilter {
+	return &TargetMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4515,13 +4515,13 @@ func (f *TargetMetricsFilter) WhereHasMetricsWith(preds ...predicate.Metrics) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (trq *TestResultQuery) addPredicate(pred func(s *sql.Selector)) {
-	trq.predicates = append(trq.predicates, pred)
+func (_q *TestResultQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TestResultQuery builder.
-func (trq *TestResultQuery) Filter() *TestResultFilter {
-	return &TestResultFilter{config: trq.config, predicateAdder: trq}
+func (_q *TestResultQuery) Filter() *TestResultFilter {
+	return &TestResultFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4639,13 +4639,13 @@ func (f *TestResultFilter) WhereHasTestSummaryWith(preds ...predicate.TestSummar
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tsq *TestSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
-	tsq.predicates = append(tsq.predicates, pred)
+func (_q *TestSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TestSummaryQuery builder.
-func (tsq *TestSummaryQuery) Filter() *TestSummaryFilter {
-	return &TestSummaryFilter{config: tsq.config, predicateAdder: tsq}
+func (_q *TestSummaryQuery) Filter() *TestSummaryFilter {
+	return &TestSummaryFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4752,13 +4752,13 @@ func (f *TestSummaryFilter) WhereHasTestResultsWith(preds ...predicate.TestResul
 }
 
 // addPredicate implements the predicateAdder interface.
-func (ttq *TestTargetQuery) addPredicate(pred func(s *sql.Selector)) {
-	ttq.predicates = append(ttq.predicates, pred)
+func (_q *TestTargetQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TestTargetQuery builder.
-func (ttq *TestTargetQuery) Filter() *TestTargetFilter {
-	return &TestTargetFilter{config: ttq.config, predicateAdder: ttq}
+func (_q *TestTargetQuery) Filter() *TestTargetFilter {
+	return &TestTargetFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4811,13 +4811,13 @@ func (f *TestTargetFilter) WhereHasTargetWith(preds ...predicate.Target) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tmq *TimingMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	tmq.predicates = append(tmq.predicates, pred)
+func (_q *TimingMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TimingMetricsQuery builder.
-func (tmq *TimingMetricsQuery) Filter() *TimingMetricsFilter {
-	return &TimingMetricsFilter{config: tmq.config, predicateAdder: tmq}
+func (_q *TimingMetricsQuery) Filter() *TimingMetricsFilter {
+	return &TimingMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.

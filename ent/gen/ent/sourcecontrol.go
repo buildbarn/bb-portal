@@ -78,7 +78,7 @@ func (*SourceControl) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SourceControl fields.
-func (sc *SourceControl) assignValues(columns []string, values []any) error {
+func (_m *SourceControl) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -89,52 +89,52 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			sc.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case sourcecontrol.FieldRepo:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field repo", values[i])
 			} else if value.Valid {
-				sc.Repo = value.String
+				_m.Repo = value.String
 			}
 		case sourcecontrol.FieldRepoURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field repo_url", values[i])
 			} else if value.Valid {
-				sc.RepoURL = value.String
+				_m.RepoURL = value.String
 			}
 		case sourcecontrol.FieldRef:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field ref", values[i])
 			} else if value.Valid {
-				sc.Ref = value.String
+				_m.Ref = value.String
 			}
 		case sourcecontrol.FieldRefURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field ref_url", values[i])
 			} else if value.Valid {
-				sc.RefURL = value.String
+				_m.RefURL = value.String
 			}
 		case sourcecontrol.FieldCommit:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field commit", values[i])
 			} else if value.Valid {
-				sc.Commit = value.String
+				_m.Commit = value.String
 			}
 		case sourcecontrol.FieldCommitURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field commit_url", values[i])
 			} else if value.Valid {
-				sc.CommitURL = value.String
+				_m.CommitURL = value.String
 			}
 		case sourcecontrol.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_source_control", value)
 			} else if value.Valid {
-				sc.bazel_invocation_source_control = new(int64)
-				*sc.bazel_invocation_source_control = int64(value.Int64)
+				_m.bazel_invocation_source_control = new(int64)
+				*_m.bazel_invocation_source_control = int64(value.Int64)
 			}
 		default:
-			sc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -142,55 +142,55 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the SourceControl.
 // This includes values selected through modifiers, order, etc.
-func (sc *SourceControl) Value(name string) (ent.Value, error) {
-	return sc.selectValues.Get(name)
+func (_m *SourceControl) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the SourceControl entity.
-func (sc *SourceControl) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewSourceControlClient(sc.config).QueryBazelInvocation(sc)
+func (_m *SourceControl) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewSourceControlClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // Update returns a builder for updating this SourceControl.
 // Note that you need to call SourceControl.Unwrap() before calling this method if this SourceControl
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sc *SourceControl) Update() *SourceControlUpdateOne {
-	return NewSourceControlClient(sc.config).UpdateOne(sc)
+func (_m *SourceControl) Update() *SourceControlUpdateOne {
+	return NewSourceControlClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SourceControl entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sc *SourceControl) Unwrap() *SourceControl {
-	_tx, ok := sc.config.driver.(*txDriver)
+func (_m *SourceControl) Unwrap() *SourceControl {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SourceControl is not a transactional entity")
 	}
-	sc.config.driver = _tx.drv
-	return sc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sc *SourceControl) String() string {
+func (_m *SourceControl) String() string {
 	var builder strings.Builder
 	builder.WriteString("SourceControl(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("repo=")
-	builder.WriteString(sc.Repo)
+	builder.WriteString(_m.Repo)
 	builder.WriteString(", ")
 	builder.WriteString("repo_url=")
-	builder.WriteString(sc.RepoURL)
+	builder.WriteString(_m.RepoURL)
 	builder.WriteString(", ")
 	builder.WriteString("ref=")
-	builder.WriteString(sc.Ref)
+	builder.WriteString(_m.Ref)
 	builder.WriteString(", ")
 	builder.WriteString("ref_url=")
-	builder.WriteString(sc.RefURL)
+	builder.WriteString(_m.RefURL)
 	builder.WriteString(", ")
 	builder.WriteString("commit=")
-	builder.WriteString(sc.Commit)
+	builder.WriteString(_m.Commit)
 	builder.WriteString(", ")
 	builder.WriteString("commit_url=")
-	builder.WriteString(sc.CommitURL)
+	builder.WriteString(_m.CommitURL)
 	builder.WriteByte(')')
 	return builder.String()
 }

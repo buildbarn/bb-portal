@@ -23,110 +23,110 @@ type BuildLogChunkUpdate struct {
 }
 
 // Where appends a list predicates to the BuildLogChunkUpdate builder.
-func (blcu *BuildLogChunkUpdate) Where(ps ...predicate.BuildLogChunk) *BuildLogChunkUpdate {
-	blcu.mutation.Where(ps...)
-	return blcu
+func (_u *BuildLogChunkUpdate) Where(ps ...predicate.BuildLogChunk) *BuildLogChunkUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetData sets the "data" field.
-func (blcu *BuildLogChunkUpdate) SetData(b []byte) *BuildLogChunkUpdate {
-	blcu.mutation.SetData(b)
-	return blcu
+func (_u *BuildLogChunkUpdate) SetData(v []byte) *BuildLogChunkUpdate {
+	_u.mutation.SetData(v)
+	return _u
 }
 
 // SetChunkIndex sets the "chunk_index" field.
-func (blcu *BuildLogChunkUpdate) SetChunkIndex(i int) *BuildLogChunkUpdate {
-	blcu.mutation.ResetChunkIndex()
-	blcu.mutation.SetChunkIndex(i)
-	return blcu
+func (_u *BuildLogChunkUpdate) SetChunkIndex(v int) *BuildLogChunkUpdate {
+	_u.mutation.ResetChunkIndex()
+	_u.mutation.SetChunkIndex(v)
+	return _u
 }
 
 // SetNillableChunkIndex sets the "chunk_index" field if the given value is not nil.
-func (blcu *BuildLogChunkUpdate) SetNillableChunkIndex(i *int) *BuildLogChunkUpdate {
-	if i != nil {
-		blcu.SetChunkIndex(*i)
+func (_u *BuildLogChunkUpdate) SetNillableChunkIndex(v *int) *BuildLogChunkUpdate {
+	if v != nil {
+		_u.SetChunkIndex(*v)
 	}
-	return blcu
+	return _u
 }
 
-// AddChunkIndex adds i to the "chunk_index" field.
-func (blcu *BuildLogChunkUpdate) AddChunkIndex(i int) *BuildLogChunkUpdate {
-	blcu.mutation.AddChunkIndex(i)
-	return blcu
+// AddChunkIndex adds value to the "chunk_index" field.
+func (_u *BuildLogChunkUpdate) AddChunkIndex(v int) *BuildLogChunkUpdate {
+	_u.mutation.AddChunkIndex(v)
+	return _u
 }
 
 // SetFirstLineIndex sets the "first_line_index" field.
-func (blcu *BuildLogChunkUpdate) SetFirstLineIndex(i int64) *BuildLogChunkUpdate {
-	blcu.mutation.ResetFirstLineIndex()
-	blcu.mutation.SetFirstLineIndex(i)
-	return blcu
+func (_u *BuildLogChunkUpdate) SetFirstLineIndex(v int64) *BuildLogChunkUpdate {
+	_u.mutation.ResetFirstLineIndex()
+	_u.mutation.SetFirstLineIndex(v)
+	return _u
 }
 
 // SetNillableFirstLineIndex sets the "first_line_index" field if the given value is not nil.
-func (blcu *BuildLogChunkUpdate) SetNillableFirstLineIndex(i *int64) *BuildLogChunkUpdate {
-	if i != nil {
-		blcu.SetFirstLineIndex(*i)
+func (_u *BuildLogChunkUpdate) SetNillableFirstLineIndex(v *int64) *BuildLogChunkUpdate {
+	if v != nil {
+		_u.SetFirstLineIndex(*v)
 	}
-	return blcu
+	return _u
 }
 
-// AddFirstLineIndex adds i to the "first_line_index" field.
-func (blcu *BuildLogChunkUpdate) AddFirstLineIndex(i int64) *BuildLogChunkUpdate {
-	blcu.mutation.AddFirstLineIndex(i)
-	return blcu
+// AddFirstLineIndex adds value to the "first_line_index" field.
+func (_u *BuildLogChunkUpdate) AddFirstLineIndex(v int64) *BuildLogChunkUpdate {
+	_u.mutation.AddFirstLineIndex(v)
+	return _u
 }
 
 // SetLastLineIndex sets the "last_line_index" field.
-func (blcu *BuildLogChunkUpdate) SetLastLineIndex(i int64) *BuildLogChunkUpdate {
-	blcu.mutation.ResetLastLineIndex()
-	blcu.mutation.SetLastLineIndex(i)
-	return blcu
+func (_u *BuildLogChunkUpdate) SetLastLineIndex(v int64) *BuildLogChunkUpdate {
+	_u.mutation.ResetLastLineIndex()
+	_u.mutation.SetLastLineIndex(v)
+	return _u
 }
 
 // SetNillableLastLineIndex sets the "last_line_index" field if the given value is not nil.
-func (blcu *BuildLogChunkUpdate) SetNillableLastLineIndex(i *int64) *BuildLogChunkUpdate {
-	if i != nil {
-		blcu.SetLastLineIndex(*i)
+func (_u *BuildLogChunkUpdate) SetNillableLastLineIndex(v *int64) *BuildLogChunkUpdate {
+	if v != nil {
+		_u.SetLastLineIndex(*v)
 	}
-	return blcu
+	return _u
 }
 
-// AddLastLineIndex adds i to the "last_line_index" field.
-func (blcu *BuildLogChunkUpdate) AddLastLineIndex(i int64) *BuildLogChunkUpdate {
-	blcu.mutation.AddLastLineIndex(i)
-	return blcu
+// AddLastLineIndex adds value to the "last_line_index" field.
+func (_u *BuildLogChunkUpdate) AddLastLineIndex(v int64) *BuildLogChunkUpdate {
+	_u.mutation.AddLastLineIndex(v)
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (blcu *BuildLogChunkUpdate) SetBazelInvocationID(id int64) *BuildLogChunkUpdate {
-	blcu.mutation.SetBazelInvocationID(id)
-	return blcu
+func (_u *BuildLogChunkUpdate) SetBazelInvocationID(id int64) *BuildLogChunkUpdate {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (blcu *BuildLogChunkUpdate) SetBazelInvocation(b *BazelInvocation) *BuildLogChunkUpdate {
-	return blcu.SetBazelInvocationID(b.ID)
+func (_u *BuildLogChunkUpdate) SetBazelInvocation(v *BazelInvocation) *BuildLogChunkUpdate {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the BuildLogChunkMutation object of the builder.
-func (blcu *BuildLogChunkUpdate) Mutation() *BuildLogChunkMutation {
-	return blcu.mutation
+func (_u *BuildLogChunkUpdate) Mutation() *BuildLogChunkMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (blcu *BuildLogChunkUpdate) ClearBazelInvocation() *BuildLogChunkUpdate {
-	blcu.mutation.ClearBazelInvocation()
-	return blcu
+func (_u *BuildLogChunkUpdate) ClearBazelInvocation() *BuildLogChunkUpdate {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (blcu *BuildLogChunkUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, blcu.sqlSave, blcu.mutation, blcu.hooks)
+func (_u *BuildLogChunkUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (blcu *BuildLogChunkUpdate) SaveX(ctx context.Context) int {
-	affected, err := blcu.Save(ctx)
+func (_u *BuildLogChunkUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -134,60 +134,60 @@ func (blcu *BuildLogChunkUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (blcu *BuildLogChunkUpdate) Exec(ctx context.Context) error {
-	_, err := blcu.Save(ctx)
+func (_u *BuildLogChunkUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (blcu *BuildLogChunkUpdate) ExecX(ctx context.Context) {
-	if err := blcu.Exec(ctx); err != nil {
+func (_u *BuildLogChunkUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (blcu *BuildLogChunkUpdate) check() error {
-	if blcu.mutation.BazelInvocationCleared() && len(blcu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *BuildLogChunkUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BuildLogChunk.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (blcu *BuildLogChunkUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := blcu.check(); err != nil {
-		return n, err
+func (_u *BuildLogChunkUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
-	if ps := blcu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := blcu.mutation.Data(); ok {
+	if value, ok := _u.mutation.Data(); ok {
 		_spec.SetField(buildlogchunk.FieldData, field.TypeBytes, value)
 	}
-	if value, ok := blcu.mutation.ChunkIndex(); ok {
+	if value, ok := _u.mutation.ChunkIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldChunkIndex, field.TypeInt, value)
 	}
-	if value, ok := blcu.mutation.AddedChunkIndex(); ok {
+	if value, ok := _u.mutation.AddedChunkIndex(); ok {
 		_spec.AddField(buildlogchunk.FieldChunkIndex, field.TypeInt, value)
 	}
-	if value, ok := blcu.mutation.FirstLineIndex(); ok {
+	if value, ok := _u.mutation.FirstLineIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldFirstLineIndex, field.TypeInt64, value)
 	}
-	if value, ok := blcu.mutation.AddedFirstLineIndex(); ok {
+	if value, ok := _u.mutation.AddedFirstLineIndex(); ok {
 		_spec.AddField(buildlogchunk.FieldFirstLineIndex, field.TypeInt64, value)
 	}
-	if value, ok := blcu.mutation.LastLineIndex(); ok {
+	if value, ok := _u.mutation.LastLineIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldLastLineIndex, field.TypeInt64, value)
 	}
-	if value, ok := blcu.mutation.AddedLastLineIndex(); ok {
+	if value, ok := _u.mutation.AddedLastLineIndex(); ok {
 		_spec.AddField(buildlogchunk.FieldLastLineIndex, field.TypeInt64, value)
 	}
-	if blcu.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -200,7 +200,7 @@ func (blcu *BuildLogChunkUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := blcu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -216,7 +216,7 @@ func (blcu *BuildLogChunkUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, blcu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildlogchunk.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -224,8 +224,8 @@ func (blcu *BuildLogChunkUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		return 0, err
 	}
-	blcu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // BuildLogChunkUpdateOne is the builder for updating a single BuildLogChunk entity.
@@ -237,117 +237,117 @@ type BuildLogChunkUpdateOne struct {
 }
 
 // SetData sets the "data" field.
-func (blcuo *BuildLogChunkUpdateOne) SetData(b []byte) *BuildLogChunkUpdateOne {
-	blcuo.mutation.SetData(b)
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) SetData(v []byte) *BuildLogChunkUpdateOne {
+	_u.mutation.SetData(v)
+	return _u
 }
 
 // SetChunkIndex sets the "chunk_index" field.
-func (blcuo *BuildLogChunkUpdateOne) SetChunkIndex(i int) *BuildLogChunkUpdateOne {
-	blcuo.mutation.ResetChunkIndex()
-	blcuo.mutation.SetChunkIndex(i)
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) SetChunkIndex(v int) *BuildLogChunkUpdateOne {
+	_u.mutation.ResetChunkIndex()
+	_u.mutation.SetChunkIndex(v)
+	return _u
 }
 
 // SetNillableChunkIndex sets the "chunk_index" field if the given value is not nil.
-func (blcuo *BuildLogChunkUpdateOne) SetNillableChunkIndex(i *int) *BuildLogChunkUpdateOne {
-	if i != nil {
-		blcuo.SetChunkIndex(*i)
+func (_u *BuildLogChunkUpdateOne) SetNillableChunkIndex(v *int) *BuildLogChunkUpdateOne {
+	if v != nil {
+		_u.SetChunkIndex(*v)
 	}
-	return blcuo
+	return _u
 }
 
-// AddChunkIndex adds i to the "chunk_index" field.
-func (blcuo *BuildLogChunkUpdateOne) AddChunkIndex(i int) *BuildLogChunkUpdateOne {
-	blcuo.mutation.AddChunkIndex(i)
-	return blcuo
+// AddChunkIndex adds value to the "chunk_index" field.
+func (_u *BuildLogChunkUpdateOne) AddChunkIndex(v int) *BuildLogChunkUpdateOne {
+	_u.mutation.AddChunkIndex(v)
+	return _u
 }
 
 // SetFirstLineIndex sets the "first_line_index" field.
-func (blcuo *BuildLogChunkUpdateOne) SetFirstLineIndex(i int64) *BuildLogChunkUpdateOne {
-	blcuo.mutation.ResetFirstLineIndex()
-	blcuo.mutation.SetFirstLineIndex(i)
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) SetFirstLineIndex(v int64) *BuildLogChunkUpdateOne {
+	_u.mutation.ResetFirstLineIndex()
+	_u.mutation.SetFirstLineIndex(v)
+	return _u
 }
 
 // SetNillableFirstLineIndex sets the "first_line_index" field if the given value is not nil.
-func (blcuo *BuildLogChunkUpdateOne) SetNillableFirstLineIndex(i *int64) *BuildLogChunkUpdateOne {
-	if i != nil {
-		blcuo.SetFirstLineIndex(*i)
+func (_u *BuildLogChunkUpdateOne) SetNillableFirstLineIndex(v *int64) *BuildLogChunkUpdateOne {
+	if v != nil {
+		_u.SetFirstLineIndex(*v)
 	}
-	return blcuo
+	return _u
 }
 
-// AddFirstLineIndex adds i to the "first_line_index" field.
-func (blcuo *BuildLogChunkUpdateOne) AddFirstLineIndex(i int64) *BuildLogChunkUpdateOne {
-	blcuo.mutation.AddFirstLineIndex(i)
-	return blcuo
+// AddFirstLineIndex adds value to the "first_line_index" field.
+func (_u *BuildLogChunkUpdateOne) AddFirstLineIndex(v int64) *BuildLogChunkUpdateOne {
+	_u.mutation.AddFirstLineIndex(v)
+	return _u
 }
 
 // SetLastLineIndex sets the "last_line_index" field.
-func (blcuo *BuildLogChunkUpdateOne) SetLastLineIndex(i int64) *BuildLogChunkUpdateOne {
-	blcuo.mutation.ResetLastLineIndex()
-	blcuo.mutation.SetLastLineIndex(i)
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) SetLastLineIndex(v int64) *BuildLogChunkUpdateOne {
+	_u.mutation.ResetLastLineIndex()
+	_u.mutation.SetLastLineIndex(v)
+	return _u
 }
 
 // SetNillableLastLineIndex sets the "last_line_index" field if the given value is not nil.
-func (blcuo *BuildLogChunkUpdateOne) SetNillableLastLineIndex(i *int64) *BuildLogChunkUpdateOne {
-	if i != nil {
-		blcuo.SetLastLineIndex(*i)
+func (_u *BuildLogChunkUpdateOne) SetNillableLastLineIndex(v *int64) *BuildLogChunkUpdateOne {
+	if v != nil {
+		_u.SetLastLineIndex(*v)
 	}
-	return blcuo
+	return _u
 }
 
-// AddLastLineIndex adds i to the "last_line_index" field.
-func (blcuo *BuildLogChunkUpdateOne) AddLastLineIndex(i int64) *BuildLogChunkUpdateOne {
-	blcuo.mutation.AddLastLineIndex(i)
-	return blcuo
+// AddLastLineIndex adds value to the "last_line_index" field.
+func (_u *BuildLogChunkUpdateOne) AddLastLineIndex(v int64) *BuildLogChunkUpdateOne {
+	_u.mutation.AddLastLineIndex(v)
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (blcuo *BuildLogChunkUpdateOne) SetBazelInvocationID(id int64) *BuildLogChunkUpdateOne {
-	blcuo.mutation.SetBazelInvocationID(id)
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) SetBazelInvocationID(id int64) *BuildLogChunkUpdateOne {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (blcuo *BuildLogChunkUpdateOne) SetBazelInvocation(b *BazelInvocation) *BuildLogChunkUpdateOne {
-	return blcuo.SetBazelInvocationID(b.ID)
+func (_u *BuildLogChunkUpdateOne) SetBazelInvocation(v *BazelInvocation) *BuildLogChunkUpdateOne {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the BuildLogChunkMutation object of the builder.
-func (blcuo *BuildLogChunkUpdateOne) Mutation() *BuildLogChunkMutation {
-	return blcuo.mutation
+func (_u *BuildLogChunkUpdateOne) Mutation() *BuildLogChunkMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (blcuo *BuildLogChunkUpdateOne) ClearBazelInvocation() *BuildLogChunkUpdateOne {
-	blcuo.mutation.ClearBazelInvocation()
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) ClearBazelInvocation() *BuildLogChunkUpdateOne {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Where appends a list predicates to the BuildLogChunkUpdate builder.
-func (blcuo *BuildLogChunkUpdateOne) Where(ps ...predicate.BuildLogChunk) *BuildLogChunkUpdateOne {
-	blcuo.mutation.Where(ps...)
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) Where(ps ...predicate.BuildLogChunk) *BuildLogChunkUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (blcuo *BuildLogChunkUpdateOne) Select(field string, fields ...string) *BuildLogChunkUpdateOne {
-	blcuo.fields = append([]string{field}, fields...)
-	return blcuo
+func (_u *BuildLogChunkUpdateOne) Select(field string, fields ...string) *BuildLogChunkUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated BuildLogChunk entity.
-func (blcuo *BuildLogChunkUpdateOne) Save(ctx context.Context) (*BuildLogChunk, error) {
-	return withHooks(ctx, blcuo.sqlSave, blcuo.mutation, blcuo.hooks)
+func (_u *BuildLogChunkUpdateOne) Save(ctx context.Context) (*BuildLogChunk, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (blcuo *BuildLogChunkUpdateOne) SaveX(ctx context.Context) *BuildLogChunk {
-	node, err := blcuo.Save(ctx)
+func (_u *BuildLogChunkUpdateOne) SaveX(ctx context.Context) *BuildLogChunk {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -355,37 +355,37 @@ func (blcuo *BuildLogChunkUpdateOne) SaveX(ctx context.Context) *BuildLogChunk {
 }
 
 // Exec executes the query on the entity.
-func (blcuo *BuildLogChunkUpdateOne) Exec(ctx context.Context) error {
-	_, err := blcuo.Save(ctx)
+func (_u *BuildLogChunkUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (blcuo *BuildLogChunkUpdateOne) ExecX(ctx context.Context) {
-	if err := blcuo.Exec(ctx); err != nil {
+func (_u *BuildLogChunkUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (blcuo *BuildLogChunkUpdateOne) check() error {
-	if blcuo.mutation.BazelInvocationCleared() && len(blcuo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *BuildLogChunkUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BuildLogChunk.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildLogChunk, err error) {
-	if err := blcuo.check(); err != nil {
+func (_u *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildLogChunk, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
-	id, ok := blcuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "BuildLogChunk.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := blcuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, buildlogchunk.FieldID)
 		for _, f := range fields {
@@ -397,35 +397,35 @@ func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildL
 			}
 		}
 	}
-	if ps := blcuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := blcuo.mutation.Data(); ok {
+	if value, ok := _u.mutation.Data(); ok {
 		_spec.SetField(buildlogchunk.FieldData, field.TypeBytes, value)
 	}
-	if value, ok := blcuo.mutation.ChunkIndex(); ok {
+	if value, ok := _u.mutation.ChunkIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldChunkIndex, field.TypeInt, value)
 	}
-	if value, ok := blcuo.mutation.AddedChunkIndex(); ok {
+	if value, ok := _u.mutation.AddedChunkIndex(); ok {
 		_spec.AddField(buildlogchunk.FieldChunkIndex, field.TypeInt, value)
 	}
-	if value, ok := blcuo.mutation.FirstLineIndex(); ok {
+	if value, ok := _u.mutation.FirstLineIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldFirstLineIndex, field.TypeInt64, value)
 	}
-	if value, ok := blcuo.mutation.AddedFirstLineIndex(); ok {
+	if value, ok := _u.mutation.AddedFirstLineIndex(); ok {
 		_spec.AddField(buildlogchunk.FieldFirstLineIndex, field.TypeInt64, value)
 	}
-	if value, ok := blcuo.mutation.LastLineIndex(); ok {
+	if value, ok := _u.mutation.LastLineIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldLastLineIndex, field.TypeInt64, value)
 	}
-	if value, ok := blcuo.mutation.AddedLastLineIndex(); ok {
+	if value, ok := _u.mutation.AddedLastLineIndex(); ok {
 		_spec.AddField(buildlogchunk.FieldLastLineIndex, field.TypeInt64, value)
 	}
-	if blcuo.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -438,7 +438,7 @@ func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildL
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := blcuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -454,10 +454,10 @@ func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildL
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &BuildLogChunk{config: blcuo.config}
+	_node = &BuildLogChunk{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, blcuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildlogchunk.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -465,6 +465,6 @@ func (blcuo *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildL
 		}
 		return nil, err
 	}
-	blcuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

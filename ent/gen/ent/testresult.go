@@ -102,7 +102,7 @@ func (*TestResult) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TestResult fields.
-func (tr *TestResult) assignValues(columns []string, values []any) error {
+func (_m *TestResult) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -113,60 +113,60 @@ func (tr *TestResult) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tr.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case testresult.FieldRun:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field run", values[i])
 			} else if value.Valid {
-				tr.Run = int32(value.Int64)
+				_m.Run = int32(value.Int64)
 			}
 		case testresult.FieldShard:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field shard", values[i])
 			} else if value.Valid {
-				tr.Shard = int32(value.Int64)
+				_m.Shard = int32(value.Int64)
 			}
 		case testresult.FieldAttempt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field attempt", values[i])
 			} else if value.Valid {
-				tr.Attempt = int32(value.Int64)
+				_m.Attempt = int32(value.Int64)
 			}
 		case testresult.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				tr.Status = value.String
+				_m.Status = value.String
 			}
 		case testresult.FieldStatusDetails:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status_details", values[i])
 			} else if value.Valid {
-				tr.StatusDetails = value.String
+				_m.StatusDetails = value.String
 			}
 		case testresult.FieldCachedLocally:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field cached_locally", values[i])
 			} else if value.Valid {
-				tr.CachedLocally = value.Bool
+				_m.CachedLocally = value.Bool
 			}
 		case testresult.FieldTestAttemptStart:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field test_attempt_start", values[i])
 			} else if value.Valid {
-				tr.TestAttemptStart = value.Time
+				_m.TestAttemptStart = value.Time
 			}
 		case testresult.FieldTestAttemptDurationInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field test_attempt_duration_in_ms", values[i])
 			} else if value.Valid {
-				tr.TestAttemptDurationInMs = value.Int64
+				_m.TestAttemptDurationInMs = value.Int64
 			}
 		case testresult.FieldWarning:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field warning", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &tr.Warning); err != nil {
+				if err := json.Unmarshal(*value, &_m.Warning); err != nil {
 					return fmt.Errorf("unmarshal field warning: %w", err)
 				}
 			}
@@ -174,31 +174,31 @@ func (tr *TestResult) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field strategy", values[i])
 			} else if value.Valid {
-				tr.Strategy = value.String
+				_m.Strategy = value.String
 			}
 		case testresult.FieldCachedRemotely:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field cached_remotely", values[i])
 			} else if value.Valid {
-				tr.CachedRemotely = value.Bool
+				_m.CachedRemotely = value.Bool
 			}
 		case testresult.FieldExitCode:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field exit_code", values[i])
 			} else if value.Valid {
-				tr.ExitCode = int32(value.Int64)
+				_m.ExitCode = int32(value.Int64)
 			}
 		case testresult.FieldHostname:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field hostname", values[i])
 			} else if value.Valid {
-				tr.Hostname = value.String
+				_m.Hostname = value.String
 			}
 		case testresult.FieldTimingBreakdown:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field timing_breakdown", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &tr.TimingBreakdown); err != nil {
+				if err := json.Unmarshal(*value, &_m.TimingBreakdown); err != nil {
 					return fmt.Errorf("unmarshal field timing_breakdown: %w", err)
 				}
 			}
@@ -206,11 +206,11 @@ func (tr *TestResult) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_test_results", value)
 			} else if value.Valid {
-				tr.test_summary_test_results = new(int64)
-				*tr.test_summary_test_results = int64(value.Int64)
+				_m.test_summary_test_results = new(int64)
+				*_m.test_summary_test_results = int64(value.Int64)
 			}
 		default:
-			tr.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -218,79 +218,79 @@ func (tr *TestResult) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TestResult.
 // This includes values selected through modifiers, order, etc.
-func (tr *TestResult) Value(name string) (ent.Value, error) {
-	return tr.selectValues.Get(name)
+func (_m *TestResult) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryTestSummary queries the "test_summary" edge of the TestResult entity.
-func (tr *TestResult) QueryTestSummary() *TestSummaryQuery {
-	return NewTestResultClient(tr.config).QueryTestSummary(tr)
+func (_m *TestResult) QueryTestSummary() *TestSummaryQuery {
+	return NewTestResultClient(_m.config).QueryTestSummary(_m)
 }
 
 // Update returns a builder for updating this TestResult.
 // Note that you need to call TestResult.Unwrap() before calling this method if this TestResult
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (tr *TestResult) Update() *TestResultUpdateOne {
-	return NewTestResultClient(tr.config).UpdateOne(tr)
+func (_m *TestResult) Update() *TestResultUpdateOne {
+	return NewTestResultClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TestResult entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (tr *TestResult) Unwrap() *TestResult {
-	_tx, ok := tr.config.driver.(*txDriver)
+func (_m *TestResult) Unwrap() *TestResult {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TestResult is not a transactional entity")
 	}
-	tr.config.driver = _tx.drv
-	return tr
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (tr *TestResult) String() string {
+func (_m *TestResult) String() string {
 	var builder strings.Builder
 	builder.WriteString("TestResult(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", tr.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("run=")
-	builder.WriteString(fmt.Sprintf("%v", tr.Run))
+	builder.WriteString(fmt.Sprintf("%v", _m.Run))
 	builder.WriteString(", ")
 	builder.WriteString("shard=")
-	builder.WriteString(fmt.Sprintf("%v", tr.Shard))
+	builder.WriteString(fmt.Sprintf("%v", _m.Shard))
 	builder.WriteString(", ")
 	builder.WriteString("attempt=")
-	builder.WriteString(fmt.Sprintf("%v", tr.Attempt))
+	builder.WriteString(fmt.Sprintf("%v", _m.Attempt))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(tr.Status)
+	builder.WriteString(_m.Status)
 	builder.WriteString(", ")
 	builder.WriteString("status_details=")
-	builder.WriteString(tr.StatusDetails)
+	builder.WriteString(_m.StatusDetails)
 	builder.WriteString(", ")
 	builder.WriteString("cached_locally=")
-	builder.WriteString(fmt.Sprintf("%v", tr.CachedLocally))
+	builder.WriteString(fmt.Sprintf("%v", _m.CachedLocally))
 	builder.WriteString(", ")
 	builder.WriteString("test_attempt_start=")
-	builder.WriteString(tr.TestAttemptStart.Format(time.ANSIC))
+	builder.WriteString(_m.TestAttemptStart.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("test_attempt_duration_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", tr.TestAttemptDurationInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.TestAttemptDurationInMs))
 	builder.WriteString(", ")
 	builder.WriteString("warning=")
-	builder.WriteString(fmt.Sprintf("%v", tr.Warning))
+	builder.WriteString(fmt.Sprintf("%v", _m.Warning))
 	builder.WriteString(", ")
 	builder.WriteString("strategy=")
-	builder.WriteString(tr.Strategy)
+	builder.WriteString(_m.Strategy)
 	builder.WriteString(", ")
 	builder.WriteString("cached_remotely=")
-	builder.WriteString(fmt.Sprintf("%v", tr.CachedRemotely))
+	builder.WriteString(fmt.Sprintf("%v", _m.CachedRemotely))
 	builder.WriteString(", ")
 	builder.WriteString("exit_code=")
-	builder.WriteString(fmt.Sprintf("%v", tr.ExitCode))
+	builder.WriteString(fmt.Sprintf("%v", _m.ExitCode))
 	builder.WriteString(", ")
 	builder.WriteString("hostname=")
-	builder.WriteString(tr.Hostname)
+	builder.WriteString(_m.Hostname)
 	builder.WriteString(", ")
 	builder.WriteString("timing_breakdown=")
-	builder.WriteString(fmt.Sprintf("%v", tr.TimingBreakdown))
+	builder.WriteString(fmt.Sprintf("%v", _m.TimingBreakdown))
 	builder.WriteByte(')')
 	return builder.String()
 }

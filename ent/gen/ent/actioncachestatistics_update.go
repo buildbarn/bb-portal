@@ -24,220 +24,220 @@ type ActionCacheStatisticsUpdate struct {
 }
 
 // Where appends a list predicates to the ActionCacheStatisticsUpdate builder.
-func (acsu *ActionCacheStatisticsUpdate) Where(ps ...predicate.ActionCacheStatistics) *ActionCacheStatisticsUpdate {
-	acsu.mutation.Where(ps...)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) Where(ps ...predicate.ActionCacheStatistics) *ActionCacheStatisticsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSizeInBytes sets the "size_in_bytes" field.
-func (acsu *ActionCacheStatisticsUpdate) SetSizeInBytes(u uint64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.ResetSizeInBytes()
-	acsu.mutation.SetSizeInBytes(u)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpdate {
+	_u.mutation.ResetSizeInBytes()
+	_u.mutation.SetSizeInBytes(v)
+	return _u
 }
 
 // SetNillableSizeInBytes sets the "size_in_bytes" field if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableSizeInBytes(u *uint64) *ActionCacheStatisticsUpdate {
-	if u != nil {
-		acsu.SetSizeInBytes(*u)
+func (_u *ActionCacheStatisticsUpdate) SetNillableSizeInBytes(v *uint64) *ActionCacheStatisticsUpdate {
+	if v != nil {
+		_u.SetSizeInBytes(*v)
 	}
-	return acsu
+	return _u
 }
 
-// AddSizeInBytes adds u to the "size_in_bytes" field.
-func (acsu *ActionCacheStatisticsUpdate) AddSizeInBytes(u int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.AddSizeInBytes(u)
-	return acsu
+// AddSizeInBytes adds value to the "size_in_bytes" field.
+func (_u *ActionCacheStatisticsUpdate) AddSizeInBytes(v int64) *ActionCacheStatisticsUpdate {
+	_u.mutation.AddSizeInBytes(v)
+	return _u
 }
 
 // ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (acsu *ActionCacheStatisticsUpdate) ClearSizeInBytes() *ActionCacheStatisticsUpdate {
-	acsu.mutation.ClearSizeInBytes()
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) ClearSizeInBytes() *ActionCacheStatisticsUpdate {
+	_u.mutation.ClearSizeInBytes()
+	return _u
 }
 
 // SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) SetSaveTimeInMs(u uint64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.ResetSaveTimeInMs()
-	acsu.mutation.SetSaveTimeInMs(u)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpdate {
+	_u.mutation.ResetSaveTimeInMs()
+	_u.mutation.SetSaveTimeInMs(v)
+	return _u
 }
 
 // SetNillableSaveTimeInMs sets the "save_time_in_ms" field if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableSaveTimeInMs(u *uint64) *ActionCacheStatisticsUpdate {
-	if u != nil {
-		acsu.SetSaveTimeInMs(*u)
+func (_u *ActionCacheStatisticsUpdate) SetNillableSaveTimeInMs(v *uint64) *ActionCacheStatisticsUpdate {
+	if v != nil {
+		_u.SetSaveTimeInMs(*v)
 	}
-	return acsu
+	return _u
 }
 
-// AddSaveTimeInMs adds u to the "save_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) AddSaveTimeInMs(u int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.AddSaveTimeInMs(u)
-	return acsu
+// AddSaveTimeInMs adds value to the "save_time_in_ms" field.
+func (_u *ActionCacheStatisticsUpdate) AddSaveTimeInMs(v int64) *ActionCacheStatisticsUpdate {
+	_u.mutation.AddSaveTimeInMs(v)
+	return _u
 }
 
 // ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) ClearSaveTimeInMs() *ActionCacheStatisticsUpdate {
-	acsu.mutation.ClearSaveTimeInMs()
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) ClearSaveTimeInMs() *ActionCacheStatisticsUpdate {
+	_u.mutation.ClearSaveTimeInMs()
+	return _u
 }
 
 // SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) SetLoadTimeInMs(i int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.ResetLoadTimeInMs()
-	acsu.mutation.SetLoadTimeInMs(i)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpdate {
+	_u.mutation.ResetLoadTimeInMs()
+	_u.mutation.SetLoadTimeInMs(v)
+	return _u
 }
 
 // SetNillableLoadTimeInMs sets the "load_time_in_ms" field if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableLoadTimeInMs(i *int64) *ActionCacheStatisticsUpdate {
-	if i != nil {
-		acsu.SetLoadTimeInMs(*i)
+func (_u *ActionCacheStatisticsUpdate) SetNillableLoadTimeInMs(v *int64) *ActionCacheStatisticsUpdate {
+	if v != nil {
+		_u.SetLoadTimeInMs(*v)
 	}
-	return acsu
+	return _u
 }
 
-// AddLoadTimeInMs adds i to the "load_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) AddLoadTimeInMs(i int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.AddLoadTimeInMs(i)
-	return acsu
+// AddLoadTimeInMs adds value to the "load_time_in_ms" field.
+func (_u *ActionCacheStatisticsUpdate) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpdate {
+	_u.mutation.AddLoadTimeInMs(v)
+	return _u
 }
 
 // ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) ClearLoadTimeInMs() *ActionCacheStatisticsUpdate {
-	acsu.mutation.ClearLoadTimeInMs()
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) ClearLoadTimeInMs() *ActionCacheStatisticsUpdate {
+	_u.mutation.ClearLoadTimeInMs()
+	return _u
 }
 
 // SetHits sets the "hits" field.
-func (acsu *ActionCacheStatisticsUpdate) SetHits(i int32) *ActionCacheStatisticsUpdate {
-	acsu.mutation.ResetHits()
-	acsu.mutation.SetHits(i)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) SetHits(v int32) *ActionCacheStatisticsUpdate {
+	_u.mutation.ResetHits()
+	_u.mutation.SetHits(v)
+	return _u
 }
 
 // SetNillableHits sets the "hits" field if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableHits(i *int32) *ActionCacheStatisticsUpdate {
-	if i != nil {
-		acsu.SetHits(*i)
+func (_u *ActionCacheStatisticsUpdate) SetNillableHits(v *int32) *ActionCacheStatisticsUpdate {
+	if v != nil {
+		_u.SetHits(*v)
 	}
-	return acsu
+	return _u
 }
 
-// AddHits adds i to the "hits" field.
-func (acsu *ActionCacheStatisticsUpdate) AddHits(i int32) *ActionCacheStatisticsUpdate {
-	acsu.mutation.AddHits(i)
-	return acsu
+// AddHits adds value to the "hits" field.
+func (_u *ActionCacheStatisticsUpdate) AddHits(v int32) *ActionCacheStatisticsUpdate {
+	_u.mutation.AddHits(v)
+	return _u
 }
 
 // ClearHits clears the value of the "hits" field.
-func (acsu *ActionCacheStatisticsUpdate) ClearHits() *ActionCacheStatisticsUpdate {
-	acsu.mutation.ClearHits()
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) ClearHits() *ActionCacheStatisticsUpdate {
+	_u.mutation.ClearHits()
+	return _u
 }
 
 // SetMisses sets the "misses" field.
-func (acsu *ActionCacheStatisticsUpdate) SetMisses(i int32) *ActionCacheStatisticsUpdate {
-	acsu.mutation.ResetMisses()
-	acsu.mutation.SetMisses(i)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) SetMisses(v int32) *ActionCacheStatisticsUpdate {
+	_u.mutation.ResetMisses()
+	_u.mutation.SetMisses(v)
+	return _u
 }
 
 // SetNillableMisses sets the "misses" field if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableMisses(i *int32) *ActionCacheStatisticsUpdate {
-	if i != nil {
-		acsu.SetMisses(*i)
+func (_u *ActionCacheStatisticsUpdate) SetNillableMisses(v *int32) *ActionCacheStatisticsUpdate {
+	if v != nil {
+		_u.SetMisses(*v)
 	}
-	return acsu
+	return _u
 }
 
-// AddMisses adds i to the "misses" field.
-func (acsu *ActionCacheStatisticsUpdate) AddMisses(i int32) *ActionCacheStatisticsUpdate {
-	acsu.mutation.AddMisses(i)
-	return acsu
+// AddMisses adds value to the "misses" field.
+func (_u *ActionCacheStatisticsUpdate) AddMisses(v int32) *ActionCacheStatisticsUpdate {
+	_u.mutation.AddMisses(v)
+	return _u
 }
 
 // ClearMisses clears the value of the "misses" field.
-func (acsu *ActionCacheStatisticsUpdate) ClearMisses() *ActionCacheStatisticsUpdate {
-	acsu.mutation.ClearMisses()
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) ClearMisses() *ActionCacheStatisticsUpdate {
+	_u.mutation.ClearMisses()
+	return _u
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (acsu *ActionCacheStatisticsUpdate) SetActionSummaryID(id int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.SetActionSummaryID(id)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) SetActionSummaryID(id int64) *ActionCacheStatisticsUpdate {
+	_u.mutation.SetActionSummaryID(id)
+	return _u
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableActionSummaryID(id *int64) *ActionCacheStatisticsUpdate {
+func (_u *ActionCacheStatisticsUpdate) SetNillableActionSummaryID(id *int64) *ActionCacheStatisticsUpdate {
 	if id != nil {
-		acsu = acsu.SetActionSummaryID(*id)
+		_u = _u.SetActionSummaryID(*id)
 	}
-	return acsu
+	return _u
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (acsu *ActionCacheStatisticsUpdate) SetActionSummary(a *ActionSummary) *ActionCacheStatisticsUpdate {
-	return acsu.SetActionSummaryID(a.ID)
+func (_u *ActionCacheStatisticsUpdate) SetActionSummary(v *ActionSummary) *ActionCacheStatisticsUpdate {
+	return _u.SetActionSummaryID(v.ID)
 }
 
 // AddMissDetailIDs adds the "miss_details" edge to the MissDetail entity by IDs.
-func (acsu *ActionCacheStatisticsUpdate) AddMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.AddMissDetailIDs(ids...)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) AddMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdate {
+	_u.mutation.AddMissDetailIDs(ids...)
+	return _u
 }
 
 // AddMissDetails adds the "miss_details" edges to the MissDetail entity.
-func (acsu *ActionCacheStatisticsUpdate) AddMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdate {
-	ids := make([]int64, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+func (_u *ActionCacheStatisticsUpdate) AddMissDetails(v ...*MissDetail) *ActionCacheStatisticsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acsu.AddMissDetailIDs(ids...)
+	return _u.AddMissDetailIDs(ids...)
 }
 
 // Mutation returns the ActionCacheStatisticsMutation object of the builder.
-func (acsu *ActionCacheStatisticsUpdate) Mutation() *ActionCacheStatisticsMutation {
-	return acsu.mutation
+func (_u *ActionCacheStatisticsUpdate) Mutation() *ActionCacheStatisticsMutation {
+	return _u.mutation
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
-func (acsu *ActionCacheStatisticsUpdate) ClearActionSummary() *ActionCacheStatisticsUpdate {
-	acsu.mutation.ClearActionSummary()
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) ClearActionSummary() *ActionCacheStatisticsUpdate {
+	_u.mutation.ClearActionSummary()
+	return _u
 }
 
 // ClearMissDetails clears all "miss_details" edges to the MissDetail entity.
-func (acsu *ActionCacheStatisticsUpdate) ClearMissDetails() *ActionCacheStatisticsUpdate {
-	acsu.mutation.ClearMissDetails()
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) ClearMissDetails() *ActionCacheStatisticsUpdate {
+	_u.mutation.ClearMissDetails()
+	return _u
 }
 
 // RemoveMissDetailIDs removes the "miss_details" edge to MissDetail entities by IDs.
-func (acsu *ActionCacheStatisticsUpdate) RemoveMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.RemoveMissDetailIDs(ids...)
-	return acsu
+func (_u *ActionCacheStatisticsUpdate) RemoveMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdate {
+	_u.mutation.RemoveMissDetailIDs(ids...)
+	return _u
 }
 
 // RemoveMissDetails removes "miss_details" edges to MissDetail entities.
-func (acsu *ActionCacheStatisticsUpdate) RemoveMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdate {
-	ids := make([]int64, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+func (_u *ActionCacheStatisticsUpdate) RemoveMissDetails(v ...*MissDetail) *ActionCacheStatisticsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acsu.RemoveMissDetailIDs(ids...)
+	return _u.RemoveMissDetailIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (acsu *ActionCacheStatisticsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, acsu.sqlSave, acsu.mutation, acsu.hooks)
+func (_u *ActionCacheStatisticsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acsu *ActionCacheStatisticsUpdate) SaveX(ctx context.Context) int {
-	affected, err := acsu.Save(ctx)
+func (_u *ActionCacheStatisticsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -245,73 +245,73 @@ func (acsu *ActionCacheStatisticsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (acsu *ActionCacheStatisticsUpdate) Exec(ctx context.Context) error {
-	_, err := acsu.Save(ctx)
+func (_u *ActionCacheStatisticsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acsu *ActionCacheStatisticsUpdate) ExecX(ctx context.Context) {
-	if err := acsu.Exec(ctx); err != nil {
+func (_u *ActionCacheStatisticsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
-	if ps := acsu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := acsu.mutation.SizeInBytes(); ok {
+	if value, ok := _u.mutation.SizeInBytes(); ok {
 		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
 	}
-	if value, ok := acsu.mutation.AddedSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeInBytes(); ok {
 		_spec.AddField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
 	}
-	if acsu.mutation.SizeInBytesCleared() {
+	if _u.mutation.SizeInBytesCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64)
 	}
-	if value, ok := acsu.mutation.SaveTimeInMs(); ok {
+	if value, ok := _u.mutation.SaveTimeInMs(); ok {
 		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
 	}
-	if value, ok := acsu.mutation.AddedSaveTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedSaveTimeInMs(); ok {
 		_spec.AddField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
 	}
-	if acsu.mutation.SaveTimeInMsCleared() {
+	if _u.mutation.SaveTimeInMsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64)
 	}
-	if value, ok := acsu.mutation.LoadTimeInMs(); ok {
+	if value, ok := _u.mutation.LoadTimeInMs(); ok {
 		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := acsu.mutation.AddedLoadTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedLoadTimeInMs(); ok {
 		_spec.AddField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
 	}
-	if acsu.mutation.LoadTimeInMsCleared() {
+	if _u.mutation.LoadTimeInMsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64)
 	}
-	if value, ok := acsu.mutation.Hits(); ok {
+	if value, ok := _u.mutation.Hits(); ok {
 		_spec.SetField(actioncachestatistics.FieldHits, field.TypeInt32, value)
 	}
-	if value, ok := acsu.mutation.AddedHits(); ok {
+	if value, ok := _u.mutation.AddedHits(); ok {
 		_spec.AddField(actioncachestatistics.FieldHits, field.TypeInt32, value)
 	}
-	if acsu.mutation.HitsCleared() {
+	if _u.mutation.HitsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldHits, field.TypeInt32)
 	}
-	if value, ok := acsu.mutation.Misses(); ok {
+	if value, ok := _u.mutation.Misses(); ok {
 		_spec.SetField(actioncachestatistics.FieldMisses, field.TypeInt32, value)
 	}
-	if value, ok := acsu.mutation.AddedMisses(); ok {
+	if value, ok := _u.mutation.AddedMisses(); ok {
 		_spec.AddField(actioncachestatistics.FieldMisses, field.TypeInt32, value)
 	}
-	if acsu.mutation.MissesCleared() {
+	if _u.mutation.MissesCleared() {
 		_spec.ClearField(actioncachestatistics.FieldMisses, field.TypeInt32)
 	}
-	if acsu.mutation.ActionSummaryCleared() {
+	if _u.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -324,7 +324,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acsu.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -340,7 +340,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if acsu.mutation.MissDetailsCleared() {
+	if _u.mutation.MissDetailsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -353,7 +353,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acsu.mutation.RemovedMissDetailsIDs(); len(nodes) > 0 && !acsu.mutation.MissDetailsCleared() {
+	if nodes := _u.mutation.RemovedMissDetailsIDs(); len(nodes) > 0 && !_u.mutation.MissDetailsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -369,7 +369,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acsu.mutation.MissDetailsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MissDetailsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -385,7 +385,7 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, acsu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actioncachestatistics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -393,8 +393,8 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		}
 		return 0, err
 	}
-	acsu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ActionCacheStatisticsUpdateOne is the builder for updating a single ActionCacheStatistics entity.
@@ -406,227 +406,227 @@ type ActionCacheStatisticsUpdateOne struct {
 }
 
 // SetSizeInBytes sets the "size_in_bytes" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetSizeInBytes(u uint64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ResetSizeInBytes()
-	acsuo.mutation.SetSizeInBytes(u)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ResetSizeInBytes()
+	_u.mutation.SetSizeInBytes(v)
+	return _u
 }
 
 // SetNillableSizeInBytes sets the "size_in_bytes" field if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableSizeInBytes(u *uint64) *ActionCacheStatisticsUpdateOne {
-	if u != nil {
-		acsuo.SetSizeInBytes(*u)
+func (_u *ActionCacheStatisticsUpdateOne) SetNillableSizeInBytes(v *uint64) *ActionCacheStatisticsUpdateOne {
+	if v != nil {
+		_u.SetSizeInBytes(*v)
 	}
-	return acsuo
+	return _u
 }
 
-// AddSizeInBytes adds u to the "size_in_bytes" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddSizeInBytes(u int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.AddSizeInBytes(u)
-	return acsuo
+// AddSizeInBytes adds value to the "size_in_bytes" field.
+func (_u *ActionCacheStatisticsUpdateOne) AddSizeInBytes(v int64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.AddSizeInBytes(v)
+	return _u
 }
 
 // ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) ClearSizeInBytes() *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ClearSizeInBytes()
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) ClearSizeInBytes() *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ClearSizeInBytes()
+	return _u
 }
 
 // SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetSaveTimeInMs(u uint64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ResetSaveTimeInMs()
-	acsuo.mutation.SetSaveTimeInMs(u)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ResetSaveTimeInMs()
+	_u.mutation.SetSaveTimeInMs(v)
+	return _u
 }
 
 // SetNillableSaveTimeInMs sets the "save_time_in_ms" field if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableSaveTimeInMs(u *uint64) *ActionCacheStatisticsUpdateOne {
-	if u != nil {
-		acsuo.SetSaveTimeInMs(*u)
+func (_u *ActionCacheStatisticsUpdateOne) SetNillableSaveTimeInMs(v *uint64) *ActionCacheStatisticsUpdateOne {
+	if v != nil {
+		_u.SetSaveTimeInMs(*v)
 	}
-	return acsuo
+	return _u
 }
 
-// AddSaveTimeInMs adds u to the "save_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddSaveTimeInMs(u int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.AddSaveTimeInMs(u)
-	return acsuo
+// AddSaveTimeInMs adds value to the "save_time_in_ms" field.
+func (_u *ActionCacheStatisticsUpdateOne) AddSaveTimeInMs(v int64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.AddSaveTimeInMs(v)
+	return _u
 }
 
 // ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) ClearSaveTimeInMs() *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ClearSaveTimeInMs()
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) ClearSaveTimeInMs() *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ClearSaveTimeInMs()
+	return _u
 }
 
 // SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetLoadTimeInMs(i int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ResetLoadTimeInMs()
-	acsuo.mutation.SetLoadTimeInMs(i)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ResetLoadTimeInMs()
+	_u.mutation.SetLoadTimeInMs(v)
+	return _u
 }
 
 // SetNillableLoadTimeInMs sets the "load_time_in_ms" field if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableLoadTimeInMs(i *int64) *ActionCacheStatisticsUpdateOne {
-	if i != nil {
-		acsuo.SetLoadTimeInMs(*i)
+func (_u *ActionCacheStatisticsUpdateOne) SetNillableLoadTimeInMs(v *int64) *ActionCacheStatisticsUpdateOne {
+	if v != nil {
+		_u.SetLoadTimeInMs(*v)
 	}
-	return acsuo
+	return _u
 }
 
-// AddLoadTimeInMs adds i to the "load_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddLoadTimeInMs(i int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.AddLoadTimeInMs(i)
-	return acsuo
+// AddLoadTimeInMs adds value to the "load_time_in_ms" field.
+func (_u *ActionCacheStatisticsUpdateOne) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.AddLoadTimeInMs(v)
+	return _u
 }
 
 // ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) ClearLoadTimeInMs() *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ClearLoadTimeInMs()
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) ClearLoadTimeInMs() *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ClearLoadTimeInMs()
+	return _u
 }
 
 // SetHits sets the "hits" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetHits(i int32) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ResetHits()
-	acsuo.mutation.SetHits(i)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) SetHits(v int32) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ResetHits()
+	_u.mutation.SetHits(v)
+	return _u
 }
 
 // SetNillableHits sets the "hits" field if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableHits(i *int32) *ActionCacheStatisticsUpdateOne {
-	if i != nil {
-		acsuo.SetHits(*i)
+func (_u *ActionCacheStatisticsUpdateOne) SetNillableHits(v *int32) *ActionCacheStatisticsUpdateOne {
+	if v != nil {
+		_u.SetHits(*v)
 	}
-	return acsuo
+	return _u
 }
 
-// AddHits adds i to the "hits" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddHits(i int32) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.AddHits(i)
-	return acsuo
+// AddHits adds value to the "hits" field.
+func (_u *ActionCacheStatisticsUpdateOne) AddHits(v int32) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.AddHits(v)
+	return _u
 }
 
 // ClearHits clears the value of the "hits" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) ClearHits() *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ClearHits()
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) ClearHits() *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ClearHits()
+	return _u
 }
 
 // SetMisses sets the "misses" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetMisses(i int32) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ResetMisses()
-	acsuo.mutation.SetMisses(i)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) SetMisses(v int32) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ResetMisses()
+	_u.mutation.SetMisses(v)
+	return _u
 }
 
 // SetNillableMisses sets the "misses" field if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableMisses(i *int32) *ActionCacheStatisticsUpdateOne {
-	if i != nil {
-		acsuo.SetMisses(*i)
+func (_u *ActionCacheStatisticsUpdateOne) SetNillableMisses(v *int32) *ActionCacheStatisticsUpdateOne {
+	if v != nil {
+		_u.SetMisses(*v)
 	}
-	return acsuo
+	return _u
 }
 
-// AddMisses adds i to the "misses" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddMisses(i int32) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.AddMisses(i)
-	return acsuo
+// AddMisses adds value to the "misses" field.
+func (_u *ActionCacheStatisticsUpdateOne) AddMisses(v int32) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.AddMisses(v)
+	return _u
 }
 
 // ClearMisses clears the value of the "misses" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) ClearMisses() *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ClearMisses()
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) ClearMisses() *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ClearMisses()
+	return _u
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetActionSummaryID(id int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.SetActionSummaryID(id)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) SetActionSummaryID(id int64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.SetActionSummaryID(id)
+	return _u
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableActionSummaryID(id *int64) *ActionCacheStatisticsUpdateOne {
+func (_u *ActionCacheStatisticsUpdateOne) SetNillableActionSummaryID(id *int64) *ActionCacheStatisticsUpdateOne {
 	if id != nil {
-		acsuo = acsuo.SetActionSummaryID(*id)
+		_u = _u.SetActionSummaryID(*id)
 	}
-	return acsuo
+	return _u
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetActionSummary(a *ActionSummary) *ActionCacheStatisticsUpdateOne {
-	return acsuo.SetActionSummaryID(a.ID)
+func (_u *ActionCacheStatisticsUpdateOne) SetActionSummary(v *ActionSummary) *ActionCacheStatisticsUpdateOne {
+	return _u.SetActionSummaryID(v.ID)
 }
 
 // AddMissDetailIDs adds the "miss_details" edge to the MissDetail entity by IDs.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.AddMissDetailIDs(ids...)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) AddMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.AddMissDetailIDs(ids...)
+	return _u
 }
 
 // AddMissDetails adds the "miss_details" edges to the MissDetail entity.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdateOne {
-	ids := make([]int64, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+func (_u *ActionCacheStatisticsUpdateOne) AddMissDetails(v ...*MissDetail) *ActionCacheStatisticsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acsuo.AddMissDetailIDs(ids...)
+	return _u.AddMissDetailIDs(ids...)
 }
 
 // Mutation returns the ActionCacheStatisticsMutation object of the builder.
-func (acsuo *ActionCacheStatisticsUpdateOne) Mutation() *ActionCacheStatisticsMutation {
-	return acsuo.mutation
+func (_u *ActionCacheStatisticsUpdateOne) Mutation() *ActionCacheStatisticsMutation {
+	return _u.mutation
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
-func (acsuo *ActionCacheStatisticsUpdateOne) ClearActionSummary() *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ClearActionSummary()
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) ClearActionSummary() *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ClearActionSummary()
+	return _u
 }
 
 // ClearMissDetails clears all "miss_details" edges to the MissDetail entity.
-func (acsuo *ActionCacheStatisticsUpdateOne) ClearMissDetails() *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.ClearMissDetails()
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) ClearMissDetails() *ActionCacheStatisticsUpdateOne {
+	_u.mutation.ClearMissDetails()
+	return _u
 }
 
 // RemoveMissDetailIDs removes the "miss_details" edge to MissDetail entities by IDs.
-func (acsuo *ActionCacheStatisticsUpdateOne) RemoveMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.RemoveMissDetailIDs(ids...)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) RemoveMissDetailIDs(ids ...int64) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.RemoveMissDetailIDs(ids...)
+	return _u
 }
 
 // RemoveMissDetails removes "miss_details" edges to MissDetail entities.
-func (acsuo *ActionCacheStatisticsUpdateOne) RemoveMissDetails(m ...*MissDetail) *ActionCacheStatisticsUpdateOne {
-	ids := make([]int64, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+func (_u *ActionCacheStatisticsUpdateOne) RemoveMissDetails(v ...*MissDetail) *ActionCacheStatisticsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acsuo.RemoveMissDetailIDs(ids...)
+	return _u.RemoveMissDetailIDs(ids...)
 }
 
 // Where appends a list predicates to the ActionCacheStatisticsUpdate builder.
-func (acsuo *ActionCacheStatisticsUpdateOne) Where(ps ...predicate.ActionCacheStatistics) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.Where(ps...)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) Where(ps ...predicate.ActionCacheStatistics) *ActionCacheStatisticsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (acsuo *ActionCacheStatisticsUpdateOne) Select(field string, fields ...string) *ActionCacheStatisticsUpdateOne {
-	acsuo.fields = append([]string{field}, fields...)
-	return acsuo
+func (_u *ActionCacheStatisticsUpdateOne) Select(field string, fields ...string) *ActionCacheStatisticsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated ActionCacheStatistics entity.
-func (acsuo *ActionCacheStatisticsUpdateOne) Save(ctx context.Context) (*ActionCacheStatistics, error) {
-	return withHooks(ctx, acsuo.sqlSave, acsuo.mutation, acsuo.hooks)
+func (_u *ActionCacheStatisticsUpdateOne) Save(ctx context.Context) (*ActionCacheStatistics, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acsuo *ActionCacheStatisticsUpdateOne) SaveX(ctx context.Context) *ActionCacheStatistics {
-	node, err := acsuo.Save(ctx)
+func (_u *ActionCacheStatisticsUpdateOne) SaveX(ctx context.Context) *ActionCacheStatistics {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -634,26 +634,26 @@ func (acsuo *ActionCacheStatisticsUpdateOne) SaveX(ctx context.Context) *ActionC
 }
 
 // Exec executes the query on the entity.
-func (acsuo *ActionCacheStatisticsUpdateOne) Exec(ctx context.Context) error {
-	_, err := acsuo.Save(ctx)
+func (_u *ActionCacheStatisticsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acsuo *ActionCacheStatisticsUpdateOne) ExecX(ctx context.Context) {
-	if err := acsuo.Exec(ctx); err != nil {
+func (_u *ActionCacheStatisticsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node *ActionCacheStatistics, err error) {
+func (_u *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node *ActionCacheStatistics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
-	id, ok := acsuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ActionCacheStatistics.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := acsuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, actioncachestatistics.FieldID)
 		for _, f := range fields {
@@ -665,59 +665,59 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 			}
 		}
 	}
-	if ps := acsuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := acsuo.mutation.SizeInBytes(); ok {
+	if value, ok := _u.mutation.SizeInBytes(); ok {
 		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
 	}
-	if value, ok := acsuo.mutation.AddedSizeInBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeInBytes(); ok {
 		_spec.AddField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
 	}
-	if acsuo.mutation.SizeInBytesCleared() {
+	if _u.mutation.SizeInBytesCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64)
 	}
-	if value, ok := acsuo.mutation.SaveTimeInMs(); ok {
+	if value, ok := _u.mutation.SaveTimeInMs(); ok {
 		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
 	}
-	if value, ok := acsuo.mutation.AddedSaveTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedSaveTimeInMs(); ok {
 		_spec.AddField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
 	}
-	if acsuo.mutation.SaveTimeInMsCleared() {
+	if _u.mutation.SaveTimeInMsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64)
 	}
-	if value, ok := acsuo.mutation.LoadTimeInMs(); ok {
+	if value, ok := _u.mutation.LoadTimeInMs(); ok {
 		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := acsuo.mutation.AddedLoadTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedLoadTimeInMs(); ok {
 		_spec.AddField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
 	}
-	if acsuo.mutation.LoadTimeInMsCleared() {
+	if _u.mutation.LoadTimeInMsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64)
 	}
-	if value, ok := acsuo.mutation.Hits(); ok {
+	if value, ok := _u.mutation.Hits(); ok {
 		_spec.SetField(actioncachestatistics.FieldHits, field.TypeInt32, value)
 	}
-	if value, ok := acsuo.mutation.AddedHits(); ok {
+	if value, ok := _u.mutation.AddedHits(); ok {
 		_spec.AddField(actioncachestatistics.FieldHits, field.TypeInt32, value)
 	}
-	if acsuo.mutation.HitsCleared() {
+	if _u.mutation.HitsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldHits, field.TypeInt32)
 	}
-	if value, ok := acsuo.mutation.Misses(); ok {
+	if value, ok := _u.mutation.Misses(); ok {
 		_spec.SetField(actioncachestatistics.FieldMisses, field.TypeInt32, value)
 	}
-	if value, ok := acsuo.mutation.AddedMisses(); ok {
+	if value, ok := _u.mutation.AddedMisses(); ok {
 		_spec.AddField(actioncachestatistics.FieldMisses, field.TypeInt32, value)
 	}
-	if acsuo.mutation.MissesCleared() {
+	if _u.mutation.MissesCleared() {
 		_spec.ClearField(actioncachestatistics.FieldMisses, field.TypeInt32)
 	}
-	if acsuo.mutation.ActionSummaryCleared() {
+	if _u.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -730,7 +730,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acsuo.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -746,7 +746,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if acsuo.mutation.MissDetailsCleared() {
+	if _u.mutation.MissDetailsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -759,7 +759,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acsuo.mutation.RemovedMissDetailsIDs(); len(nodes) > 0 && !acsuo.mutation.MissDetailsCleared() {
+	if nodes := _u.mutation.RemovedMissDetailsIDs(); len(nodes) > 0 && !_u.mutation.MissDetailsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -775,7 +775,7 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acsuo.mutation.MissDetailsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MissDetailsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -791,10 +791,10 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &ActionCacheStatistics{config: acsuo.config}
+	_node = &ActionCacheStatistics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, acsuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actioncachestatistics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -802,6 +802,6 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		return nil, err
 	}
-	acsuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

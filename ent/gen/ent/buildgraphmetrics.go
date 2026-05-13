@@ -82,7 +82,7 @@ func (*BuildGraphMetrics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the BuildGraphMetrics fields.
-func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error {
+func (_m *BuildGraphMetrics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -93,70 +93,70 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			bgm.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case buildgraphmetrics.FieldActionLookupValueCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field action_lookup_value_count", values[i])
 			} else if value.Valid {
-				bgm.ActionLookupValueCount = int32(value.Int64)
+				_m.ActionLookupValueCount = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field action_lookup_value_count_not_including_aspects", values[i])
 			} else if value.Valid {
-				bgm.ActionLookupValueCountNotIncludingAspects = int32(value.Int64)
+				_m.ActionLookupValueCountNotIncludingAspects = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldActionCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field action_count", values[i])
 			} else if value.Valid {
-				bgm.ActionCount = int32(value.Int64)
+				_m.ActionCount = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldActionCountNotIncludingAspects:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field action_count_not_including_aspects", values[i])
 			} else if value.Valid {
-				bgm.ActionCountNotIncludingAspects = int32(value.Int64)
+				_m.ActionCountNotIncludingAspects = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldInputFileConfiguredTargetCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field input_file_configured_target_count", values[i])
 			} else if value.Valid {
-				bgm.InputFileConfiguredTargetCount = int32(value.Int64)
+				_m.InputFileConfiguredTargetCount = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldOutputFileConfiguredTargetCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field output_file_configured_target_count", values[i])
 			} else if value.Valid {
-				bgm.OutputFileConfiguredTargetCount = int32(value.Int64)
+				_m.OutputFileConfiguredTargetCount = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldOtherConfiguredTargetCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field other_configured_target_count", values[i])
 			} else if value.Valid {
-				bgm.OtherConfiguredTargetCount = int32(value.Int64)
+				_m.OtherConfiguredTargetCount = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldOutputArtifactCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field output_artifact_count", values[i])
 			} else if value.Valid {
-				bgm.OutputArtifactCount = int32(value.Int64)
+				_m.OutputArtifactCount = int32(value.Int64)
 			}
 		case buildgraphmetrics.FieldPostInvocationSkyframeNodeCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field post_invocation_skyframe_node_count", values[i])
 			} else if value.Valid {
-				bgm.PostInvocationSkyframeNodeCount = int32(value.Int64)
+				_m.PostInvocationSkyframeNodeCount = int32(value.Int64)
 			}
 		case buildgraphmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_build_graph_metrics", value)
 			} else if value.Valid {
-				bgm.metrics_build_graph_metrics = new(int64)
-				*bgm.metrics_build_graph_metrics = int64(value.Int64)
+				_m.metrics_build_graph_metrics = new(int64)
+				*_m.metrics_build_graph_metrics = int64(value.Int64)
 			}
 		default:
-			bgm.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -164,64 +164,64 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the BuildGraphMetrics.
 // This includes values selected through modifiers, order, etc.
-func (bgm *BuildGraphMetrics) Value(name string) (ent.Value, error) {
-	return bgm.selectValues.Get(name)
+func (_m *BuildGraphMetrics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMetrics queries the "metrics" edge of the BuildGraphMetrics entity.
-func (bgm *BuildGraphMetrics) QueryMetrics() *MetricsQuery {
-	return NewBuildGraphMetricsClient(bgm.config).QueryMetrics(bgm)
+func (_m *BuildGraphMetrics) QueryMetrics() *MetricsQuery {
+	return NewBuildGraphMetricsClient(_m.config).QueryMetrics(_m)
 }
 
 // Update returns a builder for updating this BuildGraphMetrics.
 // Note that you need to call BuildGraphMetrics.Unwrap() before calling this method if this BuildGraphMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (bgm *BuildGraphMetrics) Update() *BuildGraphMetricsUpdateOne {
-	return NewBuildGraphMetricsClient(bgm.config).UpdateOne(bgm)
+func (_m *BuildGraphMetrics) Update() *BuildGraphMetricsUpdateOne {
+	return NewBuildGraphMetricsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the BuildGraphMetrics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (bgm *BuildGraphMetrics) Unwrap() *BuildGraphMetrics {
-	_tx, ok := bgm.config.driver.(*txDriver)
+func (_m *BuildGraphMetrics) Unwrap() *BuildGraphMetrics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: BuildGraphMetrics is not a transactional entity")
 	}
-	bgm.config.driver = _tx.drv
-	return bgm
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (bgm *BuildGraphMetrics) String() string {
+func (_m *BuildGraphMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("BuildGraphMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", bgm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("action_lookup_value_count=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.ActionLookupValueCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionLookupValueCount))
 	builder.WriteString(", ")
 	builder.WriteString("action_lookup_value_count_not_including_aspects=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.ActionLookupValueCountNotIncludingAspects))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionLookupValueCountNotIncludingAspects))
 	builder.WriteString(", ")
 	builder.WriteString("action_count=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.ActionCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionCount))
 	builder.WriteString(", ")
 	builder.WriteString("action_count_not_including_aspects=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.ActionCountNotIncludingAspects))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionCountNotIncludingAspects))
 	builder.WriteString(", ")
 	builder.WriteString("input_file_configured_target_count=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.InputFileConfiguredTargetCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.InputFileConfiguredTargetCount))
 	builder.WriteString(", ")
 	builder.WriteString("output_file_configured_target_count=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.OutputFileConfiguredTargetCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.OutputFileConfiguredTargetCount))
 	builder.WriteString(", ")
 	builder.WriteString("other_configured_target_count=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.OtherConfiguredTargetCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.OtherConfiguredTargetCount))
 	builder.WriteString(", ")
 	builder.WriteString("output_artifact_count=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.OutputArtifactCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.OutputArtifactCount))
 	builder.WriteString(", ")
 	builder.WriteString("post_invocation_skyframe_node_count=")
-	builder.WriteString(fmt.Sprintf("%v", bgm.PostInvocationSkyframeNodeCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.PostInvocationSkyframeNodeCount))
 	builder.WriteByte(')')
 	return builder.String()
 }

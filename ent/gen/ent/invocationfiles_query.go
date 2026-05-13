@@ -33,44 +33,44 @@ type InvocationFilesQuery struct {
 }
 
 // Where adds a new predicate for the InvocationFilesQuery builder.
-func (ifq *InvocationFilesQuery) Where(ps ...predicate.InvocationFiles) *InvocationFilesQuery {
-	ifq.predicates = append(ifq.predicates, ps...)
-	return ifq
+func (_q *InvocationFilesQuery) Where(ps ...predicate.InvocationFiles) *InvocationFilesQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (ifq *InvocationFilesQuery) Limit(limit int) *InvocationFilesQuery {
-	ifq.ctx.Limit = &limit
-	return ifq
+func (_q *InvocationFilesQuery) Limit(limit int) *InvocationFilesQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (ifq *InvocationFilesQuery) Offset(offset int) *InvocationFilesQuery {
-	ifq.ctx.Offset = &offset
-	return ifq
+func (_q *InvocationFilesQuery) Offset(offset int) *InvocationFilesQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (ifq *InvocationFilesQuery) Unique(unique bool) *InvocationFilesQuery {
-	ifq.ctx.Unique = &unique
-	return ifq
+func (_q *InvocationFilesQuery) Unique(unique bool) *InvocationFilesQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (ifq *InvocationFilesQuery) Order(o ...invocationfiles.OrderOption) *InvocationFilesQuery {
-	ifq.order = append(ifq.order, o...)
-	return ifq
+func (_q *InvocationFilesQuery) Order(o ...invocationfiles.OrderOption) *InvocationFilesQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (ifq *InvocationFilesQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: ifq.config}).Query()
+func (_q *InvocationFilesQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ifq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ifq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (ifq *InvocationFilesQuery) QueryBazelInvocation() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, invocationfiles.BazelInvocationTable, invocationfiles.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ifq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (ifq *InvocationFilesQuery) QueryBazelInvocation() *BazelInvocationQuery {
 
 // First returns the first InvocationFiles entity from the query.
 // Returns a *NotFoundError when no InvocationFiles was found.
-func (ifq *InvocationFilesQuery) First(ctx context.Context) (*InvocationFiles, error) {
-	nodes, err := ifq.Limit(1).All(setContextOp(ctx, ifq.ctx, ent.OpQueryFirst))
+func (_q *InvocationFilesQuery) First(ctx context.Context) (*InvocationFiles, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (ifq *InvocationFilesQuery) First(ctx context.Context) (*InvocationFiles, e
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) FirstX(ctx context.Context) *InvocationFiles {
-	node, err := ifq.First(ctx)
+func (_q *InvocationFilesQuery) FirstX(ctx context.Context) *InvocationFiles {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (ifq *InvocationFilesQuery) FirstX(ctx context.Context) *InvocationFiles {
 
 // FirstID returns the first InvocationFiles ID from the query.
 // Returns a *NotFoundError when no InvocationFiles ID was found.
-func (ifq *InvocationFilesQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *InvocationFilesQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = ifq.Limit(1).IDs(setContextOp(ctx, ifq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (ifq *InvocationFilesQuery) FirstID(ctx context.Context) (id int64, err err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := ifq.FirstID(ctx)
+func (_q *InvocationFilesQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (ifq *InvocationFilesQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single InvocationFiles entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one InvocationFiles entity is found.
 // Returns a *NotFoundError when no InvocationFiles entities are found.
-func (ifq *InvocationFilesQuery) Only(ctx context.Context) (*InvocationFiles, error) {
-	nodes, err := ifq.Limit(2).All(setContextOp(ctx, ifq.ctx, ent.OpQueryOnly))
+func (_q *InvocationFilesQuery) Only(ctx context.Context) (*InvocationFiles, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (ifq *InvocationFilesQuery) Only(ctx context.Context) (*InvocationFiles, er
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) OnlyX(ctx context.Context) *InvocationFiles {
-	node, err := ifq.Only(ctx)
+func (_q *InvocationFilesQuery) OnlyX(ctx context.Context) *InvocationFiles {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (ifq *InvocationFilesQuery) OnlyX(ctx context.Context) *InvocationFiles {
 // OnlyID is like Only, but returns the only InvocationFiles ID in the query.
 // Returns a *NotSingularError when more than one InvocationFiles ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ifq *InvocationFilesQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *InvocationFilesQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = ifq.Limit(2).IDs(setContextOp(ctx, ifq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (ifq *InvocationFilesQuery) OnlyID(ctx context.Context) (id int64, err erro
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := ifq.OnlyID(ctx)
+func (_q *InvocationFilesQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (ifq *InvocationFilesQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of InvocationFilesSlice.
-func (ifq *InvocationFilesQuery) All(ctx context.Context) ([]*InvocationFiles, error) {
-	ctx = setContextOp(ctx, ifq.ctx, ent.OpQueryAll)
-	if err := ifq.prepareQuery(ctx); err != nil {
+func (_q *InvocationFilesQuery) All(ctx context.Context) ([]*InvocationFiles, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*InvocationFiles, *InvocationFilesQuery]()
-	return withInterceptors[[]*InvocationFiles](ctx, ifq, qr, ifq.inters)
+	return withInterceptors[[]*InvocationFiles](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) AllX(ctx context.Context) []*InvocationFiles {
-	nodes, err := ifq.All(ctx)
+func (_q *InvocationFilesQuery) AllX(ctx context.Context) []*InvocationFiles {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (ifq *InvocationFilesQuery) AllX(ctx context.Context) []*InvocationFiles {
 }
 
 // IDs executes the query and returns a list of InvocationFiles IDs.
-func (ifq *InvocationFilesQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if ifq.ctx.Unique == nil && ifq.path != nil {
-		ifq.Unique(true)
+func (_q *InvocationFilesQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, ifq.ctx, ent.OpQueryIDs)
-	if err = ifq.Select(invocationfiles.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(invocationfiles.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := ifq.IDs(ctx)
+func (_q *InvocationFilesQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (ifq *InvocationFilesQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (ifq *InvocationFilesQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ifq.ctx, ent.OpQueryCount)
-	if err := ifq.prepareQuery(ctx); err != nil {
+func (_q *InvocationFilesQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, ifq, querierCount[*InvocationFilesQuery](), ifq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*InvocationFilesQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) CountX(ctx context.Context) int {
-	count, err := ifq.Count(ctx)
+func (_q *InvocationFilesQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (ifq *InvocationFilesQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (ifq *InvocationFilesQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ifq.ctx, ent.OpQueryExist)
-	switch _, err := ifq.FirstID(ctx); {
+func (_q *InvocationFilesQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (ifq *InvocationFilesQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (ifq *InvocationFilesQuery) ExistX(ctx context.Context) bool {
-	exist, err := ifq.Exist(ctx)
+func (_q *InvocationFilesQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (ifq *InvocationFilesQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the InvocationFilesQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (ifq *InvocationFilesQuery) Clone() *InvocationFilesQuery {
-	if ifq == nil {
+func (_q *InvocationFilesQuery) Clone() *InvocationFilesQuery {
+	if _q == nil {
 		return nil
 	}
 	return &InvocationFilesQuery{
-		config:              ifq.config,
-		ctx:                 ifq.ctx.Clone(),
-		order:               append([]invocationfiles.OrderOption{}, ifq.order...),
-		inters:              append([]Interceptor{}, ifq.inters...),
-		predicates:          append([]predicate.InvocationFiles{}, ifq.predicates...),
-		withBazelInvocation: ifq.withBazelInvocation.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]invocationfiles.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.InvocationFiles{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  ifq.sql.Clone(),
-		path: ifq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (ifq *InvocationFilesQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *InvocationFilesQuery {
-	query := (&BazelInvocationClient{config: ifq.config}).Query()
+func (_q *InvocationFilesQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *InvocationFilesQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ifq.withBazelInvocation = query
-	return ifq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (ifq *InvocationFilesQuery) WithBazelInvocation(opts ...func(*BazelInvocati
 //		GroupBy(invocationfiles.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (ifq *InvocationFilesQuery) GroupBy(field string, fields ...string) *InvocationFilesGroupBy {
-	ifq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &InvocationFilesGroupBy{build: ifq}
-	grbuild.flds = &ifq.ctx.Fields
+func (_q *InvocationFilesQuery) GroupBy(field string, fields ...string) *InvocationFilesGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &InvocationFilesGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = invocationfiles.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (ifq *InvocationFilesQuery) GroupBy(field string, fields ...string) *Invoca
 //	client.InvocationFiles.Query().
 //		Select(invocationfiles.FieldName).
 //		Scan(ctx, &v)
-func (ifq *InvocationFilesQuery) Select(fields ...string) *InvocationFilesSelect {
-	ifq.ctx.Fields = append(ifq.ctx.Fields, fields...)
-	sbuild := &InvocationFilesSelect{InvocationFilesQuery: ifq}
+func (_q *InvocationFilesQuery) Select(fields ...string) *InvocationFilesSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &InvocationFilesSelect{InvocationFilesQuery: _q}
 	sbuild.label = invocationfiles.Label
-	sbuild.flds, sbuild.scan = &ifq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a InvocationFilesSelect configured with the given aggregations.
-func (ifq *InvocationFilesQuery) Aggregate(fns ...AggregateFunc) *InvocationFilesSelect {
-	return ifq.Select().Aggregate(fns...)
+func (_q *InvocationFilesQuery) Aggregate(fns ...AggregateFunc) *InvocationFilesSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (ifq *InvocationFilesQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range ifq.inters {
+func (_q *InvocationFilesQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, ifq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range ifq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !invocationfiles.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if ifq.path != nil {
-		prev, err := ifq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		ifq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (ifq *InvocationFilesQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*InvocationFiles, error) {
+func (_q *InvocationFilesQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*InvocationFiles, error) {
 	var (
 		nodes       = []*InvocationFiles{}
-		withFKs     = ifq.withFKs
-		_spec       = ifq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			ifq.withBazelInvocation != nil,
+			_q.withBazelInvocation != nil,
 		}
 	)
-	if ifq.withBazelInvocation != nil {
+	if _q.withBazelInvocation != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (ifq *InvocationFilesQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		return (*InvocationFiles).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &InvocationFiles{config: ifq.config}
+		node := &InvocationFiles{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(ifq.modifiers) > 0 {
-		_spec.Modifiers = ifq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, ifq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := ifq.withBazelInvocation; query != nil {
-		if err := ifq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *InvocationFiles, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range ifq.loadTotal {
-		if err := ifq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (ifq *InvocationFilesQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*InvocationFiles, init func(*InvocationFiles), assign func(*InvocationFiles, *BazelInvocation)) error {
+func (_q *InvocationFilesQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*InvocationFiles, init func(*InvocationFiles), assign func(*InvocationFiles, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*InvocationFiles)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (ifq *InvocationFilesQuery) loadBazelInvocation(ctx context.Context, query 
 	return nil
 }
 
-func (ifq *InvocationFilesQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := ifq.querySpec()
-	if len(ifq.modifiers) > 0 {
-		_spec.Modifiers = ifq.modifiers
+func (_q *InvocationFilesQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = ifq.ctx.Fields
-	if len(ifq.ctx.Fields) > 0 {
-		_spec.Unique = ifq.ctx.Unique != nil && *ifq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, ifq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (ifq *InvocationFilesQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *InvocationFilesQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(invocationfiles.Table, invocationfiles.Columns, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
-	_spec.From = ifq.sql
-	if unique := ifq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if ifq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := ifq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, invocationfiles.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (ifq *InvocationFilesQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := ifq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := ifq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := ifq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := ifq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (ifq *InvocationFilesQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (ifq *InvocationFilesQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(ifq.driver.Dialect())
+func (_q *InvocationFilesQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(invocationfiles.Table)
-	columns := ifq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = invocationfiles.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if ifq.sql != nil {
-		selector = ifq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if ifq.ctx.Unique != nil && *ifq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range ifq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range ifq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := ifq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := ifq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type InvocationFilesGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ifgb *InvocationFilesGroupBy) Aggregate(fns ...AggregateFunc) *InvocationFilesGroupBy {
-	ifgb.fns = append(ifgb.fns, fns...)
-	return ifgb
+func (_g *InvocationFilesGroupBy) Aggregate(fns ...AggregateFunc) *InvocationFilesGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ifgb *InvocationFilesGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ifgb.build.ctx, ent.OpQueryGroupBy)
-	if err := ifgb.build.prepareQuery(ctx); err != nil {
+func (_g *InvocationFilesGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*InvocationFilesQuery, *InvocationFilesGroupBy](ctx, ifgb.build, ifgb, ifgb.build.inters, v)
+	return scanWithInterceptors[*InvocationFilesQuery, *InvocationFilesGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ifgb *InvocationFilesGroupBy) sqlScan(ctx context.Context, root *InvocationFilesQuery, v any) error {
+func (_g *InvocationFilesGroupBy) sqlScan(ctx context.Context, root *InvocationFilesQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ifgb.fns))
-	for _, fn := range ifgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ifgb.flds)+len(ifgb.fns))
-		for _, f := range *ifgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ifgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ifgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type InvocationFilesSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ifs *InvocationFilesSelect) Aggregate(fns ...AggregateFunc) *InvocationFilesSelect {
-	ifs.fns = append(ifs.fns, fns...)
-	return ifs
+func (_s *InvocationFilesSelect) Aggregate(fns ...AggregateFunc) *InvocationFilesSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ifs *InvocationFilesSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ifs.ctx, ent.OpQuerySelect)
-	if err := ifs.prepareQuery(ctx); err != nil {
+func (_s *InvocationFilesSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*InvocationFilesQuery, *InvocationFilesSelect](ctx, ifs.InvocationFilesQuery, ifs, ifs.inters, v)
+	return scanWithInterceptors[*InvocationFilesQuery, *InvocationFilesSelect](ctx, _s.InvocationFilesQuery, _s, _s.inters, v)
 }
 
-func (ifs *InvocationFilesSelect) sqlScan(ctx context.Context, root *InvocationFilesQuery, v any) error {
+func (_s *InvocationFilesSelect) sqlScan(ctx context.Context, root *InvocationFilesQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ifs.fns))
-	for _, fn := range ifs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ifs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (ifs *InvocationFilesSelect) sqlScan(ctx context.Context, root *InvocationF
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ifs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

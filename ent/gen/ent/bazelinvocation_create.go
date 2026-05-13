@@ -40,500 +40,500 @@ type BazelInvocationCreate struct {
 }
 
 // SetInvocationID sets the "invocation_id" field.
-func (bic *BazelInvocationCreate) SetInvocationID(u uuid.UUID) *BazelInvocationCreate {
-	bic.mutation.SetInvocationID(u)
-	return bic
+func (_c *BazelInvocationCreate) SetInvocationID(v uuid.UUID) *BazelInvocationCreate {
+	_c.mutation.SetInvocationID(v)
+	return _c
 }
 
 // SetCreatedTimestamp sets the "created_timestamp" field.
-func (bic *BazelInvocationCreate) SetCreatedTimestamp(t time.Time) *BazelInvocationCreate {
-	bic.mutation.SetCreatedTimestamp(t)
-	return bic
+func (_c *BazelInvocationCreate) SetCreatedTimestamp(v time.Time) *BazelInvocationCreate {
+	_c.mutation.SetCreatedTimestamp(v)
+	return _c
 }
 
 // SetStartedAt sets the "started_at" field.
-func (bic *BazelInvocationCreate) SetStartedAt(t time.Time) *BazelInvocationCreate {
-	bic.mutation.SetStartedAt(t)
-	return bic
+func (_c *BazelInvocationCreate) SetStartedAt(v time.Time) *BazelInvocationCreate {
+	_c.mutation.SetStartedAt(v)
+	return _c
 }
 
 // SetNillableStartedAt sets the "started_at" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableStartedAt(t *time.Time) *BazelInvocationCreate {
-	if t != nil {
-		bic.SetStartedAt(*t)
+func (_c *BazelInvocationCreate) SetNillableStartedAt(v *time.Time) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetStartedAt(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetEndedAt sets the "ended_at" field.
-func (bic *BazelInvocationCreate) SetEndedAt(t time.Time) *BazelInvocationCreate {
-	bic.mutation.SetEndedAt(t)
-	return bic
+func (_c *BazelInvocationCreate) SetEndedAt(v time.Time) *BazelInvocationCreate {
+	_c.mutation.SetEndedAt(v)
+	return _c
 }
 
 // SetNillableEndedAt sets the "ended_at" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableEndedAt(t *time.Time) *BazelInvocationCreate {
-	if t != nil {
-		bic.SetEndedAt(*t)
+func (_c *BazelInvocationCreate) SetNillableEndedAt(v *time.Time) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetEndedAt(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetBepCompleted sets the "bep_completed" field.
-func (bic *BazelInvocationCreate) SetBepCompleted(b bool) *BazelInvocationCreate {
-	bic.mutation.SetBepCompleted(b)
-	return bic
+func (_c *BazelInvocationCreate) SetBepCompleted(v bool) *BazelInvocationCreate {
+	_c.mutation.SetBepCompleted(v)
+	return _c
 }
 
 // SetNillableBepCompleted sets the "bep_completed" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableBepCompleted(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetBepCompleted(*b)
+func (_c *BazelInvocationCreate) SetNillableBepCompleted(v *bool) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetBepCompleted(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetUsername sets the "username" field.
-func (bic *BazelInvocationCreate) SetUsername(s string) *BazelInvocationCreate {
-	bic.mutation.SetUsername(s)
-	return bic
+func (_c *BazelInvocationCreate) SetUsername(v string) *BazelInvocationCreate {
+	_c.mutation.SetUsername(v)
+	return _c
 }
 
 // SetNillableUsername sets the "username" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableUsername(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetUsername(*s)
+func (_c *BazelInvocationCreate) SetNillableUsername(v *string) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetUsername(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetHostname sets the "hostname" field.
-func (bic *BazelInvocationCreate) SetHostname(s string) *BazelInvocationCreate {
-	bic.mutation.SetHostname(s)
-	return bic
+func (_c *BazelInvocationCreate) SetHostname(v string) *BazelInvocationCreate {
+	_c.mutation.SetHostname(v)
+	return _c
 }
 
 // SetNillableHostname sets the "hostname" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableHostname(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetHostname(*s)
+func (_c *BazelInvocationCreate) SetNillableHostname(v *string) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetHostname(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetNumFetches sets the "num_fetches" field.
-func (bic *BazelInvocationCreate) SetNumFetches(i int64) *BazelInvocationCreate {
-	bic.mutation.SetNumFetches(i)
-	return bic
+func (_c *BazelInvocationCreate) SetNumFetches(v int64) *BazelInvocationCreate {
+	_c.mutation.SetNumFetches(v)
+	return _c
 }
 
 // SetNillableNumFetches sets the "num_fetches" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableNumFetches(i *int64) *BazelInvocationCreate {
-	if i != nil {
-		bic.SetNumFetches(*i)
+func (_c *BazelInvocationCreate) SetNillableNumFetches(v *int64) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetNumFetches(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetProfileName sets the "profile_name" field.
-func (bic *BazelInvocationCreate) SetProfileName(s string) *BazelInvocationCreate {
-	bic.mutation.SetProfileName(s)
-	return bic
+func (_c *BazelInvocationCreate) SetProfileName(v string) *BazelInvocationCreate {
+	_c.mutation.SetProfileName(v)
+	return _c
 }
 
 // SetNillableProfileName sets the "profile_name" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableProfileName(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetProfileName(*s)
+func (_c *BazelInvocationCreate) SetNillableProfileName(v *string) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetProfileName(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetBazelVersion sets the "bazel_version" field.
-func (bic *BazelInvocationCreate) SetBazelVersion(s string) *BazelInvocationCreate {
-	bic.mutation.SetBazelVersion(s)
-	return bic
+func (_c *BazelInvocationCreate) SetBazelVersion(v string) *BazelInvocationCreate {
+	_c.mutation.SetBazelVersion(v)
+	return _c
 }
 
 // SetNillableBazelVersion sets the "bazel_version" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableBazelVersion(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetBazelVersion(*s)
+func (_c *BazelInvocationCreate) SetNillableBazelVersion(v *string) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetBazelVersion(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetExitCodeName sets the "exit_code_name" field.
-func (bic *BazelInvocationCreate) SetExitCodeName(s string) *BazelInvocationCreate {
-	bic.mutation.SetExitCodeName(s)
-	return bic
+func (_c *BazelInvocationCreate) SetExitCodeName(v string) *BazelInvocationCreate {
+	_c.mutation.SetExitCodeName(v)
+	return _c
 }
 
 // SetNillableExitCodeName sets the "exit_code_name" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableExitCodeName(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetExitCodeName(*s)
+func (_c *BazelInvocationCreate) SetNillableExitCodeName(v *string) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetExitCodeName(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetExitCodeCode sets the "exit_code_code" field.
-func (bic *BazelInvocationCreate) SetExitCodeCode(i int32) *BazelInvocationCreate {
-	bic.mutation.SetExitCodeCode(i)
-	return bic
+func (_c *BazelInvocationCreate) SetExitCodeCode(v int32) *BazelInvocationCreate {
+	_c.mutation.SetExitCodeCode(v)
+	return _c
 }
 
 // SetNillableExitCodeCode sets the "exit_code_code" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableExitCodeCode(i *int32) *BazelInvocationCreate {
-	if i != nil {
-		bic.SetExitCodeCode(*i)
+func (_c *BazelInvocationCreate) SetNillableExitCodeCode(v *int32) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetExitCodeCode(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetCanonicalCommandLine sets the "canonical_command_line" field.
-func (bic *BazelInvocationCreate) SetCanonicalCommandLine(ild *invocation.CommandLineData) *BazelInvocationCreate {
-	bic.mutation.SetCanonicalCommandLine(ild)
-	return bic
+func (_c *BazelInvocationCreate) SetCanonicalCommandLine(v *invocation.CommandLineData) *BazelInvocationCreate {
+	_c.mutation.SetCanonicalCommandLine(v)
+	return _c
 }
 
 // SetOriginalCommandLine sets the "original_command_line" field.
-func (bic *BazelInvocationCreate) SetOriginalCommandLine(ild *invocation.CommandLineData) *BazelInvocationCreate {
-	bic.mutation.SetOriginalCommandLine(ild)
-	return bic
+func (_c *BazelInvocationCreate) SetOriginalCommandLine(v *invocation.CommandLineData) *BazelInvocationCreate {
+	_c.mutation.SetOriginalCommandLine(v)
+	return _c
 }
 
 // SetOptionsParsed sets the "options_parsed" field.
-func (bic *BazelInvocationCreate) SetOptionsParsed(iclo *invocation.ParsedCommandLineOptions) *BazelInvocationCreate {
-	bic.mutation.SetOptionsParsed(iclo)
-	return bic
+func (_c *BazelInvocationCreate) SetOptionsParsed(v *invocation.ParsedCommandLineOptions) *BazelInvocationCreate {
+	_c.mutation.SetOptionsParsed(v)
+	return _c
 }
 
 // SetEnvironmentVariables sets the "environment_variables" field.
-func (bic *BazelInvocationCreate) SetEnvironmentVariables(m map[string]string) *BazelInvocationCreate {
-	bic.mutation.SetEnvironmentVariables(m)
-	return bic
+func (_c *BazelInvocationCreate) SetEnvironmentVariables(v map[string]string) *BazelInvocationCreate {
+	_c.mutation.SetEnvironmentVariables(v)
+	return _c
 }
 
 // SetProcessedEventStarted sets the "processed_event_started" field.
-func (bic *BazelInvocationCreate) SetProcessedEventStarted(b bool) *BazelInvocationCreate {
-	bic.mutation.SetProcessedEventStarted(b)
-	return bic
+func (_c *BazelInvocationCreate) SetProcessedEventStarted(v bool) *BazelInvocationCreate {
+	_c.mutation.SetProcessedEventStarted(v)
+	return _c
 }
 
 // SetNillableProcessedEventStarted sets the "processed_event_started" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableProcessedEventStarted(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetProcessedEventStarted(*b)
+func (_c *BazelInvocationCreate) SetNillableProcessedEventStarted(v *bool) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetProcessedEventStarted(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetProcessedEventBuildMetadata sets the "processed_event_build_metadata" field.
-func (bic *BazelInvocationCreate) SetProcessedEventBuildMetadata(b bool) *BazelInvocationCreate {
-	bic.mutation.SetProcessedEventBuildMetadata(b)
-	return bic
+func (_c *BazelInvocationCreate) SetProcessedEventBuildMetadata(v bool) *BazelInvocationCreate {
+	_c.mutation.SetProcessedEventBuildMetadata(v)
+	return _c
 }
 
 // SetNillableProcessedEventBuildMetadata sets the "processed_event_build_metadata" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableProcessedEventBuildMetadata(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetProcessedEventBuildMetadata(*b)
+func (_c *BazelInvocationCreate) SetNillableProcessedEventBuildMetadata(v *bool) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetProcessedEventBuildMetadata(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
-func (bic *BazelInvocationCreate) SetProcessedEventBuildFinished(b bool) *BazelInvocationCreate {
-	bic.mutation.SetProcessedEventBuildFinished(b)
-	return bic
+func (_c *BazelInvocationCreate) SetProcessedEventBuildFinished(v bool) *BazelInvocationCreate {
+	_c.mutation.SetProcessedEventBuildFinished(v)
+	return _c
 }
 
 // SetNillableProcessedEventBuildFinished sets the "processed_event_build_finished" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableProcessedEventBuildFinished(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetProcessedEventBuildFinished(*b)
+func (_c *BazelInvocationCreate) SetNillableProcessedEventBuildFinished(v *bool) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetProcessedEventBuildFinished(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
-func (bic *BazelInvocationCreate) SetProcessedEventWorkspaceStatus(b bool) *BazelInvocationCreate {
-	bic.mutation.SetProcessedEventWorkspaceStatus(b)
-	return bic
+func (_c *BazelInvocationCreate) SetProcessedEventWorkspaceStatus(v bool) *BazelInvocationCreate {
+	_c.mutation.SetProcessedEventWorkspaceStatus(v)
+	return _c
 }
 
 // SetNillableProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableProcessedEventWorkspaceStatus(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetProcessedEventWorkspaceStatus(*b)
+func (_c *BazelInvocationCreate) SetNillableProcessedEventWorkspaceStatus(v *bool) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetProcessedEventWorkspaceStatus(*v)
 	}
-	return bic
+	return _c
 }
 
 // SetID sets the "id" field.
-func (bic *BazelInvocationCreate) SetID(i int64) *BazelInvocationCreate {
-	bic.mutation.SetID(i)
-	return bic
+func (_c *BazelInvocationCreate) SetID(v int64) *BazelInvocationCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (bic *BazelInvocationCreate) SetInstanceNameID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetInstanceNameID(id)
-	return bic
+func (_c *BazelInvocationCreate) SetInstanceNameID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetInstanceNameID(id)
+	return _c
 }
 
 // SetInstanceName sets the "instance_name" edge to the InstanceName entity.
-func (bic *BazelInvocationCreate) SetInstanceName(i *InstanceName) *BazelInvocationCreate {
-	return bic.SetInstanceNameID(i.ID)
+func (_c *BazelInvocationCreate) SetInstanceName(v *InstanceName) *BazelInvocationCreate {
+	return _c.SetInstanceNameID(v.ID)
 }
 
 // SetBuildID sets the "build" edge to the Build entity by ID.
-func (bic *BazelInvocationCreate) SetBuildID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetBuildID(id)
-	return bic
+func (_c *BazelInvocationCreate) SetBuildID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetBuildID(id)
+	return _c
 }
 
 // SetNillableBuildID sets the "build" edge to the Build entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableBuildID(id *int64) *BazelInvocationCreate {
+func (_c *BazelInvocationCreate) SetNillableBuildID(id *int64) *BazelInvocationCreate {
 	if id != nil {
-		bic = bic.SetBuildID(*id)
+		_c = _c.SetBuildID(*id)
 	}
-	return bic
+	return _c
 }
 
 // SetBuild sets the "build" edge to the Build entity.
-func (bic *BazelInvocationCreate) SetBuild(b *Build) *BazelInvocationCreate {
-	return bic.SetBuildID(b.ID)
+func (_c *BazelInvocationCreate) SetBuild(v *Build) *BazelInvocationCreate {
+	return _c.SetBuildID(v.ID)
 }
 
 // SetAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID.
-func (bic *BazelInvocationCreate) SetAuthenticatedUserID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetAuthenticatedUserID(id)
-	return bic
+func (_c *BazelInvocationCreate) SetAuthenticatedUserID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetAuthenticatedUserID(id)
+	return _c
 }
 
 // SetNillableAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableAuthenticatedUserID(id *int64) *BazelInvocationCreate {
+func (_c *BazelInvocationCreate) SetNillableAuthenticatedUserID(id *int64) *BazelInvocationCreate {
 	if id != nil {
-		bic = bic.SetAuthenticatedUserID(*id)
+		_c = _c.SetAuthenticatedUserID(*id)
 	}
-	return bic
+	return _c
 }
 
 // SetAuthenticatedUser sets the "authenticated_user" edge to the AuthenticatedUser entity.
-func (bic *BazelInvocationCreate) SetAuthenticatedUser(a *AuthenticatedUser) *BazelInvocationCreate {
-	return bic.SetAuthenticatedUserID(a.ID)
+func (_c *BazelInvocationCreate) SetAuthenticatedUser(v *AuthenticatedUser) *BazelInvocationCreate {
+	return _c.SetAuthenticatedUserID(v.ID)
 }
 
 // AddTagIDs adds the "tags" edge to the InvocationTag entity by IDs.
-func (bic *BazelInvocationCreate) AddTagIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddTagIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddTagIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddTagIDs(ids...)
+	return _c
 }
 
 // AddTags adds the "tags" edges to the InvocationTag entity.
-func (bic *BazelInvocationCreate) AddTags(i ...*InvocationTag) *BazelInvocationCreate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_c *BazelInvocationCreate) AddTags(v ...*InvocationTag) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddTagIDs(ids...)
+	return _c.AddTagIDs(ids...)
 }
 
 // SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
-func (bic *BazelInvocationCreate) SetEventMetadataID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetEventMetadataID(id)
-	return bic
+func (_c *BazelInvocationCreate) SetEventMetadataID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetEventMetadataID(id)
+	return _c
 }
 
 // SetNillableEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableEventMetadataID(id *int64) *BazelInvocationCreate {
+func (_c *BazelInvocationCreate) SetNillableEventMetadataID(id *int64) *BazelInvocationCreate {
 	if id != nil {
-		bic = bic.SetEventMetadataID(*id)
+		_c = _c.SetEventMetadataID(*id)
 	}
-	return bic
+	return _c
 }
 
 // SetEventMetadata sets the "event_metadata" edge to the EventMetadata entity.
-func (bic *BazelInvocationCreate) SetEventMetadata(e *EventMetadata) *BazelInvocationCreate {
-	return bic.SetEventMetadataID(e.ID)
+func (_c *BazelInvocationCreate) SetEventMetadata(v *EventMetadata) *BazelInvocationCreate {
+	return _c.SetEventMetadataID(v.ID)
 }
 
 // SetConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID.
-func (bic *BazelInvocationCreate) SetConnectionMetadataID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetConnectionMetadataID(id)
-	return bic
+func (_c *BazelInvocationCreate) SetConnectionMetadataID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetConnectionMetadataID(id)
+	return _c
 }
 
 // SetNillableConnectionMetadataID sets the "connection_metadata" edge to the ConnectionMetadata entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableConnectionMetadataID(id *int64) *BazelInvocationCreate {
+func (_c *BazelInvocationCreate) SetNillableConnectionMetadataID(id *int64) *BazelInvocationCreate {
 	if id != nil {
-		bic = bic.SetConnectionMetadataID(*id)
+		_c = _c.SetConnectionMetadataID(*id)
 	}
-	return bic
+	return _c
 }
 
 // SetConnectionMetadata sets the "connection_metadata" edge to the ConnectionMetadata entity.
-func (bic *BazelInvocationCreate) SetConnectionMetadata(c *ConnectionMetadata) *BazelInvocationCreate {
-	return bic.SetConnectionMetadataID(c.ID)
+func (_c *BazelInvocationCreate) SetConnectionMetadata(v *ConnectionMetadata) *BazelInvocationCreate {
+	return _c.SetConnectionMetadataID(v.ID)
 }
 
 // AddConfigurationIDs adds the "configurations" edge to the Configuration entity by IDs.
-func (bic *BazelInvocationCreate) AddConfigurationIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddConfigurationIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddConfigurationIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddConfigurationIDs(ids...)
+	return _c
 }
 
 // AddConfigurations adds the "configurations" edges to the Configuration entity.
-func (bic *BazelInvocationCreate) AddConfigurations(c ...*Configuration) *BazelInvocationCreate {
-	ids := make([]int64, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+func (_c *BazelInvocationCreate) AddConfigurations(v ...*Configuration) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddConfigurationIDs(ids...)
+	return _c.AddConfigurationIDs(ids...)
 }
 
 // AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (bic *BazelInvocationCreate) AddActionIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddActionIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddActionIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddActionIDs(ids...)
+	return _c
 }
 
 // AddActions adds the "actions" edges to the Action entity.
-func (bic *BazelInvocationCreate) AddActions(a ...*Action) *BazelInvocationCreate {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *BazelInvocationCreate) AddActions(v ...*Action) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddActionIDs(ids...)
+	return _c.AddActionIDs(ids...)
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bic *BazelInvocationCreate) SetMetricsID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetMetricsID(id)
-	return bic
+func (_c *BazelInvocationCreate) SetMetricsID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableMetricsID(id *int64) *BazelInvocationCreate {
+func (_c *BazelInvocationCreate) SetNillableMetricsID(id *int64) *BazelInvocationCreate {
 	if id != nil {
-		bic = bic.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return bic
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (bic *BazelInvocationCreate) SetMetrics(m *Metrics) *BazelInvocationCreate {
-	return bic.SetMetricsID(m.ID)
+func (_c *BazelInvocationCreate) SetMetrics(v *Metrics) *BazelInvocationCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // AddIncompleteBuildLogIDs adds the "incomplete_build_logs" edge to the IncompleteBuildLog entity by IDs.
-func (bic *BazelInvocationCreate) AddIncompleteBuildLogIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddIncompleteBuildLogIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddIncompleteBuildLogIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddIncompleteBuildLogIDs(ids...)
+	return _c
 }
 
 // AddIncompleteBuildLogs adds the "incomplete_build_logs" edges to the IncompleteBuildLog entity.
-func (bic *BazelInvocationCreate) AddIncompleteBuildLogs(i ...*IncompleteBuildLog) *BazelInvocationCreate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_c *BazelInvocationCreate) AddIncompleteBuildLogs(v ...*IncompleteBuildLog) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddIncompleteBuildLogIDs(ids...)
+	return _c.AddIncompleteBuildLogIDs(ids...)
 }
 
 // AddBuildLogChunkIDs adds the "build_log_chunks" edge to the BuildLogChunk entity by IDs.
-func (bic *BazelInvocationCreate) AddBuildLogChunkIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddBuildLogChunkIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddBuildLogChunkIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddBuildLogChunkIDs(ids...)
+	return _c
 }
 
 // AddBuildLogChunks adds the "build_log_chunks" edges to the BuildLogChunk entity.
-func (bic *BazelInvocationCreate) AddBuildLogChunks(b ...*BuildLogChunk) *BazelInvocationCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_c *BazelInvocationCreate) AddBuildLogChunks(v ...*BuildLogChunk) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddBuildLogChunkIDs(ids...)
+	return _c.AddBuildLogChunkIDs(ids...)
 }
 
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
-func (bic *BazelInvocationCreate) AddInvocationFileIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddInvocationFileIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddInvocationFileIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddInvocationFileIDs(ids...)
+	return _c
 }
 
 // AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
-func (bic *BazelInvocationCreate) AddInvocationFiles(i ...*InvocationFiles) *BazelInvocationCreate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_c *BazelInvocationCreate) AddInvocationFiles(v ...*InvocationFiles) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddInvocationFileIDs(ids...)
+	return _c.AddInvocationFileIDs(ids...)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (bic *BazelInvocationCreate) AddInvocationTargetIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddInvocationTargetIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddInvocationTargetIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddInvocationTargetIDs(ids...)
+	return _c
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
-func (bic *BazelInvocationCreate) AddInvocationTargets(i ...*InvocationTarget) *BazelInvocationCreate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_c *BazelInvocationCreate) AddInvocationTargets(v ...*InvocationTarget) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddInvocationTargetIDs(ids...)
+	return _c.AddInvocationTargetIDs(ids...)
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (bic *BazelInvocationCreate) AddTargetKindMappingIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddTargetKindMappingIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddTargetKindMappingIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddTargetKindMappingIDs(ids...)
+	return _c
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
-func (bic *BazelInvocationCreate) AddTargetKindMappings(t ...*TargetKindMapping) *BazelInvocationCreate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_c *BazelInvocationCreate) AddTargetKindMappings(v ...*TargetKindMapping) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddTargetKindMappingIDs(ids...)
+	return _c.AddTargetKindMappingIDs(ids...)
 }
 
 // AddSourceControlIDs adds the "source_control" edge to the SourceControl entity by IDs.
-func (bic *BazelInvocationCreate) AddSourceControlIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddSourceControlIDs(ids...)
-	return bic
+func (_c *BazelInvocationCreate) AddSourceControlIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddSourceControlIDs(ids...)
+	return _c
 }
 
 // AddSourceControl adds the "source_control" edges to the SourceControl entity.
-func (bic *BazelInvocationCreate) AddSourceControl(s ...*SourceControl) *BazelInvocationCreate {
-	ids := make([]int64, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_c *BazelInvocationCreate) AddSourceControl(v ...*SourceControl) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bic.AddSourceControlIDs(ids...)
+	return _c.AddSourceControlIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
-func (bic *BazelInvocationCreate) Mutation() *BazelInvocationMutation {
-	return bic.mutation
+func (_c *BazelInvocationCreate) Mutation() *BazelInvocationMutation {
+	return _c.mutation
 }
 
 // Save creates the BazelInvocation in the database.
-func (bic *BazelInvocationCreate) Save(ctx context.Context) (*BazelInvocation, error) {
-	if err := bic.defaults(); err != nil {
+func (_c *BazelInvocationCreate) Save(ctx context.Context) (*BazelInvocation, error) {
+	if err := _c.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks(ctx, bic.sqlSave, bic.mutation, bic.hooks)
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (bic *BazelInvocationCreate) SaveX(ctx context.Context) *BazelInvocation {
-	v, err := bic.Save(ctx)
+func (_c *BazelInvocationCreate) SaveX(ctx context.Context) *BazelInvocation {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -541,78 +541,78 @@ func (bic *BazelInvocationCreate) SaveX(ctx context.Context) *BazelInvocation {
 }
 
 // Exec executes the query.
-func (bic *BazelInvocationCreate) Exec(ctx context.Context) error {
-	_, err := bic.Save(ctx)
+func (_c *BazelInvocationCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bic *BazelInvocationCreate) ExecX(ctx context.Context) {
-	if err := bic.Exec(ctx); err != nil {
+func (_c *BazelInvocationCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (bic *BazelInvocationCreate) defaults() error {
-	if _, ok := bic.mutation.BepCompleted(); !ok {
+func (_c *BazelInvocationCreate) defaults() error {
+	if _, ok := _c.mutation.BepCompleted(); !ok {
 		v := bazelinvocation.DefaultBepCompleted
-		bic.mutation.SetBepCompleted(v)
+		_c.mutation.SetBepCompleted(v)
 	}
-	if _, ok := bic.mutation.ProcessedEventStarted(); !ok {
+	if _, ok := _c.mutation.ProcessedEventStarted(); !ok {
 		v := bazelinvocation.DefaultProcessedEventStarted
-		bic.mutation.SetProcessedEventStarted(v)
+		_c.mutation.SetProcessedEventStarted(v)
 	}
-	if _, ok := bic.mutation.ProcessedEventBuildMetadata(); !ok {
+	if _, ok := _c.mutation.ProcessedEventBuildMetadata(); !ok {
 		v := bazelinvocation.DefaultProcessedEventBuildMetadata
-		bic.mutation.SetProcessedEventBuildMetadata(v)
+		_c.mutation.SetProcessedEventBuildMetadata(v)
 	}
-	if _, ok := bic.mutation.ProcessedEventBuildFinished(); !ok {
+	if _, ok := _c.mutation.ProcessedEventBuildFinished(); !ok {
 		v := bazelinvocation.DefaultProcessedEventBuildFinished
-		bic.mutation.SetProcessedEventBuildFinished(v)
+		_c.mutation.SetProcessedEventBuildFinished(v)
 	}
-	if _, ok := bic.mutation.ProcessedEventWorkspaceStatus(); !ok {
+	if _, ok := _c.mutation.ProcessedEventWorkspaceStatus(); !ok {
 		v := bazelinvocation.DefaultProcessedEventWorkspaceStatus
-		bic.mutation.SetProcessedEventWorkspaceStatus(v)
+		_c.mutation.SetProcessedEventWorkspaceStatus(v)
 	}
 	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (bic *BazelInvocationCreate) check() error {
-	if _, ok := bic.mutation.InvocationID(); !ok {
+func (_c *BazelInvocationCreate) check() error {
+	if _, ok := _c.mutation.InvocationID(); !ok {
 		return &ValidationError{Name: "invocation_id", err: errors.New(`ent: missing required field "BazelInvocation.invocation_id"`)}
 	}
-	if _, ok := bic.mutation.CreatedTimestamp(); !ok {
+	if _, ok := _c.mutation.CreatedTimestamp(); !ok {
 		return &ValidationError{Name: "created_timestamp", err: errors.New(`ent: missing required field "BazelInvocation.created_timestamp"`)}
 	}
-	if _, ok := bic.mutation.BepCompleted(); !ok {
+	if _, ok := _c.mutation.BepCompleted(); !ok {
 		return &ValidationError{Name: "bep_completed", err: errors.New(`ent: missing required field "BazelInvocation.bep_completed"`)}
 	}
-	if _, ok := bic.mutation.ProcessedEventStarted(); !ok {
+	if _, ok := _c.mutation.ProcessedEventStarted(); !ok {
 		return &ValidationError{Name: "processed_event_started", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_started"`)}
 	}
-	if _, ok := bic.mutation.ProcessedEventBuildMetadata(); !ok {
+	if _, ok := _c.mutation.ProcessedEventBuildMetadata(); !ok {
 		return &ValidationError{Name: "processed_event_build_metadata", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_build_metadata"`)}
 	}
-	if _, ok := bic.mutation.ProcessedEventBuildFinished(); !ok {
+	if _, ok := _c.mutation.ProcessedEventBuildFinished(); !ok {
 		return &ValidationError{Name: "processed_event_build_finished", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_build_finished"`)}
 	}
-	if _, ok := bic.mutation.ProcessedEventWorkspaceStatus(); !ok {
+	if _, ok := _c.mutation.ProcessedEventWorkspaceStatus(); !ok {
 		return &ValidationError{Name: "processed_event_workspace_status", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_workspace_status"`)}
 	}
-	if len(bic.mutation.InstanceNameIDs()) == 0 {
+	if len(_c.mutation.InstanceNameIDs()) == 0 {
 		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required edge "BazelInvocation.instance_name"`)}
 	}
 	return nil
 }
 
-func (bic *BazelInvocationCreate) sqlSave(ctx context.Context) (*BazelInvocation, error) {
-	if err := bic.check(); err != nil {
+func (_c *BazelInvocationCreate) sqlSave(ctx context.Context) (*BazelInvocation, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := bic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, bic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -622,102 +622,102 @@ func (bic *BazelInvocationCreate) sqlSave(ctx context.Context) (*BazelInvocation
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	bic.mutation.id = &_node.ID
-	bic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.CreateSpec) {
+func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.CreateSpec) {
 	var (
-		_node = &BazelInvocation{config: bic.config}
+		_node = &BazelInvocation{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(bazelinvocation.Table, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = bic.conflict
-	if id, ok := bic.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := bic.mutation.InvocationID(); ok {
+	if value, ok := _c.mutation.InvocationID(); ok {
 		_spec.SetField(bazelinvocation.FieldInvocationID, field.TypeUUID, value)
 		_node.InvocationID = value
 	}
-	if value, ok := bic.mutation.CreatedTimestamp(); ok {
+	if value, ok := _c.mutation.CreatedTimestamp(); ok {
 		_spec.SetField(bazelinvocation.FieldCreatedTimestamp, field.TypeTime, value)
 		_node.CreatedTimestamp = value
 	}
-	if value, ok := bic.mutation.StartedAt(); ok {
+	if value, ok := _c.mutation.StartedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldStartedAt, field.TypeTime, value)
 		_node.StartedAt = value
 	}
-	if value, ok := bic.mutation.EndedAt(); ok {
+	if value, ok := _c.mutation.EndedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldEndedAt, field.TypeTime, value)
 		_node.EndedAt = &value
 	}
-	if value, ok := bic.mutation.BepCompleted(); ok {
+	if value, ok := _c.mutation.BepCompleted(); ok {
 		_spec.SetField(bazelinvocation.FieldBepCompleted, field.TypeBool, value)
 		_node.BepCompleted = value
 	}
-	if value, ok := bic.mutation.Username(); ok {
+	if value, ok := _c.mutation.Username(); ok {
 		_spec.SetField(bazelinvocation.FieldUsername, field.TypeString, value)
 		_node.Username = value
 	}
-	if value, ok := bic.mutation.Hostname(); ok {
+	if value, ok := _c.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
 		_node.Hostname = value
 	}
-	if value, ok := bic.mutation.NumFetches(); ok {
+	if value, ok := _c.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
 		_node.NumFetches = value
 	}
-	if value, ok := bic.mutation.ProfileName(); ok {
+	if value, ok := _c.mutation.ProfileName(); ok {
 		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
 		_node.ProfileName = value
 	}
-	if value, ok := bic.mutation.BazelVersion(); ok {
+	if value, ok := _c.mutation.BazelVersion(); ok {
 		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
 		_node.BazelVersion = value
 	}
-	if value, ok := bic.mutation.ExitCodeName(); ok {
+	if value, ok := _c.mutation.ExitCodeName(); ok {
 		_spec.SetField(bazelinvocation.FieldExitCodeName, field.TypeString, value)
 		_node.ExitCodeName = value
 	}
-	if value, ok := bic.mutation.ExitCodeCode(); ok {
+	if value, ok := _c.mutation.ExitCodeCode(); ok {
 		_spec.SetField(bazelinvocation.FieldExitCodeCode, field.TypeInt32, value)
 		_node.ExitCodeCode = value
 	}
-	if value, ok := bic.mutation.CanonicalCommandLine(); ok {
+	if value, ok := _c.mutation.CanonicalCommandLine(); ok {
 		_spec.SetField(bazelinvocation.FieldCanonicalCommandLine, field.TypeJSON, value)
 		_node.CanonicalCommandLine = value
 	}
-	if value, ok := bic.mutation.OriginalCommandLine(); ok {
+	if value, ok := _c.mutation.OriginalCommandLine(); ok {
 		_spec.SetField(bazelinvocation.FieldOriginalCommandLine, field.TypeJSON, value)
 		_node.OriginalCommandLine = value
 	}
-	if value, ok := bic.mutation.OptionsParsed(); ok {
+	if value, ok := _c.mutation.OptionsParsed(); ok {
 		_spec.SetField(bazelinvocation.FieldOptionsParsed, field.TypeJSON, value)
 		_node.OptionsParsed = value
 	}
-	if value, ok := bic.mutation.EnvironmentVariables(); ok {
+	if value, ok := _c.mutation.EnvironmentVariables(); ok {
 		_spec.SetField(bazelinvocation.FieldEnvironmentVariables, field.TypeJSON, value)
 		_node.EnvironmentVariables = value
 	}
-	if value, ok := bic.mutation.ProcessedEventStarted(); ok {
+	if value, ok := _c.mutation.ProcessedEventStarted(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
 		_node.ProcessedEventStarted = value
 	}
-	if value, ok := bic.mutation.ProcessedEventBuildMetadata(); ok {
+	if value, ok := _c.mutation.ProcessedEventBuildMetadata(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildMetadata, field.TypeBool, value)
 		_node.ProcessedEventBuildMetadata = value
 	}
-	if value, ok := bic.mutation.ProcessedEventBuildFinished(); ok {
+	if value, ok := _c.mutation.ProcessedEventBuildFinished(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildFinished, field.TypeBool, value)
 		_node.ProcessedEventBuildFinished = value
 	}
-	if value, ok := bic.mutation.ProcessedEventWorkspaceStatus(); ok {
+	if value, ok := _c.mutation.ProcessedEventWorkspaceStatus(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
 		_node.ProcessedEventWorkspaceStatus = value
 	}
-	if nodes := bic.mutation.InstanceNameIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -734,7 +734,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_node.instance_name_bazel_invocations = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.BuildIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BuildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -751,7 +751,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_node.build_invocations = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.AuthenticatedUserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AuthenticatedUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -768,7 +768,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_node.authenticated_user_bazel_invocations = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.TagsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TagsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -784,7 +784,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.EventMetadataIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.EventMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -800,7 +800,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -816,7 +816,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.ConfigurationsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ConfigurationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -832,7 +832,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -848,7 +848,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -864,7 +864,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.IncompleteBuildLogsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.IncompleteBuildLogsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -880,7 +880,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.BuildLogChunksIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BuildLogChunksIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -896,7 +896,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.InvocationFilesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InvocationFilesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -912,7 +912,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -928,7 +928,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -944,7 +944,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.SourceControlIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SourceControlIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -979,10 +979,10 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 //			SetInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (bic *BazelInvocationCreate) OnConflict(opts ...sql.ConflictOption) *BazelInvocationUpsertOne {
-	bic.conflict = opts
+func (_c *BazelInvocationCreate) OnConflict(opts ...sql.ConflictOption) *BazelInvocationUpsertOne {
+	_c.conflict = opts
 	return &BazelInvocationUpsertOne{
-		create: bic,
+		create: _c,
 	}
 }
 
@@ -992,10 +992,10 @@ func (bic *BazelInvocationCreate) OnConflict(opts ...sql.ConflictOption) *BazelI
 //	client.BazelInvocation.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (bic *BazelInvocationCreate) OnConflictColumns(columns ...string) *BazelInvocationUpsertOne {
-	bic.conflict = append(bic.conflict, sql.ConflictColumns(columns...))
+func (_c *BazelInvocationCreate) OnConflictColumns(columns ...string) *BazelInvocationUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BazelInvocationUpsertOne{
-		create: bic,
+		create: _c,
 	}
 }
 
@@ -1771,16 +1771,16 @@ type BazelInvocationCreateBulk struct {
 }
 
 // Save creates the BazelInvocation entities in the database.
-func (bicb *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvocation, error) {
-	if bicb.err != nil {
-		return nil, bicb.err
+func (_c *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvocation, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(bicb.builders))
-	nodes := make([]*BazelInvocation, len(bicb.builders))
-	mutators := make([]Mutator, len(bicb.builders))
-	for i := range bicb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*BazelInvocation, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := bicb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*BazelInvocationMutation)
@@ -1794,12 +1794,12 @@ func (bicb *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvoca
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, bicb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = bicb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, bicb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1823,7 +1823,7 @@ func (bicb *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvoca
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, bicb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1831,8 +1831,8 @@ func (bicb *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvoca
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (bicb *BazelInvocationCreateBulk) SaveX(ctx context.Context) []*BazelInvocation {
-	v, err := bicb.Save(ctx)
+func (_c *BazelInvocationCreateBulk) SaveX(ctx context.Context) []*BazelInvocation {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1840,14 +1840,14 @@ func (bicb *BazelInvocationCreateBulk) SaveX(ctx context.Context) []*BazelInvoca
 }
 
 // Exec executes the query.
-func (bicb *BazelInvocationCreateBulk) Exec(ctx context.Context) error {
-	_, err := bicb.Save(ctx)
+func (_c *BazelInvocationCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bicb *BazelInvocationCreateBulk) ExecX(ctx context.Context) {
-	if err := bicb.Exec(ctx); err != nil {
+func (_c *BazelInvocationCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1867,10 +1867,10 @@ func (bicb *BazelInvocationCreateBulk) ExecX(ctx context.Context) {
 //			SetInvocationID(v+v).
 //		}).
 //		Exec(ctx)
-func (bicb *BazelInvocationCreateBulk) OnConflict(opts ...sql.ConflictOption) *BazelInvocationUpsertBulk {
-	bicb.conflict = opts
+func (_c *BazelInvocationCreateBulk) OnConflict(opts ...sql.ConflictOption) *BazelInvocationUpsertBulk {
+	_c.conflict = opts
 	return &BazelInvocationUpsertBulk{
-		create: bicb,
+		create: _c,
 	}
 }
 
@@ -1880,10 +1880,10 @@ func (bicb *BazelInvocationCreateBulk) OnConflict(opts ...sql.ConflictOption) *B
 //	client.BazelInvocation.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (bicb *BazelInvocationCreateBulk) OnConflictColumns(columns ...string) *BazelInvocationUpsertBulk {
-	bicb.conflict = append(bicb.conflict, sql.ConflictColumns(columns...))
+func (_c *BazelInvocationCreateBulk) OnConflictColumns(columns ...string) *BazelInvocationUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BazelInvocationUpsertBulk{
-		create: bicb,
+		create: _c,
 	}
 }
 

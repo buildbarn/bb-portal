@@ -37,44 +37,44 @@ type ActionCacheStatisticsQuery struct {
 }
 
 // Where adds a new predicate for the ActionCacheStatisticsQuery builder.
-func (acsq *ActionCacheStatisticsQuery) Where(ps ...predicate.ActionCacheStatistics) *ActionCacheStatisticsQuery {
-	acsq.predicates = append(acsq.predicates, ps...)
-	return acsq
+func (_q *ActionCacheStatisticsQuery) Where(ps ...predicate.ActionCacheStatistics) *ActionCacheStatisticsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (acsq *ActionCacheStatisticsQuery) Limit(limit int) *ActionCacheStatisticsQuery {
-	acsq.ctx.Limit = &limit
-	return acsq
+func (_q *ActionCacheStatisticsQuery) Limit(limit int) *ActionCacheStatisticsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (acsq *ActionCacheStatisticsQuery) Offset(offset int) *ActionCacheStatisticsQuery {
-	acsq.ctx.Offset = &offset
-	return acsq
+func (_q *ActionCacheStatisticsQuery) Offset(offset int) *ActionCacheStatisticsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (acsq *ActionCacheStatisticsQuery) Unique(unique bool) *ActionCacheStatisticsQuery {
-	acsq.ctx.Unique = &unique
-	return acsq
+func (_q *ActionCacheStatisticsQuery) Unique(unique bool) *ActionCacheStatisticsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (acsq *ActionCacheStatisticsQuery) Order(o ...actioncachestatistics.OrderOption) *ActionCacheStatisticsQuery {
-	acsq.order = append(acsq.order, o...)
-	return acsq
+func (_q *ActionCacheStatisticsQuery) Order(o ...actioncachestatistics.OrderOption) *ActionCacheStatisticsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryActionSummary chains the current query on the "action_summary" edge.
-func (acsq *ActionCacheStatisticsQuery) QueryActionSummary() *ActionSummaryQuery {
-	query := (&ActionSummaryClient{config: acsq.config}).Query()
+func (_q *ActionCacheStatisticsQuery) QueryActionSummary() *ActionSummaryQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := acsq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := acsq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -83,20 +83,20 @@ func (acsq *ActionCacheStatisticsQuery) QueryActionSummary() *ActionSummaryQuery
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, actioncachestatistics.ActionSummaryTable, actioncachestatistics.ActionSummaryColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(acsq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryMissDetails chains the current query on the "miss_details" edge.
-func (acsq *ActionCacheStatisticsQuery) QueryMissDetails() *MissDetailQuery {
-	query := (&MissDetailClient{config: acsq.config}).Query()
+func (_q *ActionCacheStatisticsQuery) QueryMissDetails() *MissDetailQuery {
+	query := (&MissDetailClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := acsq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := acsq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -105,7 +105,7 @@ func (acsq *ActionCacheStatisticsQuery) QueryMissDetails() *MissDetailQuery {
 			sqlgraph.To(missdetail.Table, missdetail.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, actioncachestatistics.MissDetailsTable, actioncachestatistics.MissDetailsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(acsq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -113,8 +113,8 @@ func (acsq *ActionCacheStatisticsQuery) QueryMissDetails() *MissDetailQuery {
 
 // First returns the first ActionCacheStatistics entity from the query.
 // Returns a *NotFoundError when no ActionCacheStatistics was found.
-func (acsq *ActionCacheStatisticsQuery) First(ctx context.Context) (*ActionCacheStatistics, error) {
-	nodes, err := acsq.Limit(1).All(setContextOp(ctx, acsq.ctx, ent.OpQueryFirst))
+func (_q *ActionCacheStatisticsQuery) First(ctx context.Context) (*ActionCacheStatistics, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +125,8 @@ func (acsq *ActionCacheStatisticsQuery) First(ctx context.Context) (*ActionCache
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) FirstX(ctx context.Context) *ActionCacheStatistics {
-	node, err := acsq.First(ctx)
+func (_q *ActionCacheStatisticsQuery) FirstX(ctx context.Context) *ActionCacheStatistics {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -135,9 +135,9 @@ func (acsq *ActionCacheStatisticsQuery) FirstX(ctx context.Context) *ActionCache
 
 // FirstID returns the first ActionCacheStatistics ID from the query.
 // Returns a *NotFoundError when no ActionCacheStatistics ID was found.
-func (acsq *ActionCacheStatisticsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *ActionCacheStatisticsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = acsq.Limit(1).IDs(setContextOp(ctx, acsq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -148,8 +148,8 @@ func (acsq *ActionCacheStatisticsQuery) FirstID(ctx context.Context) (id int64, 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := acsq.FirstID(ctx)
+func (_q *ActionCacheStatisticsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -159,8 +159,8 @@ func (acsq *ActionCacheStatisticsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single ActionCacheStatistics entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one ActionCacheStatistics entity is found.
 // Returns a *NotFoundError when no ActionCacheStatistics entities are found.
-func (acsq *ActionCacheStatisticsQuery) Only(ctx context.Context) (*ActionCacheStatistics, error) {
-	nodes, err := acsq.Limit(2).All(setContextOp(ctx, acsq.ctx, ent.OpQueryOnly))
+func (_q *ActionCacheStatisticsQuery) Only(ctx context.Context) (*ActionCacheStatistics, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -175,8 +175,8 @@ func (acsq *ActionCacheStatisticsQuery) Only(ctx context.Context) (*ActionCacheS
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) OnlyX(ctx context.Context) *ActionCacheStatistics {
-	node, err := acsq.Only(ctx)
+func (_q *ActionCacheStatisticsQuery) OnlyX(ctx context.Context) *ActionCacheStatistics {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,9 +186,9 @@ func (acsq *ActionCacheStatisticsQuery) OnlyX(ctx context.Context) *ActionCacheS
 // OnlyID is like Only, but returns the only ActionCacheStatistics ID in the query.
 // Returns a *NotSingularError when more than one ActionCacheStatistics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (acsq *ActionCacheStatisticsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *ActionCacheStatisticsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = acsq.Limit(2).IDs(setContextOp(ctx, acsq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -203,8 +203,8 @@ func (acsq *ActionCacheStatisticsQuery) OnlyID(ctx context.Context) (id int64, e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := acsq.OnlyID(ctx)
+func (_q *ActionCacheStatisticsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -212,18 +212,18 @@ func (acsq *ActionCacheStatisticsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of ActionCacheStatisticsSlice.
-func (acsq *ActionCacheStatisticsQuery) All(ctx context.Context) ([]*ActionCacheStatistics, error) {
-	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryAll)
-	if err := acsq.prepareQuery(ctx); err != nil {
+func (_q *ActionCacheStatisticsQuery) All(ctx context.Context) ([]*ActionCacheStatistics, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*ActionCacheStatistics, *ActionCacheStatisticsQuery]()
-	return withInterceptors[[]*ActionCacheStatistics](ctx, acsq, qr, acsq.inters)
+	return withInterceptors[[]*ActionCacheStatistics](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) AllX(ctx context.Context) []*ActionCacheStatistics {
-	nodes, err := acsq.All(ctx)
+func (_q *ActionCacheStatisticsQuery) AllX(ctx context.Context) []*ActionCacheStatistics {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -231,20 +231,20 @@ func (acsq *ActionCacheStatisticsQuery) AllX(ctx context.Context) []*ActionCache
 }
 
 // IDs executes the query and returns a list of ActionCacheStatistics IDs.
-func (acsq *ActionCacheStatisticsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if acsq.ctx.Unique == nil && acsq.path != nil {
-		acsq.Unique(true)
+func (_q *ActionCacheStatisticsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryIDs)
-	if err = acsq.Select(actioncachestatistics.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(actioncachestatistics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := acsq.IDs(ctx)
+func (_q *ActionCacheStatisticsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -252,17 +252,17 @@ func (acsq *ActionCacheStatisticsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (acsq *ActionCacheStatisticsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryCount)
-	if err := acsq.prepareQuery(ctx); err != nil {
+func (_q *ActionCacheStatisticsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, acsq, querierCount[*ActionCacheStatisticsQuery](), acsq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*ActionCacheStatisticsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) CountX(ctx context.Context) int {
-	count, err := acsq.Count(ctx)
+func (_q *ActionCacheStatisticsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -270,9 +270,9 @@ func (acsq *ActionCacheStatisticsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (acsq *ActionCacheStatisticsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryExist)
-	switch _, err := acsq.FirstID(ctx); {
+func (_q *ActionCacheStatisticsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -283,8 +283,8 @@ func (acsq *ActionCacheStatisticsQuery) Exist(ctx context.Context) (bool, error)
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (acsq *ActionCacheStatisticsQuery) ExistX(ctx context.Context) bool {
-	exist, err := acsq.Exist(ctx)
+func (_q *ActionCacheStatisticsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -293,44 +293,44 @@ func (acsq *ActionCacheStatisticsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the ActionCacheStatisticsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (acsq *ActionCacheStatisticsQuery) Clone() *ActionCacheStatisticsQuery {
-	if acsq == nil {
+func (_q *ActionCacheStatisticsQuery) Clone() *ActionCacheStatisticsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &ActionCacheStatisticsQuery{
-		config:            acsq.config,
-		ctx:               acsq.ctx.Clone(),
-		order:             append([]actioncachestatistics.OrderOption{}, acsq.order...),
-		inters:            append([]Interceptor{}, acsq.inters...),
-		predicates:        append([]predicate.ActionCacheStatistics{}, acsq.predicates...),
-		withActionSummary: acsq.withActionSummary.Clone(),
-		withMissDetails:   acsq.withMissDetails.Clone(),
+		config:            _q.config,
+		ctx:               _q.ctx.Clone(),
+		order:             append([]actioncachestatistics.OrderOption{}, _q.order...),
+		inters:            append([]Interceptor{}, _q.inters...),
+		predicates:        append([]predicate.ActionCacheStatistics{}, _q.predicates...),
+		withActionSummary: _q.withActionSummary.Clone(),
+		withMissDetails:   _q.withMissDetails.Clone(),
 		// clone intermediate query.
-		sql:  acsq.sql.Clone(),
-		path: acsq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithActionSummary tells the query-builder to eager-load the nodes that are connected to
 // the "action_summary" edge. The optional arguments are used to configure the query builder of the edge.
-func (acsq *ActionCacheStatisticsQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *ActionCacheStatisticsQuery {
-	query := (&ActionSummaryClient{config: acsq.config}).Query()
+func (_q *ActionCacheStatisticsQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *ActionCacheStatisticsQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	acsq.withActionSummary = query
-	return acsq
+	_q.withActionSummary = query
+	return _q
 }
 
 // WithMissDetails tells the query-builder to eager-load the nodes that are connected to
 // the "miss_details" edge. The optional arguments are used to configure the query builder of the edge.
-func (acsq *ActionCacheStatisticsQuery) WithMissDetails(opts ...func(*MissDetailQuery)) *ActionCacheStatisticsQuery {
-	query := (&MissDetailClient{config: acsq.config}).Query()
+func (_q *ActionCacheStatisticsQuery) WithMissDetails(opts ...func(*MissDetailQuery)) *ActionCacheStatisticsQuery {
+	query := (&MissDetailClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	acsq.withMissDetails = query
-	return acsq
+	_q.withMissDetails = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -347,10 +347,10 @@ func (acsq *ActionCacheStatisticsQuery) WithMissDetails(opts ...func(*MissDetail
 //		GroupBy(actioncachestatistics.FieldSizeInBytes).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (acsq *ActionCacheStatisticsQuery) GroupBy(field string, fields ...string) *ActionCacheStatisticsGroupBy {
-	acsq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ActionCacheStatisticsGroupBy{build: acsq}
-	grbuild.flds = &acsq.ctx.Fields
+func (_q *ActionCacheStatisticsQuery) GroupBy(field string, fields ...string) *ActionCacheStatisticsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &ActionCacheStatisticsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = actioncachestatistics.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -368,56 +368,56 @@ func (acsq *ActionCacheStatisticsQuery) GroupBy(field string, fields ...string) 
 //	client.ActionCacheStatistics.Query().
 //		Select(actioncachestatistics.FieldSizeInBytes).
 //		Scan(ctx, &v)
-func (acsq *ActionCacheStatisticsQuery) Select(fields ...string) *ActionCacheStatisticsSelect {
-	acsq.ctx.Fields = append(acsq.ctx.Fields, fields...)
-	sbuild := &ActionCacheStatisticsSelect{ActionCacheStatisticsQuery: acsq}
+func (_q *ActionCacheStatisticsQuery) Select(fields ...string) *ActionCacheStatisticsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &ActionCacheStatisticsSelect{ActionCacheStatisticsQuery: _q}
 	sbuild.label = actioncachestatistics.Label
-	sbuild.flds, sbuild.scan = &acsq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a ActionCacheStatisticsSelect configured with the given aggregations.
-func (acsq *ActionCacheStatisticsQuery) Aggregate(fns ...AggregateFunc) *ActionCacheStatisticsSelect {
-	return acsq.Select().Aggregate(fns...)
+func (_q *ActionCacheStatisticsQuery) Aggregate(fns ...AggregateFunc) *ActionCacheStatisticsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (acsq *ActionCacheStatisticsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range acsq.inters {
+func (_q *ActionCacheStatisticsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, acsq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range acsq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !actioncachestatistics.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if acsq.path != nil {
-		prev, err := acsq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		acsq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (acsq *ActionCacheStatisticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionCacheStatistics, error) {
+func (_q *ActionCacheStatisticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionCacheStatistics, error) {
 	var (
 		nodes       = []*ActionCacheStatistics{}
-		withFKs     = acsq.withFKs
-		_spec       = acsq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			acsq.withActionSummary != nil,
-			acsq.withMissDetails != nil,
+			_q.withActionSummary != nil,
+			_q.withMissDetails != nil,
 		}
 	)
-	if acsq.withActionSummary != nil {
+	if _q.withActionSummary != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -427,52 +427,52 @@ func (acsq *ActionCacheStatisticsQuery) sqlAll(ctx context.Context, hooks ...que
 		return (*ActionCacheStatistics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &ActionCacheStatistics{config: acsq.config}
+		node := &ActionCacheStatistics{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(acsq.modifiers) > 0 {
-		_spec.Modifiers = acsq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, acsq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := acsq.withActionSummary; query != nil {
-		if err := acsq.loadActionSummary(ctx, query, nodes, nil,
+	if query := _q.withActionSummary; query != nil {
+		if err := _q.loadActionSummary(ctx, query, nodes, nil,
 			func(n *ActionCacheStatistics, e *ActionSummary) { n.Edges.ActionSummary = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := acsq.withMissDetails; query != nil {
-		if err := acsq.loadMissDetails(ctx, query, nodes,
+	if query := _q.withMissDetails; query != nil {
+		if err := _q.loadMissDetails(ctx, query, nodes,
 			func(n *ActionCacheStatistics) { n.Edges.MissDetails = []*MissDetail{} },
 			func(n *ActionCacheStatistics, e *MissDetail) { n.Edges.MissDetails = append(n.Edges.MissDetails, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range acsq.withNamedMissDetails {
-		if err := acsq.loadMissDetails(ctx, query, nodes,
+	for name, query := range _q.withNamedMissDetails {
+		if err := _q.loadMissDetails(ctx, query, nodes,
 			func(n *ActionCacheStatistics) { n.appendNamedMissDetails(name) },
 			func(n *ActionCacheStatistics, e *MissDetail) { n.appendNamedMissDetails(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range acsq.loadTotal {
-		if err := acsq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (acsq *ActionCacheStatisticsQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*ActionCacheStatistics, init func(*ActionCacheStatistics), assign func(*ActionCacheStatistics, *ActionSummary)) error {
+func (_q *ActionCacheStatisticsQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*ActionCacheStatistics, init func(*ActionCacheStatistics), assign func(*ActionCacheStatistics, *ActionSummary)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*ActionCacheStatistics)
 	for i := range nodes {
@@ -504,7 +504,7 @@ func (acsq *ActionCacheStatisticsQuery) loadActionSummary(ctx context.Context, q
 	}
 	return nil
 }
-func (acsq *ActionCacheStatisticsQuery) loadMissDetails(ctx context.Context, query *MissDetailQuery, nodes []*ActionCacheStatistics, init func(*ActionCacheStatistics), assign func(*ActionCacheStatistics, *MissDetail)) error {
+func (_q *ActionCacheStatisticsQuery) loadMissDetails(ctx context.Context, query *MissDetailQuery, nodes []*ActionCacheStatistics, init func(*ActionCacheStatistics), assign func(*ActionCacheStatistics, *MissDetail)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*ActionCacheStatistics)
 	for i := range nodes {
@@ -536,27 +536,27 @@ func (acsq *ActionCacheStatisticsQuery) loadMissDetails(ctx context.Context, que
 	return nil
 }
 
-func (acsq *ActionCacheStatisticsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := acsq.querySpec()
-	if len(acsq.modifiers) > 0 {
-		_spec.Modifiers = acsq.modifiers
+func (_q *ActionCacheStatisticsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = acsq.ctx.Fields
-	if len(acsq.ctx.Fields) > 0 {
-		_spec.Unique = acsq.ctx.Unique != nil && *acsq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, acsq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (acsq *ActionCacheStatisticsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *ActionCacheStatisticsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(actioncachestatistics.Table, actioncachestatistics.Columns, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
-	_spec.From = acsq.sql
-	if unique := acsq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if acsq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := acsq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, actioncachestatistics.FieldID)
 		for i := range fields {
@@ -565,20 +565,20 @@ func (acsq *ActionCacheStatisticsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := acsq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := acsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := acsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := acsq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -588,33 +588,33 @@ func (acsq *ActionCacheStatisticsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (acsq *ActionCacheStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(acsq.driver.Dialect())
+func (_q *ActionCacheStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(actioncachestatistics.Table)
-	columns := acsq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = actioncachestatistics.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if acsq.sql != nil {
-		selector = acsq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if acsq.ctx.Unique != nil && *acsq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range acsq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range acsq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := acsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := acsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -622,16 +622,16 @@ func (acsq *ActionCacheStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selec
 
 // WithNamedMissDetails tells the query-builder to eager-load the nodes that are connected to the "miss_details"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (acsq *ActionCacheStatisticsQuery) WithNamedMissDetails(name string, opts ...func(*MissDetailQuery)) *ActionCacheStatisticsQuery {
-	query := (&MissDetailClient{config: acsq.config}).Query()
+func (_q *ActionCacheStatisticsQuery) WithNamedMissDetails(name string, opts ...func(*MissDetailQuery)) *ActionCacheStatisticsQuery {
+	query := (&MissDetailClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if acsq.withNamedMissDetails == nil {
-		acsq.withNamedMissDetails = make(map[string]*MissDetailQuery)
+	if _q.withNamedMissDetails == nil {
+		_q.withNamedMissDetails = make(map[string]*MissDetailQuery)
 	}
-	acsq.withNamedMissDetails[name] = query
-	return acsq
+	_q.withNamedMissDetails[name] = query
+	return _q
 }
 
 // ActionCacheStatisticsGroupBy is the group-by builder for ActionCacheStatistics entities.
@@ -641,41 +641,41 @@ type ActionCacheStatisticsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (acsgb *ActionCacheStatisticsGroupBy) Aggregate(fns ...AggregateFunc) *ActionCacheStatisticsGroupBy {
-	acsgb.fns = append(acsgb.fns, fns...)
-	return acsgb
+func (_g *ActionCacheStatisticsGroupBy) Aggregate(fns ...AggregateFunc) *ActionCacheStatisticsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (acsgb *ActionCacheStatisticsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, acsgb.build.ctx, ent.OpQueryGroupBy)
-	if err := acsgb.build.prepareQuery(ctx); err != nil {
+func (_g *ActionCacheStatisticsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionCacheStatisticsQuery, *ActionCacheStatisticsGroupBy](ctx, acsgb.build, acsgb, acsgb.build.inters, v)
+	return scanWithInterceptors[*ActionCacheStatisticsQuery, *ActionCacheStatisticsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (acsgb *ActionCacheStatisticsGroupBy) sqlScan(ctx context.Context, root *ActionCacheStatisticsQuery, v any) error {
+func (_g *ActionCacheStatisticsGroupBy) sqlScan(ctx context.Context, root *ActionCacheStatisticsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(acsgb.fns))
-	for _, fn := range acsgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*acsgb.flds)+len(acsgb.fns))
-		for _, f := range *acsgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*acsgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := acsgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -689,27 +689,27 @@ type ActionCacheStatisticsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (acss *ActionCacheStatisticsSelect) Aggregate(fns ...AggregateFunc) *ActionCacheStatisticsSelect {
-	acss.fns = append(acss.fns, fns...)
-	return acss
+func (_s *ActionCacheStatisticsSelect) Aggregate(fns ...AggregateFunc) *ActionCacheStatisticsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (acss *ActionCacheStatisticsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, acss.ctx, ent.OpQuerySelect)
-	if err := acss.prepareQuery(ctx); err != nil {
+func (_s *ActionCacheStatisticsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionCacheStatisticsQuery, *ActionCacheStatisticsSelect](ctx, acss.ActionCacheStatisticsQuery, acss, acss.inters, v)
+	return scanWithInterceptors[*ActionCacheStatisticsQuery, *ActionCacheStatisticsSelect](ctx, _s.ActionCacheStatisticsQuery, _s, _s.inters, v)
 }
 
-func (acss *ActionCacheStatisticsSelect) sqlScan(ctx context.Context, root *ActionCacheStatisticsQuery, v any) error {
+func (_s *ActionCacheStatisticsSelect) sqlScan(ctx context.Context, root *ActionCacheStatisticsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(acss.fns))
-	for _, fn := range acss.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*acss.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -717,7 +717,7 @@ func (acss *ActionCacheStatisticsSelect) sqlScan(ctx context.Context, root *Acti
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := acss.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
