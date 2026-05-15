@@ -2,6 +2,7 @@ package dbcleanupservice
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"math/rand/v2"
 	"time"
@@ -9,11 +10,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
+	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -86,34 +89,34 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 			case <-ctx.Done():
 				return nil
 			case <-time.After(timeToSleep):
-				if err := dc.LockInvocationsWithNoRecentEvents(ctx); err != nil {
+				if err := dc.executeTask(ctx, "LockInvocationsWithNoRecentEvents", "invocations_locked", dc.LockInvocationsWithNoRecentEvents); err != nil {
 					slog.Warn("Failed to lock unfinished invocations with no recent events", "err", err)
 				}
-				if err := dc.UpdateInvocationEndedAtFromEvents(ctx); err != nil {
+				if err := dc.executeTask(ctx, "UpdateInvocationEndedAtFromEvents", "updated_invocations", dc.UpdateInvocationEndedAtFromEvents); err != nil {
 					slog.Warn("Failed to update invocation ended_at from event metadata", "err", err)
 				}
-				if err := dc.CompactLogs(ctx); err != nil {
+				if err := dc.executeTask(ctx, "CompactLogs", "compacted_logs", dc.CompactLogs); err != nil {
 					slog.Warn("Failed to compact logs", "err", err)
 				}
-				if err := dc.DeleteIncompleteLogs(ctx); err != nil {
+				if err := dc.executeTask(ctx, "DeleteIncompleteLogs", "deleted_logs", dc.DeleteIncompleteLogs); err != nil {
 					slog.Warn("Failed to delete incomplete logs", "err", err)
 				}
-				if err := dc.RemoveOldInvocations(ctx); err != nil {
+				if err := dc.executeTask(ctx, "RemoveOldInvocations", "deleted_invocations", dc.RemoveOldInvocations); err != nil {
 					slog.Warn("Failed to remove old invocations", "err", err)
 				}
-				if err := dc.RemoveInactiveUsers(ctx); err != nil {
+				if err := dc.executeTask(ctx, "RemoveInactiveUsers", "deleted_users", dc.RemoveInactiveUsers); err != nil {
 					slog.Warn("Failed to remove users without invocations")
 				}
-				if err := dc.RemoveBuildsWithoutInvocations(ctx); err != nil {
+				if err := dc.executeTask(ctx, "RemoveBuildsWithoutInvocations", "deleted_builds", dc.RemoveBuildsWithoutInvocations); err != nil {
 					slog.Warn("Failed to remove builds without invocations", "err", err)
 				}
-				if err := dc.RemoveTargetKindMappings(ctx); err != nil {
+				if err := dc.executeTask(ctx, "RemoveTargetKindMappings", "removed_target_kind_mappings", dc.RemoveTargetKindMappings); err != nil {
 					slog.Warn("Failed to remove old TargetKindMappings", "err", err)
 				}
-				if err := dc.RemoveUnusedTargets(ctx); err != nil {
+				if err := dc.executeTask(ctx, "RemoveUnusedTargets", "removed_unused_targets", dc.RemoveUnusedTargets); err != nil {
 					slog.Warn("Failed to remove unused targets", "err", err)
 				}
-				if err := dc.RemoveOrphanedTestTargets(ctx); err != nil {
+				if err := dc.executeTask(ctx, "RemoveOrphanedTestTargets", "removed_test_targets", dc.RemoveOrphanedTestTargets); err != nil {
 					slog.Warn("Failed to remove orphaned test targets", "err", err)
 				}
 			}
@@ -123,20 +126,35 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 
 // RemoveBuildsWithoutInvocations removes builds that do not have any
 // associated invocations.
-func (dc *DbCleanupService) RemoveBuildsWithoutInvocations(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveBuildsWithoutInvocations")
-	defer span.End()
-
+func (dc *DbCleanupService) RemoveBuildsWithoutInvocations(ctx context.Context) (int64, error) {
 	deletedBuilds, err := dc.db.Ent().Build.Delete().
 		Where(
 			build.Not(build.HasInvocations()),
 		).
 		Exec(ctx)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to remove builds without invocations")
+		return 0, util.StatusWrap(err, "Failed to remove builds without invocations")
 	}
 
-	span.SetAttributes(attribute.KeyValue{Key: "deleted_builds", Value: attribute.IntValue(deletedBuilds)})
+	return int64(deletedBuilds), nil
+}
 
-	return nil
+// A helper function which records metrics and tracing attributes
+// for the cleanup tasks
+func (dc *DbCleanupService) executeTask(ctx context.Context, taskName, attributeKey string, task func(context.Context) (int64, error)) error {
+	ctx, span := dc.tracer.Start(ctx, fmt.Sprintf("DbCleanupService.%s", taskName))
+	defer span.End()
+	start := dc.clock.Now()
+
+	volume, err := task(ctx)
+	prometheusmetrics.CleanupDurations.WithLabelValues(taskName).Add(dc.clock.Now().Sub(start).Seconds())
+	prometheusmetrics.CleanupVolumes.WithLabelValues(taskName).Add(float64(volume))
+	span.SetAttributes(attribute.Int64(attributeKey, volume))
+
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, fmt.Sprintf("An error occured during cleanup service %s", taskName))
+	}
+
+	return err
 }

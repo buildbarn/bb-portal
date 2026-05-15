@@ -28,8 +28,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 	})
 
 	t.Run("UnfinishedInvocation-NoEventMetadata", func(t *testing.T) {
@@ -42,8 +43,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		resInv, err := client.BazelInvocation.Get(ctx, startInv.ID)
 		require.NoError(t, err)
@@ -64,8 +66,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		resInv, err := client.BazelInvocation.Get(ctx, startInv.ID)
 		require.NoError(t, err)
@@ -90,8 +93,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		inv, err := client.BazelInvocation.Get(ctx, invocationDb.ID)
 		require.NoError(t, err)
@@ -117,8 +121,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		inv, err := client.BazelInvocation.Get(ctx, invocationDb.ID)
 		require.NoError(t, err)
@@ -142,8 +147,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, locked)
 
 		inv, err := client.BazelInvocation.Get(ctx, invocationDb.ID)
 		require.NoError(t, err)
@@ -169,8 +175,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		inv, err := client.BazelInvocation.Get(ctx, invocationDb.ID)
 		require.NoError(t, err)
@@ -208,8 +215,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
+		locked, err := cleanup.LockInvocationsWithNoRecentEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, locked)
 
 		gotOld, err := client.BazelInvocation.Get(ctx, invOld.ID)
 		require.NoError(t, err)
@@ -232,8 +240,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.UpdateInvocationEndedAtFromEvents(ctx)
+		locked, err := cleanup.UpdateInvocationEndedAtFromEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 	})
 
 	t.Run("NoEndedAt-NoEventMetadata", func(t *testing.T) {
@@ -247,8 +256,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.UpdateInvocationEndedAtFromEvents(ctx)
+		locked, err := cleanup.UpdateInvocationEndedAtFromEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		resInv, err := client.BazelInvocation.Get(ctx, startInv.ID)
 		require.NoError(t, err)
@@ -268,8 +278,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.UpdateInvocationEndedAtFromEvents(ctx)
+		locked, err := cleanup.UpdateInvocationEndedAtFromEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		inv, err := client.BazelInvocation.Get(ctx, startInv.ID)
 		require.NoError(t, err)
@@ -296,8 +307,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.UpdateInvocationEndedAtFromEvents(ctx)
+		locked, err := cleanup.UpdateInvocationEndedAtFromEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, locked)
 
 		inv, err := client.BazelInvocation.Get(ctx, invocationDb.ID)
 		require.NoError(t, err)
@@ -326,8 +338,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.UpdateInvocationEndedAtFromEvents(ctx)
+		locked, err := cleanup.UpdateInvocationEndedAtFromEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		inv, err := client.BazelInvocation.Get(ctx, invocationDb.ID)
 		require.NoError(t, err)
@@ -370,8 +383,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.UpdateInvocationEndedAtFromEvents(ctx)
+		locked, err := cleanup.UpdateInvocationEndedAtFromEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, locked)
 
 		gotUpdated, err := client.BazelInvocation.Get(ctx, invToUpdate.ID)
 		require.NoError(t, err)
@@ -400,8 +414,9 @@ func TestUpdateInvocationEndedAtFromEvents(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.UpdateInvocationEndedAtFromEvents(ctx)
+		locked, err := cleanup.UpdateInvocationEndedAtFromEvents(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, locked)
 
 		gotNotUpdated, err := client.BazelInvocation.Get(ctx, invToNotUpdate.ID)
 		require.NoError(t, err)

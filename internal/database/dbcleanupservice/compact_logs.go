@@ -3,7 +3,6 @@ package dbcleanupservice
 import (
 	"bytes"
 	"context"
-	"fmt"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
@@ -88,10 +87,7 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocation 
 
 // CompactLogs compacts incomplete build logs by merging log entries for
 // the same invocation.
-func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.CompactLogs")
-	defer span.End()
-
+func (dc *DbCleanupService) CompactLogs(ctx context.Context) (int64, error) {
 	invocations, err := dc.db.Ent().BazelInvocation.Query().
 		Where(
 			bazelinvocation.BepCompleted(true),
@@ -102,9 +98,7 @@ func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
 		).
 		All(ctx)
 	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, "Failed to query invocations with incomplete build logs")
-		return util.StatusWrap(err, "Failed to query invocations with incomplete build logs")
+		return 0, util.StatusWrap(err, "Failed to query invocations with incomplete build logs")
 	}
 
 	errs := make([]error, 0, len(invocations))
@@ -115,17 +109,11 @@ func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
 		}
 	}
 
-	span.SetAttributes(
-		attribute.Int("invocations.total", len(invocations)),
-		attribute.Int("invocations.succeeded", len(invocations)-len(errs)),
-	)
-
+	succeeded := int64(len(invocations) - len(errs))
 	if len(errs) != 0 {
 		err = util.StatusFromMultiple(errs)
-		span.RecordError(err)
-		span.SetStatus(codes.Error, fmt.Sprintf("%d/%d invocation logs could not be compacted", len(errs), len(invocations)))
-		return err
+		return succeeded, err
 	}
 
-	return nil
+	return succeeded, nil
 }

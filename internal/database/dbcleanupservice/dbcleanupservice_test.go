@@ -98,8 +98,9 @@ func TestCompactLogs(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.CompactLogs(ctx)
+		compacted, err := cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, compacted)
 		count, err := client.BuildLogChunk.Query().Where(
 			buildlogchunk.HasBazelInvocationWith(
 				bazelinvocation.ID(inv.ID),
@@ -137,12 +138,14 @@ func TestCompactLogs(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		// Delete attempt before compaction should not delete logs.
-		err = cleanup.DeleteIncompleteLogs(ctx)
+		deleted, err := cleanup.DeleteIncompleteLogs(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 		requireIncompleteLogCount(t, client, 6)
 		// Compaction should not delete logs
-		err = cleanup.CompactLogs(ctx)
+		compacted, err := cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, compacted)
 		requireIncompleteLogCount(t, client, 6)
 		chunk, err := client.BuildLogChunk.Query().Where(
 			buildlogchunk.HasBazelInvocationWith(
@@ -156,8 +159,9 @@ func TestCompactLogs(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, "\x1b[35mWARNING: \x1b[0mBuild options --dynamic_mode, --extra_execution_platforms, and --extra_toolchains have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).\n\x1b[32mINFO: \x1b[0mAnalyzed target //:hello (0 packages loaded, 2 targets configured).\n\x1b[32mINFO: \x1b[0mFound 1 target...\nTarget //:hello up-to-date:\n  bazel-bin/hello.sh\n\x1b[32mINFO: \x1b[0mElapsed time: 0.137s, Critical Path: 0.02s\n\x1b[32mINFO: \x1b[0m2 processes: 1 internal, 1 linux-sandbox.\n\x1b[32mINFO: \x1b[0mBuild completed successfully, 2 total actions\n\x1b[32mINFO:\x1b[0m \n", string(data))
 		// Now logs should be deleted
-		err = cleanup.DeleteIncompleteLogs(ctx)
+		deleted, err = cleanup.DeleteIncompleteLogs(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 6, deleted)
 		requireIncompleteLogCount(t, client, 0)
 	})
 
@@ -174,11 +178,13 @@ func TestCompactLogs(t *testing.T) {
 		requireIncompleteLogCount(t, client, 6)
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.CompactLogs(ctx)
+		compacted, err := cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, compacted)
 		requireIncompleteLogCount(t, client, 6)
-		err = cleanup.DeleteIncompleteLogs(ctx)
+		deleted, err := cleanup.DeleteIncompleteLogs(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 		requireIncompleteLogCount(t, client, 6)
 	})
 }
@@ -195,8 +201,9 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
+		deleted, err := cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.Build.Query().Count(ctx)
 		require.NoError(t, err)
@@ -217,8 +224,9 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
+		deleted, err := cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.Build.Query().Count(ctx)
 		require.NoError(t, err)
@@ -235,8 +243,9 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
+		deleted, err := cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 
 		count, err := client.Build.Query().Count(ctx)
 		require.NoError(t, err)
@@ -264,8 +273,9 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
+		deleted, err := cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 2, deleted)
 
 		count, err := client.Build.Query().Count(ctx)
 		require.NoError(t, err)
