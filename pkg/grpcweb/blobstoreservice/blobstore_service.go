@@ -36,11 +36,6 @@ func NewBlobstoreService(
 	instanceNameAuthorizer auth.Authorizer,
 	router *mux.Router,
 ) error {
-	browserConfig := configuration.BrowserServiceConfiguration
-	if browserConfig == nil {
-		return nil
-	}
-
 	// Authorizer used to deny all write requests.
 	denyAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return false })
 
@@ -49,10 +44,10 @@ func NewBlobstoreService(
 
 	// Content Addressable Storage (CAS).
 	var contentAddressableStorageInfo *blobstore_configuration.BlobAccessInfo
-	if browserConfig.ContentAddressableStorage != nil {
+	if configuration.ContentAddressableStorage != nil {
 		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
 			dependenciesGroup,
-			browserConfig.ContentAddressableStorage,
+			configuration.ContentAddressableStorage,
 			blobstore_configuration.NewCASBlobAccessCreator(grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
 		)
 		if err != nil {
@@ -77,10 +72,10 @@ func NewBlobstoreService(
 	}
 
 	// Action Cache (AC).
-	if browserConfig.ActionCache != nil {
+	if configuration.ActionCache != nil {
 		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
 			dependenciesGroup,
-			browserConfig.ActionCache,
+			configuration.ActionCache,
 			blobstore_configuration.NewACBlobAccessCreator(contentAddressableStorageInfo, grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
 		)
 		if err != nil {
@@ -93,10 +88,10 @@ func NewBlobstoreService(
 	}
 
 	// Initial Size Class Cache (ISCC).
-	if browserConfig.InitialSizeClassCache != nil {
+	if configuration.InitialSizeClassCache != nil {
 		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
 			dependenciesGroup,
-			browserConfig.InitialSizeClassCache,
+			configuration.InitialSizeClassCache,
 			blobstore_configuration.NewISCCBlobAccessCreator(grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
 		)
 		if err != nil {
@@ -109,10 +104,10 @@ func NewBlobstoreService(
 	}
 
 	// File System Access Cache (FSAC).
-	if browserConfig.FileSystemAccessCache != nil {
+	if configuration.FileSystemAccessCache != nil {
 		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
 			dependenciesGroup,
-			browserConfig.FileSystemAccessCache,
+			configuration.FileSystemAccessCache,
 			blobstore_configuration.NewFSACBlobAccessCreator(grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
 		)
 		if err != nil {

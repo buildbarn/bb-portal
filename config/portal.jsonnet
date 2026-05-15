@@ -61,6 +61,11 @@ local semaphoreExtractor = importstr 'semaphore.jmespath';
     authenticationPolicy: { allow: {} },
   }],
 
+  contentAddressableStorage: { grpc: { client: { address: 'localhost:8980' } } },
+  actionCache: { grpc: { client: { address: 'localhost:8980' } } },
+  initialSizeClassCache: { grpc: { client: { address: 'localhost:8980' } } },
+  fileSystemAccessCache: { grpc: { client: { address: 'localhost:8980' } } },
+
   instanceNameAuthorizer: {
     allow: {},
   },
@@ -98,14 +103,6 @@ local semaphoreExtractor = importstr 'semaphore.jmespath';
       expression: githubActionsExtractor,
     },
     buildKey: "build_id",
-  },
-
-  // The BrowserService can be disabled by not setting this field.
-  browserServiceConfiguration: {
-    contentAddressableStorage: { grpc: { client: { address: 'localhost:8980' } } },
-    actionCache: { grpc: { client: { address: 'localhost:8980' } } },
-    initialSizeClassCache: { grpc: { client: { address: 'localhost:8980' } } },
-    fileSystemAccessCache: { grpc: { client: { address: 'localhost:8980' } } },
   },
 
   // The SchedulerService can be disabled by not setting this field.
