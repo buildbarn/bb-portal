@@ -26,8 +26,9 @@ func TestRemoveInactiveUser(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveInactiveUsers(ctx)
+		deleted, err := cleanup.RemoveInactiveUsers(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.AuthenticatedUser.Query().Count(ctx)
 		require.NoError(t, err)
@@ -47,8 +48,9 @@ func TestRemoveInactiveUser(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveInactiveUsers(ctx)
+		deleted, err := cleanup.RemoveInactiveUsers(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 
 		count, err := client.AuthenticatedUser.Query().Count(ctx)
 		require.NoError(t, err)
@@ -74,8 +76,9 @@ func TestRemoveInactiveUser(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveInactiveUsers(ctx)
+		deleted, err := cleanup.RemoveInactiveUsers(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.AuthenticatedUser.Query().Count(ctx)
 		require.NoError(t, err)
@@ -113,8 +116,9 @@ func TestRemoveInactiveUser(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveInactiveUsers(ctx)
+		deleted, err := cleanup.RemoveInactiveUsers(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 
 		count, err = client.AuthenticatedUser.Query().Count(ctx)
 		require.NoError(t, err)

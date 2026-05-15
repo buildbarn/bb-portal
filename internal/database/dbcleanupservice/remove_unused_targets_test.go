@@ -25,8 +25,9 @@ func TestRemoveUnusedTargets(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveUnusedTargets(ctx)
+		deleted, err := cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.Target.Query().Count(ctx)
 		require.NoError(t, err)
@@ -49,8 +50,9 @@ func TestRemoveUnusedTargets(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveUnusedTargets(ctx)
+		deleted, err := cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 
 		count, err := client.Target.Query().Count(ctx)
 		require.NoError(t, err)
@@ -83,8 +85,9 @@ func TestRemoveUnusedTargets(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveUnusedTargets(ctx)
+		deleted, err := cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.Target.Query().Count(ctx)
 		require.NoError(t, err)
@@ -116,8 +119,9 @@ func TestRemoveUnusedTargets(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveUnusedTargets(ctx)
+		deleted, err := cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.Target.Query().Count(ctx)
 		require.NoError(t, err)
@@ -156,8 +160,9 @@ func TestRemoveUnusedTargets(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveUnusedTargets(ctx)
+		deleted, err := cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.Target.Query().Count(ctx)
 		require.NoError(t, err)

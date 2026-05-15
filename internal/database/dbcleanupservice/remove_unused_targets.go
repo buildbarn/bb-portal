@@ -6,18 +6,14 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"go.opentelemetry.io/otel/attribute"
 )
 
 // RemoveUnusedTargets removes Targets that have no InvocationTargets or
 // TargetKindMappings.
-func (dc *DbCleanupService) RemoveUnusedTargets(ctx context.Context) error {
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveUnusedTargets")
-	defer span.End()
-
+func (dc *DbCleanupService) RemoveUnusedTargets(ctx context.Context) (int64, error) {
 	start, count, err := dc.nextSlice(ctx, target.Table)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	deleted, err := dc.db.Sqlc().DeleteUnusedTargetsFromPages(ctx, sqlc.DeleteUnusedTargetsFromPagesParams{
@@ -25,9 +21,8 @@ func (dc *DbCleanupService) RemoveUnusedTargets(ctx context.Context) error {
 		Pages:    count,
 	})
 	if err != nil {
-		return util.StatusWrap(err, "Failed to remove unused Targets")
+		return 0, util.StatusWrap(err, "Failed to remove unused Targets")
 	}
 
-	span.SetAttributes(attribute.Int64("unused_targets_removed", deleted))
-	return nil
+	return deleted, nil
 }

@@ -27,8 +27,9 @@ func TestRemoveOldInvocations(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldInvocations(ctx)
+		deleted, err := cleanup.RemoveOldInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.BazelInvocation.Query().Count(ctx)
 		require.NoError(t, err)
@@ -47,8 +48,9 @@ func TestRemoveOldInvocations(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldInvocations(ctx)
+		deleted, err := cleanup.RemoveOldInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.BazelInvocation.Query().Count(ctx)
 		require.NoError(t, err)
@@ -68,8 +70,9 @@ func TestRemoveOldInvocations(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldInvocations(ctx)
+		deleted, err := cleanup.RemoveOldInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.BazelInvocation.Query().Count(ctx)
 		require.NoError(t, err)
@@ -90,8 +93,9 @@ func TestRemoveOldInvocations(t *testing.T) {
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 
-		err = cleanup.RemoveOldInvocations(ctx)
+		deleted, err := cleanup.RemoveOldInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 
 		count, err := client.BazelInvocation.Query().Count(ctx)
 		require.NoError(t, err)
@@ -128,8 +132,9 @@ func TestRemoveOldInvocations(t *testing.T) {
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldInvocations(ctx)
+		deleted, err := cleanup.RemoveOldInvocations(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 
 		count, err := client.BazelInvocation.Query().Count(ctx)
 		require.NoError(t, err)
