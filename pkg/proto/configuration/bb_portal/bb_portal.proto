@@ -199,16 +199,6 @@ message BuildEventStreamService {
   string build_key = 12;
 }
 
-message BrowserService {
-  buildbarn.configuration.blobstore.BlobAccessConfiguration
-      content_addressable_storage = 1;
-  buildbarn.configuration.blobstore.BlobAccessConfiguration action_cache = 2;
-  buildbarn.configuration.blobstore.BlobAccessConfiguration
-      initial_size_class_cache = 3;
-  buildbarn.configuration.blobstore.BlobAccessConfiguration
-      file_system_access_cache = 4;
-}
-
 message SchedulerService {
   // Configures the gRPC-Web proxies that are used from the web UI to
   // communicate with the Buildbarn.
@@ -257,10 +247,17 @@ message ApplicationConfiguration {
   // Common configuration options that apply to all Buildbarn binaries.
   buildbarn.configuration.global.Configuration global = 2;
 
-  // Configurations for the various services that are part of the application.
-  // If a service is not configured, it will not be started.
+  // Config for starting the Build Event Stream Service. If omitted, the BES
+  // part of the backend will not be started.
   BuildEventStreamService bes_service_configuration = 3;
-  BrowserService browser_service_configuration = 4;
+
+  // Was 'browser_service_configuration'. Replaced by configuring
+  // 'content_addressable_storage', 'action_cache', 'initial_size_class_cache',
+  // and/or 'file_system_access_cache' on the top level.
+  reserved 4;
+
+  // Config for starting the Scheduler Service. If omitted, the Scheduler part
+  // of the backend will not be started.
   SchedulerService scheduler_service_configuration = 5;
 
   // Maximum Protobuf message size to unmarshal.
@@ -279,4 +276,12 @@ message ApplicationConfiguration {
   reserved 9;
 
   FrontendService frontend_service_configuration = 10;
+
+  buildbarn.configuration.blobstore.BlobAccessConfiguration
+      content_addressable_storage = 11;
+  buildbarn.configuration.blobstore.BlobAccessConfiguration action_cache = 12;
+  buildbarn.configuration.blobstore.BlobAccessConfiguration
+      initial_size_class_cache = 13;
+  buildbarn.configuration.blobstore.BlobAccessConfiguration
+      file_system_access_cache = 14;
 }
