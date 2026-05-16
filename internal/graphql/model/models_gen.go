@@ -2,6 +2,29 @@
 
 package model
 
+// Maps a BEP file URI to a server-side download URL when one is available
+// (bytestream:// URIs route through bb-portal's /api/v1/servefile/...
+// endpoint; http(s):// URIs pass through; everything else returns null).
+type ArtifactFile struct {
+	Name           string  `json:"name"`
+	URI            *string `json:"uri,omitempty"`
+	Digest         *string `json:"digest,omitempty"`
+	SizeBytes      *int    `json:"sizeBytes,omitempty"`
+	DigestFunction *string `json:"digestFunction,omitempty"`
+	DownloadURL    *string `json:"downloadUrl,omitempty"`
+}
+
+// Compressed BEP-graph blob written once at BuildFinished when the
+// invocation's save level is basic_and_target_and_artifacts. payload is
+// a base64-encoded zstd stream of length-prefixed serialized
+// bes.BuildEvent messages (NamedSetOfFiles and TargetCompleted variants
+// only). Clients base64-decode, zstd-decompress, and walk the graph
+// themselves.
+type ArtifactGraph struct {
+	Payload          string `json:"payload"`
+	UncompressedSize int    `json:"uncompressedSize"`
+}
+
 type Profile struct {
 	ID             string `json:"id"`
 	Name           string `json:"name"`

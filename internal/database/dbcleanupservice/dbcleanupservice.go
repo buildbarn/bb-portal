@@ -18,6 +18,8 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
+	grpccodes "google.golang.org/grpc/codes"
+	grpcstatus "google.golang.org/grpc/status"
 )
 
 // DbCleanupService a service that performs periodic cleanup of the
@@ -40,6 +42,7 @@ type DbCleanupService struct {
 	cleanupInterval          time.Duration
 	invocationMessageTimeout time.Duration
 	invocationRetention      time.Duration
+	artifactRetention        time.Duration
 	tracer                   trace.Tracer
 }
 
@@ -65,6 +68,20 @@ func NewDbCleanupService(
 		return nil, util.StatusWrap(err, "Failed to parse invocationRetention parameter time")
 	}
 
+	artifactRetentionPb := cleanupConfiguration.ArtifactRetention
+	artifactRetention := invocationRetention.AsDuration() // default: same as invocation_retention
+	if artifactRetentionPb != nil {
+		if err := artifactRetentionPb.CheckValid(); err != nil {
+			return nil, util.StatusWrap(err, "Failed to parse artifactRetention parameter time")
+		}
+		artifactRetention = artifactRetentionPb.AsDuration()
+		if artifactRetention > invocationRetention.AsDuration() {
+			return nil, grpcstatus.Errorf(grpccodes.InvalidArgument,
+				"artifact_retention (%s) must be <= invocation_retention (%s)",
+				artifactRetention, invocationRetention.AsDuration())
+		}
+	}
+
 	return &DbCleanupService{
 		db:                       db,
 		counter:                  rand.Int64N(65536),
@@ -72,6 +89,7 @@ func NewDbCleanupService(
 		cleanupInterval:          cleanupInterval.AsDuration(),
 		invocationMessageTimeout: invocationMessageTimeout.AsDuration(),
 		invocationRetention:      invocationRetention.AsDuration(),
+		artifactRetention:        artifactRetention,
 		tracer:                   tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"),
 	}, nil
 }
@@ -100,6 +118,9 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				}
 				if err := dc.executeTask(ctx, "DeleteIncompleteLogs", "deleted_logs", dc.DeleteIncompleteLogs); err != nil {
 					slog.Warn("Failed to delete incomplete logs", "err", err)
+				}
+				if err := dc.executeTask(ctx, "RemoveOldArtifacts", "deleted_artifacts", dc.RemoveOldArtifacts); err != nil {
+					slog.Warn("Failed to remove old artifacts", "err", err)
 				}
 				if err := dc.executeTask(ctx, "RemoveOldInvocations", "deleted_invocations", dc.RemoveOldInvocations); err != nil {
 					slog.Warn("Failed to remove old invocations", "err", err)

@@ -10,6 +10,7 @@ go_library(
         "event_metadata.sql.go",
         "incomplete_build_logs.sql.go",
         "instance_names.sql.go",
+        "invocation_artifacts.sql.go",
         "invocation_targets.sql.go",
         "models.go",
         "postgres.sql.go",

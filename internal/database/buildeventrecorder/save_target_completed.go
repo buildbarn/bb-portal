@@ -18,6 +18,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 // saveTargetCompletedBatch efficiently saves a batch of target
@@ -32,6 +33,8 @@ func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 	case *bb_portal.BuildEventStreamService_SaveDataLevel_Basic:
 		return nil
 	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget:
+		// Continue processing.
+	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTargetAndArtifacts:
 		// Continue processing.
 	default:
 		return status.Error(codes.Internal, "Attempted to save target completed events when `saveDataLevel` is not recognized. This is probably a bug.")
@@ -70,6 +73,10 @@ func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 
 	if err := createInvocationTargetsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, batch, targetInfoMap); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert invocation targets")
+	}
+
+	if err := r.appendTargetCompletedToArtifactGraph(batch); err != nil {
+		return util.StatusWrap(err, "Failed to append target completed events to artifact graph")
 	}
 
 	if err := r.createTestSummariesFromTargetCompletedChildren(ctx, tx, batch, targetInfoMap); err != nil {
@@ -291,4 +298,27 @@ func stripParams(aspect string) string {
 		return aspect[:idx]
 	}
 	return aspect
+}
+
+// appendTargetCompletedToArtifactGraph serializes each TargetCompleted
+// BuildEvent in the batch and appends it to the in-memory streaming
+// buffer. No-op when the buffer is nil (save level below
+// basic_and_target_and_artifacts).
+func (r *buildEventRecorder) appendTargetCompletedToArtifactGraph(batch []BuildEventWithInfo) error {
+	if r.artifactGraph == nil {
+		return nil
+	}
+	for _, x := range batch {
+		if x.Event == nil || x.Event.GetCompleted() == nil {
+			continue
+		}
+		payload, err := proto.Marshal(x.Event)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to marshal TargetCompleted BuildEvent")
+		}
+		if err := r.artifactGraph.AppendBuildEvent(payload); err != nil {
+			return util.StatusWrap(err, "Failed to append TargetCompleted to artifact graph buffer")
+		}
+	}
+	return nil
 }

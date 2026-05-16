@@ -28,6 +28,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -59,40 +60,41 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAction                = "Action"
-	TypeActionCacheStatistics = "ActionCacheStatistics"
-	TypeActionData            = "ActionData"
-	TypeActionSummary         = "ActionSummary"
-	TypeArtifactMetrics       = "ArtifactMetrics"
-	TypeAuthenticatedUser     = "AuthenticatedUser"
-	TypeBazelInvocation       = "BazelInvocation"
-	TypeBuild                 = "Build"
-	TypeBuildGraphMetrics     = "BuildGraphMetrics"
-	TypeBuildLogChunk         = "BuildLogChunk"
-	TypeBuildTag              = "BuildTag"
-	TypeConfiguration         = "Configuration"
-	TypeConnectionMetadata    = "ConnectionMetadata"
-	TypeEventMetadata         = "EventMetadata"
-	TypeGarbageMetrics        = "GarbageMetrics"
-	TypeIncompleteBuildLog    = "IncompleteBuildLog"
-	TypeInstanceName          = "InstanceName"
-	TypeInvocationFiles       = "InvocationFiles"
-	TypeInvocationTag         = "InvocationTag"
-	TypeInvocationTarget      = "InvocationTarget"
-	TypeMemoryMetrics         = "MemoryMetrics"
-	TypeMetrics               = "Metrics"
-	TypeMissDetail            = "MissDetail"
-	TypeNetworkMetrics        = "NetworkMetrics"
-	TypeRunnerCount           = "RunnerCount"
-	TypeSourceControl         = "SourceControl"
-	TypeSystemNetworkStats    = "SystemNetworkStats"
-	TypeTarget                = "Target"
-	TypeTargetKindMapping     = "TargetKindMapping"
-	TypeTargetMetrics         = "TargetMetrics"
-	TypeTestResult            = "TestResult"
-	TypeTestSummary           = "TestSummary"
-	TypeTestTarget            = "TestTarget"
-	TypeTimingMetrics         = "TimingMetrics"
+	TypeAction                  = "Action"
+	TypeActionCacheStatistics   = "ActionCacheStatistics"
+	TypeActionData              = "ActionData"
+	TypeActionSummary           = "ActionSummary"
+	TypeArtifactMetrics         = "ArtifactMetrics"
+	TypeAuthenticatedUser       = "AuthenticatedUser"
+	TypeBazelInvocation         = "BazelInvocation"
+	TypeBuild                   = "Build"
+	TypeBuildGraphMetrics       = "BuildGraphMetrics"
+	TypeBuildLogChunk           = "BuildLogChunk"
+	TypeBuildTag                = "BuildTag"
+	TypeConfiguration           = "Configuration"
+	TypeConnectionMetadata      = "ConnectionMetadata"
+	TypeEventMetadata           = "EventMetadata"
+	TypeGarbageMetrics          = "GarbageMetrics"
+	TypeIncompleteBuildLog      = "IncompleteBuildLog"
+	TypeInstanceName            = "InstanceName"
+	TypeInvocationArtifactGraph = "InvocationArtifactGraph"
+	TypeInvocationFiles         = "InvocationFiles"
+	TypeInvocationTag           = "InvocationTag"
+	TypeInvocationTarget        = "InvocationTarget"
+	TypeMemoryMetrics           = "MemoryMetrics"
+	TypeMetrics                 = "Metrics"
+	TypeMissDetail              = "MissDetail"
+	TypeNetworkMetrics          = "NetworkMetrics"
+	TypeRunnerCount             = "RunnerCount"
+	TypeSourceControl           = "SourceControl"
+	TypeSystemNetworkStats      = "SystemNetworkStats"
+	TypeTarget                  = "Target"
+	TypeTargetKindMapping       = "TargetKindMapping"
+	TypeTargetMetrics           = "TargetMetrics"
+	TypeTestResult              = "TestResult"
+	TypeTestSummary             = "TestSummary"
+	TypeTestTarget              = "TestTarget"
+	TypeTimingMetrics           = "TimingMetrics"
 )
 
 // ActionMutation represents an operation that mutates the Action nodes in the graph.
@@ -6728,6 +6730,8 @@ type BazelInvocationMutation struct {
 	source_control                   map[int64]struct{}
 	removedsource_control            map[int64]struct{}
 	clearedsource_control            bool
+	artifact_graph                   *int64
+	clearedartifact_graph            bool
 	done                             bool
 	oldValue                         func(context.Context) (*BazelInvocation, error)
 	predicates                       []predicate.BazelInvocation
@@ -8488,6 +8492,45 @@ func (m *BazelInvocationMutation) ResetSourceControl() {
 	m.removedsource_control = nil
 }
 
+// SetArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by id.
+func (m *BazelInvocationMutation) SetArtifactGraphID(id int64) {
+	m.artifact_graph = &id
+}
+
+// ClearArtifactGraph clears the "artifact_graph" edge to the InvocationArtifactGraph entity.
+func (m *BazelInvocationMutation) ClearArtifactGraph() {
+	m.clearedartifact_graph = true
+}
+
+// ArtifactGraphCleared reports if the "artifact_graph" edge to the InvocationArtifactGraph entity was cleared.
+func (m *BazelInvocationMutation) ArtifactGraphCleared() bool {
+	return m.clearedartifact_graph
+}
+
+// ArtifactGraphID returns the "artifact_graph" edge ID in the mutation.
+func (m *BazelInvocationMutation) ArtifactGraphID() (id int64, exists bool) {
+	if m.artifact_graph != nil {
+		return *m.artifact_graph, true
+	}
+	return
+}
+
+// ArtifactGraphIDs returns the "artifact_graph" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ArtifactGraphID instead. It exists only for internal usage by the builders.
+func (m *BazelInvocationMutation) ArtifactGraphIDs() (ids []int64) {
+	if id := m.artifact_graph; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetArtifactGraph resets all changes to the "artifact_graph" edge.
+func (m *BazelInvocationMutation) ResetArtifactGraph() {
+	m.artifact_graph = nil
+	m.clearedartifact_graph = false
+}
+
 // Where appends a list predicates to the BazelInvocationMutation builder.
 func (m *BazelInvocationMutation) Where(ps ...predicate.BazelInvocation) {
 	m.predicates = append(m.predicates, ps...)
@@ -9052,7 +9095,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 16)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9097,6 +9140,9 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.source_control != nil {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
+	}
+	if m.artifact_graph != nil {
+		edges = append(edges, bazelinvocation.EdgeArtifactGraph)
 	}
 	return edges
 }
@@ -9183,13 +9229,17 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeArtifactGraph:
+		if id := m.artifact_graph; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 16)
 	if m.removedtags != nil {
 		edges = append(edges, bazelinvocation.EdgeTags)
 	}
@@ -9284,7 +9334,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 16)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9330,6 +9380,9 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	if m.clearedsource_control {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
 	}
+	if m.clearedartifact_graph {
+		edges = append(edges, bazelinvocation.EdgeArtifactGraph)
+	}
 	return edges
 }
 
@@ -9367,6 +9420,8 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedtarget_kind_mappings
 	case bazelinvocation.EdgeSourceControl:
 		return m.clearedsource_control
+	case bazelinvocation.EdgeArtifactGraph:
+		return m.clearedartifact_graph
 	}
 	return false
 }
@@ -9392,6 +9447,9 @@ func (m *BazelInvocationMutation) ClearEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ClearMetrics()
+		return nil
+	case bazelinvocation.EdgeArtifactGraph:
+		m.ClearArtifactGraph()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation unique edge %s", name)
@@ -9445,6 +9503,9 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeSourceControl:
 		m.ResetSourceControl()
+		return nil
+	case bazelinvocation.EdgeArtifactGraph:
+		m.ResetArtifactGraph()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation edge %s", name)
@@ -16157,6 +16218,495 @@ func (m *InstanceNameMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown InstanceName edge %s", name)
+}
+
+// InvocationArtifactGraphMutation represents an operation that mutates the InvocationArtifactGraph nodes in the graph.
+type InvocationArtifactGraphMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int64
+	payload                 *[]byte
+	uncompressed_size       *int64
+	adduncompressed_size    *int64
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int64
+	clearedbazel_invocation bool
+	done                    bool
+	oldValue                func(context.Context) (*InvocationArtifactGraph, error)
+	predicates              []predicate.InvocationArtifactGraph
+}
+
+var _ ent.Mutation = (*InvocationArtifactGraphMutation)(nil)
+
+// invocationartifactgraphOption allows management of the mutation configuration using functional options.
+type invocationartifactgraphOption func(*InvocationArtifactGraphMutation)
+
+// newInvocationArtifactGraphMutation creates new mutation for the InvocationArtifactGraph entity.
+func newInvocationArtifactGraphMutation(c config, op Op, opts ...invocationartifactgraphOption) *InvocationArtifactGraphMutation {
+	m := &InvocationArtifactGraphMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeInvocationArtifactGraph,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withInvocationArtifactGraphID sets the ID field of the mutation.
+func withInvocationArtifactGraphID(id int64) invocationartifactgraphOption {
+	return func(m *InvocationArtifactGraphMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *InvocationArtifactGraph
+		)
+		m.oldValue = func(ctx context.Context) (*InvocationArtifactGraph, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().InvocationArtifactGraph.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withInvocationArtifactGraph sets the old InvocationArtifactGraph of the mutation.
+func withInvocationArtifactGraph(node *InvocationArtifactGraph) invocationartifactgraphOption {
+	return func(m *InvocationArtifactGraphMutation) {
+		m.oldValue = func(context.Context) (*InvocationArtifactGraph, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m InvocationArtifactGraphMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m InvocationArtifactGraphMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of InvocationArtifactGraph entities.
+func (m *InvocationArtifactGraphMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *InvocationArtifactGraphMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *InvocationArtifactGraphMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().InvocationArtifactGraph.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetPayload sets the "payload" field.
+func (m *InvocationArtifactGraphMutation) SetPayload(b []byte) {
+	m.payload = &b
+}
+
+// Payload returns the value of the "payload" field in the mutation.
+func (m *InvocationArtifactGraphMutation) Payload() (r []byte, exists bool) {
+	v := m.payload
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPayload returns the old "payload" field's value of the InvocationArtifactGraph entity.
+// If the InvocationArtifactGraph object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationArtifactGraphMutation) OldPayload(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPayload is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPayload requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPayload: %w", err)
+	}
+	return oldValue.Payload, nil
+}
+
+// ResetPayload resets all changes to the "payload" field.
+func (m *InvocationArtifactGraphMutation) ResetPayload() {
+	m.payload = nil
+}
+
+// SetUncompressedSize sets the "uncompressed_size" field.
+func (m *InvocationArtifactGraphMutation) SetUncompressedSize(i int64) {
+	m.uncompressed_size = &i
+	m.adduncompressed_size = nil
+}
+
+// UncompressedSize returns the value of the "uncompressed_size" field in the mutation.
+func (m *InvocationArtifactGraphMutation) UncompressedSize() (r int64, exists bool) {
+	v := m.uncompressed_size
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUncompressedSize returns the old "uncompressed_size" field's value of the InvocationArtifactGraph entity.
+// If the InvocationArtifactGraph object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationArtifactGraphMutation) OldUncompressedSize(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUncompressedSize is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUncompressedSize requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUncompressedSize: %w", err)
+	}
+	return oldValue.UncompressedSize, nil
+}
+
+// AddUncompressedSize adds i to the "uncompressed_size" field.
+func (m *InvocationArtifactGraphMutation) AddUncompressedSize(i int64) {
+	if m.adduncompressed_size != nil {
+		*m.adduncompressed_size += i
+	} else {
+		m.adduncompressed_size = &i
+	}
+}
+
+// AddedUncompressedSize returns the value that was added to the "uncompressed_size" field in this mutation.
+func (m *InvocationArtifactGraphMutation) AddedUncompressedSize() (r int64, exists bool) {
+	v := m.adduncompressed_size
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUncompressedSize resets all changes to the "uncompressed_size" field.
+func (m *InvocationArtifactGraphMutation) ResetUncompressedSize() {
+	m.uncompressed_size = nil
+	m.adduncompressed_size = nil
+}
+
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
+func (m *InvocationArtifactGraphMutation) SetBazelInvocationID(id int64) {
+	m.bazel_invocation = &id
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *InvocationArtifactGraphMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *InvocationArtifactGraphMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
+func (m *InvocationArtifactGraphMutation) BazelInvocationID() (id int64, exists bool) {
+	if m.bazel_invocation != nil {
+		return *m.bazel_invocation, true
+	}
+	return
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *InvocationArtifactGraphMutation) BazelInvocationIDs() (ids []int64) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *InvocationArtifactGraphMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// Where appends a list predicates to the InvocationArtifactGraphMutation builder.
+func (m *InvocationArtifactGraphMutation) Where(ps ...predicate.InvocationArtifactGraph) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the InvocationArtifactGraphMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *InvocationArtifactGraphMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.InvocationArtifactGraph, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *InvocationArtifactGraphMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *InvocationArtifactGraphMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (InvocationArtifactGraph).
+func (m *InvocationArtifactGraphMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *InvocationArtifactGraphMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.payload != nil {
+		fields = append(fields, invocationartifactgraph.FieldPayload)
+	}
+	if m.uncompressed_size != nil {
+		fields = append(fields, invocationartifactgraph.FieldUncompressedSize)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *InvocationArtifactGraphMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case invocationartifactgraph.FieldPayload:
+		return m.Payload()
+	case invocationartifactgraph.FieldUncompressedSize:
+		return m.UncompressedSize()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *InvocationArtifactGraphMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case invocationartifactgraph.FieldPayload:
+		return m.OldPayload(ctx)
+	case invocationartifactgraph.FieldUncompressedSize:
+		return m.OldUncompressedSize(ctx)
+	}
+	return nil, fmt.Errorf("unknown InvocationArtifactGraph field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *InvocationArtifactGraphMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case invocationartifactgraph.FieldPayload:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPayload(v)
+		return nil
+	case invocationartifactgraph.FieldUncompressedSize:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUncompressedSize(v)
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationArtifactGraph field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *InvocationArtifactGraphMutation) AddedFields() []string {
+	var fields []string
+	if m.adduncompressed_size != nil {
+		fields = append(fields, invocationartifactgraph.FieldUncompressedSize)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *InvocationArtifactGraphMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case invocationartifactgraph.FieldUncompressedSize:
+		return m.AddedUncompressedSize()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *InvocationArtifactGraphMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case invocationartifactgraph.FieldUncompressedSize:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUncompressedSize(v)
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationArtifactGraph numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *InvocationArtifactGraphMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *InvocationArtifactGraphMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *InvocationArtifactGraphMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown InvocationArtifactGraph nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *InvocationArtifactGraphMutation) ResetField(name string) error {
+	switch name {
+	case invocationartifactgraph.FieldPayload:
+		m.ResetPayload()
+		return nil
+	case invocationartifactgraph.FieldUncompressedSize:
+		m.ResetUncompressedSize()
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationArtifactGraph field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *InvocationArtifactGraphMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.bazel_invocation != nil {
+		edges = append(edges, invocationartifactgraph.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *InvocationArtifactGraphMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case invocationartifactgraph.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *InvocationArtifactGraphMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *InvocationArtifactGraphMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *InvocationArtifactGraphMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedbazel_invocation {
+		edges = append(edges, invocationartifactgraph.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *InvocationArtifactGraphMutation) EdgeCleared(name string) bool {
+	switch name {
+	case invocationartifactgraph.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *InvocationArtifactGraphMutation) ClearEdge(name string) error {
+	switch name {
+	case invocationartifactgraph.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationArtifactGraph unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *InvocationArtifactGraphMutation) ResetEdge(name string) error {
+	switch name {
+	case invocationartifactgraph.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationArtifactGraph edge %s", name)
 }
 
 // InvocationFilesMutation represents an operation that mutates the InvocationFiles nodes in the graph.

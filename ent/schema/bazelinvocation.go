@@ -173,6 +173,15 @@ func (BazelInvocation) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+
+		// Compressed BEP-graph blob written once at BuildFinished when
+		// save level is basic_and_target_and_artifacts. Clients decompress
+		// and walk the graph themselves.
+		edge.To("artifact_graph", InvocationArtifactGraph.Type).
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

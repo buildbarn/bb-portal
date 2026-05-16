@@ -1,8 +1,9 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "graphql",
     srcs = [
+        "artifact_download_url.go",
         "custom.resolvers.go",
         "ent.resolvers.go",
         "resolver.go",
@@ -41,5 +42,14 @@ go_library(
         "@com_github_vektah_gqlparser_v2//ast",
         "@io_entgo_contrib//entgql",
         "@io_opentelemetry_go_otel_trace//:trace",
+    ],
+)
+
+go_test(
+    name = "graphql_test",
+    srcs = ["artifact_download_url_test.go"],
+    embed = [":graphql"],
+    deps = [
+        "@com_github_google_go_cmp//cmp",
     ],
 )

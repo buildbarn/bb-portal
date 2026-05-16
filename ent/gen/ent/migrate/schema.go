@@ -611,6 +611,34 @@ var (
 		Columns:    InstanceNamesColumns,
 		PrimaryKey: []*schema.Column{InstanceNamesColumns[0]},
 	}
+	// InvocationArtifactGraphsColumns holds the columns for the "invocation_artifact_graphs" table.
+	InvocationArtifactGraphsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "payload", Type: field.TypeBytes},
+		{Name: "uncompressed_size", Type: field.TypeInt64},
+		{Name: "bazel_invocation_artifact_graph", Type: field.TypeInt64, Unique: true},
+	}
+	// InvocationArtifactGraphsTable holds the schema information for the "invocation_artifact_graphs" table.
+	InvocationArtifactGraphsTable = &schema.Table{
+		Name:       "invocation_artifact_graphs",
+		Columns:    InvocationArtifactGraphsColumns,
+		PrimaryKey: []*schema.Column{InvocationArtifactGraphsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "invocation_artifact_graphs_bazel_invocations_artifact_graph",
+				Columns:    []*schema.Column{InvocationArtifactGraphsColumns[3]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "invocationartifactgraph_bazel_invocation_artifact_graph",
+				Unique:  true,
+				Columns: []*schema.Column{InvocationArtifactGraphsColumns[3]},
+			},
+		},
+	}
 	// InvocationFilesColumns holds the columns for the "invocation_files" table.
 	InvocationFilesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -1207,6 +1235,7 @@ var (
 		GarbageMetricsTable,
 		IncompleteBuildLogsTable,
 		InstanceNamesTable,
+		InvocationArtifactGraphsTable,
 		InvocationFilesTable,
 		InvocationTagsTable,
 		InvocationTargetsTable,
@@ -1246,6 +1275,7 @@ func init() {
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	InvocationArtifactGraphsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationFilesTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationTagsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationTargetsTable.ForeignKeys[0].RefTable = BazelInvocationsTable

@@ -72,6 +72,13 @@ type buildEventRecorder struct {
 	dataExtractors *DataExtractors
 	buildKey       string
 
+	// artifactGraph is non-nil only when saveDataLevel is
+	// basic_and_target_and_artifacts. It buffers NamedSetOfFiles and
+	// TargetCompleted BuildEvents as length-prefixed serialized protos
+	// through a streaming zstd encoder. Finalized at BuildFinished and
+	// written as a single invocation_artifact_graphs row.
+	artifactGraph *artifactGraphBuffer
+
 	InstanceName     string
 	InstanceNameDbID int64
 	InvocationID     string
@@ -144,7 +151,7 @@ func NewBuildEventRecorder(
 		return nil, util.StatusWrap(err, "Failed to commit transaction")
 	}
 
-	return &buildEventRecorder{
+	r := &buildEventRecorder{
 		db:             db,
 		saveDataLevel:  saveDataLevel,
 		tracer:         tracer,
@@ -156,7 +163,15 @@ func NewBuildEventRecorder(
 		InvocationID:     invocationID,
 		InvocationDbID:   invocationDbID,
 		IsRealTime:       isRealTime,
-	}, nil
+	}
+	if _, ok := saveDataLevel.GetLevel().(*bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTargetAndArtifacts); ok {
+		buf, err := newArtifactGraphBuffer()
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to initialize artifact graph buffer")
+		}
+		r.artifactGraph = buf
+	}
+	return r, nil
 }
 
 // FindOrCreateAuthenticatedUser creates a user or

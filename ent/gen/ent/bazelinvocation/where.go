@@ -1226,6 +1226,29 @@ func HasSourceControlWith(preds ...predicate.SourceControl) predicate.BazelInvoc
 	})
 }
 
+// HasArtifactGraph applies the HasEdge predicate on the "artifact_graph" edge.
+func HasArtifactGraph() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, ArtifactGraphTable, ArtifactGraphColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasArtifactGraphWith applies the HasEdge predicate on the "artifact_graph" edge with a given conditions (other predicates).
+func HasArtifactGraphWith(preds ...predicate.InvocationArtifactGraph) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newArtifactGraphStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.BazelInvocation) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.AndPredicates(predicates...))

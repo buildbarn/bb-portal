@@ -57,6 +57,9 @@ type IncompleteBuildLog func(*sql.Selector)
 // InstanceName is the predicate function for instancename builders.
 type InstanceName func(*sql.Selector)
 
+// InvocationArtifactGraph is the predicate function for invocationartifactgraph builders.
+type InvocationArtifactGraph func(*sql.Selector)
+
 // InvocationFiles is the predicate function for invocationfiles builders.
 type InvocationFiles func(*sql.Selector)
 

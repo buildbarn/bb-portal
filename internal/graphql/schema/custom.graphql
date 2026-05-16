@@ -29,3 +29,34 @@ extend type ConnectionMetadata {
 extend type Target {
   invocationTargetsTotalDurationMillis: Int! @goField(forceResolver: true)
 }
+
+"""
+Maps a BEP file URI to a server-side download URL when one is available
+(bytestream:// URIs route through bb-portal's /api/v1/servefile/...
+endpoint; http(s):// URIs pass through; everything else returns null).
+"""
+type ArtifactFile {
+  name: String!
+  uri: String
+  digest: String
+  sizeBytes: Int
+  digestFunction: String
+  downloadUrl: String @goField(forceResolver: true)
+}
+
+"""
+Compressed BEP-graph blob written once at BuildFinished when the
+invocation's save level is basic_and_target_and_artifacts. payload is
+a base64-encoded zstd stream of length-prefixed serialized
+bes.BuildEvent messages (NamedSetOfFiles and TargetCompleted variants
+only). Clients base64-decode, zstd-decompress, and walk the graph
+themselves.
+"""
+type ArtifactGraph {
+  payload: String!
+  uncompressedSize: Int!
+}
+
+extend type BazelInvocation {
+  artifactGraph: ArtifactGraph @goField(forceResolver: true)
+}

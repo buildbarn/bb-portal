@@ -83,6 +83,8 @@ const (
 	EdgeTargetKindMappings = "target_kind_mappings"
 	// EdgeSourceControl holds the string denoting the source_control edge name in mutations.
 	EdgeSourceControl = "source_control"
+	// EdgeArtifactGraph holds the string denoting the artifact_graph edge name in mutations.
+	EdgeArtifactGraph = "artifact_graph"
 	// Table holds the table name of the bazelinvocation in the database.
 	Table = "bazel_invocations"
 	// InstanceNameTable is the table that holds the instance_name relation/edge.
@@ -190,6 +192,13 @@ const (
 	SourceControlInverseTable = "source_controls"
 	// SourceControlColumn is the table column denoting the source_control relation/edge.
 	SourceControlColumn = "bazel_invocation_source_control"
+	// ArtifactGraphTable is the table that holds the artifact_graph relation/edge.
+	ArtifactGraphTable = "invocation_artifact_graphs"
+	// ArtifactGraphInverseTable is the table name for the InvocationArtifactGraph entity.
+	// It exists in this package in order to avoid circular dependency with the "invocationartifactgraph" package.
+	ArtifactGraphInverseTable = "invocation_artifact_graphs"
+	// ArtifactGraphColumn is the table column denoting the artifact_graph relation/edge.
+	ArtifactGraphColumn = "bazel_invocation_artifact_graph"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.
@@ -515,6 +524,13 @@ func BySourceControl(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByArtifactGraphField orders the results by artifact_graph field.
+func ByArtifactGraphField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newArtifactGraphStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newInstanceNameStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -618,5 +634,12 @@ func newSourceControlStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SourceControlInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, SourceControlTable, SourceControlColumn),
+	)
+}
+func newArtifactGraphStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ArtifactGraphInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, ArtifactGraphTable, ArtifactGraphColumn),
 	)
 }

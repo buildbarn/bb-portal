@@ -7,6 +7,9 @@ package graphql
 
 import (
 	"context"
+	"database/sql"
+	"encoding/base64"
+	"errors"
 	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
@@ -20,6 +23,29 @@ import (
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/google/uuid"
 )
+
+// DownloadURL is the resolver for the downloadUrl field.
+func (r *artifactFileResolver) DownloadURL(ctx context.Context, obj *model.ArtifactFile) (*string, error) {
+	var sz int64
+	if obj.SizeBytes != nil {
+		sz = int64(*obj.SizeBytes)
+	}
+	var df, dg, uri string
+	if obj.DigestFunction != nil {
+		df = *obj.DigestFunction
+	}
+	if obj.Digest != nil {
+		dg = *obj.Digest
+	}
+	if obj.URI != nil {
+		uri = *obj.URI
+	}
+	out := downloadURLFor(uri, dg, df, sz, obj.Name)
+	if out == "" {
+		return nil, nil
+	}
+	return &out, nil
+}
 
 // Profile is the resolver for the profile field.
 func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error) {
@@ -37,6 +63,24 @@ func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInv
 		Digest:         profile.Digest,
 		SizeInBytes:    int(profile.SizeBytes),
 		DigestFunction: profile.DigestFunction,
+	}, nil
+}
+
+// ArtifactGraph is the resolver for the artifactGraph field. Returns the
+// compressed BEP-graph blob for the invocation, or nil when no row exists
+// (save level below basic_and_target_and_artifacts, or BuildFinished
+// never arrived).
+func (r *bazelInvocationResolver) ArtifactGraph(ctx context.Context, obj *ent.BazelInvocation) (*model.ArtifactGraph, error) {
+	row, err := r.db.Sqlc().GetInvocationArtifactGraph(ctx, obj.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &model.ArtifactGraph{
+		Payload:          base64.StdEncoding.EncodeToString(row.Payload),
+		UncompressedSize: int(row.UncompressedSize),
 	}, nil
 }
 
@@ -79,7 +123,7 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent
 }
 
 // GetTarget is the resolver for the getTarget field.
-func (r *queryResolver) GetTarget(ctx context.Context, instanceName, label, aspect, targetKind string) (*ent.Target, error) {
+func (r *queryResolver) GetTarget(ctx context.Context, instanceName string, label string, aspect string, targetKind string) (*ent.Target, error) {
 	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
 	// need it, but somehow it does.
 	query, err := r.db.Ent().Target.Query().Where(
@@ -115,3 +159,8 @@ func (r *targetResolver) InvocationTargetsTotalDurationMillis(ctx context.Contex
 		Aggregate(ent.Sum(invocationtarget.FieldDurationInMs)).
 		Int(ctx)
 }
+
+// ArtifactFile returns ArtifactFileResolver implementation.
+func (r *Resolver) ArtifactFile() ArtifactFileResolver { return &artifactFileResolver{r} }
+
+type artifactFileResolver struct{ *Resolver }

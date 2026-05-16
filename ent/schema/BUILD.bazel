@@ -20,6 +20,7 @@ go_library(
         "garbagemetrics.go",
         "incompletebuildlog.go",
         "instancename.go",
+        "invocationartifactgraph.go",
         "invocationfiles.go",
         "invocationtag.go",
         "invocationtarget.go",

@@ -519,6 +519,30 @@ func (f InstanceNameMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mu
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.InstanceNameMutation", m)
 }
 
+// The InvocationArtifactGraphQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type InvocationArtifactGraphQueryRuleFunc func(context.Context, *ent.InvocationArtifactGraphQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f InvocationArtifactGraphQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.InvocationArtifactGraphQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.InvocationArtifactGraphQuery", q)
+}
+
+// The InvocationArtifactGraphMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type InvocationArtifactGraphMutationRuleFunc func(context.Context, *ent.InvocationArtifactGraphMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f InvocationArtifactGraphMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.InvocationArtifactGraphMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.InvocationArtifactGraphMutation", m)
+}
+
 // The InvocationFilesQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type InvocationFilesQueryRuleFunc func(context.Context, *ent.InvocationFilesQuery) error
@@ -996,6 +1020,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.InstanceNameQuery:
 		return q.Filter(), nil
+	case *ent.InvocationArtifactGraphQuery:
+		return q.Filter(), nil
 	case *ent.InvocationFilesQuery:
 		return q.Filter(), nil
 	case *ent.InvocationTagQuery:
@@ -1070,6 +1096,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.IncompleteBuildLogMutation:
 		return m.Filter(), nil
 	case *ent.InstanceNameMutation:
+		return m.Filter(), nil
+	case *ent.InvocationArtifactGraphMutation:
 		return m.Filter(), nil
 	case *ent.InvocationFilesMutation:
 		return m.Filter(), nil

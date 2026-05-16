@@ -14,6 +14,7 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  query ArtifactGraph($id: UUID!) {\n    getBazelInvocation(invocationID: $id) {\n      id\n      artifactGraph {\n        payload\n        uncompressedSize\n      }\n    }\n  }\n": typeof types.ArtifactGraphDocument,
     "\n  query FindBazelInvocations(\n    $after: Cursor\n    $first: Int\n    $before: Cursor\n    $last: Int\n    $orderBy: BazelInvocationOrder\n    $where: BazelInvocationWhereInput\n  ) {\n    findBazelInvocations(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          ...BazelInvocationNode\n        }\n      }\n    }\n  }\n": typeof types.FindBazelInvocationsDocument,
     "\n  fragment BazelInvocationNode on BazelInvocation {\n    id\n    invocationID\n    startedAt\n    username\n    authenticatedUser {\n      userUUID\n      displayName\n    }\n    endedAt\n    exitCodeName\n    connectionMetadata {\n      connectionLastOpenAt\n      timeSinceLastConnectionMillis\n    }\n    build {\n      buildUUID\n    }\n  }\n": typeof types.BazelInvocationNodeFragmentDoc,
     "\n  query FindBuilds(\n    $after: Cursor\n    $first: Int\n    $before: Cursor\n    $last: Int\n    $orderBy: BuildOrder\n    $where: BuildWhereInput\n  ) {\n    findBuilds(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          ...BuildNode\n        }\n      }\n    }\n  }\n": typeof types.FindBuildsDocument,
@@ -59,6 +60,7 @@ type Documents = {
     "\n  fragment AuthenticatedUserNodeFragment on AuthenticatedUser {\n    id\n    displayName\n    userInfo\n    userUUID\n    bazelInvocations(after: $after, first: $first, before: $before, last: $last, orderBy: $bazelInvocationsOrderBy, where: $bazelInvocationsWhere) {\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          id\n          invocationID\n          build {\n            id\n            buildUUID\n          }\n          endedAt\n          startedAt\n          exitCodeName\n          connectionMetadata {\n            id\n            connectionLastOpenAt\n            timeSinceLastConnectionMillis\n          }\n        }\n      }\n    }\n  }\n": typeof types.AuthenticatedUserNodeFragmentFragmentDoc,
 };
 const documents: Documents = {
+    "\n  query ArtifactGraph($id: UUID!) {\n    getBazelInvocation(invocationID: $id) {\n      id\n      artifactGraph {\n        payload\n        uncompressedSize\n      }\n    }\n  }\n": types.ArtifactGraphDocument,
     "\n  query FindBazelInvocations(\n    $after: Cursor\n    $first: Int\n    $before: Cursor\n    $last: Int\n    $orderBy: BazelInvocationOrder\n    $where: BazelInvocationWhereInput\n  ) {\n    findBazelInvocations(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          ...BazelInvocationNode\n        }\n      }\n    }\n  }\n": types.FindBazelInvocationsDocument,
     "\n  fragment BazelInvocationNode on BazelInvocation {\n    id\n    invocationID\n    startedAt\n    username\n    authenticatedUser {\n      userUUID\n      displayName\n    }\n    endedAt\n    exitCodeName\n    connectionMetadata {\n      connectionLastOpenAt\n      timeSinceLastConnectionMillis\n    }\n    build {\n      buildUUID\n    }\n  }\n": types.BazelInvocationNodeFragmentDoc,
     "\n  query FindBuilds(\n    $after: Cursor\n    $first: Int\n    $before: Cursor\n    $last: Int\n    $orderBy: BuildOrder\n    $where: BuildWhereInput\n  ) {\n    findBuilds(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n      edges {\n        node {\n          ...BuildNode\n        }\n      }\n    }\n  }\n": types.FindBuildsDocument,
@@ -118,6 +120,10 @@ const documents: Documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query ArtifactGraph($id: UUID!) {\n    getBazelInvocation(invocationID: $id) {\n      id\n      artifactGraph {\n        payload\n        uncompressedSize\n      }\n    }\n  }\n"): (typeof documents)["\n  query ArtifactGraph($id: UUID!) {\n    getBazelInvocation(invocationID: $id) {\n      id\n      artifactGraph {\n        payload\n        uncompressedSize\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

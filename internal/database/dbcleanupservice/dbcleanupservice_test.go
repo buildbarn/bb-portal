@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -281,4 +282,66 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 1, count)
 	})
+}
+
+func TestNewDbCleanupService_ArtifactRetentionExceedsInvocationRetention(t *testing.T) {
+	ctrl, _ := gomock.WithContext(context.Background(), t)
+	clock := mock.NewMockClock(ctrl)
+	traceProvider := noop.NewTracerProvider()
+
+	cfg := &bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration{
+		CleanupInterval:          durationpb.New(1 * time.Minute),
+		InvocationMessageTimeout: durationpb.New(30 * time.Second),
+		InvocationRetention:      durationpb.New(30 * time.Minute),
+		ArtifactRetention:        durationpb.New(60 * time.Minute), // exceeds invocation_retention
+	}
+	db := testutils.SetupTestDB(t, dbProvider)
+	_, err := dbcleanupservice.NewDbCleanupService(db, clock, cfg, traceProvider)
+	if err == nil {
+		t.Fatalf("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "artifact_retention") {
+		t.Errorf("error %q does not mention artifact_retention", err.Error())
+	}
+}
+
+func TestNewDbCleanupService_ArtifactRetentionDefaultsToInvocationRetention(t *testing.T) {
+	ctrl, _ := gomock.WithContext(context.Background(), t)
+	clock := mock.NewMockClock(ctrl)
+	traceProvider := noop.NewTracerProvider()
+
+	cfg := &bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration{
+		CleanupInterval:          durationpb.New(1 * time.Minute),
+		InvocationMessageTimeout: durationpb.New(30 * time.Second),
+		InvocationRetention:      durationpb.New(30 * time.Minute),
+		// ArtifactRetention left unset
+	}
+	db := testutils.SetupTestDB(t, dbProvider)
+	svc, err := dbcleanupservice.NewDbCleanupService(db, clock, cfg, traceProvider)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if svc == nil {
+		t.Fatal("expected non-nil service")
+	}
+	// No structural getter is exposed; this test exists to lock the no-error contract
+	// when ArtifactRetention is unset.
+}
+
+func TestNewDbCleanupService_ArtifactRetentionEqualToInvocationRetention(t *testing.T) {
+	// ArtifactRetention == InvocationRetention is allowed (the spec says <=).
+	ctrl, _ := gomock.WithContext(context.Background(), t)
+	clock := mock.NewMockClock(ctrl)
+	traceProvider := noop.NewTracerProvider()
+
+	cfg := &bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration{
+		CleanupInterval:          durationpb.New(1 * time.Minute),
+		InvocationMessageTimeout: durationpb.New(30 * time.Second),
+		InvocationRetention:      durationpb.New(30 * time.Minute),
+		ArtifactRetention:        durationpb.New(30 * time.Minute),
+	}
+	db := testutils.SetupTestDB(t, dbProvider)
+	if _, err := dbcleanupservice.NewDbCleanupService(db, clock, cfg, traceProvider); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
 }

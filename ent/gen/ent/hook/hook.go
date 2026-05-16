@@ -213,6 +213,18 @@ func (f InstanceNameFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InstanceNameMutation", m)
 }
 
+// The InvocationArtifactGraphFunc type is an adapter to allow the use of ordinary
+// function as InvocationArtifactGraph mutator.
+type InvocationArtifactGraphFunc func(context.Context, *ent.InvocationArtifactGraphMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f InvocationArtifactGraphFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.InvocationArtifactGraphMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationArtifactGraphMutation", m)
+}
+
 // The InvocationFilesFunc type is an adapter to allow the use of ordinary
 // function as InvocationFiles mutator.
 type InvocationFilesFunc func(context.Context, *ent.InvocationFilesMutation) (ent.Value, error)

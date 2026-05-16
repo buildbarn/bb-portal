@@ -73,7 +73,7 @@ func (r *buildEventRecorder) saveBuildEvent(
 	case *bes.BuildEventId_OptionsParsed:
 		return r.saveOptionsParsed(ctx, tx.Ent(), buildEvent.GetOptionsParsed())
 	case *bes.BuildEventId_BuildFinished:
-		return r.saveBuildFinished(ctx, tx.Ent(), buildEvent.GetFinished())
+		return r.saveBuildFinished(ctx, tx, buildEvent.GetFinished())
 	case *bes.BuildEventId_BuildMetrics:
 		return r.saveBuildMetrics(ctx, tx.Ent(), buildEvent.GetBuildMetrics())
 	case *bes.BuildEventId_StructuredCommandLine:
@@ -86,6 +86,8 @@ func (r *buildEventRecorder) saveBuildEvent(
 		return r.saveBuildToolLogs(ctx, tx.Ent(), buildEvent.GetBuildToolLogs())
 	case *bes.BuildEventId_WorkspaceStatus:
 		return r.saveWorkspaceStatus(ctx, tx.Ent(), buildEvent.GetWorkspaceStatus())
+	case *bes.BuildEventId_NamedSet:
+		return r.saveNamedSetOfFiles(ctx, buildEvent)
 	default:
 		return nil
 	}

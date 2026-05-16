@@ -1,3 +1,4 @@
 bazel-demo
 third_party/bazel
 frontend/node_modules
+test/integrationtest/testdata/bazel_workspace

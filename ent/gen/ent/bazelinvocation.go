@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
@@ -107,9 +108,11 @@ type BazelInvocationEdges struct {
 	TargetKindMappings []*TargetKindMapping `json:"target_kind_mappings,omitempty"`
 	// SourceControl holds the value of the source_control edge.
 	SourceControl []*SourceControl `json:"source_control,omitempty"`
+	// ArtifactGraph holds the value of the artifact_graph edge.
+	ArtifactGraph *InvocationArtifactGraph `json:"artifact_graph,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [15]bool
+	loadedTypes [16]bool
 	// totalCount holds the count of the edges above.
 	totalCount [10]map[string]int
 
@@ -269,6 +272,17 @@ func (e BazelInvocationEdges) SourceControlOrErr() ([]*SourceControl, error) {
 		return e.SourceControl, nil
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
+}
+
+// ArtifactGraphOrErr returns the ArtifactGraph value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BazelInvocationEdges) ArtifactGraphOrErr() (*InvocationArtifactGraph, error) {
+	if e.ArtifactGraph != nil {
+		return e.ArtifactGraph, nil
+	} else if e.loadedTypes[15] {
+		return nil, &NotFoundError{label: invocationartifactgraph.Label}
+	}
+	return nil, &NotLoadedError{edge: "artifact_graph"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -551,6 +565,11 @@ func (_m *BazelInvocation) QueryTargetKindMappings() *TargetKindMappingQuery {
 // QuerySourceControl queries the "source_control" edge of the BazelInvocation entity.
 func (_m *BazelInvocation) QuerySourceControl() *SourceControlQuery {
 	return NewBazelInvocationClient(_m.config).QuerySourceControl(_m)
+}
+
+// QueryArtifactGraph queries the "artifact_graph" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryArtifactGraph() *InvocationArtifactGraphQuery {
+	return NewBazelInvocationClient(bi.config).QueryArtifactGraph(bi)
 }
 
 // Update returns a builder for updating this BazelInvocation.

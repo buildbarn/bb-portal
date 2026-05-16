@@ -39,10 +39,12 @@ type (
 	IncompleteBuildLog struct{ schema.IncompleteBuildLog }
 	// InstanceName reexport with auth policy added
 	InstanceName struct{ schema.InstanceName }
-	// InvocationTag reexport with auth policy added
-	InvocationTag struct{ schema.InvocationTag }
+	// InvocationArtifactGraph reexport with auth policy added
+	InvocationArtifactGraph struct{ schema.InvocationArtifactGraph }
 	// InvocationFiles reexport with auth policy added
 	InvocationFiles struct{ schema.InvocationFiles }
+	// InvocationTag reexport with auth policy added
+	InvocationTag struct{ schema.InvocationTag }
 	// InvocationTarget reexport with auth policy added
 	InvocationTarget struct{ schema.InvocationTarget }
 	// MemoryMetrics reexport with auth policy added
