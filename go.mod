@@ -59,7 +59,10 @@ require (
 
 require (
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang/mock v1.7.0-rc.1 // indirect
 	github.com/rs/cors v1.11.1 // indirect
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1 // indirect
 )
 
 require (
@@ -98,7 +101,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.38.6 // indirect
 	github.com/aws/smithy-go v1.23.0 // indirect
-	github.com/bazelbuild/rules_go v0.59.0
+	github.com/bazelbuild/rules_go v0.60.0
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.12.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
