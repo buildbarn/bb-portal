@@ -166,8 +166,17 @@ export const TrendsPage: React.FC = () => {
                       <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <XAxis
+                    dataKey="from"
+                    tickFormatter={(v: string) =>
+                      new Date(v).toLocaleDateString()
+                    }
+                  />
+                  <YAxis
+                    tickFormatter={(v: number) =>
+                      readableDurationFromMilliseconds(v, { smallestUnit: "s" })
+                    }
+                  />
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <Tooltip />
                   <Area
