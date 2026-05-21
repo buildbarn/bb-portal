@@ -50,9 +50,6 @@ const BAZEL_INVOCATION_COMMON_FRAGMENT = gql(/* GraphQL */ `
     sourceControl {
       id
     }
-    tags {
-      totalCount
-    }
   }
 `);
 

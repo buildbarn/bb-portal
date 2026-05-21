@@ -25,7 +25,6 @@ const getMenuItems = (
   const showActionsTab = !!invocation.actions?.length;
   const showMetricsTab = !!invocation.metrics;
   const showSourceControlTab = !!invocation.sourceControl?.length;
-  const showTagsTab = !!invocation.tags?.totalCount;
   const showTargetsTab = !!env.featureFlags?.bes?.pageTargets;
   const showTestsTab = !!env.featureFlags?.bes?.pageTests;
 
@@ -112,19 +111,23 @@ const getMenuItems = (
         </Link>
       ),
     });
-  if (showTagsTab)
-    items.push({
-      key: "tags",
-      icon: <TagsOutlined />,
-      label: (
-        <Link
-          to="/bazel-invocations/$invocationID/tags"
-          params={{ invocationID }}
-        >
-          Tags
-        </Link>
-      ),
-    });
+  // Previously we counted the number of tags to determine if we should show
+  // this link, but due to a bug in (probably) ApolloClient, this was removed.
+  // The bug caused a cache warning when fetching the count, which in turn
+  // caused a rerender of the build details page when you hovered over a link
+  // to a invocation.
+  items.push({
+    key: "tags",
+    icon: <TagsOutlined />,
+    label: (
+      <Link
+        to="/bazel-invocations/$invocationID/tags"
+        params={{ invocationID }}
+      >
+        Tags
+      </Link>
+    ),
+  });
   if (showActionsTab)
     items.push({
       key: "actions",
