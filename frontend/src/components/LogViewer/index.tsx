@@ -61,9 +61,14 @@ const LogViewerCard: React.FC<Props> = ({
           padding: "0px",
         },
       }}
+      reservedTitleWidth={300}
       className={!error ? styles.compactCard : undefined}
       icon={<FileSearchOutlined />}
-      titleBits={[title]}
+      titleBits={[
+        <div className={styles.titleWrapper} key={"title"}>
+          {title}
+        </div>,
+      ]}
       extraBits={[
         logDownloadUrl && (
           <Button icon={<DownloadOutlined />} type="primary">
