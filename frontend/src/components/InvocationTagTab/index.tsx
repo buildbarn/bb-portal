@@ -2,6 +2,7 @@ import { TagsOutlined } from "@ant-design/icons";
 import { Descriptions } from "antd";
 import type React from "react";
 import type { BazelInvocationTagsFragment } from "@/graphql/__generated__/graphql";
+import PortalAlert from "../PortalAlert";
 import PortalCard from "../PortalCard";
 
 const linkRegex =
@@ -12,13 +13,11 @@ interface Props {
 }
 
 export const InvocationTagTab: React.FC<Props> = ({ tags }) => {
-  return (
-    <PortalCard
-      type="inner"
-      icon={<TagsOutlined />}
-      titleBits={[<span key="title">Tags</span>]}
-      style={{ width: "100%" }}
-    >
+  const renderTags = () => {
+    if (tags.length === 0) {
+      return <PortalAlert showIcon message="This invocation has no tags." />;
+    }
+    return (
       <Descriptions bordered column={1} style={{ width: "max-content" }}>
         {tags?.map((tag) => (
           <Descriptions.Item key={tag.key} label={tag.key}>
@@ -30,6 +29,17 @@ export const InvocationTagTab: React.FC<Props> = ({ tags }) => {
           </Descriptions.Item>
         ))}
       </Descriptions>
+    );
+  };
+
+  return (
+    <PortalCard
+      type="inner"
+      icon={<TagsOutlined />}
+      titleBits={[<span key="title">Tags</span>]}
+      style={{ width: "100%" }}
+    >
+      {renderTags()}
     </PortalCard>
   );
 };
