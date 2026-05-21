@@ -38,3 +38,9 @@
   background-attachment: local, local, scroll, scroll;
   padding: 6px 0.6em;
 }
+
+.titleWrapper {
+  text-overflow: "[…]";
+  overflow: hidden;
+  margin-right: 12px;
+}
