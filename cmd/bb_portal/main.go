@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"reflect"
 	"time"
@@ -64,6 +65,7 @@ func main() {
 		}
 
 		router := mux.NewRouter()
+		router.NotFoundHandler = http.HandlerFunc(http.NotFound)
 		router.Use(otelmux.Middleware("bb-portal-http", otelmux.WithTracerProvider(tracerProvider)))
 
 		if err = blobstoreservice.NewBlobstoreService(
