@@ -2,12 +2,7 @@ extend type Query {
   getAuthenticatedUser(userUUID: UUID!): AuthenticatedUser
   getBazelInvocation(invocationID: UUID!): BazelInvocation
   getBuild(buildUUID: UUID!): Build
-  getTarget(
-    instanceName: String!
-    label: String!
-    aspect: String!
-    targetKind: String!
-  ): Target
+  getTarget(id: ID!): Target
 }
 
 type Profile {

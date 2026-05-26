@@ -13,11 +13,12 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
+	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
 )
 
@@ -79,21 +80,18 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent
 }
 
 // GetTarget is the resolver for the getTarget field.
-func (r *queryResolver) GetTarget(ctx context.Context, instanceName, label, aspect, targetKind string) (*ent.Target, error) {
+func (r *queryResolver) GetTarget(ctx context.Context, id string) (*ent.Target, error) {
+	_, dbID, err := helpers.GraphQLTypeAndIntIDFromID(id)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to parse graphql ID")
+	}
 	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
 	// need it, but somehow it does.
-	query, err := r.db.Ent().Target.Query().Where(
-		target.LabelEQ(label),
-		target.Aspect(aspect),
-		target.TargetKind(targetKind),
-		target.HasInstanceNameWith(
-			instancename.Name(instanceName),
-		),
-	).CollectFields(ctx)
+	query, err := r.db.Ent().Target.Query().Where(target.ID(dbID)).CollectFields(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return query.First(ctx)
+	return query.Only(ctx)
 }
 
 // InvocationTargetsTotalDurationMillis is the resolver for the invocationTargetsTotalDurationMillis field.

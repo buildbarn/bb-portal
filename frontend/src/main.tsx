@@ -8,21 +8,13 @@ import { DisabledPage } from "./components/pages/DisabledPage";
 import { ErrorPage } from "./components/pages/ErrorPage";
 import { FeatureDisabledError } from "./utils/featureGuard";
 
-export class TargetNotFoundError extends Error {
-  constructor() {
-    super("TARGET_NOT_FOUND");
-  }
-}
-
-export class TestNotFoundError extends Error {
-  constructor() {
-    super("TEST_NOT_FOUND");
-  }
-}
-
-export class UserNotFoundError extends Error {
-  constructor() {
-    super("USER_NOT_FOUND");
+export class NotFoundError extends Error {
+  type?: string;
+  details?: string;
+  constructor(type?: string, details?: string) {
+    super("NOT_FOUND");
+    this.type = type;
+    this.details = details;
   }
 }
 
@@ -34,12 +26,14 @@ const router = createRouter({
     switch (true) {
       case error instanceof FeatureDisabledError:
         return <DisabledPage />;
-      case error instanceof TargetNotFoundError:
-        return <NotFoundPage type="target" showUnauthenticatedMessage={true} />;
-      case error instanceof TestNotFoundError:
-        return <NotFoundPage type="test" showUnauthenticatedMessage={true} />;
-      case error instanceof UserNotFoundError:
-        return <NotFoundPage type="user" showUnauthenticatedMessage={true} />;
+      case error instanceof NotFoundError:
+        return (
+          <NotFoundPage
+            type={error.type}
+            details={error.details}
+            showUnauthenticatedMessage={true}
+          />
+        );
       default:
         return <ErrorPage error={error} />;
     }

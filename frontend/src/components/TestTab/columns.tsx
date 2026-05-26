@@ -1,26 +1,22 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
-import type { TableColumnsType } from "antd/lib";
+import type { FilterValue } from "antd/es/table/interface";
 import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import {
-  type GetTestsForInvocationQuery,
   OrderDirection,
+  type TestSummaryNodeFragment,
   type TestSummaryOrder,
   TestSummaryOrderField,
+  type TestSummaryWhereInput,
 } from "@/graphql/__generated__/graphql";
+import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
 import { TEST_STATUS_FILTERS } from "@/types/TestStatus";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import styles from "../../theme/theme.module.css";
 import { type CacheLocation, CacheLocationTag } from "../CacheLocationTag";
 import { TestStatusTag } from "../TestStatusTag";
 
-export type TestTabRowType = NonNullable<
-  NonNullable<
-    NonNullable<
-      GetTestsForInvocationQuery["findTestSummaries"]["edges"]
-    >[number]
-  >["node"]
-> & {
+export type TestTabRowType = TestSummaryNodeFragment & {
   cacheLocation: CacheLocation;
 };
 
@@ -29,16 +25,29 @@ export const defaultSorting: TestSummaryOrder = {
   direction: OrderDirection.Desc,
 };
 
-export const columns: TableColumnsType<TestTabRowType> = [
+export const columns: TableColumnTypeWithFilter<
+  TestTabRowType,
+  TestSummaryWhereInput
+>[] = [
   {
     key: "overallStatus",
     title: "Status",
     render: (_, record) => <TestStatusTag status={record.overallStatus} />,
     filters: TEST_STATUS_FILTERS,
+    applyFilter: (value: FilterValue) => {
+      if (!value || value.length === 0) {
+        return undefined;
+      }
+      return [
+        {
+          overallStatusIn: value as TestSummaryWhereInput["overallStatusIn"],
+        },
+      ];
+    },
   },
   {
     title: "Label",
-    dataIndex: "label",
+    key: "label",
     render: (_, record) => (
       <Link
         to="/targets/$targetID/tests"
@@ -54,6 +63,24 @@ export const columns: TableColumnsType<TestTabRowType> = [
     filterIcon: (filtered) => (
       <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
+    applyFilter: (value: FilterValue) => {
+      if (!value || value.length === 0) {
+        return undefined;
+      }
+      return [
+        {
+          hasInvocationTargetWith: [
+            {
+              hasTargetWith: [
+                {
+                  labelContainsFold: value[0] as string,
+                },
+              ],
+            },
+          ],
+        },
+      ];
+    },
   },
   {
     key: "cacheLocation",
@@ -64,7 +91,7 @@ export const columns: TableColumnsType<TestTabRowType> = [
   },
   {
     title: "Duration",
-    dataIndex: "totalRunDurationInMs",
+    key: "totalRunDurationInMs",
     render: (_, record) => (
       <span className={styles.numberFormat}>
         {readableDurationFromMilliseconds(record.totalRunDurationInMs, {

@@ -1,7 +1,8 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { apolloClient } from "@/components/ApolloWrapper";
 import BuildLogsDisplay from "@/components/BuildLogsDisplay";
 import { getFragmentData, gql } from "@/graphql/__generated__";
+import { NotFoundError } from "@/main";
 import { commandLineDataToString } from "@/utils/commandLineDataToString";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
@@ -25,14 +26,15 @@ export const Route = createFileRoute("/bazel-invocations/$invocationID/log")({
   component: RouteComponent,
   loader: async ({ params }) => {
     // TODO (isakstenstrom): Move the log fetching to this loader instead
-    const { data } = await apolloClient.query({
+    const { data, error } = await apolloClient.query({
+      errorPolicy: "all",
       query: GET_BAZEL_INVOCATION_LOG,
       variables: { invocationID: params.invocationID },
       fetchPolicy: "network-only",
     });
 
     if (!data?.getBazelInvocation) {
-      throw notFound();
+      throw new NotFoundError("invocation", error?.message);
     }
 
     const invocation = getFragmentData(

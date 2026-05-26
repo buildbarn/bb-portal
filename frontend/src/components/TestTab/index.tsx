@@ -1,150 +1,47 @@
-import { useQuery } from "@apollo/client/react";
-import type { FilterValue, SorterResult } from "antd/es/table/interface";
-import React, { useMemo } from "react";
-import {
-  type GetTestsForInvocationQuery,
-  OrderDirection,
-  type TestSummaryOrder,
-  TestSummaryOrderField,
-  type TestSummaryWhereInput,
-} from "@/graphql/__generated__/graphql";
-import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
-import styles from "../../theme/theme.module.css";
-import { cacheLocationFromTestResults } from "../CacheLocationTag";
-import { CursorTable, getNewPaginationVariables } from "../CursorTable";
-import type { PaginationVariables } from "../CursorTable/types";
-import PortalAlert from "../PortalAlert";
-import { columns, defaultSorting, type TestTabRowType } from "./columns";
-import { GET_TESTS_FOR_INVOCATION } from "./graphql";
+import type { SorterResult } from "antd/es/table/interface";
+import type React from "react";
+import type { TestSummaryWhereInput } from "@/graphql/__generated__/graphql";
+import { PageCursorTable } from "../PageCursorTable";
+import type {
+  GetPaginationUpdateLinkType,
+  PageInfo,
+} from "../PageCursorTable/types";
+import { tableFiltersToGraphqlWhere } from "../PageCursorTable/utils";
+import { columns, type TestTabRowType } from "./columns";
 
 interface Props {
-  invocationId: string;
+  testSummaryData: TestTabRowType[];
+  pageSize: number;
+  onFilterChange: (where: TestSummaryWhereInput[]) => void;
+  onSortChange: (
+    sorter: SorterResult<TestTabRowType> | SorterResult<TestTabRowType>[],
+  ) => void;
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
+  pageInfo: PageInfo;
 }
 
-export const TestTab: React.FC<Props> = ({ invocationId }) => {
-  const [paginationVariables, setPaginationVariables] =
-    React.useState<PaginationVariables>(getNewPaginationVariables());
-  const [filterVariables, setFilterVariables] = React.useState<
-    Array<TestSummaryWhereInput>
-  >([]);
-  const [orderBy, setOrderBy] =
-    React.useState<TestSummaryOrder>(defaultSorting);
-
-  const { data, error, loading } = useQuery<GetTestsForInvocationQuery>(
-    GET_TESTS_FOR_INVOCATION,
-    {
-      variables: {
-        where: {
-          and: [
-            {
-              hasInvocationTargetWith: {
-                hasBazelInvocationWith: { invocationID: invocationId },
-              },
-            },
-            ...filterVariables,
-          ],
-        },
-        orderBy,
-        ...paginationVariables,
-      },
-      fetchPolicy: "cache-first",
-      notifyOnNetworkStatusChange: true,
-    },
-  );
-
-  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
-    const newFilters: TestSummaryWhereInput[] = [];
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && value.length > 0) {
-        switch (key) {
-          case "overallStatus":
-            newFilters.push({
-              overallStatusIn:
-                value as TestSummaryWhereInput["overallStatusIn"],
-            });
-            break;
-          case "label":
-            newFilters.push({
-              hasInvocationTargetWith: [
-                {
-                  hasTargetWith: [
-                    {
-                      labelContainsFold: value[0] as string,
-                    },
-                  ],
-                },
-              ],
-            });
-            break;
-        }
-      }
-    });
-    setFilterVariables(newFilters);
-  };
-
-  const onSortChange = (
-    sorter: SorterResult<TestTabRowType> | SorterResult<TestTabRowType>[],
-  ) => {
-    const s = Array.isArray(sorter) ? sorter[0] : sorter;
-    if (!s || !s.order) {
-      return;
-    }
-    switch (s.field) {
-      case "totalRunDurationInMs":
-        setOrderBy({
-          field: TestSummaryOrderField.TotalRunDurationInMs,
-          direction:
-            s.order === "ascend" ? OrderDirection.Asc : OrderDirection.Desc,
-        });
-        break;
-    }
-  };
-
-  const parsedData: TestTabRowType[] = useMemo(
-    () =>
-      parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => ({
-        ...ts,
-        cacheLocation: cacheLocationFromTestResults(ts.testResults),
-      })),
-    [data],
-  );
-
-  if (error) {
-    return (
-      <PortalAlert
-        type="error"
-        message={error.message}
-        showIcon
-        className={styles.alert}
-      />
-    );
-  }
-
+export const TestTab: React.FC<Props> = ({
+  testSummaryData,
+  pageSize,
+  onFilterChange,
+  onSortChange,
+  getPaginationUpdateLink,
+  pageInfo,
+}) => {
   return (
-    <CursorTable
+    <PageCursorTable
       size="small"
       columns={columns}
-      dataSource={parsedData}
-      loading={loading}
+      dataSource={testSummaryData}
       rowKey={"id"}
       showSorterTooltip={{ target: "sorter-icon" }}
-      pagination={{
-        position: "bottom",
-        justify: "end",
-        size: "middle",
-      }}
       onChange={(_pagination, filters, sorter, _extra) => {
-        onFilterChange(filters);
         onSortChange(sorter);
+        onFilterChange(tableFiltersToGraphqlWhere(columns, filters));
       }}
-      pageInfo={{
-        startCursor: data?.findTestSummaries.pageInfo.startCursor,
-        endCursor: data?.findTestSummaries.pageInfo.endCursor,
-        hasNextPage: data?.findTestSummaries.pageInfo.hasNextPage,
-        hasPreviousPage: data?.findTestSummaries.pageInfo.hasPreviousPage,
-      }}
-      paginationVariables={paginationVariables}
-      setPaginationVariables={setPaginationVariables}
+      getPaginationUpdateLink={getPaginationUpdateLink}
+      pageInfo={pageInfo}
+      pageSize={pageSize}
     />
   );
 };

@@ -1,5 +1,10 @@
 {
   "getTarget": {
+    "aspect": "",
+    "id": "VGFyZ2V0OjIy",
+    "instanceName": {
+      "name": ""
+    },
     "invocationTargets": {
       "edges": [
         {
@@ -63,6 +68,8 @@
       },
       "totalCount": 4
     },
-    "invocationTargetsTotalDurationMillis": 0
+    "invocationTargetsTotalDurationMillis": 0,
+    "label": "//packages/one:one",
+    "targetKind": "_npm_package rule"
   }
 }

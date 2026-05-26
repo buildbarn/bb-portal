@@ -1,9 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, linkOptions } from "@tanstack/react-router";
 import { z } from "zod";
 import { apolloClient } from "@/components/ApolloWrapper";
 import { DEFAULT_PAGE_SIZE } from "@/components/PageCursorTable";
 import {
-  type OnTablePaginationChange,
   type TablePaginationVars,
   TablePaginationVarsSchema,
 } from "@/components/PageCursorTable/types";
@@ -15,7 +14,7 @@ import {
   OrderDirection,
 } from "@/graphql/__generated__/graphql";
 import { BazelInvocationWhereInputSchema } from "@/graphql/__generated__/zod";
-import { UserNotFoundError } from "@/main";
+import { NotFoundError } from "@/main";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
 export const GET_AUTHENTICATED_USER_BY_UUID = gql(/* GraphQL */ `
@@ -86,7 +85,8 @@ export const Route = createFileRoute("/users/$userUUID")({
     const pagination = deps.invocationTable?.pagination ?? { first: pageSize };
     const where = deps.invocationTable?.where ?? [];
 
-    const { data } = await apolloClient.query({
+    const { data, error } = await apolloClient.query({
+      errorPolicy: "all",
       query: GET_AUTHENTICATED_USER_BY_UUID,
       variables: {
         userUUID: params.userUUID,
@@ -101,12 +101,12 @@ export const Route = createFileRoute("/users/$userUUID")({
     });
 
     if (!data?.getAuthenticatedUser) {
-      throw new UserNotFoundError();
+      throw new NotFoundError("user", error?.message);
     }
 
     const user = getFragmentData(
       AUTHENTICATED_USER_NODE_FRAGMENT,
-      data?.getAuthenticatedUser,
+      data.getAuthenticatedUser,
     );
 
     return { user, pageSize };
@@ -123,32 +123,33 @@ export const Route = createFileRoute("/users/$userUUID")({
   }),
 });
 
+const getPaginationUpdateLink = (newPagination: TablePaginationVars) =>
+  linkOptions({
+    from: Route.id,
+    to: ".",
+    search: (prev): typeof prev => ({
+      ...prev,
+      invocationTable: {
+        ...prev.invocationTable,
+        ...newPagination,
+      },
+    }),
+  });
+
 function RouteComponent() {
   const navigate = Route.useNavigate();
   const { user, pageSize } = Route.useLoaderData();
 
-  const onPaginationChange: OnTablePaginationChange = (
-    vars: TablePaginationVars,
-  ) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        invocationTable: {
-          ...prev.invocationTable,
-          pageSize: vars.pageSize,
-          pagination: vars.pagination,
-        },
-      }),
-    });
-  };
-
   const onFilterChange = (where: BazelInvocationWhereInput[]) => {
     navigate({
-      search: (prev) => ({
+      from: Route.id,
+      to: ".",
+      search: (prev): typeof prev => ({
         ...prev,
         invocationTable: {
           ...prev.invocationTable,
           where,
+          pagination: undefined,
         },
       }),
     });
@@ -158,8 +159,8 @@ function RouteComponent() {
     <UserDetailsPage
       user={user}
       pageSize={pageSize}
-      onPaginationChange={onPaginationChange}
       onFilterChange={onFilterChange}
+      getPaginationUpdateLink={getPaginationUpdateLink}
     />
   );
 }

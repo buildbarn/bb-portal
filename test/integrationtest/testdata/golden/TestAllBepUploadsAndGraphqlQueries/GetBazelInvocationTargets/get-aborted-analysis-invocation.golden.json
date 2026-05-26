@@ -1,6 +1,15 @@
 {
   "getBazelInvocation": {
     "id": "QmF6ZWxJbnZvY2F0aW9uOjY=",
+    "invocationTargets": {
+      "edges": [],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    },
     "metrics": {
       "id": "TWV0cmljczo2",
       "targetMetrics": {
@@ -9,6 +18,15 @@
         "targetsConfiguredNotIncludingAspects": 0,
         "targetsLoaded": 0
       }
+    },
+    "numSkipped": {
+      "totalCount": 0
+    },
+    "numSuccessful": {
+      "totalCount": 0
+    },
+    "numTotal": {
+      "totalCount": 0
     }
   }
 }

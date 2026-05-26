@@ -4,7 +4,9 @@ import type React from "react";
 import PortalCard from "@/components/PortalCard";
 import TestGrid from "@/components/TestGrid";
 
-export const TestsPage: React.FC = () => {
+type Props = React.ComponentProps<typeof TestGrid>;
+
+export const TestsPage: React.FC<Props> = (props) => {
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
       <PortalCard
@@ -19,7 +21,7 @@ export const TestsPage: React.FC = () => {
         ]}
         titleBits={[<span key="title">Tests Overview</span>]}
       >
-        <TestGrid />
+        <TestGrid {...props} />
       </PortalCard>
     </Space>
   );
