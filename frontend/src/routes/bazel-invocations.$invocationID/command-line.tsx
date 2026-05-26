@@ -1,7 +1,8 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { apolloClient } from "@/components/ApolloWrapper";
 import CommandLineDisplay from "@/components/CommandLine";
 import { getFragmentData, gql } from "@/graphql/__generated__";
+import { NotFoundError } from "@/main";
 import { commandLineDataToString } from "@/utils/commandLineDataToString";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
@@ -29,14 +30,15 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const { data } = await apolloClient.query({
+    const { data, error } = await apolloClient.query({
+      errorPolicy: "all",
       query: GET_BAZEL_INVOCATION_COMMANDLINE,
       variables: { invocationID: params.invocationID },
       fetchPolicy: "network-only",
     });
 
     if (!data?.getBazelInvocation) {
-      throw notFound();
+      throw new NotFoundError("invocation", error?.message);
     }
 
     return {

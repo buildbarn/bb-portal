@@ -3,9 +3,8 @@ import {
   ExperimentFilled,
   FieldTimeOutlined,
 } from "@ant-design/icons";
-import { useQuery } from "@apollo/client/react";
 import { Descriptions, Space, Typography } from "antd";
-import React, { useMemo } from "react";
+import type React from "react";
 import {
   Area,
   AreaChart,
@@ -14,154 +13,95 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { cacheLocationFromTestResults } from "@/components/CacheLocationTag";
-import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
-import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
-import { CursorTable, getNewPaginationVariables } from "../../CursorTable";
-import type { PaginationVariables } from "../../CursorTable/types";
-import PortalAlert from "../../PortalAlert";
+import { PageCursorTable } from "@/components/PageCursorTable";
+import type { GetPaginationUpdateLinkType } from "@/components/PageCursorTable/types";
+import type {
+  PageInfo,
+  TestSummaryTargetDetailsFragment,
+} from "@/graphql/__generated__/graphql";
 import PortalCard from "../../PortalCard";
 import { columns, type TestDetailsRowType } from "./columns";
-import { GET_TEST_DETAILS } from "./graphql";
 
 interface Props {
-  targetID: string;
-  aspect: string;
-  label: string;
-  kind: string;
-  instanceName: string;
+  target: TestSummaryTargetDetailsFragment;
+  testSummaries: TestDetailsRowType[];
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
+  pageSize: number;
+  pageInfo: PageInfo;
 }
 
-export const TestDetails: React.FC<Props> = ({
-  targetID,
-  aspect,
-  label,
-  kind,
-  instanceName,
+export const TestDetailsPage: React.FC<Props> = ({
+  target,
+  testSummaries,
+  getPaginationUpdateLink,
+  pageSize,
+  pageInfo,
 }) => {
-  const [paginationVariables, setPaginationVariables] =
-    React.useState<PaginationVariables>(getNewPaginationVariables());
-  const { data, loading, error } = useQuery<GetTestDetailsQuery>(
-    GET_TEST_DETAILS,
-    {
-      variables: {
-        where: {
-          hasInvocationTargetWith: {
-            hasTargetWith: {
-              id: targetID,
-            },
-          },
-        },
-        ...paginationVariables,
-      },
-      fetchPolicy: "network-only",
-    },
-  );
-
-  const testSummaries: TestDetailsRowType[] = useMemo(
-    () =>
-      parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => ({
-        ...ts,
-        cacheLocation: cacheLocationFromTestResults(ts.testResults),
-      })),
-    [data],
-  );
-
-  if (error) {
-    return (
-      <PortalAlert
-        showIcon
-        type="error"
-        message="Error fetching test details"
-        description={
-          error?.message ||
-          "Unknown error occurred while fetching data from the server."
-        }
-      />
-    );
-  }
-
-  return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-      <Descriptions column={1}>
-        <Descriptions.Item label="Instance Name">
-          {instanceName || "-"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Target Kind">{kind || "-"}</Descriptions.Item>
-        <Descriptions.Item label="Target Label">
-          <Typography.Text copyable>{label || "-"}</Typography.Text>
-        </Descriptions.Item>
-        <Descriptions.Item label="Target Aspect">
-          {aspect || "-"}
-        </Descriptions.Item>
-      </Descriptions>
-      <PortalCard
-        icon={<FieldTimeOutlined />}
-        titleBits={["Test Duration Over Time"]}
-      >
-        <AreaChart
-          width={900}
-          height={250}
-          data={testSummaries}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis />
-          <YAxis />
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <Tooltip />
-          <Area
-            type="monotone"
-            dataKey="totalRunDurationInMs"
-            stroke="#8884d8"
-            fillOpacity={1}
-            fill="url(#colorUv)"
-          />
-        </AreaChart>
-      </PortalCard>
-      <PortalCard
-        icon={<BorderInnerOutlined />}
-        titleBits={["Per Invocation Details"]}
-      >
-        <CursorTable<TestDetailsRowType>
-          rowKey="id"
-          loading={loading}
-          dataSource={testSummaries}
-          columns={columns}
-          size="small"
-          pagination={{
-            position: "bottom",
-            justify: "end",
-            size: "middle",
-          }}
-          pageInfo={{
-            startCursor: data?.findTestSummaries.pageInfo.startCursor || "",
-            endCursor: data?.findTestSummaries.pageInfo.endCursor || "",
-            hasNextPage: data?.findTestSummaries.pageInfo.hasNextPage || false,
-            hasPreviousPage:
-              data?.findTestSummaries.pageInfo.hasPreviousPage || false,
-          }}
-          paginationVariables={paginationVariables}
-          setPaginationVariables={setPaginationVariables}
-        />
-      </PortalCard>
-    </Space>
-  );
-};
-
-export const TestDetailsPage: React.FC<Props> = (params) => {
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
       <PortalCard
         icon={<ExperimentFilled />}
         titleBits={[<span key="title">Test Details</span>]}
       >
-        <TestDetails {...params} />
+        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+          <Descriptions column={1}>
+            <Descriptions.Item label="Instance Name">
+              {target.instanceName.name || "-"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Target Kind">
+              {target.targetKind || "-"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Target Label">
+              <Typography.Text copyable>{target.label || "-"}</Typography.Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Target Aspect">
+              {target.aspect || "-"}
+            </Descriptions.Item>
+          </Descriptions>
+          <PortalCard
+            icon={<FieldTimeOutlined />}
+            titleBits={["Test Duration Over Time"]}
+          >
+            <AreaChart
+              width={900}
+              height={250}
+              data={testSummaries}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis />
+              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="totalRunDurationInMs"
+                stroke="#8884d8"
+                fillOpacity={1}
+                fill="url(#colorUv)"
+              />
+            </AreaChart>
+          </PortalCard>
+          <PortalCard
+            icon={<BorderInnerOutlined />}
+            titleBits={["Per Invocation Details"]}
+          >
+            <PageCursorTable<TestDetailsRowType>
+              rowKey="id"
+              dataSource={testSummaries}
+              columns={columns}
+              size="small"
+              pageInfo={pageInfo}
+              getPaginationUpdateLink={getPaginationUpdateLink}
+              pageSize={pageSize}
+            />
+          </PortalCard>
+        </Space>
       </PortalCard>
     </Space>
   );

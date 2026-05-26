@@ -1,8 +1,10 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Button, Col, Row, Select, Space, Table, type TableProps } from "antd";
+import { useNavigate } from "@tanstack/react-router";
+import { Col, Row, Select, Space, Table, type TableProps } from "antd";
 import type { AnyObject } from "antd/es/_util/type";
 import type React from "react";
-import type { OnTablePaginationChange, PageInfo } from "./types";
+import { LinkButton } from "../LinkButton";
+import type { GetPaginationUpdateLinkType, PageInfo } from "./types";
 
 export const PAGE_SIZE_OPTIONS = [50, 100, 200, 500, 1000];
 
@@ -20,16 +22,17 @@ interface Props<RecordType = AnyObject>
   children?: React.ReactNode;
   pageInfo: PageInfo;
   pageSize: number | undefined;
-  onPaginationChange: OnTablePaginationChange;
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
 }
 
 export function PageCursorTable<RecordType = AnyObject>({
   children,
   pageInfo,
   pageSize,
-  onPaginationChange,
+  getPaginationUpdateLink,
   ...antdTableProps
 }: Props<RecordType>) {
+  const navigate = useNavigate();
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
       <Table<RecordType>
@@ -42,60 +45,51 @@ export function PageCursorTable<RecordType = AnyObject>({
       <Row justify="end">
         <Col>
           <Space direction="horizontal">
-            <Button
+            <LinkButton
+              {...getPaginationUpdateLink({
+                pagination: {
+                  after: undefined,
+                  first: undefined,
+                  before: pageInfo.startCursor,
+                  last: pageSize,
+                },
+              })}
               size="middle"
               disabled={!pageInfo.hasPreviousPage}
-              // TODO: Find a typesafe way to do this link that supports
-              // preloading. A link would be work, but I haven't found a way to
-              // make it typesafe with respect to the current route, without
-              // hardcoding the route path (which won't work since this is a
-              // generic component).
-              onClick={() =>
-                onPaginationChange({
-                  pageSize: pageSize,
-                  pagination: {
-                    after: undefined,
-                    first: undefined,
-                    before: pageInfo.startCursor,
-                    last: pageSize,
-                  },
-                })
-              }
             >
               <LeftOutlined />
-            </Button>
-            <Button
+            </LinkButton>
+            <LinkButton
+              {...getPaginationUpdateLink({
+                pagination: {
+                  after: pageInfo.endCursor,
+                  first: pageSize,
+                  before: undefined,
+                  last: undefined,
+                },
+              })}
               size="middle"
               disabled={!pageInfo.hasNextPage}
-              onClick={() =>
-                onPaginationChange({
-                  pageSize: pageSize,
-                  pagination: {
-                    after: pageInfo.endCursor,
-                    first: pageSize,
-                    before: undefined,
-                    last: undefined,
-                  },
-                })
-              }
             >
               <RightOutlined />
-            </Button>
+            </LinkButton>
             <Select
               defaultValue={pageSize}
               style={{ width: 120 }}
-              onChange={(value) =>
-                onPaginationChange({
-                  pageSize: value,
-                  pagination: {
-                    after: undefined,
-                    first: value,
-                    before: undefined,
-                    last: undefined,
-                  },
-                })
-              }
               options={getPageSizeOptions()}
+              onChange={(value) =>
+                navigate(
+                  getPaginationUpdateLink({
+                    pageSize: value,
+                    pagination: {
+                      after: undefined,
+                      first: value,
+                      before: undefined,
+                      last: undefined,
+                    },
+                  }),
+                )
+              }
             />
           </Space>
         </Col>

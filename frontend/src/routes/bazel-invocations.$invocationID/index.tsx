@@ -1,7 +1,8 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { apolloClient } from "@/components/ApolloWrapper";
 import { InvocationOverviewDisplay } from "@/components/InvocationOverviewDisplay";
 import { getFragmentData, gql } from "@/graphql/__generated__";
+import { NotFoundError } from "@/main";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
 const GET_BAZEL_INVOCATION_OVERVIEW = gql(/* GraphQL */ `
@@ -43,14 +44,15 @@ const BAZEL_INVOCATION_OVERVIEW_FRAGMENT = gql(/* GraphQL */ `
 export const Route = createFileRoute("/bazel-invocations/$invocationID/")({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const { data } = await apolloClient.query({
+    const { data, error } = await apolloClient.query({
+      errorPolicy: "all",
       query: GET_BAZEL_INVOCATION_OVERVIEW,
       variables: { invocationID: params.invocationID },
       fetchPolicy: "network-only",
     });
 
     if (!data?.getBazelInvocation) {
-      throw notFound();
+      throw new NotFoundError("invocation", error?.message);
     }
 
     return {

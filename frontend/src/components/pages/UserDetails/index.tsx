@@ -9,13 +9,15 @@ import {
   statusColumn,
 } from "@/components/BazelInvocationColumns/Columns";
 import { PageCursorTable } from "@/components/PageCursorTable";
-import type { OnTablePaginationChange } from "@/components/PageCursorTable/types";
+import type {
+  GetPaginationUpdateLinkType,
+  OnBazelInvocationFilterChange,
+} from "@/components/PageCursorTable/types";
 import { tableFiltersToGraphqlWhere } from "@/components/PageCursorTable/utils";
 import PortalCard from "@/components/PortalCard";
 import type {
   AuthenticatedUserNodeFragmentFragment,
   BazelInvocationNodeFragment,
-  BazelInvocationWhereInput,
 } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
@@ -23,15 +25,15 @@ import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 interface Props {
   pageSize: number | undefined;
   user: AuthenticatedUserNodeFragmentFragment;
-  onPaginationChange: OnTablePaginationChange;
-  onFilterChange: (where: BazelInvocationWhereInput[]) => void;
+  onFilterChange: OnBazelInvocationFilterChange;
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
 }
 
 export const UserDetailsPage: React.FC<Props> = ({
   pageSize,
   user,
-  onPaginationChange,
   onFilterChange,
+  getPaginationUpdateLink,
 }) => {
   const invocations = parseGraphqlEdgeList(user.bazelInvocations);
   const userInfo = user.userInfo || {};
@@ -83,10 +85,10 @@ export const UserDetailsPage: React.FC<Props> = ({
           size="small"
           pageInfo={user.bazelInvocations.pageInfo}
           pageSize={pageSize}
-          onPaginationChange={onPaginationChange}
           onChange={(_pagination, filters, _sorter, _extra) => {
             onFilterChange(tableFiltersToGraphqlWhere(tableColumns, filters));
           }}
+          getPaginationUpdateLink={getPaginationUpdateLink}
         />
       </Space>
     </PortalCard>

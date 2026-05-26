@@ -1,4 +1,6 @@
+import type { LinkOptions } from "@tanstack/react-router";
 import { z } from "zod";
+import type { BazelInvocationWhereInput } from "@/graphql/__generated__/graphql";
 
 export interface PageInfo {
   startCursor?: string;
@@ -16,9 +18,15 @@ export const TablePaginationVarsSchema = z.object({
       before: z.string().optional(),
       last: z.number().int().positive().optional(),
     })
-    .partial()
     .optional(),
 });
 
 export type TablePaginationVars = z.infer<typeof TablePaginationVarsSchema>;
-export type OnTablePaginationChange = (vars: TablePaginationVars) => void;
+
+export type GetPaginationUpdateLinkType = (
+  vars: TablePaginationVars,
+) => LinkOptions;
+
+export type OnBazelInvocationFilterChange = (
+  where: BazelInvocationWhereInput[],
+) => void;

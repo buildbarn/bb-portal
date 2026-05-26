@@ -4,7 +4,9 @@ import type React from "react";
 import PortalCard from "@/components/PortalCard";
 import TargetGrid from "@/components/Targets/TargetGrid";
 
-export const TargetsPage: React.FC = () => {
+type Props = React.ComponentProps<typeof TargetGrid>;
+
+export const TargetsPage: React.FC<Props> = (props) => {
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
       <PortalCard
@@ -19,7 +21,7 @@ export const TargetsPage: React.FC = () => {
         ]}
         titleBits={[<span key="title">Targets Overview </span>]}
       >
-        <TargetGrid />
+        <TargetGrid {...props} />
       </PortalCard>
     </Space>
   );

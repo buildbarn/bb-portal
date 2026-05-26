@@ -5,11 +5,13 @@ import themeStyles from "@/theme/theme.module.css";
 
 interface Props {
   type?: string;
+  details?: string;
   showUnauthenticatedMessage?: boolean;
 }
 
 export const NotFoundPage: React.FC<Props> = ({
   type,
+  details,
   showUnauthenticatedMessage = false,
 }) => {
   return (
@@ -26,6 +28,7 @@ export const NotFoundPage: React.FC<Props> = ({
           Either the {type} doesn't exist or you don't have access to it.
         </Typography.Text>
       )}
+      {details && <Typography.Text>{details}</Typography.Text>}
       <Link to="/">Go Back Home</Link>
     </Space>
   );

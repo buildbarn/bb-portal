@@ -1,6 +1,4320 @@
 {
   "getBazelInvocation": {
     "id": "QmF6ZWxJbnZvY2F0aW9uOjg=",
+    "invocationTargets": {
+      "edges": [
+        {
+          "node": {
+            "abortReason": "UNKNOWN",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTE=",
+            "success": false,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//tools:sqlc_macos",
+              "targetKind": "alias rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTI=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojcx",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:update_workflows_2_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTM=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:failure_details_pb_go_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTQ=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjY5",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:update_workflows_1_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTU=",
+            "success": true,
+            "tags": [
+              "medium",
+              "moderate",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//test/integrationtest:integrationtest_test",
+              "targetKind": "go_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//tools:sqlc",
+              "targetKind": "alias rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTc=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjY3",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:update_workflows_0_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTg=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:option_filters_pb_go_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NTk=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:command_line_pb_go_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NjA=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:invocation_policy_pb_go_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NjE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//tools:sqlc_linux",
+              "targetKind": "alias rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NjI=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:action_cache_pb_go_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NjM=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics_pb_go_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NjQ=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:build_event_stream_pb_go_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NjU=",
+            "success": true,
+            "tags": [
+              "medium",
+              "moderate",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/authmetadataextraction:authmetadataextraction_test",
+              "targetKind": "go_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NjY=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:opentelemetry_common_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0Njc=",
+            "success": true,
+            "tags": [
+              "medium",
+              "moderate",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/dbcleanupservice:dbcleanupservice_test",
+              "targetKind": "go_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0Njg=",
+            "success": true,
+            "tags": [
+              "medium",
+              "moderate",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/dbauthservice:dbauthservice_test",
+              "targetKind": "go_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0Njk=",
+            "success": true,
+            "tags": [
+              "medium",
+              "moderate",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/grpcweb/buildqueuestateproxy:buildqueuestateproxy_test",
+              "targetKind": "go_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NzA=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_launch_stage_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NzE=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_descriptor_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NzI=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_wrappers_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NzM=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_status_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NzQ=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_code_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NzU=",
+            "success": true,
+            "tags": [
+              "medium",
+              "moderate",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/common:common_test",
+              "targetKind": "go_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0NzY=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_timestamp_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0Nzc=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_client_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0Nzg=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_operations_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0Nzk=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_duration_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODA=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_http_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODE=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_empty_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODI=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_annotations_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODM=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_resourceusage_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODQ=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_query_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODU=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_any_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODY=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_iscc_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODc=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_bytestream_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODg=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_fsac_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0ODk=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:bazel_semver_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTA=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_cas_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTE=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_auth_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTI=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_buildqueuestate_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTM=",
+            "success": true,
+            "tags": [
+              "small",
+              "short",
+              "noflaky",
+              "nolocal"
+            ],
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:bazel_remote_execution_proto_test",
+              "targetKind": "_diff_test rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojc5",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:bb_portal_container_index_json_cp",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojc3",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:bb_portal_container.digest",
+              "targetKind": "jq_rule rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojc2",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:bb_portal_container",
+              "targetKind": "oci_image_index rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojgw",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:bb_portal_container_push",
+              "targetKind": "oci_push rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf_go_proto_pb_go",
+              "targetKind": "filegroup rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo0OTk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojcw",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:update_workflows_2",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf_go_proto",
+              "targetKind": "go_proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjY0",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:gazelle-runner",
+              "targetKind": "_gazelle_runner rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjY4",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:update_workflows_1",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:option_filters_go_proto_pb_go",
+              "targetKind": "genrule rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjY2",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:update_workflows_0",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjY1",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//:update_workflows",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//tools:reformat",
+              "targetKind": "sh_binary rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/configuration/bb_portal:bb_portal_go_proto",
+              "targetKind": "go_proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/uuidgql:uuidgql",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MDk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:option_filters_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//tools/github_workflows:github_workflows",
+              "targetKind": "jsonnet_to_json rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/configuration/bb_portal:bb_portal",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:strategy_policy_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/testkit:testkit",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf_proto",
+              "targetKind": "proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:invocation_policy_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI3MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/configuration/bb_portal:bb_portal_proto",
+              "targetKind": "proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MTk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI2MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:option_filters_pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MjA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics_pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MjE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:failure_details_pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MjI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:command_line_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MjM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MjQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:failure_details_go_proto_pb_go",
+              "targetKind": "genrule rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MjU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:invocation_policy_pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MjY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:invocation_policy_go_proto_pb_go",
+              "targetKind": "genrule rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Mjc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI1NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:failure_details_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Mjg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Mjk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MzA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:command_line_go_proto_pb_go",
+              "targetKind": "genrule rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MzE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics_proto",
+              "targetKind": "proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MzI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:action_cache_pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MzM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/mock:clock",
+              "targetKind": "_gomock_prog_exec rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MzQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:action_cache_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MzU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:command_line_pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1MzY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/sqlc:sqlc",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Mzc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:build_event_stream_proto",
+              "targetKind": "proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Mzg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics_go_proto",
+              "targetKind": "go_proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Mzk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjI0Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/protobuf:action_cache_go_proto_pb_go",
+              "targetKind": "genrule rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:build_event_stream_go_proto",
+              "targetKind": "go_proto_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/graphql:graphql",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:build_event_stream_proto_file",
+              "targetKind": "_copy_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/prometheus_metrics:prometheus_metrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/mock:util",
+              "targetKind": "_gomock_prog_exec rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:build_event_stream_pb_go",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics_go_proto_pb_go",
+              "targetKind": "filegroup rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/servefiles:servefiles_lib",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NDk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/grpc/bes:bes",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/graphql/helpers:helpers",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIzNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/http/loghandler:loghandler",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/authmetadataextraction:authmetadataextraction",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//pkg/proto/bazelbuild/bazel/bes:build_event_stream_go_proto_pb_go",
+              "targetKind": "filegroup rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/mock:mock",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/graphql/model:model",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database:database",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_http_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NTk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/dbauthservice:dbauthservice",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NjA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIyMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/mock:buildqueuestate",
+              "targetKind": "_gomock_prog_exec rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NjE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/common:common",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NjI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/dbcleanupservice:dbcleanupservice",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NjM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/buildeventrecorder:buildeventrecorder",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NjQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_status_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NjU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/grpcweb/buildqueuestateproxy:buildqueuestateproxy",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NjY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIxNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/database/embedded:embedded",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Njc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_launch_stage_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Njg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_status_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Njk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:opentelemetry_common_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NzA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/http/bepuploader:bepuploader",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NzE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:opentelemetry_common_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NzI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:protobuf",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NzM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_operations_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NzQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_timestamp_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NzU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjIwMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//internal/api/common:common",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1NzY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_descriptor_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Nzc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_code_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Nzg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_descriptor_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1Nzk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_wrappers_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_wrappers_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE5MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_timestamp_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_operations_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_empty_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_duration_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_http_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE4MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_launch_stage_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_annotations_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_empty_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1ODk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE3Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_duration_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_annotations_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0NQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_iscc_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_resourceusage_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_iscc_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_any_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2Ng==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_code_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_bytestream_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1Nw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_any_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0OA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_query_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo1OTk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2NA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_client_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_client_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE2MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:google_bytestream_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE1MQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_resourceusage_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/testsummary:testsummary",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_buildqueuestate_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/runnercount:runnercount",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0MA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_cas_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:bazel_remote_execution_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0OQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_query_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MDk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_cas_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0Mg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_fsac_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_buildqueuestate_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_auth_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjE0Mw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_fsac_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/schema:schema",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:bazel_semver_proto_src",
+              "targetKind": "get_proto_src rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/memorymetrics:memorymetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend/src/graphql:__generated__",
+              "targetKind": "filegroup rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/timingmetrics:timingmetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MTk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/migrate:migrate",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MjA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:bazel_remote_execution_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MjE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/networkmetrics:networkmetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MjI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:buildbarn_auth_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MjM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEzMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//frontend:bazel_semver_proto",
+              "targetKind": "_write_source_file rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MjQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/packageloadmetrics:packageloadmetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MjU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/targetmetrics:targetmetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MjY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExNw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/systemnetworkstats:systemnetworkstats",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2Mjc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExOQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/targetkindmapping:targetkindmapping",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2Mjg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExNQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/runtime:runtime",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2Mjk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent:ent",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MzA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/predicate:predicate",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MzE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/sourcecontrol:sourcecontrol",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MzI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/packagemetrics:packagemetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MzM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/missdetail:missdetail",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MzQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEyMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/testresult:testresult",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MzU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojk3",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/evaluationstat:evaluationstat",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2MzY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwMg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/instancename:instancename",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2Mzc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExOA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/target:target",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2Mzg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojg5",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/bazelinvocation:bazelinvocation",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2Mzk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwMQ==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/incompletebuildlog:incompletebuildlog",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjExMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/privacy:privacy",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwNA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/invocationtarget:invocationtarget",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojkw",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/build:build",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojk4",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/eventmetadata:eventmetadata",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojkx",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/buildgraphmetrics:buildgraphmetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojk0",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/connectionmetadata:connectionmetadata",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojkz",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/configuration:configuration",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojk5",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/garbagemetrics:garbagemetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwMw==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/invocationfiles:invocationfiles",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NDk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwNg==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/metrics:metrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0OjEwMA==",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/hook:hook",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojg4",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/authenticateduser:authenticateduser",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojg0",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/actioncachestatistics:actioncachestatistics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojcz",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_export_schema:bb_export_schema_lib",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojk1",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/cumulativemetrics:cumulativemetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojk2",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/enttest:enttest",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojgx",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:bb_portal_lib",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTc=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojg2",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/actionsummary:actionsummary",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTg=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojc1",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:bb_portal",
+              "targetKind": "go_binary rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NTk=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojc0",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:_bb_portal_container.tar",
+              "targetKind": "pkg_tar_impl rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NjA=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojgz",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/action:action",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NjE=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojky",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/buildlogchunk:buildlogchunk",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NjI=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojc4",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_portal:bb_portal_container_index_json",
+              "targetKind": "directory_path rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NjM=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojg1",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/actiondata:actiondata",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NjQ=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojg3",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/gen/ent/artifactmetrics:artifactmetrics",
+              "targetKind": "go_library rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NjU=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojcy",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//cmd/bb_export_schema:bb_export_schema",
+              "targetKind": "go_binary rule"
+            }
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo2NjY=",
+            "success": true,
+            "tags": null,
+            "target": {
+              "aspect": "",
+              "id": "VGFyZ2V0Ojgy",
+              "instanceName": {
+                "name": ""
+              },
+              "label": "//ent/authschema:authschema",
+              "targetKind": "go_library rule"
+            }
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "gaFp0wAAAAAAAAKa",
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": "gaFp0wAAAAAAAAHD"
+      }
+    },
     "metrics": {
       "id": "TWV0cmljczo4",
       "targetMetrics": {
@@ -9,6 +4323,15 @@
         "targetsConfiguredNotIncludingAspects": 0,
         "targetsLoaded": 0
       }
+    },
+    "numSkipped": {
+      "totalCount": 0
+    },
+    "numSuccessful": {
+      "totalCount": 215
+    },
+    "numTotal": {
+      "totalCount": 216
     }
   }
 }

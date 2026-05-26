@@ -2,10 +2,7 @@ import { gql } from "@/graphql/__generated__";
 
 export const GET_INVOCATION_TARGETS_FOR_TARGET = gql(/* GraphQl */ `
   query GetInvocationTargetsForTarget(
-    $instanceName: String!
-    $label: String!
-    $aspect: String!
-    $targetKind: String!
+    $targetId: ID!
 
     $after: Cursor
     $first: Int
@@ -14,7 +11,7 @@ export const GET_INVOCATION_TARGETS_FOR_TARGET = gql(/* GraphQl */ `
     $orderBy: InvocationTargetOrder
     $where: InvocationTargetWhereInput
   ){
-    getTarget (instanceName: $instanceName, label: $label, aspect: $aspect, targetKind: $targetKind){
+    getTarget (id: $targetId){
       invocationTargets(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {
         edges {
           node {

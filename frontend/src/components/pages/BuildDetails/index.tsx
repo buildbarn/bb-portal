@@ -1,39 +1,28 @@
 import { DeploymentUnitOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { useQuery } from "@apollo/client/react";
 import { Flex, Popover, Space, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 import type React from "react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import styles from "@/components/AppBar/index.module.css";
 import CollapsableInvocationTimeline from "@/components/CollapsableInvocationTimeline";
 import { OptionalLinkWrapper } from "@/components/OptionalLinkWrapper";
+import { PageCursorTable } from "@/components/PageCursorTable";
+import type { GetPaginationUpdateLinkType } from "@/components/PageCursorTable/types";
+import { tableFiltersToGraphqlWhere } from "@/components/PageCursorTable/utils";
 import PortalCard from "@/components/PortalCard";
-import {
-  BazelInvocationOrderField,
-  type BazelInvocationWhereInput,
-  type FindBuildByUuidQuery,
-  type GetBuildInvocationFragment,
-  OrderDirection,
+import type {
+  BazelInvocationWhereInput,
+  GetBuildFragment,
+  GetBuildInvocationFragment,
+  PageInfo,
 } from "@/graphql/__generated__/graphql";
-import { applyTableFilters } from "@/utils/applyColumnFilters";
 import { env } from "@/utils/env";
-import {
-  parseGraphqlEdgeList,
-  parseGraphqlEdgeListWithFragment,
-} from "@/utils/parseGraphqlEdgeList";
-import { shouldPollInvocation } from "@/utils/shouldPollInvocation";
-import { CursorTable, getNewPaginationVariables } from "../../CursorTable";
-import type { PaginationVariables } from "../../CursorTable/types";
-import PortalAlert from "../../PortalAlert";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import { getColumns } from "./Columns";
-import {
-  GET_BUILD_BY_UUID_QUERY,
-  GET_BUILD_INVOCATION_FRAGMENT,
-} from "./graphql";
 
-type BuildType = NonNullable<FindBuildByUuidQuery["getBuild"]>;
-
-const getTitleBits = (build: BuildType | undefined): React.ReactNode[] => {
+const getTitleBits = (
+  build: GetBuildFragment | undefined,
+): React.ReactNode[] => {
   if (!build) {
     return [];
   }
@@ -87,7 +76,9 @@ const getTitleBits = (build: BuildType | undefined): React.ReactNode[] => {
   return titleBits;
 };
 
-const getExtraBits = (build: BuildType | undefined): React.ReactNode[] => {
+const getExtraBits = (
+  build: GetBuildFragment | undefined,
+): React.ReactNode[] => {
   if (!build) {
     return [];
   }
@@ -99,81 +90,24 @@ const getExtraBits = (build: BuildType | undefined): React.ReactNode[] => {
 };
 
 interface Props {
-  buildUUID: string;
+  invocations: GetBuildInvocationFragment[];
+  build: GetBuildFragment;
+  pageSize: number;
+  onFilterChange: (where: BazelInvocationWhereInput[]) => void;
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
+  pageInfo: PageInfo;
 }
 
-export const BuildDetailsPage: React.FC<Props> = ({ buildUUID }) => {
-  const [paginationVariables, setPaginationVariables] =
-    useState<PaginationVariables>(getNewPaginationVariables());
-
-  const [filterVariables, setFilterVariables] = useState<
-    BazelInvocationWhereInput[]
-  >([]);
-
-  const { data, loading, error } = useQuery(GET_BUILD_BY_UUID_QUERY, {
-    variables: {
-      ...paginationVariables,
-      where: { and: filterVariables },
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: BazelInvocationOrderField.StartedAt,
-      },
-      buildUUID: buildUUID,
-    },
-  });
-
+export const BuildDetailsPage: React.FC<Props> = ({
+  invocations,
+  build,
+  pageSize,
+  onFilterChange,
+  getPaginationUpdateLink,
+  pageInfo,
+}) => {
   const tableColumns = useMemo(getColumns, []);
-
-  const build = data?.getBuild ?? undefined;
   const tags = parseGraphqlEdgeList(build?.tags);
-  const invocations = parseGraphqlEdgeListWithFragment(
-    GET_BUILD_INVOCATION_FRAGMENT,
-    data?.getBuild?.invocations,
-  );
-  const inProgressInvocations = invocations
-    .filter((inv) => shouldPollInvocation(inv))
-    .map((inv) => inv.id);
-
-  // Refetch any ongoing invocations periodically. The result of the query is
-  // unused, but in the background Apollo updates the result of the original
-  // query based on the IDs of the response.
-  useQuery(GET_BUILD_BY_UUID_QUERY, {
-    variables: {
-      where: {
-        idIn: inProgressInvocations,
-      },
-      buildUUID: buildUUID,
-    },
-    skip: inProgressInvocations.length === 0,
-    pollInterval: 5000,
-  });
-
-  if (error) {
-    return (
-      <PortalCard icon={<DeploymentUnitOutlined />} titleBits={["Build"]}>
-        <PortalAlert
-          showIcon
-          type="error"
-          message="Error fetching build details"
-          description={
-            <>
-              {error?.message ? (
-                <Typography.Paragraph>{error.message}</Typography.Paragraph>
-              ) : (
-                <Typography.Paragraph>
-                  Unknown error occurred while fetching data from the server.
-                </Typography.Paragraph>
-              )}
-              <Typography.Paragraph>
-                It could be that the build is too old and has been removed, or
-                that you don't have access to this build.
-              </Typography.Paragraph>
-            </>
-          }
-        />
-      </PortalCard>
-    );
-  }
 
   return (
     <PortalCard
@@ -201,30 +135,17 @@ export const BuildDetailsPage: React.FC<Props> = ({ buildUUID }) => {
             invocations={invocations.toReversed()}
           />
         )}
-        <CursorTable<GetBuildInvocationFragment>
+        <PageCursorTable<GetBuildInvocationFragment>
           columns={tableColumns}
-          loading={loading}
           size="small"
           rowKey="id"
           onChange={(_pagination, filters, _sorter, _extra) =>
-            applyTableFilters(tableColumns, filters, setFilterVariables)
+            onFilterChange(tableFiltersToGraphqlWhere(tableColumns, filters))
           }
           dataSource={invocations}
-          pagination={{
-            position: "bottom",
-            justify: "end",
-            size: "middle",
-          }}
-          pageInfo={{
-            startCursor: data?.getBuild?.invocations.pageInfo.startCursor || "",
-            endCursor: data?.getBuild?.invocations.pageInfo.endCursor || "",
-            hasNextPage:
-              data?.getBuild?.invocations.pageInfo.hasNextPage || false,
-            hasPreviousPage:
-              data?.getBuild?.invocations.pageInfo.hasPreviousPage || false,
-          }}
-          paginationVariables={paginationVariables}
-          setPaginationVariables={setPaginationVariables}
+          pageInfo={pageInfo}
+          pageSize={pageSize}
+          getPaginationUpdateLink={getPaginationUpdateLink}
         />
       </Space>
     </PortalCard>

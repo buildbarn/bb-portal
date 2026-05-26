@@ -4,16 +4,12 @@ import {
   type CacheLocation,
   CacheLocationTag,
 } from "@/components/CacheLocationTag";
-import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
+import type { TestSummaryRowFragment } from "@/graphql/__generated__/graphql";
 import styles from "@/theme/theme.module.css";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import { TestStatusTag } from "../../TestStatusTag";
 
-export type TestDetailsRowType = NonNullable<
-  NonNullable<
-    NonNullable<GetTestDetailsQuery["findTestSummaries"]["edges"]>[number]
-  >["node"]
-> & {
+export type TestDetailsRowType = TestSummaryRowFragment & {
   cacheLocation: CacheLocation;
 };
 

@@ -406,7 +406,7 @@ type ComplexityRoot struct {
 		GetAuthenticatedUser func(childComplexity int, userUUID uuid.UUID) int
 		GetBazelInvocation   func(childComplexity int, invocationID uuid.UUID) int
 		GetBuild             func(childComplexity int, buildUUID uuid.UUID) int
-		GetTarget            func(childComplexity int, instanceName string, label string, aspect string, targetKind string) int
+		GetTarget            func(childComplexity int, id string) int
 		Node                 func(childComplexity int, id string) int
 		Nodes                func(childComplexity int, ids []string) int
 	}
@@ -620,7 +620,7 @@ type QueryResolver interface {
 	GetAuthenticatedUser(ctx context.Context, userUUID uuid.UUID) (*ent.AuthenticatedUser, error)
 	GetBazelInvocation(ctx context.Context, invocationID uuid.UUID) (*ent.BazelInvocation, error)
 	GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent.Build, error)
-	GetTarget(ctx context.Context, instanceName string, label string, aspect string, targetKind string) (*ent.Target, error)
+	GetTarget(ctx context.Context, id string) (*ent.Target, error)
 }
 type RunnerCountResolver interface {
 	ID(ctx context.Context, obj *ent.RunnerCount) (string, error)
@@ -2322,7 +2322,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.GetTarget(childComplexity, args["instanceName"].(string), args["label"].(string), args["aspect"].(string), args["targetKind"].(string)), true
+		return e.ComplexityRoot.Query.GetTarget(childComplexity, args["id"].(string)), true
 
 	case "Query.node":
 		if e.ComplexityRoot.Query.Node == nil {
@@ -4488,38 +4488,14 @@ func (ec *executionContext) field_Query_getBuild_args(ctx context.Context, rawAr
 func (ec *executionContext) field_Query_getTarget_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "instanceName",
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id",
 		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNString2string(ctx, v)
+			return ec.unmarshalNID2string(ctx, v)
 		})
 	if err != nil {
 		return nil, err
 	}
-	args["instanceName"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "label",
-		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNString2string(ctx, v)
-		})
-	if err != nil {
-		return nil, err
-	}
-	args["label"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "aspect",
-		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNString2string(ctx, v)
-		})
-	if err != nil {
-		return nil, err
-	}
-	args["aspect"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "targetKind",
-		func(ctx context.Context, v any) (string, error) {
-			return ec.unmarshalNString2string(ctx, v)
-		})
-	if err != nil {
-		return nil, err
-	}
-	args["targetKind"] = arg3
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -10389,7 +10365,7 @@ func (ec *executionContext) _Query_getTarget(ctx context.Context, field graphql.
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().GetTarget(ctx, fc.Args["instanceName"].(string), fc.Args["label"].(string), fc.Args["aspect"].(string), fc.Args["targetKind"].(string))
+			return ec.Resolvers.Query().GetTarget(ctx, fc.Args["id"].(string))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *ent.Target) graphql.Marshaler {
