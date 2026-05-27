@@ -16,7 +16,6 @@ bazel_dep(name = "aspect_rules_js", version = "3.1.1")
 bazel_dep(name = "bazel_lib", version = "3.3.1")
 bazel_dep(name = "bazel_remote_apis")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "com_github_buildbarn_bb_browser")
 bazel_dep(name = "com_github_buildbarn_bb_remote_execution")
 bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "com_github_buildbarn_go_xdr")
@@ -37,12 +36,6 @@ git_override(
     module_name = "bazel_remote_apis",
     commit = "b02e15a6d354e2fb553216132ccec79f3f5b39cb",
     remote = "https://github.com/bazelbuild/remote-apis.git",
-)
-
-git_override(
-    module_name = "com_github_buildbarn_bb_browser",
-    commit = "ee35c54d5cecfc7a763870fe2187c93fa47aaf85",
-    remote = "https://github.com/buildbarn/bb-browser.git",
 )
 
 git_override(

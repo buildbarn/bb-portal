@@ -24,7 +24,6 @@ generate_grpc_client "${PROTO_DIR}/buildbarn/buildqueuestate/buildqueuestate.pro
 generate_grpc_client "${PROTO_DIR}/buildbarn/cas/cas.proto"
 generate_grpc_client "${PROTO_DIR}/buildbarn/fsac/fsac.proto"
 generate_grpc_client "${PROTO_DIR}/buildbarn/iscc/iscc.proto"
-generate_grpc_client "${PROTO_DIR}/buildbarn/query/query.proto"
 generate_grpc_client "${PROTO_DIR}/buildbarn/resourceusage/resourceusage.proto"
 generate_grpc_client "${PROTO_DIR}/google/bytestream/bytestream.proto"
 generate_grpc_client "${PROTO_DIR}/google/rpc/code.proto"

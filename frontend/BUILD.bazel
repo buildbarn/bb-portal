@@ -12,7 +12,6 @@ PROTO_FILES = {
     "buildbarn_cas": ("cas", "buildbarn/cas", "@com_github_buildbarn_bb_remote_execution//pkg/proto/cas:cas_proto"),
     "buildbarn_fsac": ("fsac", "buildbarn/fsac", "@com_github_buildbarn_bb_storage//pkg/proto/fsac:fsac_proto"),
     "buildbarn_iscc": ("iscc", "buildbarn/iscc", "@com_github_buildbarn_bb_storage//pkg/proto/iscc:iscc_proto"),
-    "buildbarn_query": ("query", "buildbarn/query", "@com_github_buildbarn_bb_browser//pkg/proto/query:query_proto"),
     "buildbarn_resourceusage": ("resourceusage", "buildbarn/resourceusage", "@com_github_buildbarn_bb_remote_execution//pkg/proto/resourceusage:resourceusage_proto"),
     "google_annotations": ("annotations", "google/api", "@googleapis//google/api:annotations_proto"),
     "google_client": ("client", "google/api", "@googleapis//google/api:client_proto"),
