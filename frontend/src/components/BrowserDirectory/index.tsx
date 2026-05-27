@@ -10,10 +10,10 @@ import {
   Directory,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { FileSystemAccessProfile } from "@/lib/grpc-client/buildbarn/fsac/fsac";
-import type { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
 import themeStyles from "@/theme/theme.module.css";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import type { FileSystemAccessProfileReference } from "@/types/FileSystemAccessProfileReference";
 import {
   type BloomFilterReader,
   containsPathHashes,
