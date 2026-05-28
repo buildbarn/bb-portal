@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // ID filters vertices based on their ID field.
@@ -54,82 +55,82 @@ func IDLTE(id int64) predicate.SystemNetworkStats {
 }
 
 // BytesSent applies equality check predicate on the "bytes_sent" field. It's identical to BytesSentEQ.
-func BytesSent(v uint64) predicate.SystemNetworkStats {
+func BytesSent(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesSent, v))
 }
 
 // BytesRecv applies equality check predicate on the "bytes_recv" field. It's identical to BytesRecvEQ.
-func BytesRecv(v uint64) predicate.SystemNetworkStats {
+func BytesRecv(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesRecv, v))
 }
 
 // PacketsSent applies equality check predicate on the "packets_sent" field. It's identical to PacketsSentEQ.
-func PacketsSent(v uint64) predicate.SystemNetworkStats {
+func PacketsSent(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsSent, v))
 }
 
 // PacketsRecv applies equality check predicate on the "packets_recv" field. It's identical to PacketsRecvEQ.
-func PacketsRecv(v uint64) predicate.SystemNetworkStats {
+func PacketsRecv(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsRecv, v))
 }
 
 // PeakBytesSentPerSec applies equality check predicate on the "peak_bytes_sent_per_sec" field. It's identical to PeakBytesSentPerSecEQ.
-func PeakBytesSentPerSec(v uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSec(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesSentPerSec, v))
 }
 
 // PeakBytesRecvPerSec applies equality check predicate on the "peak_bytes_recv_per_sec" field. It's identical to PeakBytesRecvPerSecEQ.
-func PeakBytesRecvPerSec(v uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSec(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesRecvPerSec, v))
 }
 
 // PeakPacketsSentPerSec applies equality check predicate on the "peak_packets_sent_per_sec" field. It's identical to PeakPacketsSentPerSecEQ.
-func PeakPacketsSentPerSec(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSec(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsSentPerSec, v))
 }
 
 // PeakPacketsRecvPerSec applies equality check predicate on the "peak_packets_recv_per_sec" field. It's identical to PeakPacketsRecvPerSecEQ.
-func PeakPacketsRecvPerSec(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSec(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsRecvPerSec, v))
 }
 
 // BytesSentEQ applies the EQ predicate on the "bytes_sent" field.
-func BytesSentEQ(v uint64) predicate.SystemNetworkStats {
+func BytesSentEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesSent, v))
 }
 
 // BytesSentNEQ applies the NEQ predicate on the "bytes_sent" field.
-func BytesSentNEQ(v uint64) predicate.SystemNetworkStats {
+func BytesSentNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldBytesSent, v))
 }
 
 // BytesSentIn applies the In predicate on the "bytes_sent" field.
-func BytesSentIn(vs ...uint64) predicate.SystemNetworkStats {
+func BytesSentIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldBytesSent, vs...))
 }
 
 // BytesSentNotIn applies the NotIn predicate on the "bytes_sent" field.
-func BytesSentNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func BytesSentNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldBytesSent, vs...))
 }
 
 // BytesSentGT applies the GT predicate on the "bytes_sent" field.
-func BytesSentGT(v uint64) predicate.SystemNetworkStats {
+func BytesSentGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldBytesSent, v))
 }
 
 // BytesSentGTE applies the GTE predicate on the "bytes_sent" field.
-func BytesSentGTE(v uint64) predicate.SystemNetworkStats {
+func BytesSentGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldBytesSent, v))
 }
 
 // BytesSentLT applies the LT predicate on the "bytes_sent" field.
-func BytesSentLT(v uint64) predicate.SystemNetworkStats {
+func BytesSentLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldBytesSent, v))
 }
 
 // BytesSentLTE applies the LTE predicate on the "bytes_sent" field.
-func BytesSentLTE(v uint64) predicate.SystemNetworkStats {
+func BytesSentLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldBytesSent, v))
 }
 
@@ -144,42 +145,42 @@ func BytesSentNotNil() predicate.SystemNetworkStats {
 }
 
 // BytesRecvEQ applies the EQ predicate on the "bytes_recv" field.
-func BytesRecvEQ(v uint64) predicate.SystemNetworkStats {
+func BytesRecvEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesRecv, v))
 }
 
 // BytesRecvNEQ applies the NEQ predicate on the "bytes_recv" field.
-func BytesRecvNEQ(v uint64) predicate.SystemNetworkStats {
+func BytesRecvNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldBytesRecv, v))
 }
 
 // BytesRecvIn applies the In predicate on the "bytes_recv" field.
-func BytesRecvIn(vs ...uint64) predicate.SystemNetworkStats {
+func BytesRecvIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldBytesRecv, vs...))
 }
 
 // BytesRecvNotIn applies the NotIn predicate on the "bytes_recv" field.
-func BytesRecvNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func BytesRecvNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldBytesRecv, vs...))
 }
 
 // BytesRecvGT applies the GT predicate on the "bytes_recv" field.
-func BytesRecvGT(v uint64) predicate.SystemNetworkStats {
+func BytesRecvGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldBytesRecv, v))
 }
 
 // BytesRecvGTE applies the GTE predicate on the "bytes_recv" field.
-func BytesRecvGTE(v uint64) predicate.SystemNetworkStats {
+func BytesRecvGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldBytesRecv, v))
 }
 
 // BytesRecvLT applies the LT predicate on the "bytes_recv" field.
-func BytesRecvLT(v uint64) predicate.SystemNetworkStats {
+func BytesRecvLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldBytesRecv, v))
 }
 
 // BytesRecvLTE applies the LTE predicate on the "bytes_recv" field.
-func BytesRecvLTE(v uint64) predicate.SystemNetworkStats {
+func BytesRecvLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldBytesRecv, v))
 }
 
@@ -194,42 +195,42 @@ func BytesRecvNotNil() predicate.SystemNetworkStats {
 }
 
 // PacketsSentEQ applies the EQ predicate on the "packets_sent" field.
-func PacketsSentEQ(v uint64) predicate.SystemNetworkStats {
+func PacketsSentEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsSent, v))
 }
 
 // PacketsSentNEQ applies the NEQ predicate on the "packets_sent" field.
-func PacketsSentNEQ(v uint64) predicate.SystemNetworkStats {
+func PacketsSentNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPacketsSent, v))
 }
 
 // PacketsSentIn applies the In predicate on the "packets_sent" field.
-func PacketsSentIn(vs ...uint64) predicate.SystemNetworkStats {
+func PacketsSentIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldPacketsSent, vs...))
 }
 
 // PacketsSentNotIn applies the NotIn predicate on the "packets_sent" field.
-func PacketsSentNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func PacketsSentNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPacketsSent, vs...))
 }
 
 // PacketsSentGT applies the GT predicate on the "packets_sent" field.
-func PacketsSentGT(v uint64) predicate.SystemNetworkStats {
+func PacketsSentGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldPacketsSent, v))
 }
 
 // PacketsSentGTE applies the GTE predicate on the "packets_sent" field.
-func PacketsSentGTE(v uint64) predicate.SystemNetworkStats {
+func PacketsSentGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPacketsSent, v))
 }
 
 // PacketsSentLT applies the LT predicate on the "packets_sent" field.
-func PacketsSentLT(v uint64) predicate.SystemNetworkStats {
+func PacketsSentLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldPacketsSent, v))
 }
 
 // PacketsSentLTE applies the LTE predicate on the "packets_sent" field.
-func PacketsSentLTE(v uint64) predicate.SystemNetworkStats {
+func PacketsSentLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPacketsSent, v))
 }
 
@@ -244,42 +245,42 @@ func PacketsSentNotNil() predicate.SystemNetworkStats {
 }
 
 // PacketsRecvEQ applies the EQ predicate on the "packets_recv" field.
-func PacketsRecvEQ(v uint64) predicate.SystemNetworkStats {
+func PacketsRecvEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsRecv, v))
 }
 
 // PacketsRecvNEQ applies the NEQ predicate on the "packets_recv" field.
-func PacketsRecvNEQ(v uint64) predicate.SystemNetworkStats {
+func PacketsRecvNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPacketsRecv, v))
 }
 
 // PacketsRecvIn applies the In predicate on the "packets_recv" field.
-func PacketsRecvIn(vs ...uint64) predicate.SystemNetworkStats {
+func PacketsRecvIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldPacketsRecv, vs...))
 }
 
 // PacketsRecvNotIn applies the NotIn predicate on the "packets_recv" field.
-func PacketsRecvNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func PacketsRecvNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPacketsRecv, vs...))
 }
 
 // PacketsRecvGT applies the GT predicate on the "packets_recv" field.
-func PacketsRecvGT(v uint64) predicate.SystemNetworkStats {
+func PacketsRecvGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldPacketsRecv, v))
 }
 
 // PacketsRecvGTE applies the GTE predicate on the "packets_recv" field.
-func PacketsRecvGTE(v uint64) predicate.SystemNetworkStats {
+func PacketsRecvGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPacketsRecv, v))
 }
 
 // PacketsRecvLT applies the LT predicate on the "packets_recv" field.
-func PacketsRecvLT(v uint64) predicate.SystemNetworkStats {
+func PacketsRecvLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldPacketsRecv, v))
 }
 
 // PacketsRecvLTE applies the LTE predicate on the "packets_recv" field.
-func PacketsRecvLTE(v uint64) predicate.SystemNetworkStats {
+func PacketsRecvLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPacketsRecv, v))
 }
 
@@ -294,42 +295,42 @@ func PacketsRecvNotNil() predicate.SystemNetworkStats {
 }
 
 // PeakBytesSentPerSecEQ applies the EQ predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecEQ(v uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesSentPerSec, v))
 }
 
 // PeakBytesSentPerSecNEQ applies the NEQ predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecNEQ(v uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakBytesSentPerSec, v))
 }
 
 // PeakBytesSentPerSecIn applies the In predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakBytesSentPerSec, vs...))
 }
 
 // PeakBytesSentPerSecNotIn applies the NotIn predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakBytesSentPerSec, vs...))
 }
 
 // PeakBytesSentPerSecGT applies the GT predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecGT(v uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakBytesSentPerSec, v))
 }
 
 // PeakBytesSentPerSecGTE applies the GTE predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecGTE(v uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakBytesSentPerSec, v))
 }
 
 // PeakBytesSentPerSecLT applies the LT predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecLT(v uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakBytesSentPerSec, v))
 }
 
 // PeakBytesSentPerSecLTE applies the LTE predicate on the "peak_bytes_sent_per_sec" field.
-func PeakBytesSentPerSecLTE(v uint64) predicate.SystemNetworkStats {
+func PeakBytesSentPerSecLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakBytesSentPerSec, v))
 }
 
@@ -344,42 +345,42 @@ func PeakBytesSentPerSecNotNil() predicate.SystemNetworkStats {
 }
 
 // PeakBytesRecvPerSecEQ applies the EQ predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecEQ(v uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesRecvPerSec, v))
 }
 
 // PeakBytesRecvPerSecNEQ applies the NEQ predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecNEQ(v uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakBytesRecvPerSec, v))
 }
 
 // PeakBytesRecvPerSecIn applies the In predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakBytesRecvPerSec, vs...))
 }
 
 // PeakBytesRecvPerSecNotIn applies the NotIn predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakBytesRecvPerSec, vs...))
 }
 
 // PeakBytesRecvPerSecGT applies the GT predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecGT(v uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakBytesRecvPerSec, v))
 }
 
 // PeakBytesRecvPerSecGTE applies the GTE predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecGTE(v uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakBytesRecvPerSec, v))
 }
 
 // PeakBytesRecvPerSecLT applies the LT predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecLT(v uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakBytesRecvPerSec, v))
 }
 
 // PeakBytesRecvPerSecLTE applies the LTE predicate on the "peak_bytes_recv_per_sec" field.
-func PeakBytesRecvPerSecLTE(v uint64) predicate.SystemNetworkStats {
+func PeakBytesRecvPerSecLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakBytesRecvPerSec, v))
 }
 
@@ -394,42 +395,42 @@ func PeakBytesRecvPerSecNotNil() predicate.SystemNetworkStats {
 }
 
 // PeakPacketsSentPerSecEQ applies the EQ predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecEQ(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsSentPerSec, v))
 }
 
 // PeakPacketsSentPerSecNEQ applies the NEQ predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecNEQ(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakPacketsSentPerSec, v))
 }
 
 // PeakPacketsSentPerSecIn applies the In predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakPacketsSentPerSec, vs...))
 }
 
 // PeakPacketsSentPerSecNotIn applies the NotIn predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakPacketsSentPerSec, vs...))
 }
 
 // PeakPacketsSentPerSecGT applies the GT predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecGT(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakPacketsSentPerSec, v))
 }
 
 // PeakPacketsSentPerSecGTE applies the GTE predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecGTE(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakPacketsSentPerSec, v))
 }
 
 // PeakPacketsSentPerSecLT applies the LT predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecLT(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakPacketsSentPerSec, v))
 }
 
 // PeakPacketsSentPerSecLTE applies the LTE predicate on the "peak_packets_sent_per_sec" field.
-func PeakPacketsSentPerSecLTE(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsSentPerSecLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakPacketsSentPerSec, v))
 }
 
@@ -444,42 +445,42 @@ func PeakPacketsSentPerSecNotNil() predicate.SystemNetworkStats {
 }
 
 // PeakPacketsRecvPerSecEQ applies the EQ predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecEQ(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsRecvPerSec, v))
 }
 
 // PeakPacketsRecvPerSecNEQ applies the NEQ predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecNEQ(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecNEQ(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakPacketsRecvPerSec, v))
 }
 
 // PeakPacketsRecvPerSecIn applies the In predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakPacketsRecvPerSec, vs...))
 }
 
 // PeakPacketsRecvPerSecNotIn applies the NotIn predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecNotIn(vs ...schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakPacketsRecvPerSec, vs...))
 }
 
 // PeakPacketsRecvPerSecGT applies the GT predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecGT(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecGT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakPacketsRecvPerSec, v))
 }
 
 // PeakPacketsRecvPerSecGTE applies the GTE predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecGTE(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecGTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakPacketsRecvPerSec, v))
 }
 
 // PeakPacketsRecvPerSecLT applies the LT predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecLT(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecLT(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakPacketsRecvPerSec, v))
 }
 
 // PeakPacketsRecvPerSecLTE applies the LTE predicate on the "peak_packets_recv_per_sec" field.
-func PeakPacketsRecvPerSecLTE(v uint64) predicate.SystemNetworkStats {
+func PeakPacketsRecvPerSecLTE(v schema.Uint64Numeric) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakPacketsRecvPerSec, v))
 }
 

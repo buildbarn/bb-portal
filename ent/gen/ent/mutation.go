@@ -46,6 +46,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/schema"
 	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
 )
@@ -22344,22 +22345,22 @@ type SystemNetworkStatsMutation struct {
 	op                           Op
 	typ                          string
 	id                           *int64
-	bytes_sent                   *uint64
-	addbytes_sent                *int64
-	bytes_recv                   *uint64
-	addbytes_recv                *int64
-	packets_sent                 *uint64
-	addpackets_sent              *int64
-	packets_recv                 *uint64
-	addpackets_recv              *int64
-	peak_bytes_sent_per_sec      *uint64
-	addpeak_bytes_sent_per_sec   *int64
-	peak_bytes_recv_per_sec      *uint64
-	addpeak_bytes_recv_per_sec   *int64
-	peak_packets_sent_per_sec    *uint64
-	addpeak_packets_sent_per_sec *int64
-	peak_packets_recv_per_sec    *uint64
-	addpeak_packets_recv_per_sec *int64
+	bytes_sent                   *schema.Uint64Numeric
+	addbytes_sent                *schema.Uint64Numeric
+	bytes_recv                   *schema.Uint64Numeric
+	addbytes_recv                *schema.Uint64Numeric
+	packets_sent                 *schema.Uint64Numeric
+	addpackets_sent              *schema.Uint64Numeric
+	packets_recv                 *schema.Uint64Numeric
+	addpackets_recv              *schema.Uint64Numeric
+	peak_bytes_sent_per_sec      *schema.Uint64Numeric
+	addpeak_bytes_sent_per_sec   *schema.Uint64Numeric
+	peak_bytes_recv_per_sec      *schema.Uint64Numeric
+	addpeak_bytes_recv_per_sec   *schema.Uint64Numeric
+	peak_packets_sent_per_sec    *schema.Uint64Numeric
+	addpeak_packets_sent_per_sec *schema.Uint64Numeric
+	peak_packets_recv_per_sec    *schema.Uint64Numeric
+	addpeak_packets_recv_per_sec *schema.Uint64Numeric
 	clearedFields                map[string]struct{}
 	network_metrics              *int64
 	clearednetwork_metrics       bool
@@ -22473,13 +22474,13 @@ func (m *SystemNetworkStatsMutation) IDs(ctx context.Context) ([]int64, error) {
 }
 
 // SetBytesSent sets the "bytes_sent" field.
-func (m *SystemNetworkStatsMutation) SetBytesSent(u uint64) {
-	m.bytes_sent = &u
+func (m *SystemNetworkStatsMutation) SetBytesSent(s schema.Uint64Numeric) {
+	m.bytes_sent = &s
 	m.addbytes_sent = nil
 }
 
 // BytesSent returns the value of the "bytes_sent" field in the mutation.
-func (m *SystemNetworkStatsMutation) BytesSent() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) BytesSent() (r schema.Uint64Numeric, exists bool) {
 	v := m.bytes_sent
 	if v == nil {
 		return
@@ -22490,7 +22491,7 @@ func (m *SystemNetworkStatsMutation) BytesSent() (r uint64, exists bool) {
 // OldBytesSent returns the old "bytes_sent" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldBytesSent(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldBytesSent(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldBytesSent is only allowed on UpdateOne operations")
 	}
@@ -22504,17 +22505,17 @@ func (m *SystemNetworkStatsMutation) OldBytesSent(ctx context.Context) (v uint64
 	return oldValue.BytesSent, nil
 }
 
-// AddBytesSent adds u to the "bytes_sent" field.
-func (m *SystemNetworkStatsMutation) AddBytesSent(u int64) {
+// AddBytesSent adds s to the "bytes_sent" field.
+func (m *SystemNetworkStatsMutation) AddBytesSent(s schema.Uint64Numeric) {
 	if m.addbytes_sent != nil {
-		*m.addbytes_sent += u
+		*m.addbytes_sent += s
 	} else {
-		m.addbytes_sent = &u
+		m.addbytes_sent = &s
 	}
 }
 
 // AddedBytesSent returns the value that was added to the "bytes_sent" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedBytesSent() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedBytesSent() (r schema.Uint64Numeric, exists bool) {
 	v := m.addbytes_sent
 	if v == nil {
 		return
@@ -22543,13 +22544,13 @@ func (m *SystemNetworkStatsMutation) ResetBytesSent() {
 }
 
 // SetBytesRecv sets the "bytes_recv" field.
-func (m *SystemNetworkStatsMutation) SetBytesRecv(u uint64) {
-	m.bytes_recv = &u
+func (m *SystemNetworkStatsMutation) SetBytesRecv(s schema.Uint64Numeric) {
+	m.bytes_recv = &s
 	m.addbytes_recv = nil
 }
 
 // BytesRecv returns the value of the "bytes_recv" field in the mutation.
-func (m *SystemNetworkStatsMutation) BytesRecv() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) BytesRecv() (r schema.Uint64Numeric, exists bool) {
 	v := m.bytes_recv
 	if v == nil {
 		return
@@ -22560,7 +22561,7 @@ func (m *SystemNetworkStatsMutation) BytesRecv() (r uint64, exists bool) {
 // OldBytesRecv returns the old "bytes_recv" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldBytesRecv(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldBytesRecv(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldBytesRecv is only allowed on UpdateOne operations")
 	}
@@ -22574,17 +22575,17 @@ func (m *SystemNetworkStatsMutation) OldBytesRecv(ctx context.Context) (v uint64
 	return oldValue.BytesRecv, nil
 }
 
-// AddBytesRecv adds u to the "bytes_recv" field.
-func (m *SystemNetworkStatsMutation) AddBytesRecv(u int64) {
+// AddBytesRecv adds s to the "bytes_recv" field.
+func (m *SystemNetworkStatsMutation) AddBytesRecv(s schema.Uint64Numeric) {
 	if m.addbytes_recv != nil {
-		*m.addbytes_recv += u
+		*m.addbytes_recv += s
 	} else {
-		m.addbytes_recv = &u
+		m.addbytes_recv = &s
 	}
 }
 
 // AddedBytesRecv returns the value that was added to the "bytes_recv" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedBytesRecv() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedBytesRecv() (r schema.Uint64Numeric, exists bool) {
 	v := m.addbytes_recv
 	if v == nil {
 		return
@@ -22613,13 +22614,13 @@ func (m *SystemNetworkStatsMutation) ResetBytesRecv() {
 }
 
 // SetPacketsSent sets the "packets_sent" field.
-func (m *SystemNetworkStatsMutation) SetPacketsSent(u uint64) {
-	m.packets_sent = &u
+func (m *SystemNetworkStatsMutation) SetPacketsSent(s schema.Uint64Numeric) {
+	m.packets_sent = &s
 	m.addpackets_sent = nil
 }
 
 // PacketsSent returns the value of the "packets_sent" field in the mutation.
-func (m *SystemNetworkStatsMutation) PacketsSent() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) PacketsSent() (r schema.Uint64Numeric, exists bool) {
 	v := m.packets_sent
 	if v == nil {
 		return
@@ -22630,7 +22631,7 @@ func (m *SystemNetworkStatsMutation) PacketsSent() (r uint64, exists bool) {
 // OldPacketsSent returns the old "packets_sent" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldPacketsSent(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldPacketsSent(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPacketsSent is only allowed on UpdateOne operations")
 	}
@@ -22644,17 +22645,17 @@ func (m *SystemNetworkStatsMutation) OldPacketsSent(ctx context.Context) (v uint
 	return oldValue.PacketsSent, nil
 }
 
-// AddPacketsSent adds u to the "packets_sent" field.
-func (m *SystemNetworkStatsMutation) AddPacketsSent(u int64) {
+// AddPacketsSent adds s to the "packets_sent" field.
+func (m *SystemNetworkStatsMutation) AddPacketsSent(s schema.Uint64Numeric) {
 	if m.addpackets_sent != nil {
-		*m.addpackets_sent += u
+		*m.addpackets_sent += s
 	} else {
-		m.addpackets_sent = &u
+		m.addpackets_sent = &s
 	}
 }
 
 // AddedPacketsSent returns the value that was added to the "packets_sent" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedPacketsSent() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedPacketsSent() (r schema.Uint64Numeric, exists bool) {
 	v := m.addpackets_sent
 	if v == nil {
 		return
@@ -22683,13 +22684,13 @@ func (m *SystemNetworkStatsMutation) ResetPacketsSent() {
 }
 
 // SetPacketsRecv sets the "packets_recv" field.
-func (m *SystemNetworkStatsMutation) SetPacketsRecv(u uint64) {
-	m.packets_recv = &u
+func (m *SystemNetworkStatsMutation) SetPacketsRecv(s schema.Uint64Numeric) {
+	m.packets_recv = &s
 	m.addpackets_recv = nil
 }
 
 // PacketsRecv returns the value of the "packets_recv" field in the mutation.
-func (m *SystemNetworkStatsMutation) PacketsRecv() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) PacketsRecv() (r schema.Uint64Numeric, exists bool) {
 	v := m.packets_recv
 	if v == nil {
 		return
@@ -22700,7 +22701,7 @@ func (m *SystemNetworkStatsMutation) PacketsRecv() (r uint64, exists bool) {
 // OldPacketsRecv returns the old "packets_recv" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldPacketsRecv(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldPacketsRecv(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPacketsRecv is only allowed on UpdateOne operations")
 	}
@@ -22714,17 +22715,17 @@ func (m *SystemNetworkStatsMutation) OldPacketsRecv(ctx context.Context) (v uint
 	return oldValue.PacketsRecv, nil
 }
 
-// AddPacketsRecv adds u to the "packets_recv" field.
-func (m *SystemNetworkStatsMutation) AddPacketsRecv(u int64) {
+// AddPacketsRecv adds s to the "packets_recv" field.
+func (m *SystemNetworkStatsMutation) AddPacketsRecv(s schema.Uint64Numeric) {
 	if m.addpackets_recv != nil {
-		*m.addpackets_recv += u
+		*m.addpackets_recv += s
 	} else {
-		m.addpackets_recv = &u
+		m.addpackets_recv = &s
 	}
 }
 
 // AddedPacketsRecv returns the value that was added to the "packets_recv" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedPacketsRecv() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedPacketsRecv() (r schema.Uint64Numeric, exists bool) {
 	v := m.addpackets_recv
 	if v == nil {
 		return
@@ -22753,13 +22754,13 @@ func (m *SystemNetworkStatsMutation) ResetPacketsRecv() {
 }
 
 // SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
-func (m *SystemNetworkStatsMutation) SetPeakBytesSentPerSec(u uint64) {
-	m.peak_bytes_sent_per_sec = &u
+func (m *SystemNetworkStatsMutation) SetPeakBytesSentPerSec(s schema.Uint64Numeric) {
+	m.peak_bytes_sent_per_sec = &s
 	m.addpeak_bytes_sent_per_sec = nil
 }
 
 // PeakBytesSentPerSec returns the value of the "peak_bytes_sent_per_sec" field in the mutation.
-func (m *SystemNetworkStatsMutation) PeakBytesSentPerSec() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) PeakBytesSentPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.peak_bytes_sent_per_sec
 	if v == nil {
 		return
@@ -22770,7 +22771,7 @@ func (m *SystemNetworkStatsMutation) PeakBytesSentPerSec() (r uint64, exists boo
 // OldPeakBytesSentPerSec returns the old "peak_bytes_sent_per_sec" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldPeakBytesSentPerSec(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldPeakBytesSentPerSec(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPeakBytesSentPerSec is only allowed on UpdateOne operations")
 	}
@@ -22784,17 +22785,17 @@ func (m *SystemNetworkStatsMutation) OldPeakBytesSentPerSec(ctx context.Context)
 	return oldValue.PeakBytesSentPerSec, nil
 }
 
-// AddPeakBytesSentPerSec adds u to the "peak_bytes_sent_per_sec" field.
-func (m *SystemNetworkStatsMutation) AddPeakBytesSentPerSec(u int64) {
+// AddPeakBytesSentPerSec adds s to the "peak_bytes_sent_per_sec" field.
+func (m *SystemNetworkStatsMutation) AddPeakBytesSentPerSec(s schema.Uint64Numeric) {
 	if m.addpeak_bytes_sent_per_sec != nil {
-		*m.addpeak_bytes_sent_per_sec += u
+		*m.addpeak_bytes_sent_per_sec += s
 	} else {
-		m.addpeak_bytes_sent_per_sec = &u
+		m.addpeak_bytes_sent_per_sec = &s
 	}
 }
 
 // AddedPeakBytesSentPerSec returns the value that was added to the "peak_bytes_sent_per_sec" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedPeakBytesSentPerSec() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedPeakBytesSentPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.addpeak_bytes_sent_per_sec
 	if v == nil {
 		return
@@ -22823,13 +22824,13 @@ func (m *SystemNetworkStatsMutation) ResetPeakBytesSentPerSec() {
 }
 
 // SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
-func (m *SystemNetworkStatsMutation) SetPeakBytesRecvPerSec(u uint64) {
-	m.peak_bytes_recv_per_sec = &u
+func (m *SystemNetworkStatsMutation) SetPeakBytesRecvPerSec(s schema.Uint64Numeric) {
+	m.peak_bytes_recv_per_sec = &s
 	m.addpeak_bytes_recv_per_sec = nil
 }
 
 // PeakBytesRecvPerSec returns the value of the "peak_bytes_recv_per_sec" field in the mutation.
-func (m *SystemNetworkStatsMutation) PeakBytesRecvPerSec() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) PeakBytesRecvPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.peak_bytes_recv_per_sec
 	if v == nil {
 		return
@@ -22840,7 +22841,7 @@ func (m *SystemNetworkStatsMutation) PeakBytesRecvPerSec() (r uint64, exists boo
 // OldPeakBytesRecvPerSec returns the old "peak_bytes_recv_per_sec" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldPeakBytesRecvPerSec(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldPeakBytesRecvPerSec(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPeakBytesRecvPerSec is only allowed on UpdateOne operations")
 	}
@@ -22854,17 +22855,17 @@ func (m *SystemNetworkStatsMutation) OldPeakBytesRecvPerSec(ctx context.Context)
 	return oldValue.PeakBytesRecvPerSec, nil
 }
 
-// AddPeakBytesRecvPerSec adds u to the "peak_bytes_recv_per_sec" field.
-func (m *SystemNetworkStatsMutation) AddPeakBytesRecvPerSec(u int64) {
+// AddPeakBytesRecvPerSec adds s to the "peak_bytes_recv_per_sec" field.
+func (m *SystemNetworkStatsMutation) AddPeakBytesRecvPerSec(s schema.Uint64Numeric) {
 	if m.addpeak_bytes_recv_per_sec != nil {
-		*m.addpeak_bytes_recv_per_sec += u
+		*m.addpeak_bytes_recv_per_sec += s
 	} else {
-		m.addpeak_bytes_recv_per_sec = &u
+		m.addpeak_bytes_recv_per_sec = &s
 	}
 }
 
 // AddedPeakBytesRecvPerSec returns the value that was added to the "peak_bytes_recv_per_sec" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedPeakBytesRecvPerSec() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedPeakBytesRecvPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.addpeak_bytes_recv_per_sec
 	if v == nil {
 		return
@@ -22893,13 +22894,13 @@ func (m *SystemNetworkStatsMutation) ResetPeakBytesRecvPerSec() {
 }
 
 // SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
-func (m *SystemNetworkStatsMutation) SetPeakPacketsSentPerSec(u uint64) {
-	m.peak_packets_sent_per_sec = &u
+func (m *SystemNetworkStatsMutation) SetPeakPacketsSentPerSec(s schema.Uint64Numeric) {
+	m.peak_packets_sent_per_sec = &s
 	m.addpeak_packets_sent_per_sec = nil
 }
 
 // PeakPacketsSentPerSec returns the value of the "peak_packets_sent_per_sec" field in the mutation.
-func (m *SystemNetworkStatsMutation) PeakPacketsSentPerSec() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) PeakPacketsSentPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.peak_packets_sent_per_sec
 	if v == nil {
 		return
@@ -22910,7 +22911,7 @@ func (m *SystemNetworkStatsMutation) PeakPacketsSentPerSec() (r uint64, exists b
 // OldPeakPacketsSentPerSec returns the old "peak_packets_sent_per_sec" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldPeakPacketsSentPerSec(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldPeakPacketsSentPerSec(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPeakPacketsSentPerSec is only allowed on UpdateOne operations")
 	}
@@ -22924,17 +22925,17 @@ func (m *SystemNetworkStatsMutation) OldPeakPacketsSentPerSec(ctx context.Contex
 	return oldValue.PeakPacketsSentPerSec, nil
 }
 
-// AddPeakPacketsSentPerSec adds u to the "peak_packets_sent_per_sec" field.
-func (m *SystemNetworkStatsMutation) AddPeakPacketsSentPerSec(u int64) {
+// AddPeakPacketsSentPerSec adds s to the "peak_packets_sent_per_sec" field.
+func (m *SystemNetworkStatsMutation) AddPeakPacketsSentPerSec(s schema.Uint64Numeric) {
 	if m.addpeak_packets_sent_per_sec != nil {
-		*m.addpeak_packets_sent_per_sec += u
+		*m.addpeak_packets_sent_per_sec += s
 	} else {
-		m.addpeak_packets_sent_per_sec = &u
+		m.addpeak_packets_sent_per_sec = &s
 	}
 }
 
 // AddedPeakPacketsSentPerSec returns the value that was added to the "peak_packets_sent_per_sec" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedPeakPacketsSentPerSec() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedPeakPacketsSentPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.addpeak_packets_sent_per_sec
 	if v == nil {
 		return
@@ -22963,13 +22964,13 @@ func (m *SystemNetworkStatsMutation) ResetPeakPacketsSentPerSec() {
 }
 
 // SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
-func (m *SystemNetworkStatsMutation) SetPeakPacketsRecvPerSec(u uint64) {
-	m.peak_packets_recv_per_sec = &u
+func (m *SystemNetworkStatsMutation) SetPeakPacketsRecvPerSec(s schema.Uint64Numeric) {
+	m.peak_packets_recv_per_sec = &s
 	m.addpeak_packets_recv_per_sec = nil
 }
 
 // PeakPacketsRecvPerSec returns the value of the "peak_packets_recv_per_sec" field in the mutation.
-func (m *SystemNetworkStatsMutation) PeakPacketsRecvPerSec() (r uint64, exists bool) {
+func (m *SystemNetworkStatsMutation) PeakPacketsRecvPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.peak_packets_recv_per_sec
 	if v == nil {
 		return
@@ -22980,7 +22981,7 @@ func (m *SystemNetworkStatsMutation) PeakPacketsRecvPerSec() (r uint64, exists b
 // OldPeakPacketsRecvPerSec returns the old "peak_packets_recv_per_sec" field's value of the SystemNetworkStats entity.
 // If the SystemNetworkStats object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SystemNetworkStatsMutation) OldPeakPacketsRecvPerSec(ctx context.Context) (v uint64, err error) {
+func (m *SystemNetworkStatsMutation) OldPeakPacketsRecvPerSec(ctx context.Context) (v schema.Uint64Numeric, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPeakPacketsRecvPerSec is only allowed on UpdateOne operations")
 	}
@@ -22994,17 +22995,17 @@ func (m *SystemNetworkStatsMutation) OldPeakPacketsRecvPerSec(ctx context.Contex
 	return oldValue.PeakPacketsRecvPerSec, nil
 }
 
-// AddPeakPacketsRecvPerSec adds u to the "peak_packets_recv_per_sec" field.
-func (m *SystemNetworkStatsMutation) AddPeakPacketsRecvPerSec(u int64) {
+// AddPeakPacketsRecvPerSec adds s to the "peak_packets_recv_per_sec" field.
+func (m *SystemNetworkStatsMutation) AddPeakPacketsRecvPerSec(s schema.Uint64Numeric) {
 	if m.addpeak_packets_recv_per_sec != nil {
-		*m.addpeak_packets_recv_per_sec += u
+		*m.addpeak_packets_recv_per_sec += s
 	} else {
-		m.addpeak_packets_recv_per_sec = &u
+		m.addpeak_packets_recv_per_sec = &s
 	}
 }
 
 // AddedPeakPacketsRecvPerSec returns the value that was added to the "peak_packets_recv_per_sec" field in this mutation.
-func (m *SystemNetworkStatsMutation) AddedPeakPacketsRecvPerSec() (r int64, exists bool) {
+func (m *SystemNetworkStatsMutation) AddedPeakPacketsRecvPerSec() (r schema.Uint64Numeric, exists bool) {
 	v := m.addpeak_packets_recv_per_sec
 	if v == nil {
 		return
@@ -23189,56 +23190,56 @@ func (m *SystemNetworkStatsMutation) OldField(ctx context.Context, name string) 
 func (m *SystemNetworkStatsMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case systemnetworkstats.FieldBytesSent:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBytesSent(v)
 		return nil
 	case systemnetworkstats.FieldBytesRecv:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBytesRecv(v)
 		return nil
 	case systemnetworkstats.FieldPacketsSent:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPacketsSent(v)
 		return nil
 	case systemnetworkstats.FieldPacketsRecv:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPacketsRecv(v)
 		return nil
 	case systemnetworkstats.FieldPeakBytesSentPerSec:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPeakBytesSentPerSec(v)
 		return nil
 	case systemnetworkstats.FieldPeakBytesRecvPerSec:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPeakBytesRecvPerSec(v)
 		return nil
 	case systemnetworkstats.FieldPeakPacketsSentPerSec:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPeakPacketsSentPerSec(v)
 		return nil
 	case systemnetworkstats.FieldPeakPacketsRecvPerSec:
-		v, ok := value.(uint64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -23310,56 +23311,56 @@ func (m *SystemNetworkStatsMutation) AddedField(name string) (ent.Value, bool) {
 func (m *SystemNetworkStatsMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case systemnetworkstats.FieldBytesSent:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddBytesSent(v)
 		return nil
 	case systemnetworkstats.FieldBytesRecv:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddBytesRecv(v)
 		return nil
 	case systemnetworkstats.FieldPacketsSent:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddPacketsSent(v)
 		return nil
 	case systemnetworkstats.FieldPacketsRecv:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddPacketsRecv(v)
 		return nil
 	case systemnetworkstats.FieldPeakBytesSentPerSec:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddPeakBytesSentPerSec(v)
 		return nil
 	case systemnetworkstats.FieldPeakBytesRecvPerSec:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddPeakBytesRecvPerSec(v)
 		return nil
 	case systemnetworkstats.FieldPeakPacketsSentPerSec:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddPeakPacketsSentPerSec(v)
 		return nil
 	case systemnetworkstats.FieldPeakPacketsRecvPerSec:
-		v, ok := value.(int64)
+		v, ok := value.(schema.Uint64Numeric)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

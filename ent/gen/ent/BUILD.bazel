@@ -227,6 +227,7 @@ go_library(
         "//ent/gen/ent/testsummary",
         "//ent/gen/ent/testtarget",
         "//ent/gen/ent/timingmetrics",
+        "//ent/schema",
         "//pkg/invocation",
         "@com_github_99designs_gqlgen//graphql",
         "@com_github_99designs_gqlgen//graphql/errcode",

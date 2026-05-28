@@ -915,14 +915,14 @@ var (
 	// SystemNetworkStatsColumns holds the columns for the "system_network_stats" table.
 	SystemNetworkStatsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "bytes_sent", Type: field.TypeUint64, Nullable: true},
-		{Name: "bytes_recv", Type: field.TypeUint64, Nullable: true},
-		{Name: "packets_sent", Type: field.TypeUint64, Nullable: true},
-		{Name: "packets_recv", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_bytes_sent_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_bytes_recv_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_packets_sent_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_packets_recv_per_sec", Type: field.TypeUint64, Nullable: true},
+		{Name: "bytes_sent", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "bytes_recv", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "packets_sent", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "packets_recv", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "peak_bytes_sent_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "peak_bytes_recv_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "peak_packets_sent_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "peak_packets_recv_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
 		{Name: "network_metrics_system_network_stats", Type: field.TypeInt64, Unique: true, Nullable: true},
 	}
 	// SystemNetworkStatsTable holds the schema information for the "system_network_stats" table.

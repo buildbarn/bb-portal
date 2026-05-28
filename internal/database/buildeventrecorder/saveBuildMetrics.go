@@ -8,6 +8,7 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	bescore "github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	entSchema "github.com/buildbarn/bb-portal/ent/schema"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -243,14 +244,14 @@ func (r *buildEventRecorder) saveSystemNetworkStats(ctx context.Context, tx *ent
 	}
 
 	err := tx.SystemNetworkStats.Create().
-		SetBytesRecv(systemNetworkStats.BytesRecv).
-		SetBytesSent(systemNetworkStats.BytesSent).
-		SetPacketsRecv(systemNetworkStats.PacketsRecv).
-		SetPacketsSent(systemNetworkStats.PacketsSent).
-		SetPeakBytesRecvPerSec(systemNetworkStats.PeakBytesRecvPerSec).
-		SetPeakBytesSentPerSec(systemNetworkStats.PeakBytesSentPerSec).
-		SetPeakPacketsRecvPerSec(systemNetworkStats.PeakPacketsRecvPerSec).
-		SetPeakBytesSentPerSec(systemNetworkStats.PeakPacketsSentPerSec).
+		SetBytesRecv(entSchema.Uint64Numeric(systemNetworkStats.BytesRecv)).
+		SetBytesSent(entSchema.Uint64Numeric(systemNetworkStats.BytesSent)).
+		SetPacketsRecv(entSchema.Uint64Numeric(systemNetworkStats.PacketsRecv)).
+		SetPacketsSent(entSchema.Uint64Numeric(systemNetworkStats.PacketsSent)).
+		SetPeakBytesRecvPerSec(entSchema.Uint64Numeric(systemNetworkStats.PeakBytesRecvPerSec)).
+		SetPeakBytesSentPerSec(entSchema.Uint64Numeric(systemNetworkStats.PeakBytesSentPerSec)).
+		SetPeakPacketsRecvPerSec(entSchema.Uint64Numeric(systemNetworkStats.PeakPacketsRecvPerSec)).
+		SetPeakPacketsSentPerSec(entSchema.Uint64Numeric(systemNetworkStats.PeakPacketsSentPerSec)).
 		SetNetworkMetricsID(networkMetricsDbID).
 		Exec(ctx)
 	if err != nil {

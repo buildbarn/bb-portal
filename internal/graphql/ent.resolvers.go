@@ -1700,64 +1700,119 @@ func (r *Resolver) TimingMetricsWhereInput() TimingMetricsWhereInputResolver {
 	return &timingMetricsWhereInputResolver{r}
 }
 
-type (
-	actionResolver                          struct{ *Resolver }
-	actionCacheStatisticsResolver           struct{ *Resolver }
-	actionDataResolver                      struct{ *Resolver }
-	actionSummaryResolver                   struct{ *Resolver }
-	artifactMetricsResolver                 struct{ *Resolver }
-	authenticatedUserResolver               struct{ *Resolver }
-	bazelInvocationResolver                 struct{ *Resolver }
-	buildResolver                           struct{ *Resolver }
-	buildGraphMetricsResolver               struct{ *Resolver }
-	buildTagResolver                        struct{ *Resolver }
-	configurationResolver                   struct{ *Resolver }
-	connectionMetadataResolver              struct{ *Resolver }
-	garbageMetricsResolver                  struct{ *Resolver }
-	instanceNameResolver                    struct{ *Resolver }
-	invocationTagResolver                   struct{ *Resolver }
-	invocationTargetResolver                struct{ *Resolver }
-	memoryMetricsResolver                   struct{ *Resolver }
-	metricsResolver                         struct{ *Resolver }
-	missDetailResolver                      struct{ *Resolver }
-	networkMetricsResolver                  struct{ *Resolver }
-	queryResolver                           struct{ *Resolver }
-	runnerCountResolver                     struct{ *Resolver }
-	sourceControlResolver                   struct{ *Resolver }
-	systemNetworkStatsResolver              struct{ *Resolver }
-	targetResolver                          struct{ *Resolver }
-	targetMetricsResolver                   struct{ *Resolver }
-	testResultResolver                      struct{ *Resolver }
-	testSummaryResolver                     struct{ *Resolver }
-	testTargetResolver                      struct{ *Resolver }
-	timingMetricsResolver                   struct{ *Resolver }
-	actionCacheStatisticsWhereInputResolver struct{ *Resolver }
-	actionDataWhereInputResolver            struct{ *Resolver }
-	actionSummaryWhereInputResolver         struct{ *Resolver }
-	actionWhereInputResolver                struct{ *Resolver }
-	artifactMetricsWhereInputResolver       struct{ *Resolver }
-	authenticatedUserWhereInputResolver     struct{ *Resolver }
-	bazelInvocationWhereInputResolver       struct{ *Resolver }
-	buildGraphMetricsWhereInputResolver     struct{ *Resolver }
-	buildTagWhereInputResolver              struct{ *Resolver }
-	buildWhereInputResolver                 struct{ *Resolver }
-	configurationWhereInputResolver         struct{ *Resolver }
-	connectionMetadataWhereInputResolver    struct{ *Resolver }
-	garbageMetricsWhereInputResolver        struct{ *Resolver }
-	instanceNameWhereInputResolver          struct{ *Resolver }
-	invocationTagWhereInputResolver         struct{ *Resolver }
-	invocationTargetWhereInputResolver      struct{ *Resolver }
-	memoryMetricsWhereInputResolver         struct{ *Resolver }
-	metricsWhereInputResolver               struct{ *Resolver }
-	missDetailWhereInputResolver            struct{ *Resolver }
-	networkMetricsWhereInputResolver        struct{ *Resolver }
-	runnerCountWhereInputResolver           struct{ *Resolver }
-	sourceControlWhereInputResolver         struct{ *Resolver }
-	systemNetworkStatsWhereInputResolver    struct{ *Resolver }
-	targetMetricsWhereInputResolver         struct{ *Resolver }
-	targetWhereInputResolver                struct{ *Resolver }
-	testResultWhereInputResolver            struct{ *Resolver }
-	testSummaryWhereInputResolver           struct{ *Resolver }
-	testTargetWhereInputResolver            struct{ *Resolver }
-	timingMetricsWhereInputResolver         struct{ *Resolver }
-)
+type actionResolver struct{ *Resolver }
+type actionCacheStatisticsResolver struct{ *Resolver }
+type actionDataResolver struct{ *Resolver }
+type actionSummaryResolver struct{ *Resolver }
+type artifactMetricsResolver struct{ *Resolver }
+type authenticatedUserResolver struct{ *Resolver }
+type bazelInvocationResolver struct{ *Resolver }
+type buildResolver struct{ *Resolver }
+type buildGraphMetricsResolver struct{ *Resolver }
+type buildTagResolver struct{ *Resolver }
+type configurationResolver struct{ *Resolver }
+type connectionMetadataResolver struct{ *Resolver }
+type garbageMetricsResolver struct{ *Resolver }
+type instanceNameResolver struct{ *Resolver }
+type invocationTagResolver struct{ *Resolver }
+type invocationTargetResolver struct{ *Resolver }
+type memoryMetricsResolver struct{ *Resolver }
+type metricsResolver struct{ *Resolver }
+type missDetailResolver struct{ *Resolver }
+type networkMetricsResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }
+type runnerCountResolver struct{ *Resolver }
+type sourceControlResolver struct{ *Resolver }
+type systemNetworkStatsResolver struct{ *Resolver }
+type targetResolver struct{ *Resolver }
+type targetMetricsResolver struct{ *Resolver }
+type testResultResolver struct{ *Resolver }
+type testSummaryResolver struct{ *Resolver }
+type testTargetResolver struct{ *Resolver }
+type timingMetricsResolver struct{ *Resolver }
+type actionCacheStatisticsWhereInputResolver struct{ *Resolver }
+type actionDataWhereInputResolver struct{ *Resolver }
+type actionSummaryWhereInputResolver struct{ *Resolver }
+type actionWhereInputResolver struct{ *Resolver }
+type artifactMetricsWhereInputResolver struct{ *Resolver }
+type authenticatedUserWhereInputResolver struct{ *Resolver }
+type bazelInvocationWhereInputResolver struct{ *Resolver }
+type buildGraphMetricsWhereInputResolver struct{ *Resolver }
+type buildTagWhereInputResolver struct{ *Resolver }
+type buildWhereInputResolver struct{ *Resolver }
+type configurationWhereInputResolver struct{ *Resolver }
+type connectionMetadataWhereInputResolver struct{ *Resolver }
+type garbageMetricsWhereInputResolver struct{ *Resolver }
+type instanceNameWhereInputResolver struct{ *Resolver }
+type invocationTagWhereInputResolver struct{ *Resolver }
+type invocationTargetWhereInputResolver struct{ *Resolver }
+type memoryMetricsWhereInputResolver struct{ *Resolver }
+type metricsWhereInputResolver struct{ *Resolver }
+type missDetailWhereInputResolver struct{ *Resolver }
+type networkMetricsWhereInputResolver struct{ *Resolver }
+type runnerCountWhereInputResolver struct{ *Resolver }
+type sourceControlWhereInputResolver struct{ *Resolver }
+type systemNetworkStatsWhereInputResolver struct{ *Resolver }
+type targetMetricsWhereInputResolver struct{ *Resolver }
+type targetWhereInputResolver struct{ *Resolver }
+type testResultWhereInputResolver struct{ *Resolver }
+type testSummaryWhereInputResolver struct{ *Resolver }
+type testTargetWhereInputResolver struct{ *Resolver }
+type timingMetricsWhereInputResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *systemNetworkStatsWhereInputResolver) BytesSentIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: BytesSentIn - bytesSentIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) BytesSentNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: BytesSentNotIn - bytesSentNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) BytesRecvIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: BytesRecvIn - bytesRecvIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) BytesRecvNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: BytesRecvNotIn - bytesRecvNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PacketsSentIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PacketsSentIn - packetsSentIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PacketsSentNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PacketsSentNotIn - packetsSentNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PacketsRecvIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PacketsRecvIn - packetsRecvIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PacketsRecvNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PacketsRecvNotIn - packetsRecvNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakBytesSentPerSecIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakBytesSentPerSecIn - peakBytesSentPerSecIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakBytesSentPerSecNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakBytesSentPerSecNotIn - peakBytesSentPerSecNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakBytesRecvPerSecIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakBytesRecvPerSecIn - peakBytesRecvPerSecIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakBytesRecvPerSecNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakBytesRecvPerSecNotIn - peakBytesRecvPerSecNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakPacketsSentPerSecIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakPacketsSentPerSecIn - peakPacketsSentPerSecIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakPacketsSentPerSecNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakPacketsSentPerSecNotIn - peakPacketsSentPerSecNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakPacketsRecvPerSecIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakPacketsRecvPerSecIn - peakPacketsRecvPerSecIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) PeakPacketsRecvPerSecNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: PeakPacketsRecvPerSecNotIn - peakPacketsRecvPerSecNotIn"))
+}
+*/

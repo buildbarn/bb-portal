@@ -64,6 +64,9 @@ models:
       - github.com/99designs/gqlgen/graphql.Uint
       - github.com/99designs/gqlgen/graphql.Uint32
       - github.com/99designs/gqlgen/graphql.Uint64
+  Uint64:
+    model:
+      - github.com/buildbarn/bb-portal/ent/schema.Uint64Numeric
   UUID:
     model:
       - github.com/buildbarn/bb-portal/pkg/uuidgql.UUID

@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
+	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // SystemNetworkStats is the model entity for the SystemNetworkStats schema.
@@ -18,21 +19,21 @@ type SystemNetworkStats struct {
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
 	// BytesSent holds the value of the "bytes_sent" field.
-	BytesSent uint64 `json:"bytes_sent,omitempty"`
+	BytesSent schema.Uint64Numeric `json:"bytes_sent,omitempty"`
 	// BytesRecv holds the value of the "bytes_recv" field.
-	BytesRecv uint64 `json:"bytes_recv,omitempty"`
+	BytesRecv schema.Uint64Numeric `json:"bytes_recv,omitempty"`
 	// PacketsSent holds the value of the "packets_sent" field.
-	PacketsSent uint64 `json:"packets_sent,omitempty"`
+	PacketsSent schema.Uint64Numeric `json:"packets_sent,omitempty"`
 	// PacketsRecv holds the value of the "packets_recv" field.
-	PacketsRecv uint64 `json:"packets_recv,omitempty"`
+	PacketsRecv schema.Uint64Numeric `json:"packets_recv,omitempty"`
 	// PeakBytesSentPerSec holds the value of the "peak_bytes_sent_per_sec" field.
-	PeakBytesSentPerSec uint64 `json:"peak_bytes_sent_per_sec,omitempty"`
+	PeakBytesSentPerSec schema.Uint64Numeric `json:"peak_bytes_sent_per_sec,omitempty"`
 	// PeakBytesRecvPerSec holds the value of the "peak_bytes_recv_per_sec" field.
-	PeakBytesRecvPerSec uint64 `json:"peak_bytes_recv_per_sec,omitempty"`
+	PeakBytesRecvPerSec schema.Uint64Numeric `json:"peak_bytes_recv_per_sec,omitempty"`
 	// PeakPacketsSentPerSec holds the value of the "peak_packets_sent_per_sec" field.
-	PeakPacketsSentPerSec uint64 `json:"peak_packets_sent_per_sec,omitempty"`
+	PeakPacketsSentPerSec schema.Uint64Numeric `json:"peak_packets_sent_per_sec,omitempty"`
 	// PeakPacketsRecvPerSec holds the value of the "peak_packets_recv_per_sec" field.
-	PeakPacketsRecvPerSec uint64 `json:"peak_packets_recv_per_sec,omitempty"`
+	PeakPacketsRecvPerSec schema.Uint64Numeric `json:"peak_packets_recv_per_sec,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SystemNetworkStatsQuery when eager-loading is set.
 	Edges                                SystemNetworkStatsEdges `json:"edges"`
@@ -67,7 +68,9 @@ func (*SystemNetworkStats) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case systemnetworkstats.FieldID, systemnetworkstats.FieldBytesSent, systemnetworkstats.FieldBytesRecv, systemnetworkstats.FieldPacketsSent, systemnetworkstats.FieldPacketsRecv, systemnetworkstats.FieldPeakBytesSentPerSec, systemnetworkstats.FieldPeakBytesRecvPerSec, systemnetworkstats.FieldPeakPacketsSentPerSec, systemnetworkstats.FieldPeakPacketsRecvPerSec:
+		case systemnetworkstats.FieldBytesSent, systemnetworkstats.FieldBytesRecv, systemnetworkstats.FieldPacketsSent, systemnetworkstats.FieldPacketsRecv, systemnetworkstats.FieldPeakBytesSentPerSec, systemnetworkstats.FieldPeakBytesRecvPerSec, systemnetworkstats.FieldPeakPacketsSentPerSec, systemnetworkstats.FieldPeakPacketsRecvPerSec:
+			values[i] = new(schema.Uint64Numeric)
+		case systemnetworkstats.FieldID:
 			values[i] = new(sql.NullInt64)
 		case systemnetworkstats.ForeignKeys[0]: // network_metrics_system_network_stats
 			values[i] = new(sql.NullInt64)
@@ -93,52 +96,52 @@ func (sns *SystemNetworkStats) assignValues(columns []string, values []any) erro
 			}
 			sns.ID = int64(value.Int64)
 		case systemnetworkstats.FieldBytesSent:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field bytes_sent", values[i])
-			} else if value.Valid {
-				sns.BytesSent = uint64(value.Int64)
+			} else if value != nil {
+				sns.BytesSent = *value
 			}
 		case systemnetworkstats.FieldBytesRecv:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field bytes_recv", values[i])
-			} else if value.Valid {
-				sns.BytesRecv = uint64(value.Int64)
+			} else if value != nil {
+				sns.BytesRecv = *value
 			}
 		case systemnetworkstats.FieldPacketsSent:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field packets_sent", values[i])
-			} else if value.Valid {
-				sns.PacketsSent = uint64(value.Int64)
+			} else if value != nil {
+				sns.PacketsSent = *value
 			}
 		case systemnetworkstats.FieldPacketsRecv:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field packets_recv", values[i])
-			} else if value.Valid {
-				sns.PacketsRecv = uint64(value.Int64)
+			} else if value != nil {
+				sns.PacketsRecv = *value
 			}
 		case systemnetworkstats.FieldPeakBytesSentPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_bytes_sent_per_sec", values[i])
-			} else if value.Valid {
-				sns.PeakBytesSentPerSec = uint64(value.Int64)
+			} else if value != nil {
+				sns.PeakBytesSentPerSec = *value
 			}
 		case systemnetworkstats.FieldPeakBytesRecvPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_bytes_recv_per_sec", values[i])
-			} else if value.Valid {
-				sns.PeakBytesRecvPerSec = uint64(value.Int64)
+			} else if value != nil {
+				sns.PeakBytesRecvPerSec = *value
 			}
 		case systemnetworkstats.FieldPeakPacketsSentPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_packets_sent_per_sec", values[i])
-			} else if value.Valid {
-				sns.PeakPacketsSentPerSec = uint64(value.Int64)
+			} else if value != nil {
+				sns.PeakPacketsSentPerSec = *value
 			}
 		case systemnetworkstats.FieldPeakPacketsRecvPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_packets_recv_per_sec", values[i])
-			} else if value.Valid {
-				sns.PeakPacketsRecvPerSec = uint64(value.Int64)
+			} else if value != nil {
+				sns.PeakPacketsRecvPerSec = *value
 			}
 		case systemnetworkstats.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {

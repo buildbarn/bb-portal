@@ -2914,14 +2914,14 @@ input SourceControlWhereInput {
 }
 type SystemNetworkStats implements Node {
   id: ID!
-  bytesSent: Int
-  bytesRecv: Int
-  packetsSent: Int
-  packetsRecv: Int
-  peakBytesSentPerSec: Int
-  peakBytesRecvPerSec: Int
-  peakPacketsSentPerSec: Int
-  peakPacketsRecvPerSec: Int
+  bytesSent: Uint64
+  bytesRecv: Uint64
+  packetsSent: Uint64
+  packetsRecv: Uint64
+  peakBytesSentPerSec: Uint64
+  peakBytesRecvPerSec: Uint64
+  peakPacketsSentPerSec: Uint64
+  peakPacketsRecvPerSec: Uint64
   networkMetrics: NetworkMetrics
 }
 """
@@ -2946,105 +2946,105 @@ input SystemNetworkStatsWhereInput {
   """
   bytes_sent field predicates
   """
-  bytesSent: Int
-  bytesSentNEQ: Int
-  bytesSentIn: [Int!]
-  bytesSentNotIn: [Int!]
-  bytesSentGT: Int
-  bytesSentGTE: Int
-  bytesSentLT: Int
-  bytesSentLTE: Int
+  bytesSent: Uint64
+  bytesSentNEQ: Uint64
+  bytesSentIn: [Uint64!]
+  bytesSentNotIn: [Uint64!]
+  bytesSentGT: Uint64
+  bytesSentGTE: Uint64
+  bytesSentLT: Uint64
+  bytesSentLTE: Uint64
   bytesSentIsNil: Boolean
   bytesSentNotNil: Boolean
   """
   bytes_recv field predicates
   """
-  bytesRecv: Int
-  bytesRecvNEQ: Int
-  bytesRecvIn: [Int!]
-  bytesRecvNotIn: [Int!]
-  bytesRecvGT: Int
-  bytesRecvGTE: Int
-  bytesRecvLT: Int
-  bytesRecvLTE: Int
+  bytesRecv: Uint64
+  bytesRecvNEQ: Uint64
+  bytesRecvIn: [Uint64!]
+  bytesRecvNotIn: [Uint64!]
+  bytesRecvGT: Uint64
+  bytesRecvGTE: Uint64
+  bytesRecvLT: Uint64
+  bytesRecvLTE: Uint64
   bytesRecvIsNil: Boolean
   bytesRecvNotNil: Boolean
   """
   packets_sent field predicates
   """
-  packetsSent: Int
-  packetsSentNEQ: Int
-  packetsSentIn: [Int!]
-  packetsSentNotIn: [Int!]
-  packetsSentGT: Int
-  packetsSentGTE: Int
-  packetsSentLT: Int
-  packetsSentLTE: Int
+  packetsSent: Uint64
+  packetsSentNEQ: Uint64
+  packetsSentIn: [Uint64!]
+  packetsSentNotIn: [Uint64!]
+  packetsSentGT: Uint64
+  packetsSentGTE: Uint64
+  packetsSentLT: Uint64
+  packetsSentLTE: Uint64
   packetsSentIsNil: Boolean
   packetsSentNotNil: Boolean
   """
   packets_recv field predicates
   """
-  packetsRecv: Int
-  packetsRecvNEQ: Int
-  packetsRecvIn: [Int!]
-  packetsRecvNotIn: [Int!]
-  packetsRecvGT: Int
-  packetsRecvGTE: Int
-  packetsRecvLT: Int
-  packetsRecvLTE: Int
+  packetsRecv: Uint64
+  packetsRecvNEQ: Uint64
+  packetsRecvIn: [Uint64!]
+  packetsRecvNotIn: [Uint64!]
+  packetsRecvGT: Uint64
+  packetsRecvGTE: Uint64
+  packetsRecvLT: Uint64
+  packetsRecvLTE: Uint64
   packetsRecvIsNil: Boolean
   packetsRecvNotNil: Boolean
   """
   peak_bytes_sent_per_sec field predicates
   """
-  peakBytesSentPerSec: Int
-  peakBytesSentPerSecNEQ: Int
-  peakBytesSentPerSecIn: [Int!]
-  peakBytesSentPerSecNotIn: [Int!]
-  peakBytesSentPerSecGT: Int
-  peakBytesSentPerSecGTE: Int
-  peakBytesSentPerSecLT: Int
-  peakBytesSentPerSecLTE: Int
+  peakBytesSentPerSec: Uint64
+  peakBytesSentPerSecNEQ: Uint64
+  peakBytesSentPerSecIn: [Uint64!]
+  peakBytesSentPerSecNotIn: [Uint64!]
+  peakBytesSentPerSecGT: Uint64
+  peakBytesSentPerSecGTE: Uint64
+  peakBytesSentPerSecLT: Uint64
+  peakBytesSentPerSecLTE: Uint64
   peakBytesSentPerSecIsNil: Boolean
   peakBytesSentPerSecNotNil: Boolean
   """
   peak_bytes_recv_per_sec field predicates
   """
-  peakBytesRecvPerSec: Int
-  peakBytesRecvPerSecNEQ: Int
-  peakBytesRecvPerSecIn: [Int!]
-  peakBytesRecvPerSecNotIn: [Int!]
-  peakBytesRecvPerSecGT: Int
-  peakBytesRecvPerSecGTE: Int
-  peakBytesRecvPerSecLT: Int
-  peakBytesRecvPerSecLTE: Int
+  peakBytesRecvPerSec: Uint64
+  peakBytesRecvPerSecNEQ: Uint64
+  peakBytesRecvPerSecIn: [Uint64!]
+  peakBytesRecvPerSecNotIn: [Uint64!]
+  peakBytesRecvPerSecGT: Uint64
+  peakBytesRecvPerSecGTE: Uint64
+  peakBytesRecvPerSecLT: Uint64
+  peakBytesRecvPerSecLTE: Uint64
   peakBytesRecvPerSecIsNil: Boolean
   peakBytesRecvPerSecNotNil: Boolean
   """
   peak_packets_sent_per_sec field predicates
   """
-  peakPacketsSentPerSec: Int
-  peakPacketsSentPerSecNEQ: Int
-  peakPacketsSentPerSecIn: [Int!]
-  peakPacketsSentPerSecNotIn: [Int!]
-  peakPacketsSentPerSecGT: Int
-  peakPacketsSentPerSecGTE: Int
-  peakPacketsSentPerSecLT: Int
-  peakPacketsSentPerSecLTE: Int
+  peakPacketsSentPerSec: Uint64
+  peakPacketsSentPerSecNEQ: Uint64
+  peakPacketsSentPerSecIn: [Uint64!]
+  peakPacketsSentPerSecNotIn: [Uint64!]
+  peakPacketsSentPerSecGT: Uint64
+  peakPacketsSentPerSecGTE: Uint64
+  peakPacketsSentPerSecLT: Uint64
+  peakPacketsSentPerSecLTE: Uint64
   peakPacketsSentPerSecIsNil: Boolean
   peakPacketsSentPerSecNotNil: Boolean
   """
   peak_packets_recv_per_sec field predicates
   """
-  peakPacketsRecvPerSec: Int
-  peakPacketsRecvPerSecNEQ: Int
-  peakPacketsRecvPerSecIn: [Int!]
-  peakPacketsRecvPerSecNotIn: [Int!]
-  peakPacketsRecvPerSecGT: Int
-  peakPacketsRecvPerSecGTE: Int
-  peakPacketsRecvPerSecLT: Int
-  peakPacketsRecvPerSecLTE: Int
+  peakPacketsRecvPerSec: Uint64
+  peakPacketsRecvPerSecNEQ: Uint64
+  peakPacketsRecvPerSecIn: [Uint64!]
+  peakPacketsRecvPerSecNotIn: [Uint64!]
+  peakPacketsRecvPerSecGT: Uint64
+  peakPacketsRecvPerSecGTE: Uint64
+  peakPacketsRecvPerSecLT: Uint64
+  peakPacketsRecvPerSecLTE: Uint64
   peakPacketsRecvPerSecIsNil: Boolean
   peakPacketsRecvPerSecNotNil: Boolean
   """

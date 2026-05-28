@@ -13,6 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
+	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // SystemNetworkStatsUpdate is the builder for updating SystemNetworkStats entities.
@@ -29,23 +30,23 @@ func (snsu *SystemNetworkStatsUpdate) Where(ps ...predicate.SystemNetworkStats) 
 }
 
 // SetBytesSent sets the "bytes_sent" field.
-func (snsu *SystemNetworkStatsUpdate) SetBytesSent(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetBytesSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetBytesSent()
-	snsu.mutation.SetBytesSent(u)
+	snsu.mutation.SetBytesSent(s)
 	return snsu
 }
 
 // SetNillableBytesSent sets the "bytes_sent" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillableBytesSent(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetBytesSent(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillableBytesSent(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetBytesSent(*s)
 	}
 	return snsu
 }
 
-// AddBytesSent adds u to the "bytes_sent" field.
-func (snsu *SystemNetworkStatsUpdate) AddBytesSent(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddBytesSent(u)
+// AddBytesSent adds s to the "bytes_sent" field.
+func (snsu *SystemNetworkStatsUpdate) AddBytesSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddBytesSent(s)
 	return snsu
 }
 
@@ -56,23 +57,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearBytesSent() *SystemNetworkStatsUpdate
 }
 
 // SetBytesRecv sets the "bytes_recv" field.
-func (snsu *SystemNetworkStatsUpdate) SetBytesRecv(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetBytesRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetBytesRecv()
-	snsu.mutation.SetBytesRecv(u)
+	snsu.mutation.SetBytesRecv(s)
 	return snsu
 }
 
 // SetNillableBytesRecv sets the "bytes_recv" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillableBytesRecv(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetBytesRecv(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillableBytesRecv(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetBytesRecv(*s)
 	}
 	return snsu
 }
 
-// AddBytesRecv adds u to the "bytes_recv" field.
-func (snsu *SystemNetworkStatsUpdate) AddBytesRecv(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddBytesRecv(u)
+// AddBytesRecv adds s to the "bytes_recv" field.
+func (snsu *SystemNetworkStatsUpdate) AddBytesRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddBytesRecv(s)
 	return snsu
 }
 
@@ -83,23 +84,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearBytesRecv() *SystemNetworkStatsUpdate
 }
 
 // SetPacketsSent sets the "packets_sent" field.
-func (snsu *SystemNetworkStatsUpdate) SetPacketsSent(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetPacketsSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetPacketsSent()
-	snsu.mutation.SetPacketsSent(u)
+	snsu.mutation.SetPacketsSent(s)
 	return snsu
 }
 
 // SetNillablePacketsSent sets the "packets_sent" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillablePacketsSent(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetPacketsSent(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillablePacketsSent(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetPacketsSent(*s)
 	}
 	return snsu
 }
 
-// AddPacketsSent adds u to the "packets_sent" field.
-func (snsu *SystemNetworkStatsUpdate) AddPacketsSent(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddPacketsSent(u)
+// AddPacketsSent adds s to the "packets_sent" field.
+func (snsu *SystemNetworkStatsUpdate) AddPacketsSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddPacketsSent(s)
 	return snsu
 }
 
@@ -110,23 +111,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearPacketsSent() *SystemNetworkStatsUpda
 }
 
 // SetPacketsRecv sets the "packets_recv" field.
-func (snsu *SystemNetworkStatsUpdate) SetPacketsRecv(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetPacketsRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetPacketsRecv()
-	snsu.mutation.SetPacketsRecv(u)
+	snsu.mutation.SetPacketsRecv(s)
 	return snsu
 }
 
 // SetNillablePacketsRecv sets the "packets_recv" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillablePacketsRecv(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetPacketsRecv(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillablePacketsRecv(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetPacketsRecv(*s)
 	}
 	return snsu
 }
 
-// AddPacketsRecv adds u to the "packets_recv" field.
-func (snsu *SystemNetworkStatsUpdate) AddPacketsRecv(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddPacketsRecv(u)
+// AddPacketsRecv adds s to the "packets_recv" field.
+func (snsu *SystemNetworkStatsUpdate) AddPacketsRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddPacketsRecv(s)
 	return snsu
 }
 
@@ -137,23 +138,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearPacketsRecv() *SystemNetworkStatsUpda
 }
 
 // SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) SetPeakBytesSentPerSec(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetPeakBytesSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetPeakBytesSentPerSec()
-	snsu.mutation.SetPeakBytesSentPerSec(u)
+	snsu.mutation.SetPeakBytesSentPerSec(s)
 	return snsu
 }
 
 // SetNillablePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillablePeakBytesSentPerSec(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetPeakBytesSentPerSec(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillablePeakBytesSentPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetPeakBytesSentPerSec(*s)
 	}
 	return snsu
 }
 
-// AddPeakBytesSentPerSec adds u to the "peak_bytes_sent_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) AddPeakBytesSentPerSec(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddPeakBytesSentPerSec(u)
+// AddPeakBytesSentPerSec adds s to the "peak_bytes_sent_per_sec" field.
+func (snsu *SystemNetworkStatsUpdate) AddPeakBytesSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddPeakBytesSentPerSec(s)
 	return snsu
 }
 
@@ -164,23 +165,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearPeakBytesSentPerSec() *SystemNetworkS
 }
 
 // SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) SetPeakBytesRecvPerSec(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetPeakBytesRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetPeakBytesRecvPerSec()
-	snsu.mutation.SetPeakBytesRecvPerSec(u)
+	snsu.mutation.SetPeakBytesRecvPerSec(s)
 	return snsu
 }
 
 // SetNillablePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillablePeakBytesRecvPerSec(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetPeakBytesRecvPerSec(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillablePeakBytesRecvPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetPeakBytesRecvPerSec(*s)
 	}
 	return snsu
 }
 
-// AddPeakBytesRecvPerSec adds u to the "peak_bytes_recv_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) AddPeakBytesRecvPerSec(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddPeakBytesRecvPerSec(u)
+// AddPeakBytesRecvPerSec adds s to the "peak_bytes_recv_per_sec" field.
+func (snsu *SystemNetworkStatsUpdate) AddPeakBytesRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddPeakBytesRecvPerSec(s)
 	return snsu
 }
 
@@ -191,23 +192,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearPeakBytesRecvPerSec() *SystemNetworkS
 }
 
 // SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) SetPeakPacketsSentPerSec(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetPeakPacketsSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetPeakPacketsSentPerSec()
-	snsu.mutation.SetPeakPacketsSentPerSec(u)
+	snsu.mutation.SetPeakPacketsSentPerSec(s)
 	return snsu
 }
 
 // SetNillablePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillablePeakPacketsSentPerSec(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetPeakPacketsSentPerSec(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillablePeakPacketsSentPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetPeakPacketsSentPerSec(*s)
 	}
 	return snsu
 }
 
-// AddPeakPacketsSentPerSec adds u to the "peak_packets_sent_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) AddPeakPacketsSentPerSec(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddPeakPacketsSentPerSec(u)
+// AddPeakPacketsSentPerSec adds s to the "peak_packets_sent_per_sec" field.
+func (snsu *SystemNetworkStatsUpdate) AddPeakPacketsSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddPeakPacketsSentPerSec(s)
 	return snsu
 }
 
@@ -218,23 +219,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearPeakPacketsSentPerSec() *SystemNetwor
 }
 
 // SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) SetPeakPacketsRecvPerSec(u uint64) *SystemNetworkStatsUpdate {
+func (snsu *SystemNetworkStatsUpdate) SetPeakPacketsRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
 	snsu.mutation.ResetPeakPacketsRecvPerSec()
-	snsu.mutation.SetPeakPacketsRecvPerSec(u)
+	snsu.mutation.SetPeakPacketsRecvPerSec(s)
 	return snsu
 }
 
 // SetNillablePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillablePeakPacketsRecvPerSec(u *uint64) *SystemNetworkStatsUpdate {
-	if u != nil {
-		snsu.SetPeakPacketsRecvPerSec(*u)
+func (snsu *SystemNetworkStatsUpdate) SetNillablePeakPacketsRecvPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	if s != nil {
+		snsu.SetPeakPacketsRecvPerSec(*s)
 	}
 	return snsu
 }
 
-// AddPeakPacketsRecvPerSec adds u to the "peak_packets_recv_per_sec" field.
-func (snsu *SystemNetworkStatsUpdate) AddPeakPacketsRecvPerSec(u int64) *SystemNetworkStatsUpdate {
-	snsu.mutation.AddPeakPacketsRecvPerSec(u)
+// AddPeakPacketsRecvPerSec adds s to the "peak_packets_recv_per_sec" field.
+func (snsu *SystemNetworkStatsUpdate) AddPeakPacketsRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdate {
+	snsu.mutation.AddPeakPacketsRecvPerSec(s)
 	return snsu
 }
 
@@ -432,23 +433,23 @@ type SystemNetworkStatsUpdateOne struct {
 }
 
 // SetBytesSent sets the "bytes_sent" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetBytesSent(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetBytesSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetBytesSent()
-	snsuo.mutation.SetBytesSent(u)
+	snsuo.mutation.SetBytesSent(s)
 	return snsuo
 }
 
 // SetNillableBytesSent sets the "bytes_sent" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillableBytesSent(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetBytesSent(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillableBytesSent(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetBytesSent(*s)
 	}
 	return snsuo
 }
 
-// AddBytesSent adds u to the "bytes_sent" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddBytesSent(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddBytesSent(u)
+// AddBytesSent adds s to the "bytes_sent" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddBytesSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddBytesSent(s)
 	return snsuo
 }
 
@@ -459,23 +460,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearBytesSent() *SystemNetworkStatsUp
 }
 
 // SetBytesRecv sets the "bytes_recv" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetBytesRecv(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetBytesRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetBytesRecv()
-	snsuo.mutation.SetBytesRecv(u)
+	snsuo.mutation.SetBytesRecv(s)
 	return snsuo
 }
 
 // SetNillableBytesRecv sets the "bytes_recv" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillableBytesRecv(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetBytesRecv(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillableBytesRecv(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetBytesRecv(*s)
 	}
 	return snsuo
 }
 
-// AddBytesRecv adds u to the "bytes_recv" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddBytesRecv(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddBytesRecv(u)
+// AddBytesRecv adds s to the "bytes_recv" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddBytesRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddBytesRecv(s)
 	return snsuo
 }
 
@@ -486,23 +487,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearBytesRecv() *SystemNetworkStatsUp
 }
 
 // SetPacketsSent sets the "packets_sent" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetPacketsSent(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetPacketsSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetPacketsSent()
-	snsuo.mutation.SetPacketsSent(u)
+	snsuo.mutation.SetPacketsSent(s)
 	return snsuo
 }
 
 // SetNillablePacketsSent sets the "packets_sent" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePacketsSent(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetPacketsSent(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePacketsSent(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetPacketsSent(*s)
 	}
 	return snsuo
 }
 
-// AddPacketsSent adds u to the "packets_sent" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddPacketsSent(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddPacketsSent(u)
+// AddPacketsSent adds s to the "packets_sent" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddPacketsSent(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddPacketsSent(s)
 	return snsuo
 }
 
@@ -513,23 +514,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearPacketsSent() *SystemNetworkStats
 }
 
 // SetPacketsRecv sets the "packets_recv" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetPacketsRecv(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetPacketsRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetPacketsRecv()
-	snsuo.mutation.SetPacketsRecv(u)
+	snsuo.mutation.SetPacketsRecv(s)
 	return snsuo
 }
 
 // SetNillablePacketsRecv sets the "packets_recv" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePacketsRecv(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetPacketsRecv(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePacketsRecv(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetPacketsRecv(*s)
 	}
 	return snsuo
 }
 
-// AddPacketsRecv adds u to the "packets_recv" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddPacketsRecv(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddPacketsRecv(u)
+// AddPacketsRecv adds s to the "packets_recv" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddPacketsRecv(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddPacketsRecv(s)
 	return snsuo
 }
 
@@ -540,23 +541,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearPacketsRecv() *SystemNetworkStats
 }
 
 // SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetPeakBytesSentPerSec(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetPeakBytesSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetPeakBytesSentPerSec()
-	snsuo.mutation.SetPeakBytesSentPerSec(u)
+	snsuo.mutation.SetPeakBytesSentPerSec(s)
 	return snsuo
 }
 
 // SetNillablePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakBytesSentPerSec(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetPeakBytesSentPerSec(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakBytesSentPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetPeakBytesSentPerSec(*s)
 	}
 	return snsuo
 }
 
-// AddPeakBytesSentPerSec adds u to the "peak_bytes_sent_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddPeakBytesSentPerSec(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddPeakBytesSentPerSec(u)
+// AddPeakBytesSentPerSec adds s to the "peak_bytes_sent_per_sec" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddPeakBytesSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddPeakBytesSentPerSec(s)
 	return snsuo
 }
 
@@ -567,23 +568,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearPeakBytesSentPerSec() *SystemNetw
 }
 
 // SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetPeakBytesRecvPerSec(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetPeakBytesRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetPeakBytesRecvPerSec()
-	snsuo.mutation.SetPeakBytesRecvPerSec(u)
+	snsuo.mutation.SetPeakBytesRecvPerSec(s)
 	return snsuo
 }
 
 // SetNillablePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakBytesRecvPerSec(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetPeakBytesRecvPerSec(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakBytesRecvPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetPeakBytesRecvPerSec(*s)
 	}
 	return snsuo
 }
 
-// AddPeakBytesRecvPerSec adds u to the "peak_bytes_recv_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddPeakBytesRecvPerSec(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddPeakBytesRecvPerSec(u)
+// AddPeakBytesRecvPerSec adds s to the "peak_bytes_recv_per_sec" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddPeakBytesRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddPeakBytesRecvPerSec(s)
 	return snsuo
 }
 
@@ -594,23 +595,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearPeakBytesRecvPerSec() *SystemNetw
 }
 
 // SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetPeakPacketsSentPerSec(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetPeakPacketsSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetPeakPacketsSentPerSec()
-	snsuo.mutation.SetPeakPacketsSentPerSec(u)
+	snsuo.mutation.SetPeakPacketsSentPerSec(s)
 	return snsuo
 }
 
 // SetNillablePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakPacketsSentPerSec(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetPeakPacketsSentPerSec(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakPacketsSentPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetPeakPacketsSentPerSec(*s)
 	}
 	return snsuo
 }
 
-// AddPeakPacketsSentPerSec adds u to the "peak_packets_sent_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddPeakPacketsSentPerSec(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddPeakPacketsSentPerSec(u)
+// AddPeakPacketsSentPerSec adds s to the "peak_packets_sent_per_sec" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddPeakPacketsSentPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddPeakPacketsSentPerSec(s)
 	return snsuo
 }
 
@@ -621,23 +622,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearPeakPacketsSentPerSec() *SystemNe
 }
 
 // SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) SetPeakPacketsRecvPerSec(u uint64) *SystemNetworkStatsUpdateOne {
+func (snsuo *SystemNetworkStatsUpdateOne) SetPeakPacketsRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
 	snsuo.mutation.ResetPeakPacketsRecvPerSec()
-	snsuo.mutation.SetPeakPacketsRecvPerSec(u)
+	snsuo.mutation.SetPeakPacketsRecvPerSec(s)
 	return snsuo
 }
 
 // SetNillablePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakPacketsRecvPerSec(u *uint64) *SystemNetworkStatsUpdateOne {
-	if u != nil {
-		snsuo.SetPeakPacketsRecvPerSec(*u)
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillablePeakPacketsRecvPerSec(s *schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	if s != nil {
+		snsuo.SetPeakPacketsRecvPerSec(*s)
 	}
 	return snsuo
 }
 
-// AddPeakPacketsRecvPerSec adds u to the "peak_packets_recv_per_sec" field.
-func (snsuo *SystemNetworkStatsUpdateOne) AddPeakPacketsRecvPerSec(u int64) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.AddPeakPacketsRecvPerSec(u)
+// AddPeakPacketsRecvPerSec adds s to the "peak_packets_recv_per_sec" field.
+func (snsuo *SystemNetworkStatsUpdateOne) AddPeakPacketsRecvPerSec(s schema.Uint64Numeric) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.AddPeakPacketsRecvPerSec(s)
 	return snsuo
 }
 
