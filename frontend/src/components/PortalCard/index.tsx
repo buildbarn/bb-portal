@@ -116,16 +116,18 @@ export const PortalCard: React.FC<Props> = ({
       }
       return true;
     };
-    const handleResize = () => {
+    const recalcShouldExtraMenuBeDisplayed = () => {
       setIsExtraMenuDisplayed(getShouldExtraMenuBeDisplayed());
       if (!isExtraMenuDisplayed) {
         setIsExtraMenuOpened(false);
       }
     };
-    handleResize();
-    window.addEventListener("resize", handleResize);
+    recalcShouldExtraMenuBeDisplayed();
+    window.addEventListener("resize", recalcShouldExtraMenuBeDisplayed);
+    window.addEventListener("focus", recalcShouldExtraMenuBeDisplayed);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", recalcShouldExtraMenuBeDisplayed);
+      window.removeEventListener("focus", recalcShouldExtraMenuBeDisplayed);
     };
   }, [isExtraMenuDisplayed, minimumSpaceBetweenTitleAndExtra]);
   const title = (
