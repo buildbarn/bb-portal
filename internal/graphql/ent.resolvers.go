@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/schema"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
@@ -23,6 +24,16 @@ func (r *actionResolver) ID(ctx context.Context, obj *ent.Action) (string, error
 // ID is the resolver for the id field.
 func (r *actionCacheStatisticsResolver) ID(ctx context.Context, obj *ent.ActionCacheStatistics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("ActionCacheStatistics", obj.ID), nil
+}
+
+// SizeInBytes is the resolver for the sizeInBytes field.
+func (r *actionCacheStatisticsResolver) SizeInBytes(ctx context.Context, obj *ent.ActionCacheStatistics) (*schema.Uint64Numeric, error) {
+	panic(fmt.Errorf("not implemented: SizeInBytes - sizeInBytes"))
+}
+
+// SaveTimeInMs is the resolver for the saveTimeInMs field.
+func (r *actionCacheStatisticsResolver) SaveTimeInMs(ctx context.Context, obj *ent.ActionCacheStatistics) (*schema.Uint64Numeric, error) {
+	panic(fmt.Errorf("not implemented: SaveTimeInMs - saveTimeInMs"))
 }
 
 // ID is the resolver for the id field.
@@ -301,6 +312,86 @@ func (r *actionCacheStatisticsWhereInputResolver) IDLt(ctx context.Context, obj 
 // IDLte is the resolver for the idLTE field.
 func (r *actionCacheStatisticsWhereInputResolver) IDLte(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// SizeInBytes is the resolver for the sizeInBytes field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytes(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytes - sizeInBytes"))
+}
+
+// SizeInBytesNeq is the resolver for the sizeInBytesNEQ field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytesNeq(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytesNeq - sizeInBytesNEQ"))
+}
+
+// SizeInBytesIn is the resolver for the sizeInBytesIn field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytesIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytesIn - sizeInBytesIn"))
+}
+
+// SizeInBytesNotIn is the resolver for the sizeInBytesNotIn field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytesNotIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytesNotIn - sizeInBytesNotIn"))
+}
+
+// SizeInBytesGt is the resolver for the sizeInBytesGT field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytesGt(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytesGt - sizeInBytesGT"))
+}
+
+// SizeInBytesGte is the resolver for the sizeInBytesGTE field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytesGte(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytesGte - sizeInBytesGTE"))
+}
+
+// SizeInBytesLt is the resolver for the sizeInBytesLT field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytesLt(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytesLt - sizeInBytesLT"))
+}
+
+// SizeInBytesLte is the resolver for the sizeInBytesLTE field.
+func (r *actionCacheStatisticsWhereInputResolver) SizeInBytesLte(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SizeInBytesLte - sizeInBytesLTE"))
+}
+
+// SaveTimeInMs is the resolver for the saveTimeInMs field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMs(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMs - saveTimeInMs"))
+}
+
+// SaveTimeInMsNeq is the resolver for the saveTimeInMsNEQ field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMsNeq(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMsNeq - saveTimeInMsNEQ"))
+}
+
+// SaveTimeInMsIn is the resolver for the saveTimeInMsIn field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMsIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMsIn - saveTimeInMsIn"))
+}
+
+// SaveTimeInMsNotIn is the resolver for the saveTimeInMsNotIn field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMsNotIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMsNotIn - saveTimeInMsNotIn"))
+}
+
+// SaveTimeInMsGt is the resolver for the saveTimeInMsGT field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMsGt(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMsGt - saveTimeInMsGT"))
+}
+
+// SaveTimeInMsGte is the resolver for the saveTimeInMsGTE field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMsGte(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMsGte - saveTimeInMsGTE"))
+}
+
+// SaveTimeInMsLt is the resolver for the saveTimeInMsLT field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMsLt(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMsLt - saveTimeInMsLT"))
+}
+
+// SaveTimeInMsLte is the resolver for the saveTimeInMsLTE field.
+func (r *actionCacheStatisticsWhereInputResolver) SaveTimeInMsLte(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *schema.Uint64Numeric) error {
+	panic(fmt.Errorf("not implemented: SaveTimeInMsLte - saveTimeInMsLTE"))
 }
 
 // ID is the resolver for the id field.
@@ -1767,7 +1858,19 @@ type timingMetricsWhereInputResolver struct{ *Resolver }
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
 /*
-	func (r *systemNetworkStatsWhereInputResolver) BytesSentIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
+	func (r *actionCacheStatisticsWhereInputResolver) LoadTimeInMsIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: LoadTimeInMsIn - loadTimeInMsIn"))
+}
+func (r *actionCacheStatisticsWhereInputResolver) LoadTimeInMsNotIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: LoadTimeInMsNotIn - loadTimeInMsNotIn"))
+}
+func (r *actionCacheStatisticsWhereInputResolver) CacheCheckSemaphoreWaitTimeInMsIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: CacheCheckSemaphoreWaitTimeInMsIn - cacheCheckSemaphoreWaitTimeInMsIn"))
+}
+func (r *actionCacheStatisticsWhereInputResolver) CacheCheckSemaphoreWaitTimeInMsNotIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []int) error {
+	panic(fmt.Errorf("not implemented: CacheCheckSemaphoreWaitTimeInMsNotIn - cacheCheckSemaphoreWaitTimeInMsNotIn"))
+}
+func (r *systemNetworkStatsWhereInputResolver) BytesSentIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {
 	panic(fmt.Errorf("not implemented: BytesSentIn - bytesSentIn"))
 }
 func (r *systemNetworkStatsWhereInputResolver) BytesSentNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []int) error {

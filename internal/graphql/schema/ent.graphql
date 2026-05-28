@@ -22,9 +22,10 @@ type Action implements Node {
 }
 type ActionCacheStatistics implements Node {
   id: ID!
-  sizeInBytes: Int
-  saveTimeInMs: Int
-  loadTimeInMs: Int
+  sizeInBytes: Uint64
+  saveTimeInMs: Uint64
+  loadTimeInMs: Uint64
+  cacheCheckSemaphoreWaitTimeInMs: Uint64
   hits: Int
   misses: Int
   actionSummary: ActionSummary
@@ -52,42 +53,55 @@ input ActionCacheStatisticsWhereInput {
   """
   size_in_bytes field predicates
   """
-  sizeInBytes: Int
-  sizeInBytesNEQ: Int
-  sizeInBytesIn: [Int!]
-  sizeInBytesNotIn: [Int!]
-  sizeInBytesGT: Int
-  sizeInBytesGTE: Int
-  sizeInBytesLT: Int
-  sizeInBytesLTE: Int
+  sizeInBytes: Uint64
+  sizeInBytesNEQ: Uint64
+  sizeInBytesIn: [Uint64!]
+  sizeInBytesNotIn: [Uint64!]
+  sizeInBytesGT: Uint64
+  sizeInBytesGTE: Uint64
+  sizeInBytesLT: Uint64
+  sizeInBytesLTE: Uint64
   sizeInBytesIsNil: Boolean
   sizeInBytesNotNil: Boolean
   """
   save_time_in_ms field predicates
   """
-  saveTimeInMs: Int
-  saveTimeInMsNEQ: Int
-  saveTimeInMsIn: [Int!]
-  saveTimeInMsNotIn: [Int!]
-  saveTimeInMsGT: Int
-  saveTimeInMsGTE: Int
-  saveTimeInMsLT: Int
-  saveTimeInMsLTE: Int
+  saveTimeInMs: Uint64
+  saveTimeInMsNEQ: Uint64
+  saveTimeInMsIn: [Uint64!]
+  saveTimeInMsNotIn: [Uint64!]
+  saveTimeInMsGT: Uint64
+  saveTimeInMsGTE: Uint64
+  saveTimeInMsLT: Uint64
+  saveTimeInMsLTE: Uint64
   saveTimeInMsIsNil: Boolean
   saveTimeInMsNotNil: Boolean
   """
   load_time_in_ms field predicates
   """
-  loadTimeInMs: Int
-  loadTimeInMsNEQ: Int
-  loadTimeInMsIn: [Int!]
-  loadTimeInMsNotIn: [Int!]
-  loadTimeInMsGT: Int
-  loadTimeInMsGTE: Int
-  loadTimeInMsLT: Int
-  loadTimeInMsLTE: Int
+  loadTimeInMs: Uint64
+  loadTimeInMsNEQ: Uint64
+  loadTimeInMsIn: [Uint64!]
+  loadTimeInMsNotIn: [Uint64!]
+  loadTimeInMsGT: Uint64
+  loadTimeInMsGTE: Uint64
+  loadTimeInMsLT: Uint64
+  loadTimeInMsLTE: Uint64
   loadTimeInMsIsNil: Boolean
   loadTimeInMsNotNil: Boolean
+  """
+  cache_check_semaphore_wait_time_in_ms field predicates
+  """
+  cacheCheckSemaphoreWaitTimeInMs: Uint64
+  cacheCheckSemaphoreWaitTimeInMsNEQ: Uint64
+  cacheCheckSemaphoreWaitTimeInMsIn: [Uint64!]
+  cacheCheckSemaphoreWaitTimeInMsNotIn: [Uint64!]
+  cacheCheckSemaphoreWaitTimeInMsGT: Uint64
+  cacheCheckSemaphoreWaitTimeInMsGTE: Uint64
+  cacheCheckSemaphoreWaitTimeInMsLT: Uint64
+  cacheCheckSemaphoreWaitTimeInMsLTE: Uint64
+  cacheCheckSemaphoreWaitTimeInMsIsNil: Boolean
+  cacheCheckSemaphoreWaitTimeInMsNotNil: Boolean
   """
   hits field predicates
   """

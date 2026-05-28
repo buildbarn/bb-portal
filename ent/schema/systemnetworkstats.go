@@ -6,6 +6,7 @@ import (
 	"io"
 	"strconv"
 
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/edge"
@@ -77,48 +78,56 @@ func (SystemNetworkStats) Fields() []ent.Field {
 	return []ent.Field{
 		// Total bytes sent during the invocation.
 		field.Uint64("bytes_sent").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),
 
 		// Total bytes received during the invocation.
 		field.Uint64("bytes_recv").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),
 
 		// Total packets sent during the invocation.
 		field.Uint64("packets_sent").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),
 
 		// Total packets received during the invocation
 		field.Uint64("packets_recv").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),
 
 		// Peak bytes/sec sent during the invocation.
 		field.Uint64("peak_bytes_sent_per_sec").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),
 
 		// Peak bytes/sec received during the invocation.
 		field.Uint64("peak_bytes_recv_per_sec").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),
 
 		// Peak packets/sec sent during the invocation.
 		field.Uint64("peak_packets_sent_per_sec").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),
 
 		// Peak packets/sec received during the invocation.
 		field.Uint64("peak_packets_recv_per_sec").
+			Annotations(entgql.Type("Uint64")).
 			GoType(Uint64Numeric(0)).
 			Optional().
 			SchemaType(postgresUint64SchemaType),

@@ -967,16 +967,28 @@ type ActionCacheStatisticsWhereInput struct {
 	SaveTimeInMsNotNil bool     `json:"saveTimeInMsNotNil,omitempty"`
 
 	// "load_time_in_ms" field predicates.
-	LoadTimeInMs       *int64  `json:"loadTimeInMs,omitempty"`
-	LoadTimeInMsNEQ    *int64  `json:"loadTimeInMsNEQ,omitempty"`
-	LoadTimeInMsIn     []int64 `json:"loadTimeInMsIn,omitempty"`
-	LoadTimeInMsNotIn  []int64 `json:"loadTimeInMsNotIn,omitempty"`
-	LoadTimeInMsGT     *int64  `json:"loadTimeInMsGT,omitempty"`
-	LoadTimeInMsGTE    *int64  `json:"loadTimeInMsGTE,omitempty"`
-	LoadTimeInMsLT     *int64  `json:"loadTimeInMsLT,omitempty"`
-	LoadTimeInMsLTE    *int64  `json:"loadTimeInMsLTE,omitempty"`
-	LoadTimeInMsIsNil  bool    `json:"loadTimeInMsIsNil,omitempty"`
-	LoadTimeInMsNotNil bool    `json:"loadTimeInMsNotNil,omitempty"`
+	LoadTimeInMs       *schema.Uint64Numeric  `json:"loadTimeInMs,omitempty"`
+	LoadTimeInMsNEQ    *schema.Uint64Numeric  `json:"loadTimeInMsNEQ,omitempty"`
+	LoadTimeInMsIn     []schema.Uint64Numeric `json:"loadTimeInMsIn,omitempty"`
+	LoadTimeInMsNotIn  []schema.Uint64Numeric `json:"loadTimeInMsNotIn,omitempty"`
+	LoadTimeInMsGT     *schema.Uint64Numeric  `json:"loadTimeInMsGT,omitempty"`
+	LoadTimeInMsGTE    *schema.Uint64Numeric  `json:"loadTimeInMsGTE,omitempty"`
+	LoadTimeInMsLT     *schema.Uint64Numeric  `json:"loadTimeInMsLT,omitempty"`
+	LoadTimeInMsLTE    *schema.Uint64Numeric  `json:"loadTimeInMsLTE,omitempty"`
+	LoadTimeInMsIsNil  bool                   `json:"loadTimeInMsIsNil,omitempty"`
+	LoadTimeInMsNotNil bool                   `json:"loadTimeInMsNotNil,omitempty"`
+
+	// "cache_check_semaphore_wait_time_in_ms" field predicates.
+	CacheCheckSemaphoreWaitTimeInMs       *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMs,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNEQ    *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsNEQ,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsIn     []schema.Uint64Numeric `json:"cacheCheckSemaphoreWaitTimeInMsIn,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNotIn  []schema.Uint64Numeric `json:"cacheCheckSemaphoreWaitTimeInMsNotIn,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsGT     *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsGT,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsGTE    *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsGTE,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsLT     *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsLT,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsLTE    *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsLTE,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsIsNil  bool                   `json:"cacheCheckSemaphoreWaitTimeInMsIsNil,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNotNil bool                   `json:"cacheCheckSemaphoreWaitTimeInMsNotNil,omitempty"`
 
 	// "hits" field predicates.
 	Hits       *int32  `json:"hits,omitempty"`
@@ -1195,6 +1207,36 @@ func (i *ActionCacheStatisticsWhereInput) P() (predicate.ActionCacheStatistics, 
 	}
 	if i.LoadTimeInMsNotNil {
 		predicates = append(predicates, actioncachestatistics.LoadTimeInMsNotNil())
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMs != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsEQ(*i.CacheCheckSemaphoreWaitTimeInMs))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsNEQ != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNEQ(*i.CacheCheckSemaphoreWaitTimeInMsNEQ))
+	}
+	if len(i.CacheCheckSemaphoreWaitTimeInMsIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsIn(i.CacheCheckSemaphoreWaitTimeInMsIn...))
+	}
+	if len(i.CacheCheckSemaphoreWaitTimeInMsNotIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNotIn(i.CacheCheckSemaphoreWaitTimeInMsNotIn...))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsGT != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsGT(*i.CacheCheckSemaphoreWaitTimeInMsGT))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsGTE != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsGTE(*i.CacheCheckSemaphoreWaitTimeInMsGTE))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsLT != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsLT(*i.CacheCheckSemaphoreWaitTimeInMsLT))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsLTE != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsLTE(*i.CacheCheckSemaphoreWaitTimeInMsLTE))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsIsNil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsIsNil())
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsNotNil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNotNil())
 	}
 	if i.Hits != nil {
 		predicates = append(predicates, actioncachestatistics.HitsEQ(*i.Hits))

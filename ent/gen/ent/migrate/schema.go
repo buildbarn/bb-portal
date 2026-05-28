@@ -71,7 +71,8 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "size_in_bytes", Type: field.TypeUint64, Nullable: true},
 		{Name: "save_time_in_ms", Type: field.TypeUint64, Nullable: true},
-		{Name: "load_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "load_time_in_ms", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
+		{Name: "cache_check_semaphore_wait_time_in_ms", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "numeric"}},
 		{Name: "hits", Type: field.TypeInt32, Nullable: true},
 		{Name: "misses", Type: field.TypeInt32, Nullable: true},
 		{Name: "action_summary_action_cache_statistics", Type: field.TypeInt64, Unique: true, Nullable: true},
@@ -84,7 +85,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "action_cache_statistics_action_summaries_action_cache_statistics",
-				Columns:    []*schema.Column{ActionCacheStatisticsColumns[6]},
+				Columns:    []*schema.Column{ActionCacheStatisticsColumns[7]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -93,7 +94,7 @@ var (
 			{
 				Name:    "actioncachestatistics_action_summary_action_cache_statistics",
 				Unique:  false,
-				Columns: []*schema.Column{ActionCacheStatisticsColumns[6]},
+				Columns: []*schema.Column{ActionCacheStatisticsColumns[7]},
 			},
 		},
 	}
