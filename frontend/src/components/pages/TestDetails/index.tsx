@@ -16,7 +16,6 @@ import {
 } from "recharts";
 import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
-import Content from "../../Content";
 import { CursorTable, getNewPaginationVariables } from "../../CursorTable";
 import type { PaginationVariables } from "../../CursorTable/types";
 import PortalAlert from "../../PortalAlert";
@@ -171,17 +170,13 @@ export const TestDetails: React.FC<Props> = ({
 
 export const TestDetailsPage: React.FC<Props> = (params) => {
   return (
-    <Content
-      content={
-        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-          <PortalCard
-            icon={<ExperimentFilled />}
-            titleBits={[<span key="title">Test Details</span>]}
-          >
-            <TestDetails {...params} />
-          </PortalCard>
-        </Space>
-      }
-    />
+    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+      <PortalCard
+        icon={<ExperimentFilled />}
+        titleBits={[<span key="title">Test Details</span>]}
+      >
+        <TestDetails {...params} />
+      </PortalCard>
+    </Space>
   );
 };

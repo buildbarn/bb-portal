@@ -1,5 +1,4 @@
 import { Space, Typography } from "antd";
-import Content from "@/components/Content";
 import Uploader from "@/components/Uploader";
 import { env } from "@/utils/env";
 import styles from "./index.module.css";
@@ -45,13 +44,9 @@ const BepFileUploader: React.FC = () => {
 
 export function HomePage() {
   return (
-    <Content
-      content={
-        <Space direction="vertical" size="large" className={styles.container}>
-          {!!env.featureFlags?.home?.fileUpload && <BepFileUploader />}
-          {!!env.featureFlags?.home?.instructions && <BuildInstructions />}
-        </Space>
-      }
-    />
+    <Space direction="vertical" size="large" className={styles.container}>
+      {!!env.featureFlags?.home?.fileUpload && <BepFileUploader />}
+      {!!env.featureFlags?.home?.instructions && <BuildInstructions />}
+    </Space>
   );
 }

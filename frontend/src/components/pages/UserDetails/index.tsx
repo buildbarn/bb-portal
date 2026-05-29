@@ -8,7 +8,6 @@ import {
   startedAtColumn,
   statusColumn,
 } from "@/components/BazelInvocationColumns/Columns";
-import Content from "@/components/Content";
 import { PageCursorTable } from "@/components/PageCursorTable";
 import type { OnTablePaginationChange } from "@/components/PageCursorTable/types";
 import { tableFiltersToGraphqlWhere } from "@/components/PageCursorTable/utils";
@@ -28,11 +27,7 @@ interface Props {
   onFilterChange: (where: BazelInvocationWhereInput[]) => void;
 }
 
-export const UserDetailsPage: React.FC<Props> = (params) => {
-  return <Content content={<UserDetails {...params} />} />;
-};
-
-const UserDetails: React.FC<Props> = ({
+export const UserDetailsPage: React.FC<Props> = ({
   pageSize,
   user,
   onPaginationChange,

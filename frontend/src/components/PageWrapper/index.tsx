@@ -1,19 +1,27 @@
 import { FloatButton, Layout } from "antd";
 import type React from "react";
+import AppBar from "@/components/AppBar";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import styles from "@/components/Content/index.module.css";
 import FooterBar from "@/components/FooterBar";
+import styles from "./index.module.css";
 
 interface Props {
-  content: React.ReactNode;
+  children: React.ReactNode;
+  toggleTheme: () => void;
+  prefersDark: boolean;
 }
 
-const Content: React.FC<Props> = ({ content }) => {
+export const PageWrapper: React.FC<Props> = ({
+  children,
+  toggleTheme,
+  prefersDark,
+}) => {
   return (
     <Layout>
+      <AppBar toggleTheme={toggleTheme} prefersDark={prefersDark} />
       <div className={styles.container}>
         <Breadcrumbs />
-        <Layout.Content className={styles.content}>{content}</Layout.Content>
+        <Layout.Content className={styles.content}>{children}</Layout.Content>
         <div className={styles.footer}>
           <FooterBar />
         </div>
@@ -22,5 +30,3 @@ const Content: React.FC<Props> = ({ content }) => {
     </Layout>
   );
 };
-
-export default Content;
