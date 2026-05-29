@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Typography } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import dayjs from "dayjs";
+import { validate as uuidValidate } from "uuid";
 import PortalDuration from "@/components/PortalDuration";
 import {
   SearchFilterIcon,
@@ -40,6 +41,8 @@ export const invocationIdColumn: TableColumnTypeWithFilter<
   filterDropdown: (filterProps) => (
     <SearchWidget
       placeholder="Provide a Bazel invocation ID..."
+      dataValidator={uuidValidate}
+      validationTooltip="The search string needs to be a valid UUID"
       {...filterProps}
     />
   ),
@@ -145,7 +148,12 @@ export const buildColumn: TableColumnTypeWithFilter<
       </Link>
     ),
   filterDropdown: (filterProps) => (
-    <SearchWidget placeholder="Provide a build UUID..." {...filterProps} />
+    <SearchWidget
+      placeholder="Provide a build UUID..."
+      {...filterProps}
+      dataValidator={uuidValidate}
+      validationTooltip="The search string needs to be a valid UUID"
+    />
   ),
   filterIcon: (filtered) => (
     <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />

@@ -20,6 +20,12 @@ export class TestNotFoundError extends Error {
   }
 }
 
+export class UserNotFoundError extends Error {
+  constructor() {
+    super("USER_NOT_FOUND");
+  }
+}
+
 const router = createRouter({
   routeTree,
   defaultPreload: "intent",
@@ -32,6 +38,8 @@ const router = createRouter({
         return <NotFoundPage type="target" showUnauthenticatedMessage={true} />;
       case error instanceof TestNotFoundError:
         return <NotFoundPage type="test" showUnauthenticatedMessage={true} />;
+      case error instanceof UserNotFoundError:
+        return <NotFoundPage type="user" showUnauthenticatedMessage={true} />;
       default:
         return <ErrorPage error={error} />;
     }
