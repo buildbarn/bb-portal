@@ -3,7 +3,10 @@ import { Link } from "@tanstack/react-router";
 import { Descriptions, Space, Spin, Typography } from "antd";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { actionCacheClient } from "@/grpc/actionCacheClient";
+import { casByteStreamClient } from "@/grpc/casByteStreamClient";
+import { fileSystemAccessCacheClient } from "@/grpc/fileSystemAccessCacheClient";
+import { initialSizeClassCacheClient } from "@/grpc/initialSizeClassCacheClient";
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import {
@@ -44,13 +47,6 @@ const BrowserActionGrid: React.FC<Params> = ({
   const [reducedActionDigest, setReducedActionDigest] = useState<
     Digest | undefined
   >(undefined);
-
-  const {
-    actionCacheClient,
-    casByteStreamClient,
-    initialSizeClassCacheClient,
-    fileSystemAccessCacheClient,
-  } = useGrpcClients();
 
   const { data, isError, isPending, error } = useQuery({
     queryKey: ["browserActionGrid", browserPageParams],

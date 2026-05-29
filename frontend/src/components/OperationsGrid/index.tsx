@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
 import type React from "react";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import { RequestMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { OperationsFilterParams } from "@/routes/operations.index";
 import themeStyles from "@/theme/theme.module.css";
@@ -16,8 +16,6 @@ interface Props {
 }
 
 const OperationsTable: React.FC<Props> = ({ filter }) => {
-  const { buildQueueStateClient } = useGrpcClients();
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["operationsTable", filter],
     queryFn: buildQueueStateClient.listOperations.bind(window, {

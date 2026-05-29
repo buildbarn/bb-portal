@@ -1,8 +1,8 @@
 import { WarningOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Descriptions, Flex, Space, Tooltip, Typography } from "antd";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
 import type { BazelInvocationInfoFragment } from "@/graphql/__generated__/graphql";
+import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
 import { fetchCasObject } from "@/utils/fetchCasObject";
@@ -41,8 +41,6 @@ interface Props {
 }
 
 export const ActionDetails: React.FC<Props> = ({ instanceName, action }) => {
-  const { casByteStreamClient } = useGrpcClients();
-
   const { data } = useQuery({
     queryKey: ["actionLogs", action.id],
     queryFn: async () => {
