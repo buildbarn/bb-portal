@@ -22,9 +22,10 @@ type Action implements Node {
 }
 type ActionCacheStatistics implements Node {
   id: ID!
-  sizeInBytes: Int
-  saveTimeInMs: Int
-  loadTimeInMs: Int
+  sizeInBytes: Uint64
+  saveTimeInMs: Uint64
+  loadTimeInMs: Uint64
+  cacheCheckSemaphoreWaitTimeInMs: Uint64
   hits: Int
   misses: Int
   actionSummary: ActionSummary
@@ -52,42 +53,55 @@ input ActionCacheStatisticsWhereInput {
   """
   size_in_bytes field predicates
   """
-  sizeInBytes: Int
-  sizeInBytesNEQ: Int
-  sizeInBytesIn: [Int!]
-  sizeInBytesNotIn: [Int!]
-  sizeInBytesGT: Int
-  sizeInBytesGTE: Int
-  sizeInBytesLT: Int
-  sizeInBytesLTE: Int
+  sizeInBytes: Uint64
+  sizeInBytesNEQ: Uint64
+  sizeInBytesIn: [Uint64!]
+  sizeInBytesNotIn: [Uint64!]
+  sizeInBytesGT: Uint64
+  sizeInBytesGTE: Uint64
+  sizeInBytesLT: Uint64
+  sizeInBytesLTE: Uint64
   sizeInBytesIsNil: Boolean
   sizeInBytesNotNil: Boolean
   """
   save_time_in_ms field predicates
   """
-  saveTimeInMs: Int
-  saveTimeInMsNEQ: Int
-  saveTimeInMsIn: [Int!]
-  saveTimeInMsNotIn: [Int!]
-  saveTimeInMsGT: Int
-  saveTimeInMsGTE: Int
-  saveTimeInMsLT: Int
-  saveTimeInMsLTE: Int
+  saveTimeInMs: Uint64
+  saveTimeInMsNEQ: Uint64
+  saveTimeInMsIn: [Uint64!]
+  saveTimeInMsNotIn: [Uint64!]
+  saveTimeInMsGT: Uint64
+  saveTimeInMsGTE: Uint64
+  saveTimeInMsLT: Uint64
+  saveTimeInMsLTE: Uint64
   saveTimeInMsIsNil: Boolean
   saveTimeInMsNotNil: Boolean
   """
   load_time_in_ms field predicates
   """
-  loadTimeInMs: Int
-  loadTimeInMsNEQ: Int
-  loadTimeInMsIn: [Int!]
-  loadTimeInMsNotIn: [Int!]
-  loadTimeInMsGT: Int
-  loadTimeInMsGTE: Int
-  loadTimeInMsLT: Int
-  loadTimeInMsLTE: Int
+  loadTimeInMs: Uint64
+  loadTimeInMsNEQ: Uint64
+  loadTimeInMsIn: [Uint64!]
+  loadTimeInMsNotIn: [Uint64!]
+  loadTimeInMsGT: Uint64
+  loadTimeInMsGTE: Uint64
+  loadTimeInMsLT: Uint64
+  loadTimeInMsLTE: Uint64
   loadTimeInMsIsNil: Boolean
   loadTimeInMsNotNil: Boolean
+  """
+  cache_check_semaphore_wait_time_in_ms field predicates
+  """
+  cacheCheckSemaphoreWaitTimeInMs: Uint64
+  cacheCheckSemaphoreWaitTimeInMsNEQ: Uint64
+  cacheCheckSemaphoreWaitTimeInMsIn: [Uint64!]
+  cacheCheckSemaphoreWaitTimeInMsNotIn: [Uint64!]
+  cacheCheckSemaphoreWaitTimeInMsGT: Uint64
+  cacheCheckSemaphoreWaitTimeInMsGTE: Uint64
+  cacheCheckSemaphoreWaitTimeInMsLT: Uint64
+  cacheCheckSemaphoreWaitTimeInMsLTE: Uint64
+  cacheCheckSemaphoreWaitTimeInMsIsNil: Boolean
+  cacheCheckSemaphoreWaitTimeInMsNotNil: Boolean
   """
   hits field predicates
   """
@@ -2914,14 +2928,14 @@ input SourceControlWhereInput {
 }
 type SystemNetworkStats implements Node {
   id: ID!
-  bytesSent: Int
-  bytesRecv: Int
-  packetsSent: Int
-  packetsRecv: Int
-  peakBytesSentPerSec: Int
-  peakBytesRecvPerSec: Int
-  peakPacketsSentPerSec: Int
-  peakPacketsRecvPerSec: Int
+  bytesSent: Uint64
+  bytesRecv: Uint64
+  packetsSent: Uint64
+  packetsRecv: Uint64
+  peakBytesSentPerSec: Uint64
+  peakBytesRecvPerSec: Uint64
+  peakPacketsSentPerSec: Uint64
+  peakPacketsRecvPerSec: Uint64
   networkMetrics: NetworkMetrics
 }
 """
@@ -2946,105 +2960,105 @@ input SystemNetworkStatsWhereInput {
   """
   bytes_sent field predicates
   """
-  bytesSent: Int
-  bytesSentNEQ: Int
-  bytesSentIn: [Int!]
-  bytesSentNotIn: [Int!]
-  bytesSentGT: Int
-  bytesSentGTE: Int
-  bytesSentLT: Int
-  bytesSentLTE: Int
+  bytesSent: Uint64
+  bytesSentNEQ: Uint64
+  bytesSentIn: [Uint64!]
+  bytesSentNotIn: [Uint64!]
+  bytesSentGT: Uint64
+  bytesSentGTE: Uint64
+  bytesSentLT: Uint64
+  bytesSentLTE: Uint64
   bytesSentIsNil: Boolean
   bytesSentNotNil: Boolean
   """
   bytes_recv field predicates
   """
-  bytesRecv: Int
-  bytesRecvNEQ: Int
-  bytesRecvIn: [Int!]
-  bytesRecvNotIn: [Int!]
-  bytesRecvGT: Int
-  bytesRecvGTE: Int
-  bytesRecvLT: Int
-  bytesRecvLTE: Int
+  bytesRecv: Uint64
+  bytesRecvNEQ: Uint64
+  bytesRecvIn: [Uint64!]
+  bytesRecvNotIn: [Uint64!]
+  bytesRecvGT: Uint64
+  bytesRecvGTE: Uint64
+  bytesRecvLT: Uint64
+  bytesRecvLTE: Uint64
   bytesRecvIsNil: Boolean
   bytesRecvNotNil: Boolean
   """
   packets_sent field predicates
   """
-  packetsSent: Int
-  packetsSentNEQ: Int
-  packetsSentIn: [Int!]
-  packetsSentNotIn: [Int!]
-  packetsSentGT: Int
-  packetsSentGTE: Int
-  packetsSentLT: Int
-  packetsSentLTE: Int
+  packetsSent: Uint64
+  packetsSentNEQ: Uint64
+  packetsSentIn: [Uint64!]
+  packetsSentNotIn: [Uint64!]
+  packetsSentGT: Uint64
+  packetsSentGTE: Uint64
+  packetsSentLT: Uint64
+  packetsSentLTE: Uint64
   packetsSentIsNil: Boolean
   packetsSentNotNil: Boolean
   """
   packets_recv field predicates
   """
-  packetsRecv: Int
-  packetsRecvNEQ: Int
-  packetsRecvIn: [Int!]
-  packetsRecvNotIn: [Int!]
-  packetsRecvGT: Int
-  packetsRecvGTE: Int
-  packetsRecvLT: Int
-  packetsRecvLTE: Int
+  packetsRecv: Uint64
+  packetsRecvNEQ: Uint64
+  packetsRecvIn: [Uint64!]
+  packetsRecvNotIn: [Uint64!]
+  packetsRecvGT: Uint64
+  packetsRecvGTE: Uint64
+  packetsRecvLT: Uint64
+  packetsRecvLTE: Uint64
   packetsRecvIsNil: Boolean
   packetsRecvNotNil: Boolean
   """
   peak_bytes_sent_per_sec field predicates
   """
-  peakBytesSentPerSec: Int
-  peakBytesSentPerSecNEQ: Int
-  peakBytesSentPerSecIn: [Int!]
-  peakBytesSentPerSecNotIn: [Int!]
-  peakBytesSentPerSecGT: Int
-  peakBytesSentPerSecGTE: Int
-  peakBytesSentPerSecLT: Int
-  peakBytesSentPerSecLTE: Int
+  peakBytesSentPerSec: Uint64
+  peakBytesSentPerSecNEQ: Uint64
+  peakBytesSentPerSecIn: [Uint64!]
+  peakBytesSentPerSecNotIn: [Uint64!]
+  peakBytesSentPerSecGT: Uint64
+  peakBytesSentPerSecGTE: Uint64
+  peakBytesSentPerSecLT: Uint64
+  peakBytesSentPerSecLTE: Uint64
   peakBytesSentPerSecIsNil: Boolean
   peakBytesSentPerSecNotNil: Boolean
   """
   peak_bytes_recv_per_sec field predicates
   """
-  peakBytesRecvPerSec: Int
-  peakBytesRecvPerSecNEQ: Int
-  peakBytesRecvPerSecIn: [Int!]
-  peakBytesRecvPerSecNotIn: [Int!]
-  peakBytesRecvPerSecGT: Int
-  peakBytesRecvPerSecGTE: Int
-  peakBytesRecvPerSecLT: Int
-  peakBytesRecvPerSecLTE: Int
+  peakBytesRecvPerSec: Uint64
+  peakBytesRecvPerSecNEQ: Uint64
+  peakBytesRecvPerSecIn: [Uint64!]
+  peakBytesRecvPerSecNotIn: [Uint64!]
+  peakBytesRecvPerSecGT: Uint64
+  peakBytesRecvPerSecGTE: Uint64
+  peakBytesRecvPerSecLT: Uint64
+  peakBytesRecvPerSecLTE: Uint64
   peakBytesRecvPerSecIsNil: Boolean
   peakBytesRecvPerSecNotNil: Boolean
   """
   peak_packets_sent_per_sec field predicates
   """
-  peakPacketsSentPerSec: Int
-  peakPacketsSentPerSecNEQ: Int
-  peakPacketsSentPerSecIn: [Int!]
-  peakPacketsSentPerSecNotIn: [Int!]
-  peakPacketsSentPerSecGT: Int
-  peakPacketsSentPerSecGTE: Int
-  peakPacketsSentPerSecLT: Int
-  peakPacketsSentPerSecLTE: Int
+  peakPacketsSentPerSec: Uint64
+  peakPacketsSentPerSecNEQ: Uint64
+  peakPacketsSentPerSecIn: [Uint64!]
+  peakPacketsSentPerSecNotIn: [Uint64!]
+  peakPacketsSentPerSecGT: Uint64
+  peakPacketsSentPerSecGTE: Uint64
+  peakPacketsSentPerSecLT: Uint64
+  peakPacketsSentPerSecLTE: Uint64
   peakPacketsSentPerSecIsNil: Boolean
   peakPacketsSentPerSecNotNil: Boolean
   """
   peak_packets_recv_per_sec field predicates
   """
-  peakPacketsRecvPerSec: Int
-  peakPacketsRecvPerSecNEQ: Int
-  peakPacketsRecvPerSecIn: [Int!]
-  peakPacketsRecvPerSecNotIn: [Int!]
-  peakPacketsRecvPerSecGT: Int
-  peakPacketsRecvPerSecGTE: Int
-  peakPacketsRecvPerSecLT: Int
-  peakPacketsRecvPerSecLTE: Int
+  peakPacketsRecvPerSec: Uint64
+  peakPacketsRecvPerSecNEQ: Uint64
+  peakPacketsRecvPerSecIn: [Uint64!]
+  peakPacketsRecvPerSecNotIn: [Uint64!]
+  peakPacketsRecvPerSecGT: Uint64
+  peakPacketsRecvPerSecGTE: Uint64
+  peakPacketsRecvPerSecLT: Uint64
+  peakPacketsRecvPerSecLTE: Uint64
   peakPacketsRecvPerSecIsNil: Boolean
   peakPacketsRecvPerSecNotNil: Boolean
   """

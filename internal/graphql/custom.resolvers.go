@@ -78,7 +78,7 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent
 }
 
 // GetTarget is the resolver for the getTarget field.
-func (r *queryResolver) GetTarget(ctx context.Context, instanceName, label, aspect, targetKind string) (*ent.Target, error) {
+func (r *queryResolver) GetTarget(ctx context.Context, instanceName string, label string, aspect string, targetKind string) (*ent.Target, error) {
 	// CollectFields here is used to avoid the N+1 query problem. Ent shouldn't
 	// need it, but somehow it does.
 	query, err := r.db.Ent().Target.Query().Where(

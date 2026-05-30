@@ -301,7 +301,7 @@ func (snsq *SystemNetworkStatsQuery) WithNetworkMetrics(opts ...func(*NetworkMet
 // Example:
 //
 //	var v []struct {
-//		BytesSent uint64 `json:"bytes_sent,omitempty"`
+//		BytesSent schema.Uint64Numeric `json:"bytes_sent,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -324,7 +324,7 @@ func (snsq *SystemNetworkStatsQuery) GroupBy(field string, fields ...string) *Sy
 // Example:
 //
 //	var v []struct {
-//		BytesSent uint64 `json:"bytes_sent,omitempty"`
+//		BytesSent schema.Uint64Numeric `json:"bytes_sent,omitempty"`
 //	}
 //
 //	client.SystemNetworkStats.Query().

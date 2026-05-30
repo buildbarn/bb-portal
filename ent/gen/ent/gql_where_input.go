@@ -37,6 +37,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/schema"
 	"github.com/google/uuid"
 )
 
@@ -966,16 +967,28 @@ type ActionCacheStatisticsWhereInput struct {
 	SaveTimeInMsNotNil bool     `json:"saveTimeInMsNotNil,omitempty"`
 
 	// "load_time_in_ms" field predicates.
-	LoadTimeInMs       *int64  `json:"loadTimeInMs,omitempty"`
-	LoadTimeInMsNEQ    *int64  `json:"loadTimeInMsNEQ,omitempty"`
-	LoadTimeInMsIn     []int64 `json:"loadTimeInMsIn,omitempty"`
-	LoadTimeInMsNotIn  []int64 `json:"loadTimeInMsNotIn,omitempty"`
-	LoadTimeInMsGT     *int64  `json:"loadTimeInMsGT,omitempty"`
-	LoadTimeInMsGTE    *int64  `json:"loadTimeInMsGTE,omitempty"`
-	LoadTimeInMsLT     *int64  `json:"loadTimeInMsLT,omitempty"`
-	LoadTimeInMsLTE    *int64  `json:"loadTimeInMsLTE,omitempty"`
-	LoadTimeInMsIsNil  bool    `json:"loadTimeInMsIsNil,omitempty"`
-	LoadTimeInMsNotNil bool    `json:"loadTimeInMsNotNil,omitempty"`
+	LoadTimeInMs       *schema.Uint64Numeric  `json:"loadTimeInMs,omitempty"`
+	LoadTimeInMsNEQ    *schema.Uint64Numeric  `json:"loadTimeInMsNEQ,omitempty"`
+	LoadTimeInMsIn     []schema.Uint64Numeric `json:"loadTimeInMsIn,omitempty"`
+	LoadTimeInMsNotIn  []schema.Uint64Numeric `json:"loadTimeInMsNotIn,omitempty"`
+	LoadTimeInMsGT     *schema.Uint64Numeric  `json:"loadTimeInMsGT,omitempty"`
+	LoadTimeInMsGTE    *schema.Uint64Numeric  `json:"loadTimeInMsGTE,omitempty"`
+	LoadTimeInMsLT     *schema.Uint64Numeric  `json:"loadTimeInMsLT,omitempty"`
+	LoadTimeInMsLTE    *schema.Uint64Numeric  `json:"loadTimeInMsLTE,omitempty"`
+	LoadTimeInMsIsNil  bool                   `json:"loadTimeInMsIsNil,omitempty"`
+	LoadTimeInMsNotNil bool                   `json:"loadTimeInMsNotNil,omitempty"`
+
+	// "cache_check_semaphore_wait_time_in_ms" field predicates.
+	CacheCheckSemaphoreWaitTimeInMs       *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMs,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNEQ    *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsNEQ,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsIn     []schema.Uint64Numeric `json:"cacheCheckSemaphoreWaitTimeInMsIn,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNotIn  []schema.Uint64Numeric `json:"cacheCheckSemaphoreWaitTimeInMsNotIn,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsGT     *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsGT,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsGTE    *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsGTE,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsLT     *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsLT,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsLTE    *schema.Uint64Numeric  `json:"cacheCheckSemaphoreWaitTimeInMsLTE,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsIsNil  bool                   `json:"cacheCheckSemaphoreWaitTimeInMsIsNil,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNotNil bool                   `json:"cacheCheckSemaphoreWaitTimeInMsNotNil,omitempty"`
 
 	// "hits" field predicates.
 	Hits       *int32  `json:"hits,omitempty"`
@@ -1194,6 +1207,36 @@ func (i *ActionCacheStatisticsWhereInput) P() (predicate.ActionCacheStatistics, 
 	}
 	if i.LoadTimeInMsNotNil {
 		predicates = append(predicates, actioncachestatistics.LoadTimeInMsNotNil())
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMs != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsEQ(*i.CacheCheckSemaphoreWaitTimeInMs))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsNEQ != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNEQ(*i.CacheCheckSemaphoreWaitTimeInMsNEQ))
+	}
+	if len(i.CacheCheckSemaphoreWaitTimeInMsIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsIn(i.CacheCheckSemaphoreWaitTimeInMsIn...))
+	}
+	if len(i.CacheCheckSemaphoreWaitTimeInMsNotIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNotIn(i.CacheCheckSemaphoreWaitTimeInMsNotIn...))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsGT != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsGT(*i.CacheCheckSemaphoreWaitTimeInMsGT))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsGTE != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsGTE(*i.CacheCheckSemaphoreWaitTimeInMsGTE))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsLT != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsLT(*i.CacheCheckSemaphoreWaitTimeInMsLT))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsLTE != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsLTE(*i.CacheCheckSemaphoreWaitTimeInMsLTE))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsIsNil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsIsNil())
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsNotNil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNotNil())
 	}
 	if i.Hits != nil {
 		predicates = append(predicates, actioncachestatistics.HitsEQ(*i.Hits))
@@ -8478,100 +8521,100 @@ type SystemNetworkStatsWhereInput struct {
 	IDLTE   *int64  `json:"idLTE,omitempty"`
 
 	// "bytes_sent" field predicates.
-	BytesSent       *uint64  `json:"bytesSent,omitempty"`
-	BytesSentNEQ    *uint64  `json:"bytesSentNEQ,omitempty"`
-	BytesSentIn     []uint64 `json:"bytesSentIn,omitempty"`
-	BytesSentNotIn  []uint64 `json:"bytesSentNotIn,omitempty"`
-	BytesSentGT     *uint64  `json:"bytesSentGT,omitempty"`
-	BytesSentGTE    *uint64  `json:"bytesSentGTE,omitempty"`
-	BytesSentLT     *uint64  `json:"bytesSentLT,omitempty"`
-	BytesSentLTE    *uint64  `json:"bytesSentLTE,omitempty"`
-	BytesSentIsNil  bool     `json:"bytesSentIsNil,omitempty"`
-	BytesSentNotNil bool     `json:"bytesSentNotNil,omitempty"`
+	BytesSent       *schema.Uint64Numeric  `json:"bytesSent,omitempty"`
+	BytesSentNEQ    *schema.Uint64Numeric  `json:"bytesSentNEQ,omitempty"`
+	BytesSentIn     []schema.Uint64Numeric `json:"bytesSentIn,omitempty"`
+	BytesSentNotIn  []schema.Uint64Numeric `json:"bytesSentNotIn,omitempty"`
+	BytesSentGT     *schema.Uint64Numeric  `json:"bytesSentGT,omitempty"`
+	BytesSentGTE    *schema.Uint64Numeric  `json:"bytesSentGTE,omitempty"`
+	BytesSentLT     *schema.Uint64Numeric  `json:"bytesSentLT,omitempty"`
+	BytesSentLTE    *schema.Uint64Numeric  `json:"bytesSentLTE,omitempty"`
+	BytesSentIsNil  bool                   `json:"bytesSentIsNil,omitempty"`
+	BytesSentNotNil bool                   `json:"bytesSentNotNil,omitempty"`
 
 	// "bytes_recv" field predicates.
-	BytesRecv       *uint64  `json:"bytesRecv,omitempty"`
-	BytesRecvNEQ    *uint64  `json:"bytesRecvNEQ,omitempty"`
-	BytesRecvIn     []uint64 `json:"bytesRecvIn,omitempty"`
-	BytesRecvNotIn  []uint64 `json:"bytesRecvNotIn,omitempty"`
-	BytesRecvGT     *uint64  `json:"bytesRecvGT,omitempty"`
-	BytesRecvGTE    *uint64  `json:"bytesRecvGTE,omitempty"`
-	BytesRecvLT     *uint64  `json:"bytesRecvLT,omitempty"`
-	BytesRecvLTE    *uint64  `json:"bytesRecvLTE,omitempty"`
-	BytesRecvIsNil  bool     `json:"bytesRecvIsNil,omitempty"`
-	BytesRecvNotNil bool     `json:"bytesRecvNotNil,omitempty"`
+	BytesRecv       *schema.Uint64Numeric  `json:"bytesRecv,omitempty"`
+	BytesRecvNEQ    *schema.Uint64Numeric  `json:"bytesRecvNEQ,omitempty"`
+	BytesRecvIn     []schema.Uint64Numeric `json:"bytesRecvIn,omitempty"`
+	BytesRecvNotIn  []schema.Uint64Numeric `json:"bytesRecvNotIn,omitempty"`
+	BytesRecvGT     *schema.Uint64Numeric  `json:"bytesRecvGT,omitempty"`
+	BytesRecvGTE    *schema.Uint64Numeric  `json:"bytesRecvGTE,omitempty"`
+	BytesRecvLT     *schema.Uint64Numeric  `json:"bytesRecvLT,omitempty"`
+	BytesRecvLTE    *schema.Uint64Numeric  `json:"bytesRecvLTE,omitempty"`
+	BytesRecvIsNil  bool                   `json:"bytesRecvIsNil,omitempty"`
+	BytesRecvNotNil bool                   `json:"bytesRecvNotNil,omitempty"`
 
 	// "packets_sent" field predicates.
-	PacketsSent       *uint64  `json:"packetsSent,omitempty"`
-	PacketsSentNEQ    *uint64  `json:"packetsSentNEQ,omitempty"`
-	PacketsSentIn     []uint64 `json:"packetsSentIn,omitempty"`
-	PacketsSentNotIn  []uint64 `json:"packetsSentNotIn,omitempty"`
-	PacketsSentGT     *uint64  `json:"packetsSentGT,omitempty"`
-	PacketsSentGTE    *uint64  `json:"packetsSentGTE,omitempty"`
-	PacketsSentLT     *uint64  `json:"packetsSentLT,omitempty"`
-	PacketsSentLTE    *uint64  `json:"packetsSentLTE,omitempty"`
-	PacketsSentIsNil  bool     `json:"packetsSentIsNil,omitempty"`
-	PacketsSentNotNil bool     `json:"packetsSentNotNil,omitempty"`
+	PacketsSent       *schema.Uint64Numeric  `json:"packetsSent,omitempty"`
+	PacketsSentNEQ    *schema.Uint64Numeric  `json:"packetsSentNEQ,omitempty"`
+	PacketsSentIn     []schema.Uint64Numeric `json:"packetsSentIn,omitempty"`
+	PacketsSentNotIn  []schema.Uint64Numeric `json:"packetsSentNotIn,omitempty"`
+	PacketsSentGT     *schema.Uint64Numeric  `json:"packetsSentGT,omitempty"`
+	PacketsSentGTE    *schema.Uint64Numeric  `json:"packetsSentGTE,omitempty"`
+	PacketsSentLT     *schema.Uint64Numeric  `json:"packetsSentLT,omitempty"`
+	PacketsSentLTE    *schema.Uint64Numeric  `json:"packetsSentLTE,omitempty"`
+	PacketsSentIsNil  bool                   `json:"packetsSentIsNil,omitempty"`
+	PacketsSentNotNil bool                   `json:"packetsSentNotNil,omitempty"`
 
 	// "packets_recv" field predicates.
-	PacketsRecv       *uint64  `json:"packetsRecv,omitempty"`
-	PacketsRecvNEQ    *uint64  `json:"packetsRecvNEQ,omitempty"`
-	PacketsRecvIn     []uint64 `json:"packetsRecvIn,omitempty"`
-	PacketsRecvNotIn  []uint64 `json:"packetsRecvNotIn,omitempty"`
-	PacketsRecvGT     *uint64  `json:"packetsRecvGT,omitempty"`
-	PacketsRecvGTE    *uint64  `json:"packetsRecvGTE,omitempty"`
-	PacketsRecvLT     *uint64  `json:"packetsRecvLT,omitempty"`
-	PacketsRecvLTE    *uint64  `json:"packetsRecvLTE,omitempty"`
-	PacketsRecvIsNil  bool     `json:"packetsRecvIsNil,omitempty"`
-	PacketsRecvNotNil bool     `json:"packetsRecvNotNil,omitempty"`
+	PacketsRecv       *schema.Uint64Numeric  `json:"packetsRecv,omitempty"`
+	PacketsRecvNEQ    *schema.Uint64Numeric  `json:"packetsRecvNEQ,omitempty"`
+	PacketsRecvIn     []schema.Uint64Numeric `json:"packetsRecvIn,omitempty"`
+	PacketsRecvNotIn  []schema.Uint64Numeric `json:"packetsRecvNotIn,omitempty"`
+	PacketsRecvGT     *schema.Uint64Numeric  `json:"packetsRecvGT,omitempty"`
+	PacketsRecvGTE    *schema.Uint64Numeric  `json:"packetsRecvGTE,omitempty"`
+	PacketsRecvLT     *schema.Uint64Numeric  `json:"packetsRecvLT,omitempty"`
+	PacketsRecvLTE    *schema.Uint64Numeric  `json:"packetsRecvLTE,omitempty"`
+	PacketsRecvIsNil  bool                   `json:"packetsRecvIsNil,omitempty"`
+	PacketsRecvNotNil bool                   `json:"packetsRecvNotNil,omitempty"`
 
 	// "peak_bytes_sent_per_sec" field predicates.
-	PeakBytesSentPerSec       *uint64  `json:"peakBytesSentPerSec,omitempty"`
-	PeakBytesSentPerSecNEQ    *uint64  `json:"peakBytesSentPerSecNEQ,omitempty"`
-	PeakBytesSentPerSecIn     []uint64 `json:"peakBytesSentPerSecIn,omitempty"`
-	PeakBytesSentPerSecNotIn  []uint64 `json:"peakBytesSentPerSecNotIn,omitempty"`
-	PeakBytesSentPerSecGT     *uint64  `json:"peakBytesSentPerSecGT,omitempty"`
-	PeakBytesSentPerSecGTE    *uint64  `json:"peakBytesSentPerSecGTE,omitempty"`
-	PeakBytesSentPerSecLT     *uint64  `json:"peakBytesSentPerSecLT,omitempty"`
-	PeakBytesSentPerSecLTE    *uint64  `json:"peakBytesSentPerSecLTE,omitempty"`
-	PeakBytesSentPerSecIsNil  bool     `json:"peakBytesSentPerSecIsNil,omitempty"`
-	PeakBytesSentPerSecNotNil bool     `json:"peakBytesSentPerSecNotNil,omitempty"`
+	PeakBytesSentPerSec       *schema.Uint64Numeric  `json:"peakBytesSentPerSec,omitempty"`
+	PeakBytesSentPerSecNEQ    *schema.Uint64Numeric  `json:"peakBytesSentPerSecNEQ,omitempty"`
+	PeakBytesSentPerSecIn     []schema.Uint64Numeric `json:"peakBytesSentPerSecIn,omitempty"`
+	PeakBytesSentPerSecNotIn  []schema.Uint64Numeric `json:"peakBytesSentPerSecNotIn,omitempty"`
+	PeakBytesSentPerSecGT     *schema.Uint64Numeric  `json:"peakBytesSentPerSecGT,omitempty"`
+	PeakBytesSentPerSecGTE    *schema.Uint64Numeric  `json:"peakBytesSentPerSecGTE,omitempty"`
+	PeakBytesSentPerSecLT     *schema.Uint64Numeric  `json:"peakBytesSentPerSecLT,omitempty"`
+	PeakBytesSentPerSecLTE    *schema.Uint64Numeric  `json:"peakBytesSentPerSecLTE,omitempty"`
+	PeakBytesSentPerSecIsNil  bool                   `json:"peakBytesSentPerSecIsNil,omitempty"`
+	PeakBytesSentPerSecNotNil bool                   `json:"peakBytesSentPerSecNotNil,omitempty"`
 
 	// "peak_bytes_recv_per_sec" field predicates.
-	PeakBytesRecvPerSec       *uint64  `json:"peakBytesRecvPerSec,omitempty"`
-	PeakBytesRecvPerSecNEQ    *uint64  `json:"peakBytesRecvPerSecNEQ,omitempty"`
-	PeakBytesRecvPerSecIn     []uint64 `json:"peakBytesRecvPerSecIn,omitempty"`
-	PeakBytesRecvPerSecNotIn  []uint64 `json:"peakBytesRecvPerSecNotIn,omitempty"`
-	PeakBytesRecvPerSecGT     *uint64  `json:"peakBytesRecvPerSecGT,omitempty"`
-	PeakBytesRecvPerSecGTE    *uint64  `json:"peakBytesRecvPerSecGTE,omitempty"`
-	PeakBytesRecvPerSecLT     *uint64  `json:"peakBytesRecvPerSecLT,omitempty"`
-	PeakBytesRecvPerSecLTE    *uint64  `json:"peakBytesRecvPerSecLTE,omitempty"`
-	PeakBytesRecvPerSecIsNil  bool     `json:"peakBytesRecvPerSecIsNil,omitempty"`
-	PeakBytesRecvPerSecNotNil bool     `json:"peakBytesRecvPerSecNotNil,omitempty"`
+	PeakBytesRecvPerSec       *schema.Uint64Numeric  `json:"peakBytesRecvPerSec,omitempty"`
+	PeakBytesRecvPerSecNEQ    *schema.Uint64Numeric  `json:"peakBytesRecvPerSecNEQ,omitempty"`
+	PeakBytesRecvPerSecIn     []schema.Uint64Numeric `json:"peakBytesRecvPerSecIn,omitempty"`
+	PeakBytesRecvPerSecNotIn  []schema.Uint64Numeric `json:"peakBytesRecvPerSecNotIn,omitempty"`
+	PeakBytesRecvPerSecGT     *schema.Uint64Numeric  `json:"peakBytesRecvPerSecGT,omitempty"`
+	PeakBytesRecvPerSecGTE    *schema.Uint64Numeric  `json:"peakBytesRecvPerSecGTE,omitempty"`
+	PeakBytesRecvPerSecLT     *schema.Uint64Numeric  `json:"peakBytesRecvPerSecLT,omitempty"`
+	PeakBytesRecvPerSecLTE    *schema.Uint64Numeric  `json:"peakBytesRecvPerSecLTE,omitempty"`
+	PeakBytesRecvPerSecIsNil  bool                   `json:"peakBytesRecvPerSecIsNil,omitempty"`
+	PeakBytesRecvPerSecNotNil bool                   `json:"peakBytesRecvPerSecNotNil,omitempty"`
 
 	// "peak_packets_sent_per_sec" field predicates.
-	PeakPacketsSentPerSec       *uint64  `json:"peakPacketsSentPerSec,omitempty"`
-	PeakPacketsSentPerSecNEQ    *uint64  `json:"peakPacketsSentPerSecNEQ,omitempty"`
-	PeakPacketsSentPerSecIn     []uint64 `json:"peakPacketsSentPerSecIn,omitempty"`
-	PeakPacketsSentPerSecNotIn  []uint64 `json:"peakPacketsSentPerSecNotIn,omitempty"`
-	PeakPacketsSentPerSecGT     *uint64  `json:"peakPacketsSentPerSecGT,omitempty"`
-	PeakPacketsSentPerSecGTE    *uint64  `json:"peakPacketsSentPerSecGTE,omitempty"`
-	PeakPacketsSentPerSecLT     *uint64  `json:"peakPacketsSentPerSecLT,omitempty"`
-	PeakPacketsSentPerSecLTE    *uint64  `json:"peakPacketsSentPerSecLTE,omitempty"`
-	PeakPacketsSentPerSecIsNil  bool     `json:"peakPacketsSentPerSecIsNil,omitempty"`
-	PeakPacketsSentPerSecNotNil bool     `json:"peakPacketsSentPerSecNotNil,omitempty"`
+	PeakPacketsSentPerSec       *schema.Uint64Numeric  `json:"peakPacketsSentPerSec,omitempty"`
+	PeakPacketsSentPerSecNEQ    *schema.Uint64Numeric  `json:"peakPacketsSentPerSecNEQ,omitempty"`
+	PeakPacketsSentPerSecIn     []schema.Uint64Numeric `json:"peakPacketsSentPerSecIn,omitempty"`
+	PeakPacketsSentPerSecNotIn  []schema.Uint64Numeric `json:"peakPacketsSentPerSecNotIn,omitempty"`
+	PeakPacketsSentPerSecGT     *schema.Uint64Numeric  `json:"peakPacketsSentPerSecGT,omitempty"`
+	PeakPacketsSentPerSecGTE    *schema.Uint64Numeric  `json:"peakPacketsSentPerSecGTE,omitempty"`
+	PeakPacketsSentPerSecLT     *schema.Uint64Numeric  `json:"peakPacketsSentPerSecLT,omitempty"`
+	PeakPacketsSentPerSecLTE    *schema.Uint64Numeric  `json:"peakPacketsSentPerSecLTE,omitempty"`
+	PeakPacketsSentPerSecIsNil  bool                   `json:"peakPacketsSentPerSecIsNil,omitempty"`
+	PeakPacketsSentPerSecNotNil bool                   `json:"peakPacketsSentPerSecNotNil,omitempty"`
 
 	// "peak_packets_recv_per_sec" field predicates.
-	PeakPacketsRecvPerSec       *uint64  `json:"peakPacketsRecvPerSec,omitempty"`
-	PeakPacketsRecvPerSecNEQ    *uint64  `json:"peakPacketsRecvPerSecNEQ,omitempty"`
-	PeakPacketsRecvPerSecIn     []uint64 `json:"peakPacketsRecvPerSecIn,omitempty"`
-	PeakPacketsRecvPerSecNotIn  []uint64 `json:"peakPacketsRecvPerSecNotIn,omitempty"`
-	PeakPacketsRecvPerSecGT     *uint64  `json:"peakPacketsRecvPerSecGT,omitempty"`
-	PeakPacketsRecvPerSecGTE    *uint64  `json:"peakPacketsRecvPerSecGTE,omitempty"`
-	PeakPacketsRecvPerSecLT     *uint64  `json:"peakPacketsRecvPerSecLT,omitempty"`
-	PeakPacketsRecvPerSecLTE    *uint64  `json:"peakPacketsRecvPerSecLTE,omitempty"`
-	PeakPacketsRecvPerSecIsNil  bool     `json:"peakPacketsRecvPerSecIsNil,omitempty"`
-	PeakPacketsRecvPerSecNotNil bool     `json:"peakPacketsRecvPerSecNotNil,omitempty"`
+	PeakPacketsRecvPerSec       *schema.Uint64Numeric  `json:"peakPacketsRecvPerSec,omitempty"`
+	PeakPacketsRecvPerSecNEQ    *schema.Uint64Numeric  `json:"peakPacketsRecvPerSecNEQ,omitempty"`
+	PeakPacketsRecvPerSecIn     []schema.Uint64Numeric `json:"peakPacketsRecvPerSecIn,omitempty"`
+	PeakPacketsRecvPerSecNotIn  []schema.Uint64Numeric `json:"peakPacketsRecvPerSecNotIn,omitempty"`
+	PeakPacketsRecvPerSecGT     *schema.Uint64Numeric  `json:"peakPacketsRecvPerSecGT,omitempty"`
+	PeakPacketsRecvPerSecGTE    *schema.Uint64Numeric  `json:"peakPacketsRecvPerSecGTE,omitempty"`
+	PeakPacketsRecvPerSecLT     *schema.Uint64Numeric  `json:"peakPacketsRecvPerSecLT,omitempty"`
+	PeakPacketsRecvPerSecLTE    *schema.Uint64Numeric  `json:"peakPacketsRecvPerSecLTE,omitempty"`
+	PeakPacketsRecvPerSecIsNil  bool                   `json:"peakPacketsRecvPerSecIsNil,omitempty"`
+	PeakPacketsRecvPerSecNotNil bool                   `json:"peakPacketsRecvPerSecNotNil,omitempty"`
 
 	// "network_metrics" edge predicates.
 	HasNetworkMetrics     *bool                       `json:"hasNetworkMetrics,omitempty"`

@@ -38,6 +38,7 @@ go_library(
         "//ent/gen/ent/configuration",
         "//ent/gen/ent/connectionmetadata",
         "//ent/gen/ent/invocationtarget",
+        "//ent/schema",
         "//internal/api/common",
         "//internal/database",
         "//internal/database/common",

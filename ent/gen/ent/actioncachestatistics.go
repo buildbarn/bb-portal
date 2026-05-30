@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
+	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // ActionCacheStatistics is the model entity for the ActionCacheStatistics schema.
@@ -22,7 +23,9 @@ type ActionCacheStatistics struct {
 	// SaveTimeInMs holds the value of the "save_time_in_ms" field.
 	SaveTimeInMs uint64 `json:"save_time_in_ms,omitempty"`
 	// LoadTimeInMs holds the value of the "load_time_in_ms" field.
-	LoadTimeInMs int64 `json:"load_time_in_ms,omitempty"`
+	LoadTimeInMs schema.Uint64Numeric `json:"load_time_in_ms,omitempty"`
+	// CacheCheckSemaphoreWaitTimeInMs holds the value of the "cache_check_semaphore_wait_time_in_ms" field.
+	CacheCheckSemaphoreWaitTimeInMs schema.Uint64Numeric `json:"cache_check_semaphore_wait_time_in_ms,omitempty"`
 	// Hits holds the value of the "hits" field.
 	Hits int32 `json:"hits,omitempty"`
 	// Misses holds the value of the "misses" field.
@@ -74,7 +77,9 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
+		case actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+			values[i] = new(schema.Uint64Numeric)
+		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
 			values[i] = new(sql.NullInt64)
 		case actioncachestatistics.ForeignKeys[0]: // action_summary_action_cache_statistics
 			values[i] = new(sql.NullInt64)
@@ -112,10 +117,16 @@ func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) e
 				acs.SaveTimeInMs = uint64(value.Int64)
 			}
 		case actioncachestatistics.FieldLoadTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
 				return fmt.Errorf("unexpected type %T for field load_time_in_ms", values[i])
-			} else if value.Valid {
-				acs.LoadTimeInMs = value.Int64
+			} else if value != nil {
+				acs.LoadTimeInMs = *value
+			}
+		case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
+				return fmt.Errorf("unexpected type %T for field cache_check_semaphore_wait_time_in_ms", values[i])
+			} else if value != nil {
+				acs.CacheCheckSemaphoreWaitTimeInMs = *value
 			}
 		case actioncachestatistics.FieldHits:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -190,6 +201,9 @@ func (acs *ActionCacheStatistics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("load_time_in_ms=")
 	builder.WriteString(fmt.Sprintf("%v", acs.LoadTimeInMs))
+	builder.WriteString(", ")
+	builder.WriteString("cache_check_semaphore_wait_time_in_ms=")
+	builder.WriteString(fmt.Sprintf("%v", acs.CacheCheckSemaphoreWaitTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("hits=")
 	builder.WriteString(fmt.Sprintf("%v", acs.Hits))

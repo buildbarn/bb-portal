@@ -25,6 +25,7 @@ go_library(
         "//ent/gen/ent/invocationfiles",
         "//ent/gen/ent/invocationtarget",
         "//ent/gen/ent/target",
+        "//ent/schema",
         "//internal/database",
         "//internal/graphql/helpers",
         "//internal/graphql/model",

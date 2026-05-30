@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
@@ -20,14 +21,29 @@ func (ActionCacheStatistics) Fields() []ent.Field {
 		// This is computed by the code that persists the action cache to disk and
 		// represents the size of the written files, which has no direct relation to
 		// the number of entries in the cache.
-		field.Uint64("size_in_bytes").Optional(),
+		field.Uint64("size_in_bytes").
+			Annotations(entgql.Type("Uint64")).
+			Optional(),
 
 		// Time it took to save the action cache to disk.
-		field.Uint64("save_time_in_ms").Optional(),
+		field.Uint64("save_time_in_ms").
+			Annotations(entgql.Type("Uint64")).
+			Optional(),
 
 		// Time it took to load the action cache from disk. Reported as 0 if the
 		// action cache has not been loaded in this invocation.
-		field.Int64("load_time_in_ms").Optional(),
+		field.Uint64("load_time_in_ms").
+			Annotations(entgql.Type("Uint64")).
+			GoType(Uint64Numeric(0)).
+			Optional().
+			SchemaType(postgresUint64SchemaType),
+
+		// Time spent waiting on the cache check semaphore.
+		field.Uint64("cache_check_semaphore_wait_time_in_ms").
+			Annotations(entgql.Type("Uint64")).
+			GoType(Uint64Numeric(0)).
+			Optional().
+			SchemaType(postgresUint64SchemaType),
 
 		// Cache counters.
 		field.Int32("hits").Optional(),

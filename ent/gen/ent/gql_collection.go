@@ -266,6 +266,11 @@ func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode
 				selectedFields = append(selectedFields, actioncachestatistics.FieldLoadTimeInMs)
 				fieldSeen[actioncachestatistics.FieldLoadTimeInMs] = struct{}{}
 			}
+		case "cacheCheckSemaphoreWaitTimeInMs":
+			if _, ok := fieldSeen[actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+				fieldSeen[actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs] = struct{}{}
+			}
 		case "hits":
 			if _, ok := fieldSeen[actioncachestatistics.FieldHits]; !ok {
 				selectedFields = append(selectedFields, actioncachestatistics.FieldHits)

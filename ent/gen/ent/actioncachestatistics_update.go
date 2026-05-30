@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // ActionCacheStatisticsUpdate is the builder for updating ActionCacheStatistics entities.
@@ -84,29 +85,56 @@ func (acsu *ActionCacheStatisticsUpdate) ClearSaveTimeInMs() *ActionCacheStatist
 }
 
 // SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) SetLoadTimeInMs(i int64) *ActionCacheStatisticsUpdate {
+func (acsu *ActionCacheStatisticsUpdate) SetLoadTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdate {
 	acsu.mutation.ResetLoadTimeInMs()
-	acsu.mutation.SetLoadTimeInMs(i)
+	acsu.mutation.SetLoadTimeInMs(s)
 	return acsu
 }
 
 // SetNillableLoadTimeInMs sets the "load_time_in_ms" field if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableLoadTimeInMs(i *int64) *ActionCacheStatisticsUpdate {
-	if i != nil {
-		acsu.SetLoadTimeInMs(*i)
+func (acsu *ActionCacheStatisticsUpdate) SetNillableLoadTimeInMs(s *schema.Uint64Numeric) *ActionCacheStatisticsUpdate {
+	if s != nil {
+		acsu.SetLoadTimeInMs(*s)
 	}
 	return acsu
 }
 
-// AddLoadTimeInMs adds i to the "load_time_in_ms" field.
-func (acsu *ActionCacheStatisticsUpdate) AddLoadTimeInMs(i int64) *ActionCacheStatisticsUpdate {
-	acsu.mutation.AddLoadTimeInMs(i)
+// AddLoadTimeInMs adds s to the "load_time_in_ms" field.
+func (acsu *ActionCacheStatisticsUpdate) AddLoadTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdate {
+	acsu.mutation.AddLoadTimeInMs(s)
 	return acsu
 }
 
 // ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
 func (acsu *ActionCacheStatisticsUpdate) ClearLoadTimeInMs() *ActionCacheStatisticsUpdate {
 	acsu.mutation.ClearLoadTimeInMs()
+	return acsu
+}
+
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (acsu *ActionCacheStatisticsUpdate) SetCacheCheckSemaphoreWaitTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdate {
+	acsu.mutation.ResetCacheCheckSemaphoreWaitTimeInMs()
+	acsu.mutation.SetCacheCheckSemaphoreWaitTimeInMs(s)
+	return acsu
+}
+
+// SetNillableCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field if the given value is not nil.
+func (acsu *ActionCacheStatisticsUpdate) SetNillableCacheCheckSemaphoreWaitTimeInMs(s *schema.Uint64Numeric) *ActionCacheStatisticsUpdate {
+	if s != nil {
+		acsu.SetCacheCheckSemaphoreWaitTimeInMs(*s)
+	}
+	return acsu
+}
+
+// AddCacheCheckSemaphoreWaitTimeInMs adds s to the "cache_check_semaphore_wait_time_in_ms" field.
+func (acsu *ActionCacheStatisticsUpdate) AddCacheCheckSemaphoreWaitTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdate {
+	acsu.mutation.AddCacheCheckSemaphoreWaitTimeInMs(s)
+	return acsu
+}
+
+// ClearCacheCheckSemaphoreWaitTimeInMs clears the value of the "cache_check_semaphore_wait_time_in_ms" field.
+func (acsu *ActionCacheStatisticsUpdate) ClearCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpdate {
+	acsu.mutation.ClearCacheCheckSemaphoreWaitTimeInMs()
 	return acsu
 }
 
@@ -285,13 +313,22 @@ func (acsu *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (n int, er
 		_spec.ClearField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64)
 	}
 	if value, ok := acsu.mutation.LoadTimeInMs(); ok {
-		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
+		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeUint64, value)
 	}
 	if value, ok := acsu.mutation.AddedLoadTimeInMs(); ok {
-		_spec.AddField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
+		_spec.AddField(actioncachestatistics.FieldLoadTimeInMs, field.TypeUint64, value)
 	}
 	if acsu.mutation.LoadTimeInMsCleared() {
-		_spec.ClearField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64)
+		_spec.ClearField(actioncachestatistics.FieldLoadTimeInMs, field.TypeUint64)
+	}
+	if value, ok := acsu.mutation.CacheCheckSemaphoreWaitTimeInMs(); ok {
+		_spec.SetField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64, value)
+	}
+	if value, ok := acsu.mutation.AddedCacheCheckSemaphoreWaitTimeInMs(); ok {
+		_spec.AddField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64, value)
+	}
+	if acsu.mutation.CacheCheckSemaphoreWaitTimeInMsCleared() {
+		_spec.ClearField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64)
 	}
 	if value, ok := acsu.mutation.Hits(); ok {
 		_spec.SetField(actioncachestatistics.FieldHits, field.TypeInt32, value)
@@ -460,29 +497,56 @@ func (acsuo *ActionCacheStatisticsUpdateOne) ClearSaveTimeInMs() *ActionCacheSta
 }
 
 // SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetLoadTimeInMs(i int64) *ActionCacheStatisticsUpdateOne {
+func (acsuo *ActionCacheStatisticsUpdateOne) SetLoadTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdateOne {
 	acsuo.mutation.ResetLoadTimeInMs()
-	acsuo.mutation.SetLoadTimeInMs(i)
+	acsuo.mutation.SetLoadTimeInMs(s)
 	return acsuo
 }
 
 // SetNillableLoadTimeInMs sets the "load_time_in_ms" field if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableLoadTimeInMs(i *int64) *ActionCacheStatisticsUpdateOne {
-	if i != nil {
-		acsuo.SetLoadTimeInMs(*i)
+func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableLoadTimeInMs(s *schema.Uint64Numeric) *ActionCacheStatisticsUpdateOne {
+	if s != nil {
+		acsuo.SetLoadTimeInMs(*s)
 	}
 	return acsuo
 }
 
-// AddLoadTimeInMs adds i to the "load_time_in_ms" field.
-func (acsuo *ActionCacheStatisticsUpdateOne) AddLoadTimeInMs(i int64) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.AddLoadTimeInMs(i)
+// AddLoadTimeInMs adds s to the "load_time_in_ms" field.
+func (acsuo *ActionCacheStatisticsUpdateOne) AddLoadTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdateOne {
+	acsuo.mutation.AddLoadTimeInMs(s)
 	return acsuo
 }
 
 // ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
 func (acsuo *ActionCacheStatisticsUpdateOne) ClearLoadTimeInMs() *ActionCacheStatisticsUpdateOne {
 	acsuo.mutation.ClearLoadTimeInMs()
+	return acsuo
+}
+
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (acsuo *ActionCacheStatisticsUpdateOne) SetCacheCheckSemaphoreWaitTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdateOne {
+	acsuo.mutation.ResetCacheCheckSemaphoreWaitTimeInMs()
+	acsuo.mutation.SetCacheCheckSemaphoreWaitTimeInMs(s)
+	return acsuo
+}
+
+// SetNillableCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field if the given value is not nil.
+func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableCacheCheckSemaphoreWaitTimeInMs(s *schema.Uint64Numeric) *ActionCacheStatisticsUpdateOne {
+	if s != nil {
+		acsuo.SetCacheCheckSemaphoreWaitTimeInMs(*s)
+	}
+	return acsuo
+}
+
+// AddCacheCheckSemaphoreWaitTimeInMs adds s to the "cache_check_semaphore_wait_time_in_ms" field.
+func (acsuo *ActionCacheStatisticsUpdateOne) AddCacheCheckSemaphoreWaitTimeInMs(s schema.Uint64Numeric) *ActionCacheStatisticsUpdateOne {
+	acsuo.mutation.AddCacheCheckSemaphoreWaitTimeInMs(s)
+	return acsuo
+}
+
+// ClearCacheCheckSemaphoreWaitTimeInMs clears the value of the "cache_check_semaphore_wait_time_in_ms" field.
+func (acsuo *ActionCacheStatisticsUpdateOne) ClearCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpdateOne {
+	acsuo.mutation.ClearCacheCheckSemaphoreWaitTimeInMs()
 	return acsuo
 }
 
@@ -691,13 +755,22 @@ func (acsuo *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node
 		_spec.ClearField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64)
 	}
 	if value, ok := acsuo.mutation.LoadTimeInMs(); ok {
-		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
+		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeUint64, value)
 	}
 	if value, ok := acsuo.mutation.AddedLoadTimeInMs(); ok {
-		_spec.AddField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
+		_spec.AddField(actioncachestatistics.FieldLoadTimeInMs, field.TypeUint64, value)
 	}
 	if acsuo.mutation.LoadTimeInMsCleared() {
-		_spec.ClearField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64)
+		_spec.ClearField(actioncachestatistics.FieldLoadTimeInMs, field.TypeUint64)
+	}
+	if value, ok := acsuo.mutation.CacheCheckSemaphoreWaitTimeInMs(); ok {
+		_spec.SetField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64, value)
+	}
+	if value, ok := acsuo.mutation.AddedCacheCheckSemaphoreWaitTimeInMs(); ok {
+		_spec.AddField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64, value)
+	}
+	if acsuo.mutation.CacheCheckSemaphoreWaitTimeInMsCleared() {
+		_spec.ClearField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64)
 	}
 	if value, ok := acsuo.mutation.Hits(); ok {
 		_spec.SetField(actioncachestatistics.FieldHits, field.TypeInt32, value)

@@ -89,11 +89,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "ActionCacheStatistics",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			actioncachestatistics.FieldSizeInBytes:  {Type: field.TypeUint64, Column: actioncachestatistics.FieldSizeInBytes},
-			actioncachestatistics.FieldSaveTimeInMs: {Type: field.TypeUint64, Column: actioncachestatistics.FieldSaveTimeInMs},
-			actioncachestatistics.FieldLoadTimeInMs: {Type: field.TypeInt64, Column: actioncachestatistics.FieldLoadTimeInMs},
-			actioncachestatistics.FieldHits:         {Type: field.TypeInt32, Column: actioncachestatistics.FieldHits},
-			actioncachestatistics.FieldMisses:       {Type: field.TypeInt32, Column: actioncachestatistics.FieldMisses},
+			actioncachestatistics.FieldSizeInBytes:                     {Type: field.TypeUint64, Column: actioncachestatistics.FieldSizeInBytes},
+			actioncachestatistics.FieldSaveTimeInMs:                    {Type: field.TypeUint64, Column: actioncachestatistics.FieldSaveTimeInMs},
+			actioncachestatistics.FieldLoadTimeInMs:                    {Type: field.TypeUint64, Column: actioncachestatistics.FieldLoadTimeInMs},
+			actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs: {Type: field.TypeUint64, Column: actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs},
+			actioncachestatistics.FieldHits:                            {Type: field.TypeInt32, Column: actioncachestatistics.FieldHits},
+			actioncachestatistics.FieldMisses:                          {Type: field.TypeInt32, Column: actioncachestatistics.FieldMisses},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -1788,9 +1789,14 @@ func (f *ActionCacheStatisticsFilter) WhereSaveTimeInMs(p entql.Uint64P) {
 	f.Where(p.Field(actioncachestatistics.FieldSaveTimeInMs))
 }
 
-// WhereLoadTimeInMs applies the entql int64 predicate on the load_time_in_ms field.
-func (f *ActionCacheStatisticsFilter) WhereLoadTimeInMs(p entql.Int64P) {
+// WhereLoadTimeInMs applies the entql uint64 predicate on the load_time_in_ms field.
+func (f *ActionCacheStatisticsFilter) WhereLoadTimeInMs(p entql.Uint64P) {
 	f.Where(p.Field(actioncachestatistics.FieldLoadTimeInMs))
+}
+
+// WhereCacheCheckSemaphoreWaitTimeInMs applies the entql uint64 predicate on the cache_check_semaphore_wait_time_in_ms field.
+func (f *ActionCacheStatisticsFilter) WhereCacheCheckSemaphoreWaitTimeInMs(p entql.Uint64P) {
+	f.Where(p.Field(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs))
 }
 
 // WhereHits applies the entql int32 predicate on the hits field.
