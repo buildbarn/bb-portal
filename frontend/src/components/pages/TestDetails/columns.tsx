@@ -4,7 +4,7 @@ import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
 import styles from "@/theme/theme.module.css";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import NullBooleanTag from "../../NullableBooleanTag";
-import TestStatusTag, { type TestStatusEnum } from "../../TestStatusTag";
+import { TestStatusTag } from "../../TestStatusTag";
 
 export type TestDetailsRowType = NonNullable<
   NonNullable<
@@ -17,15 +17,9 @@ export type TestDetailsRowType = NonNullable<
 
 export const columns: TableColumnsType<TestDetailsRowType> = [
   {
+    key: "status",
     title: "Status",
-    dataIndex: "status",
-    render: (_, record) => (
-      <TestStatusTag
-        displayText={true}
-        key="status"
-        status={record.overallStatus as TestStatusEnum}
-      />
-    ),
+    render: (_, record) => <TestStatusTag status={record.overallStatus} />,
   },
   {
     title: "Invocation ID",
