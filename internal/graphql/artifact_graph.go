@@ -11,16 +11,16 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// decodeArtifactGraph decompresses and decodes the stored BEP-graph blob
-// into the structured GraphQL model. The blob is a zstd stream of
+// decodeArtifactGraphBlob decompresses and decodes the compacted BEP-graph
+// blob into the structured GraphQL model. The blob is a zstd stream of
 // length-prefixed serialized bes.BuildEvent messages (NamedSetOfFiles and
-// TargetCompleted variants only), written by
-// internal/database/buildeventrecorder/artifact_graph_buffer.go.
+// TargetCompleted variants only), produced by
+// dbcleanupservice.CompactArtifactGraphs.
 //
 // Decoding happens entirely server-side using the generated BES protos;
 // the client receives structured data and never sees the compressed
 // bytes or has to parse a wire format.
-func decodeArtifactGraph(compressed []byte) (*model.ArtifactGraph, error) {
+func decodeArtifactGraphBlob(compressed []byte) (*model.ArtifactGraph, error) {
 	dec, err := zstd.NewReader(nil)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create zstd reader for artifact graph")
@@ -32,10 +32,7 @@ func decodeArtifactGraph(compressed []byte) (*model.ArtifactGraph, error) {
 		return nil, util.StatusWrap(err, "Failed to decompress artifact graph")
 	}
 
-	graph := &model.ArtifactGraph{
-		NamedSets: []*model.ArtifactNamedSet{},
-		Targets:   []*model.ArtifactTarget{},
-	}
+	graph := newArtifactGraph()
 	for len(raw) > 0 {
 		msgLen, n := binary.Uvarint(raw)
 		if n <= 0 {
@@ -45,14 +42,42 @@ func decodeArtifactGraph(compressed []byte) (*model.ArtifactGraph, error) {
 		if uint64(len(raw)) < msgLen {
 			return nil, util.StatusWrap(fmt.Errorf("length-prefixed message past end of stream"), "Failed to decode artifact graph")
 		}
-		var event bes.BuildEvent
-		if err := proto.Unmarshal(raw[:msgLen], &event); err != nil {
-			return nil, util.StatusWrap(err, "Failed to unmarshal artifact graph BuildEvent")
+		if err := foldArtifactEventBytes(graph, raw[:msgLen]); err != nil {
+			return nil, err
 		}
 		raw = raw[msgLen:]
-		appendArtifactEvent(graph, &event)
 	}
 	return graph, nil
+}
+
+// decodeArtifactGraphEvents decodes the structured graph from the
+// uncompacted staging events (one serialized bes.BuildEvent per element),
+// so the graph can be served in its partial state before compaction has
+// run.
+func decodeArtifactGraphEvents(events [][]byte) (*model.ArtifactGraph, error) {
+	graph := newArtifactGraph()
+	for _, event := range events {
+		if err := foldArtifactEventBytes(graph, event); err != nil {
+			return nil, err
+		}
+	}
+	return graph, nil
+}
+
+func newArtifactGraph() *model.ArtifactGraph {
+	return &model.ArtifactGraph{
+		NamedSets: []*model.ArtifactNamedSet{},
+		Targets:   []*model.ArtifactTarget{},
+	}
+}
+
+func foldArtifactEventBytes(graph *model.ArtifactGraph, raw []byte) error {
+	var event bes.BuildEvent
+	if err := proto.Unmarshal(raw, &event); err != nil {
+		return util.StatusWrap(err, "Failed to unmarshal artifact graph BuildEvent")
+	}
+	appendArtifactEvent(graph, &event)
+	return nil
 }
 
 // appendArtifactEvent folds a single BuildEvent into the graph, handling

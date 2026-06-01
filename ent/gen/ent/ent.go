@@ -27,6 +27,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
@@ -122,6 +123,7 @@ func checkColumn(t, c string) error {
 			connectionmetadata.Table:      connectionmetadata.ValidColumn,
 			eventmetadata.Table:           eventmetadata.ValidColumn,
 			garbagemetrics.Table:          garbagemetrics.ValidColumn,
+			incompleteartifactgraph.Table: incompleteartifactgraph.ValidColumn,
 			incompletebuildlog.Table:      incompletebuildlog.ValidColumn,
 			instancename.Table:            instancename.ValidColumn,
 			invocationartifactgraph.Table: invocationartifactgraph.ValidColumn,

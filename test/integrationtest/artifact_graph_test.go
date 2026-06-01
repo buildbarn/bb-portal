@@ -22,9 +22,11 @@ import (
 // the expected NamedSetOfFiles + TargetCompleted shape for the fixture
 // build.
 //
-// The server decodes the stored blob and returns structured data, so the
-// test walks the named-set graph directly rather than parsing a wire
-// format.
+// Compaction (dbcleanupservice) does not run in this test, so the graph is
+// served from the incomplete_artifact_graphs staging table via the
+// resolver's partial-state path. The server decodes the events and returns
+// structured data, so the test walks the named-set graph directly rather
+// than parsing a wire format.
 func TestArtifactGraphEndToEnd(t *testing.T) {
 	ctx := context.Background()
 

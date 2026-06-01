@@ -471,6 +471,30 @@ func (f GarbageMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.GarbageMetricsMutation", m)
 }
 
+// The IncompleteArtifactGraphQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type IncompleteArtifactGraphQueryRuleFunc func(context.Context, *ent.IncompleteArtifactGraphQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f IncompleteArtifactGraphQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.IncompleteArtifactGraphQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.IncompleteArtifactGraphQuery", q)
+}
+
+// The IncompleteArtifactGraphMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type IncompleteArtifactGraphMutationRuleFunc func(context.Context, *ent.IncompleteArtifactGraphMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f IncompleteArtifactGraphMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.IncompleteArtifactGraphMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.IncompleteArtifactGraphMutation", m)
+}
+
 // The IncompleteBuildLogQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type IncompleteBuildLogQueryRuleFunc func(context.Context, *ent.IncompleteBuildLogQuery) error
@@ -1016,6 +1040,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.GarbageMetricsQuery:
 		return q.Filter(), nil
+	case *ent.IncompleteArtifactGraphQuery:
+		return q.Filter(), nil
 	case *ent.IncompleteBuildLogQuery:
 		return q.Filter(), nil
 	case *ent.InstanceNameQuery:
@@ -1092,6 +1118,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.EventMetadataMutation:
 		return m.Filter(), nil
 	case *ent.GarbageMetricsMutation:
+		return m.Filter(), nil
+	case *ent.IncompleteArtifactGraphMutation:
 		return m.Filter(), nil
 	case *ent.IncompleteBuildLogMutation:
 		return m.Filter(), nil

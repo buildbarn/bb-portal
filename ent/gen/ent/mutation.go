@@ -26,6 +26,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
@@ -75,6 +76,7 @@ const (
 	TypeConnectionMetadata      = "ConnectionMetadata"
 	TypeEventMetadata           = "EventMetadata"
 	TypeGarbageMetrics          = "GarbageMetrics"
+	TypeIncompleteArtifactGraph = "IncompleteArtifactGraph"
 	TypeIncompleteBuildLog      = "IncompleteBuildLog"
 	TypeInstanceName            = "InstanceName"
 	TypeInvocationArtifactGraph = "InvocationArtifactGraph"
@@ -6665,76 +6667,79 @@ func (m *AuthenticatedUserMutation) ResetEdge(name string) error {
 // BazelInvocationMutation represents an operation that mutates the BazelInvocation nodes in the graph.
 type BazelInvocationMutation struct {
 	config
-	op                               Op
-	typ                              string
-	id                               *int64
-	invocation_id                    *uuid.UUID
-	created_timestamp                *time.Time
-	started_at                       *time.Time
-	ended_at                         *time.Time
-	bep_completed                    *bool
-	username                         *string
-	hostname                         *string
-	num_fetches                      *int64
-	addnum_fetches                   *int64
-	profile_name                     *string
-	bazel_version                    *string
-	exit_code_name                   *string
-	exit_code_code                   *int32
-	addexit_code_code                *int32
-	canonical_command_line           **invocation.CommandLineData
-	original_command_line            **invocation.CommandLineData
-	options_parsed                   **invocation.ParsedCommandLineOptions
-	environment_variables            *map[string]string
-	processed_event_started          *bool
-	processed_event_build_metadata   *bool
-	processed_event_build_finished   *bool
-	processed_event_workspace_status *bool
-	clearedFields                    map[string]struct{}
-	instance_name                    *int64
-	clearedinstance_name             bool
-	build                            *int64
-	clearedbuild                     bool
-	authenticated_user               *int64
-	clearedauthenticated_user        bool
-	tags                             map[int64]struct{}
-	removedtags                      map[int64]struct{}
-	clearedtags                      bool
-	event_metadata                   *int64
-	clearedevent_metadata            bool
-	connection_metadata              *int64
-	clearedconnection_metadata       bool
-	configurations                   map[int64]struct{}
-	removedconfigurations            map[int64]struct{}
-	clearedconfigurations            bool
-	actions                          map[int64]struct{}
-	removedactions                   map[int64]struct{}
-	clearedactions                   bool
-	metrics                          *int64
-	clearedmetrics                   bool
-	incomplete_build_logs            map[int64]struct{}
-	removedincomplete_build_logs     map[int64]struct{}
-	clearedincomplete_build_logs     bool
-	build_log_chunks                 map[int64]struct{}
-	removedbuild_log_chunks          map[int64]struct{}
-	clearedbuild_log_chunks          bool
-	invocation_files                 map[int64]struct{}
-	removedinvocation_files          map[int64]struct{}
-	clearedinvocation_files          bool
-	invocation_targets               map[int64]struct{}
-	removedinvocation_targets        map[int64]struct{}
-	clearedinvocation_targets        bool
-	target_kind_mappings             map[int64]struct{}
-	removedtarget_kind_mappings      map[int64]struct{}
-	clearedtarget_kind_mappings      bool
-	source_control                   map[int64]struct{}
-	removedsource_control            map[int64]struct{}
-	clearedsource_control            bool
-	artifact_graph                   *int64
-	clearedartifact_graph            bool
-	done                             bool
-	oldValue                         func(context.Context) (*BazelInvocation, error)
-	predicates                       []predicate.BazelInvocation
+	op                                Op
+	typ                               string
+	id                                *int64
+	invocation_id                     *uuid.UUID
+	created_timestamp                 *time.Time
+	started_at                        *time.Time
+	ended_at                          *time.Time
+	bep_completed                     *bool
+	username                          *string
+	hostname                          *string
+	num_fetches                       *int64
+	addnum_fetches                    *int64
+	profile_name                      *string
+	bazel_version                     *string
+	exit_code_name                    *string
+	exit_code_code                    *int32
+	addexit_code_code                 *int32
+	canonical_command_line            **invocation.CommandLineData
+	original_command_line             **invocation.CommandLineData
+	options_parsed                    **invocation.ParsedCommandLineOptions
+	environment_variables             *map[string]string
+	processed_event_started           *bool
+	processed_event_build_metadata    *bool
+	processed_event_build_finished    *bool
+	processed_event_workspace_status  *bool
+	clearedFields                     map[string]struct{}
+	instance_name                     *int64
+	clearedinstance_name              bool
+	build                             *int64
+	clearedbuild                      bool
+	authenticated_user                *int64
+	clearedauthenticated_user         bool
+	tags                              map[int64]struct{}
+	removedtags                       map[int64]struct{}
+	clearedtags                       bool
+	event_metadata                    *int64
+	clearedevent_metadata             bool
+	connection_metadata               *int64
+	clearedconnection_metadata        bool
+	configurations                    map[int64]struct{}
+	removedconfigurations             map[int64]struct{}
+	clearedconfigurations             bool
+	actions                           map[int64]struct{}
+	removedactions                    map[int64]struct{}
+	clearedactions                    bool
+	metrics                           *int64
+	clearedmetrics                    bool
+	incomplete_build_logs             map[int64]struct{}
+	removedincomplete_build_logs      map[int64]struct{}
+	clearedincomplete_build_logs      bool
+	build_log_chunks                  map[int64]struct{}
+	removedbuild_log_chunks           map[int64]struct{}
+	clearedbuild_log_chunks           bool
+	incomplete_artifact_graphs        map[int64]struct{}
+	removedincomplete_artifact_graphs map[int64]struct{}
+	clearedincomplete_artifact_graphs bool
+	invocation_files                  map[int64]struct{}
+	removedinvocation_files           map[int64]struct{}
+	clearedinvocation_files           bool
+	invocation_targets                map[int64]struct{}
+	removedinvocation_targets         map[int64]struct{}
+	clearedinvocation_targets         bool
+	target_kind_mappings              map[int64]struct{}
+	removedtarget_kind_mappings       map[int64]struct{}
+	clearedtarget_kind_mappings       bool
+	source_control                    map[int64]struct{}
+	removedsource_control             map[int64]struct{}
+	clearedsource_control             bool
+	artifact_graph                    *int64
+	clearedartifact_graph             bool
+	done                              bool
+	oldValue                          func(context.Context) (*BazelInvocation, error)
+	predicates                        []predicate.BazelInvocation
 }
 
 var _ ent.Mutation = (*BazelInvocationMutation)(nil)
@@ -8276,6 +8281,60 @@ func (m *BazelInvocationMutation) ResetBuildLogChunks() {
 	m.removedbuild_log_chunks = nil
 }
 
+// AddIncompleteArtifactGraphIDs adds the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity by ids.
+func (m *BazelInvocationMutation) AddIncompleteArtifactGraphIDs(ids ...int64) {
+	if m.incomplete_artifact_graphs == nil {
+		m.incomplete_artifact_graphs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.incomplete_artifact_graphs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearIncompleteArtifactGraphs clears the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity.
+func (m *BazelInvocationMutation) ClearIncompleteArtifactGraphs() {
+	m.clearedincomplete_artifact_graphs = true
+}
+
+// IncompleteArtifactGraphsCleared reports if the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity was cleared.
+func (m *BazelInvocationMutation) IncompleteArtifactGraphsCleared() bool {
+	return m.clearedincomplete_artifact_graphs
+}
+
+// RemoveIncompleteArtifactGraphIDs removes the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity by IDs.
+func (m *BazelInvocationMutation) RemoveIncompleteArtifactGraphIDs(ids ...int64) {
+	if m.removedincomplete_artifact_graphs == nil {
+		m.removedincomplete_artifact_graphs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.incomplete_artifact_graphs, ids[i])
+		m.removedincomplete_artifact_graphs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedIncompleteArtifactGraphs returns the removed IDs of the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity.
+func (m *BazelInvocationMutation) RemovedIncompleteArtifactGraphsIDs() (ids []int64) {
+	for id := range m.removedincomplete_artifact_graphs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// IncompleteArtifactGraphsIDs returns the "incomplete_artifact_graphs" edge IDs in the mutation.
+func (m *BazelInvocationMutation) IncompleteArtifactGraphsIDs() (ids []int64) {
+	for id := range m.incomplete_artifact_graphs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetIncompleteArtifactGraphs resets all changes to the "incomplete_artifact_graphs" edge.
+func (m *BazelInvocationMutation) ResetIncompleteArtifactGraphs() {
+	m.incomplete_artifact_graphs = nil
+	m.clearedincomplete_artifact_graphs = false
+	m.removedincomplete_artifact_graphs = nil
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by ids.
 func (m *BazelInvocationMutation) AddInvocationFileIDs(ids ...int64) {
 	if m.invocation_files == nil {
@@ -9095,7 +9154,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 17)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9128,6 +9187,9 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.build_log_chunks != nil {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
+	}
+	if m.incomplete_artifact_graphs != nil {
+		edges = append(edges, bazelinvocation.EdgeIncompleteArtifactGraphs)
 	}
 	if m.invocation_files != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
@@ -9205,6 +9267,12 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeIncompleteArtifactGraphs:
+		ids := make([]ent.Value, 0, len(m.incomplete_artifact_graphs))
+		for id := range m.incomplete_artifact_graphs {
+			ids = append(ids, id)
+		}
+		return ids
 	case bazelinvocation.EdgeInvocationFiles:
 		ids := make([]ent.Value, 0, len(m.invocation_files))
 		for id := range m.invocation_files {
@@ -9239,7 +9307,7 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 17)
 	if m.removedtags != nil {
 		edges = append(edges, bazelinvocation.EdgeTags)
 	}
@@ -9254,6 +9322,9 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	}
 	if m.removedbuild_log_chunks != nil {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
+	}
+	if m.removedincomplete_artifact_graphs != nil {
+		edges = append(edges, bazelinvocation.EdgeIncompleteArtifactGraphs)
 	}
 	if m.removedinvocation_files != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
@@ -9304,6 +9375,12 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeIncompleteArtifactGraphs:
+		ids := make([]ent.Value, 0, len(m.removedincomplete_artifact_graphs))
+		for id := range m.removedincomplete_artifact_graphs {
+			ids = append(ids, id)
+		}
+		return ids
 	case bazelinvocation.EdgeInvocationFiles:
 		ids := make([]ent.Value, 0, len(m.removedinvocation_files))
 		for id := range m.removedinvocation_files {
@@ -9334,7 +9411,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 17)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9367,6 +9444,9 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedbuild_log_chunks {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
+	}
+	if m.clearedincomplete_artifact_graphs {
+		edges = append(edges, bazelinvocation.EdgeIncompleteArtifactGraphs)
 	}
 	if m.clearedinvocation_files {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
@@ -9412,6 +9492,8 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedincomplete_build_logs
 	case bazelinvocation.EdgeBuildLogChunks:
 		return m.clearedbuild_log_chunks
+	case bazelinvocation.EdgeIncompleteArtifactGraphs:
+		return m.clearedincomplete_artifact_graphs
 	case bazelinvocation.EdgeInvocationFiles:
 		return m.clearedinvocation_files
 	case bazelinvocation.EdgeInvocationTargets:
@@ -9491,6 +9573,9 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeBuildLogChunks:
 		m.ResetBuildLogChunks()
+		return nil
+	case bazelinvocation.EdgeIncompleteArtifactGraphs:
+		m.ResetIncompleteArtifactGraphs()
 		return nil
 	case bazelinvocation.EdgeInvocationFiles:
 		m.ResetInvocationFiles()
@@ -15097,6 +15182,536 @@ func (m *GarbageMetricsMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown GarbageMetrics edge %s", name)
+}
+
+// IncompleteArtifactGraphMutation represents an operation that mutates the IncompleteArtifactGraph nodes in the graph.
+type IncompleteArtifactGraphMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int64
+	seq_id                  *int32
+	addseq_id               *int32
+	event                   *[]byte
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int64
+	clearedbazel_invocation bool
+	done                    bool
+	oldValue                func(context.Context) (*IncompleteArtifactGraph, error)
+	predicates              []predicate.IncompleteArtifactGraph
+}
+
+var _ ent.Mutation = (*IncompleteArtifactGraphMutation)(nil)
+
+// incompleteartifactgraphOption allows management of the mutation configuration using functional options.
+type incompleteartifactgraphOption func(*IncompleteArtifactGraphMutation)
+
+// newIncompleteArtifactGraphMutation creates new mutation for the IncompleteArtifactGraph entity.
+func newIncompleteArtifactGraphMutation(c config, op Op, opts ...incompleteartifactgraphOption) *IncompleteArtifactGraphMutation {
+	m := &IncompleteArtifactGraphMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeIncompleteArtifactGraph,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withIncompleteArtifactGraphID sets the ID field of the mutation.
+func withIncompleteArtifactGraphID(id int64) incompleteartifactgraphOption {
+	return func(m *IncompleteArtifactGraphMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *IncompleteArtifactGraph
+		)
+		m.oldValue = func(ctx context.Context) (*IncompleteArtifactGraph, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().IncompleteArtifactGraph.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withIncompleteArtifactGraph sets the old IncompleteArtifactGraph of the mutation.
+func withIncompleteArtifactGraph(node *IncompleteArtifactGraph) incompleteartifactgraphOption {
+	return func(m *IncompleteArtifactGraphMutation) {
+		m.oldValue = func(context.Context) (*IncompleteArtifactGraph, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m IncompleteArtifactGraphMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m IncompleteArtifactGraphMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of IncompleteArtifactGraph entities.
+func (m *IncompleteArtifactGraphMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *IncompleteArtifactGraphMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *IncompleteArtifactGraphMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().IncompleteArtifactGraph.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSeqID sets the "seq_id" field.
+func (m *IncompleteArtifactGraphMutation) SetSeqID(i int32) {
+	m.seq_id = &i
+	m.addseq_id = nil
+}
+
+// SeqID returns the value of the "seq_id" field in the mutation.
+func (m *IncompleteArtifactGraphMutation) SeqID() (r int32, exists bool) {
+	v := m.seq_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSeqID returns the old "seq_id" field's value of the IncompleteArtifactGraph entity.
+// If the IncompleteArtifactGraph object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IncompleteArtifactGraphMutation) OldSeqID(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSeqID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSeqID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSeqID: %w", err)
+	}
+	return oldValue.SeqID, nil
+}
+
+// AddSeqID adds i to the "seq_id" field.
+func (m *IncompleteArtifactGraphMutation) AddSeqID(i int32) {
+	if m.addseq_id != nil {
+		*m.addseq_id += i
+	} else {
+		m.addseq_id = &i
+	}
+}
+
+// AddedSeqID returns the value that was added to the "seq_id" field in this mutation.
+func (m *IncompleteArtifactGraphMutation) AddedSeqID() (r int32, exists bool) {
+	v := m.addseq_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSeqID resets all changes to the "seq_id" field.
+func (m *IncompleteArtifactGraphMutation) ResetSeqID() {
+	m.seq_id = nil
+	m.addseq_id = nil
+}
+
+// SetEvent sets the "event" field.
+func (m *IncompleteArtifactGraphMutation) SetEvent(b []byte) {
+	m.event = &b
+}
+
+// Event returns the value of the "event" field in the mutation.
+func (m *IncompleteArtifactGraphMutation) Event() (r []byte, exists bool) {
+	v := m.event
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEvent returns the old "event" field's value of the IncompleteArtifactGraph entity.
+// If the IncompleteArtifactGraph object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IncompleteArtifactGraphMutation) OldEvent(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEvent is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEvent requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEvent: %w", err)
+	}
+	return oldValue.Event, nil
+}
+
+// ResetEvent resets all changes to the "event" field.
+func (m *IncompleteArtifactGraphMutation) ResetEvent() {
+	m.event = nil
+}
+
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (m *IncompleteArtifactGraphMutation) SetBazelInvocationID(i int64) {
+	m.bazel_invocation = &i
+}
+
+// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
+func (m *IncompleteArtifactGraphMutation) BazelInvocationID() (r int64, exists bool) {
+	v := m.bazel_invocation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the IncompleteArtifactGraph entity.
+// If the IncompleteArtifactGraph object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IncompleteArtifactGraphMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
+	}
+	return oldValue.BazelInvocationID, nil
+}
+
+// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
+func (m *IncompleteArtifactGraphMutation) ResetBazelInvocationID() {
+	m.bazel_invocation = nil
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *IncompleteArtifactGraphMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+	m.clearedFields[incompleteartifactgraph.FieldBazelInvocationID] = struct{}{}
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *IncompleteArtifactGraphMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *IncompleteArtifactGraphMutation) BazelInvocationIDs() (ids []int64) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *IncompleteArtifactGraphMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// Where appends a list predicates to the IncompleteArtifactGraphMutation builder.
+func (m *IncompleteArtifactGraphMutation) Where(ps ...predicate.IncompleteArtifactGraph) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the IncompleteArtifactGraphMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *IncompleteArtifactGraphMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.IncompleteArtifactGraph, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *IncompleteArtifactGraphMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *IncompleteArtifactGraphMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (IncompleteArtifactGraph).
+func (m *IncompleteArtifactGraphMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *IncompleteArtifactGraphMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.seq_id != nil {
+		fields = append(fields, incompleteartifactgraph.FieldSeqID)
+	}
+	if m.event != nil {
+		fields = append(fields, incompleteartifactgraph.FieldEvent)
+	}
+	if m.bazel_invocation != nil {
+		fields = append(fields, incompleteartifactgraph.FieldBazelInvocationID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *IncompleteArtifactGraphMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case incompleteartifactgraph.FieldSeqID:
+		return m.SeqID()
+	case incompleteartifactgraph.FieldEvent:
+		return m.Event()
+	case incompleteartifactgraph.FieldBazelInvocationID:
+		return m.BazelInvocationID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *IncompleteArtifactGraphMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case incompleteartifactgraph.FieldSeqID:
+		return m.OldSeqID(ctx)
+	case incompleteartifactgraph.FieldEvent:
+		return m.OldEvent(ctx)
+	case incompleteartifactgraph.FieldBazelInvocationID:
+		return m.OldBazelInvocationID(ctx)
+	}
+	return nil, fmt.Errorf("unknown IncompleteArtifactGraph field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *IncompleteArtifactGraphMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case incompleteartifactgraph.FieldSeqID:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSeqID(v)
+		return nil
+	case incompleteartifactgraph.FieldEvent:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEvent(v)
+		return nil
+	case incompleteartifactgraph.FieldBazelInvocationID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBazelInvocationID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown IncompleteArtifactGraph field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *IncompleteArtifactGraphMutation) AddedFields() []string {
+	var fields []string
+	if m.addseq_id != nil {
+		fields = append(fields, incompleteartifactgraph.FieldSeqID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *IncompleteArtifactGraphMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case incompleteartifactgraph.FieldSeqID:
+		return m.AddedSeqID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *IncompleteArtifactGraphMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case incompleteartifactgraph.FieldSeqID:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSeqID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown IncompleteArtifactGraph numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *IncompleteArtifactGraphMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *IncompleteArtifactGraphMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *IncompleteArtifactGraphMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown IncompleteArtifactGraph nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *IncompleteArtifactGraphMutation) ResetField(name string) error {
+	switch name {
+	case incompleteartifactgraph.FieldSeqID:
+		m.ResetSeqID()
+		return nil
+	case incompleteartifactgraph.FieldEvent:
+		m.ResetEvent()
+		return nil
+	case incompleteartifactgraph.FieldBazelInvocationID:
+		m.ResetBazelInvocationID()
+		return nil
+	}
+	return fmt.Errorf("unknown IncompleteArtifactGraph field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *IncompleteArtifactGraphMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.bazel_invocation != nil {
+		edges = append(edges, incompleteartifactgraph.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *IncompleteArtifactGraphMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case incompleteartifactgraph.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *IncompleteArtifactGraphMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *IncompleteArtifactGraphMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *IncompleteArtifactGraphMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedbazel_invocation {
+		edges = append(edges, incompleteartifactgraph.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *IncompleteArtifactGraphMutation) EdgeCleared(name string) bool {
+	switch name {
+	case incompleteartifactgraph.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *IncompleteArtifactGraphMutation) ClearEdge(name string) error {
+	switch name {
+	case incompleteartifactgraph.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown IncompleteArtifactGraph unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *IncompleteArtifactGraphMutation) ResetEdge(name string) error {
+	switch name {
+	case incompleteartifactgraph.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown IncompleteArtifactGraph edge %s", name)
 }
 
 // IncompleteBuildLogMutation represents an operation that mutates the IncompleteBuildLog nodes in the graph.

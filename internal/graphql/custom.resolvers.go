@@ -62,20 +62,29 @@ func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInv
 	}, nil
 }
 
-// ArtifactGraph is the resolver for the artifactGraph field. Reads the
-// invocation's compressed BEP-graph blob, decompresses and decodes it
-// server-side, and returns the structured graph. Returns nil when no row
-// exists (save level below basic_and_target_and_artifacts, or
-// BuildFinished never arrived).
+// ArtifactGraph is the resolver for the artifactGraph field. Prefers the
+// compacted blob; if it has not been written yet (build still running, or
+// compaction hasn't run), it decodes the staged events so the graph is
+// available in its partial state. Returns nil when neither exists (save
+// level below basic_and_target_and_artifacts, or no artifact events yet).
 func (r *bazelInvocationResolver) ArtifactGraph(ctx context.Context, obj *ent.BazelInvocation) (*model.ArtifactGraph, error) {
 	payload, err := r.db.Sqlc().GetInvocationArtifactGraph(ctx, obj.ID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
-		}
+	if err == nil {
+		return decodeArtifactGraphBlob(payload)
+	}
+	if !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
-	return decodeArtifactGraph(payload)
+
+	// No compacted blob yet — fall back to the staging table.
+	events, err := r.db.Sqlc().GetIncompleteArtifactGraphEvents(ctx, obj.ID)
+	if err != nil {
+		return nil, err
+	}
+	if len(events) == 0 {
+		return nil, nil
+	}
+	return decodeArtifactGraphEvents(events)
 }
 
 // TimeSinceLastConnectionMillis is the resolver for the timeSinceLastConnectionMillis field.

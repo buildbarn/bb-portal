@@ -3,8 +3,10 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "dbcleanupservice",
     srcs = [
+        "compact_artifact_graphs.go",
         "compact_logs.go",
         "dbcleanupservice.go",
+        "delete_incomplete_artifact_graphs.go",
         "delete_incomplete_logs.go",
         "lockinvocations.go",
         "next_slice.go",
@@ -22,6 +24,7 @@ go_library(
         "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/build",
+        "//ent/gen/ent/incompleteartifactgraph",
         "//ent/gen/ent/incompletebuildlog",
         "//ent/gen/ent/invocationartifactgraph",
         "//ent/gen/ent/target",

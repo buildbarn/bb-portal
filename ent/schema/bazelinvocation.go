@@ -150,6 +150,14 @@ func (BazelInvocation) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
+		// Incomplete artifact-graph events (NamedSetOfFiles /
+		// TargetCompleted) accumulated during the build, before
+		// compaction into the artifact_graph blob.
+		edge.To("incomplete_artifact_graphs", IncompleteArtifactGraph.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
 		// Files for the Invocation
 		edge.To("invocation_files", InvocationFiles.Type).
 			Annotations(

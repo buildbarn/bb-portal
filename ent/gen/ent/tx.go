@@ -44,6 +44,8 @@ type Tx struct {
 	EventMetadata *EventMetadataClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
+	// IncompleteArtifactGraph is the client for interacting with the IncompleteArtifactGraph builders.
+	IncompleteArtifactGraph *IncompleteArtifactGraphClient
 	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
 	IncompleteBuildLog *IncompleteBuildLogClient
 	// InstanceName is the client for interacting with the InstanceName builders.
@@ -230,6 +232,7 @@ func (tx *Tx) init() {
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
 	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
+	tx.IncompleteArtifactGraph = NewIncompleteArtifactGraphClient(tx.config)
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
 	tx.InstanceName = NewInstanceNameClient(tx.config)
 	tx.InvocationArtifactGraph = NewInvocationArtifactGraphClient(tx.config)

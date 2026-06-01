@@ -72,18 +72,20 @@ type buildEventRecorder struct {
 	dataExtractors *DataExtractors
 	buildKey       string
 
-	// artifactGraph is non-nil only when saveDataLevel is
-	// basic_and_target_and_artifacts. It buffers NamedSetOfFiles and
-	// TargetCompleted BuildEvents as length-prefixed serialized protos
-	// through a streaming zstd encoder. Finalized at BuildFinished and
-	// written as a single invocation_artifact_graphs row.
-	artifactGraph *artifactGraphBuffer
-
 	InstanceName     string
 	InstanceNameDbID int64
 	InvocationID     string
 	InvocationDbID   int64
 	IsRealTime       bool
+}
+
+// artifactsEnabled reports whether the save level requests per-file
+// artifact data. When true, NamedSetOfFiles and TargetCompleted events are
+// persisted to the incomplete_artifact_graphs staging table as they
+// arrive, then compacted into a single blob after the build finishes.
+func (r *buildEventRecorder) artifactsEnabled() bool {
+	_, ok := r.saveDataLevel.GetLevel().(*bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTargetAndArtifacts)
+	return ok
 }
 
 type handledEvents struct {
@@ -163,13 +165,6 @@ func NewBuildEventRecorder(
 		InvocationID:     invocationID,
 		InvocationDbID:   invocationDbID,
 		IsRealTime:       isRealTime,
-	}
-	if _, ok := saveDataLevel.GetLevel().(*bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTargetAndArtifacts); ok {
-		buf, err := newArtifactGraphBuffer()
-		if err != nil {
-			return nil, util.StatusWrap(err, "Failed to initialize artifact graph buffer")
-		}
-		r.artifactGraph = buf
 	}
 	return r, nil
 }

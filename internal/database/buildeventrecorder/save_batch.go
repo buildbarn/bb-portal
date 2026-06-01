@@ -53,6 +53,15 @@ func (r *buildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWi
 		return util.StatusWrap(err, "Failed to save batch test summary events")
 	}
 
+	// NamedSetOfFiles events only matter when artifact data is being
+	// saved; otherwise they fall through to saveRemainingBatch as a no-op.
+	if r.artifactsEnabled() {
+		batch, rest = filterNamedSetOfFilesBatch(rest)
+		if err = r.saveNamedSetOfFilesBatch(ctx, batch); err != nil {
+			return util.StatusWrap(err, "Failed to save batch named set of files events")
+		}
+	}
+
 	if err = r.saveRemainingBatch(ctx, rest); err != nil {
 		return util.StatusWrap(err, "Failed to save individual events")
 	}

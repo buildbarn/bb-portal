@@ -19,6 +19,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
@@ -457,6 +458,21 @@ func (_c *BazelInvocationCreate) AddBuildLogChunks(v ...*BuildLogChunk) *BazelIn
 		ids[i] = v[i].ID
 	}
 	return _c.AddBuildLogChunkIDs(ids...)
+}
+
+// AddIncompleteArtifactGraphIDs adds the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity by IDs.
+func (_c *BazelInvocationCreate) AddIncompleteArtifactGraphIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddIncompleteArtifactGraphIDs(ids...)
+	return _c
+}
+
+// AddIncompleteArtifactGraphs adds the "incomplete_artifact_graphs" edges to the IncompleteArtifactGraph entity.
+func (_c *BazelInvocationCreate) AddIncompleteArtifactGraphs(v ...*IncompleteArtifactGraph) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddIncompleteArtifactGraphIDs(ids...)
 }
 
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
@@ -909,6 +925,22 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.IncompleteArtifactGraphsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

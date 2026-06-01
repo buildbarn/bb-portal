@@ -51,6 +51,9 @@ type EventMetadata func(*sql.Selector)
 // GarbageMetrics is the predicate function for garbagemetrics builders.
 type GarbageMetrics func(*sql.Selector)
 
+// IncompleteArtifactGraph is the predicate function for incompleteartifactgraph builders.
+type IncompleteArtifactGraph func(*sql.Selector)
+
 // IncompleteBuildLog is the predicate function for incompletebuildlog builders.
 type IncompleteBuildLog func(*sql.Selector)
 

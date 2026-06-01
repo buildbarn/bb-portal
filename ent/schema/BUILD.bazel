@@ -18,6 +18,7 @@ go_library(
         "connectionmetadata.go",
         "eventmetadata.go",
         "garbagemetrics.go",
+        "incompleteartifactgraph.go",
         "incompletebuildlog.go",
         "instancename.go",
         "invocationartifactgraph.go",

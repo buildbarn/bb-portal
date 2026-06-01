@@ -8,7 +8,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/internal/database"
-	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -43,31 +42,8 @@ func (r *buildEventRecorder) saveBuildFinished(ctx context.Context, tx database.
 		return util.StatusWrap(err, "Failed to update bazel invocation with build finished BES message")
 	}
 
-	if err := r.flushArtifactGraph(ctx, tx); err != nil {
-		return util.StatusWrap(err, "Failed to flush artifact graph at completion")
-	}
+	// The artifact graph is left in the incomplete_artifact_graphs staging
+	// table; dbcleanupservice.CompactArtifactGraphs folds it into a single
+	// compressed blob once the invocation is marked complete.
 	return nil
-}
-
-// flushArtifactGraph finalizes the in-memory streaming buffer and writes
-// a single invocation_artifact_graphs row. No-op when the buffer is nil
-// (save level below basic_and_target_and_artifacts) or empty (no
-// NamedSetOfFiles or TargetCompleted events were seen).
-func (r *buildEventRecorder) flushArtifactGraph(ctx context.Context, tx database.Tx) error {
-	if r.artifactGraph == nil {
-		return nil
-	}
-	buf := r.artifactGraph
-	r.artifactGraph = nil
-	payload, uncompressed, err := buf.Finalize()
-	if err != nil {
-		return util.StatusWrap(err, "Failed to finalize artifact graph buffer")
-	}
-	if uncompressed == 0 {
-		return nil
-	}
-	return tx.Sqlc().InsertInvocationArtifactGraph(ctx, sqlc.InsertInvocationArtifactGraphParams{
-		Payload:           payload,
-		BazelInvocationID: r.InvocationDbID,
-	})
 }

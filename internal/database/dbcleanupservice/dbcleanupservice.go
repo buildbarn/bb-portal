@@ -119,6 +119,12 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				if err := dc.executeTask(ctx, "DeleteIncompleteLogs", "deleted_logs", dc.DeleteIncompleteLogs); err != nil {
 					slog.Warn("Failed to delete incomplete logs", "err", err)
 				}
+				if err := dc.executeTask(ctx, "CompactArtifactGraphs", "compacted_artifact_graphs", dc.CompactArtifactGraphs); err != nil {
+					slog.Warn("Failed to compact artifact graphs", "err", err)
+				}
+				if err := dc.executeTask(ctx, "DeleteIncompleteArtifactGraphs", "deleted_incomplete_artifact_graphs", dc.DeleteIncompleteArtifactGraphs); err != nil {
+					slog.Warn("Failed to delete staged artifact graph events", "err", err)
+				}
 				if err := dc.executeTask(ctx, "RemoveOldArtifacts", "deleted_artifacts", dc.RemoveOldArtifacts); err != nil {
 					slog.Warn("Failed to remove old artifacts", "err", err)
 				}

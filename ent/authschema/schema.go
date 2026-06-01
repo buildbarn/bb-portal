@@ -35,6 +35,8 @@ type (
 	EventMetadata struct{ schema.EventMetadata }
 	// GarbageMetrics reexport with auth policy added
 	GarbageMetrics struct{ schema.GarbageMetrics }
+	// IncompleteArtifactGraph reexport with auth policy added
+	IncompleteArtifactGraph struct{ schema.IncompleteArtifactGraph }
 	// IncompleteBuildLog reexport with auth policy added
 	IncompleteBuildLog struct{ schema.IncompleteBuildLog }
 	// InstanceName reexport with auth policy added
