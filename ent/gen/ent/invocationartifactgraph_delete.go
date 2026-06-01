@@ -20,56 +20,56 @@ type InvocationArtifactGraphDelete struct {
 }
 
 // Where appends a list predicates to the InvocationArtifactGraphDelete builder.
-func (iagd *InvocationArtifactGraphDelete) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphDelete {
-	iagd.mutation.Where(ps...)
-	return iagd
+func (_d *InvocationArtifactGraphDelete) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (iagd *InvocationArtifactGraphDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, iagd.sqlExec, iagd.mutation, iagd.hooks)
+func (_d *InvocationArtifactGraphDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iagd *InvocationArtifactGraphDelete) ExecX(ctx context.Context) int {
-	n, err := iagd.Exec(ctx)
+func (_d *InvocationArtifactGraphDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (iagd *InvocationArtifactGraphDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *InvocationArtifactGraphDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(invocationartifactgraph.Table, sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64))
-	if ps := iagd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, iagd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	iagd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // InvocationArtifactGraphDeleteOne is the builder for deleting a single InvocationArtifactGraph entity.
 type InvocationArtifactGraphDeleteOne struct {
-	iagd *InvocationArtifactGraphDelete
+	_d *InvocationArtifactGraphDelete
 }
 
 // Where appends a list predicates to the InvocationArtifactGraphDelete builder.
-func (iagdo *InvocationArtifactGraphDeleteOne) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphDeleteOne {
-	iagdo.iagd.mutation.Where(ps...)
-	return iagdo
+func (_d *InvocationArtifactGraphDeleteOne) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (iagdo *InvocationArtifactGraphDeleteOne) Exec(ctx context.Context) error {
-	n, err := iagdo.iagd.Exec(ctx)
+func (_d *InvocationArtifactGraphDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (iagdo *InvocationArtifactGraphDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iagdo *InvocationArtifactGraphDeleteOne) ExecX(ctx context.Context) {
-	if err := iagdo.Exec(ctx); err != nil {
+func (_d *InvocationArtifactGraphDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

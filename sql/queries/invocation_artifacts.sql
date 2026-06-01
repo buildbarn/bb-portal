@@ -1,23 +1,20 @@
 -- name: InsertInvocationArtifactGraph :exec
 -- Insert (or replace) the compressed artifact graph for an invocation.
--- Idempotent via the unique edge on bazel_invocation_artifact_graph.
+-- Idempotent via the unique foreign key on bazel_invocation_id.
 INSERT INTO invocation_artifact_graphs (
     payload,
-    uncompressed_size,
-    bazel_invocation_artifact_graph
+    bazel_invocation_id
 ) VALUES (
     sqlc.arg(payload)::bytea,
-    sqlc.arg(uncompressed_size)::bigint,
     sqlc.arg(bazel_invocation_id)::bigint
 )
-ON CONFLICT (bazel_invocation_artifact_graph) DO UPDATE SET
-    payload = EXCLUDED.payload,
-    uncompressed_size = EXCLUDED.uncompressed_size;
+ON CONFLICT (bazel_invocation_id) DO UPDATE SET
+    payload = EXCLUDED.payload;
 
 -- name: GetInvocationArtifactGraph :one
-SELECT payload, uncompressed_size
+SELECT payload
 FROM invocation_artifact_graphs
-WHERE bazel_invocation_artifact_graph = sqlc.arg(bazel_invocation_id);
+WHERE bazel_invocation_id = sqlc.arg(bazel_invocation_id);
 
 -- name: DeleteOldInvocationArtifactGraphsFromPages :execrows
 -- Delete artifact-graph rows whose owning invocation completed more than
@@ -28,7 +25,7 @@ DELETE FROM invocation_artifact_graphs
 WHERE
     ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
     AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
-    AND bazel_invocation_artifact_graph IN (
+    AND bazel_invocation_id IN (
       SELECT id FROM bazel_invocations
       WHERE bep_completed = true
         AND ended_at IS NOT NULL

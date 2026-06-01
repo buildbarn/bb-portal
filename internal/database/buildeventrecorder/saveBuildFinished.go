@@ -2,7 +2,6 @@ package buildeventrecorder
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
@@ -67,14 +66,8 @@ func (r *buildEventRecorder) flushArtifactGraph(ctx context.Context, tx database
 	if uncompressed == 0 {
 		return nil
 	}
-	if buf.Capped() {
-		slog.Warn("Artifact graph buffer hit uncompressed size cap; partial graph stored",
-			"invocation_id", r.InvocationID,
-			"uncompressed_bytes", uncompressed)
-	}
 	return tx.Sqlc().InsertInvocationArtifactGraph(ctx, sqlc.InsertInvocationArtifactGraphParams{
 		Payload:           payload,
-		UncompressedSize:  uncompressed,
 		BazelInvocationID: r.InvocationDbID,
 	})
 }

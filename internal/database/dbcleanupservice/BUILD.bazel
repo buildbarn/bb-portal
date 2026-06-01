@@ -23,6 +23,7 @@ go_library(
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/build",
         "//ent/gen/ent/incompletebuildlog",
+        "//ent/gen/ent/invocationartifactgraph",
         "//ent/gen/ent/target",
         "//ent/gen/ent/targetkindmapping",
         "//ent/gen/ent/testtarget",

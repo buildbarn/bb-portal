@@ -2,34 +2,29 @@ package integrationtest
 
 import (
 	"context"
-	"encoding/base64"
-	"encoding/binary"
 	"net/http/httptest"
 	"os"
 	"sort"
 	"testing"
 
-	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/testkit"
 	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/google/go-cmp/cmp"
 	gql "github.com/machinebox/graphql"
-	"github.com/klauspost/compress/zstd"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // TestArtifactGraphEndToEnd uploads the artifact fixture at the
 // basicAndTargetAndArtifacts save level, fetches the resulting
-// artifactGraph via GraphQL, decodes the zstd-compressed BEP-graph
-// blob, and asserts the decoded structure matches the expected
-// NamedSetOfFiles + TargetCompleted shape for the fixture build.
+// artifactGraph via GraphQL, and asserts the decoded structure matches
+// the expected NamedSetOfFiles + TargetCompleted shape for the fixture
+// build.
 //
-// This test deliberately avoids the golden-file framework because the
-// zstd-encoded payload is not byte-stable across encoder versions; we
-// compare the decoded structure instead.
+// The server decodes the stored blob and returns structured data, so the
+// test walks the named-set graph directly rather than parsing a wire
+// format.
 func TestArtifactGraphEndToEnd(t *testing.T) {
 	ctx := context.Background()
 
@@ -54,10 +49,11 @@ func TestArtifactGraphEndToEnd(t *testing.T) {
 	server := startGraphqlHTTPServer(t, db)
 	queryRegistry := testkit.LoadQueryRegistry(t, "", consumerContractFile)
 
-	got := runArtifactGraphQuery(ctx, t, server, queryRegistry, artifactsEndToEndBuild.invocationID)
-	payload := decodeArtifactGraphPayload(t, got)
+	resp := runArtifactGraphQuery(ctx, t, server, queryRegistry, artifactsEndToEndBuild.invocationID)
+	graph := resp.GetBazelInvocation.ArtifactGraph
+	require.NotNil(t, graph, "artifactGraph missing from response")
 
-	targets, sets := parseArtifactGraphEvents(t, payload)
+	targets := resolveTargets(graph)
 
 	wantTargets := []targetEntry{
 		{
@@ -71,9 +67,47 @@ func TestArtifactGraphEndToEnd(t *testing.T) {
 	if diff := cmp.Diff(wantTargets, targets, cmp.AllowUnexported(targetEntry{}, outputGroupEntry{})); diff != "" {
 		t.Fatalf("decoded targets mismatch (-want +got):\n%s", diff)
 	}
-	if len(sets) == 0 {
+	if len(graph.NamedSets) == 0 {
 		t.Fatalf("expected at least one NamedSetOfFiles in graph; got 0")
 	}
+}
+
+type artifactFileResp struct {
+	Name        string  `json:"name"`
+	URI         *string `json:"uri"`
+	Digest      *string `json:"digest"`
+	SizeBytes   *int    `json:"sizeBytes"`
+	DownloadURL *string `json:"downloadUrl"`
+}
+
+type artifactNamedSetResp struct {
+	ID          string             `json:"id"`
+	ChildSetIds []string           `json:"childSetIds"`
+	Files       []artifactFileResp `json:"files"`
+}
+
+type artifactOutputGroupResp struct {
+	Name       string   `json:"name"`
+	Incomplete bool     `json:"incomplete"`
+	RootSetIds []string `json:"rootSetIds"`
+}
+
+type artifactTargetResp struct {
+	Label        string                    `json:"label"`
+	Aspect       *string                   `json:"aspect"`
+	OutputGroups []artifactOutputGroupResp `json:"outputGroups"`
+}
+
+type artifactGraphResp struct {
+	NamedSets []artifactNamedSetResp `json:"namedSets"`
+	Targets   []artifactTargetResp   `json:"targets"`
+}
+
+type artifactGraphResponse struct {
+	GetBazelInvocation struct {
+		ID            string             `json:"id"`
+		ArtifactGraph *artifactGraphResp `json:"artifactGraph"`
+	} `json:"getBazelInvocation"`
 }
 
 func runArtifactGraphQuery(
@@ -82,32 +116,14 @@ func runArtifactGraphQuery(
 	server *httptest.Server,
 	queryRegistry *testkit.QueryRegistry,
 	invocationID string,
-) map[string]interface{} {
+) artifactGraphResponse {
 	t.Helper()
 	client := gql.NewClient(server.URL)
 	req := queryRegistry.NewRequest("ArtifactGraph")
 	req.Var("id", invocationID)
-	var got map[string]interface{}
+	var got artifactGraphResponse
 	require.NoError(t, client.Run(ctx, req, &got))
 	return got
-}
-
-func decodeArtifactGraphPayload(t *testing.T, got map[string]interface{}) []byte {
-	t.Helper()
-	inv, ok := got["getBazelInvocation"].(map[string]interface{})
-	require.True(t, ok, "getBazelInvocation missing from response: %v", got)
-	graph, ok := inv["artifactGraph"].(map[string]interface{})
-	require.True(t, ok, "artifactGraph missing from response: %v", inv)
-	payloadStr, ok := graph["payload"].(string)
-	require.True(t, ok, "payload missing from artifactGraph: %v", graph)
-	compressed, err := base64.StdEncoding.DecodeString(payloadStr)
-	require.NoError(t, err)
-	decoder, err := zstd.NewReader(nil)
-	require.NoError(t, err)
-	defer decoder.Close()
-	decompressed, err := decoder.DecodeAll(compressed, nil)
-	require.NoError(t, err)
-	return decompressed
 }
 
 type outputGroupEntry struct {
@@ -120,68 +136,22 @@ type targetEntry struct {
 	outputGroups []outputGroupEntry
 }
 
-// parseArtifactGraphEvents walks length-prefixed serialized bes.BuildEvent
-// messages and returns the targets seen (with their output groups and
-// resolved file names) plus the set of NamedSetOfFiles set IDs encountered.
-//
-// Two-pass: the recorder may emit TargetCompleted events to the buffer
-// before the NamedSetOfFiles events they reference (saveBatch processes
-// TargetCompleted as a dedicated batch step, NamedSetOfFiles as part of
-// the catch-all step). We collect all sets in pass 1, then walk files in
-// pass 2.
-func parseArtifactGraphEvents(t *testing.T, stream []byte) ([]targetEntry, map[string]*bes.NamedSetOfFiles) {
-	t.Helper()
-	sets := map[string]*bes.NamedSetOfFiles{}
-	type pendingTarget struct {
-		label  string
-		groups []struct {
-			name     string
-			rootIDs  []string
-		}
-	}
-	var pending []pendingTarget
-
-	offset := 0
-	for offset < len(stream) {
-		size, n := binary.Uvarint(stream[offset:])
-		require.Greater(t, n, 0, "invalid varint at offset %d", offset)
-		offset += n
-		require.LessOrEqual(t, offset+int(size), len(stream), "truncated BuildEvent at offset %d", offset)
-		evt := &bes.BuildEvent{}
-		require.NoError(t, proto.Unmarshal(stream[offset:offset+int(size)], evt))
-		offset += int(size)
-
-		switch id := evt.GetId().GetId().(type) {
-		case *bes.BuildEventId_NamedSet:
-			sets[id.NamedSet.GetId()] = evt.GetNamedSetOfFiles()
-		case *bes.BuildEventId_TargetCompleted:
-			completed := evt.GetCompleted()
-			if completed == nil {
-				continue
-			}
-			pt := pendingTarget{label: id.TargetCompleted.GetLabel()}
-			for _, og := range completed.GetOutputGroup() {
-				var rootIDs []string
-				for _, ref := range og.GetFileSets() {
-					rootIDs = append(rootIDs, ref.GetId())
-				}
-				pt.groups = append(pt.groups, struct {
-					name    string
-					rootIDs []string
-				}{name: og.GetName(), rootIDs: rootIDs})
-			}
-			pending = append(pending, pt)
-		}
+// resolveTargets walks each target's output groups through the named-set
+// graph and returns the resolved file names, sorted for stable comparison.
+func resolveTargets(graph *artifactGraphResp) []targetEntry {
+	sets := make(map[string]artifactNamedSetResp, len(graph.NamedSets))
+	for _, s := range graph.NamedSets {
+		sets[s.ID] = s
 	}
 
-	var targets []targetEntry
-	for _, pt := range pending {
-		entry := targetEntry{label: pt.label}
-		for _, g := range pt.groups {
-			files := walkFileNames(sets, g.rootIDs)
+	targets := make([]targetEntry, 0, len(graph.Targets))
+	for _, t := range graph.Targets {
+		entry := targetEntry{label: t.Label}
+		for _, og := range t.OutputGroups {
+			files := walkFileNames(sets, og.RootSetIds)
 			sort.Strings(files)
 			entry.outputGroups = append(entry.outputGroups, outputGroupEntry{
-				name:      g.name,
+				name:      og.Name,
 				fileNames: files,
 			})
 		}
@@ -190,12 +160,11 @@ func parseArtifactGraphEvents(t *testing.T, stream []byte) ([]targetEntry, map[s
 		})
 		targets = append(targets, entry)
 	}
-
 	sort.Slice(targets, func(i, j int) bool { return targets[i].label < targets[j].label })
-	return targets, sets
+	return targets
 }
 
-func walkFileNames(sets map[string]*bes.NamedSetOfFiles, roots []string) []string {
+func walkFileNames(sets map[string]artifactNamedSetResp, roots []string) []string {
 	visited := map[string]struct{}{}
 	queue := append([]string(nil), roots...)
 	var out []string
@@ -210,12 +179,10 @@ func walkFileNames(sets map[string]*bes.NamedSetOfFiles, roots []string) []strin
 		if !ok {
 			continue
 		}
-		for _, f := range set.GetFiles() {
-			out = append(out, f.GetName())
+		for _, f := range set.Files {
+			out = append(out, f.Name)
 		}
-		for _, child := range set.GetFileSets() {
-			queue = append(queue, child.GetId())
-		}
+		queue = append(queue, set.ChildSetIds...)
 	}
 	return out
 }

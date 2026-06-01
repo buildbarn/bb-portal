@@ -8,7 +8,6 @@ package graphql
 import (
 	"context"
 	"database/sql"
-	"encoding/base64"
 	"errors"
 	"time"
 
@@ -30,17 +29,14 @@ func (r *artifactFileResolver) DownloadURL(ctx context.Context, obj *model.Artif
 	if obj.SizeBytes != nil {
 		sz = int64(*obj.SizeBytes)
 	}
-	var df, dg, uri string
-	if obj.DigestFunction != nil {
-		df = *obj.DigestFunction
-	}
+	var dg, uri string
 	if obj.Digest != nil {
 		dg = *obj.Digest
 	}
 	if obj.URI != nil {
 		uri = *obj.URI
 	}
-	out := downloadURLFor(uri, dg, df, sz, obj.Name)
+	out := downloadURLFor(uri, dg, sz, obj.Name)
 	if out == "" {
 		return nil, nil
 	}
@@ -66,22 +62,20 @@ func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInv
 	}, nil
 }
 
-// ArtifactGraph is the resolver for the artifactGraph field. Returns the
-// compressed BEP-graph blob for the invocation, or nil when no row exists
-// (save level below basic_and_target_and_artifacts, or BuildFinished
-// never arrived).
+// ArtifactGraph is the resolver for the artifactGraph field. Reads the
+// invocation's compressed BEP-graph blob, decompresses and decodes it
+// server-side, and returns the structured graph. Returns nil when no row
+// exists (save level below basic_and_target_and_artifacts, or
+// BuildFinished never arrived).
 func (r *bazelInvocationResolver) ArtifactGraph(ctx context.Context, obj *ent.BazelInvocation) (*model.ArtifactGraph, error) {
-	row, err := r.db.Sqlc().GetInvocationArtifactGraph(ctx, obj.ID)
+	payload, err := r.db.Sqlc().GetInvocationArtifactGraph(ctx, obj.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err
 	}
-	return &model.ArtifactGraph{
-		Payload:          base64.StdEncoding.EncodeToString(row.Payload),
-		UncompressedSize: int(row.UncompressedSize),
-	}, nil
+	return decodeArtifactGraph(payload)
 }
 
 // TimeSinceLastConnectionMillis is the resolver for the timeSinceLastConnectionMillis field.

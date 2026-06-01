@@ -175,10 +175,14 @@ func (BazelInvocation) Edges() []ent.Edge {
 			),
 
 		// Compressed BEP-graph blob written once at BuildFinished when
-		// save level is basic_and_target_and_artifacts. Clients decompress
-		// and walk the graph themselves.
+		// save level is basic_and_target_and_artifacts. The server
+		// decompresses and decodes it on demand.
 		edge.To("artifact_graph", InvocationArtifactGraph.Type).
 			Unique().
+			// Name the foreign-key column on invocation_artifact_graphs
+			// explicitly rather than relying on ent's auto-generated
+			// "bazel_invocation_artifact_graph".
+			StorageKey(edge.Column("bazel_invocation_id")).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),

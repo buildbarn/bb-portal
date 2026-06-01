@@ -33,7 +33,6 @@
     "ansi_up": "^6.0.2",
     "antd": "^5.21.3",
     "dayjs": "^1.11.11",
-    "fzstd": "^0.1.1",
     "graphql": "^16.8.1",
     "nice-grpc-common": "^2.0.2",
     "nice-grpc-web": "^3.3.5",

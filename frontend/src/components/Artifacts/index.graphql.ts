@@ -5,8 +5,26 @@ export const ARTIFACT_GRAPH_QUERY = gql(/* GraphQL */ `
     getBazelInvocation(invocationID: $id) {
       id
       artifactGraph {
-        payload
-        uncompressedSize
+        namedSets {
+          id
+          childSetIds
+          files {
+            name
+            uri
+            digest
+            sizeBytes
+            downloadUrl
+          }
+        }
+        targets {
+          label
+          aspect
+          outputGroups {
+            name
+            incomplete
+            rootSetIds
+          }
+        }
       }
     }
   }

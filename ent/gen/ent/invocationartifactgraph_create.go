@@ -23,47 +23,41 @@ type InvocationArtifactGraphCreate struct {
 }
 
 // SetPayload sets the "payload" field.
-func (iagc *InvocationArtifactGraphCreate) SetPayload(b []byte) *InvocationArtifactGraphCreate {
-	iagc.mutation.SetPayload(b)
-	return iagc
-}
-
-// SetUncompressedSize sets the "uncompressed_size" field.
-func (iagc *InvocationArtifactGraphCreate) SetUncompressedSize(i int64) *InvocationArtifactGraphCreate {
-	iagc.mutation.SetUncompressedSize(i)
-	return iagc
+func (_c *InvocationArtifactGraphCreate) SetPayload(v []byte) *InvocationArtifactGraphCreate {
+	_c.mutation.SetPayload(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (iagc *InvocationArtifactGraphCreate) SetID(i int64) *InvocationArtifactGraphCreate {
-	iagc.mutation.SetID(i)
-	return iagc
+func (_c *InvocationArtifactGraphCreate) SetID(v int64) *InvocationArtifactGraphCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (iagc *InvocationArtifactGraphCreate) SetBazelInvocationID(id int64) *InvocationArtifactGraphCreate {
-	iagc.mutation.SetBazelInvocationID(id)
-	return iagc
+func (_c *InvocationArtifactGraphCreate) SetBazelInvocationID(id int64) *InvocationArtifactGraphCreate {
+	_c.mutation.SetBazelInvocationID(id)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (iagc *InvocationArtifactGraphCreate) SetBazelInvocation(b *BazelInvocation) *InvocationArtifactGraphCreate {
-	return iagc.SetBazelInvocationID(b.ID)
+func (_c *InvocationArtifactGraphCreate) SetBazelInvocation(v *BazelInvocation) *InvocationArtifactGraphCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the InvocationArtifactGraphMutation object of the builder.
-func (iagc *InvocationArtifactGraphCreate) Mutation() *InvocationArtifactGraphMutation {
-	return iagc.mutation
+func (_c *InvocationArtifactGraphCreate) Mutation() *InvocationArtifactGraphMutation {
+	return _c.mutation
 }
 
 // Save creates the InvocationArtifactGraph in the database.
-func (iagc *InvocationArtifactGraphCreate) Save(ctx context.Context) (*InvocationArtifactGraph, error) {
-	return withHooks(ctx, iagc.sqlSave, iagc.mutation, iagc.hooks)
+func (_c *InvocationArtifactGraphCreate) Save(ctx context.Context) (*InvocationArtifactGraph, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (iagc *InvocationArtifactGraphCreate) SaveX(ctx context.Context) *InvocationArtifactGraph {
-	v, err := iagc.Save(ctx)
+func (_c *InvocationArtifactGraphCreate) SaveX(ctx context.Context) *InvocationArtifactGraph {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -71,38 +65,35 @@ func (iagc *InvocationArtifactGraphCreate) SaveX(ctx context.Context) *Invocatio
 }
 
 // Exec executes the query.
-func (iagc *InvocationArtifactGraphCreate) Exec(ctx context.Context) error {
-	_, err := iagc.Save(ctx)
+func (_c *InvocationArtifactGraphCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iagc *InvocationArtifactGraphCreate) ExecX(ctx context.Context) {
-	if err := iagc.Exec(ctx); err != nil {
+func (_c *InvocationArtifactGraphCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iagc *InvocationArtifactGraphCreate) check() error {
-	if _, ok := iagc.mutation.Payload(); !ok {
+func (_c *InvocationArtifactGraphCreate) check() error {
+	if _, ok := _c.mutation.Payload(); !ok {
 		return &ValidationError{Name: "payload", err: errors.New(`ent: missing required field "InvocationArtifactGraph.payload"`)}
 	}
-	if _, ok := iagc.mutation.UncompressedSize(); !ok {
-		return &ValidationError{Name: "uncompressed_size", err: errors.New(`ent: missing required field "InvocationArtifactGraph.uncompressed_size"`)}
-	}
-	if len(iagc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "InvocationArtifactGraph.bazel_invocation"`)}
 	}
 	return nil
 }
 
-func (iagc *InvocationArtifactGraphCreate) sqlSave(ctx context.Context) (*InvocationArtifactGraph, error) {
-	if err := iagc.check(); err != nil {
+func (_c *InvocationArtifactGraphCreate) sqlSave(ctx context.Context) (*InvocationArtifactGraph, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := iagc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, iagc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -112,30 +103,26 @@ func (iagc *InvocationArtifactGraphCreate) sqlSave(ctx context.Context) (*Invoca
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	iagc.mutation.id = &_node.ID
-	iagc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (iagc *InvocationArtifactGraphCreate) createSpec() (*InvocationArtifactGraph, *sqlgraph.CreateSpec) {
+func (_c *InvocationArtifactGraphCreate) createSpec() (*InvocationArtifactGraph, *sqlgraph.CreateSpec) {
 	var (
-		_node = &InvocationArtifactGraph{config: iagc.config}
+		_node = &InvocationArtifactGraph{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(invocationartifactgraph.Table, sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = iagc.conflict
-	if id, ok := iagc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := iagc.mutation.Payload(); ok {
+	if value, ok := _c.mutation.Payload(); ok {
 		_spec.SetField(invocationartifactgraph.FieldPayload, field.TypeBytes, value)
 		_node.Payload = value
 	}
-	if value, ok := iagc.mutation.UncompressedSize(); ok {
-		_spec.SetField(invocationartifactgraph.FieldUncompressedSize, field.TypeInt64, value)
-		_node.UncompressedSize = value
-	}
-	if nodes := iagc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -149,7 +136,7 @@ func (iagc *InvocationArtifactGraphCreate) createSpec() (*InvocationArtifactGrap
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_artifact_graph = &nodes[0]
+		_node.bazel_invocation_id = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -171,10 +158,10 @@ func (iagc *InvocationArtifactGraphCreate) createSpec() (*InvocationArtifactGrap
 //			SetPayload(v+v).
 //		}).
 //		Exec(ctx)
-func (iagc *InvocationArtifactGraphCreate) OnConflict(opts ...sql.ConflictOption) *InvocationArtifactGraphUpsertOne {
-	iagc.conflict = opts
+func (_c *InvocationArtifactGraphCreate) OnConflict(opts ...sql.ConflictOption) *InvocationArtifactGraphUpsertOne {
+	_c.conflict = opts
 	return &InvocationArtifactGraphUpsertOne{
-		create: iagc,
+		create: _c,
 	}
 }
 
@@ -184,10 +171,10 @@ func (iagc *InvocationArtifactGraphCreate) OnConflict(opts ...sql.ConflictOption
 //	client.InvocationArtifactGraph.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (iagc *InvocationArtifactGraphCreate) OnConflictColumns(columns ...string) *InvocationArtifactGraphUpsertOne {
-	iagc.conflict = append(iagc.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationArtifactGraphCreate) OnConflictColumns(columns ...string) *InvocationArtifactGraphUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationArtifactGraphUpsertOne{
-		create: iagc,
+		create: _c,
 	}
 }
 
@@ -213,24 +200,6 @@ func (u *InvocationArtifactGraphUpsert) SetPayload(v []byte) *InvocationArtifact
 // UpdatePayload sets the "payload" field to the value that was provided on create.
 func (u *InvocationArtifactGraphUpsert) UpdatePayload() *InvocationArtifactGraphUpsert {
 	u.SetExcluded(invocationartifactgraph.FieldPayload)
-	return u
-}
-
-// SetUncompressedSize sets the "uncompressed_size" field.
-func (u *InvocationArtifactGraphUpsert) SetUncompressedSize(v int64) *InvocationArtifactGraphUpsert {
-	u.Set(invocationartifactgraph.FieldUncompressedSize, v)
-	return u
-}
-
-// UpdateUncompressedSize sets the "uncompressed_size" field to the value that was provided on create.
-func (u *InvocationArtifactGraphUpsert) UpdateUncompressedSize() *InvocationArtifactGraphUpsert {
-	u.SetExcluded(invocationartifactgraph.FieldUncompressedSize)
-	return u
-}
-
-// AddUncompressedSize adds v to the "uncompressed_size" field.
-func (u *InvocationArtifactGraphUpsert) AddUncompressedSize(v int64) *InvocationArtifactGraphUpsert {
-	u.Add(invocationartifactgraph.FieldUncompressedSize, v)
 	return u
 }
 
@@ -296,27 +265,6 @@ func (u *InvocationArtifactGraphUpsertOne) UpdatePayload() *InvocationArtifactGr
 	})
 }
 
-// SetUncompressedSize sets the "uncompressed_size" field.
-func (u *InvocationArtifactGraphUpsertOne) SetUncompressedSize(v int64) *InvocationArtifactGraphUpsertOne {
-	return u.Update(func(s *InvocationArtifactGraphUpsert) {
-		s.SetUncompressedSize(v)
-	})
-}
-
-// AddUncompressedSize adds v to the "uncompressed_size" field.
-func (u *InvocationArtifactGraphUpsertOne) AddUncompressedSize(v int64) *InvocationArtifactGraphUpsertOne {
-	return u.Update(func(s *InvocationArtifactGraphUpsert) {
-		s.AddUncompressedSize(v)
-	})
-}
-
-// UpdateUncompressedSize sets the "uncompressed_size" field to the value that was provided on create.
-func (u *InvocationArtifactGraphUpsertOne) UpdateUncompressedSize() *InvocationArtifactGraphUpsertOne {
-	return u.Update(func(s *InvocationArtifactGraphUpsert) {
-		s.UpdateUncompressedSize()
-	})
-}
-
 // Exec executes the query.
 func (u *InvocationArtifactGraphUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -359,16 +307,16 @@ type InvocationArtifactGraphCreateBulk struct {
 }
 
 // Save creates the InvocationArtifactGraph entities in the database.
-func (iagcb *InvocationArtifactGraphCreateBulk) Save(ctx context.Context) ([]*InvocationArtifactGraph, error) {
-	if iagcb.err != nil {
-		return nil, iagcb.err
+func (_c *InvocationArtifactGraphCreateBulk) Save(ctx context.Context) ([]*InvocationArtifactGraph, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(iagcb.builders))
-	nodes := make([]*InvocationArtifactGraph, len(iagcb.builders))
-	mutators := make([]Mutator, len(iagcb.builders))
-	for i := range iagcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*InvocationArtifactGraph, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := iagcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*InvocationArtifactGraphMutation)
 				if !ok {
@@ -381,12 +329,12 @@ func (iagcb *InvocationArtifactGraphCreateBulk) Save(ctx context.Context) ([]*In
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, iagcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = iagcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, iagcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -410,7 +358,7 @@ func (iagcb *InvocationArtifactGraphCreateBulk) Save(ctx context.Context) ([]*In
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, iagcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -418,8 +366,8 @@ func (iagcb *InvocationArtifactGraphCreateBulk) Save(ctx context.Context) ([]*In
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iagcb *InvocationArtifactGraphCreateBulk) SaveX(ctx context.Context) []*InvocationArtifactGraph {
-	v, err := iagcb.Save(ctx)
+func (_c *InvocationArtifactGraphCreateBulk) SaveX(ctx context.Context) []*InvocationArtifactGraph {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -427,14 +375,14 @@ func (iagcb *InvocationArtifactGraphCreateBulk) SaveX(ctx context.Context) []*In
 }
 
 // Exec executes the query.
-func (iagcb *InvocationArtifactGraphCreateBulk) Exec(ctx context.Context) error {
-	_, err := iagcb.Save(ctx)
+func (_c *InvocationArtifactGraphCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iagcb *InvocationArtifactGraphCreateBulk) ExecX(ctx context.Context) {
-	if err := iagcb.Exec(ctx); err != nil {
+func (_c *InvocationArtifactGraphCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -454,10 +402,10 @@ func (iagcb *InvocationArtifactGraphCreateBulk) ExecX(ctx context.Context) {
 //			SetPayload(v+v).
 //		}).
 //		Exec(ctx)
-func (iagcb *InvocationArtifactGraphCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationArtifactGraphUpsertBulk {
-	iagcb.conflict = opts
+func (_c *InvocationArtifactGraphCreateBulk) OnConflict(opts ...sql.ConflictOption) *InvocationArtifactGraphUpsertBulk {
+	_c.conflict = opts
 	return &InvocationArtifactGraphUpsertBulk{
-		create: iagcb,
+		create: _c,
 	}
 }
 
@@ -467,10 +415,10 @@ func (iagcb *InvocationArtifactGraphCreateBulk) OnConflict(opts ...sql.ConflictO
 //	client.InvocationArtifactGraph.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (iagcb *InvocationArtifactGraphCreateBulk) OnConflictColumns(columns ...string) *InvocationArtifactGraphUpsertBulk {
-	iagcb.conflict = append(iagcb.conflict, sql.ConflictColumns(columns...))
+func (_c *InvocationArtifactGraphCreateBulk) OnConflictColumns(columns ...string) *InvocationArtifactGraphUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &InvocationArtifactGraphUpsertBulk{
-		create: iagcb,
+		create: _c,
 	}
 }
 
@@ -541,27 +489,6 @@ func (u *InvocationArtifactGraphUpsertBulk) SetPayload(v []byte) *InvocationArti
 func (u *InvocationArtifactGraphUpsertBulk) UpdatePayload() *InvocationArtifactGraphUpsertBulk {
 	return u.Update(func(s *InvocationArtifactGraphUpsert) {
 		s.UpdatePayload()
-	})
-}
-
-// SetUncompressedSize sets the "uncompressed_size" field.
-func (u *InvocationArtifactGraphUpsertBulk) SetUncompressedSize(v int64) *InvocationArtifactGraphUpsertBulk {
-	return u.Update(func(s *InvocationArtifactGraphUpsert) {
-		s.SetUncompressedSize(v)
-	})
-}
-
-// AddUncompressedSize adds v to the "uncompressed_size" field.
-func (u *InvocationArtifactGraphUpsertBulk) AddUncompressedSize(v int64) *InvocationArtifactGraphUpsertBulk {
-	return u.Update(func(s *InvocationArtifactGraphUpsert) {
-		s.AddUncompressedSize(v)
-	})
-}
-
-// UpdateUncompressedSize sets the "uncompressed_size" field to the value that was provided on create.
-func (u *InvocationArtifactGraphUpsertBulk) UpdateUncompressedSize() *InvocationArtifactGraphUpsertBulk {
-	return u.Update(func(s *InvocationArtifactGraphUpsert) {
-		s.UpdateUncompressedSize()
 	})
 }
 

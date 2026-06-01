@@ -1,7 +1,7 @@
 
 --- a/dist/node/chunks/node.js
 +++ b/dist/node/chunks/node.js
-@@ -22535,10 +22535,15 @@
+@@ -22427,10 +22427,15 @@
  				});
  				if (chunk && canInlineEntry) inlineEntryChunk.add(chunk.fileName);
  				const shortEmitName = normalizePath(path.relative(config.root, normalizedId));

@@ -198,7 +198,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "invocationartifactgraph" package.
 	ArtifactGraphInverseTable = "invocation_artifact_graphs"
 	// ArtifactGraphColumn is the table column denoting the artifact_graph relation/edge.
-	ArtifactGraphColumn = "bazel_invocation_artifact_graph"
+	ArtifactGraphColumn = "bazel_invocation_id"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.

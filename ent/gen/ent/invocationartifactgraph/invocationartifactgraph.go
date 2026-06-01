@@ -14,8 +14,6 @@ const (
 	FieldID = "id"
 	// FieldPayload holds the string denoting the payload field in the database.
 	FieldPayload = "payload"
-	// FieldUncompressedSize holds the string denoting the uncompressed_size field in the database.
-	FieldUncompressedSize = "uncompressed_size"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// Table holds the table name of the invocationartifactgraph in the database.
@@ -26,20 +24,19 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
 	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "bazel_invocation_artifact_graph"
+	BazelInvocationColumn = "bazel_invocation_id"
 )
 
 // Columns holds all SQL columns for invocationartifactgraph fields.
 var Columns = []string{
 	FieldID,
 	FieldPayload,
-	FieldUncompressedSize,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "invocation_artifact_graphs"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"bazel_invocation_artifact_graph",
+	"bazel_invocation_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -63,11 +60,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByUncompressedSize orders the results by the uncompressed_size field.
-func ByUncompressedSize(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUncompressedSize, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

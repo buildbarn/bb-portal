@@ -615,8 +615,7 @@ var (
 	InvocationArtifactGraphsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "payload", Type: field.TypeBytes},
-		{Name: "uncompressed_size", Type: field.TypeInt64},
-		{Name: "bazel_invocation_artifact_graph", Type: field.TypeInt64, Unique: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt64, Unique: true},
 	}
 	// InvocationArtifactGraphsTable holds the schema information for the "invocation_artifact_graphs" table.
 	InvocationArtifactGraphsTable = &schema.Table{
@@ -626,16 +625,16 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "invocation_artifact_graphs_bazel_invocations_artifact_graph",
-				Columns:    []*schema.Column{InvocationArtifactGraphsColumns[3]},
+				Columns:    []*schema.Column{InvocationArtifactGraphsColumns[2]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "invocationartifactgraph_bazel_invocation_artifact_graph",
+				Name:    "invocationartifactgraph_bazel_invocation_id",
 				Unique:  true,
-				Columns: []*schema.Column{InvocationArtifactGraphsColumns[3]},
+				Columns: []*schema.Column{InvocationArtifactGraphsColumns[2]},
 			},
 		},
 	}

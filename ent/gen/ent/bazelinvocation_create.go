@@ -520,22 +520,22 @@ func (_c *BazelInvocationCreate) AddSourceControl(v ...*SourceControl) *BazelInv
 }
 
 // SetArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID.
-func (bic *BazelInvocationCreate) SetArtifactGraphID(id int64) *BazelInvocationCreate {
-	bic.mutation.SetArtifactGraphID(id)
-	return bic
+func (_c *BazelInvocationCreate) SetArtifactGraphID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetArtifactGraphID(id)
+	return _c
 }
 
 // SetNillableArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableArtifactGraphID(id *int64) *BazelInvocationCreate {
+func (_c *BazelInvocationCreate) SetNillableArtifactGraphID(id *int64) *BazelInvocationCreate {
 	if id != nil {
-		bic = bic.SetArtifactGraphID(*id)
+		_c = _c.SetArtifactGraphID(*id)
 	}
-	return bic
+	return _c
 }
 
 // SetArtifactGraph sets the "artifact_graph" edge to the InvocationArtifactGraph entity.
-func (bic *BazelInvocationCreate) SetArtifactGraph(i *InvocationArtifactGraph) *BazelInvocationCreate {
-	return bic.SetArtifactGraphID(i.ID)
+func (_c *BazelInvocationCreate) SetArtifactGraph(v *InvocationArtifactGraph) *BazelInvocationCreate {
+	return _c.SetArtifactGraphID(v.ID)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -980,7 +980,7 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.ArtifactGraphIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ArtifactGraphIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,

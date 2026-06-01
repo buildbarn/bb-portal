@@ -568,8 +568,8 @@ func (_m *BazelInvocation) QuerySourceControl() *SourceControlQuery {
 }
 
 // QueryArtifactGraph queries the "artifact_graph" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryArtifactGraph() *InvocationArtifactGraphQuery {
-	return NewBazelInvocationClient(bi.config).QueryArtifactGraph(bi)
+func (_m *BazelInvocation) QueryArtifactGraph() *InvocationArtifactGraphQuery {
+	return NewBazelInvocationClient(_m.config).QueryArtifactGraph(_m)
 }
 
 // Update returns a builder for updating this BazelInvocation.

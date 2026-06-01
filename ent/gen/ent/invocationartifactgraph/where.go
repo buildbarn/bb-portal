@@ -58,11 +58,6 @@ func Payload(v []byte) predicate.InvocationArtifactGraph {
 	return predicate.InvocationArtifactGraph(sql.FieldEQ(FieldPayload, v))
 }
 
-// UncompressedSize applies equality check predicate on the "uncompressed_size" field. It's identical to UncompressedSizeEQ.
-func UncompressedSize(v int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldEQ(FieldUncompressedSize, v))
-}
-
 // PayloadEQ applies the EQ predicate on the "payload" field.
 func PayloadEQ(v []byte) predicate.InvocationArtifactGraph {
 	return predicate.InvocationArtifactGraph(sql.FieldEQ(FieldPayload, v))
@@ -101,46 +96,6 @@ func PayloadLT(v []byte) predicate.InvocationArtifactGraph {
 // PayloadLTE applies the LTE predicate on the "payload" field.
 func PayloadLTE(v []byte) predicate.InvocationArtifactGraph {
 	return predicate.InvocationArtifactGraph(sql.FieldLTE(FieldPayload, v))
-}
-
-// UncompressedSizeEQ applies the EQ predicate on the "uncompressed_size" field.
-func UncompressedSizeEQ(v int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldEQ(FieldUncompressedSize, v))
-}
-
-// UncompressedSizeNEQ applies the NEQ predicate on the "uncompressed_size" field.
-func UncompressedSizeNEQ(v int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldNEQ(FieldUncompressedSize, v))
-}
-
-// UncompressedSizeIn applies the In predicate on the "uncompressed_size" field.
-func UncompressedSizeIn(vs ...int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldIn(FieldUncompressedSize, vs...))
-}
-
-// UncompressedSizeNotIn applies the NotIn predicate on the "uncompressed_size" field.
-func UncompressedSizeNotIn(vs ...int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldNotIn(FieldUncompressedSize, vs...))
-}
-
-// UncompressedSizeGT applies the GT predicate on the "uncompressed_size" field.
-func UncompressedSizeGT(v int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldGT(FieldUncompressedSize, v))
-}
-
-// UncompressedSizeGTE applies the GTE predicate on the "uncompressed_size" field.
-func UncompressedSizeGTE(v int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldGTE(FieldUncompressedSize, v))
-}
-
-// UncompressedSizeLT applies the LT predicate on the "uncompressed_size" field.
-func UncompressedSizeLT(v int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldLT(FieldUncompressedSize, v))
-}
-
-// UncompressedSizeLTE applies the LTE predicate on the "uncompressed_size" field.
-func UncompressedSizeLTE(v int64) predicate.InvocationArtifactGraph {
-	return predicate.InvocationArtifactGraph(sql.FieldLTE(FieldUncompressedSize, v))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

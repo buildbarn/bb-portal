@@ -16227,8 +16227,6 @@ type InvocationArtifactGraphMutation struct {
 	typ                     string
 	id                      *int64
 	payload                 *[]byte
-	uncompressed_size       *int64
-	adduncompressed_size    *int64
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int64
 	clearedbazel_invocation bool
@@ -16377,62 +16375,6 @@ func (m *InvocationArtifactGraphMutation) ResetPayload() {
 	m.payload = nil
 }
 
-// SetUncompressedSize sets the "uncompressed_size" field.
-func (m *InvocationArtifactGraphMutation) SetUncompressedSize(i int64) {
-	m.uncompressed_size = &i
-	m.adduncompressed_size = nil
-}
-
-// UncompressedSize returns the value of the "uncompressed_size" field in the mutation.
-func (m *InvocationArtifactGraphMutation) UncompressedSize() (r int64, exists bool) {
-	v := m.uncompressed_size
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUncompressedSize returns the old "uncompressed_size" field's value of the InvocationArtifactGraph entity.
-// If the InvocationArtifactGraph object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationArtifactGraphMutation) OldUncompressedSize(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUncompressedSize is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUncompressedSize requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUncompressedSize: %w", err)
-	}
-	return oldValue.UncompressedSize, nil
-}
-
-// AddUncompressedSize adds i to the "uncompressed_size" field.
-func (m *InvocationArtifactGraphMutation) AddUncompressedSize(i int64) {
-	if m.adduncompressed_size != nil {
-		*m.adduncompressed_size += i
-	} else {
-		m.adduncompressed_size = &i
-	}
-}
-
-// AddedUncompressedSize returns the value that was added to the "uncompressed_size" field in this mutation.
-func (m *InvocationArtifactGraphMutation) AddedUncompressedSize() (r int64, exists bool) {
-	v := m.adduncompressed_size
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetUncompressedSize resets all changes to the "uncompressed_size" field.
-func (m *InvocationArtifactGraphMutation) ResetUncompressedSize() {
-	m.uncompressed_size = nil
-	m.adduncompressed_size = nil
-}
-
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
 func (m *InvocationArtifactGraphMutation) SetBazelInvocationID(id int64) {
 	m.bazel_invocation = &id
@@ -16506,12 +16448,9 @@ func (m *InvocationArtifactGraphMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *InvocationArtifactGraphMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 1)
 	if m.payload != nil {
 		fields = append(fields, invocationartifactgraph.FieldPayload)
-	}
-	if m.uncompressed_size != nil {
-		fields = append(fields, invocationartifactgraph.FieldUncompressedSize)
 	}
 	return fields
 }
@@ -16523,8 +16462,6 @@ func (m *InvocationArtifactGraphMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case invocationartifactgraph.FieldPayload:
 		return m.Payload()
-	case invocationartifactgraph.FieldUncompressedSize:
-		return m.UncompressedSize()
 	}
 	return nil, false
 }
@@ -16536,8 +16473,6 @@ func (m *InvocationArtifactGraphMutation) OldField(ctx context.Context, name str
 	switch name {
 	case invocationartifactgraph.FieldPayload:
 		return m.OldPayload(ctx)
-	case invocationartifactgraph.FieldUncompressedSize:
-		return m.OldUncompressedSize(ctx)
 	}
 	return nil, fmt.Errorf("unknown InvocationArtifactGraph field %s", name)
 }
@@ -16554,13 +16489,6 @@ func (m *InvocationArtifactGraphMutation) SetField(name string, value ent.Value)
 		}
 		m.SetPayload(v)
 		return nil
-	case invocationartifactgraph.FieldUncompressedSize:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUncompressedSize(v)
-		return nil
 	}
 	return fmt.Errorf("unknown InvocationArtifactGraph field %s", name)
 }
@@ -16568,21 +16496,13 @@ func (m *InvocationArtifactGraphMutation) SetField(name string, value ent.Value)
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *InvocationArtifactGraphMutation) AddedFields() []string {
-	var fields []string
-	if m.adduncompressed_size != nil {
-		fields = append(fields, invocationartifactgraph.FieldUncompressedSize)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *InvocationArtifactGraphMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case invocationartifactgraph.FieldUncompressedSize:
-		return m.AddedUncompressedSize()
-	}
 	return nil, false
 }
 
@@ -16591,13 +16511,6 @@ func (m *InvocationArtifactGraphMutation) AddedField(name string) (ent.Value, bo
 // type.
 func (m *InvocationArtifactGraphMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case invocationartifactgraph.FieldUncompressedSize:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUncompressedSize(v)
-		return nil
 	}
 	return fmt.Errorf("unknown InvocationArtifactGraph numeric field %s", name)
 }
@@ -16627,9 +16540,6 @@ func (m *InvocationArtifactGraphMutation) ResetField(name string) error {
 	switch name {
 	case invocationartifactgraph.FieldPayload:
 		m.ResetPayload()
-		return nil
-	case invocationartifactgraph.FieldUncompressedSize:
-		m.ResetUncompressedSize()
 		return nil
 	}
 	return fmt.Errorf("unknown InvocationArtifactGraph field %s", name)

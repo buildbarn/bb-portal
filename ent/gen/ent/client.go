@@ -1821,16 +1821,16 @@ func (c *BazelInvocationClient) QuerySourceControl(_m *BazelInvocation) *SourceC
 }
 
 // QueryArtifactGraph queries the artifact_graph edge of a BazelInvocation.
-func (c *BazelInvocationClient) QueryArtifactGraph(bi *BazelInvocation) *InvocationArtifactGraphQuery {
+func (c *BazelInvocationClient) QueryArtifactGraph(_m *BazelInvocation) *InvocationArtifactGraphQuery {
 	query := (&InvocationArtifactGraphClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := bi.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(invocationartifactgraph.Table, invocationartifactgraph.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.ArtifactGraphTable, bazelinvocation.ArtifactGraphColumn),
 		)
-		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -3504,8 +3504,8 @@ func (c *InvocationArtifactGraphClient) Update() *InvocationArtifactGraphUpdate 
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *InvocationArtifactGraphClient) UpdateOne(iag *InvocationArtifactGraph) *InvocationArtifactGraphUpdateOne {
-	mutation := newInvocationArtifactGraphMutation(c.config, OpUpdateOne, withInvocationArtifactGraph(iag))
+func (c *InvocationArtifactGraphClient) UpdateOne(_m *InvocationArtifactGraph) *InvocationArtifactGraphUpdateOne {
+	mutation := newInvocationArtifactGraphMutation(c.config, OpUpdateOne, withInvocationArtifactGraph(_m))
 	return &InvocationArtifactGraphUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -3522,8 +3522,8 @@ func (c *InvocationArtifactGraphClient) Delete() *InvocationArtifactGraphDelete 
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *InvocationArtifactGraphClient) DeleteOne(iag *InvocationArtifactGraph) *InvocationArtifactGraphDeleteOne {
-	return c.DeleteOneID(iag.ID)
+func (c *InvocationArtifactGraphClient) DeleteOne(_m *InvocationArtifactGraph) *InvocationArtifactGraphDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -3558,16 +3558,16 @@ func (c *InvocationArtifactGraphClient) GetX(ctx context.Context, id int64) *Inv
 }
 
 // QueryBazelInvocation queries the bazel_invocation edge of a InvocationArtifactGraph.
-func (c *InvocationArtifactGraphClient) QueryBazelInvocation(iag *InvocationArtifactGraph) *BazelInvocationQuery {
+func (c *InvocationArtifactGraphClient) QueryBazelInvocation(_m *InvocationArtifactGraph) *BazelInvocationQuery {
 	query := (&BazelInvocationClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := iag.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(invocationartifactgraph.Table, invocationartifactgraph.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, invocationartifactgraph.BazelInvocationTable, invocationartifactgraph.BazelInvocationColumn),
 		)
-		fromV = sqlgraph.Neighbors(iag.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query

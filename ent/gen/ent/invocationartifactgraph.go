@@ -19,13 +19,11 @@ type InvocationArtifactGraph struct {
 	ID int64 `json:"id,omitempty"`
 	// Payload holds the value of the "payload" field.
 	Payload []byte `json:"payload,omitempty"`
-	// UncompressedSize holds the value of the "uncompressed_size" field.
-	UncompressedSize int64 `json:"uncompressed_size,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the InvocationArtifactGraphQuery when eager-loading is set.
-	Edges                           InvocationArtifactGraphEdges `json:"edges"`
-	bazel_invocation_artifact_graph *int64
-	selectValues                    sql.SelectValues
+	Edges               InvocationArtifactGraphEdges `json:"edges"`
+	bazel_invocation_id *int64
+	selectValues        sql.SelectValues
 }
 
 // InvocationArtifactGraphEdges holds the relations/edges for other nodes in the graph.
@@ -57,9 +55,9 @@ func (*InvocationArtifactGraph) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case invocationartifactgraph.FieldPayload:
 			values[i] = new([]byte)
-		case invocationartifactgraph.FieldID, invocationartifactgraph.FieldUncompressedSize:
+		case invocationartifactgraph.FieldID:
 			values[i] = new(sql.NullInt64)
-		case invocationartifactgraph.ForeignKeys[0]: // bazel_invocation_artifact_graph
+		case invocationartifactgraph.ForeignKeys[0]: // bazel_invocation_id
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -70,7 +68,7 @@ func (*InvocationArtifactGraph) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the InvocationArtifactGraph fields.
-func (iag *InvocationArtifactGraph) assignValues(columns []string, values []any) error {
+func (_m *InvocationArtifactGraph) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -81,28 +79,22 @@ func (iag *InvocationArtifactGraph) assignValues(columns []string, values []any)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			iag.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case invocationartifactgraph.FieldPayload:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field payload", values[i])
 			} else if value != nil {
-				iag.Payload = *value
-			}
-		case invocationartifactgraph.FieldUncompressedSize:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field uncompressed_size", values[i])
-			} else if value.Valid {
-				iag.UncompressedSize = value.Int64
+				_m.Payload = *value
 			}
 		case invocationartifactgraph.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_artifact_graph", value)
+				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_id", value)
 			} else if value.Valid {
-				iag.bazel_invocation_artifact_graph = new(int64)
-				*iag.bazel_invocation_artifact_graph = int64(value.Int64)
+				_m.bazel_invocation_id = new(int64)
+				*_m.bazel_invocation_id = int64(value.Int64)
 			}
 		default:
-			iag.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -110,43 +102,40 @@ func (iag *InvocationArtifactGraph) assignValues(columns []string, values []any)
 
 // Value returns the ent.Value that was dynamically selected and assigned to the InvocationArtifactGraph.
 // This includes values selected through modifiers, order, etc.
-func (iag *InvocationArtifactGraph) Value(name string) (ent.Value, error) {
-	return iag.selectValues.Get(name)
+func (_m *InvocationArtifactGraph) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the InvocationArtifactGraph entity.
-func (iag *InvocationArtifactGraph) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewInvocationArtifactGraphClient(iag.config).QueryBazelInvocation(iag)
+func (_m *InvocationArtifactGraph) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewInvocationArtifactGraphClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // Update returns a builder for updating this InvocationArtifactGraph.
 // Note that you need to call InvocationArtifactGraph.Unwrap() before calling this method if this InvocationArtifactGraph
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (iag *InvocationArtifactGraph) Update() *InvocationArtifactGraphUpdateOne {
-	return NewInvocationArtifactGraphClient(iag.config).UpdateOne(iag)
+func (_m *InvocationArtifactGraph) Update() *InvocationArtifactGraphUpdateOne {
+	return NewInvocationArtifactGraphClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the InvocationArtifactGraph entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (iag *InvocationArtifactGraph) Unwrap() *InvocationArtifactGraph {
-	_tx, ok := iag.config.driver.(*txDriver)
+func (_m *InvocationArtifactGraph) Unwrap() *InvocationArtifactGraph {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: InvocationArtifactGraph is not a transactional entity")
 	}
-	iag.config.driver = _tx.drv
-	return iag
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (iag *InvocationArtifactGraph) String() string {
+func (_m *InvocationArtifactGraph) String() string {
 	var builder strings.Builder
 	builder.WriteString("InvocationArtifactGraph(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", iag.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("payload=")
-	builder.WriteString(fmt.Sprintf("%v", iag.Payload))
-	builder.WriteString(", ")
-	builder.WriteString("uncompressed_size=")
-	builder.WriteString(fmt.Sprintf("%v", iag.UncompressedSize))
+	builder.WriteString(fmt.Sprintf("%v", _m.Payload))
 	builder.WriteByte(')')
 	return builder.String()
 }

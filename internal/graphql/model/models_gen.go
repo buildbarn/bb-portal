@@ -6,23 +6,47 @@ package model
 // (bytestream:// URIs route through bb-portal's /api/v1/servefile/...
 // endpoint; http(s):// URIs pass through; everything else returns null).
 type ArtifactFile struct {
-	Name           string  `json:"name"`
-	URI            *string `json:"uri,omitempty"`
-	Digest         *string `json:"digest,omitempty"`
-	SizeBytes      *int    `json:"sizeBytes,omitempty"`
-	DigestFunction *string `json:"digestFunction,omitempty"`
-	DownloadURL    *string `json:"downloadUrl,omitempty"`
+	Name        string  `json:"name"`
+	URI         *string `json:"uri,omitempty"`
+	Digest      *string `json:"digest,omitempty"`
+	SizeBytes   *int    `json:"sizeBytes,omitempty"`
+	DownloadURL *string `json:"downloadUrl,omitempty"`
 }
 
-// Compressed BEP-graph blob written once at BuildFinished when the
-// invocation's save level is basic_and_target_and_artifacts. payload is
-// a base64-encoded zstd stream of length-prefixed serialized
-// bes.BuildEvent messages (NamedSetOfFiles and TargetCompleted variants
-// only). Clients base64-decode, zstd-decompress, and walk the graph
-// themselves.
+// The build's per-file artifact graph for an invocation. The server stores
+// this compressed at rest and decompresses and decodes it on demand; the
+// structured form here is returned directly so the client never decodes a
+// binary blob. Populated only when the save level is
+// basic_and_target_and_artifacts and a BuildFinished event arrived.
 type ArtifactGraph struct {
-	Payload          string `json:"payload"`
-	UncompressedSize int    `json:"uncompressedSize"`
+	NamedSets []*ArtifactNamedSet `json:"namedSets"`
+	Targets   []*ArtifactTarget   `json:"targets"`
+}
+
+// A NamedSetOfFiles from the build's artifact graph: a set of files plus
+// references to nested sets. Output groups point at root sets and the
+// client walks childSetIds to enumerate every file. Mirrors the BEP
+// NamedSetOfFiles message.
+type ArtifactNamedSet struct {
+	ID          string          `json:"id"`
+	Files       []*ArtifactFile `json:"files"`
+	ChildSetIds []string        `json:"childSetIds"`
+}
+
+// A target output group, referencing the root named sets whose transitive
+// closure makes up the group's files.
+type ArtifactOutputGroup struct {
+	Name       string   `json:"name"`
+	Incomplete bool     `json:"incomplete"`
+	RootSetIds []string `json:"rootSetIds"`
+}
+
+// A completed target (optionally for a specific aspect) and its output
+// groups.
+type ArtifactTarget struct {
+	Label        string                 `json:"label"`
+	Aspect       *string                `json:"aspect,omitempty"`
+	OutputGroups []*ArtifactOutputGroup `json:"outputGroups"`
 }
 
 type Profile struct {

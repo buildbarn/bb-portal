@@ -23,68 +23,47 @@ type InvocationArtifactGraphUpdate struct {
 }
 
 // Where appends a list predicates to the InvocationArtifactGraphUpdate builder.
-func (iagu *InvocationArtifactGraphUpdate) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphUpdate {
-	iagu.mutation.Where(ps...)
-	return iagu
+func (_u *InvocationArtifactGraphUpdate) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetPayload sets the "payload" field.
-func (iagu *InvocationArtifactGraphUpdate) SetPayload(b []byte) *InvocationArtifactGraphUpdate {
-	iagu.mutation.SetPayload(b)
-	return iagu
-}
-
-// SetUncompressedSize sets the "uncompressed_size" field.
-func (iagu *InvocationArtifactGraphUpdate) SetUncompressedSize(i int64) *InvocationArtifactGraphUpdate {
-	iagu.mutation.ResetUncompressedSize()
-	iagu.mutation.SetUncompressedSize(i)
-	return iagu
-}
-
-// SetNillableUncompressedSize sets the "uncompressed_size" field if the given value is not nil.
-func (iagu *InvocationArtifactGraphUpdate) SetNillableUncompressedSize(i *int64) *InvocationArtifactGraphUpdate {
-	if i != nil {
-		iagu.SetUncompressedSize(*i)
-	}
-	return iagu
-}
-
-// AddUncompressedSize adds i to the "uncompressed_size" field.
-func (iagu *InvocationArtifactGraphUpdate) AddUncompressedSize(i int64) *InvocationArtifactGraphUpdate {
-	iagu.mutation.AddUncompressedSize(i)
-	return iagu
+func (_u *InvocationArtifactGraphUpdate) SetPayload(v []byte) *InvocationArtifactGraphUpdate {
+	_u.mutation.SetPayload(v)
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (iagu *InvocationArtifactGraphUpdate) SetBazelInvocationID(id int64) *InvocationArtifactGraphUpdate {
-	iagu.mutation.SetBazelInvocationID(id)
-	return iagu
+func (_u *InvocationArtifactGraphUpdate) SetBazelInvocationID(id int64) *InvocationArtifactGraphUpdate {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (iagu *InvocationArtifactGraphUpdate) SetBazelInvocation(b *BazelInvocation) *InvocationArtifactGraphUpdate {
-	return iagu.SetBazelInvocationID(b.ID)
+func (_u *InvocationArtifactGraphUpdate) SetBazelInvocation(v *BazelInvocation) *InvocationArtifactGraphUpdate {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the InvocationArtifactGraphMutation object of the builder.
-func (iagu *InvocationArtifactGraphUpdate) Mutation() *InvocationArtifactGraphMutation {
-	return iagu.mutation
+func (_u *InvocationArtifactGraphUpdate) Mutation() *InvocationArtifactGraphMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (iagu *InvocationArtifactGraphUpdate) ClearBazelInvocation() *InvocationArtifactGraphUpdate {
-	iagu.mutation.ClearBazelInvocation()
-	return iagu
+func (_u *InvocationArtifactGraphUpdate) ClearBazelInvocation() *InvocationArtifactGraphUpdate {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (iagu *InvocationArtifactGraphUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, iagu.sqlSave, iagu.mutation, iagu.hooks)
+func (_u *InvocationArtifactGraphUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iagu *InvocationArtifactGraphUpdate) SaveX(ctx context.Context) int {
-	affected, err := iagu.Save(ctx)
+func (_u *InvocationArtifactGraphUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -92,48 +71,42 @@ func (iagu *InvocationArtifactGraphUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (iagu *InvocationArtifactGraphUpdate) Exec(ctx context.Context) error {
-	_, err := iagu.Save(ctx)
+func (_u *InvocationArtifactGraphUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iagu *InvocationArtifactGraphUpdate) ExecX(ctx context.Context) {
-	if err := iagu.Exec(ctx); err != nil {
+func (_u *InvocationArtifactGraphUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iagu *InvocationArtifactGraphUpdate) check() error {
-	if iagu.mutation.BazelInvocationCleared() && len(iagu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *InvocationArtifactGraphUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationArtifactGraph.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (iagu *InvocationArtifactGraphUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := iagu.check(); err != nil {
-		return n, err
+func (_u *InvocationArtifactGraphUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(invocationartifactgraph.Table, invocationartifactgraph.Columns, sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64))
-	if ps := iagu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := iagu.mutation.Payload(); ok {
+	if value, ok := _u.mutation.Payload(); ok {
 		_spec.SetField(invocationartifactgraph.FieldPayload, field.TypeBytes, value)
 	}
-	if value, ok := iagu.mutation.UncompressedSize(); ok {
-		_spec.SetField(invocationartifactgraph.FieldUncompressedSize, field.TypeInt64, value)
-	}
-	if value, ok := iagu.mutation.AddedUncompressedSize(); ok {
-		_spec.AddField(invocationartifactgraph.FieldUncompressedSize, field.TypeInt64, value)
-	}
-	if iagu.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -146,7 +119,7 @@ func (iagu *InvocationArtifactGraphUpdate) sqlSave(ctx context.Context) (n int, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iagu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -162,7 +135,7 @@ func (iagu *InvocationArtifactGraphUpdate) sqlSave(ctx context.Context) (n int, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, iagu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationartifactgraph.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -170,8 +143,8 @@ func (iagu *InvocationArtifactGraphUpdate) sqlSave(ctx context.Context) (n int, 
 		}
 		return 0, err
 	}
-	iagu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // InvocationArtifactGraphUpdateOne is the builder for updating a single InvocationArtifactGraph entity.
@@ -183,75 +156,54 @@ type InvocationArtifactGraphUpdateOne struct {
 }
 
 // SetPayload sets the "payload" field.
-func (iaguo *InvocationArtifactGraphUpdateOne) SetPayload(b []byte) *InvocationArtifactGraphUpdateOne {
-	iaguo.mutation.SetPayload(b)
-	return iaguo
-}
-
-// SetUncompressedSize sets the "uncompressed_size" field.
-func (iaguo *InvocationArtifactGraphUpdateOne) SetUncompressedSize(i int64) *InvocationArtifactGraphUpdateOne {
-	iaguo.mutation.ResetUncompressedSize()
-	iaguo.mutation.SetUncompressedSize(i)
-	return iaguo
-}
-
-// SetNillableUncompressedSize sets the "uncompressed_size" field if the given value is not nil.
-func (iaguo *InvocationArtifactGraphUpdateOne) SetNillableUncompressedSize(i *int64) *InvocationArtifactGraphUpdateOne {
-	if i != nil {
-		iaguo.SetUncompressedSize(*i)
-	}
-	return iaguo
-}
-
-// AddUncompressedSize adds i to the "uncompressed_size" field.
-func (iaguo *InvocationArtifactGraphUpdateOne) AddUncompressedSize(i int64) *InvocationArtifactGraphUpdateOne {
-	iaguo.mutation.AddUncompressedSize(i)
-	return iaguo
+func (_u *InvocationArtifactGraphUpdateOne) SetPayload(v []byte) *InvocationArtifactGraphUpdateOne {
+	_u.mutation.SetPayload(v)
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (iaguo *InvocationArtifactGraphUpdateOne) SetBazelInvocationID(id int64) *InvocationArtifactGraphUpdateOne {
-	iaguo.mutation.SetBazelInvocationID(id)
-	return iaguo
+func (_u *InvocationArtifactGraphUpdateOne) SetBazelInvocationID(id int64) *InvocationArtifactGraphUpdateOne {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (iaguo *InvocationArtifactGraphUpdateOne) SetBazelInvocation(b *BazelInvocation) *InvocationArtifactGraphUpdateOne {
-	return iaguo.SetBazelInvocationID(b.ID)
+func (_u *InvocationArtifactGraphUpdateOne) SetBazelInvocation(v *BazelInvocation) *InvocationArtifactGraphUpdateOne {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the InvocationArtifactGraphMutation object of the builder.
-func (iaguo *InvocationArtifactGraphUpdateOne) Mutation() *InvocationArtifactGraphMutation {
-	return iaguo.mutation
+func (_u *InvocationArtifactGraphUpdateOne) Mutation() *InvocationArtifactGraphMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (iaguo *InvocationArtifactGraphUpdateOne) ClearBazelInvocation() *InvocationArtifactGraphUpdateOne {
-	iaguo.mutation.ClearBazelInvocation()
-	return iaguo
+func (_u *InvocationArtifactGraphUpdateOne) ClearBazelInvocation() *InvocationArtifactGraphUpdateOne {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Where appends a list predicates to the InvocationArtifactGraphUpdate builder.
-func (iaguo *InvocationArtifactGraphUpdateOne) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphUpdateOne {
-	iaguo.mutation.Where(ps...)
-	return iaguo
+func (_u *InvocationArtifactGraphUpdateOne) Where(ps ...predicate.InvocationArtifactGraph) *InvocationArtifactGraphUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (iaguo *InvocationArtifactGraphUpdateOne) Select(field string, fields ...string) *InvocationArtifactGraphUpdateOne {
-	iaguo.fields = append([]string{field}, fields...)
-	return iaguo
+func (_u *InvocationArtifactGraphUpdateOne) Select(field string, fields ...string) *InvocationArtifactGraphUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated InvocationArtifactGraph entity.
-func (iaguo *InvocationArtifactGraphUpdateOne) Save(ctx context.Context) (*InvocationArtifactGraph, error) {
-	return withHooks(ctx, iaguo.sqlSave, iaguo.mutation, iaguo.hooks)
+func (_u *InvocationArtifactGraphUpdateOne) Save(ctx context.Context) (*InvocationArtifactGraph, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iaguo *InvocationArtifactGraphUpdateOne) SaveX(ctx context.Context) *InvocationArtifactGraph {
-	node, err := iaguo.Save(ctx)
+func (_u *InvocationArtifactGraphUpdateOne) SaveX(ctx context.Context) *InvocationArtifactGraph {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -259,37 +211,37 @@ func (iaguo *InvocationArtifactGraphUpdateOne) SaveX(ctx context.Context) *Invoc
 }
 
 // Exec executes the query on the entity.
-func (iaguo *InvocationArtifactGraphUpdateOne) Exec(ctx context.Context) error {
-	_, err := iaguo.Save(ctx)
+func (_u *InvocationArtifactGraphUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iaguo *InvocationArtifactGraphUpdateOne) ExecX(ctx context.Context) {
-	if err := iaguo.Exec(ctx); err != nil {
+func (_u *InvocationArtifactGraphUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iaguo *InvocationArtifactGraphUpdateOne) check() error {
-	if iaguo.mutation.BazelInvocationCleared() && len(iaguo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *InvocationArtifactGraphUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "InvocationArtifactGraph.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (iaguo *InvocationArtifactGraphUpdateOne) sqlSave(ctx context.Context) (_node *InvocationArtifactGraph, err error) {
-	if err := iaguo.check(); err != nil {
+func (_u *InvocationArtifactGraphUpdateOne) sqlSave(ctx context.Context) (_node *InvocationArtifactGraph, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(invocationartifactgraph.Table, invocationartifactgraph.Columns, sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64))
-	id, ok := iaguo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "InvocationArtifactGraph.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := iaguo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, invocationartifactgraph.FieldID)
 		for _, f := range fields {
@@ -301,23 +253,17 @@ func (iaguo *InvocationArtifactGraphUpdateOne) sqlSave(ctx context.Context) (_no
 			}
 		}
 	}
-	if ps := iaguo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := iaguo.mutation.Payload(); ok {
+	if value, ok := _u.mutation.Payload(); ok {
 		_spec.SetField(invocationartifactgraph.FieldPayload, field.TypeBytes, value)
 	}
-	if value, ok := iaguo.mutation.UncompressedSize(); ok {
-		_spec.SetField(invocationartifactgraph.FieldUncompressedSize, field.TypeInt64, value)
-	}
-	if value, ok := iaguo.mutation.AddedUncompressedSize(); ok {
-		_spec.AddField(invocationartifactgraph.FieldUncompressedSize, field.TypeInt64, value)
-	}
-	if iaguo.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -330,7 +276,7 @@ func (iaguo *InvocationArtifactGraphUpdateOne) sqlSave(ctx context.Context) (_no
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iaguo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -346,10 +292,10 @@ func (iaguo *InvocationArtifactGraphUpdateOne) sqlSave(ctx context.Context) (_no
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &InvocationArtifactGraph{config: iaguo.config}
+	_node = &InvocationArtifactGraph{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, iaguo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationartifactgraph.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -357,6 +303,6 @@ func (iaguo *InvocationArtifactGraphUpdateOne) sqlSave(ctx context.Context) (_no
 		}
 		return nil, err
 	}
-	iaguo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

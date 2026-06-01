@@ -11,9 +11,9 @@ import (
 
 // InvocationArtifactGraph stores a zstd-compressed blob of the build's
 // artifact graph: every NamedSetOfFiles event plus every TargetCompleted
-// event's output-group references, length-prefixed and concatenated.
-// Clients decompress and walk the graph themselves; the server only
-// hands the payload back through GraphQL.
+// event's output-group references, length-prefixed and concatenated. The
+// server decompresses and decodes this blob and exposes the graph as
+// structured GraphQL types; clients never see the compressed bytes.
 //
 // One row per invocation, written once at BuildFinished, never updated.
 type InvocationArtifactGraph struct {
@@ -23,7 +23,6 @@ type InvocationArtifactGraph struct {
 func (InvocationArtifactGraph) Fields() []ent.Field {
 	return []ent.Field{
 		field.Bytes("payload"),
-		field.Int64("uncompressed_size"),
 	}
 }
 

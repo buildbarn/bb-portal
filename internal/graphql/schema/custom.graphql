@@ -40,21 +40,51 @@ type ArtifactFile {
   uri: String
   digest: String
   sizeBytes: Int
-  digestFunction: String
   downloadUrl: String @goField(forceResolver: true)
 }
 
 """
-Compressed BEP-graph blob written once at BuildFinished when the
-invocation's save level is basic_and_target_and_artifacts. payload is
-a base64-encoded zstd stream of length-prefixed serialized
-bes.BuildEvent messages (NamedSetOfFiles and TargetCompleted variants
-only). Clients base64-decode, zstd-decompress, and walk the graph
-themselves.
+A NamedSetOfFiles from the build's artifact graph: a set of files plus
+references to nested sets. Output groups point at root sets and the
+client walks childSetIds to enumerate every file. Mirrors the BEP
+NamedSetOfFiles message.
+"""
+type ArtifactNamedSet {
+  id: String!
+  files: [ArtifactFile!]!
+  childSetIds: [String!]!
+}
+
+"""
+A target output group, referencing the root named sets whose transitive
+closure makes up the group's files.
+"""
+type ArtifactOutputGroup {
+  name: String!
+  incomplete: Boolean!
+  rootSetIds: [String!]!
+}
+
+"""
+A completed target (optionally for a specific aspect) and its output
+groups.
+"""
+type ArtifactTarget {
+  label: String!
+  aspect: String
+  outputGroups: [ArtifactOutputGroup!]!
+}
+
+"""
+The build's per-file artifact graph for an invocation. The server stores
+this compressed at rest and decompresses and decodes it on demand; the
+structured form here is returned directly so the client never decodes a
+binary blob. Populated only when the save level is
+basic_and_target_and_artifacts and a BuildFinished event arrived.
 """
 type ArtifactGraph {
-  payload: String!
-  uncompressedSize: Int!
+  namedSets: [ArtifactNamedSet!]!
+  targets: [ArtifactTarget!]!
 }
 
 extend type BazelInvocation {
