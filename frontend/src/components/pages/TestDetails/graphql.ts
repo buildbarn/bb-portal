@@ -33,11 +33,14 @@ export const GET_TEST_DETAILS = gql(/* GraphQL */ `
           firstStartTime
           totalRunDurationInMs
           testResults {
+            id
             cachedLocally
             cachedRemotely
           }
           invocationTarget {
+            id
             bazelInvocation {
+              id
               invocationID
             }
           }
