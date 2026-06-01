@@ -8,10 +8,11 @@ import {
   type TestSummaryOrder,
   TestSummaryOrderField,
 } from "@/graphql/__generated__/graphql";
+import { TEST_STATUS_FILTERS } from "@/types/TestStatus";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import styles from "../../theme/theme.module.css";
 import NullBooleanTag from "../NullableBooleanTag";
-import TestStatusTag, { type TestStatusEnum } from "../TestStatusTag";
+import { TestStatusTag } from "../TestStatusTag";
 
 export type TestTabRowType = NonNullable<
   NonNullable<
@@ -31,53 +32,10 @@ export const defaultSorting: TestSummaryOrder = {
 
 export const columns: TableColumnsType<TestTabRowType> = [
   {
+    key: "overallStatus",
     title: "Status",
-    dataIndex: "overallStatus",
-    render: (x) => (
-      <TestStatusTag
-        displayText={true}
-        key="status"
-        status={x as TestStatusEnum}
-      />
-    ),
-    filters: [
-      {
-        text: "No Status",
-        value: "NO_STATUS",
-      },
-      {
-        text: "Passed",
-        value: "PASSED",
-      },
-      {
-        text: "Flaky",
-        value: "FLAKY",
-      },
-      {
-        text: "Timeout",
-        value: "TIMEOUT",
-      },
-      {
-        text: "Failed",
-        value: "FAILED",
-      },
-      {
-        text: "Incomplete",
-        value: "INCOMPLETE",
-      },
-      {
-        text: "Remote Failure",
-        value: "REMOTE_FAILURE",
-      },
-      {
-        text: "Failed to Build",
-        value: "FAILED_TO_BUILD",
-      },
-      {
-        text: "Tool Halted Before Testing",
-        value: "TOOL_HALTED_BEFORE_TESTING",
-      },
-    ],
+    render: (_, record) => <TestStatusTag status={record.overallStatus} />,
+    filters: TEST_STATUS_FILTERS,
   },
   {
     title: "Label",
