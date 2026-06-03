@@ -35,13 +35,11 @@ func NewBlobstoreService(
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	instanceNameAuthorizer auth.Authorizer,
+	zstdPool bb_zstd.Pool,
 	router *mux.Router,
 ) error {
 	// Authorizer used to deny all write requests.
 	denyAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return false })
-
-	// Create a process-wide ZSTD compression pool.
-	zstdPool := bb_zstd.NewPoolFromConfiguration(configuration.ZstdPool)
 
 	grpcServer := go_grpc.NewServer()
 	grpcWebServer := grpcweb.WrapServer(grpcServer)

@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strconv"
 
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend"
@@ -106,7 +105,6 @@ func setupProxyHandler(router *mux.Router, sourceConfig *bb_portal.FrontendServi
 			}
 
 			r.Body = io.NopCloser(bytes.NewReader(newIndexContent))
-			r.Header.Set("Content-Length", strconv.Itoa(len(newIndexContent)))
 			return nil
 		},
 	}

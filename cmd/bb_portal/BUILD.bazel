@@ -8,6 +8,7 @@ go_library(
     visibility = ["//visibility:private"],
     deps = [
         "//ent/gen/ent/runtime",
+        "//internal/api/http/zstdmiddleware",
         "//internal/bep",
         "//pkg/frontend",
         "//pkg/grpcweb/blobstoreservice",
@@ -18,6 +19,7 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/http/server",
         "@com_github_buildbarn_bb_storage//pkg/program",
         "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_buildbarn_bb_storage//pkg/zstd",
         "@com_github_gorilla_mux//:mux",
         "@io_opentelemetry_go_contrib_instrumentation_github_com_gorilla_mux_otelmux//:otelmux",
         "@io_opentelemetry_go_otel//:otel",

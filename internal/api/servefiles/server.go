@@ -105,7 +105,6 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request) 
 		}
 	}
 
-	w.Header().Set("Content-Length", strconv.FormatInt(digest.GetSizeBytes(), 10))
 	w.Header().Set("Content-Type", contentType)
 	w.Write(first[:n])
 	io.Copy(w, r)
