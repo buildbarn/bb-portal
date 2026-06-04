@@ -17396,12 +17396,6 @@ type InvocationTargetMutation struct {
 	success                 *bool
 	tags                    *[]string
 	appendtags              []string
-	start_time_in_ms        *int64
-	addstart_time_in_ms     *int64
-	end_time_in_ms          *int64
-	addend_time_in_ms       *int64
-	duration_in_ms          *int64
-	addduration_in_ms       *int64
 	failure_message         *string
 	abort_reason            *invocationtarget.AbortReason
 	clearedFields           map[string]struct{}
@@ -17622,216 +17616,6 @@ func (m *InvocationTargetMutation) ResetTags() {
 	m.tags = nil
 	m.appendtags = nil
 	delete(m.clearedFields, invocationtarget.FieldTags)
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (m *InvocationTargetMutation) SetStartTimeInMs(i int64) {
-	m.start_time_in_ms = &i
-	m.addstart_time_in_ms = nil
-}
-
-// StartTimeInMs returns the value of the "start_time_in_ms" field in the mutation.
-func (m *InvocationTargetMutation) StartTimeInMs() (r int64, exists bool) {
-	v := m.start_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStartTimeInMs returns the old "start_time_in_ms" field's value of the InvocationTarget entity.
-// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationTargetMutation) OldStartTimeInMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartTimeInMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartTimeInMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartTimeInMs: %w", err)
-	}
-	return oldValue.StartTimeInMs, nil
-}
-
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (m *InvocationTargetMutation) AddStartTimeInMs(i int64) {
-	if m.addstart_time_in_ms != nil {
-		*m.addstart_time_in_ms += i
-	} else {
-		m.addstart_time_in_ms = &i
-	}
-}
-
-// AddedStartTimeInMs returns the value that was added to the "start_time_in_ms" field in this mutation.
-func (m *InvocationTargetMutation) AddedStartTimeInMs() (r int64, exists bool) {
-	v := m.addstart_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (m *InvocationTargetMutation) ClearStartTimeInMs() {
-	m.start_time_in_ms = nil
-	m.addstart_time_in_ms = nil
-	m.clearedFields[invocationtarget.FieldStartTimeInMs] = struct{}{}
-}
-
-// StartTimeInMsCleared returns if the "start_time_in_ms" field was cleared in this mutation.
-func (m *InvocationTargetMutation) StartTimeInMsCleared() bool {
-	_, ok := m.clearedFields[invocationtarget.FieldStartTimeInMs]
-	return ok
-}
-
-// ResetStartTimeInMs resets all changes to the "start_time_in_ms" field.
-func (m *InvocationTargetMutation) ResetStartTimeInMs() {
-	m.start_time_in_ms = nil
-	m.addstart_time_in_ms = nil
-	delete(m.clearedFields, invocationtarget.FieldStartTimeInMs)
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (m *InvocationTargetMutation) SetEndTimeInMs(i int64) {
-	m.end_time_in_ms = &i
-	m.addend_time_in_ms = nil
-}
-
-// EndTimeInMs returns the value of the "end_time_in_ms" field in the mutation.
-func (m *InvocationTargetMutation) EndTimeInMs() (r int64, exists bool) {
-	v := m.end_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEndTimeInMs returns the old "end_time_in_ms" field's value of the InvocationTarget entity.
-// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationTargetMutation) OldEndTimeInMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEndTimeInMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEndTimeInMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEndTimeInMs: %w", err)
-	}
-	return oldValue.EndTimeInMs, nil
-}
-
-// AddEndTimeInMs adds i to the "end_time_in_ms" field.
-func (m *InvocationTargetMutation) AddEndTimeInMs(i int64) {
-	if m.addend_time_in_ms != nil {
-		*m.addend_time_in_ms += i
-	} else {
-		m.addend_time_in_ms = &i
-	}
-}
-
-// AddedEndTimeInMs returns the value that was added to the "end_time_in_ms" field in this mutation.
-func (m *InvocationTargetMutation) AddedEndTimeInMs() (r int64, exists bool) {
-	v := m.addend_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (m *InvocationTargetMutation) ClearEndTimeInMs() {
-	m.end_time_in_ms = nil
-	m.addend_time_in_ms = nil
-	m.clearedFields[invocationtarget.FieldEndTimeInMs] = struct{}{}
-}
-
-// EndTimeInMsCleared returns if the "end_time_in_ms" field was cleared in this mutation.
-func (m *InvocationTargetMutation) EndTimeInMsCleared() bool {
-	_, ok := m.clearedFields[invocationtarget.FieldEndTimeInMs]
-	return ok
-}
-
-// ResetEndTimeInMs resets all changes to the "end_time_in_ms" field.
-func (m *InvocationTargetMutation) ResetEndTimeInMs() {
-	m.end_time_in_ms = nil
-	m.addend_time_in_ms = nil
-	delete(m.clearedFields, invocationtarget.FieldEndTimeInMs)
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (m *InvocationTargetMutation) SetDurationInMs(i int64) {
-	m.duration_in_ms = &i
-	m.addduration_in_ms = nil
-}
-
-// DurationInMs returns the value of the "duration_in_ms" field in the mutation.
-func (m *InvocationTargetMutation) DurationInMs() (r int64, exists bool) {
-	v := m.duration_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDurationInMs returns the old "duration_in_ms" field's value of the InvocationTarget entity.
-// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationTargetMutation) OldDurationInMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDurationInMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDurationInMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDurationInMs: %w", err)
-	}
-	return oldValue.DurationInMs, nil
-}
-
-// AddDurationInMs adds i to the "duration_in_ms" field.
-func (m *InvocationTargetMutation) AddDurationInMs(i int64) {
-	if m.addduration_in_ms != nil {
-		*m.addduration_in_ms += i
-	} else {
-		m.addduration_in_ms = &i
-	}
-}
-
-// AddedDurationInMs returns the value that was added to the "duration_in_ms" field in this mutation.
-func (m *InvocationTargetMutation) AddedDurationInMs() (r int64, exists bool) {
-	v := m.addduration_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (m *InvocationTargetMutation) ClearDurationInMs() {
-	m.duration_in_ms = nil
-	m.addduration_in_ms = nil
-	m.clearedFields[invocationtarget.FieldDurationInMs] = struct{}{}
-}
-
-// DurationInMsCleared returns if the "duration_in_ms" field was cleared in this mutation.
-func (m *InvocationTargetMutation) DurationInMsCleared() bool {
-	_, ok := m.clearedFields[invocationtarget.FieldDurationInMs]
-	return ok
-}
-
-// ResetDurationInMs resets all changes to the "duration_in_ms" field.
-func (m *InvocationTargetMutation) ResetDurationInMs() {
-	m.duration_in_ms = nil
-	m.addduration_in_ms = nil
-	delete(m.clearedFields, invocationtarget.FieldDurationInMs)
 }
 
 // SetFailureMessage sets the "failure_message" field.
@@ -18124,21 +17908,12 @@ func (m *InvocationTargetMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *InvocationTargetMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 4)
 	if m.success != nil {
 		fields = append(fields, invocationtarget.FieldSuccess)
 	}
 	if m.tags != nil {
 		fields = append(fields, invocationtarget.FieldTags)
-	}
-	if m.start_time_in_ms != nil {
-		fields = append(fields, invocationtarget.FieldStartTimeInMs)
-	}
-	if m.end_time_in_ms != nil {
-		fields = append(fields, invocationtarget.FieldEndTimeInMs)
-	}
-	if m.duration_in_ms != nil {
-		fields = append(fields, invocationtarget.FieldDurationInMs)
 	}
 	if m.failure_message != nil {
 		fields = append(fields, invocationtarget.FieldFailureMessage)
@@ -18158,12 +17933,6 @@ func (m *InvocationTargetMutation) Field(name string) (ent.Value, bool) {
 		return m.Success()
 	case invocationtarget.FieldTags:
 		return m.Tags()
-	case invocationtarget.FieldStartTimeInMs:
-		return m.StartTimeInMs()
-	case invocationtarget.FieldEndTimeInMs:
-		return m.EndTimeInMs()
-	case invocationtarget.FieldDurationInMs:
-		return m.DurationInMs()
 	case invocationtarget.FieldFailureMessage:
 		return m.FailureMessage()
 	case invocationtarget.FieldAbortReason:
@@ -18181,12 +17950,6 @@ func (m *InvocationTargetMutation) OldField(ctx context.Context, name string) (e
 		return m.OldSuccess(ctx)
 	case invocationtarget.FieldTags:
 		return m.OldTags(ctx)
-	case invocationtarget.FieldStartTimeInMs:
-		return m.OldStartTimeInMs(ctx)
-	case invocationtarget.FieldEndTimeInMs:
-		return m.OldEndTimeInMs(ctx)
-	case invocationtarget.FieldDurationInMs:
-		return m.OldDurationInMs(ctx)
 	case invocationtarget.FieldFailureMessage:
 		return m.OldFailureMessage(ctx)
 	case invocationtarget.FieldAbortReason:
@@ -18214,27 +17977,6 @@ func (m *InvocationTargetMutation) SetField(name string, value ent.Value) error 
 		}
 		m.SetTags(v)
 		return nil
-	case invocationtarget.FieldStartTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStartTimeInMs(v)
-		return nil
-	case invocationtarget.FieldEndTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEndTimeInMs(v)
-		return nil
-	case invocationtarget.FieldDurationInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDurationInMs(v)
-		return nil
 	case invocationtarget.FieldFailureMessage:
 		v, ok := value.(string)
 		if !ok {
@@ -18256,31 +17998,13 @@ func (m *InvocationTargetMutation) SetField(name string, value ent.Value) error 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *InvocationTargetMutation) AddedFields() []string {
-	var fields []string
-	if m.addstart_time_in_ms != nil {
-		fields = append(fields, invocationtarget.FieldStartTimeInMs)
-	}
-	if m.addend_time_in_ms != nil {
-		fields = append(fields, invocationtarget.FieldEndTimeInMs)
-	}
-	if m.addduration_in_ms != nil {
-		fields = append(fields, invocationtarget.FieldDurationInMs)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *InvocationTargetMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case invocationtarget.FieldStartTimeInMs:
-		return m.AddedStartTimeInMs()
-	case invocationtarget.FieldEndTimeInMs:
-		return m.AddedEndTimeInMs()
-	case invocationtarget.FieldDurationInMs:
-		return m.AddedDurationInMs()
-	}
 	return nil, false
 }
 
@@ -18289,27 +18013,6 @@ func (m *InvocationTargetMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *InvocationTargetMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case invocationtarget.FieldStartTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStartTimeInMs(v)
-		return nil
-	case invocationtarget.FieldEndTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddEndTimeInMs(v)
-		return nil
-	case invocationtarget.FieldDurationInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddDurationInMs(v)
-		return nil
 	}
 	return fmt.Errorf("unknown InvocationTarget numeric field %s", name)
 }
@@ -18320,15 +18023,6 @@ func (m *InvocationTargetMutation) ClearedFields() []string {
 	var fields []string
 	if m.FieldCleared(invocationtarget.FieldTags) {
 		fields = append(fields, invocationtarget.FieldTags)
-	}
-	if m.FieldCleared(invocationtarget.FieldStartTimeInMs) {
-		fields = append(fields, invocationtarget.FieldStartTimeInMs)
-	}
-	if m.FieldCleared(invocationtarget.FieldEndTimeInMs) {
-		fields = append(fields, invocationtarget.FieldEndTimeInMs)
-	}
-	if m.FieldCleared(invocationtarget.FieldDurationInMs) {
-		fields = append(fields, invocationtarget.FieldDurationInMs)
 	}
 	if m.FieldCleared(invocationtarget.FieldFailureMessage) {
 		fields = append(fields, invocationtarget.FieldFailureMessage)
@@ -18350,15 +18044,6 @@ func (m *InvocationTargetMutation) ClearField(name string) error {
 	case invocationtarget.FieldTags:
 		m.ClearTags()
 		return nil
-	case invocationtarget.FieldStartTimeInMs:
-		m.ClearStartTimeInMs()
-		return nil
-	case invocationtarget.FieldEndTimeInMs:
-		m.ClearEndTimeInMs()
-		return nil
-	case invocationtarget.FieldDurationInMs:
-		m.ClearDurationInMs()
-		return nil
 	case invocationtarget.FieldFailureMessage:
 		m.ClearFailureMessage()
 		return nil
@@ -18375,15 +18060,6 @@ func (m *InvocationTargetMutation) ResetField(name string) error {
 		return nil
 	case invocationtarget.FieldTags:
 		m.ResetTags()
-		return nil
-	case invocationtarget.FieldStartTimeInMs:
-		m.ResetStartTimeInMs()
-		return nil
-	case invocationtarget.FieldEndTimeInMs:
-		m.ResetEndTimeInMs()
-		return nil
-	case invocationtarget.FieldDurationInMs:
-		m.ResetDurationInMs()
 		return nil
 	case invocationtarget.FieldFailureMessage:
 		m.ResetFailureMessage()
@@ -24285,8 +23961,6 @@ type TargetKindMappingMutation struct {
 	op                      Op
 	typ                     string
 	id                      *int64
-	start_time_in_ms        *int64
-	addstart_time_in_ms     *int64
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int64
 	clearedbazel_invocation bool
@@ -24473,76 +24147,6 @@ func (m *TargetKindMappingMutation) ResetTargetID() {
 	m.target = nil
 }
 
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (m *TargetKindMappingMutation) SetStartTimeInMs(i int64) {
-	m.start_time_in_ms = &i
-	m.addstart_time_in_ms = nil
-}
-
-// StartTimeInMs returns the value of the "start_time_in_ms" field in the mutation.
-func (m *TargetKindMappingMutation) StartTimeInMs() (r int64, exists bool) {
-	v := m.start_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStartTimeInMs returns the old "start_time_in_ms" field's value of the TargetKindMapping entity.
-// If the TargetKindMapping object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetKindMappingMutation) OldStartTimeInMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartTimeInMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartTimeInMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartTimeInMs: %w", err)
-	}
-	return oldValue.StartTimeInMs, nil
-}
-
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (m *TargetKindMappingMutation) AddStartTimeInMs(i int64) {
-	if m.addstart_time_in_ms != nil {
-		*m.addstart_time_in_ms += i
-	} else {
-		m.addstart_time_in_ms = &i
-	}
-}
-
-// AddedStartTimeInMs returns the value that was added to the "start_time_in_ms" field in this mutation.
-func (m *TargetKindMappingMutation) AddedStartTimeInMs() (r int64, exists bool) {
-	v := m.addstart_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (m *TargetKindMappingMutation) ClearStartTimeInMs() {
-	m.start_time_in_ms = nil
-	m.addstart_time_in_ms = nil
-	m.clearedFields[targetkindmapping.FieldStartTimeInMs] = struct{}{}
-}
-
-// StartTimeInMsCleared returns if the "start_time_in_ms" field was cleared in this mutation.
-func (m *TargetKindMappingMutation) StartTimeInMsCleared() bool {
-	_, ok := m.clearedFields[targetkindmapping.FieldStartTimeInMs]
-	return ok
-}
-
-// ResetStartTimeInMs resets all changes to the "start_time_in_ms" field.
-func (m *TargetKindMappingMutation) ResetStartTimeInMs() {
-	m.start_time_in_ms = nil
-	m.addstart_time_in_ms = nil
-	delete(m.clearedFields, targetkindmapping.FieldStartTimeInMs)
-}
-
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (m *TargetKindMappingMutation) ClearBazelInvocation() {
 	m.clearedbazel_invocation = true
@@ -24631,15 +24235,12 @@ func (m *TargetKindMappingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TargetKindMappingMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 2)
 	if m.bazel_invocation != nil {
 		fields = append(fields, targetkindmapping.FieldBazelInvocationID)
 	}
 	if m.target != nil {
 		fields = append(fields, targetkindmapping.FieldTargetID)
-	}
-	if m.start_time_in_ms != nil {
-		fields = append(fields, targetkindmapping.FieldStartTimeInMs)
 	}
 	return fields
 }
@@ -24653,8 +24254,6 @@ func (m *TargetKindMappingMutation) Field(name string) (ent.Value, bool) {
 		return m.BazelInvocationID()
 	case targetkindmapping.FieldTargetID:
 		return m.TargetID()
-	case targetkindmapping.FieldStartTimeInMs:
-		return m.StartTimeInMs()
 	}
 	return nil, false
 }
@@ -24668,8 +24267,6 @@ func (m *TargetKindMappingMutation) OldField(ctx context.Context, name string) (
 		return m.OldBazelInvocationID(ctx)
 	case targetkindmapping.FieldTargetID:
 		return m.OldTargetID(ctx)
-	case targetkindmapping.FieldStartTimeInMs:
-		return m.OldStartTimeInMs(ctx)
 	}
 	return nil, fmt.Errorf("unknown TargetKindMapping field %s", name)
 }
@@ -24693,13 +24290,6 @@ func (m *TargetKindMappingMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetTargetID(v)
 		return nil
-	case targetkindmapping.FieldStartTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStartTimeInMs(v)
-		return nil
 	}
 	return fmt.Errorf("unknown TargetKindMapping field %s", name)
 }
@@ -24708,9 +24298,6 @@ func (m *TargetKindMappingMutation) SetField(name string, value ent.Value) error
 // this mutation.
 func (m *TargetKindMappingMutation) AddedFields() []string {
 	var fields []string
-	if m.addstart_time_in_ms != nil {
-		fields = append(fields, targetkindmapping.FieldStartTimeInMs)
-	}
 	return fields
 }
 
@@ -24719,8 +24306,6 @@ func (m *TargetKindMappingMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *TargetKindMappingMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case targetkindmapping.FieldStartTimeInMs:
-		return m.AddedStartTimeInMs()
 	}
 	return nil, false
 }
@@ -24730,13 +24315,6 @@ func (m *TargetKindMappingMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *TargetKindMappingMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case targetkindmapping.FieldStartTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStartTimeInMs(v)
-		return nil
 	}
 	return fmt.Errorf("unknown TargetKindMapping numeric field %s", name)
 }
@@ -24744,11 +24322,7 @@ func (m *TargetKindMappingMutation) AddField(name string, value ent.Value) error
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *TargetKindMappingMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(targetkindmapping.FieldStartTimeInMs) {
-		fields = append(fields, targetkindmapping.FieldStartTimeInMs)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -24761,11 +24335,6 @@ func (m *TargetKindMappingMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *TargetKindMappingMutation) ClearField(name string) error {
-	switch name {
-	case targetkindmapping.FieldStartTimeInMs:
-		m.ClearStartTimeInMs()
-		return nil
-	}
 	return fmt.Errorf("unknown TargetKindMapping nullable field %s", name)
 }
 
@@ -24778,9 +24347,6 @@ func (m *TargetKindMappingMutation) ResetField(name string) error {
 		return nil
 	case targetkindmapping.FieldTargetID:
 		m.ResetTargetID()
-		return nil
-	case targetkindmapping.FieldStartTimeInMs:
-		m.ResetStartTimeInMs()
 		return nil
 	}
 	return fmt.Errorf("unknown TargetKindMapping field %s", name)

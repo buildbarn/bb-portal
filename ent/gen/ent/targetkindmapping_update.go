@@ -27,33 +27,6 @@ func (_u *TargetKindMappingUpdate) Where(ps ...predicate.TargetKindMapping) *Tar
 	return _u
 }
 
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (_u *TargetKindMappingUpdate) SetStartTimeInMs(v int64) *TargetKindMappingUpdate {
-	_u.mutation.ResetStartTimeInMs()
-	_u.mutation.SetStartTimeInMs(v)
-	return _u
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (_u *TargetKindMappingUpdate) SetNillableStartTimeInMs(v *int64) *TargetKindMappingUpdate {
-	if v != nil {
-		_u.SetStartTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddStartTimeInMs adds value to the "start_time_in_ms" field.
-func (_u *TargetKindMappingUpdate) AddStartTimeInMs(v int64) *TargetKindMappingUpdate {
-	_u.mutation.AddStartTimeInMs(v)
-	return _u
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (_u *TargetKindMappingUpdate) ClearStartTimeInMs() *TargetKindMappingUpdate {
-	_u.mutation.ClearStartTimeInMs()
-	return _u
-}
-
 // Mutation returns the TargetKindMappingMutation object of the builder.
 func (_u *TargetKindMappingUpdate) Mutation() *TargetKindMappingMutation {
 	return _u.mutation
@@ -109,15 +82,6 @@ func (_u *TargetKindMappingUpdate) sqlSave(ctx context.Context) (_node int, err 
 			}
 		}
 	}
-	if value, ok := _u.mutation.StartTimeInMs(); ok {
-		_spec.SetField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
-		_spec.AddField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.StartTimeInMsCleared() {
-		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetkindmapping.Label}
@@ -136,33 +100,6 @@ type TargetKindMappingUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *TargetKindMappingMutation
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (_u *TargetKindMappingUpdateOne) SetStartTimeInMs(v int64) *TargetKindMappingUpdateOne {
-	_u.mutation.ResetStartTimeInMs()
-	_u.mutation.SetStartTimeInMs(v)
-	return _u
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (_u *TargetKindMappingUpdateOne) SetNillableStartTimeInMs(v *int64) *TargetKindMappingUpdateOne {
-	if v != nil {
-		_u.SetStartTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddStartTimeInMs adds value to the "start_time_in_ms" field.
-func (_u *TargetKindMappingUpdateOne) AddStartTimeInMs(v int64) *TargetKindMappingUpdateOne {
-	_u.mutation.AddStartTimeInMs(v)
-	return _u
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (_u *TargetKindMappingUpdateOne) ClearStartTimeInMs() *TargetKindMappingUpdateOne {
-	_u.mutation.ClearStartTimeInMs()
-	return _u
 }
 
 // Mutation returns the TargetKindMappingMutation object of the builder.
@@ -249,15 +186,6 @@ func (_u *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *Targe
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.StartTimeInMs(); ok {
-		_spec.SetField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
-		_spec.AddField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.StartTimeInMsCleared() {
-		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
 	}
 	_node = &TargetKindMapping{config: _u.config}
 	_spec.Assign = _node.assignValues

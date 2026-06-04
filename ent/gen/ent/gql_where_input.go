@@ -6219,42 +6219,6 @@ type InvocationTargetWhereInput struct {
 	Success    *bool `json:"success,omitempty"`
 	SuccessNEQ *bool `json:"successNEQ,omitempty"`
 
-	// "start_time_in_ms" field predicates.
-	StartTimeInMs       *int64  `json:"startTimeInMs,omitempty"`
-	StartTimeInMsNEQ    *int64  `json:"startTimeInMsNEQ,omitempty"`
-	StartTimeInMsIn     []int64 `json:"startTimeInMsIn,omitempty"`
-	StartTimeInMsNotIn  []int64 `json:"startTimeInMsNotIn,omitempty"`
-	StartTimeInMsGT     *int64  `json:"startTimeInMsGT,omitempty"`
-	StartTimeInMsGTE    *int64  `json:"startTimeInMsGTE,omitempty"`
-	StartTimeInMsLT     *int64  `json:"startTimeInMsLT,omitempty"`
-	StartTimeInMsLTE    *int64  `json:"startTimeInMsLTE,omitempty"`
-	StartTimeInMsIsNil  bool    `json:"startTimeInMsIsNil,omitempty"`
-	StartTimeInMsNotNil bool    `json:"startTimeInMsNotNil,omitempty"`
-
-	// "end_time_in_ms" field predicates.
-	EndTimeInMs       *int64  `json:"endTimeInMs,omitempty"`
-	EndTimeInMsNEQ    *int64  `json:"endTimeInMsNEQ,omitempty"`
-	EndTimeInMsIn     []int64 `json:"endTimeInMsIn,omitempty"`
-	EndTimeInMsNotIn  []int64 `json:"endTimeInMsNotIn,omitempty"`
-	EndTimeInMsGT     *int64  `json:"endTimeInMsGT,omitempty"`
-	EndTimeInMsGTE    *int64  `json:"endTimeInMsGTE,omitempty"`
-	EndTimeInMsLT     *int64  `json:"endTimeInMsLT,omitempty"`
-	EndTimeInMsLTE    *int64  `json:"endTimeInMsLTE,omitempty"`
-	EndTimeInMsIsNil  bool    `json:"endTimeInMsIsNil,omitempty"`
-	EndTimeInMsNotNil bool    `json:"endTimeInMsNotNil,omitempty"`
-
-	// "duration_in_ms" field predicates.
-	DurationInMs       *int64  `json:"durationInMs,omitempty"`
-	DurationInMsNEQ    *int64  `json:"durationInMsNEQ,omitempty"`
-	DurationInMsIn     []int64 `json:"durationInMsIn,omitempty"`
-	DurationInMsNotIn  []int64 `json:"durationInMsNotIn,omitempty"`
-	DurationInMsGT     *int64  `json:"durationInMsGT,omitempty"`
-	DurationInMsGTE    *int64  `json:"durationInMsGTE,omitempty"`
-	DurationInMsLT     *int64  `json:"durationInMsLT,omitempty"`
-	DurationInMsLTE    *int64  `json:"durationInMsLTE,omitempty"`
-	DurationInMsIsNil  bool    `json:"durationInMsIsNil,omitempty"`
-	DurationInMsNotNil bool    `json:"durationInMsNotNil,omitempty"`
-
 	// "failure_message" field predicates.
 	FailureMessage             *string  `json:"failureMessage,omitempty"`
 	FailureMessageNEQ          *string  `json:"failureMessageNEQ,omitempty"`
@@ -6395,96 +6359,6 @@ func (i *InvocationTargetWhereInput) P() (predicate.InvocationTarget, error) {
 	}
 	if i.SuccessNEQ != nil {
 		predicates = append(predicates, invocationtarget.SuccessNEQ(*i.SuccessNEQ))
-	}
-	if i.StartTimeInMs != nil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsEQ(*i.StartTimeInMs))
-	}
-	if i.StartTimeInMsNEQ != nil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsNEQ(*i.StartTimeInMsNEQ))
-	}
-	if len(i.StartTimeInMsIn) > 0 {
-		predicates = append(predicates, invocationtarget.StartTimeInMsIn(i.StartTimeInMsIn...))
-	}
-	if len(i.StartTimeInMsNotIn) > 0 {
-		predicates = append(predicates, invocationtarget.StartTimeInMsNotIn(i.StartTimeInMsNotIn...))
-	}
-	if i.StartTimeInMsGT != nil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsGT(*i.StartTimeInMsGT))
-	}
-	if i.StartTimeInMsGTE != nil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsGTE(*i.StartTimeInMsGTE))
-	}
-	if i.StartTimeInMsLT != nil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsLT(*i.StartTimeInMsLT))
-	}
-	if i.StartTimeInMsLTE != nil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsLTE(*i.StartTimeInMsLTE))
-	}
-	if i.StartTimeInMsIsNil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsIsNil())
-	}
-	if i.StartTimeInMsNotNil {
-		predicates = append(predicates, invocationtarget.StartTimeInMsNotNil())
-	}
-	if i.EndTimeInMs != nil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsEQ(*i.EndTimeInMs))
-	}
-	if i.EndTimeInMsNEQ != nil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsNEQ(*i.EndTimeInMsNEQ))
-	}
-	if len(i.EndTimeInMsIn) > 0 {
-		predicates = append(predicates, invocationtarget.EndTimeInMsIn(i.EndTimeInMsIn...))
-	}
-	if len(i.EndTimeInMsNotIn) > 0 {
-		predicates = append(predicates, invocationtarget.EndTimeInMsNotIn(i.EndTimeInMsNotIn...))
-	}
-	if i.EndTimeInMsGT != nil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsGT(*i.EndTimeInMsGT))
-	}
-	if i.EndTimeInMsGTE != nil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsGTE(*i.EndTimeInMsGTE))
-	}
-	if i.EndTimeInMsLT != nil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsLT(*i.EndTimeInMsLT))
-	}
-	if i.EndTimeInMsLTE != nil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsLTE(*i.EndTimeInMsLTE))
-	}
-	if i.EndTimeInMsIsNil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsIsNil())
-	}
-	if i.EndTimeInMsNotNil {
-		predicates = append(predicates, invocationtarget.EndTimeInMsNotNil())
-	}
-	if i.DurationInMs != nil {
-		predicates = append(predicates, invocationtarget.DurationInMsEQ(*i.DurationInMs))
-	}
-	if i.DurationInMsNEQ != nil {
-		predicates = append(predicates, invocationtarget.DurationInMsNEQ(*i.DurationInMsNEQ))
-	}
-	if len(i.DurationInMsIn) > 0 {
-		predicates = append(predicates, invocationtarget.DurationInMsIn(i.DurationInMsIn...))
-	}
-	if len(i.DurationInMsNotIn) > 0 {
-		predicates = append(predicates, invocationtarget.DurationInMsNotIn(i.DurationInMsNotIn...))
-	}
-	if i.DurationInMsGT != nil {
-		predicates = append(predicates, invocationtarget.DurationInMsGT(*i.DurationInMsGT))
-	}
-	if i.DurationInMsGTE != nil {
-		predicates = append(predicates, invocationtarget.DurationInMsGTE(*i.DurationInMsGTE))
-	}
-	if i.DurationInMsLT != nil {
-		predicates = append(predicates, invocationtarget.DurationInMsLT(*i.DurationInMsLT))
-	}
-	if i.DurationInMsLTE != nil {
-		predicates = append(predicates, invocationtarget.DurationInMsLTE(*i.DurationInMsLTE))
-	}
-	if i.DurationInMsIsNil {
-		predicates = append(predicates, invocationtarget.DurationInMsIsNil())
-	}
-	if i.DurationInMsNotNil {
-		predicates = append(predicates, invocationtarget.DurationInMsNotNil())
 	}
 	if i.FailureMessage != nil {
 		predicates = append(predicates, invocationtarget.FailureMessageEQ(*i.FailureMessage))

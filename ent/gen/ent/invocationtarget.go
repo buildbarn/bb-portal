@@ -24,12 +24,6 @@ type InvocationTarget struct {
 	Success bool `json:"success,omitempty"`
 	// Tags holds the value of the "tags" field.
 	Tags []string `json:"tags,omitempty"`
-	// StartTimeInMs holds the value of the "start_time_in_ms" field.
-	StartTimeInMs int64 `json:"start_time_in_ms,omitempty"`
-	// EndTimeInMs holds the value of the "end_time_in_ms" field.
-	EndTimeInMs int64 `json:"end_time_in_ms,omitempty"`
-	// DurationInMs holds the value of the "duration_in_ms" field.
-	DurationInMs int64 `json:"duration_in_ms,omitempty"`
 	// FailureMessage holds the value of the "failure_message" field.
 	FailureMessage string `json:"failure_message,omitempty"`
 	// AbortReason holds the value of the "abort_reason" field.
@@ -113,7 +107,7 @@ func (*InvocationTarget) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case invocationtarget.FieldSuccess:
 			values[i] = new(sql.NullBool)
-		case invocationtarget.FieldID, invocationtarget.FieldStartTimeInMs, invocationtarget.FieldEndTimeInMs, invocationtarget.FieldDurationInMs:
+		case invocationtarget.FieldID:
 			values[i] = new(sql.NullInt64)
 		case invocationtarget.FieldFailureMessage, invocationtarget.FieldAbortReason:
 			values[i] = new(sql.NullString)
@@ -157,24 +151,6 @@ func (_m *InvocationTarget) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &_m.Tags); err != nil {
 					return fmt.Errorf("unmarshal field tags: %w", err)
 				}
-			}
-		case invocationtarget.FieldStartTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field start_time_in_ms", values[i])
-			} else if value.Valid {
-				_m.StartTimeInMs = value.Int64
-			}
-		case invocationtarget.FieldEndTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field end_time_in_ms", values[i])
-			} else if value.Valid {
-				_m.EndTimeInMs = value.Int64
-			}
-		case invocationtarget.FieldDurationInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field duration_in_ms", values[i])
-			} else if value.Valid {
-				_m.DurationInMs = value.Int64
 			}
 		case invocationtarget.FieldFailureMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -270,15 +246,6 @@ func (_m *InvocationTarget) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("tags=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Tags))
-	builder.WriteString(", ")
-	builder.WriteString("start_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", _m.StartTimeInMs))
-	builder.WriteString(", ")
-	builder.WriteString("end_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", _m.EndTimeInMs))
-	builder.WriteString(", ")
-	builder.WriteString("duration_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", _m.DurationInMs))
 	builder.WriteString(", ")
 	builder.WriteString("failure_message=")
 	builder.WriteString(_m.FailureMessage)

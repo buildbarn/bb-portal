@@ -6,15 +6,12 @@ import { getInvocationTargetAbortReasonFilterOptions } from "@/components/Invoca
 import { InvocationTargetTagList } from "@/components/InvocationTargets/InvocationTargetTagList";
 import NullBooleanTag from "@/components/NullableBooleanTag";
 import { SearchFilterIcon } from "@/components/SearchWidgets";
-import { TargetDurationWarning } from "@/components/TargetDurationWarning";
 import type {
   InvocationTargetAbortReason,
   InvocationTargetDetailsFragment,
   InvocationTargetWhereInput,
 } from "@/graphql/__generated__/graphql";
-import styles from "@/theme/theme.module.css";
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
-import { readableDurationFromMilliseconds } from "@/utils/time";
 
 export const columns: TableColumnTypeWithFilter<
   InvocationTargetDetailsFragment,
@@ -31,20 +28,6 @@ export const columns: TableColumnTypeWithFilter<
         {record.bazelInvocation.invocationID}
       </Link>
     ),
-  },
-  {
-    title: <TargetDurationWarning text="Duration" />,
-    key: "duration",
-    align: "right",
-    render: (_, record) =>
-      record.durationInMs !== undefined &&
-      record.durationInMs !== null && (
-        <span className={styles.numberFormat}>
-          {readableDurationFromMilliseconds(record.durationInMs, {
-            smallestUnit: "ms",
-          })}
-        </span>
-      ),
   },
   {
     title: "Overall Success",

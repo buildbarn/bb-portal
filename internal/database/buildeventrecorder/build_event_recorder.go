@@ -37,10 +37,6 @@ type BuildEventWithInfo struct {
 	// assume we can fit the SequenceNumber in an uint32 and in case we
 	// can not we will refuse to process the event.
 	SequenceNumber uint32
-	// TODO: This field is only used for duration calculation of target
-	// completed events which is dubious to begin with. Might be worth
-	// removing.
-	AddedAt time.Time
 }
 
 // BuildEventRecorder performs the actual recording of build events for
@@ -76,7 +72,6 @@ type buildEventRecorder struct {
 	InstanceNameDbID int64
 	InvocationID     string
 	InvocationDbID   int64
-	IsRealTime       bool
 }
 
 type handledEvents struct {
@@ -94,7 +89,6 @@ func NewBuildEventRecorder(
 	tracerProvider trace.TracerProvider,
 	instanceName string,
 	invocationID string,
-	isRealTime bool,
 	dataExtractors *DataExtractors,
 	buildKey string,
 ) (BuildEventRecorder, error) {
@@ -155,7 +149,6 @@ func NewBuildEventRecorder(
 		InstanceNameDbID: instanceNameDbID,
 		InvocationID:     invocationID,
 		InvocationDbID:   invocationDbID,
-		IsRealTime:       isRealTime,
 	}, nil
 }
 

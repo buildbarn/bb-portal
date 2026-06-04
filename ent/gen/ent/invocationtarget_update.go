@@ -64,87 +64,6 @@ func (_u *InvocationTargetUpdate) ClearTags() *InvocationTargetUpdate {
 	return _u
 }
 
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (_u *InvocationTargetUpdate) SetStartTimeInMs(v int64) *InvocationTargetUpdate {
-	_u.mutation.ResetStartTimeInMs()
-	_u.mutation.SetStartTimeInMs(v)
-	return _u
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (_u *InvocationTargetUpdate) SetNillableStartTimeInMs(v *int64) *InvocationTargetUpdate {
-	if v != nil {
-		_u.SetStartTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddStartTimeInMs adds value to the "start_time_in_ms" field.
-func (_u *InvocationTargetUpdate) AddStartTimeInMs(v int64) *InvocationTargetUpdate {
-	_u.mutation.AddStartTimeInMs(v)
-	return _u
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (_u *InvocationTargetUpdate) ClearStartTimeInMs() *InvocationTargetUpdate {
-	_u.mutation.ClearStartTimeInMs()
-	return _u
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (_u *InvocationTargetUpdate) SetEndTimeInMs(v int64) *InvocationTargetUpdate {
-	_u.mutation.ResetEndTimeInMs()
-	_u.mutation.SetEndTimeInMs(v)
-	return _u
-}
-
-// SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (_u *InvocationTargetUpdate) SetNillableEndTimeInMs(v *int64) *InvocationTargetUpdate {
-	if v != nil {
-		_u.SetEndTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddEndTimeInMs adds value to the "end_time_in_ms" field.
-func (_u *InvocationTargetUpdate) AddEndTimeInMs(v int64) *InvocationTargetUpdate {
-	_u.mutation.AddEndTimeInMs(v)
-	return _u
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (_u *InvocationTargetUpdate) ClearEndTimeInMs() *InvocationTargetUpdate {
-	_u.mutation.ClearEndTimeInMs()
-	return _u
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (_u *InvocationTargetUpdate) SetDurationInMs(v int64) *InvocationTargetUpdate {
-	_u.mutation.ResetDurationInMs()
-	_u.mutation.SetDurationInMs(v)
-	return _u
-}
-
-// SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (_u *InvocationTargetUpdate) SetNillableDurationInMs(v *int64) *InvocationTargetUpdate {
-	if v != nil {
-		_u.SetDurationInMs(*v)
-	}
-	return _u
-}
-
-// AddDurationInMs adds value to the "duration_in_ms" field.
-func (_u *InvocationTargetUpdate) AddDurationInMs(v int64) *InvocationTargetUpdate {
-	_u.mutation.AddDurationInMs(v)
-	return _u
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (_u *InvocationTargetUpdate) ClearDurationInMs() *InvocationTargetUpdate {
-	_u.mutation.ClearDurationInMs()
-	return _u
-}
-
 // SetFailureMessage sets the "failure_message" field.
 func (_u *InvocationTargetUpdate) SetFailureMessage(v string) *InvocationTargetUpdate {
 	_u.mutation.SetFailureMessage(v)
@@ -348,33 +267,6 @@ func (_u *InvocationTargetUpdate) sqlSave(ctx context.Context) (_node int, err e
 	if _u.mutation.TagsCleared() {
 		_spec.ClearField(invocationtarget.FieldTags, field.TypeJSON)
 	}
-	if value, ok := _u.mutation.StartTimeInMs(); ok {
-		_spec.SetField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
-		_spec.AddField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.StartTimeInMsCleared() {
-		_spec.ClearField(invocationtarget.FieldStartTimeInMs, field.TypeInt64)
-	}
-	if value, ok := _u.mutation.EndTimeInMs(); ok {
-		_spec.SetField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedEndTimeInMs(); ok {
-		_spec.AddField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.EndTimeInMsCleared() {
-		_spec.ClearField(invocationtarget.FieldEndTimeInMs, field.TypeInt64)
-	}
-	if value, ok := _u.mutation.DurationInMs(); ok {
-		_spec.SetField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedDurationInMs(); ok {
-		_spec.AddField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.DurationInMsCleared() {
-		_spec.ClearField(invocationtarget.FieldDurationInMs, field.TypeInt64)
-	}
 	if value, ok := _u.mutation.FailureMessage(); ok {
 		_spec.SetField(invocationtarget.FieldFailureMessage, field.TypeString, value)
 	}
@@ -565,87 +457,6 @@ func (_u *InvocationTargetUpdateOne) AppendTags(v []string) *InvocationTargetUpd
 // ClearTags clears the value of the "tags" field.
 func (_u *InvocationTargetUpdateOne) ClearTags() *InvocationTargetUpdateOne {
 	_u.mutation.ClearTags()
-	return _u
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (_u *InvocationTargetUpdateOne) SetStartTimeInMs(v int64) *InvocationTargetUpdateOne {
-	_u.mutation.ResetStartTimeInMs()
-	_u.mutation.SetStartTimeInMs(v)
-	return _u
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (_u *InvocationTargetUpdateOne) SetNillableStartTimeInMs(v *int64) *InvocationTargetUpdateOne {
-	if v != nil {
-		_u.SetStartTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddStartTimeInMs adds value to the "start_time_in_ms" field.
-func (_u *InvocationTargetUpdateOne) AddStartTimeInMs(v int64) *InvocationTargetUpdateOne {
-	_u.mutation.AddStartTimeInMs(v)
-	return _u
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (_u *InvocationTargetUpdateOne) ClearStartTimeInMs() *InvocationTargetUpdateOne {
-	_u.mutation.ClearStartTimeInMs()
-	return _u
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (_u *InvocationTargetUpdateOne) SetEndTimeInMs(v int64) *InvocationTargetUpdateOne {
-	_u.mutation.ResetEndTimeInMs()
-	_u.mutation.SetEndTimeInMs(v)
-	return _u
-}
-
-// SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (_u *InvocationTargetUpdateOne) SetNillableEndTimeInMs(v *int64) *InvocationTargetUpdateOne {
-	if v != nil {
-		_u.SetEndTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddEndTimeInMs adds value to the "end_time_in_ms" field.
-func (_u *InvocationTargetUpdateOne) AddEndTimeInMs(v int64) *InvocationTargetUpdateOne {
-	_u.mutation.AddEndTimeInMs(v)
-	return _u
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (_u *InvocationTargetUpdateOne) ClearEndTimeInMs() *InvocationTargetUpdateOne {
-	_u.mutation.ClearEndTimeInMs()
-	return _u
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (_u *InvocationTargetUpdateOne) SetDurationInMs(v int64) *InvocationTargetUpdateOne {
-	_u.mutation.ResetDurationInMs()
-	_u.mutation.SetDurationInMs(v)
-	return _u
-}
-
-// SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (_u *InvocationTargetUpdateOne) SetNillableDurationInMs(v *int64) *InvocationTargetUpdateOne {
-	if v != nil {
-		_u.SetDurationInMs(*v)
-	}
-	return _u
-}
-
-// AddDurationInMs adds value to the "duration_in_ms" field.
-func (_u *InvocationTargetUpdateOne) AddDurationInMs(v int64) *InvocationTargetUpdateOne {
-	_u.mutation.AddDurationInMs(v)
-	return _u
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (_u *InvocationTargetUpdateOne) ClearDurationInMs() *InvocationTargetUpdateOne {
-	_u.mutation.ClearDurationInMs()
 	return _u
 }
 
@@ -881,33 +692,6 @@ func (_u *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invoca
 	}
 	if _u.mutation.TagsCleared() {
 		_spec.ClearField(invocationtarget.FieldTags, field.TypeJSON)
-	}
-	if value, ok := _u.mutation.StartTimeInMs(); ok {
-		_spec.SetField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedStartTimeInMs(); ok {
-		_spec.AddField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.StartTimeInMsCleared() {
-		_spec.ClearField(invocationtarget.FieldStartTimeInMs, field.TypeInt64)
-	}
-	if value, ok := _u.mutation.EndTimeInMs(); ok {
-		_spec.SetField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedEndTimeInMs(); ok {
-		_spec.AddField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.EndTimeInMsCleared() {
-		_spec.ClearField(invocationtarget.FieldEndTimeInMs, field.TypeInt64)
-	}
-	if value, ok := _u.mutation.DurationInMs(); ok {
-		_spec.SetField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedDurationInMs(); ok {
-		_spec.AddField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if _u.mutation.DurationInMsCleared() {
-		_spec.ClearField(invocationtarget.FieldDurationInMs, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.FailureMessage(); ok {
 		_spec.SetField(invocationtarget.FieldFailureMessage, field.TypeString, value)

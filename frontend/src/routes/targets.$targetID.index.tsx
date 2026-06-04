@@ -23,12 +23,11 @@ const GET_TARGET_DETAILS = gql(/* GraphQl */ `
     $first: Int
     $before: Cursor
     $last: Int
-    $orderBy: InvocationTargetOrder
     $where: InvocationTargetWhereInput
   ) {
     getTarget(id: $id ) {
       ...TargetDetails
-      invocationTargets(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {
+      invocationTargets(after: $after, first: $first, before: $before, last: $last, where: $where) {
         pageInfo {
           startCursor
           endCursor
@@ -55,7 +54,6 @@ const TARGET_DETAILS_FRAGMENT = gql(/* GraphQL */ `
     }
     label
     targetKind
-    invocationTargetsTotalDurationMillis
   }
 `);
 
@@ -63,7 +61,6 @@ const INVOCATION_TARGET_DETAILS_FRAGMENT = gql(/* GraphQL */ `
   fragment InvocationTargetDetails on InvocationTarget {
     id
     success
-    durationInMs
     abortReason
     failureMessage
     tags

@@ -18,9 +18,6 @@ INSERT INTO invocation_targets (
     invocation_target_configuration,
     success,
     tags,
-    start_time_in_ms,
-    end_time_in_ms,
-    duration_in_ms,
     failure_message,
     abort_reason
 )
@@ -30,9 +27,6 @@ SELECT
     cfg.id,
     input.success,
     NULLIF(input.tags, '')::jsonb,
-    NULLIF(input.start_time, 0),
-    NULLIF(input.end_time, 0),
-    NULLIF(input.duration, 0),
     NULLIF(input.failure_message, ''),
     input.abort_reason
 FROM (
@@ -41,11 +35,8 @@ FROM (
         unnest($3::text[]) AS configuration_external_id,
         unnest($4::boolean[]) AS success,
         unnest($5::text[]) AS tags,
-        unnest($6::bigint[]) AS start_time,
-        unnest($7::bigint[]) AS end_time,
-        unnest($8::bigint[]) AS duration,
-        unnest($9::text[]) AS failure_message,
-        unnest($10::text[]) AS abort_reason
+        unnest($6::text[]) AS failure_message,
+        unnest($7::text[]) AS abort_reason
 ) AS input
 JOIN configurations cfg
   ON cfg.bazel_invocation_id = $1
@@ -58,9 +49,6 @@ type CreateInvocationTargetsBulkParams struct {
 	ConfigurationIds  []string
 	Successes         []bool
 	TagsList          []string
-	StartTimes        []int64
-	EndTimes          []int64
-	Durations         []int64
 	FailureMessages   []string
 	AbortReasons      []string
 }
@@ -72,9 +60,6 @@ func (q *Queries) CreateInvocationTargetsBulk(ctx context.Context, arg CreateInv
 		pq.Array(arg.ConfigurationIds),
 		pq.Array(arg.Successes),
 		pq.Array(arg.TagsList),
-		pq.Array(arg.StartTimes),
-		pq.Array(arg.EndTimes),
-		pq.Array(arg.Durations),
 		pq.Array(arg.FailureMessages),
 		pq.Array(arg.AbortReasons),
 	)

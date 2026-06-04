@@ -14,7 +14,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
@@ -92,24 +91,4 @@ func (r *queryResolver) GetTarget(ctx context.Context, id string) (*ent.Target, 
 		return nil, err
 	}
 	return query.Only(ctx)
-}
-
-// InvocationTargetsTotalDurationMillis is the resolver for the invocationTargetsTotalDurationMillis field.
-func (r *targetResolver) InvocationTargetsTotalDurationMillis(ctx context.Context, obj *ent.Target) (int, error) {
-	// If there are no invocation targets with a duration, SUM in SQL yields NULL
-	// which can cause a scan error. Count first and return 0 if no rows match.
-	count, err := obj.QueryInvocationTargets().
-		Where(invocationtarget.DurationInMsNotNil()).
-		Count(ctx)
-	if err != nil {
-		return 0, err
-	}
-	if count == 0 {
-		return 0, nil
-	}
-
-	return obj.QueryInvocationTargets().
-		Where(invocationtarget.DurationInMsNotNil()).
-		Aggregate(ent.Sum(invocationtarget.FieldDurationInMs)).
-		Int(ctx)
 }

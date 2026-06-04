@@ -55,8 +55,6 @@
   "InvocationTargetAbortReason": [],
   "InvocationTargetConnection": [],
   "InvocationTargetEdge": [],
-  "InvocationTargetOrder": [],
-  "InvocationTargetOrderField": [],
   "InvocationTargetWhereInput": [],
   "Map": [],
   "MemoryMetrics": [],

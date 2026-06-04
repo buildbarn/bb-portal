@@ -23,7 +23,6 @@ const GET_BAZEL_INVOCATION_TARGETS = gql(/* GraphQL */ `
     $first: Int
     $before: Cursor
     $last: Int
-    $orderBy: InvocationTargetOrder
     $where: InvocationTargetWhereInput
   ) {
     getBazelInvocation(invocationID: $invocationID) {
@@ -34,7 +33,7 @@ const GET_BAZEL_INVOCATION_TARGETS = gql(/* GraphQL */ `
           ...BazelInvocationTargetMetrics
         }
       }
-      invocationTargets(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where){
+      invocationTargets(after: $after, first: $first, before: $before, last: $last, where: $where){
         pageInfo {
           startCursor
           endCursor
@@ -65,7 +64,6 @@ const BAZEL_INVOCATION_TARGETS_FRAGMENT = gql(/* GraphQL */ `
     id
     success
     abortReason
-    durationInMs
     failureMessage
     tags
     target {

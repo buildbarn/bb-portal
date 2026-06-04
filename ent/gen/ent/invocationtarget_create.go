@@ -45,48 +45,6 @@ func (_c *InvocationTargetCreate) SetTags(v []string) *InvocationTargetCreate {
 	return _c
 }
 
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (_c *InvocationTargetCreate) SetStartTimeInMs(v int64) *InvocationTargetCreate {
-	_c.mutation.SetStartTimeInMs(v)
-	return _c
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (_c *InvocationTargetCreate) SetNillableStartTimeInMs(v *int64) *InvocationTargetCreate {
-	if v != nil {
-		_c.SetStartTimeInMs(*v)
-	}
-	return _c
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (_c *InvocationTargetCreate) SetEndTimeInMs(v int64) *InvocationTargetCreate {
-	_c.mutation.SetEndTimeInMs(v)
-	return _c
-}
-
-// SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (_c *InvocationTargetCreate) SetNillableEndTimeInMs(v *int64) *InvocationTargetCreate {
-	if v != nil {
-		_c.SetEndTimeInMs(*v)
-	}
-	return _c
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (_c *InvocationTargetCreate) SetDurationInMs(v int64) *InvocationTargetCreate {
-	_c.mutation.SetDurationInMs(v)
-	return _c
-}
-
-// SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (_c *InvocationTargetCreate) SetNillableDurationInMs(v *int64) *InvocationTargetCreate {
-	if v != nil {
-		_c.SetDurationInMs(*v)
-	}
-	return _c
-}
-
 // SetFailureMessage sets the "failure_message" field.
 func (_c *InvocationTargetCreate) SetFailureMessage(v string) *InvocationTargetCreate {
 	_c.mutation.SetFailureMessage(v)
@@ -270,18 +228,6 @@ func (_c *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.Cre
 		_spec.SetField(invocationtarget.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
 	}
-	if value, ok := _c.mutation.StartTimeInMs(); ok {
-		_spec.SetField(invocationtarget.FieldStartTimeInMs, field.TypeInt64, value)
-		_node.StartTimeInMs = value
-	}
-	if value, ok := _c.mutation.EndTimeInMs(); ok {
-		_spec.SetField(invocationtarget.FieldEndTimeInMs, field.TypeInt64, value)
-		_node.EndTimeInMs = value
-	}
-	if value, ok := _c.mutation.DurationInMs(); ok {
-		_spec.SetField(invocationtarget.FieldDurationInMs, field.TypeInt64, value)
-		_node.DurationInMs = value
-	}
 	if value, ok := _c.mutation.FailureMessage(); ok {
 		_spec.SetField(invocationtarget.FieldFailureMessage, field.TypeString, value)
 		_node.FailureMessage = value
@@ -439,78 +385,6 @@ func (u *InvocationTargetUpsert) ClearTags() *InvocationTargetUpsert {
 	return u
 }
 
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *InvocationTargetUpsert) SetStartTimeInMs(v int64) *InvocationTargetUpsert {
-	u.Set(invocationtarget.FieldStartTimeInMs, v)
-	return u
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsert) UpdateStartTimeInMs() *InvocationTargetUpsert {
-	u.SetExcluded(invocationtarget.FieldStartTimeInMs)
-	return u
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *InvocationTargetUpsert) AddStartTimeInMs(v int64) *InvocationTargetUpsert {
-	u.Add(invocationtarget.FieldStartTimeInMs, v)
-	return u
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *InvocationTargetUpsert) ClearStartTimeInMs() *InvocationTargetUpsert {
-	u.SetNull(invocationtarget.FieldStartTimeInMs)
-	return u
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (u *InvocationTargetUpsert) SetEndTimeInMs(v int64) *InvocationTargetUpsert {
-	u.Set(invocationtarget.FieldEndTimeInMs, v)
-	return u
-}
-
-// UpdateEndTimeInMs sets the "end_time_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsert) UpdateEndTimeInMs() *InvocationTargetUpsert {
-	u.SetExcluded(invocationtarget.FieldEndTimeInMs)
-	return u
-}
-
-// AddEndTimeInMs adds v to the "end_time_in_ms" field.
-func (u *InvocationTargetUpsert) AddEndTimeInMs(v int64) *InvocationTargetUpsert {
-	u.Add(invocationtarget.FieldEndTimeInMs, v)
-	return u
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (u *InvocationTargetUpsert) ClearEndTimeInMs() *InvocationTargetUpsert {
-	u.SetNull(invocationtarget.FieldEndTimeInMs)
-	return u
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (u *InvocationTargetUpsert) SetDurationInMs(v int64) *InvocationTargetUpsert {
-	u.Set(invocationtarget.FieldDurationInMs, v)
-	return u
-}
-
-// UpdateDurationInMs sets the "duration_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsert) UpdateDurationInMs() *InvocationTargetUpsert {
-	u.SetExcluded(invocationtarget.FieldDurationInMs)
-	return u
-}
-
-// AddDurationInMs adds v to the "duration_in_ms" field.
-func (u *InvocationTargetUpsert) AddDurationInMs(v int64) *InvocationTargetUpsert {
-	u.Add(invocationtarget.FieldDurationInMs, v)
-	return u
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (u *InvocationTargetUpsert) ClearDurationInMs() *InvocationTargetUpsert {
-	u.SetNull(invocationtarget.FieldDurationInMs)
-	return u
-}
-
 // SetFailureMessage sets the "failure_message" field.
 func (u *InvocationTargetUpsert) SetFailureMessage(v string) *InvocationTargetUpsert {
 	u.Set(invocationtarget.FieldFailureMessage, v)
@@ -621,90 +495,6 @@ func (u *InvocationTargetUpsertOne) UpdateTags() *InvocationTargetUpsertOne {
 func (u *InvocationTargetUpsertOne) ClearTags() *InvocationTargetUpsertOne {
 	return u.Update(func(s *InvocationTargetUpsert) {
 		s.ClearTags()
-	})
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *InvocationTargetUpsertOne) SetStartTimeInMs(v int64) *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.SetStartTimeInMs(v)
-	})
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *InvocationTargetUpsertOne) AddStartTimeInMs(v int64) *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.AddStartTimeInMs(v)
-	})
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsertOne) UpdateStartTimeInMs() *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.UpdateStartTimeInMs()
-	})
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *InvocationTargetUpsertOne) ClearStartTimeInMs() *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.ClearStartTimeInMs()
-	})
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (u *InvocationTargetUpsertOne) SetEndTimeInMs(v int64) *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.SetEndTimeInMs(v)
-	})
-}
-
-// AddEndTimeInMs adds v to the "end_time_in_ms" field.
-func (u *InvocationTargetUpsertOne) AddEndTimeInMs(v int64) *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.AddEndTimeInMs(v)
-	})
-}
-
-// UpdateEndTimeInMs sets the "end_time_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsertOne) UpdateEndTimeInMs() *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.UpdateEndTimeInMs()
-	})
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (u *InvocationTargetUpsertOne) ClearEndTimeInMs() *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.ClearEndTimeInMs()
-	})
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (u *InvocationTargetUpsertOne) SetDurationInMs(v int64) *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.SetDurationInMs(v)
-	})
-}
-
-// AddDurationInMs adds v to the "duration_in_ms" field.
-func (u *InvocationTargetUpsertOne) AddDurationInMs(v int64) *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.AddDurationInMs(v)
-	})
-}
-
-// UpdateDurationInMs sets the "duration_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsertOne) UpdateDurationInMs() *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.UpdateDurationInMs()
-	})
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (u *InvocationTargetUpsertOne) ClearDurationInMs() *InvocationTargetUpsertOne {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.ClearDurationInMs()
 	})
 }
 
@@ -989,90 +779,6 @@ func (u *InvocationTargetUpsertBulk) UpdateTags() *InvocationTargetUpsertBulk {
 func (u *InvocationTargetUpsertBulk) ClearTags() *InvocationTargetUpsertBulk {
 	return u.Update(func(s *InvocationTargetUpsert) {
 		s.ClearTags()
-	})
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *InvocationTargetUpsertBulk) SetStartTimeInMs(v int64) *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.SetStartTimeInMs(v)
-	})
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *InvocationTargetUpsertBulk) AddStartTimeInMs(v int64) *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.AddStartTimeInMs(v)
-	})
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsertBulk) UpdateStartTimeInMs() *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.UpdateStartTimeInMs()
-	})
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *InvocationTargetUpsertBulk) ClearStartTimeInMs() *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.ClearStartTimeInMs()
-	})
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (u *InvocationTargetUpsertBulk) SetEndTimeInMs(v int64) *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.SetEndTimeInMs(v)
-	})
-}
-
-// AddEndTimeInMs adds v to the "end_time_in_ms" field.
-func (u *InvocationTargetUpsertBulk) AddEndTimeInMs(v int64) *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.AddEndTimeInMs(v)
-	})
-}
-
-// UpdateEndTimeInMs sets the "end_time_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsertBulk) UpdateEndTimeInMs() *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.UpdateEndTimeInMs()
-	})
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (u *InvocationTargetUpsertBulk) ClearEndTimeInMs() *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.ClearEndTimeInMs()
-	})
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (u *InvocationTargetUpsertBulk) SetDurationInMs(v int64) *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.SetDurationInMs(v)
-	})
-}
-
-// AddDurationInMs adds v to the "duration_in_ms" field.
-func (u *InvocationTargetUpsertBulk) AddDurationInMs(v int64) *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.AddDurationInMs(v)
-	})
-}
-
-// UpdateDurationInMs sets the "duration_in_ms" field to the value that was provided on create.
-func (u *InvocationTargetUpsertBulk) UpdateDurationInMs() *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.UpdateDurationInMs()
-	})
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (u *InvocationTargetUpsertBulk) ClearDurationInMs() *InvocationTargetUpsertBulk {
-	return u.Update(func(s *InvocationTargetUpsert) {
-		s.ClearDurationInMs()
 	})
 }
 

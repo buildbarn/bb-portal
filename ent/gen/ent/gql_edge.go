@@ -207,10 +207,9 @@ func (_m *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 }
 
 func (_m *BazelInvocation) InvocationTargets(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTargetOrder, where *InvocationTargetWhereInput,
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *InvocationTargetWhereInput,
 ) (*InvocationTargetConnection, error) {
 	opts := []InvocationTargetPaginateOption{
-		WithInvocationTargetOrder(orderBy),
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
@@ -574,10 +573,9 @@ func (_m *Target) InstanceName(ctx context.Context) (*InstanceName, error) {
 }
 
 func (_m *Target) InvocationTargets(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTargetOrder, where *InvocationTargetWhereInput,
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *InvocationTargetWhereInput,
 ) (*InvocationTargetConnection, error) {
 	opts := []InvocationTargetPaginateOption{
-		WithInvocationTargetOrder(orderBy),
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
