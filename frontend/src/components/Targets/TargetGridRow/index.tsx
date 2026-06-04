@@ -1,10 +1,6 @@
 import { useQuery } from "@apollo/client/react";
 import { Space } from "antd";
 import type React from "react";
-import {
-  InvocationTargetOrderField,
-  OrderDirection,
-} from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import TargetGridBtn from "../TargetGridBtn";
 import { GET_INVOCATION_TARGETS_FOR_TARGET } from "./graphql";
@@ -24,10 +20,6 @@ const TargetGridRow: React.FC<Props> = ({
     variables: {
       targetId,
       first: numberOfElements,
-      orderBy: {
-        field: InvocationTargetOrderField.StartedAt,
-        direction: OrderDirection.Desc,
-      },
     },
     fetchPolicy: "cache-and-network",
   });

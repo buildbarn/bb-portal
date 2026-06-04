@@ -1,5 +1,5 @@
 import * as z from 'zod'
-import { ActionCacheStatisticsWhereInput, ActionDataWhereInput, ActionSummaryWhereInput, ActionWhereInput, ArtifactMetricsWhereInput, AuthenticatedUserWhereInput, BazelInvocationOrder, BazelInvocationOrderField, BazelInvocationWhereInput, BuildGraphMetricsWhereInput, BuildOrder, BuildOrderField, BuildTagOrder, BuildTagOrderField, BuildTagWhereInput, BuildWhereInput, ConfigurationWhereInput, ConnectionMetadataWhereInput, GarbageMetricsWhereInput, InstanceNameWhereInput, InvocationTagOrder, InvocationTagOrderField, InvocationTagWhereInput, InvocationTargetAbortReason, InvocationTargetOrder, InvocationTargetOrderField, InvocationTargetWhereInput, MemoryMetricsWhereInput, MetricsWhereInput, MissDetailWhereInput, NetworkMetricsWhereInput, OrderDirection, RunnerCountWhereInput, SourceControlWhereInput, SystemNetworkStatsWhereInput, TargetMetricsWhereInput, TargetWhereInput, TestResultWhereInput, TestSummaryOrder, TestSummaryOrderField, TestSummaryWhereInput, TestTargetWhereInput, TimingMetricsWhereInput } from './graphql'
+import { ActionCacheStatisticsWhereInput, ActionDataWhereInput, ActionSummaryWhereInput, ActionWhereInput, ArtifactMetricsWhereInput, AuthenticatedUserWhereInput, BazelInvocationOrder, BazelInvocationOrderField, BazelInvocationWhereInput, BuildGraphMetricsWhereInput, BuildOrder, BuildOrderField, BuildTagOrder, BuildTagOrderField, BuildTagWhereInput, BuildWhereInput, ConfigurationWhereInput, ConnectionMetadataWhereInput, GarbageMetricsWhereInput, InstanceNameWhereInput, InvocationTagOrder, InvocationTagOrderField, InvocationTagWhereInput, InvocationTargetAbortReason, InvocationTargetWhereInput, MemoryMetricsWhereInput, MetricsWhereInput, MissDetailWhereInput, NetworkMetricsWhereInput, OrderDirection, RunnerCountWhereInput, SourceControlWhereInput, SystemNetworkStatsWhereInput, TargetMetricsWhereInput, TargetWhereInput, TestResultWhereInput, TestSummaryOrder, TestSummaryOrderField, TestSummaryWhereInput, TestTargetWhereInput, TimingMetricsWhereInput } from './graphql'
 
 type Properties<T> = Required<{
   [K in keyof T]: z.ZodType<T[K]>;
@@ -20,8 +20,6 @@ export const BuildTagOrderFieldSchema = z.enum(BuildTagOrderField);
 export const InvocationTagOrderFieldSchema = z.enum(InvocationTagOrderField);
 
 export const InvocationTargetAbortReasonSchema = z.enum(InvocationTargetAbortReason);
-
-export const InvocationTargetOrderFieldSchema = z.enum(InvocationTargetOrderField);
 
 export const OrderDirectionSchema = z.enum(OrderDirection);
 
@@ -1209,13 +1207,6 @@ export function InvocationTagWhereInputSchema(): z.ZodObject<Properties<Invocati
   })
 }
 
-export function InvocationTargetOrderSchema(): z.ZodObject<Properties<InvocationTargetOrder>> {
-  return z.object({
-    direction: OrderDirectionSchema.default(OrderDirection.Asc),
-    field: InvocationTargetOrderFieldSchema
-  })
-}
-
 export function InvocationTargetWhereInputSchema(): z.ZodObject<Properties<InvocationTargetWhereInput>> {
   return z.object({
     abortReason: InvocationTargetAbortReasonSchema.nullish(),
@@ -1223,26 +1214,6 @@ export function InvocationTargetWhereInputSchema(): z.ZodObject<Properties<Invoc
     abortReasonNEQ: InvocationTargetAbortReasonSchema.nullish(),
     abortReasonNotIn: z.array(InvocationTargetAbortReasonSchema).nullish(),
     and: z.array(z.lazy(() => InvocationTargetWhereInputSchema())).nullish(),
-    durationInMs: z.number().nullish(),
-    durationInMsGT: z.number().nullish(),
-    durationInMsGTE: z.number().nullish(),
-    durationInMsIn: z.array(z.number()).nullish(),
-    durationInMsIsNil: z.boolean().nullish(),
-    durationInMsLT: z.number().nullish(),
-    durationInMsLTE: z.number().nullish(),
-    durationInMsNEQ: z.number().nullish(),
-    durationInMsNotIn: z.array(z.number()).nullish(),
-    durationInMsNotNil: z.boolean().nullish(),
-    endTimeInMs: z.number().nullish(),
-    endTimeInMsGT: z.number().nullish(),
-    endTimeInMsGTE: z.number().nullish(),
-    endTimeInMsIn: z.array(z.number()).nullish(),
-    endTimeInMsIsNil: z.boolean().nullish(),
-    endTimeInMsLT: z.number().nullish(),
-    endTimeInMsLTE: z.number().nullish(),
-    endTimeInMsNEQ: z.number().nullish(),
-    endTimeInMsNotIn: z.array(z.number()).nullish(),
-    endTimeInMsNotNil: z.boolean().nullish(),
     failureMessage: z.string().nullish(),
     failureMessageContains: z.string().nullish(),
     failureMessageContainsFold: z.string().nullish(),
@@ -1276,16 +1247,6 @@ export function InvocationTargetWhereInputSchema(): z.ZodObject<Properties<Invoc
     idNotIn: z.array(z.string().min(1)).nullish(),
     not: z.lazy(() => InvocationTargetWhereInputSchema().nullish()),
     or: z.array(z.lazy(() => InvocationTargetWhereInputSchema())).nullish(),
-    startTimeInMs: z.number().nullish(),
-    startTimeInMsGT: z.number().nullish(),
-    startTimeInMsGTE: z.number().nullish(),
-    startTimeInMsIn: z.array(z.number()).nullish(),
-    startTimeInMsIsNil: z.boolean().nullish(),
-    startTimeInMsLT: z.number().nullish(),
-    startTimeInMsLTE: z.number().nullish(),
-    startTimeInMsNEQ: z.number().nullish(),
-    startTimeInMsNotIn: z.array(z.number()).nullish(),
-    startTimeInMsNotNil: z.boolean().nullish(),
     success: z.boolean().nullish(),
     successNEQ: z.boolean().nullish()
   })

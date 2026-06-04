@@ -417,9 +417,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			invocationtarget.FieldSuccess:        {Type: field.TypeBool, Column: invocationtarget.FieldSuccess},
 			invocationtarget.FieldTags:           {Type: field.TypeJSON, Column: invocationtarget.FieldTags},
-			invocationtarget.FieldStartTimeInMs:  {Type: field.TypeInt64, Column: invocationtarget.FieldStartTimeInMs},
-			invocationtarget.FieldEndTimeInMs:    {Type: field.TypeInt64, Column: invocationtarget.FieldEndTimeInMs},
-			invocationtarget.FieldDurationInMs:   {Type: field.TypeInt64, Column: invocationtarget.FieldDurationInMs},
 			invocationtarget.FieldFailureMessage: {Type: field.TypeString, Column: invocationtarget.FieldFailureMessage},
 			invocationtarget.FieldAbortReason:    {Type: field.TypeEnum, Column: invocationtarget.FieldAbortReason},
 		},
@@ -564,7 +561,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			targetkindmapping.FieldBazelInvocationID: {Type: field.TypeInt64, Column: targetkindmapping.FieldBazelInvocationID},
 			targetkindmapping.FieldTargetID:          {Type: field.TypeInt64, Column: targetkindmapping.FieldTargetID},
-			targetkindmapping.FieldStartTimeInMs:     {Type: field.TypeInt64, Column: targetkindmapping.FieldStartTimeInMs},
 		},
 	}
 	graph.Nodes[29] = &sqlgraph.Node{
@@ -3556,21 +3552,6 @@ func (f *InvocationTargetFilter) WhereTags(p entql.BytesP) {
 	f.Where(p.Field(invocationtarget.FieldTags))
 }
 
-// WhereStartTimeInMs applies the entql int64 predicate on the start_time_in_ms field.
-func (f *InvocationTargetFilter) WhereStartTimeInMs(p entql.Int64P) {
-	f.Where(p.Field(invocationtarget.FieldStartTimeInMs))
-}
-
-// WhereEndTimeInMs applies the entql int64 predicate on the end_time_in_ms field.
-func (f *InvocationTargetFilter) WhereEndTimeInMs(p entql.Int64P) {
-	f.Where(p.Field(invocationtarget.FieldEndTimeInMs))
-}
-
-// WhereDurationInMs applies the entql int64 predicate on the duration_in_ms field.
-func (f *InvocationTargetFilter) WhereDurationInMs(p entql.Int64P) {
-	f.Where(p.Field(invocationtarget.FieldDurationInMs))
-}
-
 // WhereFailureMessage applies the entql string predicate on the failure_message field.
 func (f *InvocationTargetFilter) WhereFailureMessage(p entql.StringP) {
 	f.Where(p.Field(invocationtarget.FieldFailureMessage))
@@ -4410,11 +4391,6 @@ func (f *TargetKindMappingFilter) WhereBazelInvocationID(p entql.Int64P) {
 // WhereTargetID applies the entql int64 predicate on the target_id field.
 func (f *TargetKindMappingFilter) WhereTargetID(p entql.Int64P) {
 	f.Where(p.Field(targetkindmapping.FieldTargetID))
-}
-
-// WhereStartTimeInMs applies the entql int64 predicate on the start_time_in_ms field.
-func (f *TargetKindMappingFilter) WhereStartTimeInMs(p entql.Int64P) {
-	f.Where(p.Field(targetkindmapping.FieldStartTimeInMs))
 }
 
 // WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.

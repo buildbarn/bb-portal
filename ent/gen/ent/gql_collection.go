@@ -2361,21 +2361,6 @@ func (_q *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool,
 				selectedFields = append(selectedFields, invocationtarget.FieldTags)
 				fieldSeen[invocationtarget.FieldTags] = struct{}{}
 			}
-		case "startTimeInMs":
-			if _, ok := fieldSeen[invocationtarget.FieldStartTimeInMs]; !ok {
-				selectedFields = append(selectedFields, invocationtarget.FieldStartTimeInMs)
-				fieldSeen[invocationtarget.FieldStartTimeInMs] = struct{}{}
-			}
-		case "endTimeInMs":
-			if _, ok := fieldSeen[invocationtarget.FieldEndTimeInMs]; !ok {
-				selectedFields = append(selectedFields, invocationtarget.FieldEndTimeInMs)
-				fieldSeen[invocationtarget.FieldEndTimeInMs] = struct{}{}
-			}
-		case "durationInMs":
-			if _, ok := fieldSeen[invocationtarget.FieldDurationInMs]; !ok {
-				selectedFields = append(selectedFields, invocationtarget.FieldDurationInMs)
-				fieldSeen[invocationtarget.FieldDurationInMs] = struct{}{}
-			}
 		case "failureMessage":
 			if _, ok := fieldSeen[invocationtarget.FieldFailureMessage]; !ok {
 				selectedFields = append(selectedFields, invocationtarget.FieldFailureMessage)
@@ -2420,28 +2405,6 @@ func newInvocationTargetPaginateArgs(rv map[string]any) *invocationtargetPaginat
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]any:
-			var (
-				err1, err2 error
-				order      = &InvocationTargetOrder{Field: &InvocationTargetOrderField{}, Direction: entgql.OrderDirectionAsc}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithInvocationTargetOrder(order))
-			}
-		case *InvocationTargetOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithInvocationTargetOrder(v))
-			}
-		}
 	}
 	if v, ok := rv[whereField].(*InvocationTargetWhereInput); ok {
 		args.opts = append(args.opts, WithInvocationTargetFilter(v.Filter))

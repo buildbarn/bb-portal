@@ -81,7 +81,6 @@ func NewBepUploader(
 				tracerProvider,
 				instanceName,
 				invocationID,
-				false, /* isRealTime */
 				dataExtractors,
 				configuration.BuildKey,
 			)

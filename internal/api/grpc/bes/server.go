@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"time"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	"google.golang.org/grpc/codes"
@@ -77,7 +76,6 @@ func NewBuildEventServer(
 				tracerProvider,
 				instanceName,
 				invocationID,
-				true, /* isRealTime */
 				dataExtractors,
 				configuration.BuildKey,
 			)
@@ -125,7 +123,6 @@ func requestToBuildEventWithInfo(req *build.PublishBuildToolEventStreamRequest) 
 	return &buildeventrecorder.BuildEventWithInfo{
 		Event:          &bazelEvent,
 		SequenceNumber: sequenceNumber,
-		AddedAt:        time.Now(),
 	}, nil
 }
 

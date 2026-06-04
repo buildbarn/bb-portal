@@ -21,8 +21,6 @@ func (TargetKindMapping) Fields() []ent.Field {
 		field.Int64("bazel_invocation_id").Immutable(),
 		// Foreign key to target
 		field.Int64("target_id").Immutable(),
-		// First time we saw this InvocationTarget.
-		field.Int64("start_time_in_ms").Optional(),
 	}
 }
 

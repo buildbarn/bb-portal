@@ -635,9 +635,6 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "success", Type: field.TypeBool, Default: false},
 		{Name: "tags", Type: field.TypeJSON, Nullable: true},
-		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "end_time_in_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "duration_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "failure_message", Type: field.TypeString, Nullable: true},
 		{Name: "abort_reason", Type: field.TypeEnum, Enums: []string{"ANALYSIS_FAILURE", "INCOMPLETE", "INTERNAL", "LOADING_FAILURE", "NO_ANALYZE", "NO_BUILD", "NONE", "OUT_OF_MEMORY", "REMOTE_ENVIRONMENT_FAILURE", "SKIPPED", "TIME_OUT", "UNKNOWN", "USER_INTERRUPTED"}},
 		{Name: "bazel_invocation_invocation_targets", Type: field.TypeInt64},
@@ -652,19 +649,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "invocation_targets_bazel_invocations_invocation_targets",
-				Columns:    []*schema.Column{InvocationTargetsColumns[8]},
+				Columns:    []*schema.Column{InvocationTargetsColumns[5]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "invocation_targets_configurations_configuration",
-				Columns:    []*schema.Column{InvocationTargetsColumns[9]},
+				Columns:    []*schema.Column{InvocationTargetsColumns[6]},
 				RefColumns: []*schema.Column{ConfigurationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "invocation_targets_targets_invocation_targets",
-				Columns:    []*schema.Column{InvocationTargetsColumns[10]},
+				Columns:    []*schema.Column{InvocationTargetsColumns[7]},
 				RefColumns: []*schema.Column{TargetsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -673,17 +670,17 @@ var (
 			{
 				Name:    "invocationtarget_target_invocation_targets",
 				Unique:  false,
-				Columns: []*schema.Column{InvocationTargetsColumns[10]},
+				Columns: []*schema.Column{InvocationTargetsColumns[7]},
 			},
 			{
 				Name:    "invocationtarget_invocation_target_configuration",
 				Unique:  false,
-				Columns: []*schema.Column{InvocationTargetsColumns[9]},
+				Columns: []*schema.Column{InvocationTargetsColumns[6]},
 			},
 			{
 				Name:    "invocationtarget_bazel_invocation_invocation_targets_target_invocation_targets_invocation_target_configuration",
 				Unique:  false,
-				Columns: []*schema.Column{InvocationTargetsColumns[8], InvocationTargetsColumns[10], InvocationTargetsColumns[9]},
+				Columns: []*schema.Column{InvocationTargetsColumns[5], InvocationTargetsColumns[7], InvocationTargetsColumns[6]},
 			},
 		},
 	}
@@ -905,7 +902,6 @@ var (
 	// TargetKindMappingsColumns holds the columns for the "target_kind_mappings" table.
 	TargetKindMappingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "bazel_invocation_id", Type: field.TypeInt64},
 		{Name: "target_id", Type: field.TypeInt64},
 	}
@@ -917,13 +913,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "target_kind_mappings_bazel_invocations_target_kind_mappings",
-				Columns:    []*schema.Column{TargetKindMappingsColumns[2]},
+				Columns:    []*schema.Column{TargetKindMappingsColumns[1]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "target_kind_mappings_targets_target_kind_mappings",
-				Columns:    []*schema.Column{TargetKindMappingsColumns[3]},
+				Columns:    []*schema.Column{TargetKindMappingsColumns[2]},
 				RefColumns: []*schema.Column{TargetsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -932,12 +928,12 @@ var (
 			{
 				Name:    "targetkindmapping_target_id",
 				Unique:  false,
-				Columns: []*schema.Column{TargetKindMappingsColumns[3]},
+				Columns: []*schema.Column{TargetKindMappingsColumns[2]},
 			},
 			{
 				Name:    "targetkindmapping_bazel_invocation_id_target_id",
 				Unique:  true,
-				Columns: []*schema.Column{TargetKindMappingsColumns[2], TargetKindMappingsColumns[3]},
+				Columns: []*schema.Column{TargetKindMappingsColumns[1], TargetKindMappingsColumns[2]},
 			},
 		},
 	}

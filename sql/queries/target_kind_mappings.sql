@@ -1,32 +1,27 @@
 -- name: CreateTargetKindMappingsBulk :exec
 INSERT INTO target_kind_mappings (
     bazel_invocation_id,
-    target_id,
-    start_time_in_ms
+    target_id
 )
 SELECT
     sqlc.arg(bazel_invocation_id),
-    target_id,
-    NULLIF(start_time, 0)
+    target_id
 FROM (
-    SELECT 
-        unnest(sqlc.arg(target_ids)::bigint[]) AS target_id,
-        unnest(sqlc.narg(start_times)::bigint[]) AS start_time
+    SELECT unnest(sqlc.arg(target_ids)::bigint[]) AS target_id
 ) AS input;
 
 -- name: FindMappedTargets :many
-SELECT 
-    t.label, 
-    t.aspect, 
-    m.target_id, 
-    m.start_time_in_ms
+SELECT
+    t.label,
+    t.aspect,
+    m.target_id
 FROM (
-    SELECT 
+    SELECT
         unnest(sqlc.arg(labels)::text[]) AS label,
         unnest(sqlc.arg(aspects)::text[]) AS aspect
 ) AS input
-JOIN targets t ON 
-    t.label = input.label AND 
+JOIN targets t ON
+    t.label = input.label AND
     t.aspect = input.aspect
 JOIN target_kind_mappings m ON
     m.target_id = t.id AND

@@ -35,20 +35,6 @@ func (_c *TargetKindMappingCreate) SetTargetID(v int64) *TargetKindMappingCreate
 	return _c
 }
 
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (_c *TargetKindMappingCreate) SetStartTimeInMs(v int64) *TargetKindMappingCreate {
-	_c.mutation.SetStartTimeInMs(v)
-	return _c
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (_c *TargetKindMappingCreate) SetNillableStartTimeInMs(v *int64) *TargetKindMappingCreate {
-	if v != nil {
-		_c.SetStartTimeInMs(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *TargetKindMappingCreate) SetID(v int64) *TargetKindMappingCreate {
 	_c.mutation.SetID(v)
@@ -144,10 +130,6 @@ func (_c *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph.C
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := _c.mutation.StartTimeInMs(); ok {
-		_spec.SetField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64, value)
-		_node.StartTimeInMs = value
-	}
 	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -234,30 +216,6 @@ type (
 	}
 )
 
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsert) SetStartTimeInMs(v int64) *TargetKindMappingUpsert {
-	u.Set(targetkindmapping.FieldStartTimeInMs, v)
-	return u
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *TargetKindMappingUpsert) UpdateStartTimeInMs() *TargetKindMappingUpsert {
-	u.SetExcluded(targetkindmapping.FieldStartTimeInMs)
-	return u
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsert) AddStartTimeInMs(v int64) *TargetKindMappingUpsert {
-	u.Add(targetkindmapping.FieldStartTimeInMs, v)
-	return u
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsert) ClearStartTimeInMs() *TargetKindMappingUpsert {
-	u.SetNull(targetkindmapping.FieldStartTimeInMs)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -310,34 +268,6 @@ func (u *TargetKindMappingUpsertOne) Update(set func(*TargetKindMappingUpsert)) 
 		set(&TargetKindMappingUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsertOne) SetStartTimeInMs(v int64) *TargetKindMappingUpsertOne {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.SetStartTimeInMs(v)
-	})
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsertOne) AddStartTimeInMs(v int64) *TargetKindMappingUpsertOne {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.AddStartTimeInMs(v)
-	})
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *TargetKindMappingUpsertOne) UpdateStartTimeInMs() *TargetKindMappingUpsertOne {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.UpdateStartTimeInMs()
-	})
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsertOne) ClearStartTimeInMs() *TargetKindMappingUpsertOne {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.ClearStartTimeInMs()
-	})
 }
 
 // Exec executes the query.
@@ -557,34 +487,6 @@ func (u *TargetKindMappingUpsertBulk) Update(set func(*TargetKindMappingUpsert))
 		set(&TargetKindMappingUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsertBulk) SetStartTimeInMs(v int64) *TargetKindMappingUpsertBulk {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.SetStartTimeInMs(v)
-	})
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsertBulk) AddStartTimeInMs(v int64) *TargetKindMappingUpsertBulk {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.AddStartTimeInMs(v)
-	})
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *TargetKindMappingUpsertBulk) UpdateStartTimeInMs() *TargetKindMappingUpsertBulk {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.UpdateStartTimeInMs()
-	})
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *TargetKindMappingUpsertBulk) ClearStartTimeInMs() *TargetKindMappingUpsertBulk {
-	return u.Update(func(s *TargetKindMappingUpsert) {
-		s.ClearStartTimeInMs()
-	})
 }
 
 // Exec executes the query.

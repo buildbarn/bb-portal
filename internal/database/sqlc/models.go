@@ -214,9 +214,6 @@ type InvocationTarget struct {
 	ID                               int64
 	Success                          bool
 	Tags                             pqtype.NullRawMessage
-	StartTimeInMs                    sql.NullInt64
-	EndTimeInMs                      sql.NullInt64
-	DurationInMs                     sql.NullInt64
 	FailureMessage                   sql.NullString
 	AbortReason                      string
 	BazelInvocationInvocationTargets int64
@@ -328,7 +325,6 @@ type Target struct {
 
 type TargetKindMapping struct {
 	ID                int64
-	StartTimeInMs     sql.NullInt64
 	BazelInvocationID int64
 	TargetID          int64
 }

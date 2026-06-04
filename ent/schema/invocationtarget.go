@@ -25,20 +25,6 @@ func (InvocationTarget) Fields() []ent.Field {
 		// configurations).
 		field.Strings("tags").Optional(),
 
-		// First time we saw this target.
-		field.Int64("start_time_in_ms").
-			Optional().
-			Annotations(entgql.OrderField("STARTED_AT")),
-
-		// Time we saw the event complete for this target in unix.
-		field.Int64("end_time_in_ms").Optional(),
-
-		// Duration in Milliseconds.
-		// Time from target configured message received and processed until target completed message received and processed, calculated on build complete
-		field.Int64("duration_in_ms").
-			Optional().
-			Annotations(entgql.OrderField("DURATION")),
-
 		field.String("failure_message").Optional(),
 
 		// reason the target was aborted if any

@@ -4,15 +4,12 @@ import type { FilterValue } from "antd/es/table/interface";
 import { getInvocationTargetAbortReasonFilterOptions } from "@/components/InvocationTargetAbortReasonTag/filter";
 import NullBooleanTag from "@/components/NullableBooleanTag";
 import SearchWidget, { SearchFilterIcon } from "@/components/SearchWidgets";
-import { TargetDurationWarning } from "@/components/TargetDurationWarning";
 import type {
   BazelInvocationTargetsFragment,
   InvocationTargetAbortReason,
   InvocationTargetWhereInput,
 } from "@/graphql/__generated__/graphql";
-import styles from "@/theme/theme.module.css";
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
-import { readableDurationFromMilliseconds } from "@/utils/time";
 import { InvocationTargetAbortReasonTag } from "../../InvocationTargetAbortReasonTag";
 import { InvocationTargetTagList } from "../InvocationTargetTagList";
 
@@ -73,19 +70,6 @@ export const columns: TableColumnTypeWithFilter<
         },
       ];
     },
-  },
-  {
-    title: <TargetDurationWarning text="Duration" />,
-    key: "duration",
-    align: "right",
-    render: (_, record) =>
-      record.durationInMs && (
-        <span className={styles.numberFormat}>
-          {readableDurationFromMilliseconds(record.durationInMs, {
-            smallestUnit: "ms",
-          })}
-        </span>
-      ),
   },
   {
     title: "Overall Success",

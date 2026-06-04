@@ -20,7 +20,3 @@ extend type BazelInvocation {
 extend type ConnectionMetadata {
   timeSinceLastConnectionMillis: Int! @goField(forceResolver: true)
 }
-
-extend type Target {
-  invocationTargetsTotalDurationMillis: Int! @goField(forceResolver: true)
-}

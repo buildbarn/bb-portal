@@ -6,7 +6,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTA=",
             "success": true,
@@ -25,7 +24,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTE=",
             "success": true,
@@ -44,7 +42,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTI=",
             "success": true,
@@ -63,7 +60,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTM=",
             "success": true,
@@ -82,7 +78,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTQ=",
             "success": true,
@@ -101,7 +96,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTU=",
             "success": true,
@@ -120,7 +114,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTY=",
             "success": true,
@@ -139,7 +132,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTc=",
             "success": true,
@@ -158,7 +150,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTg=",
             "success": true,
@@ -177,7 +168,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMTk=",
             "success": true,
@@ -196,7 +186,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjA=",
             "success": true,
@@ -220,7 +209,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjE=",
             "success": true,
@@ -239,7 +227,6 @@
         {
           "node": {
             "abortReason": "NONE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjI=",
             "success": true,
@@ -263,7 +250,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjM=",
             "success": false,
@@ -282,7 +268,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjQ=",
             "success": false,
@@ -301,7 +286,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjU=",
             "success": false,
@@ -320,7 +304,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjY=",
             "success": false,
@@ -339,7 +322,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjc=",
             "success": false,
@@ -358,7 +340,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjg=",
             "success": false,
@@ -377,7 +358,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMjk=",
             "success": false,
@@ -396,7 +376,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMzA=",
             "success": false,
@@ -415,7 +394,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMzE=",
             "success": false,
@@ -434,7 +412,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMzI=",
             "success": false,
@@ -453,7 +430,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMzM=",
             "success": false,
@@ -472,7 +448,6 @@
         {
           "node": {
             "abortReason": "INCOMPLETE",
-            "durationInMs": 0,
             "failureMessage": "",
             "id": "SW52b2NhdGlvblRhcmdldDoyMzQ=",
             "success": false,
