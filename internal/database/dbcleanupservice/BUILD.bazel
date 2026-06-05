@@ -46,6 +46,7 @@ go_test(
     srcs = [
         "dbcleanupservice_test.go",
         "lockinvocations_test.go",
+        "next_slice_test.go",
         "remove_old_invocations_test.go",
         "remove_orphaned_test_targets_test.go",
         "remove_target_kind_mappings_test.go",
