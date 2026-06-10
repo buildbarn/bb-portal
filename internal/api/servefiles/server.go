@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"log"
+	"mime"
 	"net/http"
 	"strconv"
 	"strings"
@@ -91,12 +92,21 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	w.Header().Set("Content-Length", strconv.FormatInt(digest.GetSizeBytes(), 10))
-	if utf8.ValidString(string(first[:])) {
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	} else {
-		w.Header().Set("Content-Type", "application/octet-stream")
+	urlPath := req.URL.Path
+	contentType := ""
+	if extensionStartIndex := strings.LastIndex(urlPath, "."); extensionStartIndex != -1 {
+		contentType = mime.TypeByExtension(urlPath[extensionStartIndex:])
 	}
+	if contentType == "" {
+		if utf8.ValidString(string(first[:])) {
+			contentType = "text/plain; charset=utf-8"
+		} else {
+			contentType = "application/octet-stream"
+		}
+	}
+
+	w.Header().Set("Content-Length", strconv.FormatInt(digest.GetSizeBytes(), 10))
+	w.Header().Set("Content-Type", contentType)
 	w.Write(first[:n])
 	io.Copy(w, r)
 }
