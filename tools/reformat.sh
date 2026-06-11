@@ -18,7 +18,6 @@ gofumpt_bazel_path="$2"
 clang_format_bazel_path="$3"
 gazelle_bazel_path="$4"
 sqlc_bazel_path="$5"
-bb_export_schema_bazel_path="$6"
 
 # Resolve them to absolute paths
 go="$(rlocation "$go_bazel_path")"
@@ -26,10 +25,9 @@ gofumpt="$(rlocation "$gofumpt_bazel_path")"
 clang_format="$(rlocation "$clang_format_bazel_path")"
 gazelle="$(rlocation "$gazelle_bazel_path")"
 sqlc="$(rlocation "$sqlc_bazel_path")"
-bb_export_schema="$(rlocation "$bb_export_schema_bazel_path")"
 
 # List of variable names to validate
-cmds=(go gofumpt clang_format gazelle sqlc bb_export_schema)
+cmds=(go gofumpt clang_format gazelle sqlc)
 for cmd in "${cmds[@]}"; do
   cmd_path="${!cmd}"
   
@@ -60,7 +58,8 @@ $go mod tidy || true
 
 # Generate database files
 $go generate
-if ! $bb_export_schema > sql/migrations/schema.sql; then  
+$gazelle
+if ! bazel run //cmd/bb_export_schema > sql/migrations/schema.sql; then  
   echo "Schema export failed, this may be due BUILD.bazel files being outdated."
   echo "Please run 'bazel run //:gazelle' and try again."
   exit 1
