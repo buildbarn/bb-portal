@@ -41,7 +41,22 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
 
   const invocationsInfo: InvocationInfo[] = useMemo(
     () =>
-      invocations
+      [...invocations]
+        .sort((a, b) => {
+          const aTags = parseGraphqlEdgeList(a.tags);
+          const bTags = parseGraphqlEdgeList(b.tags);
+
+          for (const columnName of env.additionalBuildInvocationColumns) {
+            const aValue =
+              aTags.find((tag) => tag.key === columnName.valueKey)?.value ?? "";
+            const bValue =
+              bTags.find((tag) => tag.key === columnName.valueKey)?.value ?? "";
+            if (aValue.localeCompare(bValue) !== 0) {
+              return aValue.localeCompare(bValue);
+            }
+          }
+          return dayjs(a.startedAt).valueOf() - dayjs(b.startedAt).valueOf();
+        })
         .filter((entry) => !!entry.startedAt)
         .map((entry) => {
           const invocationStatus = getInvocationResultTagEnum(
