@@ -420,7 +420,7 @@ export interface Platform_Property {
  * well as possibly some metadata about the file or directory.
  *
  * In order to ensure that two equivalent directory trees hash to the same
- * value, the following restrictions MUST be obeyed when constructing a
+ * value, the following restrictions MUST be obeyed when constructing
  * a `Directory`:
  *
  * * Every child in the directory must have a path of exactly one segment.
@@ -671,7 +671,7 @@ export interface ExecutedActionMetadata {
    *
    * The method of timekeeping used to compute the virtual execution duration
    * MUST be consistent with what is used to enforce the
-   * [Action][[build.bazel.remote.execution.v2.Action]'s `timeout`. There is no
+   * [Action][build.bazel.remote.execution.v2.Action]'s `timeout`. There is no
    * relationship between the virtual execution duration and the values of
    * `execution_start_timestamp` and `execution_completed_timestamp`.
    */
@@ -961,7 +961,7 @@ export interface OutputDirectory {
     | undefined;
   /**
    * If set, consumers MAY make the following assumptions about the
-   * directories contained in the the Tree, so that it may be
+   * directories contained in the Tree, so that it may be
    * instantiated on a local file system by scanning through it
    * sequentially:
    *
@@ -1000,7 +1000,7 @@ export interface OutputDirectory {
   /**
    * The digest of the encoded
    * [Directory][build.bazel.remote.execution.v2.Directory] proto
-   * containing the contents the directory's root.
+   * containing the contents of the directory's root.
    *
    * If both `tree_digest` and `root_directory_digest` are set, this
    * field MUST match the digest of the root directory contained in the
@@ -1525,7 +1525,7 @@ export interface BatchUpdateBlobsRequest_Request {
   /**
    * The format of `data`. Must be `IDENTITY`/unspecified, or one of the
    * compressors advertised by the
-   * [CacheCapabilities.supported_batch_compressors][build.bazel.remote.execution.v2.CacheCapabilities.supported_batch_compressors]
+   * [CacheCapabilities.supported_batch_update_compressors][build.bazel.remote.execution.v2.CacheCapabilities.supported_batch_update_compressors]
    * field.
    */
   compressor: Compressor_Value;
@@ -1703,6 +1703,12 @@ export interface SplitBlobRequest {
    * in the server's capabilities.
    */
   digestFunction: DigestFunction_Value;
+  /**
+   * The chunking function that the client prefers to use.
+   *
+   * The server MAY use a different chunking function.
+   */
+  chunkingFunction: ChunkingFunction_Value;
 }
 
 /**
@@ -1719,6 +1725,8 @@ export interface SplitBlobResponse {
    * implicitly (through hash length) specified in the split request.
    */
   chunkDigests: Digest[];
+  /** The chunking function used to split the blob. */
+  chunkingFunction: ChunkingFunction_Value;
 }
 
 /**
@@ -1766,6 +1774,8 @@ export interface SpliceBlobRequest {
    * hashes and the digest functions announced in the server's capabilities.
    */
   digestFunction: DigestFunction_Value;
+  /** The chunking function that the client used to split the blob. */
+  chunkingFunction: ChunkingFunction_Value;
 }
 
 /**
@@ -1998,6 +2008,74 @@ export function digestFunction_ValueToJSON(object: DigestFunction_Value): string
   }
 }
 
+/**
+ * The chunking function is used to split a blob into chunks.
+ *
+ * The server advertises support for a chunking function by setting the
+ * corresponding params field in
+ * [CacheCapabilities][build.bazel.remote.execution.v2.CacheCapabilities].
+ * For example, if fast_cdc_2020_params is set, the server supports FAST_CDC_2020.
+ *
+ * For optimal deduplication, clients SHOULD use an advertised chunking function.
+ * When clients use UNKNOWN, the server chooses an algorithm for SplitBlob and
+ * simply verifies chunk concatenation for SpliceBlob.
+ */
+export interface ChunkingFunction {
+}
+
+export enum ChunkingFunction_Value {
+  /**
+   * UNKNOWN - No specific algorithm. Servers MUST always accept this value.
+   * For SplitBlob, the server chooses the algorithm. For SpliceBlob, the
+   * server only verifies that chunks concatenate to form the expected blob.
+   */
+  UNKNOWN = 0,
+  /**
+   * FAST_CDC_2020 - The FastCDC chunking algorithm as described in the 2020 paper by
+   * Wen Xia, et al. See https://ieeexplore.ieee.org/document/9055082
+   * for details.
+   */
+  FAST_CDC_2020 = 1,
+  /**
+   * REP_MAX_CDC - The RepMaxCDC chunking algorithm as implemented by buildbarn/go-cdc.
+   * See https://github.com/buildbarn/go-cdc for details.
+   */
+  REP_MAX_CDC = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function chunkingFunction_ValueFromJSON(object: any): ChunkingFunction_Value {
+  switch (object) {
+    case 0:
+    case "UNKNOWN":
+      return ChunkingFunction_Value.UNKNOWN;
+    case 1:
+    case "FAST_CDC_2020":
+      return ChunkingFunction_Value.FAST_CDC_2020;
+    case 2:
+    case "REP_MAX_CDC":
+      return ChunkingFunction_Value.REP_MAX_CDC;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return ChunkingFunction_Value.UNRECOGNIZED;
+  }
+}
+
+export function chunkingFunction_ValueToJSON(object: ChunkingFunction_Value): string {
+  switch (object) {
+    case ChunkingFunction_Value.UNKNOWN:
+      return "UNKNOWN";
+    case ChunkingFunction_Value.FAST_CDC_2020:
+      return "FAST_CDC_2020";
+    case ChunkingFunction_Value.REP_MAX_CDC:
+      return "REP_MAX_CDC";
+    case ChunkingFunction_Value.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 /** Describes the server/instance capabilities for updating the action cache. */
 export interface ActionCacheUpdateCapabilities {
   updateEnabled: boolean;
@@ -2005,8 +2083,8 @@ export interface ActionCacheUpdateCapabilities {
 
 /**
  * Allowed values for priority in
- * [ResultsCachePolicy][build.bazel.remoteexecution.v2.ResultsCachePolicy] and
- * [ExecutionPolicy][build.bazel.remoteexecution.v2.ExecutionPolicy]
+ * [ResultsCachePolicy][build.bazel.remote.execution.v2.ResultsCachePolicy] and
+ * [ExecutionPolicy][build.bazel.remote.execution.v2.ExecutionPolicy]
  * Used for querying both cache and execution valid priority ranges.
  */
 export interface PriorityCapabilities {
@@ -2211,6 +2289,110 @@ export interface CacheCapabilities {
    * operation.
    */
   spliceBlobSupport: boolean;
+  /**
+   * The parameters for the FastCDC 2020 chunking algorithm.
+   * If set, the server supports the FastCDC chunking algorithm.
+   */
+  fastCdc2020Params:
+    | FastCdc2020Params
+    | undefined;
+  /**
+   * The parameters for the RepMaxCDC chunking algorithm.
+   * If set, the server supports the RepMaxCDC chunking algorithm.
+   */
+  repMaxCdcParams: RepMaxCdcParams | undefined;
+}
+
+/**
+ * Parameters for the FastCDC content-defined chunking algorithm.
+ *
+ * Implementations MUST follow the FastCDC 2020 paper by Wen Xia, et al.:
+ * https://ieeexplore.ieee.org/document/9055082
+ *
+ * Supported implementations:
+ *   - Rust: https://docs.rs/fastcdc/3.2.1/fastcdc/v2020/index.html
+ *   - Go: https://github.com/buildbuddy-io/fastcdc2020
+ *
+ * Test vectors can be found in the accompanying fastcdc2020_test_vectors.txt file.
+ *
+ * Implementations MUST use normalization level 2, which has been found
+ * successful for build artifacts with an average chunk size of 512 KiB.
+ *
+ * Key algorithm components from the paper:
+ *
+ * GEAR table: 256 64-bit integers for the rolling hash, computed as:
+ *   GEAR[i] = high_64_bits(MD5(byte(i))) for i in 0..255
+ *
+ * MASKS table: Bit patterns for chunk boundary detection, derived from
+ * the C reference implementation. The mask selection based on average
+ * chunk size SHOULD match the paper.
+ *
+ * The minimum and maximum chunk sizes MUST be derived from the average:
+ *   - min_chunk_size = avg_chunk_size_bytes / 4
+ *   - max_chunk_size = avg_chunk_size_bytes * 4
+ *
+ * Blobs smaller than max_chunk_size (avg_chunk_size_bytes * 4) SHOULD be
+ * uploaded without chunking.
+ *
+ * If any of the advertised parameters are not within the expected range,
+ * the client SHOULD ignore FastCDC chunking function support.
+ */
+export interface FastCdc2020Params {
+  /**
+   * The average (expected) chunk size for the FastCDC chunking algorithm.
+   * The value MUST be between 1 KiB and 1 MiB. The recommended value is
+   * 524288 (512 KiB).
+   */
+  avgChunkSizeBytes: string;
+  /**
+   * The seed for the FastCDC mask generation.
+   * The recommended value is 0.
+   *
+   * All clients sharing a cache SHOULD use the same seed to maximize
+   * chunk reuse.
+   */
+  seed: number;
+}
+
+/**
+ * Parameters for the RepMaxCDC content-defined chunking algorithm.
+ *
+ * Supported implementations:
+ *   - Go: https://github.com/buildbarn/go-cdc
+ *
+ * Key algorithm components:
+ *
+ * GEAR table: 256 64-bit integers for the rolling hash, computed as:
+ *   GEAR[i] = high_64_bits(MD5(byte(i))) for i in 0..255
+ *
+ * The algorithm repeatedly applies chunking until all chunks are in the
+ * range [min_chunk_size_bytes, 2*min_chunk_size_bytes). Cutting points are
+ * selected where the Gear rolling hash is maximized within a lookahead
+ * window of horizon_size_bytes.
+ *
+ * For sufficiently large files, the average chunk size prior to
+ * deduplication will approximately be min_chunk_size_bytes divided by
+ * Rényi's parking constant (0.7475979203...). More details:
+ * https://mathworld.wolfram.com/RenyisParkingConstants.html
+ *
+ * If any of the advertised parameters are not within the expected range,
+ * the client SHOULD ignore RepMaxCDC chunking function support.
+ */
+export interface RepMaxCdcParams {
+  /**
+   * The minimum chunk size for the RepMaxCDC chunking algorithm.
+   * The value MUST be at least 64 bytes (the Gear hash window size).
+   * All chunks will be in the range [min_chunk_size_bytes, 2*min_chunk_size_bytes).
+   * The recommended value is 262144 (256 KiB).
+   */
+  minChunkSizeBytes: string;
+  /**
+   * The lookahead window for finding optimal cutting points.
+   * Larger values improve deduplication quality with diminishing returns.
+   * Setting to 0 produces uniform chunks of min_chunk_size_bytes.
+   * The recommended value is 8 * min_chunk_size_bytes.
+   */
+  horizonSizeBytes: string;
 }
 
 /** Capabilities of the remote execution system. */
@@ -6927,7 +7109,7 @@ export const GetTreeResponse: MessageFns<GetTreeResponse> = {
 };
 
 function createBaseSplitBlobRequest(): SplitBlobRequest {
-  return { instanceName: "", blobDigest: undefined, digestFunction: 0 };
+  return { instanceName: "", blobDigest: undefined, digestFunction: 0, chunkingFunction: 0 };
 }
 
 export const SplitBlobRequest: MessageFns<SplitBlobRequest> = {
@@ -6940,6 +7122,9 @@ export const SplitBlobRequest: MessageFns<SplitBlobRequest> = {
     }
     if (message.digestFunction !== 0) {
       writer.uint32(24).int32(message.digestFunction);
+    }
+    if (message.chunkingFunction !== 0) {
+      writer.uint32(32).int32(message.chunkingFunction);
     }
     return writer;
   },
@@ -6975,6 +7160,14 @@ export const SplitBlobRequest: MessageFns<SplitBlobRequest> = {
           message.digestFunction = reader.int32() as any;
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.chunkingFunction = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7001,6 +7194,11 @@ export const SplitBlobRequest: MessageFns<SplitBlobRequest> = {
         : isSet(object.digest_function)
         ? digestFunction_ValueFromJSON(object.digest_function)
         : 0,
+      chunkingFunction: isSet(object.chunkingFunction)
+        ? chunkingFunction_ValueFromJSON(object.chunkingFunction)
+        : isSet(object.chunking_function)
+        ? chunkingFunction_ValueFromJSON(object.chunking_function)
+        : 0,
     };
   },
 
@@ -7015,6 +7213,9 @@ export const SplitBlobRequest: MessageFns<SplitBlobRequest> = {
     if (message.digestFunction !== 0) {
       obj.digestFunction = digestFunction_ValueToJSON(message.digestFunction);
     }
+    if (message.chunkingFunction !== 0) {
+      obj.chunkingFunction = chunkingFunction_ValueToJSON(message.chunkingFunction);
+    }
     return obj;
   },
 
@@ -7028,18 +7229,22 @@ export const SplitBlobRequest: MessageFns<SplitBlobRequest> = {
       ? Digest.fromPartial(object.blobDigest)
       : undefined;
     message.digestFunction = object.digestFunction ?? 0;
+    message.chunkingFunction = object.chunkingFunction ?? 0;
     return message;
   },
 };
 
 function createBaseSplitBlobResponse(): SplitBlobResponse {
-  return { chunkDigests: [] };
+  return { chunkDigests: [], chunkingFunction: 0 };
 }
 
 export const SplitBlobResponse: MessageFns<SplitBlobResponse> = {
   encode(message: SplitBlobResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.chunkDigests) {
       Digest.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.chunkingFunction !== 0) {
+      writer.uint32(16).int32(message.chunkingFunction);
     }
     return writer;
   },
@@ -7059,6 +7264,14 @@ export const SplitBlobResponse: MessageFns<SplitBlobResponse> = {
           message.chunkDigests.push(Digest.decode(reader, reader.uint32()));
           continue;
         }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.chunkingFunction = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7075,6 +7288,11 @@ export const SplitBlobResponse: MessageFns<SplitBlobResponse> = {
         : globalThis.Array.isArray(object?.chunk_digests)
         ? object.chunk_digests.map((e: any) => Digest.fromJSON(e))
         : [],
+      chunkingFunction: isSet(object.chunkingFunction)
+        ? chunkingFunction_ValueFromJSON(object.chunkingFunction)
+        : isSet(object.chunking_function)
+        ? chunkingFunction_ValueFromJSON(object.chunking_function)
+        : 0,
     };
   },
 
@@ -7082,6 +7300,9 @@ export const SplitBlobResponse: MessageFns<SplitBlobResponse> = {
     const obj: any = {};
     if (message.chunkDigests?.length) {
       obj.chunkDigests = message.chunkDigests.map((e) => Digest.toJSON(e));
+    }
+    if (message.chunkingFunction !== 0) {
+      obj.chunkingFunction = chunkingFunction_ValueToJSON(message.chunkingFunction);
     }
     return obj;
   },
@@ -7092,12 +7313,13 @@ export const SplitBlobResponse: MessageFns<SplitBlobResponse> = {
   fromPartial(object: DeepPartial<SplitBlobResponse>): SplitBlobResponse {
     const message = createBaseSplitBlobResponse();
     message.chunkDigests = object.chunkDigests?.map((e) => Digest.fromPartial(e)) || [];
+    message.chunkingFunction = object.chunkingFunction ?? 0;
     return message;
   },
 };
 
 function createBaseSpliceBlobRequest(): SpliceBlobRequest {
-  return { instanceName: "", blobDigest: undefined, chunkDigests: [], digestFunction: 0 };
+  return { instanceName: "", blobDigest: undefined, chunkDigests: [], digestFunction: 0, chunkingFunction: 0 };
 }
 
 export const SpliceBlobRequest: MessageFns<SpliceBlobRequest> = {
@@ -7113,6 +7335,9 @@ export const SpliceBlobRequest: MessageFns<SpliceBlobRequest> = {
     }
     if (message.digestFunction !== 0) {
       writer.uint32(32).int32(message.digestFunction);
+    }
+    if (message.chunkingFunction !== 0) {
+      writer.uint32(40).int32(message.chunkingFunction);
     }
     return writer;
   },
@@ -7156,6 +7381,14 @@ export const SpliceBlobRequest: MessageFns<SpliceBlobRequest> = {
           message.digestFunction = reader.int32() as any;
           continue;
         }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.chunkingFunction = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7187,6 +7420,11 @@ export const SpliceBlobRequest: MessageFns<SpliceBlobRequest> = {
         : isSet(object.digest_function)
         ? digestFunction_ValueFromJSON(object.digest_function)
         : 0,
+      chunkingFunction: isSet(object.chunkingFunction)
+        ? chunkingFunction_ValueFromJSON(object.chunkingFunction)
+        : isSet(object.chunking_function)
+        ? chunkingFunction_ValueFromJSON(object.chunking_function)
+        : 0,
     };
   },
 
@@ -7204,6 +7442,9 @@ export const SpliceBlobRequest: MessageFns<SpliceBlobRequest> = {
     if (message.digestFunction !== 0) {
       obj.digestFunction = digestFunction_ValueToJSON(message.digestFunction);
     }
+    if (message.chunkingFunction !== 0) {
+      obj.chunkingFunction = chunkingFunction_ValueToJSON(message.chunkingFunction);
+    }
     return obj;
   },
 
@@ -7218,6 +7459,7 @@ export const SpliceBlobRequest: MessageFns<SpliceBlobRequest> = {
       : undefined;
     message.chunkDigests = object.chunkDigests?.map((e) => Digest.fromPartial(e)) || [];
     message.digestFunction = object.digestFunction ?? 0;
+    message.chunkingFunction = object.chunkingFunction ?? 0;
     return message;
   },
 };
@@ -7556,6 +7798,49 @@ export const DigestFunction: MessageFns<DigestFunction> = {
   },
 };
 
+function createBaseChunkingFunction(): ChunkingFunction {
+  return {};
+}
+
+export const ChunkingFunction: MessageFns<ChunkingFunction> = {
+  encode(_: ChunkingFunction, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ChunkingFunction {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChunkingFunction();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ChunkingFunction {
+    return {};
+  },
+
+  toJSON(_: ChunkingFunction): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<ChunkingFunction>): ChunkingFunction {
+    return ChunkingFunction.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<ChunkingFunction>): ChunkingFunction {
+    const message = createBaseChunkingFunction();
+    return message;
+  },
+};
+
 function createBaseActionCacheUpdateCapabilities(): ActionCacheUpdateCapabilities {
   return { updateEnabled: false };
 }
@@ -7864,6 +8149,8 @@ function createBaseCacheCapabilities(): CacheCapabilities {
     maxCasBlobSizeBytes: "0",
     splitBlobSupport: false,
     spliceBlobSupport: false,
+    fastCdc2020Params: undefined,
+    repMaxCdcParams: undefined,
   };
 }
 
@@ -7904,6 +8191,12 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     }
     if (message.spliceBlobSupport !== false) {
       writer.uint32(80).bool(message.spliceBlobSupport);
+    }
+    if (message.fastCdc2020Params !== undefined) {
+      FastCdc2020Params.encode(message.fastCdc2020Params, writer.uint32(90).fork()).join();
+    }
+    if (message.repMaxCdcParams !== undefined) {
+      RepMaxCdcParams.encode(message.repMaxCdcParams, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -8025,6 +8318,22 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
           message.spliceBlobSupport = reader.bool();
           continue;
         }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.fastCdc2020Params = FastCdc2020Params.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.repMaxCdcParams = RepMaxCdcParams.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8086,6 +8395,16 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
         : isSet(object.splice_blob_support)
         ? globalThis.Boolean(object.splice_blob_support)
         : false,
+      fastCdc2020Params: isSet(object.fastCdc2020Params)
+        ? FastCdc2020Params.fromJSON(object.fastCdc2020Params)
+        : isSet(object.fast_cdc_2020_params)
+        ? FastCdc2020Params.fromJSON(object.fast_cdc_2020_params)
+        : undefined,
+      repMaxCdcParams: isSet(object.repMaxCdcParams)
+        ? RepMaxCdcParams.fromJSON(object.repMaxCdcParams)
+        : isSet(object.rep_max_cdc_params)
+        ? RepMaxCdcParams.fromJSON(object.rep_max_cdc_params)
+        : undefined,
     };
   },
 
@@ -8123,6 +8442,12 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     if (message.spliceBlobSupport !== false) {
       obj.spliceBlobSupport = message.spliceBlobSupport;
     }
+    if (message.fastCdc2020Params !== undefined) {
+      obj.fastCdc2020Params = FastCdc2020Params.toJSON(message.fastCdc2020Params);
+    }
+    if (message.repMaxCdcParams !== undefined) {
+      obj.repMaxCdcParams = RepMaxCdcParams.toJSON(message.repMaxCdcParams);
+    }
     return obj;
   },
 
@@ -8147,6 +8472,176 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     message.maxCasBlobSizeBytes = object.maxCasBlobSizeBytes ?? "0";
     message.splitBlobSupport = object.splitBlobSupport ?? false;
     message.spliceBlobSupport = object.spliceBlobSupport ?? false;
+    message.fastCdc2020Params = (object.fastCdc2020Params !== undefined && object.fastCdc2020Params !== null)
+      ? FastCdc2020Params.fromPartial(object.fastCdc2020Params)
+      : undefined;
+    message.repMaxCdcParams = (object.repMaxCdcParams !== undefined && object.repMaxCdcParams !== null)
+      ? RepMaxCdcParams.fromPartial(object.repMaxCdcParams)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseFastCdc2020Params(): FastCdc2020Params {
+  return { avgChunkSizeBytes: "0", seed: 0 };
+}
+
+export const FastCdc2020Params: MessageFns<FastCdc2020Params> = {
+  encode(message: FastCdc2020Params, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.avgChunkSizeBytes !== "0") {
+      writer.uint32(8).uint64(message.avgChunkSizeBytes);
+    }
+    if (message.seed !== 0) {
+      writer.uint32(16).uint32(message.seed);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FastCdc2020Params {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFastCdc2020Params();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.avgChunkSizeBytes = reader.uint64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.seed = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FastCdc2020Params {
+    return {
+      avgChunkSizeBytes: isSet(object.avgChunkSizeBytes)
+        ? globalThis.String(object.avgChunkSizeBytes)
+        : isSet(object.avg_chunk_size_bytes)
+        ? globalThis.String(object.avg_chunk_size_bytes)
+        : "0",
+      seed: isSet(object.seed) ? globalThis.Number(object.seed) : 0,
+    };
+  },
+
+  toJSON(message: FastCdc2020Params): unknown {
+    const obj: any = {};
+    if (message.avgChunkSizeBytes !== "0") {
+      obj.avgChunkSizeBytes = message.avgChunkSizeBytes;
+    }
+    if (message.seed !== 0) {
+      obj.seed = Math.round(message.seed);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<FastCdc2020Params>): FastCdc2020Params {
+    return FastCdc2020Params.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<FastCdc2020Params>): FastCdc2020Params {
+    const message = createBaseFastCdc2020Params();
+    message.avgChunkSizeBytes = object.avgChunkSizeBytes ?? "0";
+    message.seed = object.seed ?? 0;
+    return message;
+  },
+};
+
+function createBaseRepMaxCdcParams(): RepMaxCdcParams {
+  return { minChunkSizeBytes: "0", horizonSizeBytes: "0" };
+}
+
+export const RepMaxCdcParams: MessageFns<RepMaxCdcParams> = {
+  encode(message: RepMaxCdcParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.minChunkSizeBytes !== "0") {
+      writer.uint32(8).uint64(message.minChunkSizeBytes);
+    }
+    if (message.horizonSizeBytes !== "0") {
+      writer.uint32(16).uint64(message.horizonSizeBytes);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RepMaxCdcParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRepMaxCdcParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.minChunkSizeBytes = reader.uint64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.horizonSizeBytes = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RepMaxCdcParams {
+    return {
+      minChunkSizeBytes: isSet(object.minChunkSizeBytes)
+        ? globalThis.String(object.minChunkSizeBytes)
+        : isSet(object.min_chunk_size_bytes)
+        ? globalThis.String(object.min_chunk_size_bytes)
+        : "0",
+      horizonSizeBytes: isSet(object.horizonSizeBytes)
+        ? globalThis.String(object.horizonSizeBytes)
+        : isSet(object.horizon_size_bytes)
+        ? globalThis.String(object.horizon_size_bytes)
+        : "0",
+    };
+  },
+
+  toJSON(message: RepMaxCdcParams): unknown {
+    const obj: any = {};
+    if (message.minChunkSizeBytes !== "0") {
+      obj.minChunkSizeBytes = message.minChunkSizeBytes;
+    }
+    if (message.horizonSizeBytes !== "0") {
+      obj.horizonSizeBytes = message.horizonSizeBytes;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<RepMaxCdcParams>): RepMaxCdcParams {
+    return RepMaxCdcParams.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<RepMaxCdcParams>): RepMaxCdcParams {
+    const message = createBaseRepMaxCdcParams();
+    message.minChunkSizeBytes = object.minChunkSizeBytes ?? "0";
+    message.horizonSizeBytes = object.horizonSizeBytes ?? "0";
     return message;
   },
 };
@@ -8751,7 +9246,7 @@ export const ExecutionDefinition = {
      * server MAY choose to stream additional updates as execution progresses,
      * such as to provide an update as to the state of the execution.
      *
-     * In addition to the cases describe for Execute, the WaitExecution method
+     * In addition to the cases described for Execute, the WaitExecution method
      * may fail as follows:
      *
      * * `NOT_FOUND`: The operation no longer exists due to any of a transient
@@ -8909,7 +9404,7 @@ export interface ExecutionServiceImplementation<CallContextExt = {}> {
    * server MAY choose to stream additional updates as execution progresses,
    * such as to provide an update as to the state of the execution.
    *
-   * In addition to the cases describe for Execute, the WaitExecution method
+   * In addition to the cases described for Execute, the WaitExecution method
    * may fail as follows:
    *
    * * `NOT_FOUND`: The operation no longer exists due to any of a transient
@@ -9008,7 +9503,7 @@ export interface ExecutionClient<CallOptionsExt = {}> {
    * server MAY choose to stream additional updates as execution progresses,
    * such as to provide an update as to the state of the execution.
    *
-   * In addition to the cases describe for Execute, the WaitExecution method
+   * In addition to the cases described for Execute, the WaitExecution method
    * may fail as follows:
    *
    * * `NOT_FOUND`: The operation no longer exists due to any of a transient
@@ -9416,7 +9911,7 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  * For large uploads, the client must use the
  * [Write method][google.bytestream.ByteStream.Write] of the ByteStream API.
  *
- * For uncompressed data, The `WriteRequest.resource_name` is of the following form:
+ * For uncompressed data, the `WriteRequest.resource_name` is of the following form:
  * `{instance_name}/uploads/{uuid}/blobs/{digest_function/}{hash}/{size}{/optional_metadata}`
  *
  * Where:
@@ -9424,7 +9919,7 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  *   instances on the server. Syntax and semantics of this field are defined
  *   by the server; Clients must not make any assumptions about it (e.g.,
  *   whether it spans multiple path segments or not). If it is the empty path,
- *   the leading slash is omitted, so that  the `resource_name` becomes
+ *   the leading slash is omitted, so that the `resource_name` becomes
  *   `uploads/{uuid}/blobs/{digest_function/}{hash}/{size}{/optional_metadata}`.
  *   To simplify parsing, a path segment cannot equal any of the following
  *   keywords: `blobs`, `uploads`, `actions`, `actionResults`, `operations`,
@@ -9452,7 +9947,7 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  *   defined as above.
  * * `compressor` is a lowercase string form of a `Compressor.Value` enum
  *   other than `identity`, which is supported by the server and advertised in
- *   [CacheCapabilities.supported_compressor][build.bazel.remote.execution.v2.CacheCapabilities.supported_compressor].
+ *   [CacheCapabilities.supported_compressors][build.bazel.remote.execution.v2.CacheCapabilities.supported_compressors].
  * * `uncompressed_hash` and `uncompressed_size` refer to the
  *   [Digest][build.bazel.remote.execution.v2.Digest] of the data being
  *   uploaded, once uncompressed. Servers MUST verify that these match
@@ -9491,7 +9986,7 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  * For large downloads, the client must use the
  * [Read method][google.bytestream.ByteStream.Read] of the ByteStream API.
  *
- * For uncompressed data, The `ReadRequest.resource_name` is of the following form:
+ * For uncompressed data, the `ReadRequest.resource_name` is of the following form:
  * `{instance_name}/blobs/{digest_function/}{hash}/{size}`
  * Where `instance_name`, `digest_function`, `hash` and `size` are defined as
  * for uploads.
@@ -9917,19 +10412,19 @@ export const ContentAddressableStorageDefinition = {
       },
     },
     /**
-     * Split a blob into chunks.
+     * SplitBlob retrieves information about how a blob is split into chunks.
      *
-     * This call splits a blob into chunks, stores the chunks in the CAS, and
-     * returns a list of the chunk digests. Using this list, a client can check
-     * which chunks are locally available and just fetch the missing ones. The
-     * desired blob can be assembled by concatenating the fetched chunks in the
-     * order of the digests in the list.
+     * This call returns information about how a blob is split into chunks, and
+     * returns a list of the chunk digests. Using the returned list of chunk digests,
+     * a client can check which chunks are locally available and only fetch the
+     * missing ones. The desired blob can be assembled by concatenating the fetched
+     * chunks in the order of the digests in the list. The chunks SHOULD all be
+     * available in the CAS.
      *
-     * This rpc can be used to reduce the required data to download a large blob
-     * from CAS if chunks from earlier downloads of a different version of this
-     * blob are locally available. For this procedure to work properly, blobs
-     * SHOULD be split in a content-defined way, rather than with fixed-sized
-     * chunking.
+     * This API can be used to reduce the required data to download a large blob
+     * from CAS if some chunks from similar blobs are locally available. For this
+     * procedure to work properly, blobs SHOULD be split in a content-defined way,
+     * rather than with fixed-sized chunking.
      *
      * If a split request is answered successfully, a client can expect the
      * following guarantees from the server:
@@ -9963,12 +10458,14 @@ export const ContentAddressableStorageDefinition = {
      *
      * When blob splitting and splicing is used at the same time, the clients and
      * the server SHOULD agree out-of-band upon a chunking algorithm used by both
-     * parties to benefit from each others chunk data and avoid unnecessary data
+     * parties to benefit from each other's chunk data and avoid unnecessary data
      * duplication.
      *
      * Errors:
      *
-     * * `NOT_FOUND`: The requested blob is not present in the CAS.
+     * * `NOT_FOUND`: The requested blob is not present in the CAS, OR there is no
+     *   split information available for the blob, OR at least one chunk needed to
+     *   reconstruct the blob is missing from the CAS.
      * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
      *   chunks.
      */
@@ -10073,19 +10570,24 @@ export const ContentAddressableStorageDefinition = {
       },
     },
     /**
-     * Splice a blob from chunks.
+     * SpliceBlob tells the CAS how chunks can compose a blob.
      *
      * This is the complementary operation to the
      * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
      * function to handle the chunked upload of large blobs to save upload
      * traffic.
      *
+     * When uploading a large blob using chunked upload, clients MUST first upload
+     * all chunks to the CAS, then call this RPC to tell the server how those chunks
+     * compose the original blob. The chunks referenced in the SpliceBlob call SHOULD be
+     * available in the CAS before calling this RPC.
+     *
      * If a client needs to upload a large blob and is able to split a blob into
      * chunks in such a way that reusable chunks are obtained, e.g., by means of
      * content-defined chunking, it can first determine which parts of the blob
      * are already available in the remote CAS and upload the missing chunks, and
-     * then use this API to instruct the server to splice the original blob from
-     * the remotely available blob chunks.
+     * then use this API to store information on how the chunks compose the
+     * original blob.
      *
      * Servers which implement this functionality MUST declare that they support
      * it by setting the
@@ -10098,14 +10600,17 @@ export const ContentAddressableStorageDefinition = {
      * In order to ensure data consistency of the CAS, the server MUST only add
      * blobs to the CAS after verifying their digests. In particular, servers MUST NOT
      * trust digests provided by the client. The server MAY accept a request as no-op
-     * if the client-specified blob is already in CAS; the lifetime of that blob SHOULD
-     * be extended as usual. If the client-specified blob is not already in the CAS,
-     * the server SHOULD verify that the digest of the newly created blob matches the
-     * digest specified by the client, and reject the request if they differ.
+     * if the client-specified blob is already in CAS or if information on how to
+     * construct the blob from chunks is available. If the client-specified blob is
+     * not already in the CAS, the server MUST verify that the digest of the newly
+     * created blob assembled from chunks matches the digest specified by the
+     * client, and reject the request if they differ. Servers MAY choose to allow
+     * overwriting existing chunk mappings or to store multiple chunk mappings for
+     * the same blob.
      *
      * When blob splitting and splicing is used at the same time, the clients and
      * the server SHOULD agree out-of-band upon a chunking algorithm used by both
-     * parties to benefit from each others chunk data and avoid unnecessary data
+     * parties to benefit from each other's chunk data and avoid unnecessary data
      * duplication.
      *
      * Errors:
@@ -10115,6 +10620,11 @@ export const ContentAddressableStorageDefinition = {
      *   spliced blob.
      * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
      *   provided expected digest.
+     * * `ALREADY_EXISTS`: The blob already exists in CAS and the server did not
+     *   extend the lifetime of the chunks specified in the request, e.g. because
+     *   it prefers a different chunking and extended those instead. Clients can
+     *   call [SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+     *   to check what chunk mapping the server is using.
      */
     spliceBlob: {
       name: "SpliceBlob",
@@ -10281,19 +10791,19 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
     context: CallContext & CallContextExt,
   ): ServerStreamingMethodResult<DeepPartial<GetTreeResponse>>;
   /**
-   * Split a blob into chunks.
+   * SplitBlob retrieves information about how a blob is split into chunks.
    *
-   * This call splits a blob into chunks, stores the chunks in the CAS, and
-   * returns a list of the chunk digests. Using this list, a client can check
-   * which chunks are locally available and just fetch the missing ones. The
-   * desired blob can be assembled by concatenating the fetched chunks in the
-   * order of the digests in the list.
+   * This call returns information about how a blob is split into chunks, and
+   * returns a list of the chunk digests. Using the returned list of chunk digests,
+   * a client can check which chunks are locally available and only fetch the
+   * missing ones. The desired blob can be assembled by concatenating the fetched
+   * chunks in the order of the digests in the list. The chunks SHOULD all be
+   * available in the CAS.
    *
-   * This rpc can be used to reduce the required data to download a large blob
-   * from CAS if chunks from earlier downloads of a different version of this
-   * blob are locally available. For this procedure to work properly, blobs
-   * SHOULD be split in a content-defined way, rather than with fixed-sized
-   * chunking.
+   * This API can be used to reduce the required data to download a large blob
+   * from CAS if some chunks from similar blobs are locally available. For this
+   * procedure to work properly, blobs SHOULD be split in a content-defined way,
+   * rather than with fixed-sized chunking.
    *
    * If a split request is answered successfully, a client can expect the
    * following guarantees from the server:
@@ -10327,30 +10837,37 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    *
    * When blob splitting and splicing is used at the same time, the clients and
    * the server SHOULD agree out-of-band upon a chunking algorithm used by both
-   * parties to benefit from each others chunk data and avoid unnecessary data
+   * parties to benefit from each other's chunk data and avoid unnecessary data
    * duplication.
    *
    * Errors:
    *
-   * * `NOT_FOUND`: The requested blob is not present in the CAS.
+   * * `NOT_FOUND`: The requested blob is not present in the CAS, OR there is no
+   *   split information available for the blob, OR at least one chunk needed to
+   *   reconstruct the blob is missing from the CAS.
    * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
    *   chunks.
    */
   splitBlob(request: SplitBlobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<SplitBlobResponse>>;
   /**
-   * Splice a blob from chunks.
+   * SpliceBlob tells the CAS how chunks can compose a blob.
    *
    * This is the complementary operation to the
    * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
    * function to handle the chunked upload of large blobs to save upload
    * traffic.
    *
+   * When uploading a large blob using chunked upload, clients MUST first upload
+   * all chunks to the CAS, then call this RPC to tell the server how those chunks
+   * compose the original blob. The chunks referenced in the SpliceBlob call SHOULD be
+   * available in the CAS before calling this RPC.
+   *
    * If a client needs to upload a large blob and is able to split a blob into
    * chunks in such a way that reusable chunks are obtained, e.g., by means of
    * content-defined chunking, it can first determine which parts of the blob
    * are already available in the remote CAS and upload the missing chunks, and
-   * then use this API to instruct the server to splice the original blob from
-   * the remotely available blob chunks.
+   * then use this API to store information on how the chunks compose the
+   * original blob.
    *
    * Servers which implement this functionality MUST declare that they support
    * it by setting the
@@ -10363,14 +10880,17 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    * In order to ensure data consistency of the CAS, the server MUST only add
    * blobs to the CAS after verifying their digests. In particular, servers MUST NOT
    * trust digests provided by the client. The server MAY accept a request as no-op
-   * if the client-specified blob is already in CAS; the lifetime of that blob SHOULD
-   * be extended as usual. If the client-specified blob is not already in the CAS,
-   * the server SHOULD verify that the digest of the newly created blob matches the
-   * digest specified by the client, and reject the request if they differ.
+   * if the client-specified blob is already in CAS or if information on how to
+   * construct the blob from chunks is available. If the client-specified blob is
+   * not already in the CAS, the server MUST verify that the digest of the newly
+   * created blob assembled from chunks matches the digest specified by the
+   * client, and reject the request if they differ. Servers MAY choose to allow
+   * overwriting existing chunk mappings or to store multiple chunk mappings for
+   * the same blob.
    *
    * When blob splitting and splicing is used at the same time, the clients and
    * the server SHOULD agree out-of-band upon a chunking algorithm used by both
-   * parties to benefit from each others chunk data and avoid unnecessary data
+   * parties to benefit from each other's chunk data and avoid unnecessary data
    * duplication.
    *
    * Errors:
@@ -10380,6 +10900,11 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    *   spliced blob.
    * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
    *   provided expected digest.
+   * * `ALREADY_EXISTS`: The blob already exists in CAS and the server did not
+   *   extend the lifetime of the chunks specified in the request, e.g. because
+   *   it prefers a different chunking and extended those instead. Clients can
+   *   call [SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+   *   to check what chunk mapping the server is using.
    */
   spliceBlob(
     request: SpliceBlobRequest,
@@ -10486,19 +11011,19 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    */
   getTree(request: DeepPartial<GetTreeRequest>, options?: CallOptions & CallOptionsExt): AsyncIterable<GetTreeResponse>;
   /**
-   * Split a blob into chunks.
+   * SplitBlob retrieves information about how a blob is split into chunks.
    *
-   * This call splits a blob into chunks, stores the chunks in the CAS, and
-   * returns a list of the chunk digests. Using this list, a client can check
-   * which chunks are locally available and just fetch the missing ones. The
-   * desired blob can be assembled by concatenating the fetched chunks in the
-   * order of the digests in the list.
+   * This call returns information about how a blob is split into chunks, and
+   * returns a list of the chunk digests. Using the returned list of chunk digests,
+   * a client can check which chunks are locally available and only fetch the
+   * missing ones. The desired blob can be assembled by concatenating the fetched
+   * chunks in the order of the digests in the list. The chunks SHOULD all be
+   * available in the CAS.
    *
-   * This rpc can be used to reduce the required data to download a large blob
-   * from CAS if chunks from earlier downloads of a different version of this
-   * blob are locally available. For this procedure to work properly, blobs
-   * SHOULD be split in a content-defined way, rather than with fixed-sized
-   * chunking.
+   * This API can be used to reduce the required data to download a large blob
+   * from CAS if some chunks from similar blobs are locally available. For this
+   * procedure to work properly, blobs SHOULD be split in a content-defined way,
+   * rather than with fixed-sized chunking.
    *
    * If a split request is answered successfully, a client can expect the
    * following guarantees from the server:
@@ -10532,30 +11057,37 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    *
    * When blob splitting and splicing is used at the same time, the clients and
    * the server SHOULD agree out-of-band upon a chunking algorithm used by both
-   * parties to benefit from each others chunk data and avoid unnecessary data
+   * parties to benefit from each other's chunk data and avoid unnecessary data
    * duplication.
    *
    * Errors:
    *
-   * * `NOT_FOUND`: The requested blob is not present in the CAS.
+   * * `NOT_FOUND`: The requested blob is not present in the CAS, OR there is no
+   *   split information available for the blob, OR at least one chunk needed to
+   *   reconstruct the blob is missing from the CAS.
    * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
    *   chunks.
    */
   splitBlob(request: DeepPartial<SplitBlobRequest>, options?: CallOptions & CallOptionsExt): Promise<SplitBlobResponse>;
   /**
-   * Splice a blob from chunks.
+   * SpliceBlob tells the CAS how chunks can compose a blob.
    *
    * This is the complementary operation to the
    * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
    * function to handle the chunked upload of large blobs to save upload
    * traffic.
    *
+   * When uploading a large blob using chunked upload, clients MUST first upload
+   * all chunks to the CAS, then call this RPC to tell the server how those chunks
+   * compose the original blob. The chunks referenced in the SpliceBlob call SHOULD be
+   * available in the CAS before calling this RPC.
+   *
    * If a client needs to upload a large blob and is able to split a blob into
    * chunks in such a way that reusable chunks are obtained, e.g., by means of
    * content-defined chunking, it can first determine which parts of the blob
    * are already available in the remote CAS and upload the missing chunks, and
-   * then use this API to instruct the server to splice the original blob from
-   * the remotely available blob chunks.
+   * then use this API to store information on how the chunks compose the
+   * original blob.
    *
    * Servers which implement this functionality MUST declare that they support
    * it by setting the
@@ -10568,14 +11100,17 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    * In order to ensure data consistency of the CAS, the server MUST only add
    * blobs to the CAS after verifying their digests. In particular, servers MUST NOT
    * trust digests provided by the client. The server MAY accept a request as no-op
-   * if the client-specified blob is already in CAS; the lifetime of that blob SHOULD
-   * be extended as usual. If the client-specified blob is not already in the CAS,
-   * the server SHOULD verify that the digest of the newly created blob matches the
-   * digest specified by the client, and reject the request if they differ.
+   * if the client-specified blob is already in CAS or if information on how to
+   * construct the blob from chunks is available. If the client-specified blob is
+   * not already in the CAS, the server MUST verify that the digest of the newly
+   * created blob assembled from chunks matches the digest specified by the
+   * client, and reject the request if they differ. Servers MAY choose to allow
+   * overwriting existing chunk mappings or to store multiple chunk mappings for
+   * the same blob.
    *
    * When blob splitting and splicing is used at the same time, the clients and
    * the server SHOULD agree out-of-band upon a chunking algorithm used by both
-   * parties to benefit from each others chunk data and avoid unnecessary data
+   * parties to benefit from each other's chunk data and avoid unnecessary data
    * duplication.
    *
    * Errors:
@@ -10585,6 +11120,11 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    *   spliced blob.
    * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
    *   provided expected digest.
+   * * `ALREADY_EXISTS`: The blob already exists in CAS and the server did not
+   *   extend the lifetime of the chunks specified in the request, e.g. because
+   *   it prefers a different chunking and extended those instead. Clients can
+   *   call [SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+   *   to check what chunk mapping the server is using.
    */
   spliceBlob(
     request: DeepPartial<SpliceBlobRequest>,
