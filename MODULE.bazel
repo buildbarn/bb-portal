@@ -4,11 +4,12 @@
 
 module(name = "com_github_buildbarn_bb_portal")
 
-bazel_dep(name = "bazel_protos")
-local_path_override(
-    module_name = "bazel_protos",
+local_repositories = use_extension("//tools:local_repositories.bzl", "local_repositories")
+local_repositories.symlink(
+    name = "bazel_protos",
     path = "third_party/bazel",
 )
+use_repo(local_repositories, "bazel_protos")
 
 bazel_dep(name = "ape", version = "1.1.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")

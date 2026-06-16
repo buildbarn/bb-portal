@@ -1,0 +1,9 @@
+load("//tools:protobuf.bzl", "get_proto_src")
+load(":proto_files.bzl", "PROTO_FILES")
+
+[get_proto_src(
+    name = name + "_proto_src",
+    filename_suffix = "/%s.proto" % name,
+    proto = src,
+    visibility = ["//protobuf:__pkg__"],
+) for name, src in PROTO_FILES.items()]

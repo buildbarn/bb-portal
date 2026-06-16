@@ -1,7 +1,7 @@
 load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_file")
-load("@bazel_protos//tools:protobuf.bzl", "get_proto_src")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//frontend:vite/package_json.bzl", vite_bin = "bin")
+load("//tools:protobuf.bzl", "get_proto_src")
 load(":vite.bzl", "vite_build")
 
 PROTO_FILES = {
