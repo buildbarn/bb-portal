@@ -1080,6 +1080,7 @@ var (
 		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
 		{Name: "timing_breakdown", Type: field.TypeJSON, Nullable: true},
+		{Name: "test_action_outputs", Type: field.TypeJSON, Nullable: true},
 		{Name: "test_summary_test_results", Type: field.TypeInt64},
 	}
 	// TestResultsTable holds the schema information for the "test_results" table.
@@ -1090,7 +1091,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "test_results_test_summaries_test_results",
-				Columns:    []*schema.Column{TestResultsColumns[15]},
+				Columns:    []*schema.Column{TestResultsColumns[16]},
 				RefColumns: []*schema.Column{TestSummariesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -1099,7 +1100,7 @@ var (
 			{
 				Name:    "testresult_test_summary_test_results",
 				Unique:  false,
-				Columns: []*schema.Column{TestResultsColumns[15]},
+				Columns: []*schema.Column{TestResultsColumns[16]},
 			},
 		},
 	}

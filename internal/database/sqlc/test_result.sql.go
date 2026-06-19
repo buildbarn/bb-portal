@@ -28,7 +28,8 @@ INSERT INTO test_results (
     cached_remotely,
     exit_code,
     hostname,
-    timing_breakdown
+    timing_breakdown,
+    test_action_outputs
 )
 SELECT
     ts.id,
@@ -45,7 +46,8 @@ SELECT
     resolved_inputs.cached_remotely,
     resolved_inputs.exit_code,
     resolved_inputs.hostname,
-    resolved_inputs.timing_breakdown::jsonb
+    resolved_inputs.timing_breakdown::jsonb,
+    resolved_inputs.test_action_outputs::jsonb
 FROM (
     -- STAGE 1: Resolve Target IDs immediately using the Index
     -- We join the massive input arrays against the Targets table first.
@@ -65,7 +67,8 @@ FROM (
         input.cached_remotely,
         input.exit_code,
         input.hostname,
-        input.timing_breakdown
+        input.timing_breakdown,
+        input.test_action_outputs
     FROM (
         SELECT
             $1::bigint as instance_name_id,
@@ -84,7 +87,8 @@ FROM (
             unnest($14::boolean[]) AS cached_remotely,
             unnest($15::integer[]) AS exit_code,
             unnest($16::text[]) AS hostname,
-            unnest($17::text[]) AS timing_breakdown
+            unnest($17::text[]) AS timing_breakdown,
+            unnest($18::text[]) AS test_action_outputs
     ) AS input
     JOIN targets t
         ON t.instance_name_targets = input.instance_name_id
@@ -94,12 +98,12 @@ FROM (
     OFFSET 0
 ) AS resolved_inputs
 JOIN configurations c
-    ON c.bazel_invocation_id = $18
+    ON c.bazel_invocation_id = $19
     AND c.configuration_id = resolved_inputs.config_id
 JOIN invocation_targets it
     ON it.target_invocation_targets = resolved_inputs.target_id
     AND it.invocation_target_configuration = c.id
-    AND it.bazel_invocation_invocation_targets = $18
+    AND it.bazel_invocation_invocation_targets = $19
 JOIN test_summaries ts
     ON ts.invocation_target_test_summary = it.id
 `
@@ -122,6 +126,7 @@ type CreateTestResultsBulkParams struct {
 	ExitCodes            []int32
 	Hostnames            []string
 	TimingBreakdowns     []string
+	TestActionOutputss   []string
 	BazelInvocationID    int64
 }
 
@@ -145,6 +150,7 @@ func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResul
 		pq.Array(arg.ExitCodes),
 		pq.Array(arg.Hostnames),
 		pq.Array(arg.TimingBreakdowns),
+		pq.Array(arg.TestActionOutputss),
 		arg.BazelInvocationID,
 	)
 	if err != nil {

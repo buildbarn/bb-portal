@@ -47,6 +47,8 @@ type TestResult struct {
 	Hostname string `json:"hostname,omitempty"`
 	// TimingBreakdown holds the value of the "timing_breakdown" field.
 	TimingBreakdown map[string]interface{} `json:"timing_breakdown,omitempty"`
+	// TestActionOutputs holds the value of the "test_action_outputs" field.
+	TestActionOutputs map[string]interface{} `json:"test_action_outputs,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestResultQuery when eager-loading is set.
 	Edges                     TestResultEdges `json:"edges"`
@@ -81,7 +83,7 @@ func (*TestResult) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case testresult.FieldWarning, testresult.FieldTimingBreakdown:
+		case testresult.FieldWarning, testresult.FieldTimingBreakdown, testresult.FieldTestActionOutputs:
 			values[i] = new([]byte)
 		case testresult.FieldCachedLocally, testresult.FieldCachedRemotely:
 			values[i] = new(sql.NullBool)
@@ -202,6 +204,14 @@ func (_m *TestResult) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field timing_breakdown: %w", err)
 				}
 			}
+		case testresult.FieldTestActionOutputs:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field test_action_outputs", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.TestActionOutputs); err != nil {
+					return fmt.Errorf("unmarshal field test_action_outputs: %w", err)
+				}
+			}
 		case testresult.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_test_results", value)
@@ -291,6 +301,9 @@ func (_m *TestResult) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("timing_breakdown=")
 	builder.WriteString(fmt.Sprintf("%v", _m.TimingBreakdown))
+	builder.WriteString(", ")
+	builder.WriteString("test_action_outputs=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TestActionOutputs))
 	builder.WriteByte(')')
 	return builder.String()
 }

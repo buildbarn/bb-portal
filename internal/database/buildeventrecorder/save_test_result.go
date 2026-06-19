@@ -102,6 +102,7 @@ func createTestResultsBulk(ctx context.Context, invocationDbID, instanceNameDbID
 		ExitCodes:            make([]int32, len(batch)),
 		Hostnames:            make([]string, len(batch)),
 		TimingBreakdowns:     make([]string, len(batch)),
+		TestActionOutputss:   make([]string, len(batch)),
 	}
 
 	for i, x := range batch {
@@ -156,6 +157,16 @@ func createTestResultsBulk(ctx context.Context, invocationDbID, instanceNameDbID
 				}
 			}
 		}
+
+		// Capture per-output references (test.log, test.xml,
+		// test.outputs/outputs.zip, etc.) so the frontend can render
+		// download links without round-tripping back through BES.
+		params.TestActionOutputss[i] = "null"
+		if outs := buildTestActionOutputs(testResult.GetTestActionOutput()); len(outs) > 0 {
+			if outsJSON, err := json.Marshal(outs); err == nil {
+				params.TestActionOutputss[i] = string(outsJSON)
+			}
+		}
 	}
 
 	affectedRows, err := tx.Sqlc().CreateTestResultsBulk(ctx, params)
@@ -167,6 +178,51 @@ func createTestResultsBulk(ctx context.Context, invocationDbID, instanceNameDbID
 	}
 
 	return nil
+}
+
+// testActionOutput is the per-output reference persisted from a BES
+// TestResult.test_action_output entry. Captures enough to render a download
+// link and verify the blob (digest + length) without re-fetching the BES event.
+type testActionOutput struct {
+	Name   string `json:"name"`
+	URI    string `json:"uri"`
+	Digest string `json:"digest,omitempty"`
+	Length int64  `json:"length,omitempty"`
+}
+
+// buildTestActionOutputs flattens the BES TestResult.test_action_output array
+// into a map keyed by output name (e.g. "test.log",
+// "test.outputs__outputs.zip"), with values shaped for the
+// test_action_outputs JSON column. Returns nil if the input is empty so that
+// the JSON column reads as `null` instead of `{}` for tests that produced no
+// output files.
+func buildTestActionOutputs(files []*bes.File) map[string]testActionOutput {
+	if len(files) == 0 {
+		return nil
+	}
+	out := make(map[string]testActionOutput, len(files))
+	for _, f := range files {
+		if f == nil {
+			continue
+		}
+		// The File proto has a oneof for the location; we only care about
+		// the URI form here (bytestream:// for remote, file:// for local).
+		// Inline contents / symlinks aren't useful for download links.
+		uri := f.GetUri()
+		if uri == "" {
+			continue
+		}
+		out[f.GetName()] = testActionOutput{
+			Name:   f.GetName(),
+			URI:    uri,
+			Digest: f.GetDigest(),
+			Length: f.GetLength(),
+		}
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
 }
 
 type timingBreakdown struct {

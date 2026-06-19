@@ -5,6 +5,7 @@ import styles from "@/theme/theme.module.css";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import NullBooleanTag from "../../NullableBooleanTag";
 import TestStatusTag, { type TestStatusEnum } from "../../TestStatusTag";
+import { TestActionOutputs } from "./TestActionOutputs";
 
 export type TestDetailsRowType = NonNullable<
   NonNullable<
@@ -62,5 +63,12 @@ export const columns: TableColumnsType<TestDetailsRowType> = [
       </span>
     ),
     align: "right",
+  },
+  {
+    title: "Outputs",
+    dataIndex: "outputs",
+    render: (_, record) => (
+      <TestActionOutputs results={record.testResults ?? []} />
+    ),
   },
 ];

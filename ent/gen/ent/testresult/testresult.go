@@ -40,6 +40,8 @@ const (
 	FieldHostname = "hostname"
 	// FieldTimingBreakdown holds the string denoting the timing_breakdown field in the database.
 	FieldTimingBreakdown = "timing_breakdown"
+	// FieldTestActionOutputs holds the string denoting the test_action_outputs field in the database.
+	FieldTestActionOutputs = "test_action_outputs"
 	// EdgeTestSummary holds the string denoting the test_summary edge name in mutations.
 	EdgeTestSummary = "test_summary"
 	// Table holds the table name of the testresult in the database.
@@ -70,6 +72,7 @@ var Columns = []string{
 	FieldExitCode,
 	FieldHostname,
 	FieldTimingBreakdown,
+	FieldTestActionOutputs,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "test_results"

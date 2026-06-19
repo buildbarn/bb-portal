@@ -608,6 +608,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			testresult.FieldExitCode:                {Type: field.TypeInt32, Column: testresult.FieldExitCode},
 			testresult.FieldHostname:                {Type: field.TypeString, Column: testresult.FieldHostname},
 			testresult.FieldTimingBreakdown:         {Type: field.TypeJSON, Column: testresult.FieldTimingBreakdown},
+			testresult.FieldTestActionOutputs:       {Type: field.TypeJSON, Column: testresult.FieldTestActionOutputs},
 		},
 	}
 	graph.Nodes[31] = &sqlgraph.Node{
@@ -4622,6 +4623,11 @@ func (f *TestResultFilter) WhereHostname(p entql.StringP) {
 // WhereTimingBreakdown applies the entql json.RawMessage predicate on the timing_breakdown field.
 func (f *TestResultFilter) WhereTimingBreakdown(p entql.BytesP) {
 	f.Where(p.Field(testresult.FieldTimingBreakdown))
+}
+
+// WhereTestActionOutputs applies the entql json.RawMessage predicate on the test_action_outputs field.
+func (f *TestResultFilter) WhereTestActionOutputs(p entql.BytesP) {
+	f.Where(p.Field(testresult.FieldTestActionOutputs))
 }
 
 // WhereHasTestSummary applies a predicate to check if query has an edge test_summary.

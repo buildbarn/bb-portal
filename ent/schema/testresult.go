@@ -54,6 +54,19 @@ func (TestResult) Fields() []ent.Field {
 		field.String("hostname").Optional(),
 
 		field.JSON("timing_breakdown", map[string]any{}).Optional(),
+
+		// Per-output references from the BES TestResult.test_action_output
+		// array. Stored as a map keyed by output name (e.g. "test.log",
+		// "test.xml", "test.outputs__outputs.zip") where each value is a
+		// map of {uri, digest, length} captured from build_event_stream.File.
+		// Mirrors the timing_breakdown encoding shape so it surfaces through
+		// the existing Map GraphQL scalar without needing entgql.Type or
+		// other schema annotations.
+		//
+		// The frontend reads the map at render time and emits a download
+		// link per entry. The data is already in BES; this just persists
+		// it so the UI can query the URIs after the event is consumed.
+		field.JSON("test_action_outputs", map[string]any{}).Optional(),
 	}
 }
 

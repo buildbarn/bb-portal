@@ -745,6 +745,16 @@ func TimingBreakdownNotNil() predicate.TestResult {
 	return predicate.TestResult(sql.FieldNotNull(FieldTimingBreakdown))
 }
 
+// TestActionOutputsIsNil applies the IsNil predicate on the "test_action_outputs" field.
+func TestActionOutputsIsNil() predicate.TestResult {
+	return predicate.TestResult(sql.FieldIsNull(FieldTestActionOutputs))
+}
+
+// TestActionOutputsNotNil applies the NotNil predicate on the "test_action_outputs" field.
+func TestActionOutputsNotNil() predicate.TestResult {
+	return predicate.TestResult(sql.FieldNotNull(FieldTestActionOutputs))
+}
+
 // HasTestSummary applies the HasEdge predicate on the "test_summary" edge.
 func HasTestSummary() predicate.TestResult {
 	return predicate.TestResult(func(s *sql.Selector) {

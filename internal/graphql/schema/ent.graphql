@@ -3292,6 +3292,7 @@ type TestResult implements Node {
   exitCode: Int
   hostname: String
   timingBreakdown: Map
+  testActionOutputs: Map
   testSummary: TestSummary!
 }
 """

@@ -356,6 +356,7 @@ type TestResult struct {
 	ExitCode                sql.NullInt32
 	Hostname                sql.NullString
 	TimingBreakdown         pqtype.NullRawMessage
+	TestActionOutputs       pqtype.NullRawMessage
 	TestSummaryTestResults  int64
 }
 

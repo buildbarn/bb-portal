@@ -485,6 +485,7 @@ type ComplexityRoot struct {
 		Status                  func(childComplexity int) int
 		StatusDetails           func(childComplexity int) int
 		Strategy                func(childComplexity int) int
+		TestActionOutputs       func(childComplexity int) int
 		TestAttemptDurationInMs func(childComplexity int) int
 		TestAttemptStart        func(childComplexity int) int
 		TestSummary             func(childComplexity int) int
@@ -2663,6 +2664,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.TestResult.Strategy(childComplexity), true
+	case "TestResult.testActionOutputs":
+		if e.ComplexityRoot.TestResult.TestActionOutputs == nil {
+			break
+		}
+
+		return e.ComplexityRoot.TestResult.TestActionOutputs(childComplexity), true
 	case "TestResult.testAttemptDurationInMs":
 		if e.ComplexityRoot.TestResult.TestAttemptDurationInMs == nil {
 			break
@@ -3737,6 +3744,8 @@ func (ec *executionContext) childFields_TestResult(ctx context.Context, field gr
 		return ec.fieldContext_TestResult_hostname(ctx, field)
 	case "timingBreakdown":
 		return ec.fieldContext_TestResult_timingBreakdown(ctx, field)
+	case "testActionOutputs":
+		return ec.fieldContext_TestResult_testActionOutputs(ctx, field)
 	case "testSummary":
 		return ec.fieldContext_TestResult_testSummary(ctx, field)
 	}
@@ -11882,6 +11891,29 @@ func (ec *executionContext) _TestResult_timingBreakdown(ctx context.Context, fie
 	)
 }
 func (ec *executionContext) fieldContext_TestResult_timingBreakdown(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("TestResult", field, false, false, errors.New("field of type Map does not have child fields"))
+}
+
+func (ec *executionContext) _TestResult_testActionOutputs(ctx context.Context, field graphql.CollectedField, obj *ent.TestResult) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_TestResult_testActionOutputs(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TestActionOutputs, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v map[string]any) graphql.Marshaler {
+			return ec.marshalOMap2map(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_TestResult_testActionOutputs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	return graphql.NewScalarFieldContext("TestResult", field, false, false, errors.New("field of type Map does not have child fields"))
 }
 
@@ -34096,6 +34128,8 @@ func (ec *executionContext) _TestResult(ctx context.Context, sel ast.SelectionSe
 			out.Values[i] = ec._TestResult_hostname(ctx, field, obj)
 		case "timingBreakdown":
 			out.Values[i] = ec._TestResult_timingBreakdown(ctx, field, obj)
+		case "testActionOutputs":
+			out.Values[i] = ec._TestResult_testActionOutputs(ctx, field, obj)
 		case "testSummary":
 			field := field
 
