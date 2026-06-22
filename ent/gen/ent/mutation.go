@@ -25576,6 +25576,7 @@ type TestResultMutation struct {
 	addexit_code                   *int32
 	hostname                       *string
 	timing_breakdown               *map[string]interface{}
+	test_action_outputs            *map[string]interface{}
 	clearedFields                  map[string]struct{}
 	test_summary                   *int64
 	clearedtest_summary            bool
@@ -26453,6 +26454,55 @@ func (m *TestResultMutation) ResetTimingBreakdown() {
 	delete(m.clearedFields, testresult.FieldTimingBreakdown)
 }
 
+// SetTestActionOutputs sets the "test_action_outputs" field.
+func (m *TestResultMutation) SetTestActionOutputs(value map[string]interface{}) {
+	m.test_action_outputs = &value
+}
+
+// TestActionOutputs returns the value of the "test_action_outputs" field in the mutation.
+func (m *TestResultMutation) TestActionOutputs() (r map[string]interface{}, exists bool) {
+	v := m.test_action_outputs
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTestActionOutputs returns the old "test_action_outputs" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestResultMutation) OldTestActionOutputs(ctx context.Context) (v map[string]interface{}, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTestActionOutputs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTestActionOutputs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTestActionOutputs: %w", err)
+	}
+	return oldValue.TestActionOutputs, nil
+}
+
+// ClearTestActionOutputs clears the value of the "test_action_outputs" field.
+func (m *TestResultMutation) ClearTestActionOutputs() {
+	m.test_action_outputs = nil
+	m.clearedFields[testresult.FieldTestActionOutputs] = struct{}{}
+}
+
+// TestActionOutputsCleared returns if the "test_action_outputs" field was cleared in this mutation.
+func (m *TestResultMutation) TestActionOutputsCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldTestActionOutputs]
+	return ok
+}
+
+// ResetTestActionOutputs resets all changes to the "test_action_outputs" field.
+func (m *TestResultMutation) ResetTestActionOutputs() {
+	m.test_action_outputs = nil
+	delete(m.clearedFields, testresult.FieldTestActionOutputs)
+}
+
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by id.
 func (m *TestResultMutation) SetTestSummaryID(id int64) {
 	m.test_summary = &id
@@ -26526,7 +26576,7 @@ func (m *TestResultMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TestResultMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.run != nil {
 		fields = append(fields, testresult.FieldRun)
 	}
@@ -26569,6 +26619,9 @@ func (m *TestResultMutation) Fields() []string {
 	if m.timing_breakdown != nil {
 		fields = append(fields, testresult.FieldTimingBreakdown)
 	}
+	if m.test_action_outputs != nil {
+		fields = append(fields, testresult.FieldTestActionOutputs)
+	}
 	return fields
 }
 
@@ -26605,6 +26658,8 @@ func (m *TestResultMutation) Field(name string) (ent.Value, bool) {
 		return m.Hostname()
 	case testresult.FieldTimingBreakdown:
 		return m.TimingBreakdown()
+	case testresult.FieldTestActionOutputs:
+		return m.TestActionOutputs()
 	}
 	return nil, false
 }
@@ -26642,6 +26697,8 @@ func (m *TestResultMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldHostname(ctx)
 	case testresult.FieldTimingBreakdown:
 		return m.OldTimingBreakdown(ctx)
+	case testresult.FieldTestActionOutputs:
+		return m.OldTestActionOutputs(ctx)
 	}
 	return nil, fmt.Errorf("unknown TestResult field %s", name)
 }
@@ -26748,6 +26805,13 @@ func (m *TestResultMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTimingBreakdown(v)
+		return nil
+	case testresult.FieldTestActionOutputs:
+		v, ok := value.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTestActionOutputs(v)
 		return nil
 	}
 	return fmt.Errorf("unknown TestResult field %s", name)
@@ -26875,6 +26939,9 @@ func (m *TestResultMutation) ClearedFields() []string {
 	if m.FieldCleared(testresult.FieldTimingBreakdown) {
 		fields = append(fields, testresult.FieldTimingBreakdown)
 	}
+	if m.FieldCleared(testresult.FieldTestActionOutputs) {
+		fields = append(fields, testresult.FieldTestActionOutputs)
+	}
 	return fields
 }
 
@@ -26921,6 +26988,9 @@ func (m *TestResultMutation) ClearField(name string) error {
 		return nil
 	case testresult.FieldTimingBreakdown:
 		m.ClearTimingBreakdown()
+		return nil
+	case testresult.FieldTestActionOutputs:
+		m.ClearTestActionOutputs()
 		return nil
 	}
 	return fmt.Errorf("unknown TestResult nullable field %s", name)
@@ -26971,6 +27041,9 @@ func (m *TestResultMutation) ResetField(name string) error {
 		return nil
 	case testresult.FieldTimingBreakdown:
 		m.ResetTimingBreakdown()
+		return nil
+	case testresult.FieldTestActionOutputs:
+		m.ResetTestActionOutputs()
 		return nil
 	}
 	return fmt.Errorf("unknown TestResult field %s", name)

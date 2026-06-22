@@ -14,7 +14,8 @@ INSERT INTO test_results (
     cached_remotely,
     exit_code,
     hostname,
-    timing_breakdown
+    timing_breakdown,
+    test_action_outputs
 )
 SELECT
     ts.id,
@@ -31,7 +32,8 @@ SELECT
     resolved_inputs.cached_remotely,
     resolved_inputs.exit_code,
     resolved_inputs.hostname,
-    resolved_inputs.timing_breakdown::jsonb
+    resolved_inputs.timing_breakdown::jsonb,
+    resolved_inputs.test_action_outputs::jsonb
 FROM (
     -- STAGE 1: Resolve Target IDs immediately using the Index
     -- We join the massive input arrays against the Targets table first.
@@ -51,7 +53,8 @@ FROM (
         input.cached_remotely,
         input.exit_code,
         input.hostname,
-        input.timing_breakdown
+        input.timing_breakdown,
+        input.test_action_outputs
     FROM (
         SELECT
             sqlc.arg(instance_name_id)::bigint as instance_name_id,
@@ -70,7 +73,8 @@ FROM (
             unnest(sqlc.arg(cached_remotelys)::boolean[]) AS cached_remotely,
             unnest(sqlc.arg(exit_codes)::integer[]) AS exit_code,
             unnest(sqlc.arg(hostnames)::text[]) AS hostname,
-            unnest(sqlc.arg(timing_breakdowns)::text[]) AS timing_breakdown
+            unnest(sqlc.arg(timing_breakdowns)::text[]) AS timing_breakdown,
+            unnest(sqlc.arg(test_action_outputss)::text[]) AS test_action_outputs
     ) AS input
     JOIN targets t
         ON t.instance_name_targets = input.instance_name_id

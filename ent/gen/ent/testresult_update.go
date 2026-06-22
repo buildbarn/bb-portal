@@ -254,6 +254,18 @@ func (_u *TestResultUpdate) ClearTimingBreakdown() *TestResultUpdate {
 	return _u
 }
 
+// SetTestActionOutputs sets the "test_action_outputs" field.
+func (_u *TestResultUpdate) SetTestActionOutputs(v map[string]interface{}) *TestResultUpdate {
+	_u.mutation.SetTestActionOutputs(v)
+	return _u
+}
+
+// ClearTestActionOutputs clears the value of the "test_action_outputs" field.
+func (_u *TestResultUpdate) ClearTestActionOutputs() *TestResultUpdate {
+	_u.mutation.ClearTestActionOutputs()
+	return _u
+}
+
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
 func (_u *TestResultUpdate) SetTestSummaryID(id int64) *TestResultUpdate {
 	_u.mutation.SetTestSummaryID(id)
@@ -399,6 +411,12 @@ func (_u *TestResultUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	}
 	if _u.mutation.TimingBreakdownCleared() {
 		_spec.ClearField(testresult.FieldTimingBreakdown, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.TestActionOutputs(); ok {
+		_spec.SetField(testresult.FieldTestActionOutputs, field.TypeJSON, value)
+	}
+	if _u.mutation.TestActionOutputsCleared() {
+		_spec.ClearField(testresult.FieldTestActionOutputs, field.TypeJSON)
 	}
 	if _u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -673,6 +691,18 @@ func (_u *TestResultUpdateOne) ClearTimingBreakdown() *TestResultUpdateOne {
 	return _u
 }
 
+// SetTestActionOutputs sets the "test_action_outputs" field.
+func (_u *TestResultUpdateOne) SetTestActionOutputs(v map[string]interface{}) *TestResultUpdateOne {
+	_u.mutation.SetTestActionOutputs(v)
+	return _u
+}
+
+// ClearTestActionOutputs clears the value of the "test_action_outputs" field.
+func (_u *TestResultUpdateOne) ClearTestActionOutputs() *TestResultUpdateOne {
+	_u.mutation.ClearTestActionOutputs()
+	return _u
+}
+
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
 func (_u *TestResultUpdateOne) SetTestSummaryID(id int64) *TestResultUpdateOne {
 	_u.mutation.SetTestSummaryID(id)
@@ -848,6 +878,12 @@ func (_u *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult, 
 	}
 	if _u.mutation.TimingBreakdownCleared() {
 		_spec.ClearField(testresult.FieldTimingBreakdown, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.TestActionOutputs(); ok {
+		_spec.SetField(testresult.FieldTestActionOutputs, field.TypeJSON, value)
+	}
+	if _u.mutation.TestActionOutputsCleared() {
+		_spec.ClearField(testresult.FieldTestActionOutputs, field.TypeJSON)
 	}
 	if _u.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -3525,6 +3525,11 @@ func (_q *TestResultQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				selectedFields = append(selectedFields, testresult.FieldTimingBreakdown)
 				fieldSeen[testresult.FieldTimingBreakdown] = struct{}{}
 			}
+		case "testActionOutputs":
+			if _, ok := fieldSeen[testresult.FieldTestActionOutputs]; !ok {
+				selectedFields = append(selectedFields, testresult.FieldTestActionOutputs)
+				fieldSeen[testresult.FieldTestActionOutputs] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

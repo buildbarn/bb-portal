@@ -179,6 +179,12 @@ func (_c *TestResultCreate) SetTimingBreakdown(v map[string]interface{}) *TestRe
 	return _c
 }
 
+// SetTestActionOutputs sets the "test_action_outputs" field.
+func (_c *TestResultCreate) SetTestActionOutputs(v map[string]interface{}) *TestResultCreate {
+	_c.mutation.SetTestActionOutputs(v)
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *TestResultCreate) SetID(v int64) *TestResultCreate {
 	_c.mutation.SetID(v)
@@ -330,6 +336,10 @@ func (_c *TestResultCreate) createSpec() (*TestResult, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.TimingBreakdown(); ok {
 		_spec.SetField(testresult.FieldTimingBreakdown, field.TypeJSON, value)
 		_node.TimingBreakdown = value
+	}
+	if value, ok := _c.mutation.TestActionOutputs(); ok {
+		_spec.SetField(testresult.FieldTestActionOutputs, field.TypeJSON, value)
+		_node.TestActionOutputs = value
 	}
 	if nodes := _c.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -607,6 +617,24 @@ func (u *TestResultUpsert) UpdateTimingBreakdown() *TestResultUpsert {
 // ClearTimingBreakdown clears the value of the "timing_breakdown" field.
 func (u *TestResultUpsert) ClearTimingBreakdown() *TestResultUpsert {
 	u.SetNull(testresult.FieldTimingBreakdown)
+	return u
+}
+
+// SetTestActionOutputs sets the "test_action_outputs" field.
+func (u *TestResultUpsert) SetTestActionOutputs(v map[string]interface{}) *TestResultUpsert {
+	u.Set(testresult.FieldTestActionOutputs, v)
+	return u
+}
+
+// UpdateTestActionOutputs sets the "test_action_outputs" field to the value that was provided on create.
+func (u *TestResultUpsert) UpdateTestActionOutputs() *TestResultUpsert {
+	u.SetExcluded(testresult.FieldTestActionOutputs)
+	return u
+}
+
+// ClearTestActionOutputs clears the value of the "test_action_outputs" field.
+func (u *TestResultUpsert) ClearTestActionOutputs() *TestResultUpsert {
+	u.SetNull(testresult.FieldTestActionOutputs)
 	return u
 }
 
@@ -909,6 +937,27 @@ func (u *TestResultUpsertOne) UpdateTimingBreakdown() *TestResultUpsertOne {
 func (u *TestResultUpsertOne) ClearTimingBreakdown() *TestResultUpsertOne {
 	return u.Update(func(s *TestResultUpsert) {
 		s.ClearTimingBreakdown()
+	})
+}
+
+// SetTestActionOutputs sets the "test_action_outputs" field.
+func (u *TestResultUpsertOne) SetTestActionOutputs(v map[string]interface{}) *TestResultUpsertOne {
+	return u.Update(func(s *TestResultUpsert) {
+		s.SetTestActionOutputs(v)
+	})
+}
+
+// UpdateTestActionOutputs sets the "test_action_outputs" field to the value that was provided on create.
+func (u *TestResultUpsertOne) UpdateTestActionOutputs() *TestResultUpsertOne {
+	return u.Update(func(s *TestResultUpsert) {
+		s.UpdateTestActionOutputs()
+	})
+}
+
+// ClearTestActionOutputs clears the value of the "test_action_outputs" field.
+func (u *TestResultUpsertOne) ClearTestActionOutputs() *TestResultUpsertOne {
+	return u.Update(func(s *TestResultUpsert) {
+		s.ClearTestActionOutputs()
 	})
 }
 
@@ -1376,6 +1425,27 @@ func (u *TestResultUpsertBulk) UpdateTimingBreakdown() *TestResultUpsertBulk {
 func (u *TestResultUpsertBulk) ClearTimingBreakdown() *TestResultUpsertBulk {
 	return u.Update(func(s *TestResultUpsert) {
 		s.ClearTimingBreakdown()
+	})
+}
+
+// SetTestActionOutputs sets the "test_action_outputs" field.
+func (u *TestResultUpsertBulk) SetTestActionOutputs(v map[string]interface{}) *TestResultUpsertBulk {
+	return u.Update(func(s *TestResultUpsert) {
+		s.SetTestActionOutputs(v)
+	})
+}
+
+// UpdateTestActionOutputs sets the "test_action_outputs" field to the value that was provided on create.
+func (u *TestResultUpsertBulk) UpdateTestActionOutputs() *TestResultUpsertBulk {
+	return u.Update(func(s *TestResultUpsert) {
+		s.UpdateTestActionOutputs()
+	})
+}
+
+// ClearTestActionOutputs clears the value of the "test_action_outputs" field.
+func (u *TestResultUpsertBulk) ClearTestActionOutputs() *TestResultUpsertBulk {
+	return u.Update(func(s *TestResultUpsert) {
+		s.ClearTestActionOutputs()
 	})
 }
 

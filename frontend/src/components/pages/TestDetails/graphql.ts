@@ -35,6 +35,7 @@ export const GET_TEST_DETAILS = gql(/* GraphQL */ `
           testResults {
             cachedLocally
             cachedRemotely
+            testActionOutputs
           }
           invocationTarget {
             bazelInvocation {
