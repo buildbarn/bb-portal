@@ -1,3 +1,4 @@
+import { Navigate } from "@tanstack/react-router";
 import { Space, Typography } from "antd";
 import Uploader from "@/components/Uploader";
 import { env } from "@/utils/env";
@@ -41,12 +42,25 @@ const BepFileUploader: React.FC = () => {
     </Space>
   );
 };
+const BESdisabled = () => {
+  if (env.featureFlags?.browser) {
+    return <Navigate to="/browser" />;
+  }
+
+  if (env.featureFlags?.scheduler) {
+    return <Navigate to="/scheduler" />;
+  }
+
+  return <Navigate to="/operations" />;
+};
 
 export function HomePage() {
   return (
     <Space direction="vertical" size="large" className={styles.container}>
       {!!env.featureFlags?.home?.fileUpload && <BepFileUploader />}
       {!!env.featureFlags?.home?.instructions && <BuildInstructions />}
+      {!env.featureFlags?.home?.fileUpload &&
+        !env.featureFlags?.home?.instructions && <BESdisabled />}
     </Space>
   );
 }
