@@ -85,8 +85,6 @@ vite_build(
         "vite.config.ts",
         ":node_modules",
     ],
-    # Run inside this directory, relative to the exec dir.
-    chdir = package_name(),
     visibility = ["//visibility:public"],
     vite_binary = ":vite_binary",
 )
