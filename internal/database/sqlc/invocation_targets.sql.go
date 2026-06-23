@@ -80,3 +80,43 @@ func (q *Queries) CreateInvocationTargetsBulk(ctx context.Context, arg CreateInv
 	)
 	return err
 }
+
+const getInvocationTargetIDsForBatch = `-- name: GetInvocationTargetIDsForBatch :many
+SELECT id, target_invocation_targets AS target_id
+FROM invocation_targets
+WHERE bazel_invocation_invocation_targets = $1
+  AND target_invocation_targets = ANY($2::bigint[])
+`
+
+type GetInvocationTargetIDsForBatchParams struct {
+	BazelInvocationID int64
+	TargetIds         []int64
+}
+
+type GetInvocationTargetIDsForBatchRow struct {
+	ID       int64
+	TargetID int64
+}
+
+func (q *Queries) GetInvocationTargetIDsForBatch(ctx context.Context, arg GetInvocationTargetIDsForBatchParams) ([]GetInvocationTargetIDsForBatchRow, error) {
+	rows, err := q.db.QueryContext(ctx, getInvocationTargetIDsForBatch, arg.BazelInvocationID, pq.Array(arg.TargetIds))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetInvocationTargetIDsForBatchRow
+	for rows.Next() {
+		var i GetInvocationTargetIDsForBatchRow
+		if err := rows.Scan(&i.ID, &i.TargetID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

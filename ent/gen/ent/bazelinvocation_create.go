@@ -19,8 +19,10 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -458,6 +460,21 @@ func (_c *BazelInvocationCreate) AddBuildLogChunks(v ...*BuildLogChunk) *BazelIn
 	return _c.AddBuildLogChunkIDs(ids...)
 }
 
+// AddIncompleteArtifactGraphIDs adds the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity by IDs.
+func (_c *BazelInvocationCreate) AddIncompleteArtifactGraphIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddIncompleteArtifactGraphIDs(ids...)
+	return _c
+}
+
+// AddIncompleteArtifactGraphs adds the "incomplete_artifact_graphs" edges to the IncompleteArtifactGraph entity.
+func (_c *BazelInvocationCreate) AddIncompleteArtifactGraphs(v ...*IncompleteArtifactGraph) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddIncompleteArtifactGraphIDs(ids...)
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
 func (_c *BazelInvocationCreate) AddInvocationFileIDs(ids ...int64) *BazelInvocationCreate {
 	_c.mutation.AddInvocationFileIDs(ids...)
@@ -516,6 +533,25 @@ func (_c *BazelInvocationCreate) AddSourceControl(v ...*SourceControl) *BazelInv
 		ids[i] = v[i].ID
 	}
 	return _c.AddSourceControlIDs(ids...)
+}
+
+// SetArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID.
+func (_c *BazelInvocationCreate) SetArtifactGraphID(id int64) *BazelInvocationCreate {
+	_c.mutation.SetArtifactGraphID(id)
+	return _c
+}
+
+// SetNillableArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID if the given value is not nil.
+func (_c *BazelInvocationCreate) SetNillableArtifactGraphID(id *int64) *BazelInvocationCreate {
+	if id != nil {
+		_c = _c.SetArtifactGraphID(*id)
+	}
+	return _c
+}
+
+// SetArtifactGraph sets the "artifact_graph" edge to the InvocationArtifactGraph entity.
+func (_c *BazelInvocationCreate) SetArtifactGraph(v *InvocationArtifactGraph) *BazelInvocationCreate {
+	return _c.SetArtifactGraphID(v.ID)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -896,6 +932,22 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := _c.mutation.IncompleteArtifactGraphsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := _c.mutation.InvocationFilesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -953,6 +1005,22 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ArtifactGraphIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.ArtifactGraphTable,
+			Columns: []string{bazelinvocation.ArtifactGraphColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

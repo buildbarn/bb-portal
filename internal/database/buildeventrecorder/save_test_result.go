@@ -30,6 +30,8 @@ func (r *buildEventRecorder) saveTestResultBatch(ctx context.Context, batch []Bu
 		return nil
 	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget:
 		// Continue processing.
+	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTargetAndArtifacts:
+		// Continue processing.
 	default:
 		return status.Error(codes.Internal, "Attempted to save target completed events when `saveDataLevel` is not recognized. This is probably a bug.")
 	}

@@ -3,6 +3,13 @@ import { Space } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import React from "react";
 import {
+  buildSetIndex,
+  type NamedSetNode,
+  type OutputGroupNode,
+} from "@/components/Artifacts/graph";
+import { ARTIFACT_GRAPH_QUERY } from "@/components/Artifacts/index.graphql";
+import TargetArtifactFiles from "@/components/Artifacts/TargetArtifactFiles";
+import {
   CursorTable,
   getNewPaginationVariables,
 } from "@/components/CursorTable";
@@ -19,6 +26,11 @@ import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import { InvocationTargetsMetrics } from "../InvocationTargetsMetrics";
 import { columns, type InvocationTargetsTableRowType } from "./Columns";
 import { GET_INVOCATION_TARGETS_FOR_INVOCATION } from "./graphql";
+
+// targetKey identifies an artifact-graph target by label + aspect so it
+// can be matched to an invocation-target row.
+const targetKey = (label: string, aspect: string | null | undefined): string =>
+  `${label} ${aspect ?? ""}`;
 
 interface Props {
   invocationId: string;
@@ -47,6 +59,33 @@ export const InvocationTargetsTable: React.FC<Props> = ({
         notifyOnNetworkStatusChange: true,
       },
     );
+
+  // The per-file artifact graph (only populated when the invocation was
+  // recorded at the basic_and_target_and_artifacts save level). It is
+  // matched to target rows by label + aspect and rendered inline in the
+  // expandable row.
+  const { data: artifactData } = useQuery(ARTIFACT_GRAPH_QUERY, {
+    variables: { id: invocationId },
+    fetchPolicy: "cache-first",
+  });
+
+  const { sets, outputGroupsByTarget } = React.useMemo(() => {
+    const graph = artifactData?.getBazelInvocation?.artifactGraph;
+    const setIndex = buildSetIndex(
+      (graph?.namedSets ?? []).map(
+        (s): NamedSetNode => ({
+          id: s.id,
+          childSetIds: s.childSetIds,
+          files: s.files,
+        }),
+      ),
+    );
+    const byTarget = new Map<string, OutputGroupNode[]>();
+    for (const t of graph?.targets ?? []) {
+      byTarget.set(targetKey(t.label, t.aspect), t.outputGroups);
+    }
+    return { sets: setIndex, outputGroupsByTarget: byTarget };
+  }, [artifactData]);
 
   const onFilterChange = (filters: Record<string, FilterValue | null>) => {
     const newFilters: InvocationTargetWhereInput[] = [];
@@ -121,20 +160,48 @@ export const InvocationTargetsTable: React.FC<Props> = ({
         loading={loading}
         dataSource={invocationTargets}
         expandable={{
-          rowExpandable: (record) =>
-            record.failureMessage !== null &&
-            record.failureMessage !== undefined &&
-            record.failureMessage !== "",
-          expandedRowRender: (record) => (
-            <Space direction="vertical" style={{ paddingLeft: "48px" }}>
-              <strong>Failure Message:</strong>
-              <pre
-                style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}
+          rowExpandable: (record) => {
+            const hasFailure =
+              record.failureMessage !== null &&
+              record.failureMessage !== undefined &&
+              record.failureMessage !== "";
+            const hasArtifacts = outputGroupsByTarget.has(
+              targetKey(record.target.label, record.target.aspect),
+            );
+            return hasFailure || hasArtifacts;
+          },
+          expandedRowRender: (record) => {
+            const hasFailure =
+              record.failureMessage !== null &&
+              record.failureMessage !== undefined &&
+              record.failureMessage !== "";
+            const groups = outputGroupsByTarget.get(
+              targetKey(record.target.label, record.target.aspect),
+            );
+            return (
+              <Space
+                direction="vertical"
+                style={{ paddingLeft: "48px", display: "flex" }}
               >
-                {record.failureMessage}
-              </pre>
-            </Space>
-          ),
+                {hasFailure && (
+                  <>
+                    <strong>Failure Message:</strong>
+                    <pre
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        overflowWrap: "break-word",
+                      }}
+                    >
+                      {record.failureMessage}
+                    </pre>
+                  </>
+                )}
+                {groups && groups.length > 0 && (
+                  <TargetArtifactFiles sets={sets} outputGroups={groups} />
+                )}
+              </Space>
+            );
+          },
         }}
         showSorterTooltip={{ target: "sorter-icon" }}
         onChange={(_pagination, filters, _sorter, _extra) =>

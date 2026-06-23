@@ -567,6 +567,39 @@ var (
 			},
 		},
 	}
+	// IncompleteArtifactGraphsColumns holds the columns for the "incomplete_artifact_graphs" table.
+	IncompleteArtifactGraphsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "seq_id", Type: field.TypeInt32},
+		{Name: "event", Type: field.TypeBytes},
+		{Name: "bazel_invocation_id", Type: field.TypeInt64},
+	}
+	// IncompleteArtifactGraphsTable holds the schema information for the "incomplete_artifact_graphs" table.
+	IncompleteArtifactGraphsTable = &schema.Table{
+		Name:       "incomplete_artifact_graphs",
+		Columns:    IncompleteArtifactGraphsColumns,
+		PrimaryKey: []*schema.Column{IncompleteArtifactGraphsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "incomplete_artifact_graphs_bazel_invocations_incomplete_artifact_graphs",
+				Columns:    []*schema.Column{IncompleteArtifactGraphsColumns[3]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "incompleteartifactgraph_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{IncompleteArtifactGraphsColumns[3]},
+			},
+			{
+				Name:    "incompleteartifactgraph_seq_id_bazel_invocation_id",
+				Unique:  true,
+				Columns: []*schema.Column{IncompleteArtifactGraphsColumns[1], IncompleteArtifactGraphsColumns[3]},
+			},
+		},
+	}
 	// IncompleteBuildLogsColumns holds the columns for the "incomplete_build_logs" table.
 	IncompleteBuildLogsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -610,6 +643,33 @@ var (
 		Name:       "instance_names",
 		Columns:    InstanceNamesColumns,
 		PrimaryKey: []*schema.Column{InstanceNamesColumns[0]},
+	}
+	// InvocationArtifactGraphsColumns holds the columns for the "invocation_artifact_graphs" table.
+	InvocationArtifactGraphsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "payload", Type: field.TypeBytes},
+		{Name: "bazel_invocation_id", Type: field.TypeInt64, Unique: true},
+	}
+	// InvocationArtifactGraphsTable holds the schema information for the "invocation_artifact_graphs" table.
+	InvocationArtifactGraphsTable = &schema.Table{
+		Name:       "invocation_artifact_graphs",
+		Columns:    InvocationArtifactGraphsColumns,
+		PrimaryKey: []*schema.Column{InvocationArtifactGraphsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "invocation_artifact_graphs_bazel_invocations_artifact_graph",
+				Columns:    []*schema.Column{InvocationArtifactGraphsColumns[2]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "invocationartifactgraph_bazel_invocation_id",
+				Unique:  true,
+				Columns: []*schema.Column{InvocationArtifactGraphsColumns[2]},
+			},
+		},
 	}
 	// InvocationFilesColumns holds the columns for the "invocation_files" table.
 	InvocationFilesColumns = []*schema.Column{
@@ -1205,8 +1265,10 @@ var (
 		ConnectionMetadataTable,
 		EventMetadataTable,
 		GarbageMetricsTable,
+		IncompleteArtifactGraphsTable,
 		IncompleteBuildLogsTable,
 		InstanceNamesTable,
+		InvocationArtifactGraphsTable,
 		InvocationFilesTable,
 		InvocationTagsTable,
 		InvocationTargetsTable,
@@ -1245,7 +1307,9 @@ func init() {
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
+	IncompleteArtifactGraphsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	InvocationArtifactGraphsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationFilesTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationTagsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationTargetsTable.ForeignKeys[0].RefTable = BazelInvocationsTable

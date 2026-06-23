@@ -471,6 +471,30 @@ func (f GarbageMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.GarbageMetricsMutation", m)
 }
 
+// The IncompleteArtifactGraphQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type IncompleteArtifactGraphQueryRuleFunc func(context.Context, *ent.IncompleteArtifactGraphQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f IncompleteArtifactGraphQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.IncompleteArtifactGraphQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.IncompleteArtifactGraphQuery", q)
+}
+
+// The IncompleteArtifactGraphMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type IncompleteArtifactGraphMutationRuleFunc func(context.Context, *ent.IncompleteArtifactGraphMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f IncompleteArtifactGraphMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.IncompleteArtifactGraphMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.IncompleteArtifactGraphMutation", m)
+}
+
 // The IncompleteBuildLogQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type IncompleteBuildLogQueryRuleFunc func(context.Context, *ent.IncompleteBuildLogQuery) error
@@ -517,6 +541,30 @@ func (f InstanceNameMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mu
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.InstanceNameMutation", m)
+}
+
+// The InvocationArtifactGraphQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type InvocationArtifactGraphQueryRuleFunc func(context.Context, *ent.InvocationArtifactGraphQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f InvocationArtifactGraphQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.InvocationArtifactGraphQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.InvocationArtifactGraphQuery", q)
+}
+
+// The InvocationArtifactGraphMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type InvocationArtifactGraphMutationRuleFunc func(context.Context, *ent.InvocationArtifactGraphMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f InvocationArtifactGraphMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.InvocationArtifactGraphMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.InvocationArtifactGraphMutation", m)
 }
 
 // The InvocationFilesQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -992,9 +1040,13 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.GarbageMetricsQuery:
 		return q.Filter(), nil
+	case *ent.IncompleteArtifactGraphQuery:
+		return q.Filter(), nil
 	case *ent.IncompleteBuildLogQuery:
 		return q.Filter(), nil
 	case *ent.InstanceNameQuery:
+		return q.Filter(), nil
+	case *ent.InvocationArtifactGraphQuery:
 		return q.Filter(), nil
 	case *ent.InvocationFilesQuery:
 		return q.Filter(), nil
@@ -1067,9 +1119,13 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.GarbageMetricsMutation:
 		return m.Filter(), nil
+	case *ent.IncompleteArtifactGraphMutation:
+		return m.Filter(), nil
 	case *ent.IncompleteBuildLogMutation:
 		return m.Filter(), nil
 	case *ent.InstanceNameMutation:
+		return m.Filter(), nil
+	case *ent.InvocationArtifactGraphMutation:
 		return m.Filter(), nil
 	case *ent.InvocationFilesMutation:
 		return m.Filter(), nil

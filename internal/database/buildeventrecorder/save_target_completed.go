@@ -33,6 +33,8 @@ func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 		return nil
 	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget:
 		// Continue processing.
+	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTargetAndArtifacts:
+		// Continue processing.
 	default:
 		return status.Error(codes.Internal, "Attempted to save target completed events when `saveDataLevel` is not recognized. This is probably a bug.")
 	}
@@ -70,6 +72,10 @@ func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 
 	if err := createInvocationTargetsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, batch, targetInfoMap); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert invocation targets")
+	}
+
+	if err := r.insertIncompleteArtifactGraphEvents(ctx, tx, batch); err != nil {
+		return util.StatusWrap(err, "Failed to stage target completed events for artifact graph")
 	}
 
 	if err := r.createTestSummariesFromTargetCompletedChildren(ctx, tx, batch, targetInfoMap); err != nil {

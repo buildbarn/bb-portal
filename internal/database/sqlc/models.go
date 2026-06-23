@@ -181,6 +181,13 @@ type GarbageMetric struct {
 	MemoryMetricsGarbageMetrics sql.NullInt64
 }
 
+type IncompleteArtifactGraph struct {
+	ID                int64
+	SeqID             int32
+	Event             []byte
+	BazelInvocationID int64
+}
+
 type IncompleteBuildLog struct {
 	ID                int64
 	SnippetID         int32
@@ -191,6 +198,12 @@ type IncompleteBuildLog struct {
 type InstanceName struct {
 	ID   int64
 	Name string
+}
+
+type InvocationArtifactGraph struct {
+	ID                int64
+	Payload           []byte
+	BazelInvocationID int64
 }
 
 type InvocationFile struct {

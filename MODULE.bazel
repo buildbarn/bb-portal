@@ -120,6 +120,7 @@ use_repo(
     "com_github_bazelbuild_bazel_src_main_protobuf",
     "com_github_bazelbuild_buildtools",
     "com_github_fergusstrange_embedded_postgres",
+    "com_github_google_go_cmp",
     "com_github_google_uuid",
     "com_github_gorilla_mux",
     "com_github_hashicorp_go_multierror",

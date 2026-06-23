@@ -23,6 +23,9 @@ type Querier interface {
 	// if the invocation was created, `false` if
 	// the invocation already existed.
 	CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (CreateBazelInvocationRow, error)
+	// Bulk-insert serialized BuildEvents (NamedSetOfFiles / TargetCompleted)
+	// into the artifact-graph staging table as they stream in.
+	CreateIncompleteArtifactGraphs(ctx context.Context, arg CreateIncompleteArtifactGraphsParams) error
 	CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncompleteBuildLogsParams) error
 	//
 	// An idempotent function for creating an instance name. If the instance
@@ -42,14 +45,33 @@ type Querier interface {
 	// STAGE 2: Join the rest using the specific Target IDs we found
 	CreateTestSummariesBulk(ctx context.Context, arg CreateTestSummariesBulkParams) (int64, error)
 	CreateTestTargetsBulk(ctx context.Context, targetIds []int64) error
+	// Delete staged events for invocations whose graph has already been
+	// compacted into invocation_artifact_graphs. Paged via ctid so cleanup is
+	// spread across cleanup ticks via nextSlice(), mirroring
+	// DeleteIncompleteLogsFromPages.
+	DeleteIncompleteArtifactGraphsFromPages(ctx context.Context, arg DeleteIncompleteArtifactGraphsFromPagesParams) (int64, error)
 	DeleteIncompleteLogsFromPages(ctx context.Context, arg DeleteIncompleteLogsFromPagesParams) (int64, error)
+	// Delete artifact-graph rows whose owning invocation completed more than
+	// artifact_retention ago. Paged via ctid on the artifact graphs table —
+	// same pattern as DeleteOldInvocationsFromPages so cleanup is evenly
+	// spread across cleanup ticks via nextSlice().
+	DeleteOldInvocationArtifactGraphsFromPages(ctx context.Context, arg DeleteOldInvocationArtifactGraphsFromPagesParams) (int64, error)
 	DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error)
 	DeleteOrphanedTestTargetsFromPages(ctx context.Context, arg DeleteOrphanedTestTargetsFromPagesParams) (int64, error)
 	DeleteTargetKindMappingsFromPages(ctx context.Context, arg DeleteTargetKindMappingsFromPagesParams) (int64, error)
 	DeleteUnusedTargetsFromPages(ctx context.Context, arg DeleteUnusedTargetsFromPagesParams) (int64, error)
 	FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error)
 	FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error)
+	// Read all staged artifact-graph events for an invocation, in arrival
+	// order. Used both for compaction and for serving the graph in its
+	// partial state before compaction has run.
+	GetIncompleteArtifactGraphEvents(ctx context.Context, bazelInvocationID int64) ([][]byte, error)
+	GetInvocationArtifactGraph(ctx context.Context, bazelInvocationID int64) ([]byte, error)
+	GetInvocationTargetIDsForBatch(ctx context.Context, arg GetInvocationTargetIDsForBatchParams) ([]GetInvocationTargetIDsForBatchRow, error)
 	GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error)
+	// Insert (or replace) the compressed artifact graph for an invocation.
+	// Idempotent via the unique foreign key on bazel_invocation_id.
+	InsertInvocationArtifactGraph(ctx context.Context, arg InsertInvocationArtifactGraphParams) error
 	LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error)
 	LockStaleInvocationsFromPages(ctx context.Context, arg LockStaleInvocationsFromPagesParams) (int64, error)
 	SelectForeignKeysWithoutIndexes(ctx context.Context) ([]SelectForeignKeysWithoutIndexesRow, error)

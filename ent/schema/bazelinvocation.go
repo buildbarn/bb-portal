@@ -150,6 +150,14 @@ func (BazelInvocation) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
+		// Incomplete artifact-graph events (NamedSetOfFiles /
+		// TargetCompleted) accumulated during the build, before
+		// compaction into the artifact_graph blob.
+		edge.To("incomplete_artifact_graphs", IncompleteArtifactGraph.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
 		// Files for the Invocation
 		edge.To("invocation_files", InvocationFiles.Type).
 			Annotations(
@@ -170,6 +178,19 @@ func (BazelInvocation) Edges() []ent.Edge {
 
 		// Edge to source control information
 		edge.To("source_control", SourceControl.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Compressed BEP-graph blob written once at BuildFinished when
+		// save level is basic_and_target_and_artifacts. The server
+		// decompresses and decodes it on demand.
+		edge.To("artifact_graph", InvocationArtifactGraph.Type).
+			Unique().
+			// Name the foreign-key column on invocation_artifact_graphs
+			// explicitly rather than relying on ent's auto-generated
+			// "bazel_invocation_artifact_graph".
+			StorageKey(edge.Column("bazel_invocation_id")).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),

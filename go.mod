@@ -58,6 +58,8 @@ require (
 	mvdan.cc/gofumpt v0.10.0
 )
 
+require github.com/google/go-cmp v0.7.0
+
 require (
 	ariga.io/atlas v1.2.0 // indirect
 	cel.dev/expr v0.25.1 // indirect
@@ -117,7 +119,6 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-yaml v1.19.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-jsonnet v0.21.0 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.15 // indirect

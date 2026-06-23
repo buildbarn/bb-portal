@@ -1134,6 +1134,29 @@ func HasBuildLogChunksWith(preds ...predicate.BuildLogChunk) predicate.BazelInvo
 	})
 }
 
+// HasIncompleteArtifactGraphs applies the HasEdge predicate on the "incomplete_artifact_graphs" edge.
+func HasIncompleteArtifactGraphs() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, IncompleteArtifactGraphsTable, IncompleteArtifactGraphsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasIncompleteArtifactGraphsWith applies the HasEdge predicate on the "incomplete_artifact_graphs" edge with a given conditions (other predicates).
+func HasIncompleteArtifactGraphsWith(preds ...predicate.IncompleteArtifactGraph) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newIncompleteArtifactGraphsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasInvocationFiles applies the HasEdge predicate on the "invocation_files" edge.
 func HasInvocationFiles() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
@@ -1218,6 +1241,29 @@ func HasSourceControl() predicate.BazelInvocation {
 func HasSourceControlWith(preds ...predicate.SourceControl) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := newSourceControlStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasArtifactGraph applies the HasEdge predicate on the "artifact_graph" edge.
+func HasArtifactGraph() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, ArtifactGraphTable, ArtifactGraphColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasArtifactGraphWith applies the HasEdge predicate on the "artifact_graph" edge with a given conditions (other predicates).
+func HasArtifactGraphWith(preds ...predicate.InvocationArtifactGraph) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newArtifactGraphStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

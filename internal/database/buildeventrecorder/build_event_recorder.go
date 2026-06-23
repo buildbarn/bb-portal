@@ -79,6 +79,15 @@ type buildEventRecorder struct {
 	IsRealTime       bool
 }
 
+// artifactsEnabled reports whether the save level requests per-file
+// artifact data. When true, NamedSetOfFiles and TargetCompleted events are
+// persisted to the incomplete_artifact_graphs staging table as they
+// arrive, then compacted into a single blob after the build finishes.
+func (r *buildEventRecorder) artifactsEnabled() bool {
+	_, ok := r.saveDataLevel.GetLevel().(*bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTargetAndArtifacts)
+	return ok
+}
+
 type handledEvents struct {
 	bitmap  *roaring.Bitmap
 	version int64
@@ -144,7 +153,7 @@ func NewBuildEventRecorder(
 		return nil, util.StatusWrap(err, "Failed to commit transaction")
 	}
 
-	return &buildEventRecorder{
+	r := &buildEventRecorder{
 		db:             db,
 		saveDataLevel:  saveDataLevel,
 		tracer:         tracer,
@@ -156,7 +165,8 @@ func NewBuildEventRecorder(
 		InvocationID:     invocationID,
 		InvocationDbID:   invocationDbID,
 		IsRealTime:       isRealTime,
-	}, nil
+	}
+	return r, nil
 }
 
 // FindOrCreateAuthenticatedUser creates a user or

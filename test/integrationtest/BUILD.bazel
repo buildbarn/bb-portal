@@ -3,6 +3,7 @@ load("@rules_go//go:def.bzl", "go_test")
 go_test(
     name = "integrationtest_test",
     srcs = [
+        "artifact_graph_test.go",
         "integration_test.go",
         "types_test.go",
         "util_test.go",
@@ -25,6 +26,7 @@ go_test(
         "@com_github_buildbarn_bb_storage//pkg/digest",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
         "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_google_go_cmp//cmp",
         "@com_github_google_uuid//:uuid",
         "@com_github_machinebox_graphql//:graphql",
         "@com_github_stretchr_testify//assert",

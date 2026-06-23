@@ -18,8 +18,10 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -47,7 +49,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 34)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 36)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   action.Table,
@@ -342,6 +344,22 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[15] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
+			Table:   incompleteartifactgraph.Table,
+			Columns: incompleteartifactgraph.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: incompleteartifactgraph.FieldID,
+			},
+		},
+		Type: "IncompleteArtifactGraph",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			incompleteartifactgraph.FieldSeqID:             {Type: field.TypeInt32, Column: incompleteartifactgraph.FieldSeqID},
+			incompleteartifactgraph.FieldEvent:             {Type: field.TypeBytes, Column: incompleteartifactgraph.FieldEvent},
+			incompleteartifactgraph.FieldBazelInvocationID: {Type: field.TypeInt64, Column: incompleteartifactgraph.FieldBazelInvocationID},
+		},
+	}
+	graph.Nodes[16] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
 			Table:   incompletebuildlog.Table,
 			Columns: incompletebuildlog.Columns,
 			ID: &sqlgraph.FieldSpec{
@@ -356,7 +374,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			incompletebuildlog.FieldBazelInvocationID: {Type: field.TypeInt64, Column: incompletebuildlog.FieldBazelInvocationID},
 		},
 	}
-	graph.Nodes[16] = &sqlgraph.Node{
+	graph.Nodes[17] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   instancename.Table,
 			Columns: instancename.Columns,
@@ -370,7 +388,21 @@ var schemaGraph = func() *sqlgraph.Schema {
 			instancename.FieldName: {Type: field.TypeString, Column: instancename.FieldName},
 		},
 	}
-	graph.Nodes[17] = &sqlgraph.Node{
+	graph.Nodes[18] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   invocationartifactgraph.Table,
+			Columns: invocationartifactgraph.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: invocationartifactgraph.FieldID,
+			},
+		},
+		Type: "InvocationArtifactGraph",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			invocationartifactgraph.FieldPayload: {Type: field.TypeBytes, Column: invocationartifactgraph.FieldPayload},
+		},
+	}
+	graph.Nodes[19] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   invocationfiles.Table,
 			Columns: invocationfiles.Columns,
@@ -388,7 +420,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			invocationfiles.FieldDigestFunction: {Type: field.TypeString, Column: invocationfiles.FieldDigestFunction},
 		},
 	}
-	graph.Nodes[18] = &sqlgraph.Node{
+	graph.Nodes[20] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   invocationtag.Table,
 			Columns: invocationtag.Columns,
@@ -404,7 +436,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			invocationtag.FieldValue:             {Type: field.TypeString, Column: invocationtag.FieldValue},
 		},
 	}
-	graph.Nodes[19] = &sqlgraph.Node{
+	graph.Nodes[21] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   invocationtarget.Table,
 			Columns: invocationtarget.Columns,
@@ -424,7 +456,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			invocationtarget.FieldAbortReason:    {Type: field.TypeEnum, Column: invocationtarget.FieldAbortReason},
 		},
 	}
-	graph.Nodes[20] = &sqlgraph.Node{
+	graph.Nodes[22] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   memorymetrics.Table,
 			Columns: memorymetrics.Columns,
@@ -440,7 +472,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize: {Type: field.TypeInt64, Column: memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize},
 		},
 	}
-	graph.Nodes[21] = &sqlgraph.Node{
+	graph.Nodes[23] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   metrics.Table,
 			Columns: metrics.Columns,
@@ -452,7 +484,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Type:   "Metrics",
 		Fields: map[string]*sqlgraph.FieldSpec{},
 	}
-	graph.Nodes[22] = &sqlgraph.Node{
+	graph.Nodes[24] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   missdetail.Table,
 			Columns: missdetail.Columns,
@@ -467,7 +499,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			missdetail.FieldCount:  {Type: field.TypeInt32, Column: missdetail.FieldCount},
 		},
 	}
-	graph.Nodes[23] = &sqlgraph.Node{
+	graph.Nodes[25] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   networkmetrics.Table,
 			Columns: networkmetrics.Columns,
@@ -479,7 +511,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Type:   "NetworkMetrics",
 		Fields: map[string]*sqlgraph.FieldSpec{},
 	}
-	graph.Nodes[24] = &sqlgraph.Node{
+	graph.Nodes[26] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   runnercount.Table,
 			Columns: runnercount.Columns,
@@ -495,7 +527,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			runnercount.FieldActionsExecuted: {Type: field.TypeInt64, Column: runnercount.FieldActionsExecuted},
 		},
 	}
-	graph.Nodes[25] = &sqlgraph.Node{
+	graph.Nodes[27] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   sourcecontrol.Table,
 			Columns: sourcecontrol.Columns,
@@ -514,7 +546,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			sourcecontrol.FieldCommitURL: {Type: field.TypeString, Column: sourcecontrol.FieldCommitURL},
 		},
 	}
-	graph.Nodes[26] = &sqlgraph.Node{
+	graph.Nodes[28] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   systemnetworkstats.Table,
 			Columns: systemnetworkstats.Columns,
@@ -535,7 +567,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			systemnetworkstats.FieldPeakPacketsRecvPerSec: {Type: field.TypeUint64, Column: systemnetworkstats.FieldPeakPacketsRecvPerSec},
 		},
 	}
-	graph.Nodes[27] = &sqlgraph.Node{
+	graph.Nodes[29] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   target.Table,
 			Columns: target.Columns,
@@ -551,7 +583,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			target.FieldTargetKind: {Type: field.TypeString, Column: target.FieldTargetKind},
 		},
 	}
-	graph.Nodes[28] = &sqlgraph.Node{
+	graph.Nodes[30] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   targetkindmapping.Table,
 			Columns: targetkindmapping.Columns,
@@ -567,7 +599,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			targetkindmapping.FieldStartTimeInMs:     {Type: field.TypeInt64, Column: targetkindmapping.FieldStartTimeInMs},
 		},
 	}
-	graph.Nodes[29] = &sqlgraph.Node{
+	graph.Nodes[31] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   targetmetrics.Table,
 			Columns: targetmetrics.Columns,
@@ -583,7 +615,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			targetmetrics.FieldTargetsConfiguredNotIncludingAspects: {Type: field.TypeInt64, Column: targetmetrics.FieldTargetsConfiguredNotIncludingAspects},
 		},
 	}
-	graph.Nodes[30] = &sqlgraph.Node{
+	graph.Nodes[32] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   testresult.Table,
 			Columns: testresult.Columns,
@@ -610,7 +642,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			testresult.FieldTimingBreakdown:         {Type: field.TypeJSON, Column: testresult.FieldTimingBreakdown},
 		},
 	}
-	graph.Nodes[31] = &sqlgraph.Node{
+	graph.Nodes[33] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   testsummary.Table,
 			Columns: testsummary.Columns,
@@ -632,7 +664,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			testsummary.FieldTotalRunDurationInMs: {Type: field.TypeInt64, Column: testsummary.FieldTotalRunDurationInMs},
 		},
 	}
-	graph.Nodes[32] = &sqlgraph.Node{
+	graph.Nodes[34] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   testtarget.Table,
 			Columns: testtarget.Columns,
@@ -646,7 +678,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			testtarget.FieldTargetID: {Type: field.TypeInt64, Column: testtarget.FieldTargetID},
 		},
 	}
-	graph.Nodes[33] = &sqlgraph.Node{
+	graph.Nodes[35] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   timingmetrics.Table,
 			Columns: timingmetrics.Columns,
@@ -929,6 +961,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"BuildLogChunk",
 	)
 	graph.MustAddE(
+		"incomplete_artifact_graphs",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+		},
+		"BazelInvocation",
+		"IncompleteArtifactGraph",
+	)
+	graph.MustAddE(
 		"invocation_files",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -975,6 +1019,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"BazelInvocation",
 		"SourceControl",
+	)
+	graph.MustAddE(
+		"artifact_graph",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.ArtifactGraphTable,
+			Columns: []string{bazelinvocation.ArtifactGraphColumn},
+			Bidi:    false,
+		},
+		"BazelInvocation",
+		"InvocationArtifactGraph",
 	)
 	graph.MustAddE(
 		"instance_name",
@@ -1125,6 +1181,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
+			Table:   incompleteartifactgraph.BazelInvocationTable,
+			Columns: []string{incompleteartifactgraph.BazelInvocationColumn},
+			Bidi:    false,
+		},
+		"IncompleteArtifactGraph",
+		"BazelInvocation",
+	)
+	graph.MustAddE(
+		"bazel_invocation",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   incompletebuildlog.BazelInvocationTable,
 			Columns: []string{incompletebuildlog.BazelInvocationColumn},
 			Bidi:    false,
@@ -1167,6 +1235,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"InstanceName",
 		"Target",
+	)
+	graph.MustAddE(
+		"bazel_invocation",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   invocationartifactgraph.BazelInvocationTable,
+			Columns: []string{invocationartifactgraph.BazelInvocationColumn},
+			Bidi:    false,
+		},
+		"InvocationArtifactGraph",
+		"BazelInvocation",
 	)
 	graph.MustAddE(
 		"bazel_invocation",
@@ -2498,6 +2578,20 @@ func (f *BazelInvocationFilter) WhereHasBuildLogChunksWith(preds ...predicate.Bu
 	})))
 }
 
+// WhereHasIncompleteArtifactGraphs applies a predicate to check if query has an edge incomplete_artifact_graphs.
+func (f *BazelInvocationFilter) WhereHasIncompleteArtifactGraphs() {
+	f.Where(entql.HasEdge("incomplete_artifact_graphs"))
+}
+
+// WhereHasIncompleteArtifactGraphsWith applies a predicate to check if query has an edge incomplete_artifact_graphs with a given conditions (other predicates).
+func (f *BazelInvocationFilter) WhereHasIncompleteArtifactGraphsWith(preds ...predicate.IncompleteArtifactGraph) {
+	f.Where(entql.HasEdgeWith("incomplete_artifact_graphs", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
 // WhereHasInvocationFiles applies a predicate to check if query has an edge invocation_files.
 func (f *BazelInvocationFilter) WhereHasInvocationFiles() {
 	f.Where(entql.HasEdge("invocation_files"))
@@ -2548,6 +2642,20 @@ func (f *BazelInvocationFilter) WhereHasSourceControl() {
 // WhereHasSourceControlWith applies a predicate to check if query has an edge source_control with a given conditions (other predicates).
 func (f *BazelInvocationFilter) WhereHasSourceControlWith(preds ...predicate.SourceControl) {
 	f.Where(entql.HasEdgeWith("source_control", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasArtifactGraph applies a predicate to check if query has an edge artifact_graph.
+func (f *BazelInvocationFilter) WhereHasArtifactGraph() {
+	f.Where(entql.HasEdge("artifact_graph"))
+}
+
+// WhereHasArtifactGraphWith applies a predicate to check if query has an edge artifact_graph with a given conditions (other predicates).
+func (f *BazelInvocationFilter) WhereHasArtifactGraphWith(preds ...predicate.InvocationArtifactGraph) {
+	f.Where(entql.HasEdgeWith("artifact_graph", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -3203,6 +3311,75 @@ func (f *GarbageMetricsFilter) WhereHasMemoryMetricsWith(preds ...predicate.Memo
 }
 
 // addPredicate implements the predicateAdder interface.
+func (_q *IncompleteArtifactGraphQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the IncompleteArtifactGraphQuery builder.
+func (_q *IncompleteArtifactGraphQuery) Filter() *IncompleteArtifactGraphFilter {
+	return &IncompleteArtifactGraphFilter{config: _q.config, predicateAdder: _q}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *IncompleteArtifactGraphMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the IncompleteArtifactGraphMutation builder.
+func (m *IncompleteArtifactGraphMutation) Filter() *IncompleteArtifactGraphFilter {
+	return &IncompleteArtifactGraphFilter{config: m.config, predicateAdder: m}
+}
+
+// IncompleteArtifactGraphFilter provides a generic filtering capability at runtime for IncompleteArtifactGraphQuery.
+type IncompleteArtifactGraphFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *IncompleteArtifactGraphFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[15].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *IncompleteArtifactGraphFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(incompleteartifactgraph.FieldID))
+}
+
+// WhereSeqID applies the entql int32 predicate on the seq_id field.
+func (f *IncompleteArtifactGraphFilter) WhereSeqID(p entql.Int32P) {
+	f.Where(p.Field(incompleteartifactgraph.FieldSeqID))
+}
+
+// WhereEvent applies the entql []byte predicate on the event field.
+func (f *IncompleteArtifactGraphFilter) WhereEvent(p entql.BytesP) {
+	f.Where(p.Field(incompleteartifactgraph.FieldEvent))
+}
+
+// WhereBazelInvocationID applies the entql int64 predicate on the bazel_invocation_id field.
+func (f *IncompleteArtifactGraphFilter) WhereBazelInvocationID(p entql.Int64P) {
+	f.Where(p.Field(incompleteartifactgraph.FieldBazelInvocationID))
+}
+
+// WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
+func (f *IncompleteArtifactGraphFilter) WhereHasBazelInvocation() {
+	f.Where(entql.HasEdge("bazel_invocation"))
+}
+
+// WhereHasBazelInvocationWith applies a predicate to check if query has an edge bazel_invocation with a given conditions (other predicates).
+func (f *IncompleteArtifactGraphFilter) WhereHasBazelInvocationWith(preds ...predicate.BazelInvocation) {
+	f.Where(entql.HasEdgeWith("bazel_invocation", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (_q *IncompleteBuildLogQuery) addPredicate(pred func(s *sql.Selector)) {
 	_q.predicates = append(_q.predicates, pred)
 }
@@ -3231,7 +3408,7 @@ type IncompleteBuildLogFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *IncompleteBuildLogFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[15].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[16].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3300,7 +3477,7 @@ type InstanceNameFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *InstanceNameFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[16].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[17].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3359,6 +3536,65 @@ func (f *InstanceNameFilter) WhereHasTargetsWith(preds ...predicate.Target) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (_q *InvocationArtifactGraphQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the InvocationArtifactGraphQuery builder.
+func (_q *InvocationArtifactGraphQuery) Filter() *InvocationArtifactGraphFilter {
+	return &InvocationArtifactGraphFilter{config: _q.config, predicateAdder: _q}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *InvocationArtifactGraphMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the InvocationArtifactGraphMutation builder.
+func (m *InvocationArtifactGraphMutation) Filter() *InvocationArtifactGraphFilter {
+	return &InvocationArtifactGraphFilter{config: m.config, predicateAdder: m}
+}
+
+// InvocationArtifactGraphFilter provides a generic filtering capability at runtime for InvocationArtifactGraphQuery.
+type InvocationArtifactGraphFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *InvocationArtifactGraphFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[18].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *InvocationArtifactGraphFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(invocationartifactgraph.FieldID))
+}
+
+// WherePayload applies the entql []byte predicate on the payload field.
+func (f *InvocationArtifactGraphFilter) WherePayload(p entql.BytesP) {
+	f.Where(p.Field(invocationartifactgraph.FieldPayload))
+}
+
+// WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
+func (f *InvocationArtifactGraphFilter) WhereHasBazelInvocation() {
+	f.Where(entql.HasEdge("bazel_invocation"))
+}
+
+// WhereHasBazelInvocationWith applies a predicate to check if query has an edge bazel_invocation with a given conditions (other predicates).
+func (f *InvocationArtifactGraphFilter) WhereHasBazelInvocationWith(preds ...predicate.BazelInvocation) {
+	f.Where(entql.HasEdgeWith("bazel_invocation", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (_q *InvocationFilesQuery) addPredicate(pred func(s *sql.Selector)) {
 	_q.predicates = append(_q.predicates, pred)
 }
@@ -3387,7 +3623,7 @@ type InvocationFilesFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *InvocationFilesFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[17].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[19].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3466,7 +3702,7 @@ type InvocationTagFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *InvocationTagFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[18].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[20].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3535,7 +3771,7 @@ type InvocationTargetFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *InvocationTargetFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[19].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[21].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3666,7 +3902,7 @@ type MemoryMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MemoryMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[20].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[22].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3749,7 +3985,7 @@ type MetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[21].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[23].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3901,7 +4137,7 @@ type MissDetailFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MissDetailFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[22].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[24].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3965,7 +4201,7 @@ type NetworkMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *NetworkMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[23].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[25].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4033,7 +4269,7 @@ type RunnerCountFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *RunnerCountFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[24].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[26].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4102,7 +4338,7 @@ type SourceControlFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SourceControlFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[25].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[27].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4186,7 +4422,7 @@ type SystemNetworkStatsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SystemNetworkStatsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[26].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[28].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4280,7 +4516,7 @@ type TargetFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TargetFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[27].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[29].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4391,7 +4627,7 @@ type TargetKindMappingFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TargetKindMappingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[28].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[30].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4474,7 +4710,7 @@ type TargetMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TargetMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[29].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[31].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4543,7 +4779,7 @@ type TestResultFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TestResultFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[30].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[32].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4667,7 +4903,7 @@ type TestSummaryFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TestSummaryFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[31].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[33].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4780,7 +5016,7 @@ type TestTargetFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TestTargetFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[32].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[34].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4839,7 +5075,7 @@ type TimingMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TimingMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[33].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[35].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

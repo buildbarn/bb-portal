@@ -21,8 +21,10 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -35,37 +37,40 @@ import (
 // BazelInvocationQuery is the builder for querying BazelInvocation entities.
 type BazelInvocationQuery struct {
 	config
-	ctx                          *QueryContext
-	order                        []bazelinvocation.OrderOption
-	inters                       []Interceptor
-	predicates                   []predicate.BazelInvocation
-	withInstanceName             *InstanceNameQuery
-	withBuild                    *BuildQuery
-	withAuthenticatedUser        *AuthenticatedUserQuery
-	withTags                     *InvocationTagQuery
-	withEventMetadata            *EventMetadataQuery
-	withConnectionMetadata       *ConnectionMetadataQuery
-	withConfigurations           *ConfigurationQuery
-	withActions                  *ActionQuery
-	withMetrics                  *MetricsQuery
-	withIncompleteBuildLogs      *IncompleteBuildLogQuery
-	withBuildLogChunks           *BuildLogChunkQuery
-	withInvocationFiles          *InvocationFilesQuery
-	withInvocationTargets        *InvocationTargetQuery
-	withTargetKindMappings       *TargetKindMappingQuery
-	withSourceControl            *SourceControlQuery
-	withFKs                      bool
-	modifiers                    []func(*sql.Selector)
-	loadTotal                    []func(context.Context, []*BazelInvocation) error
-	withNamedTags                map[string]*InvocationTagQuery
-	withNamedConfigurations      map[string]*ConfigurationQuery
-	withNamedActions             map[string]*ActionQuery
-	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
-	withNamedBuildLogChunks      map[string]*BuildLogChunkQuery
-	withNamedInvocationFiles     map[string]*InvocationFilesQuery
-	withNamedInvocationTargets   map[string]*InvocationTargetQuery
-	withNamedTargetKindMappings  map[string]*TargetKindMappingQuery
-	withNamedSourceControl       map[string]*SourceControlQuery
+	ctx                               *QueryContext
+	order                             []bazelinvocation.OrderOption
+	inters                            []Interceptor
+	predicates                        []predicate.BazelInvocation
+	withInstanceName                  *InstanceNameQuery
+	withBuild                         *BuildQuery
+	withAuthenticatedUser             *AuthenticatedUserQuery
+	withTags                          *InvocationTagQuery
+	withEventMetadata                 *EventMetadataQuery
+	withConnectionMetadata            *ConnectionMetadataQuery
+	withConfigurations                *ConfigurationQuery
+	withActions                       *ActionQuery
+	withMetrics                       *MetricsQuery
+	withIncompleteBuildLogs           *IncompleteBuildLogQuery
+	withBuildLogChunks                *BuildLogChunkQuery
+	withIncompleteArtifactGraphs      *IncompleteArtifactGraphQuery
+	withInvocationFiles               *InvocationFilesQuery
+	withInvocationTargets             *InvocationTargetQuery
+	withTargetKindMappings            *TargetKindMappingQuery
+	withSourceControl                 *SourceControlQuery
+	withArtifactGraph                 *InvocationArtifactGraphQuery
+	withFKs                           bool
+	modifiers                         []func(*sql.Selector)
+	loadTotal                         []func(context.Context, []*BazelInvocation) error
+	withNamedTags                     map[string]*InvocationTagQuery
+	withNamedConfigurations           map[string]*ConfigurationQuery
+	withNamedActions                  map[string]*ActionQuery
+	withNamedIncompleteBuildLogs      map[string]*IncompleteBuildLogQuery
+	withNamedBuildLogChunks           map[string]*BuildLogChunkQuery
+	withNamedIncompleteArtifactGraphs map[string]*IncompleteArtifactGraphQuery
+	withNamedInvocationFiles          map[string]*InvocationFilesQuery
+	withNamedInvocationTargets        map[string]*InvocationTargetQuery
+	withNamedTargetKindMappings       map[string]*TargetKindMappingQuery
+	withNamedSourceControl            map[string]*SourceControlQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -344,6 +349,28 @@ func (_q *BazelInvocationQuery) QueryBuildLogChunks() *BuildLogChunkQuery {
 	return query
 }
 
+// QueryIncompleteArtifactGraphs chains the current query on the "incomplete_artifact_graphs" edge.
+func (_q *BazelInvocationQuery) QueryIncompleteArtifactGraphs() *IncompleteArtifactGraphQuery {
+	query := (&IncompleteArtifactGraphClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(incompleteartifactgraph.Table, incompleteartifactgraph.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.IncompleteArtifactGraphsTable, bazelinvocation.IncompleteArtifactGraphsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryInvocationFiles chains the current query on the "invocation_files" edge.
 func (_q *BazelInvocationQuery) QueryInvocationFiles() *InvocationFilesQuery {
 	query := (&InvocationFilesClient{config: _q.config}).Query()
@@ -425,6 +452,28 @@ func (_q *BazelInvocationQuery) QuerySourceControl() *SourceControlQuery {
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(sourcecontrol.Table, sourcecontrol.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryArtifactGraph chains the current query on the "artifact_graph" edge.
+func (_q *BazelInvocationQuery) QueryArtifactGraph() *InvocationArtifactGraphQuery {
+	query := (&InvocationArtifactGraphClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(invocationartifactgraph.Table, invocationartifactgraph.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.ArtifactGraphTable, bazelinvocation.ArtifactGraphColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -619,26 +668,28 @@ func (_q *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		return nil
 	}
 	return &BazelInvocationQuery{
-		config:                  _q.config,
-		ctx:                     _q.ctx.Clone(),
-		order:                   append([]bazelinvocation.OrderOption{}, _q.order...),
-		inters:                  append([]Interceptor{}, _q.inters...),
-		predicates:              append([]predicate.BazelInvocation{}, _q.predicates...),
-		withInstanceName:        _q.withInstanceName.Clone(),
-		withBuild:               _q.withBuild.Clone(),
-		withAuthenticatedUser:   _q.withAuthenticatedUser.Clone(),
-		withTags:                _q.withTags.Clone(),
-		withEventMetadata:       _q.withEventMetadata.Clone(),
-		withConnectionMetadata:  _q.withConnectionMetadata.Clone(),
-		withConfigurations:      _q.withConfigurations.Clone(),
-		withActions:             _q.withActions.Clone(),
-		withMetrics:             _q.withMetrics.Clone(),
-		withIncompleteBuildLogs: _q.withIncompleteBuildLogs.Clone(),
-		withBuildLogChunks:      _q.withBuildLogChunks.Clone(),
-		withInvocationFiles:     _q.withInvocationFiles.Clone(),
-		withInvocationTargets:   _q.withInvocationTargets.Clone(),
-		withTargetKindMappings:  _q.withTargetKindMappings.Clone(),
-		withSourceControl:       _q.withSourceControl.Clone(),
+		config:                       _q.config,
+		ctx:                          _q.ctx.Clone(),
+		order:                        append([]bazelinvocation.OrderOption{}, _q.order...),
+		inters:                       append([]Interceptor{}, _q.inters...),
+		predicates:                   append([]predicate.BazelInvocation{}, _q.predicates...),
+		withInstanceName:             _q.withInstanceName.Clone(),
+		withBuild:                    _q.withBuild.Clone(),
+		withAuthenticatedUser:        _q.withAuthenticatedUser.Clone(),
+		withTags:                     _q.withTags.Clone(),
+		withEventMetadata:            _q.withEventMetadata.Clone(),
+		withConnectionMetadata:       _q.withConnectionMetadata.Clone(),
+		withConfigurations:           _q.withConfigurations.Clone(),
+		withActions:                  _q.withActions.Clone(),
+		withMetrics:                  _q.withMetrics.Clone(),
+		withIncompleteBuildLogs:      _q.withIncompleteBuildLogs.Clone(),
+		withBuildLogChunks:           _q.withBuildLogChunks.Clone(),
+		withIncompleteArtifactGraphs: _q.withIncompleteArtifactGraphs.Clone(),
+		withInvocationFiles:          _q.withInvocationFiles.Clone(),
+		withInvocationTargets:        _q.withInvocationTargets.Clone(),
+		withTargetKindMappings:       _q.withTargetKindMappings.Clone(),
+		withSourceControl:            _q.withSourceControl.Clone(),
+		withArtifactGraph:            _q.withArtifactGraph.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -766,6 +817,17 @@ func (_q *BazelInvocationQuery) WithBuildLogChunks(opts ...func(*BuildLogChunkQu
 	return _q
 }
 
+// WithIncompleteArtifactGraphs tells the query-builder to eager-load the nodes that are connected to
+// the "incomplete_artifact_graphs" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *BazelInvocationQuery) WithIncompleteArtifactGraphs(opts ...func(*IncompleteArtifactGraphQuery)) *BazelInvocationQuery {
+	query := (&IncompleteArtifactGraphClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withIncompleteArtifactGraphs = query
+	return _q
+}
+
 // WithInvocationFiles tells the query-builder to eager-load the nodes that are connected to
 // the "invocation_files" edge. The optional arguments are used to configure the query builder of the edge.
 func (_q *BazelInvocationQuery) WithInvocationFiles(opts ...func(*InvocationFilesQuery)) *BazelInvocationQuery {
@@ -807,6 +869,17 @@ func (_q *BazelInvocationQuery) WithSourceControl(opts ...func(*SourceControlQue
 		opt(query)
 	}
 	_q.withSourceControl = query
+	return _q
+}
+
+// WithArtifactGraph tells the query-builder to eager-load the nodes that are connected to
+// the "artifact_graph" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *BazelInvocationQuery) WithArtifactGraph(opts ...func(*InvocationArtifactGraphQuery)) *BazelInvocationQuery {
+	query := (&InvocationArtifactGraphClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withArtifactGraph = query
 	return _q
 }
 
@@ -895,7 +968,7 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		nodes       = []*BazelInvocation{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [15]bool{
+		loadedTypes = [17]bool{
 			_q.withInstanceName != nil,
 			_q.withBuild != nil,
 			_q.withAuthenticatedUser != nil,
@@ -907,10 +980,12 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			_q.withMetrics != nil,
 			_q.withIncompleteBuildLogs != nil,
 			_q.withBuildLogChunks != nil,
+			_q.withIncompleteArtifactGraphs != nil,
 			_q.withInvocationFiles != nil,
 			_q.withInvocationTargets != nil,
 			_q.withTargetKindMappings != nil,
 			_q.withSourceControl != nil,
+			_q.withArtifactGraph != nil,
 		}
 	)
 	if _q.withInstanceName != nil || _q.withBuild != nil || _q.withAuthenticatedUser != nil {
@@ -1013,6 +1088,15 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			return nil, err
 		}
 	}
+	if query := _q.withIncompleteArtifactGraphs; query != nil {
+		if err := _q.loadIncompleteArtifactGraphs(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.IncompleteArtifactGraphs = []*IncompleteArtifactGraph{} },
+			func(n *BazelInvocation, e *IncompleteArtifactGraph) {
+				n.Edges.IncompleteArtifactGraphs = append(n.Edges.IncompleteArtifactGraphs, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	if query := _q.withInvocationFiles; query != nil {
 		if err := _q.loadInvocationFiles(ctx, query, nodes,
 			func(n *BazelInvocation) { n.Edges.InvocationFiles = []*InvocationFiles{} },
@@ -1044,6 +1128,12 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		if err := _q.loadSourceControl(ctx, query, nodes,
 			func(n *BazelInvocation) { n.Edges.SourceControl = []*SourceControl{} },
 			func(n *BazelInvocation, e *SourceControl) { n.Edges.SourceControl = append(n.Edges.SourceControl, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withArtifactGraph; query != nil {
+		if err := _q.loadArtifactGraph(ctx, query, nodes, nil,
+			func(n *BazelInvocation, e *InvocationArtifactGraph) { n.Edges.ArtifactGraph = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -1079,6 +1169,13 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		if err := _q.loadBuildLogChunks(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedBuildLogChunks(name) },
 			func(n *BazelInvocation, e *BuildLogChunk) { n.appendNamedBuildLogChunks(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedIncompleteArtifactGraphs {
+		if err := _q.loadIncompleteArtifactGraphs(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedIncompleteArtifactGraphs(name) },
+			func(n *BazelInvocation, e *IncompleteArtifactGraph) { n.appendNamedIncompleteArtifactGraphs(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1448,6 +1545,36 @@ func (_q *BazelInvocationQuery) loadBuildLogChunks(ctx context.Context, query *B
 	}
 	return nil
 }
+func (_q *BazelInvocationQuery) loadIncompleteArtifactGraphs(ctx context.Context, query *IncompleteArtifactGraphQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *IncompleteArtifactGraph)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(incompleteartifactgraph.FieldBazelInvocationID)
+	}
+	query.Where(predicate.IncompleteArtifactGraph(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.IncompleteArtifactGraphsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (_q *BazelInvocationQuery) loadInvocationFiles(ctx context.Context, query *InvocationFilesQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationFiles)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*BazelInvocation)
@@ -1566,6 +1693,34 @@ func (_q *BazelInvocationQuery) loadSourceControl(ctx context.Context, query *So
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_source_control" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *BazelInvocationQuery) loadArtifactGraph(ctx context.Context, query *InvocationArtifactGraphQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationArtifactGraph)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.InvocationArtifactGraph(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.ArtifactGraphColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_id
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1723,6 +1878,20 @@ func (_q *BazelInvocationQuery) WithNamedBuildLogChunks(name string, opts ...fun
 		_q.withNamedBuildLogChunks = make(map[string]*BuildLogChunkQuery)
 	}
 	_q.withNamedBuildLogChunks[name] = query
+	return _q
+}
+
+// WithNamedIncompleteArtifactGraphs tells the query-builder to eager-load the nodes that are connected to the "incomplete_artifact_graphs"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *BazelInvocationQuery) WithNamedIncompleteArtifactGraphs(name string, opts ...func(*IncompleteArtifactGraphQuery)) *BazelInvocationQuery {
+	query := (&IncompleteArtifactGraphClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedIncompleteArtifactGraphs == nil {
+		_q.withNamedIncompleteArtifactGraphs = make(map[string]*IncompleteArtifactGraphQuery)
+	}
+	_q.withNamedIncompleteArtifactGraphs[name] = query
 	return _q
 }
 

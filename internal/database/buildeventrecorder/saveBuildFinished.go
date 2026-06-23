@@ -7,10 +7,11 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *buildEventRecorder) saveBuildFinished(ctx context.Context, tx *ent.Client, finished *bes.BuildFinished) error {
+func (r *buildEventRecorder) saveBuildFinished(ctx context.Context, tx database.Tx, finished *bes.BuildFinished) error {
 	if finished == nil {
 		return nil
 	}
@@ -23,7 +24,7 @@ func (r *buildEventRecorder) saveBuildFinished(ctx context.Context, tx *ent.Clie
 		endedAt = time.UnixMilli(finished.GetFinishTimeMillis())
 	}
 
-	err := tx.BazelInvocation.
+	err := tx.Ent().BazelInvocation.
 		Update().
 		Where(
 			bazelinvocation.ID(r.InvocationDbID),
@@ -40,5 +41,9 @@ func (r *buildEventRecorder) saveBuildFinished(ctx context.Context, tx *ent.Clie
 	if err != nil {
 		return util.StatusWrap(err, "Failed to update bazel invocation with build finished BES message")
 	}
+
+	// The artifact graph is left in the incomplete_artifact_graphs staging
+	// table; dbcleanupservice.CompactArtifactGraphs folds it into a single
+	// compressed blob once the invocation is marked complete.
 	return nil
 }

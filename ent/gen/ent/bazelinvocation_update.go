@@ -19,8 +19,10 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -537,6 +539,21 @@ func (_u *BazelInvocationUpdate) AddBuildLogChunks(v ...*BuildLogChunk) *BazelIn
 	return _u.AddBuildLogChunkIDs(ids...)
 }
 
+// AddIncompleteArtifactGraphIDs adds the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity by IDs.
+func (_u *BazelInvocationUpdate) AddIncompleteArtifactGraphIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.AddIncompleteArtifactGraphIDs(ids...)
+	return _u
+}
+
+// AddIncompleteArtifactGraphs adds the "incomplete_artifact_graphs" edges to the IncompleteArtifactGraph entity.
+func (_u *BazelInvocationUpdate) AddIncompleteArtifactGraphs(v ...*IncompleteArtifactGraph) *BazelInvocationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddIncompleteArtifactGraphIDs(ids...)
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
 func (_u *BazelInvocationUpdate) AddInvocationFileIDs(ids ...int64) *BazelInvocationUpdate {
 	_u.mutation.AddInvocationFileIDs(ids...)
@@ -595,6 +612,25 @@ func (_u *BazelInvocationUpdate) AddSourceControl(v ...*SourceControl) *BazelInv
 		ids[i] = v[i].ID
 	}
 	return _u.AddSourceControlIDs(ids...)
+}
+
+// SetArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID.
+func (_u *BazelInvocationUpdate) SetArtifactGraphID(id int64) *BazelInvocationUpdate {
+	_u.mutation.SetArtifactGraphID(id)
+	return _u
+}
+
+// SetNillableArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID if the given value is not nil.
+func (_u *BazelInvocationUpdate) SetNillableArtifactGraphID(id *int64) *BazelInvocationUpdate {
+	if id != nil {
+		_u = _u.SetArtifactGraphID(*id)
+	}
+	return _u
+}
+
+// SetArtifactGraph sets the "artifact_graph" edge to the InvocationArtifactGraph entity.
+func (_u *BazelInvocationUpdate) SetArtifactGraph(v *InvocationArtifactGraph) *BazelInvocationUpdate {
+	return _u.SetArtifactGraphID(v.ID)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -743,6 +779,27 @@ func (_u *BazelInvocationUpdate) RemoveBuildLogChunks(v ...*BuildLogChunk) *Baze
 	return _u.RemoveBuildLogChunkIDs(ids...)
 }
 
+// ClearIncompleteArtifactGraphs clears all "incomplete_artifact_graphs" edges to the IncompleteArtifactGraph entity.
+func (_u *BazelInvocationUpdate) ClearIncompleteArtifactGraphs() *BazelInvocationUpdate {
+	_u.mutation.ClearIncompleteArtifactGraphs()
+	return _u
+}
+
+// RemoveIncompleteArtifactGraphIDs removes the "incomplete_artifact_graphs" edge to IncompleteArtifactGraph entities by IDs.
+func (_u *BazelInvocationUpdate) RemoveIncompleteArtifactGraphIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.RemoveIncompleteArtifactGraphIDs(ids...)
+	return _u
+}
+
+// RemoveIncompleteArtifactGraphs removes "incomplete_artifact_graphs" edges to IncompleteArtifactGraph entities.
+func (_u *BazelInvocationUpdate) RemoveIncompleteArtifactGraphs(v ...*IncompleteArtifactGraph) *BazelInvocationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveIncompleteArtifactGraphIDs(ids...)
+}
+
 // ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
 func (_u *BazelInvocationUpdate) ClearInvocationFiles() *BazelInvocationUpdate {
 	_u.mutation.ClearInvocationFiles()
@@ -825,6 +882,12 @@ func (_u *BazelInvocationUpdate) RemoveSourceControl(v ...*SourceControl) *Bazel
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveSourceControlIDs(ids...)
+}
+
+// ClearArtifactGraph clears the "artifact_graph" edge to the InvocationArtifactGraph entity.
+func (_u *BazelInvocationUpdate) ClearArtifactGraph() *BazelInvocationUpdate {
+	_u.mutation.ClearArtifactGraph()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -1372,6 +1435,51 @@ func (_u *BazelInvocationUpdate) sqlSave(ctx context.Context) (_node int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.IncompleteArtifactGraphsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedIncompleteArtifactGraphsIDs(); len(nodes) > 0 && !_u.mutation.IncompleteArtifactGraphsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.IncompleteArtifactGraphsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _u.mutation.InvocationFilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1545,6 +1653,35 @@ func (_u *BazelInvocationUpdate) sqlSave(ctx context.Context) (_node int, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ArtifactGraphCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.ArtifactGraphTable,
+			Columns: []string{bazelinvocation.ArtifactGraphColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ArtifactGraphIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.ArtifactGraphTable,
+			Columns: []string{bazelinvocation.ArtifactGraphColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2065,6 +2202,21 @@ func (_u *BazelInvocationUpdateOne) AddBuildLogChunks(v ...*BuildLogChunk) *Baze
 	return _u.AddBuildLogChunkIDs(ids...)
 }
 
+// AddIncompleteArtifactGraphIDs adds the "incomplete_artifact_graphs" edge to the IncompleteArtifactGraph entity by IDs.
+func (_u *BazelInvocationUpdateOne) AddIncompleteArtifactGraphIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.AddIncompleteArtifactGraphIDs(ids...)
+	return _u
+}
+
+// AddIncompleteArtifactGraphs adds the "incomplete_artifact_graphs" edges to the IncompleteArtifactGraph entity.
+func (_u *BazelInvocationUpdateOne) AddIncompleteArtifactGraphs(v ...*IncompleteArtifactGraph) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddIncompleteArtifactGraphIDs(ids...)
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
 func (_u *BazelInvocationUpdateOne) AddInvocationFileIDs(ids ...int64) *BazelInvocationUpdateOne {
 	_u.mutation.AddInvocationFileIDs(ids...)
@@ -2123,6 +2275,25 @@ func (_u *BazelInvocationUpdateOne) AddSourceControl(v ...*SourceControl) *Bazel
 		ids[i] = v[i].ID
 	}
 	return _u.AddSourceControlIDs(ids...)
+}
+
+// SetArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID.
+func (_u *BazelInvocationUpdateOne) SetArtifactGraphID(id int64) *BazelInvocationUpdateOne {
+	_u.mutation.SetArtifactGraphID(id)
+	return _u
+}
+
+// SetNillableArtifactGraphID sets the "artifact_graph" edge to the InvocationArtifactGraph entity by ID if the given value is not nil.
+func (_u *BazelInvocationUpdateOne) SetNillableArtifactGraphID(id *int64) *BazelInvocationUpdateOne {
+	if id != nil {
+		_u = _u.SetArtifactGraphID(*id)
+	}
+	return _u
+}
+
+// SetArtifactGraph sets the "artifact_graph" edge to the InvocationArtifactGraph entity.
+func (_u *BazelInvocationUpdateOne) SetArtifactGraph(v *InvocationArtifactGraph) *BazelInvocationUpdateOne {
+	return _u.SetArtifactGraphID(v.ID)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -2271,6 +2442,27 @@ func (_u *BazelInvocationUpdateOne) RemoveBuildLogChunks(v ...*BuildLogChunk) *B
 	return _u.RemoveBuildLogChunkIDs(ids...)
 }
 
+// ClearIncompleteArtifactGraphs clears all "incomplete_artifact_graphs" edges to the IncompleteArtifactGraph entity.
+func (_u *BazelInvocationUpdateOne) ClearIncompleteArtifactGraphs() *BazelInvocationUpdateOne {
+	_u.mutation.ClearIncompleteArtifactGraphs()
+	return _u
+}
+
+// RemoveIncompleteArtifactGraphIDs removes the "incomplete_artifact_graphs" edge to IncompleteArtifactGraph entities by IDs.
+func (_u *BazelInvocationUpdateOne) RemoveIncompleteArtifactGraphIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.RemoveIncompleteArtifactGraphIDs(ids...)
+	return _u
+}
+
+// RemoveIncompleteArtifactGraphs removes "incomplete_artifact_graphs" edges to IncompleteArtifactGraph entities.
+func (_u *BazelInvocationUpdateOne) RemoveIncompleteArtifactGraphs(v ...*IncompleteArtifactGraph) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveIncompleteArtifactGraphIDs(ids...)
+}
+
 // ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
 func (_u *BazelInvocationUpdateOne) ClearInvocationFiles() *BazelInvocationUpdateOne {
 	_u.mutation.ClearInvocationFiles()
@@ -2353,6 +2545,12 @@ func (_u *BazelInvocationUpdateOne) RemoveSourceControl(v ...*SourceControl) *Ba
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveSourceControlIDs(ids...)
+}
+
+// ClearArtifactGraph clears the "artifact_graph" edge to the InvocationArtifactGraph entity.
+func (_u *BazelInvocationUpdateOne) ClearArtifactGraph() *BazelInvocationUpdateOne {
+	_u.mutation.ClearArtifactGraph()
+	return _u
 }
 
 // Where appends a list predicates to the BazelInvocationUpdate builder.
@@ -2930,6 +3128,51 @@ func (_u *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelIn
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.IncompleteArtifactGraphsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedIncompleteArtifactGraphsIDs(); len(nodes) > 0 && !_u.mutation.IncompleteArtifactGraphsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.IncompleteArtifactGraphsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteArtifactGraphsTable,
+			Columns: []string{bazelinvocation.IncompleteArtifactGraphsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompleteartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _u.mutation.InvocationFilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -3103,6 +3346,35 @@ func (_u *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelIn
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ArtifactGraphCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.ArtifactGraphTable,
+			Columns: []string{bazelinvocation.ArtifactGraphColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ArtifactGraphIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.ArtifactGraphTable,
+			Columns: []string{bazelinvocation.ArtifactGraphColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationartifactgraph.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

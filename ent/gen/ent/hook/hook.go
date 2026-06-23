@@ -189,6 +189,18 @@ func (f GarbageMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GarbageMetricsMutation", m)
 }
 
+// The IncompleteArtifactGraphFunc type is an adapter to allow the use of ordinary
+// function as IncompleteArtifactGraph mutator.
+type IncompleteArtifactGraphFunc func(context.Context, *ent.IncompleteArtifactGraphMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f IncompleteArtifactGraphFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.IncompleteArtifactGraphMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.IncompleteArtifactGraphMutation", m)
+}
+
 // The IncompleteBuildLogFunc type is an adapter to allow the use of ordinary
 // function as IncompleteBuildLog mutator.
 type IncompleteBuildLogFunc func(context.Context, *ent.IncompleteBuildLogMutation) (ent.Value, error)
@@ -211,6 +223,18 @@ func (f InstanceNameFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InstanceNameMutation", m)
+}
+
+// The InvocationArtifactGraphFunc type is an adapter to allow the use of ordinary
+// function as InvocationArtifactGraph mutator.
+type InvocationArtifactGraphFunc func(context.Context, *ent.InvocationArtifactGraphMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f InvocationArtifactGraphFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.InvocationArtifactGraphMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationArtifactGraphMutation", m)
 }
 
 // The InvocationFilesFunc type is an adapter to allow the use of ordinary

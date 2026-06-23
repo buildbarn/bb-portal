@@ -39,6 +39,7 @@ type ResolverRoot interface {
 	ActionCacheStatistics() ActionCacheStatisticsResolver
 	ActionData() ActionDataResolver
 	ActionSummary() ActionSummaryResolver
+	ArtifactFile() ArtifactFileResolver
 	ArtifactMetrics() ArtifactMetricsResolver
 	AuthenticatedUser() AuthenticatedUserResolver
 	BazelInvocation() BazelInvocationResolver
@@ -156,6 +157,19 @@ type ComplexityRoot struct {
 		RunnerCount                       func(childComplexity int) int
 	}
 
+	ArtifactFile struct {
+		Digest      func(childComplexity int) int
+		DownloadURL func(childComplexity int) int
+		Name        func(childComplexity int) int
+		SizeBytes   func(childComplexity int) int
+		URI         func(childComplexity int) int
+	}
+
+	ArtifactGraph struct {
+		NamedSets func(childComplexity int) int
+		Targets   func(childComplexity int) int
+	}
+
 	ArtifactMetrics struct {
 		ID                                        func(childComplexity int) int
 		Metrics                                   func(childComplexity int) int
@@ -169,6 +183,24 @@ type ComplexityRoot struct {
 		TopLevelArtifactsSizeInBytes              func(childComplexity int) int
 	}
 
+	ArtifactNamedSet struct {
+		ChildSetIds func(childComplexity int) int
+		Files       func(childComplexity int) int
+		ID          func(childComplexity int) int
+	}
+
+	ArtifactOutputGroup struct {
+		Incomplete func(childComplexity int) int
+		Name       func(childComplexity int) int
+		RootSetIds func(childComplexity int) int
+	}
+
+	ArtifactTarget struct {
+		Aspect       func(childComplexity int) int
+		Label        func(childComplexity int) int
+		OutputGroups func(childComplexity int) int
+	}
+
 	AuthenticatedUser struct {
 		BazelInvocations func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
 		DisplayName      func(childComplexity int) int
@@ -180,6 +212,7 @@ type ComplexityRoot struct {
 
 	BazelInvocation struct {
 		Actions              func(childComplexity int) int
+		ArtifactGraph        func(childComplexity int) int
 		AuthenticatedUser    func(childComplexity int) int
 		BazelVersion         func(childComplexity int) int
 		BepCompleted         func(childComplexity int) int
@@ -547,6 +580,9 @@ type ActionDataResolver interface {
 type ActionSummaryResolver interface {
 	ID(ctx context.Context, obj *ent.ActionSummary) (string, error)
 }
+type ArtifactFileResolver interface {
+	DownloadURL(ctx context.Context, obj *model.ArtifactFile) (*string, error)
+}
 type ArtifactMetricsResolver interface {
 	ID(ctx context.Context, obj *ent.ArtifactMetrics) (string, error)
 }
@@ -562,6 +598,7 @@ type BazelInvocationResolver interface {
 	EnvironmentVariables(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 
 	Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error)
+	ArtifactGraph(ctx context.Context, obj *ent.BazelInvocation) (*model.ArtifactGraph, error)
 }
 type BuildResolver interface {
 	ID(ctx context.Context, obj *ent.Build) (string, error)
@@ -1226,6 +1263,50 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.ActionSummary.RunnerCount(childComplexity), true
 
+	case "ArtifactFile.digest":
+		if e.ComplexityRoot.ArtifactFile.Digest == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactFile.Digest(childComplexity), true
+	case "ArtifactFile.downloadUrl":
+		if e.ComplexityRoot.ArtifactFile.DownloadURL == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactFile.DownloadURL(childComplexity), true
+	case "ArtifactFile.name":
+		if e.ComplexityRoot.ArtifactFile.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactFile.Name(childComplexity), true
+	case "ArtifactFile.sizeBytes":
+		if e.ComplexityRoot.ArtifactFile.SizeBytes == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactFile.SizeBytes(childComplexity), true
+	case "ArtifactFile.uri":
+		if e.ComplexityRoot.ArtifactFile.URI == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactFile.URI(childComplexity), true
+
+	case "ArtifactGraph.namedSets":
+		if e.ComplexityRoot.ArtifactGraph.NamedSets == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactGraph.NamedSets(childComplexity), true
+	case "ArtifactGraph.targets":
+		if e.ComplexityRoot.ArtifactGraph.Targets == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactGraph.Targets(childComplexity), true
+
 	case "ArtifactMetrics.id":
 		if e.ComplexityRoot.ArtifactMetrics.ID == nil {
 			break
@@ -1287,6 +1368,63 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.ArtifactMetrics.TopLevelArtifactsSizeInBytes(childComplexity), true
 
+	case "ArtifactNamedSet.childSetIds":
+		if e.ComplexityRoot.ArtifactNamedSet.ChildSetIds == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactNamedSet.ChildSetIds(childComplexity), true
+	case "ArtifactNamedSet.files":
+		if e.ComplexityRoot.ArtifactNamedSet.Files == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactNamedSet.Files(childComplexity), true
+	case "ArtifactNamedSet.id":
+		if e.ComplexityRoot.ArtifactNamedSet.ID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactNamedSet.ID(childComplexity), true
+
+	case "ArtifactOutputGroup.incomplete":
+		if e.ComplexityRoot.ArtifactOutputGroup.Incomplete == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactOutputGroup.Incomplete(childComplexity), true
+	case "ArtifactOutputGroup.name":
+		if e.ComplexityRoot.ArtifactOutputGroup.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactOutputGroup.Name(childComplexity), true
+	case "ArtifactOutputGroup.rootSetIds":
+		if e.ComplexityRoot.ArtifactOutputGroup.RootSetIds == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactOutputGroup.RootSetIds(childComplexity), true
+
+	case "ArtifactTarget.aspect":
+		if e.ComplexityRoot.ArtifactTarget.Aspect == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactTarget.Aspect(childComplexity), true
+	case "ArtifactTarget.label":
+		if e.ComplexityRoot.ArtifactTarget.Label == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactTarget.Label(childComplexity), true
+	case "ArtifactTarget.outputGroups":
+		if e.ComplexityRoot.ArtifactTarget.OutputGroups == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ArtifactTarget.OutputGroups(childComplexity), true
+
 	case "AuthenticatedUser.bazelInvocations":
 		if e.ComplexityRoot.AuthenticatedUser.BazelInvocations == nil {
 			break
@@ -1335,6 +1473,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.BazelInvocation.Actions(childComplexity), true
+	case "BazelInvocation.artifactGraph":
+		if e.ComplexityRoot.BazelInvocation.ArtifactGraph == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BazelInvocation.ArtifactGraph(childComplexity), true
 	case "BazelInvocation.authenticatedUser":
 		if e.ComplexityRoot.BazelInvocation.AuthenticatedUser == nil {
 			break
@@ -3097,6 +3241,32 @@ func (ec *executionContext) childFields_ActionSummary(ctx context.Context, field
 	return nil, fmt.Errorf("no field named %q was found under type ActionSummary", field.Name)
 }
 
+func (ec *executionContext) childFields_ArtifactFile(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "name":
+		return ec.fieldContext_ArtifactFile_name(ctx, field)
+	case "uri":
+		return ec.fieldContext_ArtifactFile_uri(ctx, field)
+	case "digest":
+		return ec.fieldContext_ArtifactFile_digest(ctx, field)
+	case "sizeBytes":
+		return ec.fieldContext_ArtifactFile_sizeBytes(ctx, field)
+	case "downloadUrl":
+		return ec.fieldContext_ArtifactFile_downloadUrl(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type ArtifactFile", field.Name)
+}
+
+func (ec *executionContext) childFields_ArtifactGraph(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "namedSets":
+		return ec.fieldContext_ArtifactGraph_namedSets(ctx, field)
+	case "targets":
+		return ec.fieldContext_ArtifactGraph_targets(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type ArtifactGraph", field.Name)
+}
+
 func (ec *executionContext) childFields_ArtifactMetrics(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 	switch field.Name {
 	case "id":
@@ -3121,6 +3291,42 @@ func (ec *executionContext) childFields_ArtifactMetrics(ctx context.Context, fie
 		return ec.fieldContext_ArtifactMetrics_metrics(ctx, field)
 	}
 	return nil, fmt.Errorf("no field named %q was found under type ArtifactMetrics", field.Name)
+}
+
+func (ec *executionContext) childFields_ArtifactNamedSet(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "id":
+		return ec.fieldContext_ArtifactNamedSet_id(ctx, field)
+	case "files":
+		return ec.fieldContext_ArtifactNamedSet_files(ctx, field)
+	case "childSetIds":
+		return ec.fieldContext_ArtifactNamedSet_childSetIds(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type ArtifactNamedSet", field.Name)
+}
+
+func (ec *executionContext) childFields_ArtifactOutputGroup(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "name":
+		return ec.fieldContext_ArtifactOutputGroup_name(ctx, field)
+	case "incomplete":
+		return ec.fieldContext_ArtifactOutputGroup_incomplete(ctx, field)
+	case "rootSetIds":
+		return ec.fieldContext_ArtifactOutputGroup_rootSetIds(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type ArtifactOutputGroup", field.Name)
+}
+
+func (ec *executionContext) childFields_ArtifactTarget(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "label":
+		return ec.fieldContext_ArtifactTarget_label(ctx, field)
+	case "aspect":
+		return ec.fieldContext_ArtifactTarget_aspect(ctx, field)
+	case "outputGroups":
+		return ec.fieldContext_ArtifactTarget_outputGroups(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type ArtifactTarget", field.Name)
 }
 
 func (ec *executionContext) childFields_AuthenticatedUser(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
@@ -3195,6 +3401,8 @@ func (ec *executionContext) childFields_BazelInvocation(ctx context.Context, fie
 		return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 	case "profile":
 		return ec.fieldContext_BazelInvocation_profile(ctx, field)
+	case "artifactGraph":
+		return ec.fieldContext_BazelInvocation_artifactGraph(ctx, field)
 	}
 	return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 }
@@ -5754,6 +5962,185 @@ func (ec *executionContext) fieldContext_ActionSummary_actionCacheStatistics(_ c
 	return fc, nil
 }
 
+func (ec *executionContext) _ArtifactFile_name(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactFile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactFile_name(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNString2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactFile_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactFile", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactFile_uri(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactFile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactFile_uri(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.URI, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactFile_uri(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactFile", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactFile_digest(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactFile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactFile_digest(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Digest, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactFile_digest(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactFile", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactFile_sizeBytes(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactFile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactFile_sizeBytes(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.SizeBytes, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *int) graphql.Marshaler {
+			return ec.marshalOInt2ᚖint(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactFile_sizeBytes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactFile", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactFile_downloadUrl(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactFile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactFile_downloadUrl(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.ArtifactFile().DownloadURL(ctx, obj)
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactFile_downloadUrl(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactFile", field, true, true, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactGraph_namedSets(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactGraph) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactGraph_namedSets(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.NamedSets, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []*model.ArtifactNamedSet) graphql.Marshaler {
+			return ec.marshalNArtifactNamedSet2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactNamedSetᚄ(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactGraph_namedSets(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactGraph",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_ArtifactNamedSet(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactGraph_targets(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactGraph) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactGraph_targets(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Targets, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []*model.ArtifactTarget) graphql.Marshaler {
+			return ec.marshalNArtifactTarget2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactTargetᚄ(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactGraph_targets(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactGraph",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_ArtifactTarget(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ArtifactMetrics_id(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -5988,6 +6375,231 @@ func (ec *executionContext) fieldContext_ArtifactMetrics_metrics(_ context.Conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return ec.childFields_Metrics(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactNamedSet_id(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactNamedSet) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactNamedSet_id(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.ID, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNString2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactNamedSet_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactNamedSet", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactNamedSet_files(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactNamedSet) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactNamedSet_files(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Files, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []*model.ArtifactFile) graphql.Marshaler {
+			return ec.marshalNArtifactFile2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactFileᚄ(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactNamedSet_files(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactNamedSet",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_ArtifactFile(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactNamedSet_childSetIds(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactNamedSet) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactNamedSet_childSetIds(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.ChildSetIds, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []string) graphql.Marshaler {
+			return ec.marshalNString2ᚕstringᚄ(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactNamedSet_childSetIds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactNamedSet", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactOutputGroup_name(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactOutputGroup) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactOutputGroup_name(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNString2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactOutputGroup_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactOutputGroup", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactOutputGroup_incomplete(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactOutputGroup) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactOutputGroup_incomplete(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Incomplete, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v bool) graphql.Marshaler {
+			return ec.marshalNBoolean2bool(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactOutputGroup_incomplete(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactOutputGroup", field, false, false, errors.New("field of type Boolean does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactOutputGroup_rootSetIds(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactOutputGroup) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactOutputGroup_rootSetIds(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.RootSetIds, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []string) graphql.Marshaler {
+			return ec.marshalNString2ᚕstringᚄ(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactOutputGroup_rootSetIds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactOutputGroup", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactTarget_label(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactTarget) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactTarget_label(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Label, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNString2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactTarget_label(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactTarget", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactTarget_aspect(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactTarget) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactTarget_aspect(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Aspect, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactTarget_aspect(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ArtifactTarget", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _ArtifactTarget_outputGroups(ctx context.Context, field graphql.CollectedField, obj *model.ArtifactTarget) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ArtifactTarget_outputGroups(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.OutputGroups, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []*model.ArtifactOutputGroup) graphql.Marshaler {
+			return ec.marshalNArtifactOutputGroup2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactOutputGroupᚄ(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ArtifactTarget_outputGroups(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_ArtifactOutputGroup(ctx, field)
 		},
 	}
 	return fc, nil
@@ -6868,6 +7480,38 @@ func (ec *executionContext) fieldContext_BazelInvocation_profile(_ context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return ec.childFields_Profile(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BazelInvocation_artifactGraph(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_BazelInvocation_artifactGraph(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.BazelInvocation().ArtifactGraph(ctx, obj)
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *model.ArtifactGraph) graphql.Marshaler {
+			return ec.marshalOArtifactGraph2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactGraph(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_BazelInvocation_artifactGraph(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BazelInvocation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_ArtifactGraph(ctx, field)
 		},
 	}
 	return fc, nil
@@ -29474,6 +30118,128 @@ func (ec *executionContext) _ActionSummary(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var artifactFileImplementors = []string{"ArtifactFile"}
+
+func (ec *executionContext) _ArtifactFile(ctx context.Context, sel ast.SelectionSet, obj *model.ArtifactFile) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, artifactFileImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ArtifactFile")
+		case "name":
+			out.Values[i] = ec._ArtifactFile_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "uri":
+			out.Values[i] = ec._ArtifactFile_uri(ctx, field, obj)
+		case "digest":
+			out.Values[i] = ec._ArtifactFile_digest(ctx, field, obj)
+		case "sizeBytes":
+			out.Values[i] = ec._ArtifactFile_sizeBytes(ctx, field, obj)
+		case "downloadUrl":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ArtifactFile_downloadUrl(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferred), math.MaxInt32)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var artifactGraphImplementors = []string{"ArtifactGraph"}
+
+func (ec *executionContext) _ArtifactGraph(ctx context.Context, sel ast.SelectionSet, obj *model.ArtifactGraph) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, artifactGraphImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ArtifactGraph")
+		case "namedSets":
+			out.Values[i] = ec._ArtifactGraph_namedSets(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "targets":
+			out.Values[i] = ec._ArtifactGraph_targets(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferred), math.MaxInt32)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var artifactMetricsImplementors = []string{"ArtifactMetrics", "Node"}
 
 func (ec *executionContext) _ArtifactMetrics(ctx context.Context, sel ast.SelectionSet, obj *ent.ArtifactMetrics) graphql.Marshaler {
@@ -29570,6 +30336,150 @@ func (ec *executionContext) _ArtifactMetrics(ctx context.Context, sel ast.Select
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferred), math.MaxInt32)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var artifactNamedSetImplementors = []string{"ArtifactNamedSet"}
+
+func (ec *executionContext) _ArtifactNamedSet(ctx context.Context, sel ast.SelectionSet, obj *model.ArtifactNamedSet) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, artifactNamedSetImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ArtifactNamedSet")
+		case "id":
+			out.Values[i] = ec._ArtifactNamedSet_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "files":
+			out.Values[i] = ec._ArtifactNamedSet_files(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "childSetIds":
+			out.Values[i] = ec._ArtifactNamedSet_childSetIds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferred), math.MaxInt32)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var artifactOutputGroupImplementors = []string{"ArtifactOutputGroup"}
+
+func (ec *executionContext) _ArtifactOutputGroup(ctx context.Context, sel ast.SelectionSet, obj *model.ArtifactOutputGroup) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, artifactOutputGroupImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ArtifactOutputGroup")
+		case "name":
+			out.Values[i] = ec._ArtifactOutputGroup_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "incomplete":
+			out.Values[i] = ec._ArtifactOutputGroup_incomplete(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "rootSetIds":
+			out.Values[i] = ec._ArtifactOutputGroup_rootSetIds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferred), math.MaxInt32)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var artifactTargetImplementors = []string{"ArtifactTarget"}
+
+func (ec *executionContext) _ArtifactTarget(ctx context.Context, sel ast.SelectionSet, obj *model.ArtifactTarget) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, artifactTargetImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ArtifactTarget")
+		case "label":
+			out.Values[i] = ec._ArtifactTarget_label(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "aspect":
+			out.Values[i] = ec._ArtifactTarget_aspect(ctx, field, obj)
+		case "outputGroups":
+			out.Values[i] = ec._ArtifactTarget_outputGroups(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -30267,6 +31177,39 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 					}
 				}()
 				res = ec._BazelInvocation_profile(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "artifactGraph":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BazelInvocation_artifactGraph(ctx, field, obj)
 				return res
 			}
 
@@ -35029,9 +35972,113 @@ func (ec *executionContext) unmarshalNActionWhereInput2ᚖgithubᚗcomᚋbuildba
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNArtifactFile2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactFileᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ArtifactFile) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNArtifactFile2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactFile(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNArtifactFile2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactFile(ctx context.Context, sel ast.SelectionSet, v *model.ArtifactFile) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ArtifactFile(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNArtifactMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInput(ctx context.Context, v any) (*ent.ArtifactMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputArtifactMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNArtifactNamedSet2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactNamedSetᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ArtifactNamedSet) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNArtifactNamedSet2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactNamedSet(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNArtifactNamedSet2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactNamedSet(ctx context.Context, sel ast.SelectionSet, v *model.ArtifactNamedSet) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ArtifactNamedSet(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNArtifactOutputGroup2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactOutputGroupᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ArtifactOutputGroup) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNArtifactOutputGroup2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactOutputGroup(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNArtifactOutputGroup2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactOutputGroup(ctx context.Context, sel ast.SelectionSet, v *model.ArtifactOutputGroup) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ArtifactOutputGroup(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNArtifactTarget2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactTargetᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ArtifactTarget) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNArtifactTarget2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactTarget(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNArtifactTarget2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactTarget(ctx context.Context, sel ast.SelectionSet, v *model.ArtifactTarget) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ArtifactTarget(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNAuthenticatedUserWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInput(ctx context.Context, v any) (*ent.AuthenticatedUserWhereInput, error) {
@@ -35533,6 +36580,36 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
+func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalNSystemNetworkStatsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSystemNetworkStatsWhereInput(ctx context.Context, v any) (*ent.SystemNetworkStatsWhereInput, error) {
 	res, err := ec.unmarshalInputSystemNetworkStatsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -35969,6 +37046,13 @@ func (ec *executionContext) unmarshalOActionWhereInput2ᚖgithubᚗcomᚋbuildba
 	}
 	res, err := ec.unmarshalInputActionWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOArtifactGraph2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐArtifactGraph(ctx context.Context, sel ast.SelectionSet, v *model.ArtifactGraph) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ArtifactGraph(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOArtifactMetrics2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetrics(ctx context.Context, sel ast.SelectionSet, v *ent.ArtifactMetrics) graphql.Marshaler {

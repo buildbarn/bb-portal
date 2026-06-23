@@ -557,6 +557,33 @@ export type ActionWhereInput = {
   typeNotNil?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/**
+ * Maps a BEP file URI to a server-side download URL when one is available
+ * (bytestream:// URIs route through bb-portal's /api/v1/servefile/...
+ * endpoint; http(s):// URIs pass through; everything else returns null).
+ */
+export type ArtifactFile = {
+  __typename?: 'ArtifactFile';
+  digest?: Maybe<Scalars['String']['output']>;
+  downloadUrl?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  sizeBytes?: Maybe<Scalars['Int']['output']>;
+  uri?: Maybe<Scalars['String']['output']>;
+};
+
+/**
+ * The build's per-file artifact graph for an invocation. The server stores
+ * this compressed at rest and decompresses and decodes it on demand; the
+ * structured form here is returned directly so the client never decodes a
+ * binary blob. Populated only when the save level is
+ * basic_and_target_and_artifacts and a BuildFinished event arrived.
+ */
+export type ArtifactGraph = {
+  __typename?: 'ArtifactGraph';
+  namedSets: Array<ArtifactNamedSet>;
+  targets: Array<ArtifactTarget>;
+};
+
 export type ArtifactMetrics = Node & {
   __typename?: 'ArtifactMetrics';
   id: Scalars['ID']['output'];
@@ -681,6 +708,41 @@ export type ArtifactMetricsWhereInput = {
   topLevelArtifactsSizeInBytesNotNil?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/**
+ * A NamedSetOfFiles from the build's artifact graph: a set of files plus
+ * references to nested sets. Output groups point at root sets and the
+ * client walks childSetIds to enumerate every file. Mirrors the BEP
+ * NamedSetOfFiles message.
+ */
+export type ArtifactNamedSet = {
+  __typename?: 'ArtifactNamedSet';
+  childSetIds: Array<Scalars['String']['output']>;
+  files: Array<ArtifactFile>;
+  id: Scalars['String']['output'];
+};
+
+/**
+ * A target output group, referencing the root named sets whose transitive
+ * closure makes up the group's files.
+ */
+export type ArtifactOutputGroup = {
+  __typename?: 'ArtifactOutputGroup';
+  incomplete: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  rootSetIds: Array<Scalars['String']['output']>;
+};
+
+/**
+ * A completed target (optionally for a specific aspect) and its output
+ * groups.
+ */
+export type ArtifactTarget = {
+  __typename?: 'ArtifactTarget';
+  aspect?: Maybe<Scalars['String']['output']>;
+  label: Scalars['String']['output'];
+  outputGroups: Array<ArtifactOutputGroup>;
+};
+
 export type AuthenticatedUser = Node & {
   __typename?: 'AuthenticatedUser';
   bazelInvocations: BazelInvocationConnection;
@@ -765,6 +827,7 @@ export type AuthenticatedUserWhereInput = {
 export type BazelInvocation = Node & {
   __typename?: 'BazelInvocation';
   actions?: Maybe<Array<Action>>;
+  artifactGraph?: Maybe<ArtifactGraph>;
   authenticatedUser?: Maybe<AuthenticatedUser>;
   bazelVersion?: Maybe<Scalars['String']['output']>;
   bepCompleted: Scalars['Boolean']['output'];
@@ -3194,6 +3257,13 @@ export type TimingMetricsWhereInput = {
   wallTimeInMsNotNil?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type ArtifactGraphQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type ArtifactGraphQuery = { __typename?: 'Query', getBazelInvocation?: { __typename?: 'BazelInvocation', id: string, artifactGraph?: { __typename?: 'ArtifactGraph', namedSets: Array<{ __typename?: 'ArtifactNamedSet', id: string, childSetIds: Array<string>, files: Array<{ __typename?: 'ArtifactFile', name: string, uri?: string | null, digest?: string | null, sizeBytes?: number | null, downloadUrl?: string | null }> }>, targets: Array<{ __typename?: 'ArtifactTarget', label: string, aspect?: string | null, outputGroups: Array<{ __typename?: 'ArtifactOutputGroup', name: string, incomplete: boolean, rootSetIds: Array<string> }> }> } | null } | null };
+
 export type FindBazelInvocationsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3546,6 +3616,7 @@ export const BazelInvocationSourceControlFragmentDoc = {"kind":"Document","defin
 export const BazelInvocationTagsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationTags"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InvocationTag"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]} as unknown as DocumentNode<BazelInvocationTagsFragment, unknown>;
 export const BazelInvocationTargetMetricsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationTargetMetrics"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TargetMetrics"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"targetsLoaded"}},{"kind":"Field","name":{"kind":"Name","value":"targetsConfigured"}},{"kind":"Field","name":{"kind":"Name","value":"targetsConfiguredNotIncludingAspects"}}]}}]} as unknown as DocumentNode<BazelInvocationTargetMetricsFragment, unknown>;
 export const AuthenticatedUserNodeFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AuthenticatedUserNodeFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AuthenticatedUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"userInfo"}},{"kind":"Field","name":{"kind":"Name","value":"userUUID"}},{"kind":"Field","name":{"kind":"Name","value":"bazelInvocations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bazelInvocationsOrderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bazelInvocationsWhere"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"build"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"buildUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<AuthenticatedUserNodeFragmentFragment, unknown>;
+export const ArtifactGraphDocument = {"__meta__":{"hash":"f87b77176fe3f8237cc9e82fdaabeaf89d5860e5"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ArtifactGraph"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"artifactGraph"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"namedSets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"childSetIds"}},{"kind":"Field","name":{"kind":"Name","value":"files"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"uri"}},{"kind":"Field","name":{"kind":"Name","value":"digest"}},{"kind":"Field","name":{"kind":"Name","value":"sizeBytes"}},{"kind":"Field","name":{"kind":"Name","value":"downloadUrl"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"targets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"aspect"}},{"kind":"Field","name":{"kind":"Name","value":"outputGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"incomplete"}},{"kind":"Field","name":{"kind":"Name","value":"rootSetIds"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<ArtifactGraphQuery, ArtifactGraphQueryVariables>;
 export const FindBazelInvocationsDocument = {"__meta__":{"hash":"4a2014ec256f4b9babab6efa6f27203deba4fb25"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindBazelInvocations"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocationOrder"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocationWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findBazelInvocations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationNode"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationNode"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatedUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userUUID"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}}]}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}},{"kind":"Field","name":{"kind":"Name","value":"build"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"buildUUID"}}]}}]}}]} as unknown as DocumentNode<FindBazelInvocationsQuery, FindBazelInvocationsQueryVariables>;
 export const FindBuildsDocument = {"__meta__":{"hash":"b15260ccc1c9ddb567fa266f98e76090870f0097"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindBuilds"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"BuildOrder"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"BuildWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findBuilds"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BuildNode"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BuildNode"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Build"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"buildUUID"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FindBuildsQuery, FindBuildsQueryVariables>;
 export const CheckIfInvocationExistsDocument = {"__meta__":{"hash":"ca52316963621a0cc875c82e1e2edcd500389987"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CheckIfInvocationExists"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CheckIfInvocationExistsQuery, CheckIfInvocationExistsQueryVariables>;

@@ -107,6 +107,11 @@ message BuildEventStreamService {
       google.protobuf.Empty basic = 1;
       // Save basic data, as well as data about targets and tests.
       google.protobuf.Empty basic_and_target = 2;
+      // Save basic data, target/test data, AND per-file artifact data
+      // produced by the build (NamedSetOfFiles + per-target output groups,
+      // plus orphan sets). Substantially heavier storage; see
+      // database_cleanup_configuration.artifact_retention.
+      google.protobuf.Empty basic_and_target_and_artifacts = 3;
     }
   }
 
@@ -130,6 +135,13 @@ message BuildEventStreamService {
     // either completed or considered abandoned.
     // Recommended value: '604800s' (i.e., 7 days)
     google.protobuf.Duration invocation_retention = 4;
+
+    // How long to retain per-file artifact data after an invocation completes.
+    // Once exceeded, artifact rows are deleted; the invocation and its
+    // aggregate ArtifactMetrics remain. If unset, defaults to invocation_retention.
+    // Must be <= invocation_retention.
+    // Recommended value: '604800s' (i.e., 7 days)
+    google.protobuf.Duration artifact_retention = 5;
   }
 
   // Configuration for the internal database cleanup service. This is a

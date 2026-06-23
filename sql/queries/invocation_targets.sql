@@ -1,3 +1,9 @@
+-- name: GetInvocationTargetIDsForBatch :many
+SELECT id, target_invocation_targets AS target_id
+FROM invocation_targets
+WHERE bazel_invocation_invocation_targets = sqlc.arg(bazel_invocation_id)
+  AND target_invocation_targets = ANY(sqlc.arg(target_ids)::bigint[]);
+
 -- name: CreateInvocationTargetsBulk :exec
 INSERT INTO invocation_targets (
     bazel_invocation_invocation_targets,

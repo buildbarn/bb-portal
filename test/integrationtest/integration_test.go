@@ -81,6 +81,16 @@ var (
 		filename:     "github_actions_lite.bep.ndjson",
 		invocationID: "63500331-1b71-4d7a-9125-df9b3dfe4e0d",
 	}
+	// Captured from the minimal cc_binary workspace under
+	// testdata/bazel_workspace via testdata/bazel_workspace/regenerate-fixture.sh.
+	// Used by TestArtifactGraphEndToEnd; produces NamedSetOfFiles +
+	// TargetCompleted events for one cc_binary target so the artifact
+	// ingestion path can be exercised end-to-end without depending on any
+	// other test's fixture.
+	artifactsEndToEndBuild = bepFile{
+		filename:     "artifacts_endtoend.bep.ndjson",
+		invocationID: "81641f26-3a7f-42e7-9df7-08789b3bd812",
+	}
 	authenticatedUserExternalID = authmetadataextraction.ExampleExternalID()
 	authenticatedUserUUID       = uuid.NewSHA1(uuid.NameSpaceURL, []byte(authenticatedUserExternalID)).String()
 

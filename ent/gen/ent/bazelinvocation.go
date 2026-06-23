@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
@@ -99,6 +100,8 @@ type BazelInvocationEdges struct {
 	IncompleteBuildLogs []*IncompleteBuildLog `json:"incomplete_build_logs,omitempty"`
 	// BuildLogChunks holds the value of the build_log_chunks edge.
 	BuildLogChunks []*BuildLogChunk `json:"build_log_chunks,omitempty"`
+	// IncompleteArtifactGraphs holds the value of the incomplete_artifact_graphs edge.
+	IncompleteArtifactGraphs []*IncompleteArtifactGraph `json:"incomplete_artifact_graphs,omitempty"`
 	// InvocationFiles holds the value of the invocation_files edge.
 	InvocationFiles []*InvocationFiles `json:"invocation_files,omitempty"`
 	// InvocationTargets holds the value of the invocation_targets edge.
@@ -107,21 +110,24 @@ type BazelInvocationEdges struct {
 	TargetKindMappings []*TargetKindMapping `json:"target_kind_mappings,omitempty"`
 	// SourceControl holds the value of the source_control edge.
 	SourceControl []*SourceControl `json:"source_control,omitempty"`
+	// ArtifactGraph holds the value of the artifact_graph edge.
+	ArtifactGraph *InvocationArtifactGraph `json:"artifact_graph,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [15]bool
+	loadedTypes [17]bool
 	// totalCount holds the count of the edges above.
 	totalCount [10]map[string]int
 
-	namedTags                map[string][]*InvocationTag
-	namedConfigurations      map[string][]*Configuration
-	namedActions             map[string][]*Action
-	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
-	namedBuildLogChunks      map[string][]*BuildLogChunk
-	namedInvocationFiles     map[string][]*InvocationFiles
-	namedInvocationTargets   map[string][]*InvocationTarget
-	namedTargetKindMappings  map[string][]*TargetKindMapping
-	namedSourceControl       map[string][]*SourceControl
+	namedTags                     map[string][]*InvocationTag
+	namedConfigurations           map[string][]*Configuration
+	namedActions                  map[string][]*Action
+	namedIncompleteBuildLogs      map[string][]*IncompleteBuildLog
+	namedBuildLogChunks           map[string][]*BuildLogChunk
+	namedIncompleteArtifactGraphs map[string][]*IncompleteArtifactGraph
+	namedInvocationFiles          map[string][]*InvocationFiles
+	namedInvocationTargets        map[string][]*InvocationTarget
+	namedTargetKindMappings       map[string][]*TargetKindMapping
+	namedSourceControl            map[string][]*SourceControl
 }
 
 // InstanceNameOrErr returns the InstanceName value or an error if the edge
@@ -235,10 +241,19 @@ func (e BazelInvocationEdges) BuildLogChunksOrErr() ([]*BuildLogChunk, error) {
 	return nil, &NotLoadedError{edge: "build_log_chunks"}
 }
 
+// IncompleteArtifactGraphsOrErr returns the IncompleteArtifactGraphs value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) IncompleteArtifactGraphsOrErr() ([]*IncompleteArtifactGraph, error) {
+	if e.loadedTypes[11] {
+		return e.IncompleteArtifactGraphs, nil
+	}
+	return nil, &NotLoadedError{edge: "incomplete_artifact_graphs"}
+}
+
 // InvocationFilesOrErr returns the InvocationFiles value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error) {
-	if e.loadedTypes[11] {
+	if e.loadedTypes[12] {
 		return e.InvocationFiles, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_files"}
@@ -247,7 +262,7 @@ func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error)
 // InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error) {
-	if e.loadedTypes[12] {
+	if e.loadedTypes[13] {
 		return e.InvocationTargets, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_targets"}
@@ -256,7 +271,7 @@ func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, err
 // TargetKindMappingsOrErr returns the TargetKindMappings value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
-	if e.loadedTypes[13] {
+	if e.loadedTypes[14] {
 		return e.TargetKindMappings, nil
 	}
 	return nil, &NotLoadedError{edge: "target_kind_mappings"}
@@ -265,10 +280,21 @@ func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, e
 // SourceControlOrErr returns the SourceControl value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) SourceControlOrErr() ([]*SourceControl, error) {
-	if e.loadedTypes[14] {
+	if e.loadedTypes[15] {
 		return e.SourceControl, nil
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
+}
+
+// ArtifactGraphOrErr returns the ArtifactGraph value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BazelInvocationEdges) ArtifactGraphOrErr() (*InvocationArtifactGraph, error) {
+	if e.ArtifactGraph != nil {
+		return e.ArtifactGraph, nil
+	} else if e.loadedTypes[16] {
+		return nil, &NotFoundError{label: invocationartifactgraph.Label}
+	}
+	return nil, &NotLoadedError{edge: "artifact_graph"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -533,6 +559,11 @@ func (_m *BazelInvocation) QueryBuildLogChunks() *BuildLogChunkQuery {
 	return NewBazelInvocationClient(_m.config).QueryBuildLogChunks(_m)
 }
 
+// QueryIncompleteArtifactGraphs queries the "incomplete_artifact_graphs" edge of the BazelInvocation entity.
+func (_m *BazelInvocation) QueryIncompleteArtifactGraphs() *IncompleteArtifactGraphQuery {
+	return NewBazelInvocationClient(_m.config).QueryIncompleteArtifactGraphs(_m)
+}
+
 // QueryInvocationFiles queries the "invocation_files" edge of the BazelInvocation entity.
 func (_m *BazelInvocation) QueryInvocationFiles() *InvocationFilesQuery {
 	return NewBazelInvocationClient(_m.config).QueryInvocationFiles(_m)
@@ -551,6 +582,11 @@ func (_m *BazelInvocation) QueryTargetKindMappings() *TargetKindMappingQuery {
 // QuerySourceControl queries the "source_control" edge of the BazelInvocation entity.
 func (_m *BazelInvocation) QuerySourceControl() *SourceControlQuery {
 	return NewBazelInvocationClient(_m.config).QuerySourceControl(_m)
+}
+
+// QueryArtifactGraph queries the "artifact_graph" edge of the BazelInvocation entity.
+func (_m *BazelInvocation) QueryArtifactGraph() *InvocationArtifactGraphQuery {
+	return NewBazelInvocationClient(_m.config).QueryArtifactGraph(_m)
 }
 
 // Update returns a builder for updating this BazelInvocation.
@@ -758,6 +794,30 @@ func (_m *BazelInvocation) appendNamedBuildLogChunks(name string, edges ...*Buil
 		_m.Edges.namedBuildLogChunks[name] = []*BuildLogChunk{}
 	} else {
 		_m.Edges.namedBuildLogChunks[name] = append(_m.Edges.namedBuildLogChunks[name], edges...)
+	}
+}
+
+// NamedIncompleteArtifactGraphs returns the IncompleteArtifactGraphs named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *BazelInvocation) NamedIncompleteArtifactGraphs(name string) ([]*IncompleteArtifactGraph, error) {
+	if _m.Edges.namedIncompleteArtifactGraphs == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedIncompleteArtifactGraphs[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *BazelInvocation) appendNamedIncompleteArtifactGraphs(name string, edges ...*IncompleteArtifactGraph) {
+	if _m.Edges.namedIncompleteArtifactGraphs == nil {
+		_m.Edges.namedIncompleteArtifactGraphs = make(map[string][]*IncompleteArtifactGraph)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedIncompleteArtifactGraphs[name] = []*IncompleteArtifactGraph{}
+	} else {
+		_m.Edges.namedIncompleteArtifactGraphs[name] = append(_m.Edges.namedIncompleteArtifactGraphs[name], edges...)
 	}
 }
 

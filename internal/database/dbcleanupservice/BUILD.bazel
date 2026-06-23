@@ -3,11 +3,14 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "dbcleanupservice",
     srcs = [
+        "compact_artifact_graphs.go",
         "compact_logs.go",
         "dbcleanupservice.go",
+        "delete_incomplete_artifact_graphs.go",
         "delete_incomplete_logs.go",
         "lockinvocations.go",
         "next_slice.go",
+        "remove_old_artifacts.go",
         "remove_old_invocations.go",
         "remove_orphaned_test_targets.go",
         "remove_target_kind_mappings.go",
@@ -21,7 +24,9 @@ go_library(
         "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/build",
+        "//ent/gen/ent/incompleteartifactgraph",
         "//ent/gen/ent/incompletebuildlog",
+        "//ent/gen/ent/invocationartifactgraph",
         "//ent/gen/ent/target",
         "//ent/gen/ent/targetkindmapping",
         "//ent/gen/ent/testtarget",
@@ -38,6 +43,8 @@ go_library(
         "@io_opentelemetry_go_otel//attribute",
         "@io_opentelemetry_go_otel//codes",
         "@io_opentelemetry_go_otel_trace//:trace",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
     ],
 )
 

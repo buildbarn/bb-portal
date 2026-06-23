@@ -75,6 +75,8 @@ const (
 	EdgeIncompleteBuildLogs = "incomplete_build_logs"
 	// EdgeBuildLogChunks holds the string denoting the build_log_chunks edge name in mutations.
 	EdgeBuildLogChunks = "build_log_chunks"
+	// EdgeIncompleteArtifactGraphs holds the string denoting the incomplete_artifact_graphs edge name in mutations.
+	EdgeIncompleteArtifactGraphs = "incomplete_artifact_graphs"
 	// EdgeInvocationFiles holds the string denoting the invocation_files edge name in mutations.
 	EdgeInvocationFiles = "invocation_files"
 	// EdgeInvocationTargets holds the string denoting the invocation_targets edge name in mutations.
@@ -83,6 +85,8 @@ const (
 	EdgeTargetKindMappings = "target_kind_mappings"
 	// EdgeSourceControl holds the string denoting the source_control edge name in mutations.
 	EdgeSourceControl = "source_control"
+	// EdgeArtifactGraph holds the string denoting the artifact_graph edge name in mutations.
+	EdgeArtifactGraph = "artifact_graph"
 	// Table holds the table name of the bazelinvocation in the database.
 	Table = "bazel_invocations"
 	// InstanceNameTable is the table that holds the instance_name relation/edge.
@@ -162,6 +166,13 @@ const (
 	BuildLogChunksInverseTable = "build_log_chunks"
 	// BuildLogChunksColumn is the table column denoting the build_log_chunks relation/edge.
 	BuildLogChunksColumn = "bazel_invocation_build_log_chunks"
+	// IncompleteArtifactGraphsTable is the table that holds the incomplete_artifact_graphs relation/edge.
+	IncompleteArtifactGraphsTable = "incomplete_artifact_graphs"
+	// IncompleteArtifactGraphsInverseTable is the table name for the IncompleteArtifactGraph entity.
+	// It exists in this package in order to avoid circular dependency with the "incompleteartifactgraph" package.
+	IncompleteArtifactGraphsInverseTable = "incomplete_artifact_graphs"
+	// IncompleteArtifactGraphsColumn is the table column denoting the incomplete_artifact_graphs relation/edge.
+	IncompleteArtifactGraphsColumn = "bazel_invocation_id"
 	// InvocationFilesTable is the table that holds the invocation_files relation/edge.
 	InvocationFilesTable = "invocation_files"
 	// InvocationFilesInverseTable is the table name for the InvocationFiles entity.
@@ -190,6 +201,13 @@ const (
 	SourceControlInverseTable = "source_controls"
 	// SourceControlColumn is the table column denoting the source_control relation/edge.
 	SourceControlColumn = "bazel_invocation_source_control"
+	// ArtifactGraphTable is the table that holds the artifact_graph relation/edge.
+	ArtifactGraphTable = "invocation_artifact_graphs"
+	// ArtifactGraphInverseTable is the table name for the InvocationArtifactGraph entity.
+	// It exists in this package in order to avoid circular dependency with the "invocationartifactgraph" package.
+	ArtifactGraphInverseTable = "invocation_artifact_graphs"
+	// ArtifactGraphColumn is the table column denoting the artifact_graph relation/edge.
+	ArtifactGraphColumn = "bazel_invocation_id"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.
@@ -460,6 +478,20 @@ func ByBuildLogChunks(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByIncompleteArtifactGraphsCount orders the results by incomplete_artifact_graphs count.
+func ByIncompleteArtifactGraphsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newIncompleteArtifactGraphsStep(), opts...)
+	}
+}
+
+// ByIncompleteArtifactGraphs orders the results by incomplete_artifact_graphs terms.
+func ByIncompleteArtifactGraphs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newIncompleteArtifactGraphsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByInvocationFilesCount orders the results by invocation_files count.
 func ByInvocationFilesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -513,6 +545,13 @@ func BySourceControlCount(opts ...sql.OrderTermOption) OrderOption {
 func BySourceControl(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByArtifactGraphField orders the results by artifact_graph field.
+func ByArtifactGraphField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newArtifactGraphStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newInstanceNameStep() *sqlgraph.Step {
@@ -592,6 +631,13 @@ func newBuildLogChunksStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, BuildLogChunksTable, BuildLogChunksColumn),
 	)
 }
+func newIncompleteArtifactGraphsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(IncompleteArtifactGraphsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, IncompleteArtifactGraphsTable, IncompleteArtifactGraphsColumn),
+	)
+}
 func newInvocationFilesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -618,5 +664,12 @@ func newSourceControlStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SourceControlInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, SourceControlTable, SourceControlColumn),
+	)
+}
+func newArtifactGraphStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ArtifactGraphInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, ArtifactGraphTable, ArtifactGraphColumn),
 	)
 }

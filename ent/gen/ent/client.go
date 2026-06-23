@@ -30,8 +30,10 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompleteartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationartifactgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -88,10 +90,14 @@ type Client struct {
 	EventMetadata *EventMetadataClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
+	// IncompleteArtifactGraph is the client for interacting with the IncompleteArtifactGraph builders.
+	IncompleteArtifactGraph *IncompleteArtifactGraphClient
 	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
 	IncompleteBuildLog *IncompleteBuildLogClient
 	// InstanceName is the client for interacting with the InstanceName builders.
 	InstanceName *InstanceNameClient
+	// InvocationArtifactGraph is the client for interacting with the InvocationArtifactGraph builders.
+	InvocationArtifactGraph *InvocationArtifactGraphClient
 	// InvocationFiles is the client for interacting with the InvocationFiles builders.
 	InvocationFiles *InvocationFilesClient
 	// InvocationTag is the client for interacting with the InvocationTag builders.
@@ -154,8 +160,10 @@ func (c *Client) init() {
 	c.ConnectionMetadata = NewConnectionMetadataClient(c.config)
 	c.EventMetadata = NewEventMetadataClient(c.config)
 	c.GarbageMetrics = NewGarbageMetricsClient(c.config)
+	c.IncompleteArtifactGraph = NewIncompleteArtifactGraphClient(c.config)
 	c.IncompleteBuildLog = NewIncompleteBuildLogClient(c.config)
 	c.InstanceName = NewInstanceNameClient(c.config)
+	c.InvocationArtifactGraph = NewInvocationArtifactGraphClient(c.config)
 	c.InvocationFiles = NewInvocationFilesClient(c.config)
 	c.InvocationTag = NewInvocationTagClient(c.config)
 	c.InvocationTarget = NewInvocationTargetClient(c.config)
@@ -263,42 +271,44 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                   ctx,
-		config:                cfg,
-		Action:                NewActionClient(cfg),
-		ActionCacheStatistics: NewActionCacheStatisticsClient(cfg),
-		ActionData:            NewActionDataClient(cfg),
-		ActionSummary:         NewActionSummaryClient(cfg),
-		ArtifactMetrics:       NewArtifactMetricsClient(cfg),
-		AuthenticatedUser:     NewAuthenticatedUserClient(cfg),
-		BazelInvocation:       NewBazelInvocationClient(cfg),
-		Build:                 NewBuildClient(cfg),
-		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
-		BuildLogChunk:         NewBuildLogChunkClient(cfg),
-		BuildTag:              NewBuildTagClient(cfg),
-		Configuration:         NewConfigurationClient(cfg),
-		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
-		EventMetadata:         NewEventMetadataClient(cfg),
-		GarbageMetrics:        NewGarbageMetricsClient(cfg),
-		IncompleteBuildLog:    NewIncompleteBuildLogClient(cfg),
-		InstanceName:          NewInstanceNameClient(cfg),
-		InvocationFiles:       NewInvocationFilesClient(cfg),
-		InvocationTag:         NewInvocationTagClient(cfg),
-		InvocationTarget:      NewInvocationTargetClient(cfg),
-		MemoryMetrics:         NewMemoryMetricsClient(cfg),
-		Metrics:               NewMetricsClient(cfg),
-		MissDetail:            NewMissDetailClient(cfg),
-		NetworkMetrics:        NewNetworkMetricsClient(cfg),
-		RunnerCount:           NewRunnerCountClient(cfg),
-		SourceControl:         NewSourceControlClient(cfg),
-		SystemNetworkStats:    NewSystemNetworkStatsClient(cfg),
-		Target:                NewTargetClient(cfg),
-		TargetKindMapping:     NewTargetKindMappingClient(cfg),
-		TargetMetrics:         NewTargetMetricsClient(cfg),
-		TestResult:            NewTestResultClient(cfg),
-		TestSummary:           NewTestSummaryClient(cfg),
-		TestTarget:            NewTestTargetClient(cfg),
-		TimingMetrics:         NewTimingMetricsClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		Action:                  NewActionClient(cfg),
+		ActionCacheStatistics:   NewActionCacheStatisticsClient(cfg),
+		ActionData:              NewActionDataClient(cfg),
+		ActionSummary:           NewActionSummaryClient(cfg),
+		ArtifactMetrics:         NewArtifactMetricsClient(cfg),
+		AuthenticatedUser:       NewAuthenticatedUserClient(cfg),
+		BazelInvocation:         NewBazelInvocationClient(cfg),
+		Build:                   NewBuildClient(cfg),
+		BuildGraphMetrics:       NewBuildGraphMetricsClient(cfg),
+		BuildLogChunk:           NewBuildLogChunkClient(cfg),
+		BuildTag:                NewBuildTagClient(cfg),
+		Configuration:           NewConfigurationClient(cfg),
+		ConnectionMetadata:      NewConnectionMetadataClient(cfg),
+		EventMetadata:           NewEventMetadataClient(cfg),
+		GarbageMetrics:          NewGarbageMetricsClient(cfg),
+		IncompleteArtifactGraph: NewIncompleteArtifactGraphClient(cfg),
+		IncompleteBuildLog:      NewIncompleteBuildLogClient(cfg),
+		InstanceName:            NewInstanceNameClient(cfg),
+		InvocationArtifactGraph: NewInvocationArtifactGraphClient(cfg),
+		InvocationFiles:         NewInvocationFilesClient(cfg),
+		InvocationTag:           NewInvocationTagClient(cfg),
+		InvocationTarget:        NewInvocationTargetClient(cfg),
+		MemoryMetrics:           NewMemoryMetricsClient(cfg),
+		Metrics:                 NewMetricsClient(cfg),
+		MissDetail:              NewMissDetailClient(cfg),
+		NetworkMetrics:          NewNetworkMetricsClient(cfg),
+		RunnerCount:             NewRunnerCountClient(cfg),
+		SourceControl:           NewSourceControlClient(cfg),
+		SystemNetworkStats:      NewSystemNetworkStatsClient(cfg),
+		Target:                  NewTargetClient(cfg),
+		TargetKindMapping:       NewTargetKindMappingClient(cfg),
+		TargetMetrics:           NewTargetMetricsClient(cfg),
+		TestResult:              NewTestResultClient(cfg),
+		TestSummary:             NewTestSummaryClient(cfg),
+		TestTarget:              NewTestTargetClient(cfg),
+		TimingMetrics:           NewTimingMetricsClient(cfg),
 	}, nil
 }
 
@@ -316,42 +326,44 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                   ctx,
-		config:                cfg,
-		Action:                NewActionClient(cfg),
-		ActionCacheStatistics: NewActionCacheStatisticsClient(cfg),
-		ActionData:            NewActionDataClient(cfg),
-		ActionSummary:         NewActionSummaryClient(cfg),
-		ArtifactMetrics:       NewArtifactMetricsClient(cfg),
-		AuthenticatedUser:     NewAuthenticatedUserClient(cfg),
-		BazelInvocation:       NewBazelInvocationClient(cfg),
-		Build:                 NewBuildClient(cfg),
-		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
-		BuildLogChunk:         NewBuildLogChunkClient(cfg),
-		BuildTag:              NewBuildTagClient(cfg),
-		Configuration:         NewConfigurationClient(cfg),
-		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
-		EventMetadata:         NewEventMetadataClient(cfg),
-		GarbageMetrics:        NewGarbageMetricsClient(cfg),
-		IncompleteBuildLog:    NewIncompleteBuildLogClient(cfg),
-		InstanceName:          NewInstanceNameClient(cfg),
-		InvocationFiles:       NewInvocationFilesClient(cfg),
-		InvocationTag:         NewInvocationTagClient(cfg),
-		InvocationTarget:      NewInvocationTargetClient(cfg),
-		MemoryMetrics:         NewMemoryMetricsClient(cfg),
-		Metrics:               NewMetricsClient(cfg),
-		MissDetail:            NewMissDetailClient(cfg),
-		NetworkMetrics:        NewNetworkMetricsClient(cfg),
-		RunnerCount:           NewRunnerCountClient(cfg),
-		SourceControl:         NewSourceControlClient(cfg),
-		SystemNetworkStats:    NewSystemNetworkStatsClient(cfg),
-		Target:                NewTargetClient(cfg),
-		TargetKindMapping:     NewTargetKindMappingClient(cfg),
-		TargetMetrics:         NewTargetMetricsClient(cfg),
-		TestResult:            NewTestResultClient(cfg),
-		TestSummary:           NewTestSummaryClient(cfg),
-		TestTarget:            NewTestTargetClient(cfg),
-		TimingMetrics:         NewTimingMetricsClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		Action:                  NewActionClient(cfg),
+		ActionCacheStatistics:   NewActionCacheStatisticsClient(cfg),
+		ActionData:              NewActionDataClient(cfg),
+		ActionSummary:           NewActionSummaryClient(cfg),
+		ArtifactMetrics:         NewArtifactMetricsClient(cfg),
+		AuthenticatedUser:       NewAuthenticatedUserClient(cfg),
+		BazelInvocation:         NewBazelInvocationClient(cfg),
+		Build:                   NewBuildClient(cfg),
+		BuildGraphMetrics:       NewBuildGraphMetricsClient(cfg),
+		BuildLogChunk:           NewBuildLogChunkClient(cfg),
+		BuildTag:                NewBuildTagClient(cfg),
+		Configuration:           NewConfigurationClient(cfg),
+		ConnectionMetadata:      NewConnectionMetadataClient(cfg),
+		EventMetadata:           NewEventMetadataClient(cfg),
+		GarbageMetrics:          NewGarbageMetricsClient(cfg),
+		IncompleteArtifactGraph: NewIncompleteArtifactGraphClient(cfg),
+		IncompleteBuildLog:      NewIncompleteBuildLogClient(cfg),
+		InstanceName:            NewInstanceNameClient(cfg),
+		InvocationArtifactGraph: NewInvocationArtifactGraphClient(cfg),
+		InvocationFiles:         NewInvocationFilesClient(cfg),
+		InvocationTag:           NewInvocationTagClient(cfg),
+		InvocationTarget:        NewInvocationTargetClient(cfg),
+		MemoryMetrics:           NewMemoryMetricsClient(cfg),
+		Metrics:                 NewMetricsClient(cfg),
+		MissDetail:              NewMissDetailClient(cfg),
+		NetworkMetrics:          NewNetworkMetricsClient(cfg),
+		RunnerCount:             NewRunnerCountClient(cfg),
+		SourceControl:           NewSourceControlClient(cfg),
+		SystemNetworkStats:      NewSystemNetworkStatsClient(cfg),
+		Target:                  NewTargetClient(cfg),
+		TargetKindMapping:       NewTargetKindMappingClient(cfg),
+		TargetMetrics:           NewTargetMetricsClient(cfg),
+		TestResult:              NewTestResultClient(cfg),
+		TestSummary:             NewTestSummaryClient(cfg),
+		TestTarget:              NewTestTargetClient(cfg),
+		TimingMetrics:           NewTimingMetricsClient(cfg),
 	}, nil
 }
 
@@ -384,11 +396,13 @@ func (c *Client) Use(hooks ...Hook) {
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
 		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.Configuration,
-		c.ConnectionMetadata, c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog,
-		c.InstanceName, c.InvocationFiles, c.InvocationTag, c.InvocationTarget,
-		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics, c.RunnerCount,
-		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
-		c.TargetMetrics, c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
+		c.ConnectionMetadata, c.EventMetadata, c.GarbageMetrics,
+		c.IncompleteArtifactGraph, c.IncompleteBuildLog, c.InstanceName,
+		c.InvocationArtifactGraph, c.InvocationFiles, c.InvocationTag,
+		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics,
+		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
+		c.TargetKindMapping, c.TargetMetrics, c.TestResult, c.TestSummary,
+		c.TestTarget, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -401,11 +415,13 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
 		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.Configuration,
-		c.ConnectionMetadata, c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog,
-		c.InstanceName, c.InvocationFiles, c.InvocationTag, c.InvocationTarget,
-		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics, c.RunnerCount,
-		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
-		c.TargetMetrics, c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
+		c.ConnectionMetadata, c.EventMetadata, c.GarbageMetrics,
+		c.IncompleteArtifactGraph, c.IncompleteBuildLog, c.InstanceName,
+		c.InvocationArtifactGraph, c.InvocationFiles, c.InvocationTag,
+		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics,
+		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
+		c.TargetKindMapping, c.TargetMetrics, c.TestResult, c.TestSummary,
+		c.TestTarget, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -444,10 +460,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.EventMetadata.mutate(ctx, m)
 	case *GarbageMetricsMutation:
 		return c.GarbageMetrics.mutate(ctx, m)
+	case *IncompleteArtifactGraphMutation:
+		return c.IncompleteArtifactGraph.mutate(ctx, m)
 	case *IncompleteBuildLogMutation:
 		return c.IncompleteBuildLog.mutate(ctx, m)
 	case *InstanceNameMutation:
 		return c.InstanceName.mutate(ctx, m)
+	case *InvocationArtifactGraphMutation:
+		return c.InvocationArtifactGraph.mutate(ctx, m)
 	case *InvocationFilesMutation:
 		return c.InvocationFiles.mutate(ctx, m)
 	case *InvocationTagMutation:
@@ -1746,6 +1766,22 @@ func (c *BazelInvocationClient) QueryBuildLogChunks(_m *BazelInvocation) *BuildL
 	return query
 }
 
+// QueryIncompleteArtifactGraphs queries the incomplete_artifact_graphs edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryIncompleteArtifactGraphs(_m *BazelInvocation) *IncompleteArtifactGraphQuery {
+	query := (&IncompleteArtifactGraphClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(incompleteartifactgraph.Table, incompleteartifactgraph.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.IncompleteArtifactGraphsTable, bazelinvocation.IncompleteArtifactGraphsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryInvocationFiles queries the invocation_files edge of a BazelInvocation.
 func (c *BazelInvocationClient) QueryInvocationFiles(_m *BazelInvocation) *InvocationFilesQuery {
 	query := (&InvocationFilesClient{config: c.config}).Query()
@@ -1803,6 +1839,22 @@ func (c *BazelInvocationClient) QuerySourceControl(_m *BazelInvocation) *SourceC
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(sourcecontrol.Table, sourcecontrol.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryArtifactGraph queries the artifact_graph edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryArtifactGraph(_m *BazelInvocation) *InvocationArtifactGraphQuery {
+	query := (&InvocationArtifactGraphClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(invocationartifactgraph.Table, invocationartifactgraph.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.ArtifactGraphTable, bazelinvocation.ArtifactGraphColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -3093,6 +3145,155 @@ func (c *GarbageMetricsClient) mutate(ctx context.Context, m *GarbageMetricsMuta
 	}
 }
 
+// IncompleteArtifactGraphClient is a client for the IncompleteArtifactGraph schema.
+type IncompleteArtifactGraphClient struct {
+	config
+}
+
+// NewIncompleteArtifactGraphClient returns a client for the IncompleteArtifactGraph from the given config.
+func NewIncompleteArtifactGraphClient(c config) *IncompleteArtifactGraphClient {
+	return &IncompleteArtifactGraphClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `incompleteartifactgraph.Hooks(f(g(h())))`.
+func (c *IncompleteArtifactGraphClient) Use(hooks ...Hook) {
+	c.hooks.IncompleteArtifactGraph = append(c.hooks.IncompleteArtifactGraph, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `incompleteartifactgraph.Intercept(f(g(h())))`.
+func (c *IncompleteArtifactGraphClient) Intercept(interceptors ...Interceptor) {
+	c.inters.IncompleteArtifactGraph = append(c.inters.IncompleteArtifactGraph, interceptors...)
+}
+
+// Create returns a builder for creating a IncompleteArtifactGraph entity.
+func (c *IncompleteArtifactGraphClient) Create() *IncompleteArtifactGraphCreate {
+	mutation := newIncompleteArtifactGraphMutation(c.config, OpCreate)
+	return &IncompleteArtifactGraphCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of IncompleteArtifactGraph entities.
+func (c *IncompleteArtifactGraphClient) CreateBulk(builders ...*IncompleteArtifactGraphCreate) *IncompleteArtifactGraphCreateBulk {
+	return &IncompleteArtifactGraphCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *IncompleteArtifactGraphClient) MapCreateBulk(slice any, setFunc func(*IncompleteArtifactGraphCreate, int)) *IncompleteArtifactGraphCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &IncompleteArtifactGraphCreateBulk{err: fmt.Errorf("calling to IncompleteArtifactGraphClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*IncompleteArtifactGraphCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &IncompleteArtifactGraphCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for IncompleteArtifactGraph.
+func (c *IncompleteArtifactGraphClient) Update() *IncompleteArtifactGraphUpdate {
+	mutation := newIncompleteArtifactGraphMutation(c.config, OpUpdate)
+	return &IncompleteArtifactGraphUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *IncompleteArtifactGraphClient) UpdateOne(_m *IncompleteArtifactGraph) *IncompleteArtifactGraphUpdateOne {
+	mutation := newIncompleteArtifactGraphMutation(c.config, OpUpdateOne, withIncompleteArtifactGraph(_m))
+	return &IncompleteArtifactGraphUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *IncompleteArtifactGraphClient) UpdateOneID(id int64) *IncompleteArtifactGraphUpdateOne {
+	mutation := newIncompleteArtifactGraphMutation(c.config, OpUpdateOne, withIncompleteArtifactGraphID(id))
+	return &IncompleteArtifactGraphUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for IncompleteArtifactGraph.
+func (c *IncompleteArtifactGraphClient) Delete() *IncompleteArtifactGraphDelete {
+	mutation := newIncompleteArtifactGraphMutation(c.config, OpDelete)
+	return &IncompleteArtifactGraphDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *IncompleteArtifactGraphClient) DeleteOne(_m *IncompleteArtifactGraph) *IncompleteArtifactGraphDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *IncompleteArtifactGraphClient) DeleteOneID(id int64) *IncompleteArtifactGraphDeleteOne {
+	builder := c.Delete().Where(incompleteartifactgraph.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &IncompleteArtifactGraphDeleteOne{builder}
+}
+
+// Query returns a query builder for IncompleteArtifactGraph.
+func (c *IncompleteArtifactGraphClient) Query() *IncompleteArtifactGraphQuery {
+	return &IncompleteArtifactGraphQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeIncompleteArtifactGraph},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a IncompleteArtifactGraph entity by its id.
+func (c *IncompleteArtifactGraphClient) Get(ctx context.Context, id int64) (*IncompleteArtifactGraph, error) {
+	return c.Query().Where(incompleteartifactgraph.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *IncompleteArtifactGraphClient) GetX(ctx context.Context, id int64) *IncompleteArtifactGraph {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a IncompleteArtifactGraph.
+func (c *IncompleteArtifactGraphClient) QueryBazelInvocation(_m *IncompleteArtifactGraph) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(incompleteartifactgraph.Table, incompleteartifactgraph.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, incompleteartifactgraph.BazelInvocationTable, incompleteartifactgraph.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *IncompleteArtifactGraphClient) Hooks() []Hook {
+	return c.hooks.IncompleteArtifactGraph
+}
+
+// Interceptors returns the client interceptors.
+func (c *IncompleteArtifactGraphClient) Interceptors() []Interceptor {
+	return c.inters.IncompleteArtifactGraph
+}
+
+func (c *IncompleteArtifactGraphClient) mutate(ctx context.Context, m *IncompleteArtifactGraphMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&IncompleteArtifactGraphCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&IncompleteArtifactGraphUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&IncompleteArtifactGraphUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&IncompleteArtifactGraphDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown IncompleteArtifactGraph mutation op: %q", m.Op())
+	}
+}
+
 // IncompleteBuildLogClient is a client for the IncompleteBuildLog schema.
 type IncompleteBuildLogClient struct {
 	config
@@ -3420,6 +3621,155 @@ func (c *InstanceNameClient) mutate(ctx context.Context, m *InstanceNameMutation
 		return (&InstanceNameDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown InstanceName mutation op: %q", m.Op())
+	}
+}
+
+// InvocationArtifactGraphClient is a client for the InvocationArtifactGraph schema.
+type InvocationArtifactGraphClient struct {
+	config
+}
+
+// NewInvocationArtifactGraphClient returns a client for the InvocationArtifactGraph from the given config.
+func NewInvocationArtifactGraphClient(c config) *InvocationArtifactGraphClient {
+	return &InvocationArtifactGraphClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `invocationartifactgraph.Hooks(f(g(h())))`.
+func (c *InvocationArtifactGraphClient) Use(hooks ...Hook) {
+	c.hooks.InvocationArtifactGraph = append(c.hooks.InvocationArtifactGraph, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `invocationartifactgraph.Intercept(f(g(h())))`.
+func (c *InvocationArtifactGraphClient) Intercept(interceptors ...Interceptor) {
+	c.inters.InvocationArtifactGraph = append(c.inters.InvocationArtifactGraph, interceptors...)
+}
+
+// Create returns a builder for creating a InvocationArtifactGraph entity.
+func (c *InvocationArtifactGraphClient) Create() *InvocationArtifactGraphCreate {
+	mutation := newInvocationArtifactGraphMutation(c.config, OpCreate)
+	return &InvocationArtifactGraphCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of InvocationArtifactGraph entities.
+func (c *InvocationArtifactGraphClient) CreateBulk(builders ...*InvocationArtifactGraphCreate) *InvocationArtifactGraphCreateBulk {
+	return &InvocationArtifactGraphCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *InvocationArtifactGraphClient) MapCreateBulk(slice any, setFunc func(*InvocationArtifactGraphCreate, int)) *InvocationArtifactGraphCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &InvocationArtifactGraphCreateBulk{err: fmt.Errorf("calling to InvocationArtifactGraphClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*InvocationArtifactGraphCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &InvocationArtifactGraphCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for InvocationArtifactGraph.
+func (c *InvocationArtifactGraphClient) Update() *InvocationArtifactGraphUpdate {
+	mutation := newInvocationArtifactGraphMutation(c.config, OpUpdate)
+	return &InvocationArtifactGraphUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *InvocationArtifactGraphClient) UpdateOne(_m *InvocationArtifactGraph) *InvocationArtifactGraphUpdateOne {
+	mutation := newInvocationArtifactGraphMutation(c.config, OpUpdateOne, withInvocationArtifactGraph(_m))
+	return &InvocationArtifactGraphUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *InvocationArtifactGraphClient) UpdateOneID(id int64) *InvocationArtifactGraphUpdateOne {
+	mutation := newInvocationArtifactGraphMutation(c.config, OpUpdateOne, withInvocationArtifactGraphID(id))
+	return &InvocationArtifactGraphUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for InvocationArtifactGraph.
+func (c *InvocationArtifactGraphClient) Delete() *InvocationArtifactGraphDelete {
+	mutation := newInvocationArtifactGraphMutation(c.config, OpDelete)
+	return &InvocationArtifactGraphDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *InvocationArtifactGraphClient) DeleteOne(_m *InvocationArtifactGraph) *InvocationArtifactGraphDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *InvocationArtifactGraphClient) DeleteOneID(id int64) *InvocationArtifactGraphDeleteOne {
+	builder := c.Delete().Where(invocationartifactgraph.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &InvocationArtifactGraphDeleteOne{builder}
+}
+
+// Query returns a query builder for InvocationArtifactGraph.
+func (c *InvocationArtifactGraphClient) Query() *InvocationArtifactGraphQuery {
+	return &InvocationArtifactGraphQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeInvocationArtifactGraph},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a InvocationArtifactGraph entity by its id.
+func (c *InvocationArtifactGraphClient) Get(ctx context.Context, id int64) (*InvocationArtifactGraph, error) {
+	return c.Query().Where(invocationartifactgraph.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *InvocationArtifactGraphClient) GetX(ctx context.Context, id int64) *InvocationArtifactGraph {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a InvocationArtifactGraph.
+func (c *InvocationArtifactGraphClient) QueryBazelInvocation(_m *InvocationArtifactGraph) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(invocationartifactgraph.Table, invocationartifactgraph.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, invocationartifactgraph.BazelInvocationTable, invocationartifactgraph.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *InvocationArtifactGraphClient) Hooks() []Hook {
+	return c.hooks.InvocationArtifactGraph
+}
+
+// Interceptors returns the client interceptors.
+func (c *InvocationArtifactGraphClient) Interceptors() []Interceptor {
+	return c.inters.InvocationArtifactGraph
+}
+
+func (c *InvocationArtifactGraphClient) mutate(ctx context.Context, m *InvocationArtifactGraphMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&InvocationArtifactGraphCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&InvocationArtifactGraphUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&InvocationArtifactGraphUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&InvocationArtifactGraphDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown InvocationArtifactGraph mutation op: %q", m.Op())
 	}
 }
 
@@ -6237,20 +6587,21 @@ type (
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
 		BuildTag, Configuration, ConnectionMetadata, EventMetadata, GarbageMetrics,
-		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTag,
-		InvocationTarget, MemoryMetrics, Metrics, MissDetail, NetworkMetrics,
-		RunnerCount, SourceControl, SystemNetworkStats, Target, TargetKindMapping,
-		TargetMetrics, TestResult, TestSummary, TestTarget, TimingMetrics []ent.Hook
+		IncompleteArtifactGraph, IncompleteBuildLog, InstanceName,
+		InvocationArtifactGraph, InvocationFiles, InvocationTag, InvocationTarget,
+		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, RunnerCount, SourceControl,
+		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestResult,
+		TestSummary, TestTarget, TimingMetrics []ent.Hook
 	}
 	inters struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
 		BuildTag, Configuration, ConnectionMetadata, EventMetadata, GarbageMetrics,
-		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTag,
-		InvocationTarget, MemoryMetrics, Metrics, MissDetail, NetworkMetrics,
-		RunnerCount, SourceControl, SystemNetworkStats, Target, TargetKindMapping,
-		TargetMetrics, TestResult, TestSummary, TestTarget,
-		TimingMetrics []ent.Interceptor
+		IncompleteArtifactGraph, IncompleteBuildLog, InstanceName,
+		InvocationArtifactGraph, InvocationFiles, InvocationTag, InvocationTarget,
+		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, RunnerCount, SourceControl,
+		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestResult,
+		TestSummary, TestTarget, TimingMetrics []ent.Interceptor
 	}
 )
 

@@ -17,6 +17,7 @@ go_library(
         "saveFetch.go",
         "saveStarted.go",
         "saveWorkspaceStatus.go",
+        "save_artifact_graph_events.go",
         "save_batch.go",
         "save_configuration.go",
         "save_options_parsed.go",
@@ -61,6 +62,7 @@ go_library(
         "@io_opentelemetry_go_otel_trace//:trace",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_grpc//status",
+        "@org_golang_google_protobuf//proto",
     ],
 )
 
