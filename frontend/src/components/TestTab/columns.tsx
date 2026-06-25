@@ -11,7 +11,7 @@ import {
 import { TEST_STATUS_FILTERS } from "@/types/TestStatus";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import styles from "../../theme/theme.module.css";
-import NullBooleanTag from "../NullableBooleanTag";
+import { type CacheLocation, CacheLocationTag } from "../CacheLocationTag";
 import { TestStatusTag } from "../TestStatusTag";
 
 export type TestTabRowType = NonNullable<
@@ -21,8 +21,7 @@ export type TestTabRowType = NonNullable<
     >[number]
   >["node"]
 > & {
-  cachedLocally: boolean | null;
-  cachedRemotely: boolean | null;
+  cacheLocation: CacheLocation;
 };
 
 export const defaultSorting: TestSummaryOrder = {
@@ -57,14 +56,11 @@ export const columns: TableColumnsType<TestTabRowType> = [
     ),
   },
   {
-    title: "Cached Locally",
-    dataIndex: "cachedLocally",
-    render: (x) => <NullBooleanTag key="local" status={x as boolean | null} />,
-  },
-  {
-    title: "Cached Remotely",
-    dataIndex: "cachedRemotely",
-    render: (x) => <NullBooleanTag key="remote" status={x as boolean | null} />,
+    key: "cacheLocation",
+    title: "Cache Location",
+    render: (_, record) => (
+      <CacheLocationTag cacheLocation={record.cacheLocation} />
+    ),
   },
   {
     title: "Duration",
