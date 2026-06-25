@@ -14,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { cacheLocationFromTestResults } from "@/components/CacheLocationTag";
 import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import { CursorTable, getNewPaginationVariables } from "../../CursorTable";
@@ -57,29 +58,14 @@ export const TestDetails: React.FC<Props> = ({
     },
   );
 
-  const testSummaries: TestDetailsRowType[] = useMemo(() => {
-    return parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => {
-      var cachedLocally: boolean | null = null;
-      var cachedRemotely: boolean | null = null;
-      if (ts.testResults !== null && ts.testResults !== undefined) {
-        if (ts.testResults.every((tr) => tr.cachedLocally === true)) {
-          cachedLocally = true;
-        } else if (ts.testResults.some((tr) => tr.cachedLocally === false)) {
-          cachedLocally = false;
-        }
-        if (ts.testResults.every((tr) => tr.cachedRemotely === true)) {
-          cachedRemotely = true;
-        } else if (ts.testResults.some((tr) => tr.cachedRemotely === false)) {
-          cachedRemotely = false;
-        }
-      }
-      return {
+  const testSummaries: TestDetailsRowType[] = useMemo(
+    () =>
+      parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => ({
         ...ts,
-        cachedLocally: cachedLocally,
-        cachedRemotely: cachedRemotely,
-      };
-    });
-  }, [data]);
+        cacheLocation: cacheLocationFromTestResults(ts.testResults),
+      })),
+    [data],
+  );
 
   if (error) {
     return (
