@@ -41,22 +41,28 @@ func (q *Queries) CreateTargetKindMappingsBulk(ctx context.Context, arg CreateTa
 }
 
 const deleteTargetKindMappingsFromPages = `-- name: DeleteTargetKindMappingsFromPages :execrows
-DELETE FROM target_kind_mappings m
-USING bazel_invocations AS i
-WHERE
-    m.bazel_invocation_id = i.id
-    AND m.ctid >= format('(%s,0)', $1::bigint)::tid
-    AND m.ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND i.bep_completed = true
+DELETE FROM target_kind_mappings
+WHERE ctid IN (
+    SELECT m.ctid FROM target_kind_mappings m
+    JOIN bazel_invocations AS i ON i.id = m.bazel_invocation_id
+    WHERE
+        m.bazel_invocation_id = i.id
+        AND m.ctid >= format('(%s,0)', $1::bigint)::tid
+        AND m.ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+        AND i.bep_completed = true
+    FOR UPDATE SKIP LOCKED
+    LIMIT $3::bigint
+)
 `
 
 type DeleteTargetKindMappingsFromPagesParams struct {
-	FromPage int64
-	Pages    int64
+	FromPage   int64
+	Pages      int64
+	BatchLimit int64
 }
 
 func (q *Queries) DeleteTargetKindMappingsFromPages(ctx context.Context, arg DeleteTargetKindMappingsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteTargetKindMappingsFromPages, arg.FromPage, arg.Pages)
+	result, err := q.db.ExecContext(ctx, deleteTargetKindMappingsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}

@@ -17,14 +17,17 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 		return 0, err
 	}
 
-	updatedRows, err := dc.db.Sqlc().LockStaleInvocationsFromPages(
-		ctx,
-		sqlc.LockStaleInvocationsFromPagesParams{
-			FromPage:   start,
-			Pages:      count,
-			CutoffTime: cutoffTime,
-		},
-	)
+	updatedRows, err := dc.batcher.Batch(ctx, func(ctx context.Context, limit int64) (int64, error) {
+		return dc.db.Sqlc().LockStaleInvocationsFromPages(
+			ctx,
+			sqlc.LockStaleInvocationsFromPagesParams{
+				FromPage:   start,
+				Pages:      count,
+				CutoffTime: cutoffTime,
+				BatchLimit: limit,
+			},
+		)
+	})
 	if err != nil {
 		return 0, util.StatusWrap(err, "Failed to lock invocations")
 	}

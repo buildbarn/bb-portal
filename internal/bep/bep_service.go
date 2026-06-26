@@ -66,6 +66,7 @@ func NewBuildEventProtocolService(
 	databaseCleanupService, err := dbcleanupservice.NewDbCleanupService(
 		dbClient,
 		clock.SystemClock,
+		dbcleanupservice.NewTimedBatcher(clock.SystemClock, 1*time.Second, 1<<7, 1<<20),
 		configuration.DatabaseCleanupConfiguration,
 		tracerProvider,
 	)

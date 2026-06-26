@@ -35,6 +35,7 @@ import (
 //  7. Removing unused targets.
 type DbCleanupService struct {
 	db                       database.Client
+	batcher                  Batcher
 	counter                  int64
 	clock                    clock.Clock
 	cleanupInterval          time.Duration
@@ -47,6 +48,7 @@ type DbCleanupService struct {
 func NewDbCleanupService(
 	db database.Client,
 	clock clock.Clock,
+	batcher Batcher,
 	cleanupConfiguration *bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration,
 	tracerProvider trace.TracerProvider,
 ) (*DbCleanupService, error) {
@@ -69,6 +71,7 @@ func NewDbCleanupService(
 		db:                       db,
 		counter:                  rand.Int64N(65536),
 		clock:                    clock,
+		batcher:                  batcher,
 		cleanupInterval:          cleanupInterval.AsDuration(),
 		invocationMessageTimeout: invocationMessageTimeout.AsDuration(),
 		invocationRetention:      invocationRetention.AsDuration(),

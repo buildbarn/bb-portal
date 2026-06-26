@@ -18,10 +18,13 @@ func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) (int64, er
 		return 0, err
 	}
 
-	deleted, err := dc.db.Sqlc().DeleteOldInvocationsFromPages(ctx, sqlc.DeleteOldInvocationsFromPagesParams{
-		FromPage:   start,
-		Pages:      count,
-		CutoffTime: cutoffTime,
+	deleted, err := dc.batcher.Batch(ctx, func(ctx context.Context, limit int64) (int64, error) {
+		return dc.db.Sqlc().DeleteOldInvocationsFromPages(ctx, sqlc.DeleteOldInvocationsFromPagesParams{
+			FromPage:   start,
+			Pages:      count,
+			CutoffTime: cutoffTime,
+			BatchLimit: limit,
+		})
 	})
 	if err != nil {
 		return 0, util.StatusWrap(err, "Failed to remove old invocations")

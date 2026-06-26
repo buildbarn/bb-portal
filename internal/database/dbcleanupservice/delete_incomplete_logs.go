@@ -16,9 +16,12 @@ func (dc *DbCleanupService) DeleteIncompleteLogs(ctx context.Context) (int64, er
 		return 0, err
 	}
 
-	deleted, err := dc.db.Sqlc().DeleteIncompleteLogsFromPages(ctx, sqlc.DeleteIncompleteLogsFromPagesParams{
-		FromPage: start,
-		Pages:    count,
+	deleted, err := dc.batcher.Batch(ctx, func(ctx context.Context, limit int64) (int64, error) {
+		return dc.db.Sqlc().DeleteIncompleteLogsFromPages(ctx, sqlc.DeleteIncompleteLogsFromPagesParams{
+			FromPage:   start,
+			Pages:      count,
+			BatchLimit: limit,
+		})
 	})
 	if err != nil {
 		return 0, util.StatusWrap(err, "Could not delete incompleted build logs")
