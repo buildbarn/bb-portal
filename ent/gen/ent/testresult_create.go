@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
@@ -196,6 +198,36 @@ func (_c *TestResultCreate) SetTestSummary(v *TestSummary) *TestResultCreate {
 	return _c.SetTestSummaryID(v.ID)
 }
 
+// AddTestActionOutputIDs adds the "test_action_output" edge to the File entity by IDs.
+func (_c *TestResultCreate) AddTestActionOutputIDs(ids ...int64) *TestResultCreate {
+	_c.mutation.AddTestActionOutputIDs(ids...)
+	return _c
+}
+
+// AddTestActionOutput adds the "test_action_output" edges to the File entity.
+func (_c *TestResultCreate) AddTestActionOutput(v ...*File) *TestResultCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddTestActionOutputIDs(ids...)
+}
+
+// AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by IDs.
+func (_c *TestResultCreate) AddTestActionOutputTableIDs(ids ...int64) *TestResultCreate {
+	_c.mutation.AddTestActionOutputTableIDs(ids...)
+	return _c
+}
+
+// AddTestActionOutputTable adds the "test_action_output_table" edges to the TestActionOutput entity.
+func (_c *TestResultCreate) AddTestActionOutputTable(v ...*TestActionOutput) *TestResultCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddTestActionOutputTableIDs(ids...)
+}
+
 // Mutation returns the TestResultMutation object of the builder.
 func (_c *TestResultCreate) Mutation() *TestResultMutation {
 	return _c.mutation
@@ -346,6 +378,38 @@ func (_c *TestResultCreate) createSpec() (*TestResult, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.test_summary_test_results = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.TestActionOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.TestActionOutputTableIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

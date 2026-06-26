@@ -3408,10 +3408,22 @@
           "label": "//test/testutils:testutils",
           "targetKind": "go_library rule"
         }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI4NQ==",
+          "instanceName": {
+            "id": "SW5zdGFuY2VOYW1lOjE=",
+            "name": ""
+          },
+          "label": "@@+_repo_rules+abseil-hello//:hello_test",
+          "targetKind": "cc_test rule"
+        }
       }
     ],
     "pageInfo": {
-      "endCursor": "gaFp0wAAAAAAAAEc",
+      "endCursor": "gaFp0wAAAAAAAAEd",
       "hasNextPage": false,
       "hasPreviousPage": false,
       "startCursor": "gaFp0wAAAAAAAAAB"

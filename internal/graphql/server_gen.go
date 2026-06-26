@@ -302,13 +302,14 @@ type ComplexityRoot struct {
 	}
 
 	File struct {
-		ActionStderr  func(childComplexity int) int
-		ActionStdout  func(childComplexity int) int
-		BuildToolLogs func(childComplexity int) int
-		Digest        func(childComplexity int) int
-		DigestID      func(childComplexity int) int
-		FilePath      func(childComplexity int) int
-		ID            func(childComplexity int) int
+		ActionStderr     func(childComplexity int) int
+		ActionStdout     func(childComplexity int) int
+		BuildToolLogs    func(childComplexity int) int
+		Digest           func(childComplexity int) int
+		DigestID         func(childComplexity int) int
+		FilePath         func(childComplexity int) int
+		ID               func(childComplexity int) int
+		TestActionOutput func(childComplexity int) int
 	}
 
 	FilePath struct {
@@ -425,6 +426,7 @@ type ComplexityRoot struct {
 		GetBazelInvocation   func(childComplexity int, invocationID uuid.UUID) int
 		GetBuild             func(childComplexity int, buildUUID uuid.UUID) int
 		GetTarget            func(childComplexity int, id string) int
+		GetTestSummary       func(childComplexity int, invocationID uuid.UUID, testSummaryID string) int
 		Node                 func(childComplexity int, id string) int
 		Nodes                func(childComplexity int, ids []string) int
 	}
@@ -502,6 +504,7 @@ type ComplexityRoot struct {
 		Status                  func(childComplexity int) int
 		StatusDetails           func(childComplexity int) int
 		Strategy                func(childComplexity int) int
+		TestActionOutput        func(childComplexity int) int
 		TestAttemptDurationInMs func(childComplexity int) int
 		TestAttemptStart        func(childComplexity int) int
 		TestSummary             func(childComplexity int) int
@@ -651,6 +654,7 @@ type QueryResolver interface {
 	GetBazelInvocation(ctx context.Context, invocationID uuid.UUID) (*ent.BazelInvocation, error)
 	GetBuild(ctx context.Context, buildUUID uuid.UUID) (*ent.Build, error)
 	GetTarget(ctx context.Context, id string) (*ent.Target, error)
+	GetTestSummary(ctx context.Context, invocationID uuid.UUID, testSummaryID string) (*ent.TestSummary, error)
 }
 type RunnerCountResolver interface {
 	ID(ctx context.Context, obj *ent.RunnerCount) (string, error)
@@ -1957,6 +1961,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.File.ID(childComplexity), true
+	case "File.testActionOutput":
+		if e.ComplexityRoot.File.TestActionOutput == nil {
+			break
+		}
+
+		return e.ComplexityRoot.File.TestActionOutput(childComplexity), true
 
 	case "FilePath.bepInstanceName":
 		if e.ComplexityRoot.FilePath.BepInstanceName == nil {
@@ -2438,6 +2448,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Query.GetTarget(childComplexity, args["id"].(string)), true
+	case "Query.getTestSummary":
+		if e.ComplexityRoot.Query.GetTestSummary == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getTestSummary_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.GetTestSummary(childComplexity, args["invocationID"].(uuid.UUID), args["testSummaryID"].(string)), true
 
 	case "Query.node":
 		if e.ComplexityRoot.Query.Node == nil {
@@ -2780,6 +2801,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.TestResult.Strategy(childComplexity), true
+	case "TestResult.testActionOutput":
+		if e.ComplexityRoot.TestResult.TestActionOutput == nil {
+			break
+		}
+
+		return e.ComplexityRoot.TestResult.TestActionOutput(childComplexity), true
 	case "TestResult.testAttemptDurationInMs":
 		if e.ComplexityRoot.TestResult.TestAttemptDurationInMs == nil {
 			break
@@ -3512,6 +3539,8 @@ func (ec *executionContext) childFields_File(ctx context.Context, field graphql.
 		return ec.fieldContext_File_actionStderr(ctx, field)
 	case "buildToolLogs":
 		return ec.fieldContext_File_buildToolLogs(ctx, field)
+	case "testActionOutput":
+		return ec.fieldContext_File_testActionOutput(ctx, field)
 	}
 	return nil, fmt.Errorf("no field named %q was found under type File", field.Name)
 }
@@ -3882,6 +3911,8 @@ func (ec *executionContext) childFields_TestResult(ctx context.Context, field gr
 		return ec.fieldContext_TestResult_timingBreakdown(ctx, field)
 	case "testSummary":
 		return ec.fieldContext_TestResult_testSummary(ctx, field)
+	case "testActionOutput":
+		return ec.fieldContext_TestResult_testActionOutput(ctx, field)
 	}
 	return nil, fmt.Errorf("no field named %q was found under type TestResult", field.Name)
 }
@@ -4623,6 +4654,28 @@ func (ec *executionContext) field_Query_getTarget_args(ctx context.Context, rawA
 		return nil, err
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getTestSummary_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "invocationID",
+		func(ctx context.Context, v any) (uuid.UUID, error) {
+			return ec.unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["invocationID"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "testSummaryID",
+		func(ctx context.Context, v any) (string, error) {
+			return ec.unmarshalNString2string(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["testSummaryID"] = arg1
 	return args, nil
 }
 
@@ -8619,6 +8672,38 @@ func (ec *executionContext) fieldContext_File_buildToolLogs(_ context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _File_testActionOutput(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_File_testActionOutput(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TestActionOutput(ctx)
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []*ent.TestResult) graphql.Marshaler {
+			return ec.marshalOTestResult2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultᚄ(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_File_testActionOutput(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "File",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_TestResult(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _FilePath_id(ctx context.Context, field graphql.CollectedField, obj *ent.FilePath) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -10787,6 +10872,50 @@ func (ec *executionContext) fieldContext_Query_getTarget(ctx context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_getTestSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Query_getTestSummary(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().GetTestSummary(ctx, fc.Args["invocationID"].(uuid.UUID), fc.Args["testSummaryID"].(string))
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *ent.TestSummary) graphql.Marshaler {
+			return ec.marshalOTestSummary2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummary(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Query_getTestSummary(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_TestSummary(ctx, field)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getTestSummary_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -12257,6 +12386,38 @@ func (ec *executionContext) fieldContext_TestResult_testSummary(_ context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return ec.childFields_TestSummary(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TestResult_testActionOutput(ctx context.Context, field graphql.CollectedField, obj *ent.TestResult) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_TestResult_testActionOutput(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TestActionOutput(ctx)
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []*ent.File) graphql.Marshaler {
+			return ec.marshalOFile2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFileᚄ(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_TestResult_testActionOutput(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TestResult",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_File(ctx, field)
 		},
 	}
 	return fc, nil
@@ -21477,7 +21638,7 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "digestID", "digestIDNEQ", "digestIDIn", "digestIDNotIn", "hasDigest", "hasDigestWith", "hasFilePath", "hasFilePathWith", "hasActionStdout", "hasActionStdoutWith", "hasActionStderr", "hasActionStderrWith", "hasBuildToolLogs", "hasBuildToolLogsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "digestID", "digestIDNEQ", "digestIDIn", "digestIDNotIn", "hasDigest", "hasDigestWith", "hasFilePath", "hasFilePathWith", "hasActionStdout", "hasActionStdoutWith", "hasActionStderr", "hasActionStderrWith", "hasBuildToolLogs", "hasBuildToolLogsWith", "hasTestActionOutput", "hasTestActionOutputWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21683,6 +21844,20 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.HasBuildToolLogsWith = data
+		case "hasTestActionOutput":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTestActionOutput"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTestActionOutput = data
+		case "hasTestActionOutputWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTestActionOutputWith"))
+			data, err := ec.unmarshalOTestResultWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTestActionOutputWith = data
 		}
 	}
 	return it, nil
@@ -26587,7 +26762,7 @@ func (ec *executionContext) unmarshalInputTestResultWhereInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "run", "runNEQ", "runIn", "runNotIn", "runGT", "runGTE", "runLT", "runLTE", "shard", "shardNEQ", "shardIn", "shardNotIn", "shardGT", "shardGTE", "shardLT", "shardLTE", "attempt", "attemptNEQ", "attemptIn", "attemptNotIn", "attemptGT", "attemptGTE", "attemptLT", "attemptLTE", "status", "statusNEQ", "statusIn", "statusNotIn", "statusGT", "statusGTE", "statusLT", "statusLTE", "statusContains", "statusHasPrefix", "statusHasSuffix", "statusIsNil", "statusNotNil", "statusEqualFold", "statusContainsFold", "statusDetails", "statusDetailsNEQ", "statusDetailsIn", "statusDetailsNotIn", "statusDetailsGT", "statusDetailsGTE", "statusDetailsLT", "statusDetailsLTE", "statusDetailsContains", "statusDetailsHasPrefix", "statusDetailsHasSuffix", "statusDetailsIsNil", "statusDetailsNotNil", "statusDetailsEqualFold", "statusDetailsContainsFold", "cachedLocally", "cachedLocallyNEQ", "cachedLocallyIsNil", "cachedLocallyNotNil", "testAttemptStart", "testAttemptStartNEQ", "testAttemptStartIn", "testAttemptStartNotIn", "testAttemptStartGT", "testAttemptStartGTE", "testAttemptStartLT", "testAttemptStartLTE", "testAttemptStartIsNil", "testAttemptStartNotNil", "testAttemptDurationInMs", "testAttemptDurationInMsNEQ", "testAttemptDurationInMsIn", "testAttemptDurationInMsNotIn", "testAttemptDurationInMsGT", "testAttemptDurationInMsGTE", "testAttemptDurationInMsLT", "testAttemptDurationInMsLTE", "testAttemptDurationInMsIsNil", "testAttemptDurationInMsNotNil", "strategy", "strategyNEQ", "strategyIn", "strategyNotIn", "strategyGT", "strategyGTE", "strategyLT", "strategyLTE", "strategyContains", "strategyHasPrefix", "strategyHasSuffix", "strategyIsNil", "strategyNotNil", "strategyEqualFold", "strategyContainsFold", "cachedRemotely", "cachedRemotelyNEQ", "cachedRemotelyIsNil", "cachedRemotelyNotNil", "exitCode", "exitCodeNEQ", "exitCodeIn", "exitCodeNotIn", "exitCodeGT", "exitCodeGTE", "exitCodeLT", "exitCodeLTE", "exitCodeIsNil", "exitCodeNotNil", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "hasTestSummary", "hasTestSummaryWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "run", "runNEQ", "runIn", "runNotIn", "runGT", "runGTE", "runLT", "runLTE", "shard", "shardNEQ", "shardIn", "shardNotIn", "shardGT", "shardGTE", "shardLT", "shardLTE", "attempt", "attemptNEQ", "attemptIn", "attemptNotIn", "attemptGT", "attemptGTE", "attemptLT", "attemptLTE", "status", "statusNEQ", "statusIn", "statusNotIn", "statusGT", "statusGTE", "statusLT", "statusLTE", "statusContains", "statusHasPrefix", "statusHasSuffix", "statusIsNil", "statusNotNil", "statusEqualFold", "statusContainsFold", "statusDetails", "statusDetailsNEQ", "statusDetailsIn", "statusDetailsNotIn", "statusDetailsGT", "statusDetailsGTE", "statusDetailsLT", "statusDetailsLTE", "statusDetailsContains", "statusDetailsHasPrefix", "statusDetailsHasSuffix", "statusDetailsIsNil", "statusDetailsNotNil", "statusDetailsEqualFold", "statusDetailsContainsFold", "cachedLocally", "cachedLocallyNEQ", "cachedLocallyIsNil", "cachedLocallyNotNil", "testAttemptStart", "testAttemptStartNEQ", "testAttemptStartIn", "testAttemptStartNotIn", "testAttemptStartGT", "testAttemptStartGTE", "testAttemptStartLT", "testAttemptStartLTE", "testAttemptStartIsNil", "testAttemptStartNotNil", "testAttemptDurationInMs", "testAttemptDurationInMsNEQ", "testAttemptDurationInMsIn", "testAttemptDurationInMsNotIn", "testAttemptDurationInMsGT", "testAttemptDurationInMsGTE", "testAttemptDurationInMsLT", "testAttemptDurationInMsLTE", "testAttemptDurationInMsIsNil", "testAttemptDurationInMsNotNil", "strategy", "strategyNEQ", "strategyIn", "strategyNotIn", "strategyGT", "strategyGTE", "strategyLT", "strategyLTE", "strategyContains", "strategyHasPrefix", "strategyHasSuffix", "strategyIsNil", "strategyNotNil", "strategyEqualFold", "strategyContainsFold", "cachedRemotely", "cachedRemotelyNEQ", "cachedRemotelyIsNil", "cachedRemotelyNotNil", "exitCode", "exitCodeNEQ", "exitCodeIn", "exitCodeNotIn", "exitCodeGT", "exitCodeGTE", "exitCodeLT", "exitCodeLTE", "exitCodeIsNil", "exitCodeNotNil", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "hasTestSummary", "hasTestSummaryWith", "hasTestActionOutput", "hasTestActionOutputWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27555,6 +27730,20 @@ func (ec *executionContext) unmarshalInputTestResultWhereInput(ctx context.Conte
 				return it, err
 			}
 			it.HasTestSummaryWith = data
+		case "hasTestActionOutput":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTestActionOutput"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTestActionOutput = data
+		case "hasTestActionOutputWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTestActionOutputWith"))
+			data, err := ec.unmarshalOFileWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFileWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasTestActionOutputWith = data
 		}
 	}
 	return it, nil
@@ -32577,6 +32766,42 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "testActionOutput":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._File_testActionOutput(ctx, field, obj)
+				if res == graphql.RequiredNull {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -34684,6 +34909,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getTestSummary":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getTestSummary(ctx, field)
+				if res == graphql.RequiredNull {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -35659,6 +35906,42 @@ func (ec *executionContext) _TestResult(ctx context.Context, sel ast.SelectionSe
 				}()
 				res = ec._TestResult_testSummary(ctx, field, obj)
 				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "testActionOutput":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TestResult_testActionOutput(ctx, field, obj)
+				if res == graphql.RequiredNull {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
 				return res

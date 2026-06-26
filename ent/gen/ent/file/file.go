@@ -27,8 +27,12 @@ const (
 	EdgeActionStderr = "action_stderr"
 	// EdgeBuildToolLogs holds the string denoting the build_tool_logs edge name in mutations.
 	EdgeBuildToolLogs = "build_tool_logs"
+	// EdgeTestActionOutput holds the string denoting the test_action_output edge name in mutations.
+	EdgeTestActionOutput = "test_action_output"
 	// EdgeToolLogs holds the string denoting the tool_logs edge name in mutations.
 	EdgeToolLogs = "tool_logs"
+	// EdgeTestActionOutputTable holds the string denoting the test_action_output_table edge name in mutations.
+	EdgeTestActionOutputTable = "test_action_output_table"
 	// Table holds the table name of the file in the database.
 	Table = "files"
 	// DigestTable is the table that holds the digest relation/edge.
@@ -64,6 +68,11 @@ const (
 	// BuildToolLogsInverseTable is the table name for the BazelInvocation entity.
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BuildToolLogsInverseTable = "bazel_invocations"
+	// TestActionOutputTable is the table that holds the test_action_output relation/edge. The primary key declared below.
+	TestActionOutputTable = "test_action_outputs"
+	// TestActionOutputInverseTable is the table name for the TestResult entity.
+	// It exists in this package in order to avoid circular dependency with the "testresult" package.
+	TestActionOutputInverseTable = "test_results"
 	// ToolLogsTable is the table that holds the tool_logs relation/edge.
 	ToolLogsTable = "build_tool_logs"
 	// ToolLogsInverseTable is the table name for the BuildToolLog entity.
@@ -71,6 +80,13 @@ const (
 	ToolLogsInverseTable = "build_tool_logs"
 	// ToolLogsColumn is the table column denoting the tool_logs relation/edge.
 	ToolLogsColumn = "file_id"
+	// TestActionOutputTableTable is the table that holds the test_action_output_table relation/edge.
+	TestActionOutputTableTable = "test_action_outputs"
+	// TestActionOutputTableInverseTable is the table name for the TestActionOutput entity.
+	// It exists in this package in order to avoid circular dependency with the "testactionoutput" package.
+	TestActionOutputTableInverseTable = "test_action_outputs"
+	// TestActionOutputTableColumn is the table column denoting the test_action_output_table relation/edge.
+	TestActionOutputTableColumn = "file_id"
 )
 
 // Columns holds all SQL columns for file fields.
@@ -84,6 +100,9 @@ var (
 	// BuildToolLogsPrimaryKey and BuildToolLogsColumn2 are the table columns denoting the
 	// primary key for the build_tool_logs relation (M2M).
 	BuildToolLogsPrimaryKey = []string{"bazel_invocation_id", "file_id"}
+	// TestActionOutputPrimaryKey and TestActionOutputColumn2 are the table columns denoting the
+	// primary key for the test_action_output relation (M2M).
+	TestActionOutputPrimaryKey = []string{"test_result_id", "file_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -180,6 +199,20 @@ func ByBuildToolLogs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByTestActionOutputCount orders the results by test_action_output count.
+func ByTestActionOutputCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTestActionOutputStep(), opts...)
+	}
+}
+
+// ByTestActionOutput orders the results by test_action_output terms.
+func ByTestActionOutput(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTestActionOutputStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByToolLogsCount orders the results by tool_logs count.
 func ByToolLogsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -191,6 +224,20 @@ func ByToolLogsCount(opts ...sql.OrderTermOption) OrderOption {
 func ByToolLogs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newToolLogsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByTestActionOutputTableCount orders the results by test_action_output_table count.
+func ByTestActionOutputTableCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTestActionOutputTableStep(), opts...)
+	}
+}
+
+// ByTestActionOutputTable orders the results by test_action_output_table terms.
+func ByTestActionOutputTable(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTestActionOutputTableStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newDigestStep() *sqlgraph.Step {
@@ -228,10 +275,24 @@ func newBuildToolLogsStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2M, true, BuildToolLogsTable, BuildToolLogsPrimaryKey...),
 	)
 }
+func newTestActionOutputStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TestActionOutputInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, TestActionOutputTable, TestActionOutputPrimaryKey...),
+	)
+}
 func newToolLogsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ToolLogsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, ToolLogsTable, ToolLogsColumn),
+	)
+}
+func newTestActionOutputTableStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TestActionOutputTableInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, TestActionOutputTableTable, TestActionOutputTableColumn),
 	)
 }

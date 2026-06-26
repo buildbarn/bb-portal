@@ -16,6 +16,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 )
 
 // FileCreate is the builder for creating a File entity.
@@ -99,6 +101,21 @@ func (_c *FileCreate) AddBuildToolLogs(v ...*BazelInvocation) *FileCreate {
 	return _c.AddBuildToolLogIDs(ids...)
 }
 
+// AddTestActionOutputIDs adds the "test_action_output" edge to the TestResult entity by IDs.
+func (_c *FileCreate) AddTestActionOutputIDs(ids ...int64) *FileCreate {
+	_c.mutation.AddTestActionOutputIDs(ids...)
+	return _c
+}
+
+// AddTestActionOutput adds the "test_action_output" edges to the TestResult entity.
+func (_c *FileCreate) AddTestActionOutput(v ...*TestResult) *FileCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddTestActionOutputIDs(ids...)
+}
+
 // AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by IDs.
 func (_c *FileCreate) AddToolLogIDs(ids ...int64) *FileCreate {
 	_c.mutation.AddToolLogIDs(ids...)
@@ -112,6 +129,21 @@ func (_c *FileCreate) AddToolLogs(v ...*BuildToolLog) *FileCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddToolLogIDs(ids...)
+}
+
+// AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by IDs.
+func (_c *FileCreate) AddTestActionOutputTableIDs(ids ...int64) *FileCreate {
+	_c.mutation.AddTestActionOutputTableIDs(ids...)
+	return _c
+}
+
+// AddTestActionOutputTable adds the "test_action_output_table" edges to the TestActionOutput entity.
+func (_c *FileCreate) AddTestActionOutputTable(v ...*TestActionOutput) *FileCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddTestActionOutputTableIDs(ids...)
 }
 
 // Mutation returns the FileMutation object of the builder.
@@ -275,6 +307,22 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := _c.mutation.TestActionOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   file.TestActionOutputTable,
+			Columns: file.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := _c.mutation.ToolLogsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -284,6 +332,22 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.TestActionOutputTableIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.TestActionOutputTableTable,
+			Columns: []string{file.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

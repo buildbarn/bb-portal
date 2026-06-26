@@ -58,11 +58,18 @@ type TestResult struct {
 type TestResultEdges struct {
 	// TestSummary holds the value of the test_summary edge.
 	TestSummary *TestSummary `json:"test_summary,omitempty"`
+	// TestActionOutput holds the value of the test_action_output edge.
+	TestActionOutput []*File `json:"test_action_output,omitempty"`
+	// TestActionOutputTable holds the value of the test_action_output_table edge.
+	TestActionOutputTable []*TestActionOutput `json:"test_action_output_table,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
+
+	namedTestActionOutput      map[string][]*File
+	namedTestActionOutputTable map[string][]*TestActionOutput
 }
 
 // TestSummaryOrErr returns the TestSummary value or an error if the edge
@@ -74,6 +81,24 @@ func (e TestResultEdges) TestSummaryOrErr() (*TestSummary, error) {
 		return nil, &NotFoundError{label: testsummary.Label}
 	}
 	return nil, &NotLoadedError{edge: "test_summary"}
+}
+
+// TestActionOutputOrErr returns the TestActionOutput value or an error if the edge
+// was not loaded in eager-loading.
+func (e TestResultEdges) TestActionOutputOrErr() ([]*File, error) {
+	if e.loadedTypes[1] {
+		return e.TestActionOutput, nil
+	}
+	return nil, &NotLoadedError{edge: "test_action_output"}
+}
+
+// TestActionOutputTableOrErr returns the TestActionOutputTable value or an error if the edge
+// was not loaded in eager-loading.
+func (e TestResultEdges) TestActionOutputTableOrErr() ([]*TestActionOutput, error) {
+	if e.loadedTypes[2] {
+		return e.TestActionOutputTable, nil
+	}
+	return nil, &NotLoadedError{edge: "test_action_output_table"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -227,6 +252,16 @@ func (_m *TestResult) QueryTestSummary() *TestSummaryQuery {
 	return NewTestResultClient(_m.config).QueryTestSummary(_m)
 }
 
+// QueryTestActionOutput queries the "test_action_output" edge of the TestResult entity.
+func (_m *TestResult) QueryTestActionOutput() *FileQuery {
+	return NewTestResultClient(_m.config).QueryTestActionOutput(_m)
+}
+
+// QueryTestActionOutputTable queries the "test_action_output_table" edge of the TestResult entity.
+func (_m *TestResult) QueryTestActionOutputTable() *TestActionOutputQuery {
+	return NewTestResultClient(_m.config).QueryTestActionOutputTable(_m)
+}
+
 // Update returns a builder for updating this TestResult.
 // Note that you need to call TestResult.Unwrap() before calling this method if this TestResult
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -293,6 +328,54 @@ func (_m *TestResult) String() string {
 	builder.WriteString(fmt.Sprintf("%v", _m.TimingBreakdown))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedTestActionOutput returns the TestActionOutput named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *TestResult) NamedTestActionOutput(name string) ([]*File, error) {
+	if _m.Edges.namedTestActionOutput == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedTestActionOutput[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *TestResult) appendNamedTestActionOutput(name string, edges ...*File) {
+	if _m.Edges.namedTestActionOutput == nil {
+		_m.Edges.namedTestActionOutput = make(map[string][]*File)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedTestActionOutput[name] = []*File{}
+	} else {
+		_m.Edges.namedTestActionOutput[name] = append(_m.Edges.namedTestActionOutput[name], edges...)
+	}
+}
+
+// NamedTestActionOutputTable returns the TestActionOutputTable named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *TestResult) NamedTestActionOutputTable(name string) ([]*TestActionOutput, error) {
+	if _m.Edges.namedTestActionOutputTable == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedTestActionOutputTable[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *TestResult) appendNamedTestActionOutputTable(name string, edges ...*TestActionOutput) {
+	if _m.Edges.namedTestActionOutputTable == nil {
+		_m.Edges.namedTestActionOutputTable = make(map[string][]*TestActionOutput)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedTestActionOutputTable[name] = []*TestActionOutput{}
+	} else {
+		_m.Edges.namedTestActionOutputTable[name] = append(_m.Edges.namedTestActionOutputTable[name], edges...)
+	}
 }
 
 // TestResults is a parsable slice of TestResult.

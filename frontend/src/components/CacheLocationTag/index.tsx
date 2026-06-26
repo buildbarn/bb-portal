@@ -13,6 +13,22 @@ export enum CacheLocation {
   Unknown,
 }
 
+export const cacheLocationFromBooleans = (
+  cachedLocally: boolean | undefined | null,
+  cachedRemotely: boolean | undefined | null,
+): CacheLocation => {
+  if (cachedLocally === true) {
+    return CacheLocation.Local;
+  }
+  if (cachedRemotely === true) {
+    return CacheLocation.Remote;
+  }
+  if (cachedLocally === false || cachedRemotely === false) {
+    return CacheLocation.NotCached;
+  }
+  return CacheLocation.Unknown;
+};
+
 interface TestResultCacheLocation {
   cachedLocally?: boolean | null | undefined;
   cachedRemotely?: boolean | null | undefined;

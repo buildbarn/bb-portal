@@ -1,0 +1,42 @@
+{
+  "getTestSummary": {
+    "attemptCount": 1,
+    "firstStartTime": "2024-05-03T00:23:39.112Z",
+    "id": "VGVzdFN1bW1hcnk6MjA=",
+    "invocationTarget": {
+      "id": "SW52b2NhdGlvblRhcmdldDoxODk=",
+      "target": {
+        "aspect": "",
+        "id": "VGFyZ2V0Ojc=",
+        "instanceName": {
+          "id": "SW5zdGFuY2VOYW1lOjE=",
+          "name": ""
+        },
+        "label": "//next.js/pages:jest_test",
+        "targetKind": "jest_test rule"
+      }
+    },
+    "lastStopTime": "2024-05-03T00:23:40.246Z",
+    "overallStatus": "PASSED",
+    "runCount": 1,
+    "shardCount": 0,
+    "testResults": [
+      {
+        "attempt": 1,
+        "cachedLocally": false,
+        "cachedRemotely": false,
+        "exitCode": 0,
+        "id": "VGVzdFJlc3VsdDoyMA==",
+        "run": 1,
+        "shard": 1,
+        "status": "PASSED",
+        "strategy": "darwin-sandbox",
+        "testActionOutput": [],
+        "testAttemptDurationInMs": 1134
+      }
+    ],
+    "totalNumCached": 0,
+    "totalRunCount": 1,
+    "totalRunDurationInMs": 1134
+  }
+}

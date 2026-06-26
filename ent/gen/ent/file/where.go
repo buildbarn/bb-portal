@@ -218,6 +218,29 @@ func HasBuildToolLogsWith(preds ...predicate.BazelInvocation) predicate.File {
 	})
 }
 
+// HasTestActionOutput applies the HasEdge predicate on the "test_action_output" edge.
+func HasTestActionOutput() predicate.File {
+	return predicate.File(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, TestActionOutputTable, TestActionOutputPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTestActionOutputWith applies the HasEdge predicate on the "test_action_output" edge with a given conditions (other predicates).
+func HasTestActionOutputWith(preds ...predicate.TestResult) predicate.File {
+	return predicate.File(func(s *sql.Selector) {
+		step := newTestActionOutputStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasToolLogs applies the HasEdge predicate on the "tool_logs" edge.
 func HasToolLogs() predicate.File {
 	return predicate.File(func(s *sql.Selector) {
@@ -233,6 +256,29 @@ func HasToolLogs() predicate.File {
 func HasToolLogsWith(preds ...predicate.BuildToolLog) predicate.File {
 	return predicate.File(func(s *sql.Selector) {
 		step := newToolLogsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTestActionOutputTable applies the HasEdge predicate on the "test_action_output_table" edge.
+func HasTestActionOutputTable() predicate.File {
+	return predicate.File(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, TestActionOutputTableTable, TestActionOutputTableColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTestActionOutputTableWith applies the HasEdge predicate on the "test_action_output_table" edge with a given conditions (other predicates).
+func HasTestActionOutputTableWith(preds ...predicate.TestActionOutput) predicate.File {
+	return predicate.File(func(s *sql.Selector) {
+		step := newTestActionOutputTableStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
@@ -19,14 +22,18 @@ import (
 // TestResultQuery is the builder for querying TestResult entities.
 type TestResultQuery struct {
 	config
-	ctx             *QueryContext
-	order           []testresult.OrderOption
-	inters          []Interceptor
-	predicates      []predicate.TestResult
-	withTestSummary *TestSummaryQuery
-	withFKs         bool
-	modifiers       []func(*sql.Selector)
-	loadTotal       []func(context.Context, []*TestResult) error
+	ctx                            *QueryContext
+	order                          []testresult.OrderOption
+	inters                         []Interceptor
+	predicates                     []predicate.TestResult
+	withTestSummary                *TestSummaryQuery
+	withTestActionOutput           *FileQuery
+	withTestActionOutputTable      *TestActionOutputQuery
+	withFKs                        bool
+	modifiers                      []func(*sql.Selector)
+	loadTotal                      []func(context.Context, []*TestResult) error
+	withNamedTestActionOutput      map[string]*FileQuery
+	withNamedTestActionOutputTable map[string]*TestActionOutputQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,6 +85,50 @@ func (_q *TestResultQuery) QueryTestSummary() *TestSummaryQuery {
 			sqlgraph.From(testresult.Table, testresult.FieldID, selector),
 			sqlgraph.To(testsummary.Table, testsummary.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, testresult.TestSummaryTable, testresult.TestSummaryColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTestActionOutput chains the current query on the "test_action_output" edge.
+func (_q *TestResultQuery) QueryTestActionOutput() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(testresult.Table, testresult.FieldID, selector),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, testresult.TestActionOutputTable, testresult.TestActionOutputPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTestActionOutputTable chains the current query on the "test_action_output_table" edge.
+func (_q *TestResultQuery) QueryTestActionOutputTable() *TestActionOutputQuery {
+	query := (&TestActionOutputClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(testresult.Table, testresult.FieldID, selector),
+			sqlgraph.To(testactionoutput.Table, testactionoutput.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, testresult.TestActionOutputTableTable, testresult.TestActionOutputTableColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -272,12 +323,14 @@ func (_q *TestResultQuery) Clone() *TestResultQuery {
 		return nil
 	}
 	return &TestResultQuery{
-		config:          _q.config,
-		ctx:             _q.ctx.Clone(),
-		order:           append([]testresult.OrderOption{}, _q.order...),
-		inters:          append([]Interceptor{}, _q.inters...),
-		predicates:      append([]predicate.TestResult{}, _q.predicates...),
-		withTestSummary: _q.withTestSummary.Clone(),
+		config:                    _q.config,
+		ctx:                       _q.ctx.Clone(),
+		order:                     append([]testresult.OrderOption{}, _q.order...),
+		inters:                    append([]Interceptor{}, _q.inters...),
+		predicates:                append([]predicate.TestResult{}, _q.predicates...),
+		withTestSummary:           _q.withTestSummary.Clone(),
+		withTestActionOutput:      _q.withTestActionOutput.Clone(),
+		withTestActionOutputTable: _q.withTestActionOutputTable.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -292,6 +345,28 @@ func (_q *TestResultQuery) WithTestSummary(opts ...func(*TestSummaryQuery)) *Tes
 		opt(query)
 	}
 	_q.withTestSummary = query
+	return _q
+}
+
+// WithTestActionOutput tells the query-builder to eager-load the nodes that are connected to
+// the "test_action_output" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *TestResultQuery) WithTestActionOutput(opts ...func(*FileQuery)) *TestResultQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTestActionOutput = query
+	return _q
+}
+
+// WithTestActionOutputTable tells the query-builder to eager-load the nodes that are connected to
+// the "test_action_output_table" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *TestResultQuery) WithTestActionOutputTable(opts ...func(*TestActionOutputQuery)) *TestResultQuery {
+	query := (&TestActionOutputClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTestActionOutputTable = query
 	return _q
 }
 
@@ -374,8 +449,10 @@ func (_q *TestResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*T
 		nodes       = []*TestResult{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [3]bool{
 			_q.withTestSummary != nil,
+			_q.withTestActionOutput != nil,
+			_q.withTestActionOutputTable != nil,
 		}
 	)
 	if _q.withTestSummary != nil {
@@ -408,6 +485,36 @@ func (_q *TestResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*T
 	if query := _q.withTestSummary; query != nil {
 		if err := _q.loadTestSummary(ctx, query, nodes, nil,
 			func(n *TestResult, e *TestSummary) { n.Edges.TestSummary = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTestActionOutput; query != nil {
+		if err := _q.loadTestActionOutput(ctx, query, nodes,
+			func(n *TestResult) { n.Edges.TestActionOutput = []*File{} },
+			func(n *TestResult, e *File) { n.Edges.TestActionOutput = append(n.Edges.TestActionOutput, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTestActionOutputTable; query != nil {
+		if err := _q.loadTestActionOutputTable(ctx, query, nodes,
+			func(n *TestResult) { n.Edges.TestActionOutputTable = []*TestActionOutput{} },
+			func(n *TestResult, e *TestActionOutput) {
+				n.Edges.TestActionOutputTable = append(n.Edges.TestActionOutputTable, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedTestActionOutput {
+		if err := _q.loadTestActionOutput(ctx, query, nodes,
+			func(n *TestResult) { n.appendNamedTestActionOutput(name) },
+			func(n *TestResult, e *File) { n.appendNamedTestActionOutput(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedTestActionOutputTable {
+		if err := _q.loadTestActionOutputTable(ctx, query, nodes,
+			func(n *TestResult) { n.appendNamedTestActionOutputTable(name) },
+			func(n *TestResult, e *TestActionOutput) { n.appendNamedTestActionOutputTable(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -448,6 +555,97 @@ func (_q *TestResultQuery) loadTestSummary(ctx context.Context, query *TestSumma
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (_q *TestResultQuery) loadTestActionOutput(ctx context.Context, query *FileQuery, nodes []*TestResult, init func(*TestResult), assign func(*TestResult, *File)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[int64]*TestResult)
+	nids := make(map[int64]map[*TestResult]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(testresult.TestActionOutputTable)
+		s.Join(joinT).On(s.C(file.FieldID), joinT.C(testresult.TestActionOutputPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(testresult.TestActionOutputPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(testresult.TestActionOutputPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := values[0].(*sql.NullInt64).Int64
+				inValue := values[1].(*sql.NullInt64).Int64
+				if nids[inValue] == nil {
+					nids[inValue] = map[*TestResult]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*File](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "test_action_output" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (_q *TestResultQuery) loadTestActionOutputTable(ctx context.Context, query *TestActionOutputQuery, nodes []*TestResult, init func(*TestResult), assign func(*TestResult, *TestActionOutput)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*TestResult)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(testactionoutput.FieldTestResultID)
+	}
+	query.Where(predicate.TestActionOutput(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(testresult.TestActionOutputTableColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TestResultID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "test_result_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -534,6 +732,34 @@ func (_q *TestResultQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedTestActionOutput tells the query-builder to eager-load the nodes that are connected to the "test_action_output"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *TestResultQuery) WithNamedTestActionOutput(name string, opts ...func(*FileQuery)) *TestResultQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedTestActionOutput == nil {
+		_q.withNamedTestActionOutput = make(map[string]*FileQuery)
+	}
+	_q.withNamedTestActionOutput[name] = query
+	return _q
+}
+
+// WithNamedTestActionOutputTable tells the query-builder to eager-load the nodes that are connected to the "test_action_output_table"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *TestResultQuery) WithNamedTestActionOutputTable(name string, opts ...func(*TestActionOutputQuery)) *TestResultQuery {
+	query := (&TestActionOutputClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedTestActionOutputTable == nil {
+		_q.withNamedTestActionOutputTable = make(map[string]*TestActionOutputQuery)
+	}
+	_q.withNamedTestActionOutputTable[name] = query
+	return _q
 }
 
 // TestResultGroupBy is the group-by builder for TestResult entities.

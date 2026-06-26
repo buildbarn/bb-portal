@@ -42,6 +42,10 @@ const (
 	FieldTimingBreakdown = "timing_breakdown"
 	// EdgeTestSummary holds the string denoting the test_summary edge name in mutations.
 	EdgeTestSummary = "test_summary"
+	// EdgeTestActionOutput holds the string denoting the test_action_output edge name in mutations.
+	EdgeTestActionOutput = "test_action_output"
+	// EdgeTestActionOutputTable holds the string denoting the test_action_output_table edge name in mutations.
+	EdgeTestActionOutputTable = "test_action_output_table"
 	// Table holds the table name of the testresult in the database.
 	Table = "test_results"
 	// TestSummaryTable is the table that holds the test_summary relation/edge.
@@ -51,6 +55,18 @@ const (
 	TestSummaryInverseTable = "test_summaries"
 	// TestSummaryColumn is the table column denoting the test_summary relation/edge.
 	TestSummaryColumn = "test_summary_test_results"
+	// TestActionOutputTable is the table that holds the test_action_output relation/edge. The primary key declared below.
+	TestActionOutputTable = "test_action_outputs"
+	// TestActionOutputInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	TestActionOutputInverseTable = "files"
+	// TestActionOutputTableTable is the table that holds the test_action_output_table relation/edge.
+	TestActionOutputTableTable = "test_action_outputs"
+	// TestActionOutputTableInverseTable is the table name for the TestActionOutput entity.
+	// It exists in this package in order to avoid circular dependency with the "testactionoutput" package.
+	TestActionOutputTableInverseTable = "test_action_outputs"
+	// TestActionOutputTableColumn is the table column denoting the test_action_output_table relation/edge.
+	TestActionOutputTableColumn = "test_result_id"
 )
 
 // Columns holds all SQL columns for testresult fields.
@@ -77,6 +93,12 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"test_summary_test_results",
 }
+
+var (
+	// TestActionOutputPrimaryKey and TestActionOutputColumn2 are the table columns denoting the
+	// primary key for the test_action_output relation (M2M).
+	TestActionOutputPrimaryKey = []string{"test_result_id", "file_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -167,10 +189,52 @@ func ByTestSummaryField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newTestSummaryStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByTestActionOutputCount orders the results by test_action_output count.
+func ByTestActionOutputCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTestActionOutputStep(), opts...)
+	}
+}
+
+// ByTestActionOutput orders the results by test_action_output terms.
+func ByTestActionOutput(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTestActionOutputStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByTestActionOutputTableCount orders the results by test_action_output_table count.
+func ByTestActionOutputTableCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTestActionOutputTableStep(), opts...)
+	}
+}
+
+// ByTestActionOutputTable orders the results by test_action_output_table terms.
+func ByTestActionOutputTable(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTestActionOutputTableStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newTestSummaryStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TestSummaryInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, TestSummaryTable, TestSummaryColumn),
+	)
+}
+func newTestActionOutputStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TestActionOutputInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, TestActionOutputTable, TestActionOutputPrimaryKey...),
+	)
+}
+func newTestActionOutputTableStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TestActionOutputTableInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, TestActionOutputTableTable, TestActionOutputTableColumn),
 	)
 }

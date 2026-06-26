@@ -80,6 +80,8 @@ type Tx struct {
 	TargetKindMapping *TargetKindMappingClient
 	// TargetMetrics is the client for interacting with the TargetMetrics builders.
 	TargetMetrics *TargetMetricsClient
+	// TestActionOutput is the client for interacting with the TestActionOutput builders.
+	TestActionOutput *TestActionOutputClient
 	// TestResult is the client for interacting with the TestResult builders.
 	TestResult *TestResultClient
 	// TestSummary is the client for interacting with the TestSummary builders.
@@ -252,6 +254,7 @@ func (tx *Tx) init() {
 	tx.Target = NewTargetClient(tx.config)
 	tx.TargetKindMapping = NewTargetKindMappingClient(tx.config)
 	tx.TargetMetrics = NewTargetMetricsClient(tx.config)
+	tx.TestActionOutput = NewTestActionOutputClient(tx.config)
 	tx.TestResult = NewTestResultClient(tx.config)
 	tx.TestSummary = NewTestSummaryClient(tx.config)
 	tx.TestTarget = NewTestTargetClient(tx.config)

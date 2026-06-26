@@ -349,6 +349,12 @@ type TargetMetric struct {
 	MetricsTargetMetrics                 sql.NullInt64
 }
 
+type TestActionOutput struct {
+	ID           int64
+	TestResultID int64
+	FileID       int64
+}
+
 type TestResult struct {
 	ID                      int64
 	Run                     int32

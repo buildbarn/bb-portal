@@ -105,6 +105,9 @@ type TargetKindMapping func(*sql.Selector)
 // TargetMetrics is the predicate function for targetmetrics builders.
 type TargetMetrics func(*sql.Selector)
 
+// TestActionOutput is the predicate function for testactionoutput builders.
+type TestActionOutput func(*sql.Selector)
+
 // TestResult is the predicate function for testresult builders.
 type TestResult func(*sql.Selector)
 

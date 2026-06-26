@@ -45,6 +45,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
@@ -95,6 +96,7 @@ const (
 	TypeTarget                = "Target"
 	TypeTargetKindMapping     = "TargetKindMapping"
 	TypeTargetMetrics         = "TargetMetrics"
+	TypeTestActionOutput      = "TestActionOutput"
 	TypeTestResult            = "TestResult"
 	TypeTestSummary           = "TestSummary"
 	TypeTestTarget            = "TestTarget"
@@ -15502,29 +15504,35 @@ func (m *EventMetadataMutation) ResetEdge(name string) error {
 // FileMutation represents an operation that mutates the File nodes in the graph.
 type FileMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *int64
-	clearedFields          map[string]struct{}
-	digest                 *int64
-	cleareddigest          bool
-	file_path              *int64
-	clearedfile_path       bool
-	action_stdout          map[int64]struct{}
-	removedaction_stdout   map[int64]struct{}
-	clearedaction_stdout   bool
-	action_stderr          map[int64]struct{}
-	removedaction_stderr   map[int64]struct{}
-	clearedaction_stderr   bool
-	build_tool_logs        map[int64]struct{}
-	removedbuild_tool_logs map[int64]struct{}
-	clearedbuild_tool_logs bool
-	tool_logs              map[int64]struct{}
-	removedtool_logs       map[int64]struct{}
-	clearedtool_logs       bool
-	done                   bool
-	oldValue               func(context.Context) (*File, error)
-	predicates             []predicate.File
+	op                              Op
+	typ                             string
+	id                              *int64
+	clearedFields                   map[string]struct{}
+	digest                          *int64
+	cleareddigest                   bool
+	file_path                       *int64
+	clearedfile_path                bool
+	action_stdout                   map[int64]struct{}
+	removedaction_stdout            map[int64]struct{}
+	clearedaction_stdout            bool
+	action_stderr                   map[int64]struct{}
+	removedaction_stderr            map[int64]struct{}
+	clearedaction_stderr            bool
+	build_tool_logs                 map[int64]struct{}
+	removedbuild_tool_logs          map[int64]struct{}
+	clearedbuild_tool_logs          bool
+	test_action_output              map[int64]struct{}
+	removedtest_action_output       map[int64]struct{}
+	clearedtest_action_output       bool
+	tool_logs                       map[int64]struct{}
+	removedtool_logs                map[int64]struct{}
+	clearedtool_logs                bool
+	test_action_output_table        map[int64]struct{}
+	removedtest_action_output_table map[int64]struct{}
+	clearedtest_action_output_table bool
+	done                            bool
+	oldValue                        func(context.Context) (*File, error)
+	predicates                      []predicate.File
 }
 
 var _ ent.Mutation = (*FileMutation)(nil)
@@ -15919,6 +15927,60 @@ func (m *FileMutation) ResetBuildToolLogs() {
 	m.removedbuild_tool_logs = nil
 }
 
+// AddTestActionOutputIDs adds the "test_action_output" edge to the TestResult entity by ids.
+func (m *FileMutation) AddTestActionOutputIDs(ids ...int64) {
+	if m.test_action_output == nil {
+		m.test_action_output = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.test_action_output[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTestActionOutput clears the "test_action_output" edge to the TestResult entity.
+func (m *FileMutation) ClearTestActionOutput() {
+	m.clearedtest_action_output = true
+}
+
+// TestActionOutputCleared reports if the "test_action_output" edge to the TestResult entity was cleared.
+func (m *FileMutation) TestActionOutputCleared() bool {
+	return m.clearedtest_action_output
+}
+
+// RemoveTestActionOutputIDs removes the "test_action_output" edge to the TestResult entity by IDs.
+func (m *FileMutation) RemoveTestActionOutputIDs(ids ...int64) {
+	if m.removedtest_action_output == nil {
+		m.removedtest_action_output = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.test_action_output, ids[i])
+		m.removedtest_action_output[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTestActionOutput returns the removed IDs of the "test_action_output" edge to the TestResult entity.
+func (m *FileMutation) RemovedTestActionOutputIDs() (ids []int64) {
+	for id := range m.removedtest_action_output {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TestActionOutputIDs returns the "test_action_output" edge IDs in the mutation.
+func (m *FileMutation) TestActionOutputIDs() (ids []int64) {
+	for id := range m.test_action_output {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTestActionOutput resets all changes to the "test_action_output" edge.
+func (m *FileMutation) ResetTestActionOutput() {
+	m.test_action_output = nil
+	m.clearedtest_action_output = false
+	m.removedtest_action_output = nil
+}
+
 // AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by ids.
 func (m *FileMutation) AddToolLogIDs(ids ...int64) {
 	if m.tool_logs == nil {
@@ -15971,6 +16033,60 @@ func (m *FileMutation) ResetToolLogs() {
 	m.tool_logs = nil
 	m.clearedtool_logs = false
 	m.removedtool_logs = nil
+}
+
+// AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by ids.
+func (m *FileMutation) AddTestActionOutputTableIDs(ids ...int64) {
+	if m.test_action_output_table == nil {
+		m.test_action_output_table = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.test_action_output_table[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTestActionOutputTable clears the "test_action_output_table" edge to the TestActionOutput entity.
+func (m *FileMutation) ClearTestActionOutputTable() {
+	m.clearedtest_action_output_table = true
+}
+
+// TestActionOutputTableCleared reports if the "test_action_output_table" edge to the TestActionOutput entity was cleared.
+func (m *FileMutation) TestActionOutputTableCleared() bool {
+	return m.clearedtest_action_output_table
+}
+
+// RemoveTestActionOutputTableIDs removes the "test_action_output_table" edge to the TestActionOutput entity by IDs.
+func (m *FileMutation) RemoveTestActionOutputTableIDs(ids ...int64) {
+	if m.removedtest_action_output_table == nil {
+		m.removedtest_action_output_table = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.test_action_output_table, ids[i])
+		m.removedtest_action_output_table[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTestActionOutputTable returns the removed IDs of the "test_action_output_table" edge to the TestActionOutput entity.
+func (m *FileMutation) RemovedTestActionOutputTableIDs() (ids []int64) {
+	for id := range m.removedtest_action_output_table {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TestActionOutputTableIDs returns the "test_action_output_table" edge IDs in the mutation.
+func (m *FileMutation) TestActionOutputTableIDs() (ids []int64) {
+	for id := range m.test_action_output_table {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTestActionOutputTable resets all changes to the "test_action_output_table" edge.
+func (m *FileMutation) ResetTestActionOutputTable() {
+	m.test_action_output_table = nil
+	m.clearedtest_action_output_table = false
+	m.removedtest_action_output_table = nil
 }
 
 // Where appends a list predicates to the FileMutation builder.
@@ -16126,7 +16242,7 @@ func (m *FileMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 8)
 	if m.digest != nil {
 		edges = append(edges, file.EdgeDigest)
 	}
@@ -16142,8 +16258,14 @@ func (m *FileMutation) AddedEdges() []string {
 	if m.build_tool_logs != nil {
 		edges = append(edges, file.EdgeBuildToolLogs)
 	}
+	if m.test_action_output != nil {
+		edges = append(edges, file.EdgeTestActionOutput)
+	}
 	if m.tool_logs != nil {
 		edges = append(edges, file.EdgeToolLogs)
+	}
+	if m.test_action_output_table != nil {
+		edges = append(edges, file.EdgeTestActionOutputTable)
 	}
 	return edges
 }
@@ -16178,9 +16300,21 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case file.EdgeTestActionOutput:
+		ids := make([]ent.Value, 0, len(m.test_action_output))
+		for id := range m.test_action_output {
+			ids = append(ids, id)
+		}
+		return ids
 	case file.EdgeToolLogs:
 		ids := make([]ent.Value, 0, len(m.tool_logs))
 		for id := range m.tool_logs {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeTestActionOutputTable:
+		ids := make([]ent.Value, 0, len(m.test_action_output_table))
+		for id := range m.test_action_output_table {
 			ids = append(ids, id)
 		}
 		return ids
@@ -16190,7 +16324,7 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 8)
 	if m.removedaction_stdout != nil {
 		edges = append(edges, file.EdgeActionStdout)
 	}
@@ -16200,8 +16334,14 @@ func (m *FileMutation) RemovedEdges() []string {
 	if m.removedbuild_tool_logs != nil {
 		edges = append(edges, file.EdgeBuildToolLogs)
 	}
+	if m.removedtest_action_output != nil {
+		edges = append(edges, file.EdgeTestActionOutput)
+	}
 	if m.removedtool_logs != nil {
 		edges = append(edges, file.EdgeToolLogs)
+	}
+	if m.removedtest_action_output_table != nil {
+		edges = append(edges, file.EdgeTestActionOutputTable)
 	}
 	return edges
 }
@@ -16228,9 +16368,21 @@ func (m *FileMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case file.EdgeTestActionOutput:
+		ids := make([]ent.Value, 0, len(m.removedtest_action_output))
+		for id := range m.removedtest_action_output {
+			ids = append(ids, id)
+		}
+		return ids
 	case file.EdgeToolLogs:
 		ids := make([]ent.Value, 0, len(m.removedtool_logs))
 		for id := range m.removedtool_logs {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeTestActionOutputTable:
+		ids := make([]ent.Value, 0, len(m.removedtest_action_output_table))
+		for id := range m.removedtest_action_output_table {
 			ids = append(ids, id)
 		}
 		return ids
@@ -16240,7 +16392,7 @@ func (m *FileMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 8)
 	if m.cleareddigest {
 		edges = append(edges, file.EdgeDigest)
 	}
@@ -16256,8 +16408,14 @@ func (m *FileMutation) ClearedEdges() []string {
 	if m.clearedbuild_tool_logs {
 		edges = append(edges, file.EdgeBuildToolLogs)
 	}
+	if m.clearedtest_action_output {
+		edges = append(edges, file.EdgeTestActionOutput)
+	}
 	if m.clearedtool_logs {
 		edges = append(edges, file.EdgeToolLogs)
+	}
+	if m.clearedtest_action_output_table {
+		edges = append(edges, file.EdgeTestActionOutputTable)
 	}
 	return edges
 }
@@ -16276,8 +16434,12 @@ func (m *FileMutation) EdgeCleared(name string) bool {
 		return m.clearedaction_stderr
 	case file.EdgeBuildToolLogs:
 		return m.clearedbuild_tool_logs
+	case file.EdgeTestActionOutput:
+		return m.clearedtest_action_output
 	case file.EdgeToolLogs:
 		return m.clearedtool_logs
+	case file.EdgeTestActionOutputTable:
+		return m.clearedtest_action_output_table
 	}
 	return false
 }
@@ -16315,8 +16477,14 @@ func (m *FileMutation) ResetEdge(name string) error {
 	case file.EdgeBuildToolLogs:
 		m.ResetBuildToolLogs()
 		return nil
+	case file.EdgeTestActionOutput:
+		m.ResetTestActionOutput()
+		return nil
 	case file.EdgeToolLogs:
 		m.ResetToolLogs()
+		return nil
+	case file.EdgeTestActionOutputTable:
+		m.ResetTestActionOutputTable()
 		return nil
 	}
 	return fmt.Errorf("unknown File edge %s", name)
@@ -26811,38 +26979,533 @@ func (m *TargetMetricsMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown TargetMetrics edge %s", name)
 }
 
+// TestActionOutputMutation represents an operation that mutates the TestActionOutput nodes in the graph.
+type TestActionOutputMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *int64
+	clearedFields      map[string]struct{}
+	test_result        *int64
+	clearedtest_result bool
+	file               *int64
+	clearedfile        bool
+	done               bool
+	oldValue           func(context.Context) (*TestActionOutput, error)
+	predicates         []predicate.TestActionOutput
+}
+
+var _ ent.Mutation = (*TestActionOutputMutation)(nil)
+
+// testactionoutputOption allows management of the mutation configuration using functional options.
+type testactionoutputOption func(*TestActionOutputMutation)
+
+// newTestActionOutputMutation creates new mutation for the TestActionOutput entity.
+func newTestActionOutputMutation(c config, op Op, opts ...testactionoutputOption) *TestActionOutputMutation {
+	m := &TestActionOutputMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTestActionOutput,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTestActionOutputID sets the ID field of the mutation.
+func withTestActionOutputID(id int64) testactionoutputOption {
+	return func(m *TestActionOutputMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *TestActionOutput
+		)
+		m.oldValue = func(ctx context.Context) (*TestActionOutput, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().TestActionOutput.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTestActionOutput sets the old TestActionOutput of the mutation.
+func withTestActionOutput(node *TestActionOutput) testactionoutputOption {
+	return func(m *TestActionOutputMutation) {
+		m.oldValue = func(context.Context) (*TestActionOutput, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TestActionOutputMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TestActionOutputMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TestActionOutput entities.
+func (m *TestActionOutputMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TestActionOutputMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TestActionOutputMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().TestActionOutput.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetTestResultID sets the "test_result_id" field.
+func (m *TestActionOutputMutation) SetTestResultID(i int64) {
+	m.test_result = &i
+}
+
+// TestResultID returns the value of the "test_result_id" field in the mutation.
+func (m *TestActionOutputMutation) TestResultID() (r int64, exists bool) {
+	v := m.test_result
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTestResultID returns the old "test_result_id" field's value of the TestActionOutput entity.
+// If the TestActionOutput object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestActionOutputMutation) OldTestResultID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTestResultID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTestResultID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTestResultID: %w", err)
+	}
+	return oldValue.TestResultID, nil
+}
+
+// ResetTestResultID resets all changes to the "test_result_id" field.
+func (m *TestActionOutputMutation) ResetTestResultID() {
+	m.test_result = nil
+}
+
+// SetFileID sets the "file_id" field.
+func (m *TestActionOutputMutation) SetFileID(i int64) {
+	m.file = &i
+}
+
+// FileID returns the value of the "file_id" field in the mutation.
+func (m *TestActionOutputMutation) FileID() (r int64, exists bool) {
+	v := m.file
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFileID returns the old "file_id" field's value of the TestActionOutput entity.
+// If the TestActionOutput object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestActionOutputMutation) OldFileID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFileID: %w", err)
+	}
+	return oldValue.FileID, nil
+}
+
+// ResetFileID resets all changes to the "file_id" field.
+func (m *TestActionOutputMutation) ResetFileID() {
+	m.file = nil
+}
+
+// ClearTestResult clears the "test_result" edge to the TestResult entity.
+func (m *TestActionOutputMutation) ClearTestResult() {
+	m.clearedtest_result = true
+	m.clearedFields[testactionoutput.FieldTestResultID] = struct{}{}
+}
+
+// TestResultCleared reports if the "test_result" edge to the TestResult entity was cleared.
+func (m *TestActionOutputMutation) TestResultCleared() bool {
+	return m.clearedtest_result
+}
+
+// TestResultIDs returns the "test_result" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TestResultID instead. It exists only for internal usage by the builders.
+func (m *TestActionOutputMutation) TestResultIDs() (ids []int64) {
+	if id := m.test_result; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTestResult resets all changes to the "test_result" edge.
+func (m *TestActionOutputMutation) ResetTestResult() {
+	m.test_result = nil
+	m.clearedtest_result = false
+}
+
+// ClearFile clears the "file" edge to the File entity.
+func (m *TestActionOutputMutation) ClearFile() {
+	m.clearedfile = true
+	m.clearedFields[testactionoutput.FieldFileID] = struct{}{}
+}
+
+// FileCleared reports if the "file" edge to the File entity was cleared.
+func (m *TestActionOutputMutation) FileCleared() bool {
+	return m.clearedfile
+}
+
+// FileIDs returns the "file" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FileID instead. It exists only for internal usage by the builders.
+func (m *TestActionOutputMutation) FileIDs() (ids []int64) {
+	if id := m.file; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFile resets all changes to the "file" edge.
+func (m *TestActionOutputMutation) ResetFile() {
+	m.file = nil
+	m.clearedfile = false
+}
+
+// Where appends a list predicates to the TestActionOutputMutation builder.
+func (m *TestActionOutputMutation) Where(ps ...predicate.TestActionOutput) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TestActionOutputMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TestActionOutputMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.TestActionOutput, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TestActionOutputMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TestActionOutputMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (TestActionOutput).
+func (m *TestActionOutputMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TestActionOutputMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.test_result != nil {
+		fields = append(fields, testactionoutput.FieldTestResultID)
+	}
+	if m.file != nil {
+		fields = append(fields, testactionoutput.FieldFileID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TestActionOutputMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case testactionoutput.FieldTestResultID:
+		return m.TestResultID()
+	case testactionoutput.FieldFileID:
+		return m.FileID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TestActionOutputMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case testactionoutput.FieldTestResultID:
+		return m.OldTestResultID(ctx)
+	case testactionoutput.FieldFileID:
+		return m.OldFileID(ctx)
+	}
+	return nil, fmt.Errorf("unknown TestActionOutput field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TestActionOutputMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case testactionoutput.FieldTestResultID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTestResultID(v)
+		return nil
+	case testactionoutput.FieldFileID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFileID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TestActionOutput field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TestActionOutputMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TestActionOutputMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TestActionOutputMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown TestActionOutput numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TestActionOutputMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TestActionOutputMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TestActionOutputMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown TestActionOutput nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TestActionOutputMutation) ResetField(name string) error {
+	switch name {
+	case testactionoutput.FieldTestResultID:
+		m.ResetTestResultID()
+		return nil
+	case testactionoutput.FieldFileID:
+		m.ResetFileID()
+		return nil
+	}
+	return fmt.Errorf("unknown TestActionOutput field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TestActionOutputMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.test_result != nil {
+		edges = append(edges, testactionoutput.EdgeTestResult)
+	}
+	if m.file != nil {
+		edges = append(edges, testactionoutput.EdgeFile)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TestActionOutputMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case testactionoutput.EdgeTestResult:
+		if id := m.test_result; id != nil {
+			return []ent.Value{*id}
+		}
+	case testactionoutput.EdgeFile:
+		if id := m.file; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TestActionOutputMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TestActionOutputMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TestActionOutputMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedtest_result {
+		edges = append(edges, testactionoutput.EdgeTestResult)
+	}
+	if m.clearedfile {
+		edges = append(edges, testactionoutput.EdgeFile)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TestActionOutputMutation) EdgeCleared(name string) bool {
+	switch name {
+	case testactionoutput.EdgeTestResult:
+		return m.clearedtest_result
+	case testactionoutput.EdgeFile:
+		return m.clearedfile
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TestActionOutputMutation) ClearEdge(name string) error {
+	switch name {
+	case testactionoutput.EdgeTestResult:
+		m.ClearTestResult()
+		return nil
+	case testactionoutput.EdgeFile:
+		m.ClearFile()
+		return nil
+	}
+	return fmt.Errorf("unknown TestActionOutput unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TestActionOutputMutation) ResetEdge(name string) error {
+	switch name {
+	case testactionoutput.EdgeTestResult:
+		m.ResetTestResult()
+		return nil
+	case testactionoutput.EdgeFile:
+		m.ResetFile()
+		return nil
+	}
+	return fmt.Errorf("unknown TestActionOutput edge %s", name)
+}
+
 // TestResultMutation represents an operation that mutates the TestResult nodes in the graph.
 type TestResultMutation struct {
 	config
-	op                             Op
-	typ                            string
-	id                             *int64
-	run                            *int32
-	addrun                         *int32
-	shard                          *int32
-	addshard                       *int32
-	attempt                        *int32
-	addattempt                     *int32
-	status                         *string
-	status_details                 *string
-	cached_locally                 *bool
-	test_attempt_start             *time.Time
-	test_attempt_duration_in_ms    *int64
-	addtest_attempt_duration_in_ms *int64
-	warning                        *[]string
-	appendwarning                  []string
-	strategy                       *string
-	cached_remotely                *bool
-	exit_code                      *int32
-	addexit_code                   *int32
-	hostname                       *string
-	timing_breakdown               *map[string]interface{}
-	clearedFields                  map[string]struct{}
-	test_summary                   *int64
-	clearedtest_summary            bool
-	done                           bool
-	oldValue                       func(context.Context) (*TestResult, error)
-	predicates                     []predicate.TestResult
+	op                              Op
+	typ                             string
+	id                              *int64
+	run                             *int32
+	addrun                          *int32
+	shard                           *int32
+	addshard                        *int32
+	attempt                         *int32
+	addattempt                      *int32
+	status                          *string
+	status_details                  *string
+	cached_locally                  *bool
+	test_attempt_start              *time.Time
+	test_attempt_duration_in_ms     *int64
+	addtest_attempt_duration_in_ms  *int64
+	warning                         *[]string
+	appendwarning                   []string
+	strategy                        *string
+	cached_remotely                 *bool
+	exit_code                       *int32
+	addexit_code                    *int32
+	hostname                        *string
+	timing_breakdown                *map[string]interface{}
+	clearedFields                   map[string]struct{}
+	test_summary                    *int64
+	clearedtest_summary             bool
+	test_action_output              map[int64]struct{}
+	removedtest_action_output       map[int64]struct{}
+	clearedtest_action_output       bool
+	test_action_output_table        map[int64]struct{}
+	removedtest_action_output_table map[int64]struct{}
+	clearedtest_action_output_table bool
+	done                            bool
+	oldValue                        func(context.Context) (*TestResult, error)
+	predicates                      []predicate.TestResult
 }
 
 var _ ent.Mutation = (*TestResultMutation)(nil)
@@ -27753,6 +28416,114 @@ func (m *TestResultMutation) ResetTestSummary() {
 	m.clearedtest_summary = false
 }
 
+// AddTestActionOutputIDs adds the "test_action_output" edge to the File entity by ids.
+func (m *TestResultMutation) AddTestActionOutputIDs(ids ...int64) {
+	if m.test_action_output == nil {
+		m.test_action_output = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.test_action_output[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTestActionOutput clears the "test_action_output" edge to the File entity.
+func (m *TestResultMutation) ClearTestActionOutput() {
+	m.clearedtest_action_output = true
+}
+
+// TestActionOutputCleared reports if the "test_action_output" edge to the File entity was cleared.
+func (m *TestResultMutation) TestActionOutputCleared() bool {
+	return m.clearedtest_action_output
+}
+
+// RemoveTestActionOutputIDs removes the "test_action_output" edge to the File entity by IDs.
+func (m *TestResultMutation) RemoveTestActionOutputIDs(ids ...int64) {
+	if m.removedtest_action_output == nil {
+		m.removedtest_action_output = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.test_action_output, ids[i])
+		m.removedtest_action_output[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTestActionOutput returns the removed IDs of the "test_action_output" edge to the File entity.
+func (m *TestResultMutation) RemovedTestActionOutputIDs() (ids []int64) {
+	for id := range m.removedtest_action_output {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TestActionOutputIDs returns the "test_action_output" edge IDs in the mutation.
+func (m *TestResultMutation) TestActionOutputIDs() (ids []int64) {
+	for id := range m.test_action_output {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTestActionOutput resets all changes to the "test_action_output" edge.
+func (m *TestResultMutation) ResetTestActionOutput() {
+	m.test_action_output = nil
+	m.clearedtest_action_output = false
+	m.removedtest_action_output = nil
+}
+
+// AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by ids.
+func (m *TestResultMutation) AddTestActionOutputTableIDs(ids ...int64) {
+	if m.test_action_output_table == nil {
+		m.test_action_output_table = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.test_action_output_table[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTestActionOutputTable clears the "test_action_output_table" edge to the TestActionOutput entity.
+func (m *TestResultMutation) ClearTestActionOutputTable() {
+	m.clearedtest_action_output_table = true
+}
+
+// TestActionOutputTableCleared reports if the "test_action_output_table" edge to the TestActionOutput entity was cleared.
+func (m *TestResultMutation) TestActionOutputTableCleared() bool {
+	return m.clearedtest_action_output_table
+}
+
+// RemoveTestActionOutputTableIDs removes the "test_action_output_table" edge to the TestActionOutput entity by IDs.
+func (m *TestResultMutation) RemoveTestActionOutputTableIDs(ids ...int64) {
+	if m.removedtest_action_output_table == nil {
+		m.removedtest_action_output_table = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.test_action_output_table, ids[i])
+		m.removedtest_action_output_table[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTestActionOutputTable returns the removed IDs of the "test_action_output_table" edge to the TestActionOutput entity.
+func (m *TestResultMutation) RemovedTestActionOutputTableIDs() (ids []int64) {
+	for id := range m.removedtest_action_output_table {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TestActionOutputTableIDs returns the "test_action_output_table" edge IDs in the mutation.
+func (m *TestResultMutation) TestActionOutputTableIDs() (ids []int64) {
+	for id := range m.test_action_output_table {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTestActionOutputTable resets all changes to the "test_action_output_table" edge.
+func (m *TestResultMutation) ResetTestActionOutputTable() {
+	m.test_action_output_table = nil
+	m.clearedtest_action_output_table = false
+	m.removedtest_action_output_table = nil
+}
+
 // Where appends a list predicates to the TestResultMutation builder.
 func (m *TestResultMutation) Where(ps ...predicate.TestResult) {
 	m.predicates = append(m.predicates, ps...)
@@ -28239,9 +29010,15 @@ func (m *TestResultMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *TestResultMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.test_summary != nil {
 		edges = append(edges, testresult.EdgeTestSummary)
+	}
+	if m.test_action_output != nil {
+		edges = append(edges, testresult.EdgeTestActionOutput)
+	}
+	if m.test_action_output_table != nil {
+		edges = append(edges, testresult.EdgeTestActionOutputTable)
 	}
 	return edges
 }
@@ -28254,27 +29031,65 @@ func (m *TestResultMutation) AddedIDs(name string) []ent.Value {
 		if id := m.test_summary; id != nil {
 			return []ent.Value{*id}
 		}
+	case testresult.EdgeTestActionOutput:
+		ids := make([]ent.Value, 0, len(m.test_action_output))
+		for id := range m.test_action_output {
+			ids = append(ids, id)
+		}
+		return ids
+	case testresult.EdgeTestActionOutputTable:
+		ids := make([]ent.Value, 0, len(m.test_action_output_table))
+		for id := range m.test_action_output_table {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TestResultMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
+	if m.removedtest_action_output != nil {
+		edges = append(edges, testresult.EdgeTestActionOutput)
+	}
+	if m.removedtest_action_output_table != nil {
+		edges = append(edges, testresult.EdgeTestActionOutputTable)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TestResultMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case testresult.EdgeTestActionOutput:
+		ids := make([]ent.Value, 0, len(m.removedtest_action_output))
+		for id := range m.removedtest_action_output {
+			ids = append(ids, id)
+		}
+		return ids
+	case testresult.EdgeTestActionOutputTable:
+		ids := make([]ent.Value, 0, len(m.removedtest_action_output_table))
+		for id := range m.removedtest_action_output_table {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *TestResultMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.clearedtest_summary {
 		edges = append(edges, testresult.EdgeTestSummary)
+	}
+	if m.clearedtest_action_output {
+		edges = append(edges, testresult.EdgeTestActionOutput)
+	}
+	if m.clearedtest_action_output_table {
+		edges = append(edges, testresult.EdgeTestActionOutputTable)
 	}
 	return edges
 }
@@ -28285,6 +29100,10 @@ func (m *TestResultMutation) EdgeCleared(name string) bool {
 	switch name {
 	case testresult.EdgeTestSummary:
 		return m.clearedtest_summary
+	case testresult.EdgeTestActionOutput:
+		return m.clearedtest_action_output
+	case testresult.EdgeTestActionOutputTable:
+		return m.clearedtest_action_output_table
 	}
 	return false
 }
@@ -28306,6 +29125,12 @@ func (m *TestResultMutation) ResetEdge(name string) error {
 	switch name {
 	case testresult.EdgeTestSummary:
 		m.ResetTestSummary()
+		return nil
+	case testresult.EdgeTestActionOutput:
+		m.ResetTestActionOutput()
+		return nil
+	case testresult.EdgeTestActionOutputTable:
+		m.ResetTestActionOutputTable()
 		return nil
 	}
 	return fmt.Errorf("unknown TestResult edge %s", name)

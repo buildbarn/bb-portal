@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/invocation/files"
@@ -58,12 +59,19 @@ func TestRemoveFiles(t *testing.T) {
 		require.NoError(t, err)
 		f3, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "3", InstanceName: "3", DigestFunction: 3, Hash: []byte{3}, SizeBytes: 3})
 		require.NoError(t, err)
-		_, err = buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "4", InstanceName: "4", DigestFunction: 4, Hash: []byte{4}, SizeBytes: 4})
+		f4, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "4", InstanceName: "4", DigestFunction: 4, Hash: []byte{4}, SizeBytes: 4})
+		require.NoError(t, err)
+		_, err = buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "5", InstanceName: "5", DigestFunction: 5, Hash: []byte{5}, SizeBytes: 5})
 		require.NoError(t, err)
 
 		inv := testutils.StartCreateInvocation(client, instanceName).AddBuildToolLogIDs(f1).SaveX(ctx)
 		conf := client.Configuration.Create().SetConfigurationID("1").SetBazelInvocation(inv).SaveX(ctx)
 		client.Action.Create().SetBazelInvocation(inv).SetConfiguration(conf).SetLabel("foo").SetStdoutID(f2).SetStderrID(f3).SaveX(ctx)
+
+		target := client.Target.Create().SetInstanceName(instanceName).SetLabel("foo").SetAspect("bar").SetTargetKind("baz").SaveX(ctx)
+		invTarget := client.InvocationTarget.Create().SetBazelInvocation(inv).SetTarget(target).SetAbortReason(invocationtarget.AbortReasonNONE).SaveX(ctx)
+		testSummary := client.TestSummary.Create().SetInvocationTarget(invTarget).SaveX(ctx)
+		client.TestResult.Create().SetTestSummary(testSummary).SetRun(1).SetShard(1).SetAttempt(1).AddTestActionOutputIDs(f4).SaveX(ctx)
 
 		cleanup, err := getNewDbCleanupService(db, clock.SystemClock, traceProvider)
 		require.NoError(t, err)
@@ -85,12 +93,12 @@ func TestRemoveFiles(t *testing.T) {
 
 		count, err := client.File.Query().Count(ctx)
 		require.NoError(t, err)
-		require.Equal(t, 3, count)
+		require.Equal(t, 4, count)
 		count, err = client.FilePath.Query().Count(ctx)
 		require.NoError(t, err)
-		require.Equal(t, 3, count)
+		require.Equal(t, 4, count)
 		count, err = client.Digest.Query().Count(ctx)
 		require.NoError(t, err)
-		require.Equal(t, 3, count)
+		require.Equal(t, 4, count)
 	})
 }

@@ -1,5 +1,6 @@
 import type { SorterResult } from "antd/es/table/interface";
 import type React from "react";
+import { useMemo } from "react";
 import type { TestSummaryWhereInput } from "@/graphql/__generated__/graphql";
 import { PageCursorTable } from "../PageCursorTable";
 import type {
@@ -7,9 +8,10 @@ import type {
   PageInfo,
 } from "../PageCursorTable/types";
 import { tableFiltersToGraphqlWhere } from "../PageCursorTable/utils";
-import { columns, type TestTabRowType } from "./columns";
+import { getColumns, type TestTabRowType } from "./columns";
 
 interface Props {
+  invocationId: string;
   testSummaryData: TestTabRowType[];
   pageSize: number;
   onFilterChange: (where: TestSummaryWhereInput[]) => void;
@@ -21,6 +23,7 @@ interface Props {
 }
 
 export const TestTab: React.FC<Props> = ({
+  invocationId,
   testSummaryData,
   pageSize,
   onFilterChange,
@@ -28,6 +31,8 @@ export const TestTab: React.FC<Props> = ({
   getPaginationUpdateLink,
   pageInfo,
 }) => {
+  const columns = useMemo(() => getColumns(invocationId), [invocationId]);
+
   return (
     <PageCursorTable
       size="small"

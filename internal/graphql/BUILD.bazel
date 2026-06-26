@@ -25,6 +25,7 @@ go_library(
         "//ent/gen/ent/filepath",
         "//ent/gen/ent/invocationtarget",
         "//ent/gen/ent/target",
+        "//ent/gen/ent/testsummary",
         "//internal/database",
         "//internal/graphql/helpers",
         "//pkg/uuidgql",

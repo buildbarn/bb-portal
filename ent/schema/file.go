@@ -56,6 +56,10 @@ func (File) Edges() []ent.Edge {
 		edge.From("build_tool_logs", BazelInvocation.Type).
 			Ref("build_tool_logs").
 			Through("tool_logs", BuildToolLog.Type),
+
+		edge.From("test_action_output", TestResult.Type).
+			Ref("test_action_output").
+			Through("test_action_output_table", TestActionOutput.Type),
 	}
 }
 

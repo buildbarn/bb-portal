@@ -2187,6 +2187,19 @@ func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			_q.WithNamedBuildToolLogs(alias, func(wq *BazelInvocationQuery) {
 				*wq = *query
 			})
+
+		case "testActionOutput":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestResultClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedTestActionOutput(alias, func(wq *TestResultQuery) {
+				*wq = *query
+			})
 		case "digestID":
 			if _, ok := fieldSeen[file.FieldDigestID]; !ok {
 				selectedFields = append(selectedFields, file.FieldDigestID)
@@ -3773,6 +3786,19 @@ func (_q *TestResultQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				return err
 			}
 			_q.withTestSummary = query
+
+		case "testActionOutput":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedTestActionOutput(alias, func(wq *FileQuery) {
+				*wq = *query
+			})
 		case "run":
 			if _, ok := fieldSeen[testresult.FieldRun]; !ok {
 				selectedFields = append(selectedFields, testresult.FieldRun)
