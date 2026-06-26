@@ -100,34 +100,14 @@ func FailureMessage(v string) predicate.Action {
 	return predicate.Action(sql.FieldEQ(FieldFailureMessage, v))
 }
 
-// StdoutHash applies equality check predicate on the "stdout_hash" field. It's identical to StdoutHashEQ.
-func StdoutHash(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStdoutHash, v))
+// StdoutFileID applies equality check predicate on the "stdout_file_id" field. It's identical to StdoutFileIDEQ.
+func StdoutFileID(v int64) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldStdoutFileID, v))
 }
 
-// StdoutSizeBytes applies equality check predicate on the "stdout_size_bytes" field. It's identical to StdoutSizeBytesEQ.
-func StdoutSizeBytes(v int64) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStdoutSizeBytes, v))
-}
-
-// StdoutHashFunction applies equality check predicate on the "stdout_hash_function" field. It's identical to StdoutHashFunctionEQ.
-func StdoutHashFunction(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStdoutHashFunction, v))
-}
-
-// StderrHash applies equality check predicate on the "stderr_hash" field. It's identical to StderrHashEQ.
-func StderrHash(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStderrHash, v))
-}
-
-// StderrSizeBytes applies equality check predicate on the "stderr_size_bytes" field. It's identical to StderrSizeBytesEQ.
-func StderrSizeBytes(v int64) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStderrSizeBytes, v))
-}
-
-// StderrHashFunction applies equality check predicate on the "stderr_hash_function" field. It's identical to StderrHashFunctionEQ.
-func StderrHashFunction(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStderrHashFunction, v))
+// StderrFileID applies equality check predicate on the "stderr_file_id" field. It's identical to StderrFileIDEQ.
+func StderrFileID(v int64) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldStderrFileID, v))
 }
 
 // BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
@@ -640,404 +620,64 @@ func FailureMessageContainsFold(v string) predicate.Action {
 	return predicate.Action(sql.FieldContainsFold(FieldFailureMessage, v))
 }
 
-// StdoutHashEQ applies the EQ predicate on the "stdout_hash" field.
-func StdoutHashEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStdoutHash, v))
+// StdoutFileIDEQ applies the EQ predicate on the "stdout_file_id" field.
+func StdoutFileIDEQ(v int64) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldStdoutFileID, v))
 }
 
-// StdoutHashNEQ applies the NEQ predicate on the "stdout_hash" field.
-func StdoutHashNEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldNEQ(FieldStdoutHash, v))
+// StdoutFileIDNEQ applies the NEQ predicate on the "stdout_file_id" field.
+func StdoutFileIDNEQ(v int64) predicate.Action {
+	return predicate.Action(sql.FieldNEQ(FieldStdoutFileID, v))
 }
 
-// StdoutHashIn applies the In predicate on the "stdout_hash" field.
-func StdoutHashIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldIn(FieldStdoutHash, vs...))
+// StdoutFileIDIn applies the In predicate on the "stdout_file_id" field.
+func StdoutFileIDIn(vs ...int64) predicate.Action {
+	return predicate.Action(sql.FieldIn(FieldStdoutFileID, vs...))
 }
 
-// StdoutHashNotIn applies the NotIn predicate on the "stdout_hash" field.
-func StdoutHashNotIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldNotIn(FieldStdoutHash, vs...))
+// StdoutFileIDNotIn applies the NotIn predicate on the "stdout_file_id" field.
+func StdoutFileIDNotIn(vs ...int64) predicate.Action {
+	return predicate.Action(sql.FieldNotIn(FieldStdoutFileID, vs...))
 }
 
-// StdoutHashGT applies the GT predicate on the "stdout_hash" field.
-func StdoutHashGT(v string) predicate.Action {
-	return predicate.Action(sql.FieldGT(FieldStdoutHash, v))
+// StdoutFileIDIsNil applies the IsNil predicate on the "stdout_file_id" field.
+func StdoutFileIDIsNil() predicate.Action {
+	return predicate.Action(sql.FieldIsNull(FieldStdoutFileID))
 }
 
-// StdoutHashGTE applies the GTE predicate on the "stdout_hash" field.
-func StdoutHashGTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldGTE(FieldStdoutHash, v))
+// StdoutFileIDNotNil applies the NotNil predicate on the "stdout_file_id" field.
+func StdoutFileIDNotNil() predicate.Action {
+	return predicate.Action(sql.FieldNotNull(FieldStdoutFileID))
 }
 
-// StdoutHashLT applies the LT predicate on the "stdout_hash" field.
-func StdoutHashLT(v string) predicate.Action {
-	return predicate.Action(sql.FieldLT(FieldStdoutHash, v))
+// StderrFileIDEQ applies the EQ predicate on the "stderr_file_id" field.
+func StderrFileIDEQ(v int64) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldStderrFileID, v))
 }
 
-// StdoutHashLTE applies the LTE predicate on the "stdout_hash" field.
-func StdoutHashLTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldLTE(FieldStdoutHash, v))
+// StderrFileIDNEQ applies the NEQ predicate on the "stderr_file_id" field.
+func StderrFileIDNEQ(v int64) predicate.Action {
+	return predicate.Action(sql.FieldNEQ(FieldStderrFileID, v))
 }
 
-// StdoutHashContains applies the Contains predicate on the "stdout_hash" field.
-func StdoutHashContains(v string) predicate.Action {
-	return predicate.Action(sql.FieldContains(FieldStdoutHash, v))
+// StderrFileIDIn applies the In predicate on the "stderr_file_id" field.
+func StderrFileIDIn(vs ...int64) predicate.Action {
+	return predicate.Action(sql.FieldIn(FieldStderrFileID, vs...))
 }
 
-// StdoutHashHasPrefix applies the HasPrefix predicate on the "stdout_hash" field.
-func StdoutHashHasPrefix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasPrefix(FieldStdoutHash, v))
+// StderrFileIDNotIn applies the NotIn predicate on the "stderr_file_id" field.
+func StderrFileIDNotIn(vs ...int64) predicate.Action {
+	return predicate.Action(sql.FieldNotIn(FieldStderrFileID, vs...))
 }
 
-// StdoutHashHasSuffix applies the HasSuffix predicate on the "stdout_hash" field.
-func StdoutHashHasSuffix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasSuffix(FieldStdoutHash, v))
+// StderrFileIDIsNil applies the IsNil predicate on the "stderr_file_id" field.
+func StderrFileIDIsNil() predicate.Action {
+	return predicate.Action(sql.FieldIsNull(FieldStderrFileID))
 }
 
-// StdoutHashIsNil applies the IsNil predicate on the "stdout_hash" field.
-func StdoutHashIsNil() predicate.Action {
-	return predicate.Action(sql.FieldIsNull(FieldStdoutHash))
-}
-
-// StdoutHashNotNil applies the NotNil predicate on the "stdout_hash" field.
-func StdoutHashNotNil() predicate.Action {
-	return predicate.Action(sql.FieldNotNull(FieldStdoutHash))
-}
-
-// StdoutHashEqualFold applies the EqualFold predicate on the "stdout_hash" field.
-func StdoutHashEqualFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldEqualFold(FieldStdoutHash, v))
-}
-
-// StdoutHashContainsFold applies the ContainsFold predicate on the "stdout_hash" field.
-func StdoutHashContainsFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldContainsFold(FieldStdoutHash, v))
-}
-
-// StdoutSizeBytesEQ applies the EQ predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesEQ(v int64) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStdoutSizeBytes, v))
-}
-
-// StdoutSizeBytesNEQ applies the NEQ predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesNEQ(v int64) predicate.Action {
-	return predicate.Action(sql.FieldNEQ(FieldStdoutSizeBytes, v))
-}
-
-// StdoutSizeBytesIn applies the In predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesIn(vs ...int64) predicate.Action {
-	return predicate.Action(sql.FieldIn(FieldStdoutSizeBytes, vs...))
-}
-
-// StdoutSizeBytesNotIn applies the NotIn predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesNotIn(vs ...int64) predicate.Action {
-	return predicate.Action(sql.FieldNotIn(FieldStdoutSizeBytes, vs...))
-}
-
-// StdoutSizeBytesGT applies the GT predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesGT(v int64) predicate.Action {
-	return predicate.Action(sql.FieldGT(FieldStdoutSizeBytes, v))
-}
-
-// StdoutSizeBytesGTE applies the GTE predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesGTE(v int64) predicate.Action {
-	return predicate.Action(sql.FieldGTE(FieldStdoutSizeBytes, v))
-}
-
-// StdoutSizeBytesLT applies the LT predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesLT(v int64) predicate.Action {
-	return predicate.Action(sql.FieldLT(FieldStdoutSizeBytes, v))
-}
-
-// StdoutSizeBytesLTE applies the LTE predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesLTE(v int64) predicate.Action {
-	return predicate.Action(sql.FieldLTE(FieldStdoutSizeBytes, v))
-}
-
-// StdoutSizeBytesIsNil applies the IsNil predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesIsNil() predicate.Action {
-	return predicate.Action(sql.FieldIsNull(FieldStdoutSizeBytes))
-}
-
-// StdoutSizeBytesNotNil applies the NotNil predicate on the "stdout_size_bytes" field.
-func StdoutSizeBytesNotNil() predicate.Action {
-	return predicate.Action(sql.FieldNotNull(FieldStdoutSizeBytes))
-}
-
-// StdoutHashFunctionEQ applies the EQ predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionNEQ applies the NEQ predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionNEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldNEQ(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionIn applies the In predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldIn(FieldStdoutHashFunction, vs...))
-}
-
-// StdoutHashFunctionNotIn applies the NotIn predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionNotIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldNotIn(FieldStdoutHashFunction, vs...))
-}
-
-// StdoutHashFunctionGT applies the GT predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionGT(v string) predicate.Action {
-	return predicate.Action(sql.FieldGT(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionGTE applies the GTE predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionGTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldGTE(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionLT applies the LT predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionLT(v string) predicate.Action {
-	return predicate.Action(sql.FieldLT(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionLTE applies the LTE predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionLTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldLTE(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionContains applies the Contains predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionContains(v string) predicate.Action {
-	return predicate.Action(sql.FieldContains(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionHasPrefix applies the HasPrefix predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionHasPrefix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasPrefix(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionHasSuffix applies the HasSuffix predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionHasSuffix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasSuffix(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionIsNil applies the IsNil predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionIsNil() predicate.Action {
-	return predicate.Action(sql.FieldIsNull(FieldStdoutHashFunction))
-}
-
-// StdoutHashFunctionNotNil applies the NotNil predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionNotNil() predicate.Action {
-	return predicate.Action(sql.FieldNotNull(FieldStdoutHashFunction))
-}
-
-// StdoutHashFunctionEqualFold applies the EqualFold predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionEqualFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldEqualFold(FieldStdoutHashFunction, v))
-}
-
-// StdoutHashFunctionContainsFold applies the ContainsFold predicate on the "stdout_hash_function" field.
-func StdoutHashFunctionContainsFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldContainsFold(FieldStdoutHashFunction, v))
-}
-
-// StderrHashEQ applies the EQ predicate on the "stderr_hash" field.
-func StderrHashEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStderrHash, v))
-}
-
-// StderrHashNEQ applies the NEQ predicate on the "stderr_hash" field.
-func StderrHashNEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldNEQ(FieldStderrHash, v))
-}
-
-// StderrHashIn applies the In predicate on the "stderr_hash" field.
-func StderrHashIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldIn(FieldStderrHash, vs...))
-}
-
-// StderrHashNotIn applies the NotIn predicate on the "stderr_hash" field.
-func StderrHashNotIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldNotIn(FieldStderrHash, vs...))
-}
-
-// StderrHashGT applies the GT predicate on the "stderr_hash" field.
-func StderrHashGT(v string) predicate.Action {
-	return predicate.Action(sql.FieldGT(FieldStderrHash, v))
-}
-
-// StderrHashGTE applies the GTE predicate on the "stderr_hash" field.
-func StderrHashGTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldGTE(FieldStderrHash, v))
-}
-
-// StderrHashLT applies the LT predicate on the "stderr_hash" field.
-func StderrHashLT(v string) predicate.Action {
-	return predicate.Action(sql.FieldLT(FieldStderrHash, v))
-}
-
-// StderrHashLTE applies the LTE predicate on the "stderr_hash" field.
-func StderrHashLTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldLTE(FieldStderrHash, v))
-}
-
-// StderrHashContains applies the Contains predicate on the "stderr_hash" field.
-func StderrHashContains(v string) predicate.Action {
-	return predicate.Action(sql.FieldContains(FieldStderrHash, v))
-}
-
-// StderrHashHasPrefix applies the HasPrefix predicate on the "stderr_hash" field.
-func StderrHashHasPrefix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasPrefix(FieldStderrHash, v))
-}
-
-// StderrHashHasSuffix applies the HasSuffix predicate on the "stderr_hash" field.
-func StderrHashHasSuffix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasSuffix(FieldStderrHash, v))
-}
-
-// StderrHashIsNil applies the IsNil predicate on the "stderr_hash" field.
-func StderrHashIsNil() predicate.Action {
-	return predicate.Action(sql.FieldIsNull(FieldStderrHash))
-}
-
-// StderrHashNotNil applies the NotNil predicate on the "stderr_hash" field.
-func StderrHashNotNil() predicate.Action {
-	return predicate.Action(sql.FieldNotNull(FieldStderrHash))
-}
-
-// StderrHashEqualFold applies the EqualFold predicate on the "stderr_hash" field.
-func StderrHashEqualFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldEqualFold(FieldStderrHash, v))
-}
-
-// StderrHashContainsFold applies the ContainsFold predicate on the "stderr_hash" field.
-func StderrHashContainsFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldContainsFold(FieldStderrHash, v))
-}
-
-// StderrSizeBytesEQ applies the EQ predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesEQ(v int64) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStderrSizeBytes, v))
-}
-
-// StderrSizeBytesNEQ applies the NEQ predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesNEQ(v int64) predicate.Action {
-	return predicate.Action(sql.FieldNEQ(FieldStderrSizeBytes, v))
-}
-
-// StderrSizeBytesIn applies the In predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesIn(vs ...int64) predicate.Action {
-	return predicate.Action(sql.FieldIn(FieldStderrSizeBytes, vs...))
-}
-
-// StderrSizeBytesNotIn applies the NotIn predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesNotIn(vs ...int64) predicate.Action {
-	return predicate.Action(sql.FieldNotIn(FieldStderrSizeBytes, vs...))
-}
-
-// StderrSizeBytesGT applies the GT predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesGT(v int64) predicate.Action {
-	return predicate.Action(sql.FieldGT(FieldStderrSizeBytes, v))
-}
-
-// StderrSizeBytesGTE applies the GTE predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesGTE(v int64) predicate.Action {
-	return predicate.Action(sql.FieldGTE(FieldStderrSizeBytes, v))
-}
-
-// StderrSizeBytesLT applies the LT predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesLT(v int64) predicate.Action {
-	return predicate.Action(sql.FieldLT(FieldStderrSizeBytes, v))
-}
-
-// StderrSizeBytesLTE applies the LTE predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesLTE(v int64) predicate.Action {
-	return predicate.Action(sql.FieldLTE(FieldStderrSizeBytes, v))
-}
-
-// StderrSizeBytesIsNil applies the IsNil predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesIsNil() predicate.Action {
-	return predicate.Action(sql.FieldIsNull(FieldStderrSizeBytes))
-}
-
-// StderrSizeBytesNotNil applies the NotNil predicate on the "stderr_size_bytes" field.
-func StderrSizeBytesNotNil() predicate.Action {
-	return predicate.Action(sql.FieldNotNull(FieldStderrSizeBytes))
-}
-
-// StderrHashFunctionEQ applies the EQ predicate on the "stderr_hash_function" field.
-func StderrHashFunctionEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldEQ(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionNEQ applies the NEQ predicate on the "stderr_hash_function" field.
-func StderrHashFunctionNEQ(v string) predicate.Action {
-	return predicate.Action(sql.FieldNEQ(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionIn applies the In predicate on the "stderr_hash_function" field.
-func StderrHashFunctionIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldIn(FieldStderrHashFunction, vs...))
-}
-
-// StderrHashFunctionNotIn applies the NotIn predicate on the "stderr_hash_function" field.
-func StderrHashFunctionNotIn(vs ...string) predicate.Action {
-	return predicate.Action(sql.FieldNotIn(FieldStderrHashFunction, vs...))
-}
-
-// StderrHashFunctionGT applies the GT predicate on the "stderr_hash_function" field.
-func StderrHashFunctionGT(v string) predicate.Action {
-	return predicate.Action(sql.FieldGT(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionGTE applies the GTE predicate on the "stderr_hash_function" field.
-func StderrHashFunctionGTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldGTE(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionLT applies the LT predicate on the "stderr_hash_function" field.
-func StderrHashFunctionLT(v string) predicate.Action {
-	return predicate.Action(sql.FieldLT(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionLTE applies the LTE predicate on the "stderr_hash_function" field.
-func StderrHashFunctionLTE(v string) predicate.Action {
-	return predicate.Action(sql.FieldLTE(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionContains applies the Contains predicate on the "stderr_hash_function" field.
-func StderrHashFunctionContains(v string) predicate.Action {
-	return predicate.Action(sql.FieldContains(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionHasPrefix applies the HasPrefix predicate on the "stderr_hash_function" field.
-func StderrHashFunctionHasPrefix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasPrefix(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionHasSuffix applies the HasSuffix predicate on the "stderr_hash_function" field.
-func StderrHashFunctionHasSuffix(v string) predicate.Action {
-	return predicate.Action(sql.FieldHasSuffix(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionIsNil applies the IsNil predicate on the "stderr_hash_function" field.
-func StderrHashFunctionIsNil() predicate.Action {
-	return predicate.Action(sql.FieldIsNull(FieldStderrHashFunction))
-}
-
-// StderrHashFunctionNotNil applies the NotNil predicate on the "stderr_hash_function" field.
-func StderrHashFunctionNotNil() predicate.Action {
-	return predicate.Action(sql.FieldNotNull(FieldStderrHashFunction))
-}
-
-// StderrHashFunctionEqualFold applies the EqualFold predicate on the "stderr_hash_function" field.
-func StderrHashFunctionEqualFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldEqualFold(FieldStderrHashFunction, v))
-}
-
-// StderrHashFunctionContainsFold applies the ContainsFold predicate on the "stderr_hash_function" field.
-func StderrHashFunctionContainsFold(v string) predicate.Action {
-	return predicate.Action(sql.FieldContainsFold(FieldStderrHashFunction, v))
+// StderrFileIDNotNil applies the NotNil predicate on the "stderr_file_id" field.
+func StderrFileIDNotNil() predicate.Action {
+	return predicate.Action(sql.FieldNotNull(FieldStderrFileID))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.
@@ -1078,6 +718,52 @@ func HasConfiguration() predicate.Action {
 func HasConfigurationWith(preds ...predicate.Configuration) predicate.Action {
 	return predicate.Action(func(s *sql.Selector) {
 		step := newConfigurationStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasStdout applies the HasEdge predicate on the "stdout" edge.
+func HasStdout() predicate.Action {
+	return predicate.Action(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, StdoutTable, StdoutColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStdoutWith applies the HasEdge predicate on the "stdout" edge with a given conditions (other predicates).
+func HasStdoutWith(preds ...predicate.File) predicate.Action {
+	return predicate.Action(func(s *sql.Selector) {
+		step := newStdoutStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasStderr applies the HasEdge predicate on the "stderr" edge.
+func HasStderr() predicate.Action {
+	return predicate.Action(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, StderrTable, StderrColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStderrWith applies the HasEdge predicate on the "stderr" edge with a given conditions (other predicates).
+func HasStderrWith(preds ...predicate.File) predicate.Action {
+	return predicate.Action(func(s *sql.Selector) {
+		step := newStderrStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -46,11 +46,17 @@ type Querier interface {
 	DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error)
 	DeleteOrphanedTestTargetsFromPages(ctx context.Context, arg DeleteOrphanedTestTargetsFromPagesParams) (int64, error)
 	DeleteTargetKindMappingsFromPages(ctx context.Context, arg DeleteTargetKindMappingsFromPagesParams) (int64, error)
+	DeleteUnusedDigestFromPages(ctx context.Context, arg DeleteUnusedDigestFromPagesParams) (int64, error)
+	DeleteUnusedFilePathsFromPages(ctx context.Context, arg DeleteUnusedFilePathsFromPagesParams) (int64, error)
+	DeleteUnusedFilesFromPages(ctx context.Context, arg DeleteUnusedFilesFromPagesParams) (int64, error)
 	DeleteUnusedTargetsFromPages(ctx context.Context, arg DeleteUnusedTargetsFromPagesParams) (int64, error)
 	FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error)
 	FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error)
 	GetInvocationsForLogCompactionFromPages(ctx context.Context, arg GetInvocationsForLogCompactionFromPagesParams) ([]GetInvocationsForLogCompactionFromPagesRow, error)
 	GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error)
+	InsertMissingDigests(ctx context.Context, arg InsertMissingDigestsParams) error
+	InsertMissingFilePaths(ctx context.Context, arg InsertMissingFilePathsParams) error
+	InsertMissingFiles(ctx context.Context, arg InsertMissingFilesParams) error
 	LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error)
 	LockStaleInvocationsFromPages(ctx context.Context, arg LockStaleInvocationsFromPagesParams) (int64, error)
 	SelectForeignKeysWithoutIndexes(ctx context.Context) ([]SelectForeignKeysWithoutIndexesRow, error)

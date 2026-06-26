@@ -34,20 +34,12 @@
         "id": "QWN0aW9uOjE=",
         "label": "//next.js/pages:pages",
         "startTime": null,
-        "stderrHash": "",
-        "stderrHashFunction": "",
-        "stderrSizeBytes": 0,
-        "stdoutHash": "actions",
-        "stdoutHashFunction": "sha256",
-        "stdoutSizeBytes": 0,
+        "stderr": null,
+        "stdout": null,
         "success": false,
         "type": "TsProject"
       }
     ],
-    "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
-    "instanceName": {
-      "id": "SW5zdGFuY2VOYW1lOjE=",
-      "name": ""
-    }
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjI="
   }
 }

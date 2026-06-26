@@ -36,20 +36,26 @@ type Tx struct {
 	BuildLogChunk *BuildLogChunkClient
 	// BuildTag is the client for interacting with the BuildTag builders.
 	BuildTag *BuildTagClient
+	// BuildToolLog is the client for interacting with the BuildToolLog builders.
+	BuildToolLog *BuildToolLogClient
 	// Configuration is the client for interacting with the Configuration builders.
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
 	ConnectionMetadata *ConnectionMetadataClient
+	// Digest is the client for interacting with the Digest builders.
+	Digest *DigestClient
 	// EventMetadata is the client for interacting with the EventMetadata builders.
 	EventMetadata *EventMetadataClient
+	// File is the client for interacting with the File builders.
+	File *FileClient
+	// FilePath is the client for interacting with the FilePath builders.
+	FilePath *FilePathClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
 	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
 	IncompleteBuildLog *IncompleteBuildLogClient
 	// InstanceName is the client for interacting with the InstanceName builders.
 	InstanceName *InstanceNameClient
-	// InvocationFiles is the client for interacting with the InvocationFiles builders.
-	InvocationFiles *InvocationFilesClient
 	// InvocationTag is the client for interacting with the InvocationTag builders.
 	InvocationTag *InvocationTagClient
 	// InvocationTarget is the client for interacting with the InvocationTarget builders.
@@ -224,13 +230,16 @@ func (tx *Tx) init() {
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
 	tx.BuildTag = NewBuildTagClient(tx.config)
+	tx.BuildToolLog = NewBuildToolLogClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
+	tx.Digest = NewDigestClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
+	tx.File = NewFileClient(tx.config)
+	tx.FilePath = NewFilePathClient(tx.config)
 	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
 	tx.InstanceName = NewInstanceNameClient(tx.config)
-	tx.InvocationFiles = NewInvocationFilesClient(tx.config)
 	tx.InvocationTag = NewInvocationTagClient(tx.config)
 	tx.InvocationTarget = NewInvocationTargetClient(tx.config)
 	tx.MemoryMetrics = NewMemoryMetricsClient(tx.config)

@@ -13,6 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 )
 
 // Action is the model entity for the Action schema.
@@ -42,18 +43,10 @@ type Action struct {
 	FailureCode string `json:"failure_code,omitempty"`
 	// FailureMessage holds the value of the "failure_message" field.
 	FailureMessage string `json:"failure_message,omitempty"`
-	// StdoutHash holds the value of the "stdout_hash" field.
-	StdoutHash string `json:"stdout_hash,omitempty"`
-	// StdoutSizeBytes holds the value of the "stdout_size_bytes" field.
-	StdoutSizeBytes int64 `json:"stdout_size_bytes,omitempty"`
-	// StdoutHashFunction holds the value of the "stdout_hash_function" field.
-	StdoutHashFunction string `json:"stdout_hash_function,omitempty"`
-	// StderrHash holds the value of the "stderr_hash" field.
-	StderrHash string `json:"stderr_hash,omitempty"`
-	// StderrSizeBytes holds the value of the "stderr_size_bytes" field.
-	StderrSizeBytes int64 `json:"stderr_size_bytes,omitempty"`
-	// StderrHashFunction holds the value of the "stderr_hash_function" field.
-	StderrHashFunction string `json:"stderr_hash_function,omitempty"`
+	// StdoutFileID holds the value of the "stdout_file_id" field.
+	StdoutFileID int64 `json:"stdout_file_id,omitempty"`
+	// StderrFileID holds the value of the "stderr_file_id" field.
+	StderrFileID int64 `json:"stderr_file_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionQuery when eager-loading is set.
 	Edges        ActionEdges `json:"edges"`
@@ -66,11 +59,15 @@ type ActionEdges struct {
 	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// Configuration holds the value of the configuration edge.
 	Configuration *Configuration `json:"configuration,omitempty"`
+	// Stdout holds the value of the stdout edge.
+	Stdout *File `json:"stdout,omitempty"`
+	// Stderr holds the value of the stderr edge.
+	Stderr *File `json:"stderr,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [4]map[string]int
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -95,6 +92,28 @@ func (e ActionEdges) ConfigurationOrErr() (*Configuration, error) {
 	return nil, &NotLoadedError{edge: "configuration"}
 }
 
+// StdoutOrErr returns the Stdout value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ActionEdges) StdoutOrErr() (*File, error) {
+	if e.Stdout != nil {
+		return e.Stdout, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: file.Label}
+	}
+	return nil, &NotLoadedError{edge: "stdout"}
+}
+
+// StderrOrErr returns the Stderr value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ActionEdges) StderrOrErr() (*File, error) {
+	if e.Stderr != nil {
+		return e.Stderr, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: file.Label}
+	}
+	return nil, &NotLoadedError{edge: "stderr"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Action) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -104,9 +123,9 @@ func (*Action) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case action.FieldSuccess:
 			values[i] = new(sql.NullBool)
-		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldExitCode, action.FieldStdoutSizeBytes, action.FieldStderrSizeBytes:
+		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldExitCode, action.FieldStdoutFileID, action.FieldStderrFileID:
 			values[i] = new(sql.NullInt64)
-		case action.FieldLabel, action.FieldType, action.FieldFailureCode, action.FieldFailureMessage, action.FieldStdoutHash, action.FieldStdoutHashFunction, action.FieldStderrHash, action.FieldStderrHashFunction:
+		case action.FieldLabel, action.FieldType, action.FieldFailureCode, action.FieldFailureMessage:
 			values[i] = new(sql.NullString)
 		case action.FieldStartTime, action.FieldEndTime:
 			values[i] = new(sql.NullTime)
@@ -199,41 +218,17 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.FailureMessage = value.String
 			}
-		case action.FieldStdoutHash:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field stdout_hash", values[i])
-			} else if value.Valid {
-				_m.StdoutHash = value.String
-			}
-		case action.FieldStdoutSizeBytes:
+		case action.FieldStdoutFileID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field stdout_size_bytes", values[i])
+				return fmt.Errorf("unexpected type %T for field stdout_file_id", values[i])
 			} else if value.Valid {
-				_m.StdoutSizeBytes = value.Int64
+				_m.StdoutFileID = value.Int64
 			}
-		case action.FieldStdoutHashFunction:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field stdout_hash_function", values[i])
-			} else if value.Valid {
-				_m.StdoutHashFunction = value.String
-			}
-		case action.FieldStderrHash:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field stderr_hash", values[i])
-			} else if value.Valid {
-				_m.StderrHash = value.String
-			}
-		case action.FieldStderrSizeBytes:
+		case action.FieldStderrFileID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field stderr_size_bytes", values[i])
+				return fmt.Errorf("unexpected type %T for field stderr_file_id", values[i])
 			} else if value.Valid {
-				_m.StderrSizeBytes = value.Int64
-			}
-		case action.FieldStderrHashFunction:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field stderr_hash_function", values[i])
-			} else if value.Valid {
-				_m.StderrHashFunction = value.String
+				_m.StderrFileID = value.Int64
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -256,6 +251,16 @@ func (_m *Action) QueryBazelInvocation() *BazelInvocationQuery {
 // QueryConfiguration queries the "configuration" edge of the Action entity.
 func (_m *Action) QueryConfiguration() *ConfigurationQuery {
 	return NewActionClient(_m.config).QueryConfiguration(_m)
+}
+
+// QueryStdout queries the "stdout" edge of the Action entity.
+func (_m *Action) QueryStdout() *FileQuery {
+	return NewActionClient(_m.config).QueryStdout(_m)
+}
+
+// QueryStderr queries the "stderr" edge of the Action entity.
+func (_m *Action) QueryStderr() *FileQuery {
+	return NewActionClient(_m.config).QueryStderr(_m)
 }
 
 // Update returns a builder for updating this Action.
@@ -314,23 +319,11 @@ func (_m *Action) String() string {
 	builder.WriteString("failure_message=")
 	builder.WriteString(_m.FailureMessage)
 	builder.WriteString(", ")
-	builder.WriteString("stdout_hash=")
-	builder.WriteString(_m.StdoutHash)
+	builder.WriteString("stdout_file_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.StdoutFileID))
 	builder.WriteString(", ")
-	builder.WriteString("stdout_size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", _m.StdoutSizeBytes))
-	builder.WriteString(", ")
-	builder.WriteString("stdout_hash_function=")
-	builder.WriteString(_m.StdoutHashFunction)
-	builder.WriteString(", ")
-	builder.WriteString("stderr_hash=")
-	builder.WriteString(_m.StderrHash)
-	builder.WriteString(", ")
-	builder.WriteString("stderr_size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", _m.StderrSizeBytes))
-	builder.WriteString(", ")
-	builder.WriteString("stderr_hash_function=")
-	builder.WriteString(_m.StderrHashFunction)
+	builder.WriteString("stderr_file_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.StderrFileID))
 	builder.WriteByte(')')
 	return builder.String()
 }

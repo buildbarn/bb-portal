@@ -26,20 +26,12 @@
         "id": "QWN0aW9uOjI=",
         "label": "//test/integrationtest:integrationtest_test",
         "startTime": null,
-        "stderrHash": "",
-        "stderrHashFunction": "",
-        "stderrSizeBytes": 0,
-        "stdoutHash": "",
-        "stdoutHashFunction": "",
-        "stdoutSizeBytes": 0,
+        "stderr": null,
+        "stdout": null,
         "success": false,
         "type": "TestRunner"
       }
     ],
-    "id": "QmF6ZWxJbnZvY2F0aW9uOjg=",
-    "instanceName": {
-      "id": "SW5zdGFuY2VOYW1lOjE=",
-      "name": ""
-    }
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjg="
   }
 }

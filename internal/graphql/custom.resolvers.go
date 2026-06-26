@@ -13,31 +13,27 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
-	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
 )
 
 // Profile is the resolver for the profile field.
-func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error) {
-	profile, err := obj.QueryInvocationFiles().Where(invocationfiles.NameEQ(obj.ProfileName)).Only(ctx)
+func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInvocation) (*ent.File, error) {
+	file, err := obj.QueryBuildToolLogs().
+		Where(file.HasFilePathWith(filepath.PathEQ(obj.ProfileName))).
+		Only(ctx)
+	if ent.IsNotFound(err) {
+		// We don't want to throw an error just because it doens't exist.
+		return nil, nil
+	}
 	if err != nil {
-		return nil, nil
+		return nil, util.StatusWrap(err, "Failed to query for profile file")
 	}
-
-	if profile == nil || profile.Name == "" || profile.Digest == "" || profile.SizeBytes == 0 || profile.DigestFunction == "" {
-		return nil, nil
-	}
-
-	return &model.Profile{
-		Name:           profile.Name,
-		Digest:         profile.Digest,
-		SizeInBytes:    int(profile.SizeBytes),
-		DigestFunction: profile.DigestFunction,
-	}, nil
+	return file, nil
 }
 
 // TimeSinceLastConnectionMillis is the resolver for the timeSinceLastConnectionMillis field.

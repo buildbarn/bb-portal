@@ -20,6 +20,8 @@ const (
 	EdgeBuilds = "builds"
 	// EdgeTargets holds the string denoting the targets edge name in mutations.
 	EdgeTargets = "targets"
+	// EdgeFilePaths holds the string denoting the file_paths edge name in mutations.
+	EdgeFilePaths = "file_paths"
 	// Table holds the table name of the instancename in the database.
 	Table = "instance_names"
 	// BazelInvocationsTable is the table that holds the bazel_invocations relation/edge.
@@ -43,6 +45,13 @@ const (
 	TargetsInverseTable = "targets"
 	// TargetsColumn is the table column denoting the targets relation/edge.
 	TargetsColumn = "instance_name_targets"
+	// FilePathsTable is the table that holds the file_paths relation/edge.
+	FilePathsTable = "file_paths"
+	// FilePathsInverseTable is the table name for the FilePath entity.
+	// It exists in this package in order to avoid circular dependency with the "filepath" package.
+	FilePathsInverseTable = "file_paths"
+	// FilePathsColumn is the table column denoting the file_paths relation/edge.
+	FilePathsColumn = "bep_instance_name_id"
 )
 
 // Columns holds all SQL columns for instancename fields.
@@ -115,6 +124,20 @@ func ByTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByFilePathsCount orders the results by file_paths count.
+func ByFilePathsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFilePathsStep(), opts...)
+	}
+}
+
+// ByFilePaths orders the results by file_paths terms.
+func ByFilePaths(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFilePathsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newBazelInvocationsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -134,5 +157,12 @@ func newTargetsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, TargetsTable, TargetsColumn),
+	)
+}
+func newFilePathsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FilePathsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FilePathsTable, FilePathsColumn),
 	)
 }

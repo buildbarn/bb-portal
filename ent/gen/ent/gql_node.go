@@ -25,6 +25,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
@@ -110,6 +113,21 @@ var connectionmetadataImplementors = []string{"ConnectionMetadata", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*ConnectionMetadata) IsNode() {}
+
+var digestImplementors = []string{"Digest", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Digest) IsNode() {}
+
+var fileImplementors = []string{"File", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*File) IsNode() {}
+
+var filepathImplementors = []string{"FilePath", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*FilePath) IsNode() {}
 
 var garbagemetricsImplementors = []string{"GarbageMetrics", "Node"}
 
@@ -358,6 +376,33 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(connectionmetadata.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, connectionmetadataImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case digest.Table:
+		query := c.Digest.Query().
+			Where(digest.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, digestImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case file.Table:
+		query := c.File.Query().
+			Where(file.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, fileImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case filepath.Table:
+		query := c.FilePath.Query().
+			Where(filepath.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, filepathImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -768,6 +813,54 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.ConnectionMetadata.Query().
 			Where(connectionmetadata.IDIn(ids...))
 		query, err := query.CollectFields(ctx, connectionmetadataImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case digest.Table:
+		query := c.Digest.Query().
+			Where(digest.IDIn(ids...))
+		query, err := query.CollectFields(ctx, digestImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case file.Table:
+		query := c.File.Query().
+			Where(file.IDIn(ids...))
+		query, err := query.CollectFields(ctx, fileImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case filepath.Table:
+		query := c.FilePath.Query().
+			Where(filepath.IDIn(ids...))
+		query, err := query.CollectFields(ctx, filepathImplementors...)
 		if err != nil {
 			return nil, err
 		}

@@ -150,11 +150,8 @@ func (BazelInvocation) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
-		// Files for the Invocation
-		edge.To("invocation_files", InvocationFiles.Type).
-			Annotations(
-				entsql.OnDelete(entsql.Cascade),
-			),
+		edge.To("build_tool_logs", File.Type).
+			Through("tool_logs", BuildToolLog.Type),
 
 		// Target Data for the completed Invocation
 		edge.To("invocation_targets", InvocationTarget.Type).

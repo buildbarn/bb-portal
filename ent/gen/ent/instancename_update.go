@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
@@ -73,6 +74,21 @@ func (_u *InstanceNameUpdate) AddTargets(v ...*Target) *InstanceNameUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.AddTargetIDs(ids...)
+}
+
+// AddFilePathIDs adds the "file_paths" edge to the FilePath entity by IDs.
+func (_u *InstanceNameUpdate) AddFilePathIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.AddFilePathIDs(ids...)
+	return _u
+}
+
+// AddFilePaths adds the "file_paths" edges to the FilePath entity.
+func (_u *InstanceNameUpdate) AddFilePaths(v ...*FilePath) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFilePathIDs(ids...)
 }
 
 // Mutation returns the InstanceNameMutation object of the builder.
@@ -141,6 +157,27 @@ func (_u *InstanceNameUpdate) RemoveTargets(v ...*Target) *InstanceNameUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveTargetIDs(ids...)
+}
+
+// ClearFilePaths clears all "file_paths" edges to the FilePath entity.
+func (_u *InstanceNameUpdate) ClearFilePaths() *InstanceNameUpdate {
+	_u.mutation.ClearFilePaths()
+	return _u
+}
+
+// RemoveFilePathIDs removes the "file_paths" edge to FilePath entities by IDs.
+func (_u *InstanceNameUpdate) RemoveFilePathIDs(ids ...int64) *InstanceNameUpdate {
+	_u.mutation.RemoveFilePathIDs(ids...)
+	return _u
+}
+
+// RemoveFilePaths removes "file_paths" edges to FilePath entities.
+func (_u *InstanceNameUpdate) RemoveFilePaths(v ...*FilePath) *InstanceNameUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFilePathIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -314,6 +351,51 @@ func (_u *InstanceNameUpdate) sqlSave(ctx context.Context) (_node int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.FilePathsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filepath.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFilePathsIDs(); len(nodes) > 0 && !_u.mutation.FilePathsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filepath.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FilePathsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filepath.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{instancename.Label}
@@ -377,6 +459,21 @@ func (_u *InstanceNameUpdateOne) AddTargets(v ...*Target) *InstanceNameUpdateOne
 		ids[i] = v[i].ID
 	}
 	return _u.AddTargetIDs(ids...)
+}
+
+// AddFilePathIDs adds the "file_paths" edge to the FilePath entity by IDs.
+func (_u *InstanceNameUpdateOne) AddFilePathIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.AddFilePathIDs(ids...)
+	return _u
+}
+
+// AddFilePaths adds the "file_paths" edges to the FilePath entity.
+func (_u *InstanceNameUpdateOne) AddFilePaths(v ...*FilePath) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFilePathIDs(ids...)
 }
 
 // Mutation returns the InstanceNameMutation object of the builder.
@@ -445,6 +542,27 @@ func (_u *InstanceNameUpdateOne) RemoveTargets(v ...*Target) *InstanceNameUpdate
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveTargetIDs(ids...)
+}
+
+// ClearFilePaths clears all "file_paths" edges to the FilePath entity.
+func (_u *InstanceNameUpdateOne) ClearFilePaths() *InstanceNameUpdateOne {
+	_u.mutation.ClearFilePaths()
+	return _u
+}
+
+// RemoveFilePathIDs removes the "file_paths" edge to FilePath entities by IDs.
+func (_u *InstanceNameUpdateOne) RemoveFilePathIDs(ids ...int64) *InstanceNameUpdateOne {
+	_u.mutation.RemoveFilePathIDs(ids...)
+	return _u
+}
+
+// RemoveFilePaths removes "file_paths" edges to FilePath entities.
+func (_u *InstanceNameUpdateOne) RemoveFilePaths(v ...*FilePath) *InstanceNameUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFilePathIDs(ids...)
 }
 
 // Where appends a list predicates to the InstanceNameUpdate builder.
@@ -641,6 +759,51 @@ func (_u *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *InstanceNa
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.FilePathsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filepath.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFilePathsIDs(); len(nodes) > 0 && !_u.mutation.FilePathsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filepath.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FilePathsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filepath.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

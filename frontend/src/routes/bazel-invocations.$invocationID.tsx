@@ -19,9 +19,6 @@ const BAZEL_INVOCATION_COMMON_FRAGMENT = gql(/* GraphQL */ `
     startedAt
     endedAt
     exitCodeName
-    instanceName {
-      name
-    }
     connectionMetadata {
       connectionLastOpenAt
       timeSinceLastConnectionMillis
@@ -42,11 +39,7 @@ const BAZEL_INVOCATION_COMMON_FRAGMENT = gql(/* GraphQL */ `
       id
     }
     profile {
-      id
-      name
-      digest
-      sizeInBytes
-      digestFunction
+      ...FileDetails
     }
     sourceControl {
       id

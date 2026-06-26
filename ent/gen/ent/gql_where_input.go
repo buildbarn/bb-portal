@@ -19,6 +19,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
@@ -165,98 +168,6 @@ type ActionWhereInput struct {
 	FailureMessageEqualFold    *string  `json:"failureMessageEqualFold,omitempty"`
 	FailureMessageContainsFold *string  `json:"failureMessageContainsFold,omitempty"`
 
-	// "stdout_hash" field predicates.
-	StdoutHash             *string  `json:"stdoutHash,omitempty"`
-	StdoutHashNEQ          *string  `json:"stdoutHashNEQ,omitempty"`
-	StdoutHashIn           []string `json:"stdoutHashIn,omitempty"`
-	StdoutHashNotIn        []string `json:"stdoutHashNotIn,omitempty"`
-	StdoutHashGT           *string  `json:"stdoutHashGT,omitempty"`
-	StdoutHashGTE          *string  `json:"stdoutHashGTE,omitempty"`
-	StdoutHashLT           *string  `json:"stdoutHashLT,omitempty"`
-	StdoutHashLTE          *string  `json:"stdoutHashLTE,omitempty"`
-	StdoutHashContains     *string  `json:"stdoutHashContains,omitempty"`
-	StdoutHashHasPrefix    *string  `json:"stdoutHashHasPrefix,omitempty"`
-	StdoutHashHasSuffix    *string  `json:"stdoutHashHasSuffix,omitempty"`
-	StdoutHashIsNil        bool     `json:"stdoutHashIsNil,omitempty"`
-	StdoutHashNotNil       bool     `json:"stdoutHashNotNil,omitempty"`
-	StdoutHashEqualFold    *string  `json:"stdoutHashEqualFold,omitempty"`
-	StdoutHashContainsFold *string  `json:"stdoutHashContainsFold,omitempty"`
-
-	// "stdout_size_bytes" field predicates.
-	StdoutSizeBytes       *int64  `json:"stdoutSizeBytes,omitempty"`
-	StdoutSizeBytesNEQ    *int64  `json:"stdoutSizeBytesNEQ,omitempty"`
-	StdoutSizeBytesIn     []int64 `json:"stdoutSizeBytesIn,omitempty"`
-	StdoutSizeBytesNotIn  []int64 `json:"stdoutSizeBytesNotIn,omitempty"`
-	StdoutSizeBytesGT     *int64  `json:"stdoutSizeBytesGT,omitempty"`
-	StdoutSizeBytesGTE    *int64  `json:"stdoutSizeBytesGTE,omitempty"`
-	StdoutSizeBytesLT     *int64  `json:"stdoutSizeBytesLT,omitempty"`
-	StdoutSizeBytesLTE    *int64  `json:"stdoutSizeBytesLTE,omitempty"`
-	StdoutSizeBytesIsNil  bool    `json:"stdoutSizeBytesIsNil,omitempty"`
-	StdoutSizeBytesNotNil bool    `json:"stdoutSizeBytesNotNil,omitempty"`
-
-	// "stdout_hash_function" field predicates.
-	StdoutHashFunction             *string  `json:"stdoutHashFunction,omitempty"`
-	StdoutHashFunctionNEQ          *string  `json:"stdoutHashFunctionNEQ,omitempty"`
-	StdoutHashFunctionIn           []string `json:"stdoutHashFunctionIn,omitempty"`
-	StdoutHashFunctionNotIn        []string `json:"stdoutHashFunctionNotIn,omitempty"`
-	StdoutHashFunctionGT           *string  `json:"stdoutHashFunctionGT,omitempty"`
-	StdoutHashFunctionGTE          *string  `json:"stdoutHashFunctionGTE,omitempty"`
-	StdoutHashFunctionLT           *string  `json:"stdoutHashFunctionLT,omitempty"`
-	StdoutHashFunctionLTE          *string  `json:"stdoutHashFunctionLTE,omitempty"`
-	StdoutHashFunctionContains     *string  `json:"stdoutHashFunctionContains,omitempty"`
-	StdoutHashFunctionHasPrefix    *string  `json:"stdoutHashFunctionHasPrefix,omitempty"`
-	StdoutHashFunctionHasSuffix    *string  `json:"stdoutHashFunctionHasSuffix,omitempty"`
-	StdoutHashFunctionIsNil        bool     `json:"stdoutHashFunctionIsNil,omitempty"`
-	StdoutHashFunctionNotNil       bool     `json:"stdoutHashFunctionNotNil,omitempty"`
-	StdoutHashFunctionEqualFold    *string  `json:"stdoutHashFunctionEqualFold,omitempty"`
-	StdoutHashFunctionContainsFold *string  `json:"stdoutHashFunctionContainsFold,omitempty"`
-
-	// "stderr_hash" field predicates.
-	StderrHash             *string  `json:"stderrHash,omitempty"`
-	StderrHashNEQ          *string  `json:"stderrHashNEQ,omitempty"`
-	StderrHashIn           []string `json:"stderrHashIn,omitempty"`
-	StderrHashNotIn        []string `json:"stderrHashNotIn,omitempty"`
-	StderrHashGT           *string  `json:"stderrHashGT,omitempty"`
-	StderrHashGTE          *string  `json:"stderrHashGTE,omitempty"`
-	StderrHashLT           *string  `json:"stderrHashLT,omitempty"`
-	StderrHashLTE          *string  `json:"stderrHashLTE,omitempty"`
-	StderrHashContains     *string  `json:"stderrHashContains,omitempty"`
-	StderrHashHasPrefix    *string  `json:"stderrHashHasPrefix,omitempty"`
-	StderrHashHasSuffix    *string  `json:"stderrHashHasSuffix,omitempty"`
-	StderrHashIsNil        bool     `json:"stderrHashIsNil,omitempty"`
-	StderrHashNotNil       bool     `json:"stderrHashNotNil,omitempty"`
-	StderrHashEqualFold    *string  `json:"stderrHashEqualFold,omitempty"`
-	StderrHashContainsFold *string  `json:"stderrHashContainsFold,omitempty"`
-
-	// "stderr_size_bytes" field predicates.
-	StderrSizeBytes       *int64  `json:"stderrSizeBytes,omitempty"`
-	StderrSizeBytesNEQ    *int64  `json:"stderrSizeBytesNEQ,omitempty"`
-	StderrSizeBytesIn     []int64 `json:"stderrSizeBytesIn,omitempty"`
-	StderrSizeBytesNotIn  []int64 `json:"stderrSizeBytesNotIn,omitempty"`
-	StderrSizeBytesGT     *int64  `json:"stderrSizeBytesGT,omitempty"`
-	StderrSizeBytesGTE    *int64  `json:"stderrSizeBytesGTE,omitempty"`
-	StderrSizeBytesLT     *int64  `json:"stderrSizeBytesLT,omitempty"`
-	StderrSizeBytesLTE    *int64  `json:"stderrSizeBytesLTE,omitempty"`
-	StderrSizeBytesIsNil  bool    `json:"stderrSizeBytesIsNil,omitempty"`
-	StderrSizeBytesNotNil bool    `json:"stderrSizeBytesNotNil,omitempty"`
-
-	// "stderr_hash_function" field predicates.
-	StderrHashFunction             *string  `json:"stderrHashFunction,omitempty"`
-	StderrHashFunctionNEQ          *string  `json:"stderrHashFunctionNEQ,omitempty"`
-	StderrHashFunctionIn           []string `json:"stderrHashFunctionIn,omitempty"`
-	StderrHashFunctionNotIn        []string `json:"stderrHashFunctionNotIn,omitempty"`
-	StderrHashFunctionGT           *string  `json:"stderrHashFunctionGT,omitempty"`
-	StderrHashFunctionGTE          *string  `json:"stderrHashFunctionGTE,omitempty"`
-	StderrHashFunctionLT           *string  `json:"stderrHashFunctionLT,omitempty"`
-	StderrHashFunctionLTE          *string  `json:"stderrHashFunctionLTE,omitempty"`
-	StderrHashFunctionContains     *string  `json:"stderrHashFunctionContains,omitempty"`
-	StderrHashFunctionHasPrefix    *string  `json:"stderrHashFunctionHasPrefix,omitempty"`
-	StderrHashFunctionHasSuffix    *string  `json:"stderrHashFunctionHasSuffix,omitempty"`
-	StderrHashFunctionIsNil        bool     `json:"stderrHashFunctionIsNil,omitempty"`
-	StderrHashFunctionNotNil       bool     `json:"stderrHashFunctionNotNil,omitempty"`
-	StderrHashFunctionEqualFold    *string  `json:"stderrHashFunctionEqualFold,omitempty"`
-	StderrHashFunctionContainsFold *string  `json:"stderrHashFunctionContainsFold,omitempty"`
-
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
 	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
@@ -264,6 +175,14 @@ type ActionWhereInput struct {
 	// "configuration" edge predicates.
 	HasConfiguration     *bool                      `json:"hasConfiguration,omitempty"`
 	HasConfigurationWith []*ConfigurationWhereInput `json:"hasConfigurationWith,omitempty"`
+
+	// "stdout" edge predicates.
+	HasStdout     *bool             `json:"hasStdout,omitempty"`
+	HasStdoutWith []*FileWhereInput `json:"hasStdoutWith,omitempty"`
+
+	// "stderr" edge predicates.
+	HasStderr     *bool             `json:"hasStderr,omitempty"`
+	HasStderrWith []*FileWhereInput `json:"hasStderrWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -637,246 +556,6 @@ func (i *ActionWhereInput) P() (predicate.Action, error) {
 	if i.FailureMessageContainsFold != nil {
 		predicates = append(predicates, action.FailureMessageContainsFold(*i.FailureMessageContainsFold))
 	}
-	if i.StdoutHash != nil {
-		predicates = append(predicates, action.StdoutHashEQ(*i.StdoutHash))
-	}
-	if i.StdoutHashNEQ != nil {
-		predicates = append(predicates, action.StdoutHashNEQ(*i.StdoutHashNEQ))
-	}
-	if len(i.StdoutHashIn) > 0 {
-		predicates = append(predicates, action.StdoutHashIn(i.StdoutHashIn...))
-	}
-	if len(i.StdoutHashNotIn) > 0 {
-		predicates = append(predicates, action.StdoutHashNotIn(i.StdoutHashNotIn...))
-	}
-	if i.StdoutHashGT != nil {
-		predicates = append(predicates, action.StdoutHashGT(*i.StdoutHashGT))
-	}
-	if i.StdoutHashGTE != nil {
-		predicates = append(predicates, action.StdoutHashGTE(*i.StdoutHashGTE))
-	}
-	if i.StdoutHashLT != nil {
-		predicates = append(predicates, action.StdoutHashLT(*i.StdoutHashLT))
-	}
-	if i.StdoutHashLTE != nil {
-		predicates = append(predicates, action.StdoutHashLTE(*i.StdoutHashLTE))
-	}
-	if i.StdoutHashContains != nil {
-		predicates = append(predicates, action.StdoutHashContains(*i.StdoutHashContains))
-	}
-	if i.StdoutHashHasPrefix != nil {
-		predicates = append(predicates, action.StdoutHashHasPrefix(*i.StdoutHashHasPrefix))
-	}
-	if i.StdoutHashHasSuffix != nil {
-		predicates = append(predicates, action.StdoutHashHasSuffix(*i.StdoutHashHasSuffix))
-	}
-	if i.StdoutHashIsNil {
-		predicates = append(predicates, action.StdoutHashIsNil())
-	}
-	if i.StdoutHashNotNil {
-		predicates = append(predicates, action.StdoutHashNotNil())
-	}
-	if i.StdoutHashEqualFold != nil {
-		predicates = append(predicates, action.StdoutHashEqualFold(*i.StdoutHashEqualFold))
-	}
-	if i.StdoutHashContainsFold != nil {
-		predicates = append(predicates, action.StdoutHashContainsFold(*i.StdoutHashContainsFold))
-	}
-	if i.StdoutSizeBytes != nil {
-		predicates = append(predicates, action.StdoutSizeBytesEQ(*i.StdoutSizeBytes))
-	}
-	if i.StdoutSizeBytesNEQ != nil {
-		predicates = append(predicates, action.StdoutSizeBytesNEQ(*i.StdoutSizeBytesNEQ))
-	}
-	if len(i.StdoutSizeBytesIn) > 0 {
-		predicates = append(predicates, action.StdoutSizeBytesIn(i.StdoutSizeBytesIn...))
-	}
-	if len(i.StdoutSizeBytesNotIn) > 0 {
-		predicates = append(predicates, action.StdoutSizeBytesNotIn(i.StdoutSizeBytesNotIn...))
-	}
-	if i.StdoutSizeBytesGT != nil {
-		predicates = append(predicates, action.StdoutSizeBytesGT(*i.StdoutSizeBytesGT))
-	}
-	if i.StdoutSizeBytesGTE != nil {
-		predicates = append(predicates, action.StdoutSizeBytesGTE(*i.StdoutSizeBytesGTE))
-	}
-	if i.StdoutSizeBytesLT != nil {
-		predicates = append(predicates, action.StdoutSizeBytesLT(*i.StdoutSizeBytesLT))
-	}
-	if i.StdoutSizeBytesLTE != nil {
-		predicates = append(predicates, action.StdoutSizeBytesLTE(*i.StdoutSizeBytesLTE))
-	}
-	if i.StdoutSizeBytesIsNil {
-		predicates = append(predicates, action.StdoutSizeBytesIsNil())
-	}
-	if i.StdoutSizeBytesNotNil {
-		predicates = append(predicates, action.StdoutSizeBytesNotNil())
-	}
-	if i.StdoutHashFunction != nil {
-		predicates = append(predicates, action.StdoutHashFunctionEQ(*i.StdoutHashFunction))
-	}
-	if i.StdoutHashFunctionNEQ != nil {
-		predicates = append(predicates, action.StdoutHashFunctionNEQ(*i.StdoutHashFunctionNEQ))
-	}
-	if len(i.StdoutHashFunctionIn) > 0 {
-		predicates = append(predicates, action.StdoutHashFunctionIn(i.StdoutHashFunctionIn...))
-	}
-	if len(i.StdoutHashFunctionNotIn) > 0 {
-		predicates = append(predicates, action.StdoutHashFunctionNotIn(i.StdoutHashFunctionNotIn...))
-	}
-	if i.StdoutHashFunctionGT != nil {
-		predicates = append(predicates, action.StdoutHashFunctionGT(*i.StdoutHashFunctionGT))
-	}
-	if i.StdoutHashFunctionGTE != nil {
-		predicates = append(predicates, action.StdoutHashFunctionGTE(*i.StdoutHashFunctionGTE))
-	}
-	if i.StdoutHashFunctionLT != nil {
-		predicates = append(predicates, action.StdoutHashFunctionLT(*i.StdoutHashFunctionLT))
-	}
-	if i.StdoutHashFunctionLTE != nil {
-		predicates = append(predicates, action.StdoutHashFunctionLTE(*i.StdoutHashFunctionLTE))
-	}
-	if i.StdoutHashFunctionContains != nil {
-		predicates = append(predicates, action.StdoutHashFunctionContains(*i.StdoutHashFunctionContains))
-	}
-	if i.StdoutHashFunctionHasPrefix != nil {
-		predicates = append(predicates, action.StdoutHashFunctionHasPrefix(*i.StdoutHashFunctionHasPrefix))
-	}
-	if i.StdoutHashFunctionHasSuffix != nil {
-		predicates = append(predicates, action.StdoutHashFunctionHasSuffix(*i.StdoutHashFunctionHasSuffix))
-	}
-	if i.StdoutHashFunctionIsNil {
-		predicates = append(predicates, action.StdoutHashFunctionIsNil())
-	}
-	if i.StdoutHashFunctionNotNil {
-		predicates = append(predicates, action.StdoutHashFunctionNotNil())
-	}
-	if i.StdoutHashFunctionEqualFold != nil {
-		predicates = append(predicates, action.StdoutHashFunctionEqualFold(*i.StdoutHashFunctionEqualFold))
-	}
-	if i.StdoutHashFunctionContainsFold != nil {
-		predicates = append(predicates, action.StdoutHashFunctionContainsFold(*i.StdoutHashFunctionContainsFold))
-	}
-	if i.StderrHash != nil {
-		predicates = append(predicates, action.StderrHashEQ(*i.StderrHash))
-	}
-	if i.StderrHashNEQ != nil {
-		predicates = append(predicates, action.StderrHashNEQ(*i.StderrHashNEQ))
-	}
-	if len(i.StderrHashIn) > 0 {
-		predicates = append(predicates, action.StderrHashIn(i.StderrHashIn...))
-	}
-	if len(i.StderrHashNotIn) > 0 {
-		predicates = append(predicates, action.StderrHashNotIn(i.StderrHashNotIn...))
-	}
-	if i.StderrHashGT != nil {
-		predicates = append(predicates, action.StderrHashGT(*i.StderrHashGT))
-	}
-	if i.StderrHashGTE != nil {
-		predicates = append(predicates, action.StderrHashGTE(*i.StderrHashGTE))
-	}
-	if i.StderrHashLT != nil {
-		predicates = append(predicates, action.StderrHashLT(*i.StderrHashLT))
-	}
-	if i.StderrHashLTE != nil {
-		predicates = append(predicates, action.StderrHashLTE(*i.StderrHashLTE))
-	}
-	if i.StderrHashContains != nil {
-		predicates = append(predicates, action.StderrHashContains(*i.StderrHashContains))
-	}
-	if i.StderrHashHasPrefix != nil {
-		predicates = append(predicates, action.StderrHashHasPrefix(*i.StderrHashHasPrefix))
-	}
-	if i.StderrHashHasSuffix != nil {
-		predicates = append(predicates, action.StderrHashHasSuffix(*i.StderrHashHasSuffix))
-	}
-	if i.StderrHashIsNil {
-		predicates = append(predicates, action.StderrHashIsNil())
-	}
-	if i.StderrHashNotNil {
-		predicates = append(predicates, action.StderrHashNotNil())
-	}
-	if i.StderrHashEqualFold != nil {
-		predicates = append(predicates, action.StderrHashEqualFold(*i.StderrHashEqualFold))
-	}
-	if i.StderrHashContainsFold != nil {
-		predicates = append(predicates, action.StderrHashContainsFold(*i.StderrHashContainsFold))
-	}
-	if i.StderrSizeBytes != nil {
-		predicates = append(predicates, action.StderrSizeBytesEQ(*i.StderrSizeBytes))
-	}
-	if i.StderrSizeBytesNEQ != nil {
-		predicates = append(predicates, action.StderrSizeBytesNEQ(*i.StderrSizeBytesNEQ))
-	}
-	if len(i.StderrSizeBytesIn) > 0 {
-		predicates = append(predicates, action.StderrSizeBytesIn(i.StderrSizeBytesIn...))
-	}
-	if len(i.StderrSizeBytesNotIn) > 0 {
-		predicates = append(predicates, action.StderrSizeBytesNotIn(i.StderrSizeBytesNotIn...))
-	}
-	if i.StderrSizeBytesGT != nil {
-		predicates = append(predicates, action.StderrSizeBytesGT(*i.StderrSizeBytesGT))
-	}
-	if i.StderrSizeBytesGTE != nil {
-		predicates = append(predicates, action.StderrSizeBytesGTE(*i.StderrSizeBytesGTE))
-	}
-	if i.StderrSizeBytesLT != nil {
-		predicates = append(predicates, action.StderrSizeBytesLT(*i.StderrSizeBytesLT))
-	}
-	if i.StderrSizeBytesLTE != nil {
-		predicates = append(predicates, action.StderrSizeBytesLTE(*i.StderrSizeBytesLTE))
-	}
-	if i.StderrSizeBytesIsNil {
-		predicates = append(predicates, action.StderrSizeBytesIsNil())
-	}
-	if i.StderrSizeBytesNotNil {
-		predicates = append(predicates, action.StderrSizeBytesNotNil())
-	}
-	if i.StderrHashFunction != nil {
-		predicates = append(predicates, action.StderrHashFunctionEQ(*i.StderrHashFunction))
-	}
-	if i.StderrHashFunctionNEQ != nil {
-		predicates = append(predicates, action.StderrHashFunctionNEQ(*i.StderrHashFunctionNEQ))
-	}
-	if len(i.StderrHashFunctionIn) > 0 {
-		predicates = append(predicates, action.StderrHashFunctionIn(i.StderrHashFunctionIn...))
-	}
-	if len(i.StderrHashFunctionNotIn) > 0 {
-		predicates = append(predicates, action.StderrHashFunctionNotIn(i.StderrHashFunctionNotIn...))
-	}
-	if i.StderrHashFunctionGT != nil {
-		predicates = append(predicates, action.StderrHashFunctionGT(*i.StderrHashFunctionGT))
-	}
-	if i.StderrHashFunctionGTE != nil {
-		predicates = append(predicates, action.StderrHashFunctionGTE(*i.StderrHashFunctionGTE))
-	}
-	if i.StderrHashFunctionLT != nil {
-		predicates = append(predicates, action.StderrHashFunctionLT(*i.StderrHashFunctionLT))
-	}
-	if i.StderrHashFunctionLTE != nil {
-		predicates = append(predicates, action.StderrHashFunctionLTE(*i.StderrHashFunctionLTE))
-	}
-	if i.StderrHashFunctionContains != nil {
-		predicates = append(predicates, action.StderrHashFunctionContains(*i.StderrHashFunctionContains))
-	}
-	if i.StderrHashFunctionHasPrefix != nil {
-		predicates = append(predicates, action.StderrHashFunctionHasPrefix(*i.StderrHashFunctionHasPrefix))
-	}
-	if i.StderrHashFunctionHasSuffix != nil {
-		predicates = append(predicates, action.StderrHashFunctionHasSuffix(*i.StderrHashFunctionHasSuffix))
-	}
-	if i.StderrHashFunctionIsNil {
-		predicates = append(predicates, action.StderrHashFunctionIsNil())
-	}
-	if i.StderrHashFunctionNotNil {
-		predicates = append(predicates, action.StderrHashFunctionNotNil())
-	}
-	if i.StderrHashFunctionEqualFold != nil {
-		predicates = append(predicates, action.StderrHashFunctionEqualFold(*i.StderrHashFunctionEqualFold))
-	}
-	if i.StderrHashFunctionContainsFold != nil {
-		predicates = append(predicates, action.StderrHashFunctionContainsFold(*i.StderrHashFunctionContainsFold))
-	}
 
 	if i.HasBazelInvocation != nil {
 		p := action.HasBazelInvocation()
@@ -913,6 +592,42 @@ func (i *ActionWhereInput) P() (predicate.Action, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, action.HasConfigurationWith(with...))
+	}
+	if i.HasStdout != nil {
+		p := action.HasStdout()
+		if !*i.HasStdout {
+			p = action.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasStdoutWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasStdoutWith))
+		for _, w := range i.HasStdoutWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasStdoutWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, action.HasStdoutWith(with...))
+	}
+	if i.HasStderr != nil {
+		p := action.HasStderr()
+		if !*i.HasStderr {
+			p = action.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasStderrWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasStderrWith))
+		for _, w := range i.HasStderrWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasStderrWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, action.HasStderrWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -3116,6 +2831,10 @@ type BazelInvocationWhereInput struct {
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
 	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
 
+	// "build_tool_logs" edge predicates.
+	HasBuildToolLogs     *bool             `json:"hasBuildToolLogs,omitempty"`
+	HasBuildToolLogsWith []*FileWhereInput `json:"hasBuildToolLogsWith,omitempty"`
+
 	// "invocation_targets" edge predicates.
 	HasInvocationTargets     *bool                         `json:"hasInvocationTargets,omitempty"`
 	HasInvocationTargetsWith []*InvocationTargetWhereInput `json:"hasInvocationTargetsWith,omitempty"`
@@ -3739,6 +3458,24 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, bazelinvocation.HasMetricsWith(with...))
+	}
+	if i.HasBuildToolLogs != nil {
+		p := bazelinvocation.HasBuildToolLogs()
+		if !*i.HasBuildToolLogs {
+			p = bazelinvocation.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBuildToolLogsWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasBuildToolLogsWith))
+		for _, w := range i.HasBuildToolLogsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBuildToolLogsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, bazelinvocation.HasBuildToolLogsWith(with...))
 	}
 	if i.HasInvocationTargets != nil {
 		p := bazelinvocation.HasInvocationTargets()
@@ -5450,6 +5187,748 @@ func (i *ConnectionMetadataWhereInput) P() (predicate.ConnectionMetadata, error)
 	}
 }
 
+// DigestWhereInput represents a where input for filtering Digest queries.
+type DigestWhereInput struct {
+	Predicates []predicate.Digest  `json:"-"`
+	Not        *DigestWhereInput   `json:"not,omitempty"`
+	Or         []*DigestWhereInput `json:"or,omitempty"`
+	And        []*DigestWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "rev2_instance_name" field predicates.
+	Rev2InstanceName             *string  `json:"rev2InstanceName,omitempty"`
+	Rev2InstanceNameNEQ          *string  `json:"rev2InstanceNameNEQ,omitempty"`
+	Rev2InstanceNameIn           []string `json:"rev2InstanceNameIn,omitempty"`
+	Rev2InstanceNameNotIn        []string `json:"rev2InstanceNameNotIn,omitempty"`
+	Rev2InstanceNameGT           *string  `json:"rev2InstanceNameGT,omitempty"`
+	Rev2InstanceNameGTE          *string  `json:"rev2InstanceNameGTE,omitempty"`
+	Rev2InstanceNameLT           *string  `json:"rev2InstanceNameLT,omitempty"`
+	Rev2InstanceNameLTE          *string  `json:"rev2InstanceNameLTE,omitempty"`
+	Rev2InstanceNameContains     *string  `json:"rev2InstanceNameContains,omitempty"`
+	Rev2InstanceNameHasPrefix    *string  `json:"rev2InstanceNameHasPrefix,omitempty"`
+	Rev2InstanceNameHasSuffix    *string  `json:"rev2InstanceNameHasSuffix,omitempty"`
+	Rev2InstanceNameEqualFold    *string  `json:"rev2InstanceNameEqualFold,omitempty"`
+	Rev2InstanceNameContainsFold *string  `json:"rev2InstanceNameContainsFold,omitempty"`
+
+	// "digest_function" field predicates.
+	DigestFunction      *int16  `json:"digestFunction,omitempty"`
+	DigestFunctionNEQ   *int16  `json:"digestFunctionNEQ,omitempty"`
+	DigestFunctionIn    []int16 `json:"digestFunctionIn,omitempty"`
+	DigestFunctionNotIn []int16 `json:"digestFunctionNotIn,omitempty"`
+	DigestFunctionGT    *int16  `json:"digestFunctionGT,omitempty"`
+	DigestFunctionGTE   *int16  `json:"digestFunctionGTE,omitempty"`
+	DigestFunctionLT    *int16  `json:"digestFunctionLT,omitempty"`
+	DigestFunctionLTE   *int16  `json:"digestFunctionLTE,omitempty"`
+
+	// "size_bytes" field predicates.
+	SizeBytes      *int64  `json:"sizeBytes,omitempty"`
+	SizeBytesNEQ   *int64  `json:"sizeBytesNEQ,omitempty"`
+	SizeBytesIn    []int64 `json:"sizeBytesIn,omitempty"`
+	SizeBytesNotIn []int64 `json:"sizeBytesNotIn,omitempty"`
+	SizeBytesGT    *int64  `json:"sizeBytesGT,omitempty"`
+	SizeBytesGTE   *int64  `json:"sizeBytesGTE,omitempty"`
+	SizeBytesLT    *int64  `json:"sizeBytesLT,omitempty"`
+	SizeBytesLTE   *int64  `json:"sizeBytesLTE,omitempty"`
+
+	// "files" edge predicates.
+	HasFiles     *bool             `json:"hasFiles,omitempty"`
+	HasFilesWith []*FileWhereInput `json:"hasFilesWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *DigestWhereInput) AddPredicates(predicates ...predicate.Digest) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the DigestWhereInput filter on the DigestQuery builder.
+func (i *DigestWhereInput) Filter(q *DigestQuery) (*DigestQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyDigestWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyDigestWhereInput is returned in case the DigestWhereInput is empty.
+var ErrEmptyDigestWhereInput = errors.New("ent: empty predicate DigestWhereInput")
+
+// P returns a predicate for filtering digests.
+// An error is returned if the input is empty or invalid.
+func (i *DigestWhereInput) P() (predicate.Digest, error) {
+	var predicates []predicate.Digest
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, digest.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.Digest, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, digest.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.Digest, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, digest.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, digest.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, digest.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, digest.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, digest.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, digest.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, digest.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, digest.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, digest.IDLTE(*i.IDLTE))
+	}
+	if i.Rev2InstanceName != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameEQ(*i.Rev2InstanceName))
+	}
+	if i.Rev2InstanceNameNEQ != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameNEQ(*i.Rev2InstanceNameNEQ))
+	}
+	if len(i.Rev2InstanceNameIn) > 0 {
+		predicates = append(predicates, digest.Rev2InstanceNameIn(i.Rev2InstanceNameIn...))
+	}
+	if len(i.Rev2InstanceNameNotIn) > 0 {
+		predicates = append(predicates, digest.Rev2InstanceNameNotIn(i.Rev2InstanceNameNotIn...))
+	}
+	if i.Rev2InstanceNameGT != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameGT(*i.Rev2InstanceNameGT))
+	}
+	if i.Rev2InstanceNameGTE != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameGTE(*i.Rev2InstanceNameGTE))
+	}
+	if i.Rev2InstanceNameLT != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameLT(*i.Rev2InstanceNameLT))
+	}
+	if i.Rev2InstanceNameLTE != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameLTE(*i.Rev2InstanceNameLTE))
+	}
+	if i.Rev2InstanceNameContains != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameContains(*i.Rev2InstanceNameContains))
+	}
+	if i.Rev2InstanceNameHasPrefix != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameHasPrefix(*i.Rev2InstanceNameHasPrefix))
+	}
+	if i.Rev2InstanceNameHasSuffix != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameHasSuffix(*i.Rev2InstanceNameHasSuffix))
+	}
+	if i.Rev2InstanceNameEqualFold != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameEqualFold(*i.Rev2InstanceNameEqualFold))
+	}
+	if i.Rev2InstanceNameContainsFold != nil {
+		predicates = append(predicates, digest.Rev2InstanceNameContainsFold(*i.Rev2InstanceNameContainsFold))
+	}
+	if i.DigestFunction != nil {
+		predicates = append(predicates, digest.DigestFunctionEQ(*i.DigestFunction))
+	}
+	if i.DigestFunctionNEQ != nil {
+		predicates = append(predicates, digest.DigestFunctionNEQ(*i.DigestFunctionNEQ))
+	}
+	if len(i.DigestFunctionIn) > 0 {
+		predicates = append(predicates, digest.DigestFunctionIn(i.DigestFunctionIn...))
+	}
+	if len(i.DigestFunctionNotIn) > 0 {
+		predicates = append(predicates, digest.DigestFunctionNotIn(i.DigestFunctionNotIn...))
+	}
+	if i.DigestFunctionGT != nil {
+		predicates = append(predicates, digest.DigestFunctionGT(*i.DigestFunctionGT))
+	}
+	if i.DigestFunctionGTE != nil {
+		predicates = append(predicates, digest.DigestFunctionGTE(*i.DigestFunctionGTE))
+	}
+	if i.DigestFunctionLT != nil {
+		predicates = append(predicates, digest.DigestFunctionLT(*i.DigestFunctionLT))
+	}
+	if i.DigestFunctionLTE != nil {
+		predicates = append(predicates, digest.DigestFunctionLTE(*i.DigestFunctionLTE))
+	}
+	if i.SizeBytes != nil {
+		predicates = append(predicates, digest.SizeBytesEQ(*i.SizeBytes))
+	}
+	if i.SizeBytesNEQ != nil {
+		predicates = append(predicates, digest.SizeBytesNEQ(*i.SizeBytesNEQ))
+	}
+	if len(i.SizeBytesIn) > 0 {
+		predicates = append(predicates, digest.SizeBytesIn(i.SizeBytesIn...))
+	}
+	if len(i.SizeBytesNotIn) > 0 {
+		predicates = append(predicates, digest.SizeBytesNotIn(i.SizeBytesNotIn...))
+	}
+	if i.SizeBytesGT != nil {
+		predicates = append(predicates, digest.SizeBytesGT(*i.SizeBytesGT))
+	}
+	if i.SizeBytesGTE != nil {
+		predicates = append(predicates, digest.SizeBytesGTE(*i.SizeBytesGTE))
+	}
+	if i.SizeBytesLT != nil {
+		predicates = append(predicates, digest.SizeBytesLT(*i.SizeBytesLT))
+	}
+	if i.SizeBytesLTE != nil {
+		predicates = append(predicates, digest.SizeBytesLTE(*i.SizeBytesLTE))
+	}
+
+	if i.HasFiles != nil {
+		p := digest.HasFiles()
+		if !*i.HasFiles {
+			p = digest.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFilesWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasFilesWith))
+		for _, w := range i.HasFilesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFilesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, digest.HasFilesWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyDigestWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return digest.And(predicates...), nil
+	}
+}
+
+// FileWhereInput represents a where input for filtering File queries.
+type FileWhereInput struct {
+	Predicates []predicate.File  `json:"-"`
+	Not        *FileWhereInput   `json:"not,omitempty"`
+	Or         []*FileWhereInput `json:"or,omitempty"`
+	And        []*FileWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "digest_id" field predicates.
+	DigestID      *int64  `json:"digestID,omitempty"`
+	DigestIDNEQ   *int64  `json:"digestIDNEQ,omitempty"`
+	DigestIDIn    []int64 `json:"digestIDIn,omitempty"`
+	DigestIDNotIn []int64 `json:"digestIDNotIn,omitempty"`
+
+	// "digest" edge predicates.
+	HasDigest     *bool               `json:"hasDigest,omitempty"`
+	HasDigestWith []*DigestWhereInput `json:"hasDigestWith,omitempty"`
+
+	// "file_path" edge predicates.
+	HasFilePath     *bool                 `json:"hasFilePath,omitempty"`
+	HasFilePathWith []*FilePathWhereInput `json:"hasFilePathWith,omitempty"`
+
+	// "action_stdout" edge predicates.
+	HasActionStdout     *bool               `json:"hasActionStdout,omitempty"`
+	HasActionStdoutWith []*ActionWhereInput `json:"hasActionStdoutWith,omitempty"`
+
+	// "action_stderr" edge predicates.
+	HasActionStderr     *bool               `json:"hasActionStderr,omitempty"`
+	HasActionStderrWith []*ActionWhereInput `json:"hasActionStderrWith,omitempty"`
+
+	// "build_tool_logs" edge predicates.
+	HasBuildToolLogs     *bool                        `json:"hasBuildToolLogs,omitempty"`
+	HasBuildToolLogsWith []*BazelInvocationWhereInput `json:"hasBuildToolLogsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *FileWhereInput) AddPredicates(predicates ...predicate.File) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the FileWhereInput filter on the FileQuery builder.
+func (i *FileWhereInput) Filter(q *FileQuery) (*FileQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyFileWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyFileWhereInput is returned in case the FileWhereInput is empty.
+var ErrEmptyFileWhereInput = errors.New("ent: empty predicate FileWhereInput")
+
+// P returns a predicate for filtering files.
+// An error is returned if the input is empty or invalid.
+func (i *FileWhereInput) P() (predicate.File, error) {
+	var predicates []predicate.File
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, file.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.File, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, file.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.File, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, file.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, file.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, file.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, file.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, file.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, file.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, file.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, file.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, file.IDLTE(*i.IDLTE))
+	}
+	if i.DigestID != nil {
+		predicates = append(predicates, file.DigestIDEQ(*i.DigestID))
+	}
+	if i.DigestIDNEQ != nil {
+		predicates = append(predicates, file.DigestIDNEQ(*i.DigestIDNEQ))
+	}
+	if len(i.DigestIDIn) > 0 {
+		predicates = append(predicates, file.DigestIDIn(i.DigestIDIn...))
+	}
+	if len(i.DigestIDNotIn) > 0 {
+		predicates = append(predicates, file.DigestIDNotIn(i.DigestIDNotIn...))
+	}
+
+	if i.HasDigest != nil {
+		p := file.HasDigest()
+		if !*i.HasDigest {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasDigestWith) > 0 {
+		with := make([]predicate.Digest, 0, len(i.HasDigestWith))
+		for _, w := range i.HasDigestWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasDigestWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasDigestWith(with...))
+	}
+	if i.HasFilePath != nil {
+		p := file.HasFilePath()
+		if !*i.HasFilePath {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFilePathWith) > 0 {
+		with := make([]predicate.FilePath, 0, len(i.HasFilePathWith))
+		for _, w := range i.HasFilePathWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFilePathWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasFilePathWith(with...))
+	}
+	if i.HasActionStdout != nil {
+		p := file.HasActionStdout()
+		if !*i.HasActionStdout {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasActionStdoutWith) > 0 {
+		with := make([]predicate.Action, 0, len(i.HasActionStdoutWith))
+		for _, w := range i.HasActionStdoutWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasActionStdoutWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasActionStdoutWith(with...))
+	}
+	if i.HasActionStderr != nil {
+		p := file.HasActionStderr()
+		if !*i.HasActionStderr {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasActionStderrWith) > 0 {
+		with := make([]predicate.Action, 0, len(i.HasActionStderrWith))
+		for _, w := range i.HasActionStderrWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasActionStderrWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasActionStderrWith(with...))
+	}
+	if i.HasBuildToolLogs != nil {
+		p := file.HasBuildToolLogs()
+		if !*i.HasBuildToolLogs {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBuildToolLogsWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasBuildToolLogsWith))
+		for _, w := range i.HasBuildToolLogsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBuildToolLogsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasBuildToolLogsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyFileWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return file.And(predicates...), nil
+	}
+}
+
+// FilePathWhereInput represents a where input for filtering FilePath queries.
+type FilePathWhereInput struct {
+	Predicates []predicate.FilePath  `json:"-"`
+	Not        *FilePathWhereInput   `json:"not,omitempty"`
+	Or         []*FilePathWhereInput `json:"or,omitempty"`
+	And        []*FilePathWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "path" field predicates.
+	Path             *string  `json:"path,omitempty"`
+	PathNEQ          *string  `json:"pathNEQ,omitempty"`
+	PathIn           []string `json:"pathIn,omitempty"`
+	PathNotIn        []string `json:"pathNotIn,omitempty"`
+	PathGT           *string  `json:"pathGT,omitempty"`
+	PathGTE          *string  `json:"pathGTE,omitempty"`
+	PathLT           *string  `json:"pathLT,omitempty"`
+	PathLTE          *string  `json:"pathLTE,omitempty"`
+	PathContains     *string  `json:"pathContains,omitempty"`
+	PathHasPrefix    *string  `json:"pathHasPrefix,omitempty"`
+	PathHasSuffix    *string  `json:"pathHasSuffix,omitempty"`
+	PathEqualFold    *string  `json:"pathEqualFold,omitempty"`
+	PathContainsFold *string  `json:"pathContainsFold,omitempty"`
+
+	// "bep_instance_name" edge predicates.
+	HasBepInstanceName     *bool                     `json:"hasBepInstanceName,omitempty"`
+	HasBepInstanceNameWith []*InstanceNameWhereInput `json:"hasBepInstanceNameWith,omitempty"`
+
+	// "files" edge predicates.
+	HasFiles     *bool             `json:"hasFiles,omitempty"`
+	HasFilesWith []*FileWhereInput `json:"hasFilesWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *FilePathWhereInput) AddPredicates(predicates ...predicate.FilePath) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the FilePathWhereInput filter on the FilePathQuery builder.
+func (i *FilePathWhereInput) Filter(q *FilePathQuery) (*FilePathQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyFilePathWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyFilePathWhereInput is returned in case the FilePathWhereInput is empty.
+var ErrEmptyFilePathWhereInput = errors.New("ent: empty predicate FilePathWhereInput")
+
+// P returns a predicate for filtering filepaths.
+// An error is returned if the input is empty or invalid.
+func (i *FilePathWhereInput) P() (predicate.FilePath, error) {
+	var predicates []predicate.FilePath
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, filepath.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.FilePath, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, filepath.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.FilePath, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, filepath.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, filepath.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, filepath.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, filepath.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, filepath.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, filepath.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, filepath.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, filepath.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, filepath.IDLTE(*i.IDLTE))
+	}
+	if i.Path != nil {
+		predicates = append(predicates, filepath.PathEQ(*i.Path))
+	}
+	if i.PathNEQ != nil {
+		predicates = append(predicates, filepath.PathNEQ(*i.PathNEQ))
+	}
+	if len(i.PathIn) > 0 {
+		predicates = append(predicates, filepath.PathIn(i.PathIn...))
+	}
+	if len(i.PathNotIn) > 0 {
+		predicates = append(predicates, filepath.PathNotIn(i.PathNotIn...))
+	}
+	if i.PathGT != nil {
+		predicates = append(predicates, filepath.PathGT(*i.PathGT))
+	}
+	if i.PathGTE != nil {
+		predicates = append(predicates, filepath.PathGTE(*i.PathGTE))
+	}
+	if i.PathLT != nil {
+		predicates = append(predicates, filepath.PathLT(*i.PathLT))
+	}
+	if i.PathLTE != nil {
+		predicates = append(predicates, filepath.PathLTE(*i.PathLTE))
+	}
+	if i.PathContains != nil {
+		predicates = append(predicates, filepath.PathContains(*i.PathContains))
+	}
+	if i.PathHasPrefix != nil {
+		predicates = append(predicates, filepath.PathHasPrefix(*i.PathHasPrefix))
+	}
+	if i.PathHasSuffix != nil {
+		predicates = append(predicates, filepath.PathHasSuffix(*i.PathHasSuffix))
+	}
+	if i.PathEqualFold != nil {
+		predicates = append(predicates, filepath.PathEqualFold(*i.PathEqualFold))
+	}
+	if i.PathContainsFold != nil {
+		predicates = append(predicates, filepath.PathContainsFold(*i.PathContainsFold))
+	}
+
+	if i.HasBepInstanceName != nil {
+		p := filepath.HasBepInstanceName()
+		if !*i.HasBepInstanceName {
+			p = filepath.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBepInstanceNameWith) > 0 {
+		with := make([]predicate.InstanceName, 0, len(i.HasBepInstanceNameWith))
+		for _, w := range i.HasBepInstanceNameWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBepInstanceNameWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, filepath.HasBepInstanceNameWith(with...))
+	}
+	if i.HasFiles != nil {
+		p := filepath.HasFiles()
+		if !*i.HasFiles {
+			p = filepath.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFilesWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasFilesWith))
+		for _, w := range i.HasFilesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFilesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, filepath.HasFilesWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyFilePathWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return filepath.And(predicates...), nil
+	}
+}
+
 // GarbageMetricsWhereInput represents a where input for filtering GarbageMetrics queries.
 type GarbageMetricsWhereInput struct {
 	Predicates []predicate.GarbageMetrics  `json:"-"`
@@ -5743,6 +6222,10 @@ type InstanceNameWhereInput struct {
 	// "targets" edge predicates.
 	HasTargets     *bool               `json:"hasTargets,omitempty"`
 	HasTargetsWith []*TargetWhereInput `json:"hasTargetsWith,omitempty"`
+
+	// "file_paths" edge predicates.
+	HasFilePaths     *bool                 `json:"hasFilePaths,omitempty"`
+	HasFilePathsWith []*FilePathWhereInput `json:"hasFilePathsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -5933,6 +6416,24 @@ func (i *InstanceNameWhereInput) P() (predicate.InstanceName, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, instancename.HasTargetsWith(with...))
+	}
+	if i.HasFilePaths != nil {
+		p := instancename.HasFilePaths()
+		if !*i.HasFilePaths {
+			p = instancename.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFilePathsWith) > 0 {
+		with := make([]predicate.FilePath, 0, len(i.HasFilePathsWith))
+		for _, w := range i.HasFilePathsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFilePathsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, instancename.HasFilePathsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

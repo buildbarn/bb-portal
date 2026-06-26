@@ -4,32 +4,15 @@ import {
   ProjectOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, type MenuProps, Space } from "antd";
-import type { Profile } from "@/graphql/__generated__/graphql";
-import { digestFunctionValueFromString } from "@/utils/digestFunctionUtils";
-import { generateFileUrl } from "@/utils/urlGenerator";
+import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
+import { generateFileUrlFromGraphqlFile } from "@/utils/urlGenerator";
 
 const PERFETTO_URL = "https://ui.perfetto.dev";
 
-const getProfileUrl = (
-  instanceName: string | undefined,
-  profile: Profile,
-): string => {
-  return generateFileUrl(
-    instanceName,
-    digestFunctionValueFromString(profile.digestFunction),
-    {
-      hash: profile.digest,
-      sizeBytes: profile.sizeInBytes.toString(),
-    },
-    profile.name,
-  );
-};
-
 const fetchProfileFile = async (
-  instanceName: string | undefined,
-  profile: Profile,
+  profile: FileDetailsFragment,
 ): Promise<ArrayBuffer> => {
-  const res = await fetch(getProfileUrl(instanceName, profile));
+  const res = await fetch(generateFileUrlFromGraphqlFile(profile));
   if (!res.ok) {
     return Promise.reject(`Failed to download profile file: ${res.statusText}`);
   }
@@ -55,28 +38,21 @@ const waitForPerfettoToLoad = async (handle: Window) => {
   window.clearInterval(timer);
 };
 
-function openPerfetto(
-  instanceName: string | undefined,
-  profile: Profile,
-  invocationID: string,
-) {
+function openPerfetto(profile: FileDetailsFragment, invocationID: string) {
   const handle = window.open(PERFETTO_URL);
   if (!handle) {
     console.error("Failed to open new window for Perfetto UI");
     return;
   }
 
-  Promise.all([
-    fetchProfileFile(instanceName, profile),
-    waitForPerfettoToLoad(handle),
-  ])
+  Promise.all([fetchProfileFile(profile), waitForPerfettoToLoad(handle)])
     .then((values) => {
       handle.postMessage(
         {
           perfetto: {
             buffer: values[0],
             title: invocationID,
-            fileName: profile.name,
+            fileName: profile.filePath,
           },
         },
         PERFETTO_URL,
@@ -90,22 +66,22 @@ function openPerfetto(
 }
 
 const ProfileDropdown: React.FC<{
-  instanceName: string | undefined;
-  profile: Profile;
+  profile: FileDetailsFragment;
   invocationID: string;
-}> = ({ instanceName, profile, invocationID }) => {
+}> = ({ profile, invocationID }) => {
   const items: MenuProps["items"] = [
     {
       label: "Download Profile",
       key: "download_profile",
       icon: <DownloadOutlined />,
-      onClick: () => window.open(getProfileUrl(instanceName, profile), "_self"),
+      onClick: () =>
+        window.open(generateFileUrlFromGraphqlFile(profile), "_self"),
     },
     {
       label: "Open in Perfetto",
       key: "open_in_perfetto",
       icon: <ProjectOutlined rotate={270} />,
-      onClick: () => openPerfetto(instanceName, profile, invocationID),
+      onClick: () => openPerfetto(profile, invocationID),
     },
   ];
 

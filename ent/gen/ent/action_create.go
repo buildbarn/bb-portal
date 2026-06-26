@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 )
 
 // ActionCreate is the builder for creating a Action entity.
@@ -146,86 +147,30 @@ func (_c *ActionCreate) SetNillableFailureMessage(v *string) *ActionCreate {
 	return _c
 }
 
-// SetStdoutHash sets the "stdout_hash" field.
-func (_c *ActionCreate) SetStdoutHash(v string) *ActionCreate {
-	_c.mutation.SetStdoutHash(v)
+// SetStdoutFileID sets the "stdout_file_id" field.
+func (_c *ActionCreate) SetStdoutFileID(v int64) *ActionCreate {
+	_c.mutation.SetStdoutFileID(v)
 	return _c
 }
 
-// SetNillableStdoutHash sets the "stdout_hash" field if the given value is not nil.
-func (_c *ActionCreate) SetNillableStdoutHash(v *string) *ActionCreate {
+// SetNillableStdoutFileID sets the "stdout_file_id" field if the given value is not nil.
+func (_c *ActionCreate) SetNillableStdoutFileID(v *int64) *ActionCreate {
 	if v != nil {
-		_c.SetStdoutHash(*v)
+		_c.SetStdoutFileID(*v)
 	}
 	return _c
 }
 
-// SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (_c *ActionCreate) SetStdoutSizeBytes(v int64) *ActionCreate {
-	_c.mutation.SetStdoutSizeBytes(v)
+// SetStderrFileID sets the "stderr_file_id" field.
+func (_c *ActionCreate) SetStderrFileID(v int64) *ActionCreate {
+	_c.mutation.SetStderrFileID(v)
 	return _c
 }
 
-// SetNillableStdoutSizeBytes sets the "stdout_size_bytes" field if the given value is not nil.
-func (_c *ActionCreate) SetNillableStdoutSizeBytes(v *int64) *ActionCreate {
+// SetNillableStderrFileID sets the "stderr_file_id" field if the given value is not nil.
+func (_c *ActionCreate) SetNillableStderrFileID(v *int64) *ActionCreate {
 	if v != nil {
-		_c.SetStdoutSizeBytes(*v)
-	}
-	return _c
-}
-
-// SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (_c *ActionCreate) SetStdoutHashFunction(v string) *ActionCreate {
-	_c.mutation.SetStdoutHashFunction(v)
-	return _c
-}
-
-// SetNillableStdoutHashFunction sets the "stdout_hash_function" field if the given value is not nil.
-func (_c *ActionCreate) SetNillableStdoutHashFunction(v *string) *ActionCreate {
-	if v != nil {
-		_c.SetStdoutHashFunction(*v)
-	}
-	return _c
-}
-
-// SetStderrHash sets the "stderr_hash" field.
-func (_c *ActionCreate) SetStderrHash(v string) *ActionCreate {
-	_c.mutation.SetStderrHash(v)
-	return _c
-}
-
-// SetNillableStderrHash sets the "stderr_hash" field if the given value is not nil.
-func (_c *ActionCreate) SetNillableStderrHash(v *string) *ActionCreate {
-	if v != nil {
-		_c.SetStderrHash(*v)
-	}
-	return _c
-}
-
-// SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (_c *ActionCreate) SetStderrSizeBytes(v int64) *ActionCreate {
-	_c.mutation.SetStderrSizeBytes(v)
-	return _c
-}
-
-// SetNillableStderrSizeBytes sets the "stderr_size_bytes" field if the given value is not nil.
-func (_c *ActionCreate) SetNillableStderrSizeBytes(v *int64) *ActionCreate {
-	if v != nil {
-		_c.SetStderrSizeBytes(*v)
-	}
-	return _c
-}
-
-// SetStderrHashFunction sets the "stderr_hash_function" field.
-func (_c *ActionCreate) SetStderrHashFunction(v string) *ActionCreate {
-	_c.mutation.SetStderrHashFunction(v)
-	return _c
-}
-
-// SetNillableStderrHashFunction sets the "stderr_hash_function" field if the given value is not nil.
-func (_c *ActionCreate) SetNillableStderrHashFunction(v *string) *ActionCreate {
-	if v != nil {
-		_c.SetStderrHashFunction(*v)
+		_c.SetStderrFileID(*v)
 	}
 	return _c
 }
@@ -244,6 +189,44 @@ func (_c *ActionCreate) SetBazelInvocation(v *BazelInvocation) *ActionCreate {
 // SetConfiguration sets the "configuration" edge to the Configuration entity.
 func (_c *ActionCreate) SetConfiguration(v *Configuration) *ActionCreate {
 	return _c.SetConfigurationID(v.ID)
+}
+
+// SetStdoutID sets the "stdout" edge to the File entity by ID.
+func (_c *ActionCreate) SetStdoutID(id int64) *ActionCreate {
+	_c.mutation.SetStdoutID(id)
+	return _c
+}
+
+// SetNillableStdoutID sets the "stdout" edge to the File entity by ID if the given value is not nil.
+func (_c *ActionCreate) SetNillableStdoutID(id *int64) *ActionCreate {
+	if id != nil {
+		_c = _c.SetStdoutID(*id)
+	}
+	return _c
+}
+
+// SetStdout sets the "stdout" edge to the File entity.
+func (_c *ActionCreate) SetStdout(v *File) *ActionCreate {
+	return _c.SetStdoutID(v.ID)
+}
+
+// SetStderrID sets the "stderr" edge to the File entity by ID.
+func (_c *ActionCreate) SetStderrID(id int64) *ActionCreate {
+	_c.mutation.SetStderrID(id)
+	return _c
+}
+
+// SetNillableStderrID sets the "stderr" edge to the File entity by ID if the given value is not nil.
+func (_c *ActionCreate) SetNillableStderrID(id *int64) *ActionCreate {
+	if id != nil {
+		_c = _c.SetStderrID(*id)
+	}
+	return _c
+}
+
+// SetStderr sets the "stderr" edge to the File entity.
+func (_c *ActionCreate) SetStderr(v *File) *ActionCreate {
+	return _c.SetStderrID(v.ID)
 }
 
 // Mutation returns the ActionMutation object of the builder.
@@ -364,30 +347,6 @@ func (_c *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 		_spec.SetField(action.FieldFailureMessage, field.TypeString, value)
 		_node.FailureMessage = value
 	}
-	if value, ok := _c.mutation.StdoutHash(); ok {
-		_spec.SetField(action.FieldStdoutHash, field.TypeString, value)
-		_node.StdoutHash = value
-	}
-	if value, ok := _c.mutation.StdoutSizeBytes(); ok {
-		_spec.SetField(action.FieldStdoutSizeBytes, field.TypeInt64, value)
-		_node.StdoutSizeBytes = value
-	}
-	if value, ok := _c.mutation.StdoutHashFunction(); ok {
-		_spec.SetField(action.FieldStdoutHashFunction, field.TypeString, value)
-		_node.StdoutHashFunction = value
-	}
-	if value, ok := _c.mutation.StderrHash(); ok {
-		_spec.SetField(action.FieldStderrHash, field.TypeString, value)
-		_node.StderrHash = value
-	}
-	if value, ok := _c.mutation.StderrSizeBytes(); ok {
-		_spec.SetField(action.FieldStderrSizeBytes, field.TypeInt64, value)
-		_node.StderrSizeBytes = value
-	}
-	if value, ok := _c.mutation.StderrHashFunction(); ok {
-		_spec.SetField(action.FieldStderrHashFunction, field.TypeString, value)
-		_node.StderrHashFunction = value
-	}
 	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -420,6 +379,40 @@ func (_c *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.ConfigurationID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.StdoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   action.StdoutTable,
+			Columns: []string{action.StdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.StdoutFileID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.StderrIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   action.StderrTable,
+			Columns: []string{action.StderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.StderrFileID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -636,126 +629,6 @@ func (u *ActionUpsert) ClearFailureMessage() *ActionUpsert {
 	return u
 }
 
-// SetStdoutHash sets the "stdout_hash" field.
-func (u *ActionUpsert) SetStdoutHash(v string) *ActionUpsert {
-	u.Set(action.FieldStdoutHash, v)
-	return u
-}
-
-// UpdateStdoutHash sets the "stdout_hash" field to the value that was provided on create.
-func (u *ActionUpsert) UpdateStdoutHash() *ActionUpsert {
-	u.SetExcluded(action.FieldStdoutHash)
-	return u
-}
-
-// ClearStdoutHash clears the value of the "stdout_hash" field.
-func (u *ActionUpsert) ClearStdoutHash() *ActionUpsert {
-	u.SetNull(action.FieldStdoutHash)
-	return u
-}
-
-// SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (u *ActionUpsert) SetStdoutSizeBytes(v int64) *ActionUpsert {
-	u.Set(action.FieldStdoutSizeBytes, v)
-	return u
-}
-
-// UpdateStdoutSizeBytes sets the "stdout_size_bytes" field to the value that was provided on create.
-func (u *ActionUpsert) UpdateStdoutSizeBytes() *ActionUpsert {
-	u.SetExcluded(action.FieldStdoutSizeBytes)
-	return u
-}
-
-// AddStdoutSizeBytes adds v to the "stdout_size_bytes" field.
-func (u *ActionUpsert) AddStdoutSizeBytes(v int64) *ActionUpsert {
-	u.Add(action.FieldStdoutSizeBytes, v)
-	return u
-}
-
-// ClearStdoutSizeBytes clears the value of the "stdout_size_bytes" field.
-func (u *ActionUpsert) ClearStdoutSizeBytes() *ActionUpsert {
-	u.SetNull(action.FieldStdoutSizeBytes)
-	return u
-}
-
-// SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (u *ActionUpsert) SetStdoutHashFunction(v string) *ActionUpsert {
-	u.Set(action.FieldStdoutHashFunction, v)
-	return u
-}
-
-// UpdateStdoutHashFunction sets the "stdout_hash_function" field to the value that was provided on create.
-func (u *ActionUpsert) UpdateStdoutHashFunction() *ActionUpsert {
-	u.SetExcluded(action.FieldStdoutHashFunction)
-	return u
-}
-
-// ClearStdoutHashFunction clears the value of the "stdout_hash_function" field.
-func (u *ActionUpsert) ClearStdoutHashFunction() *ActionUpsert {
-	u.SetNull(action.FieldStdoutHashFunction)
-	return u
-}
-
-// SetStderrHash sets the "stderr_hash" field.
-func (u *ActionUpsert) SetStderrHash(v string) *ActionUpsert {
-	u.Set(action.FieldStderrHash, v)
-	return u
-}
-
-// UpdateStderrHash sets the "stderr_hash" field to the value that was provided on create.
-func (u *ActionUpsert) UpdateStderrHash() *ActionUpsert {
-	u.SetExcluded(action.FieldStderrHash)
-	return u
-}
-
-// ClearStderrHash clears the value of the "stderr_hash" field.
-func (u *ActionUpsert) ClearStderrHash() *ActionUpsert {
-	u.SetNull(action.FieldStderrHash)
-	return u
-}
-
-// SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (u *ActionUpsert) SetStderrSizeBytes(v int64) *ActionUpsert {
-	u.Set(action.FieldStderrSizeBytes, v)
-	return u
-}
-
-// UpdateStderrSizeBytes sets the "stderr_size_bytes" field to the value that was provided on create.
-func (u *ActionUpsert) UpdateStderrSizeBytes() *ActionUpsert {
-	u.SetExcluded(action.FieldStderrSizeBytes)
-	return u
-}
-
-// AddStderrSizeBytes adds v to the "stderr_size_bytes" field.
-func (u *ActionUpsert) AddStderrSizeBytes(v int64) *ActionUpsert {
-	u.Add(action.FieldStderrSizeBytes, v)
-	return u
-}
-
-// ClearStderrSizeBytes clears the value of the "stderr_size_bytes" field.
-func (u *ActionUpsert) ClearStderrSizeBytes() *ActionUpsert {
-	u.SetNull(action.FieldStderrSizeBytes)
-	return u
-}
-
-// SetStderrHashFunction sets the "stderr_hash_function" field.
-func (u *ActionUpsert) SetStderrHashFunction(v string) *ActionUpsert {
-	u.Set(action.FieldStderrHashFunction, v)
-	return u
-}
-
-// UpdateStderrHashFunction sets the "stderr_hash_function" field to the value that was provided on create.
-func (u *ActionUpsert) UpdateStderrHashFunction() *ActionUpsert {
-	u.SetExcluded(action.FieldStderrHashFunction)
-	return u
-}
-
-// ClearStderrHashFunction clears the value of the "stderr_hash_function" field.
-func (u *ActionUpsert) ClearStderrHashFunction() *ActionUpsert {
-	u.SetNull(action.FieldStderrHashFunction)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -778,6 +651,12 @@ func (u *ActionUpsertOne) UpdateNewValues() *ActionUpsertOne {
 		}
 		if _, exists := u.create.mutation.ConfigurationID(); exists {
 			s.SetIgnore(action.FieldConfigurationID)
+		}
+		if _, exists := u.create.mutation.StdoutFileID(); exists {
+			s.SetIgnore(action.FieldStdoutFileID)
+		}
+		if _, exists := u.create.mutation.StderrFileID(); exists {
+			s.SetIgnore(action.FieldStderrFileID)
 		}
 	}))
 	return u
@@ -999,146 +878,6 @@ func (u *ActionUpsertOne) ClearFailureMessage() *ActionUpsertOne {
 	})
 }
 
-// SetStdoutHash sets the "stdout_hash" field.
-func (u *ActionUpsertOne) SetStdoutHash(v string) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStdoutHash(v)
-	})
-}
-
-// UpdateStdoutHash sets the "stdout_hash" field to the value that was provided on create.
-func (u *ActionUpsertOne) UpdateStdoutHash() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStdoutHash()
-	})
-}
-
-// ClearStdoutHash clears the value of the "stdout_hash" field.
-func (u *ActionUpsertOne) ClearStdoutHash() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStdoutHash()
-	})
-}
-
-// SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (u *ActionUpsertOne) SetStdoutSizeBytes(v int64) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStdoutSizeBytes(v)
-	})
-}
-
-// AddStdoutSizeBytes adds v to the "stdout_size_bytes" field.
-func (u *ActionUpsertOne) AddStdoutSizeBytes(v int64) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.AddStdoutSizeBytes(v)
-	})
-}
-
-// UpdateStdoutSizeBytes sets the "stdout_size_bytes" field to the value that was provided on create.
-func (u *ActionUpsertOne) UpdateStdoutSizeBytes() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStdoutSizeBytes()
-	})
-}
-
-// ClearStdoutSizeBytes clears the value of the "stdout_size_bytes" field.
-func (u *ActionUpsertOne) ClearStdoutSizeBytes() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStdoutSizeBytes()
-	})
-}
-
-// SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (u *ActionUpsertOne) SetStdoutHashFunction(v string) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStdoutHashFunction(v)
-	})
-}
-
-// UpdateStdoutHashFunction sets the "stdout_hash_function" field to the value that was provided on create.
-func (u *ActionUpsertOne) UpdateStdoutHashFunction() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStdoutHashFunction()
-	})
-}
-
-// ClearStdoutHashFunction clears the value of the "stdout_hash_function" field.
-func (u *ActionUpsertOne) ClearStdoutHashFunction() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStdoutHashFunction()
-	})
-}
-
-// SetStderrHash sets the "stderr_hash" field.
-func (u *ActionUpsertOne) SetStderrHash(v string) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStderrHash(v)
-	})
-}
-
-// UpdateStderrHash sets the "stderr_hash" field to the value that was provided on create.
-func (u *ActionUpsertOne) UpdateStderrHash() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStderrHash()
-	})
-}
-
-// ClearStderrHash clears the value of the "stderr_hash" field.
-func (u *ActionUpsertOne) ClearStderrHash() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStderrHash()
-	})
-}
-
-// SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (u *ActionUpsertOne) SetStderrSizeBytes(v int64) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStderrSizeBytes(v)
-	})
-}
-
-// AddStderrSizeBytes adds v to the "stderr_size_bytes" field.
-func (u *ActionUpsertOne) AddStderrSizeBytes(v int64) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.AddStderrSizeBytes(v)
-	})
-}
-
-// UpdateStderrSizeBytes sets the "stderr_size_bytes" field to the value that was provided on create.
-func (u *ActionUpsertOne) UpdateStderrSizeBytes() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStderrSizeBytes()
-	})
-}
-
-// ClearStderrSizeBytes clears the value of the "stderr_size_bytes" field.
-func (u *ActionUpsertOne) ClearStderrSizeBytes() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStderrSizeBytes()
-	})
-}
-
-// SetStderrHashFunction sets the "stderr_hash_function" field.
-func (u *ActionUpsertOne) SetStderrHashFunction(v string) *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStderrHashFunction(v)
-	})
-}
-
-// UpdateStderrHashFunction sets the "stderr_hash_function" field to the value that was provided on create.
-func (u *ActionUpsertOne) UpdateStderrHashFunction() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStderrHashFunction()
-	})
-}
-
-// ClearStderrHashFunction clears the value of the "stderr_hash_function" field.
-func (u *ActionUpsertOne) ClearStderrHashFunction() *ActionUpsertOne {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStderrHashFunction()
-	})
-}
-
 // Exec executes the query.
 func (u *ActionUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -1325,6 +1064,12 @@ func (u *ActionUpsertBulk) UpdateNewValues() *ActionUpsertBulk {
 			}
 			if _, exists := b.mutation.ConfigurationID(); exists {
 				s.SetIgnore(action.FieldConfigurationID)
+			}
+			if _, exists := b.mutation.StdoutFileID(); exists {
+				s.SetIgnore(action.FieldStdoutFileID)
+			}
+			if _, exists := b.mutation.StderrFileID(); exists {
+				s.SetIgnore(action.FieldStderrFileID)
 			}
 		}
 	}))
@@ -1544,146 +1289,6 @@ func (u *ActionUpsertBulk) UpdateFailureMessage() *ActionUpsertBulk {
 func (u *ActionUpsertBulk) ClearFailureMessage() *ActionUpsertBulk {
 	return u.Update(func(s *ActionUpsert) {
 		s.ClearFailureMessage()
-	})
-}
-
-// SetStdoutHash sets the "stdout_hash" field.
-func (u *ActionUpsertBulk) SetStdoutHash(v string) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStdoutHash(v)
-	})
-}
-
-// UpdateStdoutHash sets the "stdout_hash" field to the value that was provided on create.
-func (u *ActionUpsertBulk) UpdateStdoutHash() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStdoutHash()
-	})
-}
-
-// ClearStdoutHash clears the value of the "stdout_hash" field.
-func (u *ActionUpsertBulk) ClearStdoutHash() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStdoutHash()
-	})
-}
-
-// SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (u *ActionUpsertBulk) SetStdoutSizeBytes(v int64) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStdoutSizeBytes(v)
-	})
-}
-
-// AddStdoutSizeBytes adds v to the "stdout_size_bytes" field.
-func (u *ActionUpsertBulk) AddStdoutSizeBytes(v int64) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.AddStdoutSizeBytes(v)
-	})
-}
-
-// UpdateStdoutSizeBytes sets the "stdout_size_bytes" field to the value that was provided on create.
-func (u *ActionUpsertBulk) UpdateStdoutSizeBytes() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStdoutSizeBytes()
-	})
-}
-
-// ClearStdoutSizeBytes clears the value of the "stdout_size_bytes" field.
-func (u *ActionUpsertBulk) ClearStdoutSizeBytes() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStdoutSizeBytes()
-	})
-}
-
-// SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (u *ActionUpsertBulk) SetStdoutHashFunction(v string) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStdoutHashFunction(v)
-	})
-}
-
-// UpdateStdoutHashFunction sets the "stdout_hash_function" field to the value that was provided on create.
-func (u *ActionUpsertBulk) UpdateStdoutHashFunction() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStdoutHashFunction()
-	})
-}
-
-// ClearStdoutHashFunction clears the value of the "stdout_hash_function" field.
-func (u *ActionUpsertBulk) ClearStdoutHashFunction() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStdoutHashFunction()
-	})
-}
-
-// SetStderrHash sets the "stderr_hash" field.
-func (u *ActionUpsertBulk) SetStderrHash(v string) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStderrHash(v)
-	})
-}
-
-// UpdateStderrHash sets the "stderr_hash" field to the value that was provided on create.
-func (u *ActionUpsertBulk) UpdateStderrHash() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStderrHash()
-	})
-}
-
-// ClearStderrHash clears the value of the "stderr_hash" field.
-func (u *ActionUpsertBulk) ClearStderrHash() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStderrHash()
-	})
-}
-
-// SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (u *ActionUpsertBulk) SetStderrSizeBytes(v int64) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStderrSizeBytes(v)
-	})
-}
-
-// AddStderrSizeBytes adds v to the "stderr_size_bytes" field.
-func (u *ActionUpsertBulk) AddStderrSizeBytes(v int64) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.AddStderrSizeBytes(v)
-	})
-}
-
-// UpdateStderrSizeBytes sets the "stderr_size_bytes" field to the value that was provided on create.
-func (u *ActionUpsertBulk) UpdateStderrSizeBytes() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStderrSizeBytes()
-	})
-}
-
-// ClearStderrSizeBytes clears the value of the "stderr_size_bytes" field.
-func (u *ActionUpsertBulk) ClearStderrSizeBytes() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStderrSizeBytes()
-	})
-}
-
-// SetStderrHashFunction sets the "stderr_hash_function" field.
-func (u *ActionUpsertBulk) SetStderrHashFunction(v string) *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.SetStderrHashFunction(v)
-	})
-}
-
-// UpdateStderrHashFunction sets the "stderr_hash_function" field to the value that was provided on create.
-func (u *ActionUpsertBulk) UpdateStderrHashFunction() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.UpdateStderrHashFunction()
-	})
-}
-
-// ClearStderrHashFunction clears the value of the "stderr_hash_function" field.
-func (u *ActionUpsertBulk) ClearStderrHashFunction() *ActionUpsertBulk {
-	return u.Update(func(s *ActionUpsert) {
-		s.ClearStderrHashFunction()
 	})
 }
 

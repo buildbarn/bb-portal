@@ -23,6 +23,8 @@ type (
 	Build struct{ schema.Build }
 	// BuildTag reexport with auth policy added
 	BuildTag struct{ schema.BuildTag }
+	// BuildToolLog reexport with auth policy added
+	BuildToolLog struct{ schema.BuildToolLog }
 	// BuildLogChunk reexport with auth policy added
 	BuildLogChunk struct{ schema.BuildLogChunk }
 	// BuildGraphMetrics reexport with auth policy added
@@ -31,8 +33,14 @@ type (
 	Configuration struct{ schema.Configuration }
 	// ConnectionMetadata reexport with auth policy added
 	ConnectionMetadata struct{ schema.ConnectionMetadata }
+	// Digest reexport with auth policy added
+	Digest struct{ schema.Digest }
 	// EventMetadata reexport with auth policy added
 	EventMetadata struct{ schema.EventMetadata }
+	// File reexport with auth policy added
+	File struct{ schema.File }
+	// FilePath reexport with auth policy added
+	FilePath struct{ schema.FilePath }
 	// GarbageMetrics reexport with auth policy added
 	GarbageMetrics struct{ schema.GarbageMetrics }
 	// IncompleteBuildLog reexport with auth policy added
@@ -41,8 +49,6 @@ type (
 	InstanceName struct{ schema.InstanceName }
 	// InvocationTag reexport with auth policy added
 	InvocationTag struct{ schema.InvocationTag }
-	// InvocationFiles reexport with auth policy added
-	InvocationFiles struct{ schema.InvocationFiles }
 	// InvocationTarget reexport with auth policy added
 	InvocationTarget struct{ schema.InvocationTarget }
 	// MemoryMetrics reexport with auth policy added

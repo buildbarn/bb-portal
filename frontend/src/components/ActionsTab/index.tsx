@@ -5,10 +5,7 @@ import themeStyles from "@/theme/theme.module.css";
 import PortalDuration from "../PortalDuration";
 import { ActionDetails } from "./action";
 
-const getCollapseItems = (
-  instanceName: string,
-  actions: BazelInvocationActionsFragment[],
-) => {
+const getCollapseItems = (actions: BazelInvocationActionsFragment[]) => {
   return actions?.map((action) => {
     return {
       key: action.id,
@@ -20,21 +17,17 @@ const getCollapseItems = (
           formatConfig={{ smallestUnit: "ms" }}
         />
       ),
-      children: <ActionDetails instanceName={instanceName} action={action} />,
+      children: <ActionDetails action={action} />,
     };
   });
 };
 
 interface Props {
-  instanceName: string;
   actions: BazelInvocationActionsFragment[];
 }
 
-export const ActionsTab: React.FC<Props> = ({ instanceName, actions }) => {
-  const items = useMemo(
-    () => getCollapseItems(instanceName, actions),
-    [instanceName, actions],
-  );
+export const ActionsTab: React.FC<Props> = ({ actions }) => {
+  const items = useMemo(() => getCollapseItems(actions), [actions]);
   return (
     <Collapse
       items={items}

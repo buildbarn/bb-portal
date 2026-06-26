@@ -24,6 +24,22 @@ func (_m *Action) Configuration(ctx context.Context) (*Configuration, error) {
 	return result, err
 }
 
+func (_m *Action) Stdout(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.StdoutOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryStdout().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Action) Stderr(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.StderrOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryStderr().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *ActionCacheStatistics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
 	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
@@ -206,6 +222,18 @@ func (_m *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
+func (_m *BazelInvocation) BuildToolLogs(ctx context.Context) (result []*File, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedBuildToolLogs(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.BuildToolLogsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryBuildToolLogs().All(ctx)
+	}
+	return result, err
+}
+
 func (_m *BazelInvocation) InvocationTargets(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *InvocationTargetWhereInput,
 ) (*InvocationTargetConnection, error) {
@@ -213,7 +241,7 @@ func (_m *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := _m.Edges.totalCount[8][alias]
+	totalCount, hasTotalCount := _m.Edges.totalCount[9][alias]
 	if nodes, err := _m.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
@@ -344,6 +372,90 @@ func (_m *ConnectionMetadata) BazelInvocation(ctx context.Context) (*BazelInvoca
 	return result, err
 }
 
+func (_m *Digest) Files(ctx context.Context) (result []*File, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedFiles(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.FilesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFiles().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *File) Digest(ctx context.Context) (*Digest, error) {
+	result, err := _m.Edges.DigestOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDigest().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *File) FilePath(ctx context.Context) (*FilePath, error) {
+	result, err := _m.Edges.FilePathOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFilePath().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *File) ActionStdout(ctx context.Context) (result []*Action, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedActionStdout(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.ActionStdoutOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryActionStdout().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *File) ActionStderr(ctx context.Context) (result []*Action, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedActionStderr(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.ActionStderrOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryActionStderr().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *File) BuildToolLogs(ctx context.Context) (result []*BazelInvocation, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedBuildToolLogs(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.BuildToolLogsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryBuildToolLogs().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *FilePath) BepInstanceName(ctx context.Context) (*InstanceName, error) {
+	result, err := _m.Edges.BepInstanceNameOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryBepInstanceName().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *FilePath) Files(ctx context.Context) (result []*File, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedFiles(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.FilesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFiles().All(ctx)
+	}
+	return result, err
+}
+
 func (_m *GarbageMetrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, error) {
 	result, err := _m.Edges.MemoryMetricsOrErr()
 	if IsNotLoaded(err) {
@@ -384,6 +496,18 @@ func (_m *InstanceName) Targets(ctx context.Context) (result []*Target, err erro
 	}
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTargets().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *InstanceName) FilePaths(ctx context.Context) (result []*FilePath, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedFilePaths(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.FilePathsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFilePaths().All(ctx)
 	}
 	return result, err
 }

@@ -141,6 +141,18 @@ func (f BuildTagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildTagMutation", m)
 }
 
+// The BuildToolLogFunc type is an adapter to allow the use of ordinary
+// function as BuildToolLog mutator.
+type BuildToolLogFunc func(context.Context, *ent.BuildToolLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BuildToolLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BuildToolLogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildToolLogMutation", m)
+}
+
 // The ConfigurationFunc type is an adapter to allow the use of ordinary
 // function as Configuration mutator.
 type ConfigurationFunc func(context.Context, *ent.ConfigurationMutation) (ent.Value, error)
@@ -165,6 +177,18 @@ func (f ConnectionMetadataFunc) Mutate(ctx context.Context, m ent.Mutation) (ent
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ConnectionMetadataMutation", m)
 }
 
+// The DigestFunc type is an adapter to allow the use of ordinary
+// function as Digest mutator.
+type DigestFunc func(context.Context, *ent.DigestMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DigestFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DigestMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DigestMutation", m)
+}
+
 // The EventMetadataFunc type is an adapter to allow the use of ordinary
 // function as EventMetadata mutator.
 type EventMetadataFunc func(context.Context, *ent.EventMetadataMutation) (ent.Value, error)
@@ -175,6 +199,30 @@ func (f EventMetadataFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EventMetadataMutation", m)
+}
+
+// The FileFunc type is an adapter to allow the use of ordinary
+// function as File mutator.
+type FileFunc func(context.Context, *ent.FileMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FileFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FileMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileMutation", m)
+}
+
+// The FilePathFunc type is an adapter to allow the use of ordinary
+// function as FilePath mutator.
+type FilePathFunc func(context.Context, *ent.FilePathMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FilePathFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FilePathMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FilePathMutation", m)
 }
 
 // The GarbageMetricsFunc type is an adapter to allow the use of ordinary
@@ -211,18 +259,6 @@ func (f InstanceNameFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InstanceNameMutation", m)
-}
-
-// The InvocationFilesFunc type is an adapter to allow the use of ordinary
-// function as InvocationFiles mutator.
-type InvocationFilesFunc func(context.Context, *ent.InvocationFilesMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f InvocationFilesFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.InvocationFilesMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationFilesMutation", m)
 }
 
 // The InvocationTagFunc type is an adapter to allow the use of ordinary

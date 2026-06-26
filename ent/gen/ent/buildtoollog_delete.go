@@ -8,30 +8,30 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
-// InvocationFilesDelete is the builder for deleting a InvocationFiles entity.
-type InvocationFilesDelete struct {
+// BuildToolLogDelete is the builder for deleting a BuildToolLog entity.
+type BuildToolLogDelete struct {
 	config
 	hooks    []Hook
-	mutation *InvocationFilesMutation
+	mutation *BuildToolLogMutation
 }
 
-// Where appends a list predicates to the InvocationFilesDelete builder.
-func (_d *InvocationFilesDelete) Where(ps ...predicate.InvocationFiles) *InvocationFilesDelete {
+// Where appends a list predicates to the BuildToolLogDelete builder.
+func (_d *BuildToolLogDelete) Where(ps ...predicate.BuildToolLog) *BuildToolLogDelete {
 	_d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *InvocationFilesDelete) Exec(ctx context.Context) (int, error) {
+func (_d *BuildToolLogDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *InvocationFilesDelete) ExecX(ctx context.Context) int {
+func (_d *BuildToolLogDelete) ExecX(ctx context.Context) int {
 	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (_d *InvocationFilesDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (_d *InvocationFilesDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(invocationfiles.Table, sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64))
+func (_d *BuildToolLogDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(buildtoollog.Table, sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (_d *InvocationFilesDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// InvocationFilesDeleteOne is the builder for deleting a single InvocationFiles entity.
-type InvocationFilesDeleteOne struct {
-	_d *InvocationFilesDelete
+// BuildToolLogDeleteOne is the builder for deleting a single BuildToolLog entity.
+type BuildToolLogDeleteOne struct {
+	_d *BuildToolLogDelete
 }
 
-// Where appends a list predicates to the InvocationFilesDelete builder.
-func (_d *InvocationFilesDeleteOne) Where(ps ...predicate.InvocationFiles) *InvocationFilesDeleteOne {
+// Where appends a list predicates to the BuildToolLogDelete builder.
+func (_d *BuildToolLogDeleteOne) Where(ps ...predicate.BuildToolLog) *BuildToolLogDeleteOne {
 	_d._d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query.
-func (_d *InvocationFilesDeleteOne) Exec(ctx context.Context) error {
+func (_d *BuildToolLogDeleteOne) Exec(ctx context.Context) error {
 	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{invocationfiles.Label}
+		return &NotFoundError{buildtoollog.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *InvocationFilesDeleteOne) ExecX(ctx context.Context) {
+func (_d *BuildToolLogDeleteOne) ExecX(ctx context.Context) {
 	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}

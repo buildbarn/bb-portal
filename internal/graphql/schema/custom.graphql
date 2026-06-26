@@ -5,16 +5,8 @@ extend type Query {
   getTarget(id: ID!): Target
 }
 
-type Profile {
-  id: ID!
-  name: String!
-  digest: String!
-  sizeInBytes: Int!
-  digestFunction: String!
-}
-
 extend type BazelInvocation {
-  profile: Profile
+  profile: File
 }
 
 extend type ConnectionMetadata {

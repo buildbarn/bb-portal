@@ -7,10 +7,13 @@ package graphql
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"entgo.io/contrib/entgql"
+	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-storage/pkg/util"
@@ -132,6 +135,40 @@ func (r *configurationResolver) MakeVariables(ctx context.Context, obj *ent.Conf
 // ID is the resolver for the id field.
 func (r *connectionMetadataResolver) ID(ctx context.Context, obj *ent.ConnectionMetadata) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("ConnectionMetadata", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *digestResolver) ID(ctx context.Context, obj *ent.Digest) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("Digest", obj.ID), nil
+}
+
+// DigestFunction is the resolver for the digestFunction field.
+func (r *digestResolver) DigestFunction(ctx context.Context, obj *ent.Digest) (string, error) {
+	digestFunction, ok := remoteexecution.DigestFunction_Value_name[int32(obj.DigestFunction)]
+	if !ok {
+		digestFunction = remoteexecution.DigestFunction_UNKNOWN.String()
+	}
+	return strings.ToLower(digestFunction), nil
+}
+
+// Hash is the resolver for the hash field.
+func (r *digestResolver) Hash(ctx context.Context, obj *ent.Digest) (string, error) {
+	return hex.EncodeToString(obj.Hash), nil
+}
+
+// ID is the resolver for the id field.
+func (r *fileResolver) ID(ctx context.Context, obj *ent.File) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("File", obj.ID), nil
+}
+
+// DigestID is the resolver for the digestID field.
+func (r *fileResolver) DigestID(ctx context.Context, obj *ent.File) (string, error) {
+	panic(fmt.Errorf("not implemented: DigestID - digestID"))
+}
+
+// ID is the resolver for the id field.
+func (r *filePathResolver) ID(ctx context.Context, obj *ent.FilePath) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("FilePath", obj.ID), nil
 }
 
 // ID is the resolver for the id field.
@@ -749,6 +786,186 @@ func (r *connectionMetadataWhereInputResolver) IDLt(ctx context.Context, obj *en
 // IDLte is the resolver for the idLTE field.
 func (r *connectionMetadataWhereInputResolver) IDLte(ctx context.Context, obj *ent.ConnectionMetadataWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *digestWhereInputResolver) ID(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *digestWhereInputResolver) IDNeq(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *digestWhereInputResolver) IDIn(ctx context.Context, obj *ent.DigestWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *digestWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.DigestWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *digestWhereInputResolver) IDGt(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *digestWhereInputResolver) IDGte(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *digestWhereInputResolver) IDLt(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *digestWhereInputResolver) IDLte(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// DigestFunction is the resolver for the digestFunction field.
+func (r *digestWhereInputResolver) DigestFunction(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestFunction - digestFunction"))
+}
+
+// DigestFunctionNeq is the resolver for the digestFunctionNEQ field.
+func (r *digestWhereInputResolver) DigestFunctionNeq(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestFunctionNeq - digestFunctionNEQ"))
+}
+
+// DigestFunctionIn is the resolver for the digestFunctionIn field.
+func (r *digestWhereInputResolver) DigestFunctionIn(ctx context.Context, obj *ent.DigestWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DigestFunctionIn - digestFunctionIn"))
+}
+
+// DigestFunctionNotIn is the resolver for the digestFunctionNotIn field.
+func (r *digestWhereInputResolver) DigestFunctionNotIn(ctx context.Context, obj *ent.DigestWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DigestFunctionNotIn - digestFunctionNotIn"))
+}
+
+// DigestFunctionGt is the resolver for the digestFunctionGT field.
+func (r *digestWhereInputResolver) DigestFunctionGt(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestFunctionGt - digestFunctionGT"))
+}
+
+// DigestFunctionGte is the resolver for the digestFunctionGTE field.
+func (r *digestWhereInputResolver) DigestFunctionGte(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestFunctionGte - digestFunctionGTE"))
+}
+
+// DigestFunctionLt is the resolver for the digestFunctionLT field.
+func (r *digestWhereInputResolver) DigestFunctionLt(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestFunctionLt - digestFunctionLT"))
+}
+
+// DigestFunctionLte is the resolver for the digestFunctionLTE field.
+func (r *digestWhereInputResolver) DigestFunctionLte(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestFunctionLte - digestFunctionLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *filePathWhereInputResolver) ID(ctx context.Context, obj *ent.FilePathWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *filePathWhereInputResolver) IDNeq(ctx context.Context, obj *ent.FilePathWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *filePathWhereInputResolver) IDIn(ctx context.Context, obj *ent.FilePathWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *filePathWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.FilePathWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *filePathWhereInputResolver) IDGt(ctx context.Context, obj *ent.FilePathWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *filePathWhereInputResolver) IDGte(ctx context.Context, obj *ent.FilePathWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *filePathWhereInputResolver) IDLt(ctx context.Context, obj *ent.FilePathWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *filePathWhereInputResolver) IDLte(ctx context.Context, obj *ent.FilePathWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *fileWhereInputResolver) ID(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *fileWhereInputResolver) IDNeq(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *fileWhereInputResolver) IDIn(ctx context.Context, obj *ent.FileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *fileWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.FileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *fileWhereInputResolver) IDGt(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *fileWhereInputResolver) IDGte(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *fileWhereInputResolver) IDLt(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *fileWhereInputResolver) IDLte(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// DigestID is the resolver for the digestID field.
+func (r *fileWhereInputResolver) DigestID(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestID - digestID"))
+}
+
+// DigestIdneq is the resolver for the digestIDNEQ field.
+func (r *fileWhereInputResolver) DigestIdneq(ctx context.Context, obj *ent.FileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DigestIdneq - digestIDNEQ"))
+}
+
+// DigestIDIn is the resolver for the digestIDIn field.
+func (r *fileWhereInputResolver) DigestIDIn(ctx context.Context, obj *ent.FileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DigestIDIn - digestIDIn"))
+}
+
+// DigestIDNotIn is the resolver for the digestIDNotIn field.
+func (r *fileWhereInputResolver) DigestIDNotIn(ctx context.Context, obj *ent.FileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DigestIDNotIn - digestIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1506,6 +1723,15 @@ func (r *Resolver) ConnectionMetadata() ConnectionMetadataResolver {
 	return &connectionMetadataResolver{r}
 }
 
+// Digest returns DigestResolver implementation.
+func (r *Resolver) Digest() DigestResolver { return &digestResolver{r} }
+
+// File returns FileResolver implementation.
+func (r *Resolver) File() FileResolver { return &fileResolver{r} }
+
+// FilePath returns FilePathResolver implementation.
+func (r *Resolver) FilePath() FilePathResolver { return &filePathResolver{r} }
+
 // GarbageMetrics returns GarbageMetricsResolver implementation.
 func (r *Resolver) GarbageMetrics() GarbageMetricsResolver { return &garbageMetricsResolver{r} }
 
@@ -1618,6 +1844,17 @@ func (r *Resolver) ConnectionMetadataWhereInput() ConnectionMetadataWhereInputRe
 	return &connectionMetadataWhereInputResolver{r}
 }
 
+// DigestWhereInput returns DigestWhereInputResolver implementation.
+func (r *Resolver) DigestWhereInput() DigestWhereInputResolver { return &digestWhereInputResolver{r} }
+
+// FilePathWhereInput returns FilePathWhereInputResolver implementation.
+func (r *Resolver) FilePathWhereInput() FilePathWhereInputResolver {
+	return &filePathWhereInputResolver{r}
+}
+
+// FileWhereInput returns FileWhereInputResolver implementation.
+func (r *Resolver) FileWhereInput() FileWhereInputResolver { return &fileWhereInputResolver{r} }
+
 // GarbageMetricsWhereInput returns GarbageMetricsWhereInputResolver implementation.
 func (r *Resolver) GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver {
 	return &garbageMetricsWhereInputResolver{r}
@@ -1714,6 +1951,9 @@ type (
 	buildTagResolver                        struct{ *Resolver }
 	configurationResolver                   struct{ *Resolver }
 	connectionMetadataResolver              struct{ *Resolver }
+	digestResolver                          struct{ *Resolver }
+	fileResolver                            struct{ *Resolver }
+	filePathResolver                        struct{ *Resolver }
 	garbageMetricsResolver                  struct{ *Resolver }
 	instanceNameResolver                    struct{ *Resolver }
 	invocationTagResolver                   struct{ *Resolver }
@@ -1744,6 +1984,9 @@ type (
 	buildWhereInputResolver                 struct{ *Resolver }
 	configurationWhereInputResolver         struct{ *Resolver }
 	connectionMetadataWhereInputResolver    struct{ *Resolver }
+	digestWhereInputResolver                struct{ *Resolver }
+	filePathWhereInputResolver              struct{ *Resolver }
+	fileWhereInputResolver                  struct{ *Resolver }
 	garbageMetricsWhereInputResolver        struct{ *Resolver }
 	instanceNameWhereInputResolver          struct{ *Resolver }
 	invocationTagWhereInputResolver         struct{ *Resolver }

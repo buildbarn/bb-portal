@@ -13,24 +13,20 @@ import (
 )
 
 type Action struct {
-	ID                 int64
-	Label              string
-	Type               sql.NullString
-	Success            sql.NullBool
-	ExitCode           sql.NullInt32
-	CommandLine        pqtype.NullRawMessage
-	StartTime          sql.NullTime
-	EndTime            sql.NullTime
-	FailureCode        sql.NullString
-	FailureMessage     sql.NullString
-	StdoutHash         sql.NullString
-	StdoutSizeBytes    sql.NullInt64
-	StdoutHashFunction sql.NullString
-	StderrHash         sql.NullString
-	StderrSizeBytes    sql.NullInt64
-	StderrHashFunction sql.NullString
-	ConfigurationID    int64
-	BazelInvocationID  int64
+	ID                int64
+	Label             string
+	Type              sql.NullString
+	Success           sql.NullBool
+	ExitCode          sql.NullInt32
+	CommandLine       pqtype.NullRawMessage
+	StartTime         sql.NullTime
+	EndTime           sql.NullTime
+	FailureCode       sql.NullString
+	FailureMessage    sql.NullString
+	ConfigurationID   int64
+	StdoutFileID      sql.NullInt64
+	StderrFileID      sql.NullInt64
+	BazelInvocationID int64
 }
 
 type ActionCacheStatistic struct {
@@ -149,6 +145,12 @@ type BuildTag struct {
 	BuildID int64
 }
 
+type BuildToolLog struct {
+	ID                int64
+	BazelInvocationID int64
+	FileID            int64
+}
+
 type Configuration struct {
 	ID                int64
 	ConfigurationID   string
@@ -166,12 +168,32 @@ type ConnectionMetadatum struct {
 	BazelInvocationConnectionMetadata int64
 }
 
+type Digest struct {
+	ID               int64
+	Rev2InstanceName string
+	DigestFunction   int16
+	Hash             []byte
+	SizeBytes        int64
+}
+
 type EventMetadatum struct {
 	ID                int64
 	Handled           []byte
 	EventReceivedAt   time.Time
 	Version           int64
 	BazelInvocationID int64
+}
+
+type File struct {
+	ID         int64
+	DigestID   int64
+	FilePathID int64
+}
+
+type FilePath struct {
+	ID                int64
+	Path              string
+	BepInstanceNameID int64
 }
 
 type GarbageMetric struct {
@@ -191,16 +213,6 @@ type IncompleteBuildLog struct {
 type InstanceName struct {
 	ID   int64
 	Name string
-}
-
-type InvocationFile struct {
-	ID                             int64
-	Name                           string
-	Content                        sql.NullString
-	Digest                         sql.NullString
-	SizeBytes                      sql.NullInt64
-	DigestFunction                 sql.NullString
-	BazelInvocationInvocationFiles sql.NullInt64
 }
 
 type InvocationTag struct {

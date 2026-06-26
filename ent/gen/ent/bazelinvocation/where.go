@@ -1134,21 +1134,21 @@ func HasBuildLogChunksWith(preds ...predicate.BuildLogChunk) predicate.BazelInvo
 	})
 }
 
-// HasInvocationFiles applies the HasEdge predicate on the "invocation_files" edge.
-func HasInvocationFiles() predicate.BazelInvocation {
+// HasBuildToolLogs applies the HasEdge predicate on the "build_tool_logs" edge.
+func HasBuildToolLogs() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, InvocationFilesTable, InvocationFilesColumn),
+			sqlgraph.Edge(sqlgraph.M2M, false, BuildToolLogsTable, BuildToolLogsPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasInvocationFilesWith applies the HasEdge predicate on the "invocation_files" edge with a given conditions (other predicates).
-func HasInvocationFilesWith(preds ...predicate.InvocationFiles) predicate.BazelInvocation {
+// HasBuildToolLogsWith applies the HasEdge predicate on the "build_tool_logs" edge with a given conditions (other predicates).
+func HasBuildToolLogsWith(preds ...predicate.File) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := newInvocationFilesStep()
+		step := newBuildToolLogsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -1218,6 +1218,29 @@ func HasSourceControl() predicate.BazelInvocation {
 func HasSourceControlWith(preds ...predicate.SourceControl) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := newSourceControlStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasToolLogs applies the HasEdge predicate on the "tool_logs" edge.
+func HasToolLogs() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, ToolLogsTable, ToolLogsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasToolLogsWith applies the HasEdge predicate on the "tool_logs" edge with a given conditions (other predicates).
+func HasToolLogsWith(preds ...predicate.BuildToolLog) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newToolLogsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
