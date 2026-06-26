@@ -436,6 +436,18 @@ func (_m *File) BuildToolLogs(ctx context.Context) (result []*BazelInvocation, e
 	return result, err
 }
 
+func (_m *File) TestActionOutput(ctx context.Context) (result []*TestResult, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedTestActionOutput(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.TestActionOutputOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTestActionOutput().All(ctx)
+	}
+	return result, err
+}
+
 func (_m *FilePath) BepInstanceName(ctx context.Context) (*InstanceName, error) {
 	result, err := _m.Edges.BepInstanceNameOrErr()
 	if IsNotLoaded(err) {
@@ -736,6 +748,18 @@ func (_m *TestResult) TestSummary(ctx context.Context) (*TestSummary, error) {
 	result, err := _m.Edges.TestSummaryOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryTestSummary().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *TestResult) TestActionOutput(ctx context.Context) (result []*File, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedTestActionOutput(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.TestActionOutputOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTestActionOutput().All(ctx)
 	}
 	return result, err
 }

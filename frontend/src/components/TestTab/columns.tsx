@@ -25,85 +25,89 @@ export const defaultSorting: TestSummaryOrder = {
   direction: OrderDirection.Desc,
 };
 
-export const columns: TableColumnTypeWithFilter<
-  TestTabRowType,
-  TestSummaryWhereInput
->[] = [
-  {
-    key: "overallStatus",
-    title: "Status",
-    render: (_, record) => <TestStatusTag status={record.overallStatus} />,
-    filters: TEST_STATUS_FILTERS,
-    applyFilter: (value: FilterValue) => {
-      if (!value || value.length === 0) {
-        return undefined;
-      }
-      return [
-        {
-          overallStatusIn: value as TestSummaryWhereInput["overallStatusIn"],
-        },
-      ];
+export const getColumns = (
+  invocationID: string,
+): TableColumnTypeWithFilter<TestTabRowType, TestSummaryWhereInput>[] => {
+  return [
+    {
+      key: "overallStatus",
+      title: "Status",
+      render: (_, record) => <TestStatusTag status={record.overallStatus} />,
+      width: 200,
+      filters: TEST_STATUS_FILTERS,
+      applyFilter: (value: FilterValue) => {
+        if (!value || value.length === 0) {
+          return undefined;
+        }
+        return [
+          {
+            overallStatusIn: value as TestSummaryWhereInput["overallStatusIn"],
+          },
+        ];
+      },
     },
-  },
-  {
-    title: "Label",
-    key: "label",
-    render: (_, record) => (
-      <Link
-        to="/targets/$targetID/tests"
-        params={{ targetID: record.invocationTarget.target.id }}
-      >
-        {record.invocationTarget.target.label}
-      </Link>
-    ),
-    filterSearch: true,
-    filterDropdown: (filterProps) => (
-      <SearchWidget placeholder="Target Pattern..." {...filterProps} />
-    ),
-    filterIcon: (filtered) => (
-      <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
-    ),
-    applyFilter: (value: FilterValue) => {
-      if (!value || value.length === 0) {
-        return undefined;
-      }
-      return [
-        {
-          hasInvocationTargetWith: [
-            {
-              hasTargetWith: [
-                {
-                  labelContainsFold: value[0] as string,
-                },
-              ],
-            },
-          ],
-        },
-      ];
+    {
+      key: "cacheLocation",
+      title: "Cache Location",
+      render: (_, record) => (
+        <CacheLocationTag cacheLocation={record.cacheLocation} />
+      ),
+      width: 130,
     },
-  },
-  {
-    key: "cacheLocation",
-    title: "Cache Location",
-    render: (_, record) => (
-      <CacheLocationTag cacheLocation={record.cacheLocation} />
-    ),
-  },
-  {
-    title: "Duration",
-    key: "totalRunDurationInMs",
-    render: (_, record) => (
-      <span className={styles.numberFormat}>
-        {readableDurationFromMilliseconds(record.totalRunDurationInMs, {
-          smallestUnit: "ms",
-        })}
-      </span>
-    ),
-    align: "right",
-    sortDirections: ["ascend", "descend", "ascend"],
-    defaultSortOrder:
-      defaultSorting.direction === OrderDirection.Asc ? "ascend" : "descend",
-    // Using a dummy sorter function as sorting is handled server-side
-    sorter: (_a, _b) => 0,
-  },
-];
+    {
+      key: "totalRunDurationInMs",
+      title: "Duration",
+      render: (_, record) => (
+        <span className={styles.numberFormat}>
+          {readableDurationFromMilliseconds(record.totalRunDurationInMs, {
+            smallestUnit: "ms",
+          })}
+        </span>
+      ),
+      width: 120,
+      sortDirections: ["ascend", "descend", "ascend"],
+      defaultSortOrder:
+        defaultSorting.direction === OrderDirection.Asc ? "ascend" : "descend",
+      // Using a dummy sorter function as sorting is handled server-side
+      sorter: (_a, _b) => 0,
+    },
+    {
+      key: "label",
+      title: "Label",
+      render: (_, record) => (
+        <Link
+          to="/bazel-invocations/$invocationID/tests/$testSummaryID"
+          params={{ invocationID: invocationID, testSummaryID: record.id }}
+        >
+          {record.invocationTarget.target.label}
+        </Link>
+      ),
+      ellipsis: true,
+      filterSearch: true,
+      filterDropdown: (filterProps) => (
+        <SearchWidget placeholder="Target Pattern..." {...filterProps} />
+      ),
+      filterIcon: (filtered) => (
+        <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+      ),
+      applyFilter: (value: FilterValue) => {
+        if (!value || value.length === 0) {
+          return undefined;
+        }
+        return [
+          {
+            hasInvocationTargetWith: [
+              {
+                hasTargetWith: [
+                  {
+                    labelContainsFold: value[0] as string,
+                  },
+                ],
+              },
+            ],
+          },
+        ];
+      },
+    },
+  ];
+};

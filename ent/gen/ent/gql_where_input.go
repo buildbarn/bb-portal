@@ -5497,6 +5497,10 @@ type FileWhereInput struct {
 	// "build_tool_logs" edge predicates.
 	HasBuildToolLogs     *bool                        `json:"hasBuildToolLogs,omitempty"`
 	HasBuildToolLogsWith []*BazelInvocationWhereInput `json:"hasBuildToolLogsWith,omitempty"`
+
+	// "test_action_output" edge predicates.
+	HasTestActionOutput     *bool                   `json:"hasTestActionOutput,omitempty"`
+	HasTestActionOutputWith []*TestResultWhereInput `json:"hasTestActionOutputWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -5696,6 +5700,24 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, file.HasBuildToolLogsWith(with...))
+	}
+	if i.HasTestActionOutput != nil {
+		p := file.HasTestActionOutput()
+		if !*i.HasTestActionOutput {
+			p = file.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTestActionOutputWith) > 0 {
+		with := make([]predicate.TestResult, 0, len(i.HasTestActionOutputWith))
+		for _, w := range i.HasTestActionOutputWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTestActionOutputWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, file.HasTestActionOutputWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -10107,6 +10129,10 @@ type TestResultWhereInput struct {
 	// "test_summary" edge predicates.
 	HasTestSummary     *bool                    `json:"hasTestSummary,omitempty"`
 	HasTestSummaryWith []*TestSummaryWhereInput `json:"hasTestSummaryWith,omitempty"`
+
+	// "test_action_output" edge predicates.
+	HasTestActionOutput     *bool             `json:"hasTestActionOutput,omitempty"`
+	HasTestActionOutputWith []*FileWhereInput `json:"hasTestActionOutputWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -10588,6 +10614,24 @@ func (i *TestResultWhereInput) P() (predicate.TestResult, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, testresult.HasTestSummaryWith(with...))
+	}
+	if i.HasTestActionOutput != nil {
+		p := testresult.HasTestActionOutput()
+		if !*i.HasTestActionOutput {
+			p = testresult.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTestActionOutputWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasTestActionOutputWith))
+		for _, w := range i.HasTestActionOutputWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTestActionOutputWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, testresult.HasTestActionOutputWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

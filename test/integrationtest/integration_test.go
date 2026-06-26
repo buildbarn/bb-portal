@@ -81,6 +81,10 @@ var (
 		filename:     "github_actions_lite.bep.ndjson",
 		invocationID: "63500331-1b71-4d7a-9125-df9b3dfe4e0d",
 	}
+	remoteExecutionTests = bepFile{
+		filename:     "remote_execution_tests.bep.ndjson",
+		invocationID: "eb510b31-a9cc-441f-8898-5104ef0025fd",
+	}
 	authenticatedUserExternalID = authmetadataextraction.ExampleExternalID()
 	authenticatedUserUUID       = uuid.NewSHA1(uuid.NameSpaceURL, []byte(authenticatedUserExternalID)).String()
 
@@ -130,6 +134,7 @@ var (
 				{bepFile: abortedBuild},
 				{bepFile: abortedTests},
 				{bepFile: githubActions},
+				{bepFile: remoteExecutionTests},
 			},
 			graphqlTestCases: graphqlTestTable{
 				"GetBazelInvocationCommon": {
@@ -607,9 +612,50 @@ var (
 					},
 				},
 				"GetTestsForInvocation": {
+					"get tests for successful tests": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelTest.invocationID,
+						},
+					},
+					"get tests for failed tests": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelTest.invocationID,
+						},
+					},
 					"get tests for aborted tests": {
 						variables: testkit.Variables{
 							"invocationID": abortedTests.invocationID,
+						},
+					},
+					"get tests for remote execution": {
+						variables: testkit.Variables{
+							"invocationID": remoteExecutionTests.invocationID,
+						},
+					},
+				},
+				"GetTestSummary": {
+					"get testsummary for successful tests": {
+						variables: testkit.Variables{
+							"invocationID":  successfulBazelTest.invocationID,
+							"testSummaryID": "VGVzdFN1bW1hcnk6MjA=",
+						},
+					},
+					"get testsummary for failed tests": {
+						variables: testkit.Variables{
+							"invocationID":  failedBazelTest.invocationID,
+							"testSummaryID": "VGVzdFN1bW1hcnk6MzM=",
+						},
+					},
+					"get testsummary for aborted tests": {
+						variables: testkit.Variables{
+							"invocationID":  abortedTests.invocationID,
+							"testSummaryID": "VGVzdFN1bW1hcnk6NDQ=",
+						},
+					},
+					"get testsummary for remote execution": {
+						variables: testkit.Variables{
+							"invocationID":  remoteExecutionTests.invocationID,
+							"testSummaryID": "VGVzdFN1bW1hcnk6NzQ=",
 						},
 					},
 				},

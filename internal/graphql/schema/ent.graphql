@@ -1826,6 +1826,7 @@ type File implements Node {
   actionStdout: [Action!]
   actionStderr: [Action!]
   buildToolLogs: [BazelInvocation!]
+  testActionOutput: [TestResult!]
 }
 type FilePath implements Node {
   id: ID!
@@ -1930,6 +1931,11 @@ input FileWhereInput {
   """
   hasBuildToolLogs: Boolean
   hasBuildToolLogsWith: [BazelInvocationWhereInput!]
+  """
+  test_action_output edge predicates
+  """
+  hasTestActionOutput: Boolean
+  hasTestActionOutputWith: [TestResultWhereInput!]
 }
 type GarbageMetrics implements Node {
   id: ID!
@@ -3325,6 +3331,7 @@ type TestResult implements Node {
   hostname: String
   timingBreakdown: Map
   testSummary: TestSummary!
+  testActionOutput: [File!]
 }
 """
 TestResultWhereInput is used for filtering TestResult objects.
@@ -3508,6 +3515,11 @@ input TestResultWhereInput {
   """
   hasTestSummary: Boolean
   hasTestSummaryWith: [TestSummaryWhereInput!]
+  """
+  test_action_output edge predicates
+  """
+  hasTestActionOutput: Boolean
+  hasTestActionOutputWith: [FileWhereInput!]
 }
 type TestSummary implements Node {
   id: ID!

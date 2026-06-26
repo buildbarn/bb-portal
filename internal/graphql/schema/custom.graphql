@@ -3,6 +3,7 @@ extend type Query {
   getBazelInvocation(invocationID: UUID!): BazelInvocation
   getBuild(buildUUID: UUID!): Build
   getTarget(id: ID!): Target
+  getTestSummary(invocationID: UUID!, testSummaryID: String!): TestSummary
 }
 
 extend type BazelInvocation {

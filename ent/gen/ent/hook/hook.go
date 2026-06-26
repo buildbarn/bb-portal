@@ -405,6 +405,18 @@ func (f TargetMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetMetricsMutation", m)
 }
 
+// The TestActionOutputFunc type is an adapter to allow the use of ordinary
+// function as TestActionOutput mutator.
+type TestActionOutputFunc func(context.Context, *ent.TestActionOutputMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TestActionOutputFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TestActionOutputMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TestActionOutputMutation", m)
+}
+
 // The TestResultFunc type is an adapter to allow the use of ordinary
 // function as TestResult mutator.
 type TestResultFunc func(context.Context, *ent.TestResultMutation) (ent.Value, error)

@@ -45,6 +45,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
@@ -142,6 +143,7 @@ func checkColumn(t, c string) error {
 			target.Table:                target.ValidColumn,
 			targetkindmapping.Table:     targetkindmapping.ValidColumn,
 			targetmetrics.Table:         targetmetrics.ValidColumn,
+			testactionoutput.Table:      testactionoutput.ValidColumn,
 			testresult.Table:            testresult.ValidColumn,
 			testsummary.Table:           testsummary.ValidColumn,
 			testtarget.Table:            testtarget.ValidColumn,

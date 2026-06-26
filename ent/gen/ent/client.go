@@ -48,6 +48,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
@@ -127,6 +128,8 @@ type Client struct {
 	TargetKindMapping *TargetKindMappingClient
 	// TargetMetrics is the client for interacting with the TargetMetrics builders.
 	TargetMetrics *TargetMetricsClient
+	// TestActionOutput is the client for interacting with the TestActionOutput builders.
+	TestActionOutput *TestActionOutputClient
 	// TestResult is the client for interacting with the TestResult builders.
 	TestResult *TestResultClient
 	// TestSummary is the client for interacting with the TestSummary builders.
@@ -181,6 +184,7 @@ func (c *Client) init() {
 	c.Target = NewTargetClient(c.config)
 	c.TargetKindMapping = NewTargetKindMappingClient(c.config)
 	c.TargetMetrics = NewTargetMetricsClient(c.config)
+	c.TestActionOutput = NewTestActionOutputClient(c.config)
 	c.TestResult = NewTestResultClient(c.config)
 	c.TestSummary = NewTestSummaryClient(c.config)
 	c.TestTarget = NewTestTargetClient(c.config)
@@ -310,6 +314,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Target:                NewTargetClient(cfg),
 		TargetKindMapping:     NewTargetKindMappingClient(cfg),
 		TargetMetrics:         NewTargetMetricsClient(cfg),
+		TestActionOutput:      NewTestActionOutputClient(cfg),
 		TestResult:            NewTestResultClient(cfg),
 		TestSummary:           NewTestSummaryClient(cfg),
 		TestTarget:            NewTestTargetClient(cfg),
@@ -366,6 +371,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Target:                NewTargetClient(cfg),
 		TargetKindMapping:     NewTargetKindMappingClient(cfg),
 		TargetMetrics:         NewTargetMetricsClient(cfg),
+		TestActionOutput:      NewTestActionOutputClient(cfg),
 		TestResult:            NewTestResultClient(cfg),
 		TestSummary:           NewTestSummaryClient(cfg),
 		TestTarget:            NewTestTargetClient(cfg),
@@ -406,8 +412,8 @@ func (c *Client) Use(hooks ...Hook) {
 		c.FilePath, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
 		c.InvocationTag, c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
 		c.NetworkMetrics, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestResult, c.TestSummary,
-		c.TestTarget, c.TimingMetrics,
+		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestActionOutput,
+		c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -424,8 +430,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.FilePath, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
 		c.InvocationTag, c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
 		c.NetworkMetrics, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestResult, c.TestSummary,
-		c.TestTarget, c.TimingMetrics,
+		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestActionOutput,
+		c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -500,6 +506,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.TargetKindMapping.mutate(ctx, m)
 	case *TargetMetricsMutation:
 		return c.TargetMetrics.mutate(ctx, m)
+	case *TestActionOutputMutation:
+		return c.TestActionOutput.mutate(ctx, m)
 	case *TestResultMutation:
 		return c.TestResult.mutate(ctx, m)
 	case *TestSummaryMutation:
@@ -3520,6 +3528,22 @@ func (c *FileClient) QueryBuildToolLogs(_m *File) *BazelInvocationQuery {
 	return query
 }
 
+// QueryTestActionOutput queries the test_action_output edge of a File.
+func (c *FileClient) QueryTestActionOutput(_m *File) *TestResultQuery {
+	query := (&TestResultClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(testresult.Table, testresult.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, file.TestActionOutputTable, file.TestActionOutputPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryToolLogs queries the tool_logs edge of a File.
 func (c *FileClient) QueryToolLogs(_m *File) *BuildToolLogQuery {
 	query := (&BuildToolLogClient{config: c.config}).Query()
@@ -3529,6 +3553,22 @@ func (c *FileClient) QueryToolLogs(_m *File) *BuildToolLogQuery {
 			sqlgraph.From(file.Table, file.FieldID, id),
 			sqlgraph.To(buildtoollog.Table, buildtoollog.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, file.ToolLogsTable, file.ToolLogsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTestActionOutputTable queries the test_action_output_table edge of a File.
+func (c *FileClient) QueryTestActionOutputTable(_m *File) *TestActionOutputQuery {
+	query := (&TestActionOutputClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(testactionoutput.Table, testactionoutput.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.TestActionOutputTableTable, file.TestActionOutputTableColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -6268,6 +6308,171 @@ func (c *TargetMetricsClient) mutate(ctx context.Context, m *TargetMetricsMutati
 	}
 }
 
+// TestActionOutputClient is a client for the TestActionOutput schema.
+type TestActionOutputClient struct {
+	config
+}
+
+// NewTestActionOutputClient returns a client for the TestActionOutput from the given config.
+func NewTestActionOutputClient(c config) *TestActionOutputClient {
+	return &TestActionOutputClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `testactionoutput.Hooks(f(g(h())))`.
+func (c *TestActionOutputClient) Use(hooks ...Hook) {
+	c.hooks.TestActionOutput = append(c.hooks.TestActionOutput, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `testactionoutput.Intercept(f(g(h())))`.
+func (c *TestActionOutputClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TestActionOutput = append(c.inters.TestActionOutput, interceptors...)
+}
+
+// Create returns a builder for creating a TestActionOutput entity.
+func (c *TestActionOutputClient) Create() *TestActionOutputCreate {
+	mutation := newTestActionOutputMutation(c.config, OpCreate)
+	return &TestActionOutputCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TestActionOutput entities.
+func (c *TestActionOutputClient) CreateBulk(builders ...*TestActionOutputCreate) *TestActionOutputCreateBulk {
+	return &TestActionOutputCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TestActionOutputClient) MapCreateBulk(slice any, setFunc func(*TestActionOutputCreate, int)) *TestActionOutputCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TestActionOutputCreateBulk{err: fmt.Errorf("calling to TestActionOutputClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TestActionOutputCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TestActionOutputCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TestActionOutput.
+func (c *TestActionOutputClient) Update() *TestActionOutputUpdate {
+	mutation := newTestActionOutputMutation(c.config, OpUpdate)
+	return &TestActionOutputUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TestActionOutputClient) UpdateOne(_m *TestActionOutput) *TestActionOutputUpdateOne {
+	mutation := newTestActionOutputMutation(c.config, OpUpdateOne, withTestActionOutput(_m))
+	return &TestActionOutputUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TestActionOutputClient) UpdateOneID(id int64) *TestActionOutputUpdateOne {
+	mutation := newTestActionOutputMutation(c.config, OpUpdateOne, withTestActionOutputID(id))
+	return &TestActionOutputUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TestActionOutput.
+func (c *TestActionOutputClient) Delete() *TestActionOutputDelete {
+	mutation := newTestActionOutputMutation(c.config, OpDelete)
+	return &TestActionOutputDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TestActionOutputClient) DeleteOne(_m *TestActionOutput) *TestActionOutputDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TestActionOutputClient) DeleteOneID(id int64) *TestActionOutputDeleteOne {
+	builder := c.Delete().Where(testactionoutput.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TestActionOutputDeleteOne{builder}
+}
+
+// Query returns a query builder for TestActionOutput.
+func (c *TestActionOutputClient) Query() *TestActionOutputQuery {
+	return &TestActionOutputQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTestActionOutput},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a TestActionOutput entity by its id.
+func (c *TestActionOutputClient) Get(ctx context.Context, id int64) (*TestActionOutput, error) {
+	return c.Query().Where(testactionoutput.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TestActionOutputClient) GetX(ctx context.Context, id int64) *TestActionOutput {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryTestResult queries the test_result edge of a TestActionOutput.
+func (c *TestActionOutputClient) QueryTestResult(_m *TestActionOutput) *TestResultQuery {
+	query := (&TestResultClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(testactionoutput.Table, testactionoutput.FieldID, id),
+			sqlgraph.To(testresult.Table, testresult.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, testactionoutput.TestResultTable, testactionoutput.TestResultColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFile queries the file edge of a TestActionOutput.
+func (c *TestActionOutputClient) QueryFile(_m *TestActionOutput) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(testactionoutput.Table, testactionoutput.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, testactionoutput.FileTable, testactionoutput.FileColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *TestActionOutputClient) Hooks() []Hook {
+	return c.hooks.TestActionOutput
+}
+
+// Interceptors returns the client interceptors.
+func (c *TestActionOutputClient) Interceptors() []Interceptor {
+	return c.inters.TestActionOutput
+}
+
+func (c *TestActionOutputClient) mutate(ctx context.Context, m *TestActionOutputMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TestActionOutputCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TestActionOutputUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TestActionOutputUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TestActionOutputDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown TestActionOutput mutation op: %q", m.Op())
+	}
+}
+
 // TestResultClient is a client for the TestResult schema.
 type TestResultClient struct {
 	config
@@ -6385,6 +6590,38 @@ func (c *TestResultClient) QueryTestSummary(_m *TestResult) *TestSummaryQuery {
 			sqlgraph.From(testresult.Table, testresult.FieldID, id),
 			sqlgraph.To(testsummary.Table, testsummary.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, testresult.TestSummaryTable, testresult.TestSummaryColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTestActionOutput queries the test_action_output edge of a TestResult.
+func (c *TestResultClient) QueryTestActionOutput(_m *TestResult) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(testresult.Table, testresult.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, testresult.TestActionOutputTable, testresult.TestActionOutputPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTestActionOutputTable queries the test_action_output_table edge of a TestResult.
+func (c *TestResultClient) QueryTestActionOutputTable(_m *TestResult) *TestActionOutputQuery {
+	query := (&TestActionOutputClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(testresult.Table, testresult.FieldID, id),
+			sqlgraph.To(testactionoutput.Table, testactionoutput.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, testresult.TestActionOutputTableTable, testresult.TestActionOutputTableColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -6891,8 +7128,8 @@ type (
 		EventMetadata, File, FilePath, GarbageMetrics, IncompleteBuildLog,
 		InstanceName, InvocationTag, InvocationTarget, MemoryMetrics, Metrics,
 		MissDetail, NetworkMetrics, RunnerCount, SourceControl, SystemNetworkStats,
-		Target, TargetKindMapping, TargetMetrics, TestResult, TestSummary, TestTarget,
-		TimingMetrics []ent.Hook
+		Target, TargetKindMapping, TargetMetrics, TestActionOutput, TestResult,
+		TestSummary, TestTarget, TimingMetrics []ent.Hook
 	}
 	inters struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
@@ -6901,8 +7138,8 @@ type (
 		EventMetadata, File, FilePath, GarbageMetrics, IncompleteBuildLog,
 		InstanceName, InvocationTag, InvocationTarget, MemoryMetrics, Metrics,
 		MissDetail, NetworkMetrics, RunnerCount, SourceControl, SystemNetworkStats,
-		Target, TargetKindMapping, TargetMetrics, TestResult, TestSummary, TestTarget,
-		TimingMetrics []ent.Interceptor
+		Target, TargetKindMapping, TargetMetrics, TestActionOutput, TestResult,
+		TestSummary, TestTarget, TimingMetrics []ent.Interceptor
 	}
 )
 

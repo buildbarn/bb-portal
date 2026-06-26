@@ -112,6 +112,12 @@ WHERE ctid IN (
                 WHERE "file_id" = "files"."id"
             )
         )
+        AND (
+            NOT EXISTS (
+                SELECT 1 FROM "test_action_outputs"
+                WHERE "file_id" = "files"."id"
+            )
+        )
     FOR UPDATE SKIP LOCKED
     LIMIT sqlc.arg(batch_limit)::bigint
 );

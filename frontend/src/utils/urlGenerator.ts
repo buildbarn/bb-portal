@@ -57,7 +57,10 @@ export function generateFileUrl(
   digest: Digest,
   fileName: string,
 ): string {
-  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${fileName}`;
+  // The link will not work if there are slashes in the filename. So we take
+  // just the last segment from the file name.
+  const lastFileNameSegment = fileName.split("/").pop() ?? fileName;
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${lastFileNameSegment}`;
 }
 
 export function generateFileUrlFromGraphqlFile(

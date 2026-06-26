@@ -9,6 +9,7 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
+	"github.com/buildbarn/bb-portal/pkg/invocation/files"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
@@ -158,14 +159,54 @@ func createTestResultsBulk(ctx context.Context, invocationDbID, instanceNameDbID
 		}
 	}
 
-	affectedRows, err := tx.Sqlc().CreateTestResultsBulk(ctx, params)
+	IDs, err := tx.Sqlc().CreateTestResultsBulk(ctx, params)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to bulk insert test results")
+		return util.StatusWrap(err, "Failed to create bulk test results")
 	}
-	if int(affectedRows) != len(batch) {
-		return status.Errorf(codes.Internal, "Expected to insert %d test results, but only %d were inserted", len(batch), affectedRows)
+	if len(IDs) != len(batch) {
+		return status.Errorf(codes.Internal, "Expected to insert %d test results, but %d were inserted", len(batch), len(IDs))
 	}
 
+	taoParams := sqlc.CreateTestActionOutputAssociationParams{
+		BepInstanceNameID: instanceNameDbID,
+		TestResultID:      make([]int64, 0),
+		FilePaths:         make([]string, 0),
+		Rev2InstanceNames: make([]string, 0),
+		DigestFunctions:   make([]int16, 0),
+		Hashes:            make([][]byte, 0),
+		SizeBytes:         make([]int64, 0),
+	}
+
+	testActionOutputFiles := make([]*files.ParsedBepFile, 0, len(batch))
+	for i, x := range batch {
+		tao := x.Event.GetTestResult().GetTestActionOutput()
+		for _, file := range tao {
+			parsedFile := files.ParseBepFile(file)
+			if parsedFile == nil {
+				continue
+			}
+			testActionOutputFiles = append(testActionOutputFiles, parsedFile)
+
+			taoParams.TestResultID = append(taoParams.TestResultID, IDs[i])
+			taoParams.FilePaths = append(taoParams.FilePaths, parsedFile.Path)
+			taoParams.Rev2InstanceNames = append(taoParams.Rev2InstanceNames, parsedFile.InstanceName)
+			taoParams.DigestFunctions = append(taoParams.DigestFunctions, parsedFile.DigestFunction)
+			taoParams.Hashes = append(taoParams.Hashes, parsedFile.Hash)
+			taoParams.SizeBytes = append(taoParams.SizeBytes, parsedFile.SizeBytes)
+		}
+	}
+
+	if err = saveFilesBatch(ctx, tx, instanceNameDbID, testActionOutputFiles); err != nil {
+		return util.StatusWrap(err, "Failed to save files")
+	}
+
+	affectedRows, err := tx.Sqlc().CreateTestActionOutputAssociation(ctx, taoParams)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save test output action association")
+	}
+	if int(affectedRows) != len(taoParams.Hashes) {
+		return status.Errorf(codes.Internal, "Expected to insert %d test action output associations, but %d were inserted", len(taoParams.Hashes), int(affectedRows))
+	}
 	return nil
 }
 

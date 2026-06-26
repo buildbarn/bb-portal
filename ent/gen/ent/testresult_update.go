@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
@@ -265,6 +267,36 @@ func (_u *TestResultUpdate) SetTestSummary(v *TestSummary) *TestResultUpdate {
 	return _u.SetTestSummaryID(v.ID)
 }
 
+// AddTestActionOutputIDs adds the "test_action_output" edge to the File entity by IDs.
+func (_u *TestResultUpdate) AddTestActionOutputIDs(ids ...int64) *TestResultUpdate {
+	_u.mutation.AddTestActionOutputIDs(ids...)
+	return _u
+}
+
+// AddTestActionOutput adds the "test_action_output" edges to the File entity.
+func (_u *TestResultUpdate) AddTestActionOutput(v ...*File) *TestResultUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddTestActionOutputIDs(ids...)
+}
+
+// AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by IDs.
+func (_u *TestResultUpdate) AddTestActionOutputTableIDs(ids ...int64) *TestResultUpdate {
+	_u.mutation.AddTestActionOutputTableIDs(ids...)
+	return _u
+}
+
+// AddTestActionOutputTable adds the "test_action_output_table" edges to the TestActionOutput entity.
+func (_u *TestResultUpdate) AddTestActionOutputTable(v ...*TestActionOutput) *TestResultUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddTestActionOutputTableIDs(ids...)
+}
+
 // Mutation returns the TestResultMutation object of the builder.
 func (_u *TestResultUpdate) Mutation() *TestResultMutation {
 	return _u.mutation
@@ -274,6 +306,48 @@ func (_u *TestResultUpdate) Mutation() *TestResultMutation {
 func (_u *TestResultUpdate) ClearTestSummary() *TestResultUpdate {
 	_u.mutation.ClearTestSummary()
 	return _u
+}
+
+// ClearTestActionOutput clears all "test_action_output" edges to the File entity.
+func (_u *TestResultUpdate) ClearTestActionOutput() *TestResultUpdate {
+	_u.mutation.ClearTestActionOutput()
+	return _u
+}
+
+// RemoveTestActionOutputIDs removes the "test_action_output" edge to File entities by IDs.
+func (_u *TestResultUpdate) RemoveTestActionOutputIDs(ids ...int64) *TestResultUpdate {
+	_u.mutation.RemoveTestActionOutputIDs(ids...)
+	return _u
+}
+
+// RemoveTestActionOutput removes "test_action_output" edges to File entities.
+func (_u *TestResultUpdate) RemoveTestActionOutput(v ...*File) *TestResultUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveTestActionOutputIDs(ids...)
+}
+
+// ClearTestActionOutputTable clears all "test_action_output_table" edges to the TestActionOutput entity.
+func (_u *TestResultUpdate) ClearTestActionOutputTable() *TestResultUpdate {
+	_u.mutation.ClearTestActionOutputTable()
+	return _u
+}
+
+// RemoveTestActionOutputTableIDs removes the "test_action_output_table" edge to TestActionOutput entities by IDs.
+func (_u *TestResultUpdate) RemoveTestActionOutputTableIDs(ids ...int64) *TestResultUpdate {
+	_u.mutation.RemoveTestActionOutputTableIDs(ids...)
+	return _u
+}
+
+// RemoveTestActionOutputTable removes "test_action_output_table" edges to TestActionOutput entities.
+func (_u *TestResultUpdate) RemoveTestActionOutputTable(v ...*TestActionOutput) *TestResultUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveTestActionOutputTableIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -422,6 +496,96 @@ func (_u *TestResultUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TestActionOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedTestActionOutputIDs(); len(nodes) > 0 && !_u.mutation.TestActionOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TestActionOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TestActionOutputTableCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedTestActionOutputTableIDs(); len(nodes) > 0 && !_u.mutation.TestActionOutputTableCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TestActionOutputTableIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -684,6 +848,36 @@ func (_u *TestResultUpdateOne) SetTestSummary(v *TestSummary) *TestResultUpdateO
 	return _u.SetTestSummaryID(v.ID)
 }
 
+// AddTestActionOutputIDs adds the "test_action_output" edge to the File entity by IDs.
+func (_u *TestResultUpdateOne) AddTestActionOutputIDs(ids ...int64) *TestResultUpdateOne {
+	_u.mutation.AddTestActionOutputIDs(ids...)
+	return _u
+}
+
+// AddTestActionOutput adds the "test_action_output" edges to the File entity.
+func (_u *TestResultUpdateOne) AddTestActionOutput(v ...*File) *TestResultUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddTestActionOutputIDs(ids...)
+}
+
+// AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by IDs.
+func (_u *TestResultUpdateOne) AddTestActionOutputTableIDs(ids ...int64) *TestResultUpdateOne {
+	_u.mutation.AddTestActionOutputTableIDs(ids...)
+	return _u
+}
+
+// AddTestActionOutputTable adds the "test_action_output_table" edges to the TestActionOutput entity.
+func (_u *TestResultUpdateOne) AddTestActionOutputTable(v ...*TestActionOutput) *TestResultUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddTestActionOutputTableIDs(ids...)
+}
+
 // Mutation returns the TestResultMutation object of the builder.
 func (_u *TestResultUpdateOne) Mutation() *TestResultMutation {
 	return _u.mutation
@@ -693,6 +887,48 @@ func (_u *TestResultUpdateOne) Mutation() *TestResultMutation {
 func (_u *TestResultUpdateOne) ClearTestSummary() *TestResultUpdateOne {
 	_u.mutation.ClearTestSummary()
 	return _u
+}
+
+// ClearTestActionOutput clears all "test_action_output" edges to the File entity.
+func (_u *TestResultUpdateOne) ClearTestActionOutput() *TestResultUpdateOne {
+	_u.mutation.ClearTestActionOutput()
+	return _u
+}
+
+// RemoveTestActionOutputIDs removes the "test_action_output" edge to File entities by IDs.
+func (_u *TestResultUpdateOne) RemoveTestActionOutputIDs(ids ...int64) *TestResultUpdateOne {
+	_u.mutation.RemoveTestActionOutputIDs(ids...)
+	return _u
+}
+
+// RemoveTestActionOutput removes "test_action_output" edges to File entities.
+func (_u *TestResultUpdateOne) RemoveTestActionOutput(v ...*File) *TestResultUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveTestActionOutputIDs(ids...)
+}
+
+// ClearTestActionOutputTable clears all "test_action_output_table" edges to the TestActionOutput entity.
+func (_u *TestResultUpdateOne) ClearTestActionOutputTable() *TestResultUpdateOne {
+	_u.mutation.ClearTestActionOutputTable()
+	return _u
+}
+
+// RemoveTestActionOutputTableIDs removes the "test_action_output_table" edge to TestActionOutput entities by IDs.
+func (_u *TestResultUpdateOne) RemoveTestActionOutputTableIDs(ids ...int64) *TestResultUpdateOne {
+	_u.mutation.RemoveTestActionOutputTableIDs(ids...)
+	return _u
+}
+
+// RemoveTestActionOutputTable removes "test_action_output_table" edges to TestActionOutput entities.
+func (_u *TestResultUpdateOne) RemoveTestActionOutputTable(v ...*TestActionOutput) *TestResultUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveTestActionOutputTableIDs(ids...)
 }
 
 // Where appends a list predicates to the TestResultUpdate builder.
@@ -871,6 +1107,96 @@ func (_u *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TestActionOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedTestActionOutputIDs(); len(nodes) > 0 && !_u.mutation.TestActionOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TestActionOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.TestActionOutputTableCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedTestActionOutputTableIDs(); len(nodes) > 0 && !_u.mutation.TestActionOutputTableCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.TestActionOutputTableIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testactionoutput.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

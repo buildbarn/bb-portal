@@ -1065,6 +1065,44 @@ var (
 			},
 		},
 	}
+	// TestActionOutputsColumns holds the columns for the "test_action_outputs" table.
+	TestActionOutputsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "test_result_id", Type: field.TypeInt64},
+		{Name: "file_id", Type: field.TypeInt64},
+	}
+	// TestActionOutputsTable holds the schema information for the "test_action_outputs" table.
+	TestActionOutputsTable = &schema.Table{
+		Name:       "test_action_outputs",
+		Columns:    TestActionOutputsColumns,
+		PrimaryKey: []*schema.Column{TestActionOutputsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "test_action_outputs_test_results_test_result",
+				Columns:    []*schema.Column{TestActionOutputsColumns[1]},
+				RefColumns: []*schema.Column{TestResultsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "test_action_outputs_files_file",
+				Columns:    []*schema.Column{TestActionOutputsColumns[2]},
+				RefColumns: []*schema.Column{FilesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "testactionoutput_test_result_id_file_id",
+				Unique:  true,
+				Columns: []*schema.Column{TestActionOutputsColumns[1], TestActionOutputsColumns[2]},
+			},
+			{
+				Name:    "testactionoutput_file_id",
+				Unique:  false,
+				Columns: []*schema.Column{TestActionOutputsColumns[2]},
+			},
+		},
+	}
 	// TestResultsColumns holds the columns for the "test_results" table.
 	TestResultsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -1218,6 +1256,7 @@ var (
 		TargetsTable,
 		TargetKindMappingsTable,
 		TargetMetricsTable,
+		TestActionOutputsTable,
 		TestResultsTable,
 		TestSummariesTable,
 		TestTargetsTable,
@@ -1266,6 +1305,8 @@ func init() {
 	TargetKindMappingsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	TargetKindMappingsTable.ForeignKeys[1].RefTable = TargetsTable
 	TargetMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	TestActionOutputsTable.ForeignKeys[0].RefTable = TestResultsTable
+	TestActionOutputsTable.ForeignKeys[1].RefTable = FilesTable
 	TestResultsTable.ForeignKeys[0].RefTable = TestSummariesTable
 	TestSummariesTable.ForeignKeys[0].RefTable = InvocationTargetsTable
 	TestTargetsTable.ForeignKeys[0].RefTable = TargetsTable

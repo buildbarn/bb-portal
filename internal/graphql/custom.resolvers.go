@@ -15,7 +15,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
@@ -85,6 +87,27 @@ func (r *queryResolver) GetTarget(ctx context.Context, id string) (*ent.Target, 
 	query, err := r.db.Ent().Target.Query().Where(target.ID(dbID)).CollectFields(ctx)
 	if err != nil {
 		return nil, err
+	}
+	return query.Only(ctx)
+}
+
+// GetTestSummary is the resolver for the getTestSummary field.
+func (r *queryResolver) GetTestSummary(ctx context.Context, invocationID uuid.UUID, testSummaryID string) (*ent.TestSummary, error) {
+	_, testSummaryDbID, err := helpers.GraphQLTypeAndIntIDFromID(testSummaryID)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to parse Graphql ID")
+	}
+	query, err := r.db.Ent().TestSummary.Query().
+		Where(
+			testsummary.ID(testSummaryDbID),
+			testsummary.HasInvocationTargetWith(
+				invocationtarget.HasBazelInvocationWith(
+					bazelinvocation.InvocationID(invocationID),
+				),
+			),
+		).CollectFields(ctx)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to query fields")
 	}
 	return query.Only(ctx)
 }

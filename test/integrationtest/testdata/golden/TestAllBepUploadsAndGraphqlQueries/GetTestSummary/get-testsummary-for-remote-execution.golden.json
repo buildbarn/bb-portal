@@ -1,0 +1,71 @@
+{
+  "getTestSummary": {
+    "attemptCount": 1,
+    "firstStartTime": "2026-07-13T07:54:01.671Z",
+    "id": "VGVzdFN1bW1hcnk6NzQ=",
+    "invocationTarget": {
+      "id": "SW52b2NhdGlvblRhcmdldDo4ODI=",
+      "target": {
+        "aspect": "",
+        "id": "VGFyZ2V0OjI4NQ==",
+        "instanceName": {
+          "id": "SW5zdGFuY2VOYW1lOjE=",
+          "name": ""
+        },
+        "label": "@@+_repo_rules+abseil-hello//:hello_test",
+        "targetKind": "cc_test rule"
+      }
+    },
+    "lastStopTime": "2026-07-13T07:54:01.748Z",
+    "overallStatus": "PASSED",
+    "runCount": 1,
+    "shardCount": 0,
+    "testResults": [
+      {
+        "attempt": 1,
+        "cachedLocally": false,
+        "cachedRemotely": false,
+        "exitCode": 0,
+        "id": "VGVzdFJlc3VsdDo3Mw==",
+        "run": 1,
+        "shard": 1,
+        "status": "PASSED",
+        "strategy": "remote",
+        "testActionOutput": [
+          {
+            "digest": {
+              "digestFunction": "sha256",
+              "hash": "977a843d9996ea72c0b86102f39ae8b0c4bd55cd2b9a7778180f38a962c2a53a",
+              "id": "RGlnZXN0OjE=",
+              "rev2InstanceName": "fuse",
+              "sizeBytes": 518
+            },
+            "filePath": {
+              "id": "RmlsZVBhdGg6Mg==",
+              "path": "test.xml"
+            },
+            "id": "RmlsZTox"
+          },
+          {
+            "digest": {
+              "digestFunction": "sha256",
+              "hash": "97e3b3cf59c3b5fdeec26e012f5fd702f799d723e3abe133477f0eea2d6acbd7",
+              "id": "RGlnZXN0OjI=",
+              "rev2InstanceName": "fuse",
+              "sizeBytes": 575
+            },
+            "filePath": {
+              "id": "RmlsZVBhdGg6MQ==",
+              "path": "test.log"
+            },
+            "id": "RmlsZToy"
+          }
+        ],
+        "testAttemptDurationInMs": 77
+      }
+    ],
+    "totalNumCached": 0,
+    "totalRunCount": 1,
+    "totalRunDurationInMs": 77
+  }
+}

@@ -20,27 +20,33 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 )
 
 // FileQuery is the builder for querying File entities.
 type FileQuery struct {
 	config
-	ctx                    *QueryContext
-	order                  []file.OrderOption
-	inters                 []Interceptor
-	predicates             []predicate.File
-	withDigest             *DigestQuery
-	withFilePath           *FilePathQuery
-	withActionStdout       *ActionQuery
-	withActionStderr       *ActionQuery
-	withBuildToolLogs      *BazelInvocationQuery
-	withToolLogs           *BuildToolLogQuery
-	modifiers              []func(*sql.Selector)
-	loadTotal              []func(context.Context, []*File) error
-	withNamedActionStdout  map[string]*ActionQuery
-	withNamedActionStderr  map[string]*ActionQuery
-	withNamedBuildToolLogs map[string]*BazelInvocationQuery
-	withNamedToolLogs      map[string]*BuildToolLogQuery
+	ctx                            *QueryContext
+	order                          []file.OrderOption
+	inters                         []Interceptor
+	predicates                     []predicate.File
+	withDigest                     *DigestQuery
+	withFilePath                   *FilePathQuery
+	withActionStdout               *ActionQuery
+	withActionStderr               *ActionQuery
+	withBuildToolLogs              *BazelInvocationQuery
+	withTestActionOutput           *TestResultQuery
+	withToolLogs                   *BuildToolLogQuery
+	withTestActionOutputTable      *TestActionOutputQuery
+	modifiers                      []func(*sql.Selector)
+	loadTotal                      []func(context.Context, []*File) error
+	withNamedActionStdout          map[string]*ActionQuery
+	withNamedActionStderr          map[string]*ActionQuery
+	withNamedBuildToolLogs         map[string]*BazelInvocationQuery
+	withNamedTestActionOutput      map[string]*TestResultQuery
+	withNamedToolLogs              map[string]*BuildToolLogQuery
+	withNamedTestActionOutputTable map[string]*TestActionOutputQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -187,6 +193,28 @@ func (_q *FileQuery) QueryBuildToolLogs() *BazelInvocationQuery {
 	return query
 }
 
+// QueryTestActionOutput chains the current query on the "test_action_output" edge.
+func (_q *FileQuery) QueryTestActionOutput() *TestResultQuery {
+	query := (&TestResultClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, selector),
+			sqlgraph.To(testresult.Table, testresult.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, file.TestActionOutputTable, file.TestActionOutputPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryToolLogs chains the current query on the "tool_logs" edge.
 func (_q *FileQuery) QueryToolLogs() *BuildToolLogQuery {
 	query := (&BuildToolLogClient{config: _q.config}).Query()
@@ -202,6 +230,28 @@ func (_q *FileQuery) QueryToolLogs() *BuildToolLogQuery {
 			sqlgraph.From(file.Table, file.FieldID, selector),
 			sqlgraph.To(buildtoollog.Table, buildtoollog.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, file.ToolLogsTable, file.ToolLogsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTestActionOutputTable chains the current query on the "test_action_output_table" edge.
+func (_q *FileQuery) QueryTestActionOutputTable() *TestActionOutputQuery {
+	query := (&TestActionOutputClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, selector),
+			sqlgraph.To(testactionoutput.Table, testactionoutput.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.TestActionOutputTableTable, file.TestActionOutputTableColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -396,17 +446,19 @@ func (_q *FileQuery) Clone() *FileQuery {
 		return nil
 	}
 	return &FileQuery{
-		config:            _q.config,
-		ctx:               _q.ctx.Clone(),
-		order:             append([]file.OrderOption{}, _q.order...),
-		inters:            append([]Interceptor{}, _q.inters...),
-		predicates:        append([]predicate.File{}, _q.predicates...),
-		withDigest:        _q.withDigest.Clone(),
-		withFilePath:      _q.withFilePath.Clone(),
-		withActionStdout:  _q.withActionStdout.Clone(),
-		withActionStderr:  _q.withActionStderr.Clone(),
-		withBuildToolLogs: _q.withBuildToolLogs.Clone(),
-		withToolLogs:      _q.withToolLogs.Clone(),
+		config:                    _q.config,
+		ctx:                       _q.ctx.Clone(),
+		order:                     append([]file.OrderOption{}, _q.order...),
+		inters:                    append([]Interceptor{}, _q.inters...),
+		predicates:                append([]predicate.File{}, _q.predicates...),
+		withDigest:                _q.withDigest.Clone(),
+		withFilePath:              _q.withFilePath.Clone(),
+		withActionStdout:          _q.withActionStdout.Clone(),
+		withActionStderr:          _q.withActionStderr.Clone(),
+		withBuildToolLogs:         _q.withBuildToolLogs.Clone(),
+		withTestActionOutput:      _q.withTestActionOutput.Clone(),
+		withToolLogs:              _q.withToolLogs.Clone(),
+		withTestActionOutputTable: _q.withTestActionOutputTable.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -468,6 +520,17 @@ func (_q *FileQuery) WithBuildToolLogs(opts ...func(*BazelInvocationQuery)) *Fil
 	return _q
 }
 
+// WithTestActionOutput tells the query-builder to eager-load the nodes that are connected to
+// the "test_action_output" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithTestActionOutput(opts ...func(*TestResultQuery)) *FileQuery {
+	query := (&TestResultClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTestActionOutput = query
+	return _q
+}
+
 // WithToolLogs tells the query-builder to eager-load the nodes that are connected to
 // the "tool_logs" edge. The optional arguments are used to configure the query builder of the edge.
 func (_q *FileQuery) WithToolLogs(opts ...func(*BuildToolLogQuery)) *FileQuery {
@@ -476,6 +539,17 @@ func (_q *FileQuery) WithToolLogs(opts ...func(*BuildToolLogQuery)) *FileQuery {
 		opt(query)
 	}
 	_q.withToolLogs = query
+	return _q
+}
+
+// WithTestActionOutputTable tells the query-builder to eager-load the nodes that are connected to
+// the "test_action_output_table" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithTestActionOutputTable(opts ...func(*TestActionOutputQuery)) *FileQuery {
+	query := (&TestActionOutputClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withTestActionOutputTable = query
 	return _q
 }
 
@@ -563,13 +637,15 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 	var (
 		nodes       = []*File{}
 		_spec       = _q.querySpec()
-		loadedTypes = [6]bool{
+		loadedTypes = [8]bool{
 			_q.withDigest != nil,
 			_q.withFilePath != nil,
 			_q.withActionStdout != nil,
 			_q.withActionStderr != nil,
 			_q.withBuildToolLogs != nil,
+			_q.withTestActionOutput != nil,
 			_q.withToolLogs != nil,
+			_q.withTestActionOutputTable != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -626,10 +702,26 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 			return nil, err
 		}
 	}
+	if query := _q.withTestActionOutput; query != nil {
+		if err := _q.loadTestActionOutput(ctx, query, nodes,
+			func(n *File) { n.Edges.TestActionOutput = []*TestResult{} },
+			func(n *File, e *TestResult) { n.Edges.TestActionOutput = append(n.Edges.TestActionOutput, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := _q.withToolLogs; query != nil {
 		if err := _q.loadToolLogs(ctx, query, nodes,
 			func(n *File) { n.Edges.ToolLogs = []*BuildToolLog{} },
 			func(n *File, e *BuildToolLog) { n.Edges.ToolLogs = append(n.Edges.ToolLogs, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withTestActionOutputTable; query != nil {
+		if err := _q.loadTestActionOutputTable(ctx, query, nodes,
+			func(n *File) { n.Edges.TestActionOutputTable = []*TestActionOutput{} },
+			func(n *File, e *TestActionOutput) {
+				n.Edges.TestActionOutputTable = append(n.Edges.TestActionOutputTable, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -654,10 +746,24 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 			return nil, err
 		}
 	}
+	for name, query := range _q.withNamedTestActionOutput {
+		if err := _q.loadTestActionOutput(ctx, query, nodes,
+			func(n *File) { n.appendNamedTestActionOutput(name) },
+			func(n *File, e *TestResult) { n.appendNamedTestActionOutput(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range _q.withNamedToolLogs {
 		if err := _q.loadToolLogs(ctx, query, nodes,
 			func(n *File) { n.appendNamedToolLogs(name) },
 			func(n *File, e *BuildToolLog) { n.appendNamedToolLogs(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedTestActionOutputTable {
+		if err := _q.loadTestActionOutputTable(ctx, query, nodes,
+			func(n *File) { n.appendNamedTestActionOutputTable(name) },
+			func(n *File, e *TestActionOutput) { n.appendNamedTestActionOutputTable(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -848,6 +954,67 @@ func (_q *FileQuery) loadBuildToolLogs(ctx context.Context, query *BazelInvocati
 	}
 	return nil
 }
+func (_q *FileQuery) loadTestActionOutput(ctx context.Context, query *TestResultQuery, nodes []*File, init func(*File), assign func(*File, *TestResult)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[int64]*File)
+	nids := make(map[int64]map[*File]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(file.TestActionOutputTable)
+		s.Join(joinT).On(s.C(testresult.FieldID), joinT.C(file.TestActionOutputPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(file.TestActionOutputPrimaryKey[1]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(file.TestActionOutputPrimaryKey[1]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := values[0].(*sql.NullInt64).Int64
+				inValue := values[1].(*sql.NullInt64).Int64
+				if nids[inValue] == nil {
+					nids[inValue] = map[*File]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*TestResult](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "test_action_output" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
 func (_q *FileQuery) loadToolLogs(ctx context.Context, query *BuildToolLogQuery, nodes []*File, init func(*File), assign func(*File, *BuildToolLog)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*File)
@@ -863,6 +1030,36 @@ func (_q *FileQuery) loadToolLogs(ctx context.Context, query *BuildToolLogQuery,
 	}
 	query.Where(predicate.BuildToolLog(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(file.ToolLogsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.FileID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "file_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *FileQuery) loadTestActionOutputTable(ctx context.Context, query *TestActionOutputQuery, nodes []*File, init func(*File), assign func(*File, *TestActionOutput)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*File)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(testactionoutput.FieldFileID)
+	}
+	query.Where(predicate.TestActionOutput(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(file.TestActionOutputTableColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1011,6 +1208,20 @@ func (_q *FileQuery) WithNamedBuildToolLogs(name string, opts ...func(*BazelInvo
 	return _q
 }
 
+// WithNamedTestActionOutput tells the query-builder to eager-load the nodes that are connected to the "test_action_output"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithNamedTestActionOutput(name string, opts ...func(*TestResultQuery)) *FileQuery {
+	query := (&TestResultClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedTestActionOutput == nil {
+		_q.withNamedTestActionOutput = make(map[string]*TestResultQuery)
+	}
+	_q.withNamedTestActionOutput[name] = query
+	return _q
+}
+
 // WithNamedToolLogs tells the query-builder to eager-load the nodes that are connected to the "tool_logs"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
 func (_q *FileQuery) WithNamedToolLogs(name string, opts ...func(*BuildToolLogQuery)) *FileQuery {
@@ -1022,6 +1233,20 @@ func (_q *FileQuery) WithNamedToolLogs(name string, opts ...func(*BuildToolLogQu
 		_q.withNamedToolLogs = make(map[string]*BuildToolLogQuery)
 	}
 	_q.withNamedToolLogs[name] = query
+	return _q
+}
+
+// WithNamedTestActionOutputTable tells the query-builder to eager-load the nodes that are connected to the "test_action_output_table"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithNamedTestActionOutputTable(name string, opts ...func(*TestActionOutputQuery)) *FileQuery {
+	query := (&TestActionOutputClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedTestActionOutputTable == nil {
+		_q.withNamedTestActionOutputTable = make(map[string]*TestActionOutputQuery)
+	}
+	_q.withNamedTestActionOutputTable[name] = query
 	return _q
 }
 
