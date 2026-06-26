@@ -3,16 +3,13 @@ import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { digestFunctionValueFromString } from "@/utils/digestFunctionUtils";
 import { fetchCasObject } from "@/utils/fetchCasObject";
-import { readableFileSize } from "@/utils/filesize";
 import { generateFileUrl } from "@/utils/urlGenerator";
-import { LogViewerCard } from ".";
+import { LogViewerCard, SIZE_BYTE_LIMIT } from ".";
 
-const SIZE_BYTE_LIMIT = 1000000; // 1MiB
-
-const fetchLog = async (
+export const fetchLog = async (
   instanceName: string,
   digestFunction: string,
-  digest: string,
+  hash: string,
   sizeBytes: number,
 ): Promise<string | undefined> => {
   if (sizeBytes > SIZE_BYTE_LIMIT) {
@@ -24,7 +21,7 @@ const fetchLog = async (
     instanceName,
     digestFunction_ValueFromJSON(digestFunction.toUpperCase()),
     {
-      hash: digest,
+      hash,
       sizeBytes: sizeBytes.toString(),
     },
   );
@@ -34,7 +31,7 @@ const fetchLog = async (
 interface Props {
   instanceName: string;
   digestFunction: string;
-  digest: string;
+  hash: string;
   sizeBytes: number;
   title: string;
   fileName: string;
@@ -44,47 +41,34 @@ interface Props {
 const CasViewer: React.FC<Props> = ({
   instanceName,
   digestFunction,
-  digest,
+  hash,
   sizeBytes,
   title,
   fileName,
 }) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["casLog", digest],
+    queryKey: ["casLog", hash],
     queryFn: async () => {
-      return await fetchLog(instanceName, digestFunction, digest, sizeBytes);
+      return await fetchLog(instanceName, digestFunction, hash, sizeBytes);
     },
   });
-
-  const validActionOutputLink = digestFunction && digest && sizeBytes;
 
   return (
     <LogViewerCard
       log={data}
+      logSizeBytes={sizeBytes}
       title={title}
-      logDownloadUrl={
-        validActionOutputLink
-          ? generateFileUrl(
-              instanceName,
-              digestFunctionValueFromString(digestFunction),
-              {
-                hash: digest,
-                sizeBytes: sizeBytes.toString(),
-              },
-              fileName,
-            )
-          : undefined
-      }
+      logDownloadUrl={generateFileUrl(
+        instanceName,
+        digestFunctionValueFromString(digestFunction),
+        {
+          hash,
+          sizeBytes: sizeBytes.toString(),
+        },
+        fileName,
+      )}
       fileName={fileName}
-      error={
-        !data && sizeBytes > SIZE_BYTE_LIMIT
-          ? Error("Output is too large to display.", {
-              cause: `The size of the output is ${readableFileSize(
-                sizeBytes,
-              )}. ${validActionOutputLink && "Download the output to view it."}`,
-            })
-          : error
-      }
+      error={error}
       loading={isLoading}
     />
   );

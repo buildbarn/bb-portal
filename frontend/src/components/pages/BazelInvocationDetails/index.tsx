@@ -9,7 +9,9 @@ import { PortalCard } from "@/components/PortalCard";
 import PortalDuration from "@/components/PortalDuration";
 import ProfileDropdown from "@/components/ProfileDropdown";
 import UserStatusIndicator from "@/components/UserStatusIndicator";
+import { getFragmentData } from "@/graphql/__generated__";
 import type { BazelInvocationCommonFragment } from "@/graphql/__generated__/graphql";
+import { FILE_DETAILS_FRAGMENT } from "@/types/GraphqlFileFragment";
 
 const getTitleBits = (
   invocation: BazelInvocationCommonFragment,
@@ -59,7 +61,7 @@ const getTitleBits = (
 const getExtraBits = (
   invocation: BazelInvocationCommonFragment,
 ): React.ReactNode[] => {
-  const { invocationID, instanceName, build, profile } = invocation;
+  const { invocationID, build, profile } = invocation;
 
   const extraBits: React.ReactNode[] = [];
   if (build?.buildUUID) {
@@ -85,14 +87,12 @@ const getExtraBits = (
       formatConfig={{ smallestUnit: "s" }}
     />,
   );
-  if (profile)
+  if (profile) {
+    const parsedProfile = getFragmentData(FILE_DETAILS_FRAGMENT, profile);
     extraBits.push(
-      <ProfileDropdown
-        instanceName={instanceName.name}
-        profile={profile}
-        invocationID={invocationID}
-      />,
+      <ProfileDropdown profile={parsedProfile} invocationID={invocationID} />,
     );
+  }
   return extraBits;
 };
 

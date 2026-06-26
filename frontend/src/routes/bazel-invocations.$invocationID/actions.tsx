@@ -10,10 +10,6 @@ const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
   query GetBazelInvocationActions($invocationID: UUID!) {
     getBazelInvocation(invocationID: $invocationID) {
       id
-      instanceName {
-        id
-        name
-      }
       actions {
         ...BazelInvocationActions
       }
@@ -33,12 +29,6 @@ const BAZEL_INVOCATION_ACTIONS_FRAGMENT = gql(/* GraphQL */ `
     endTime
     failureCode
     failureMessage
-    stdoutHash
-    stdoutSizeBytes
-    stdoutHashFunction
-    stderrHash
-    stderrSizeBytes
-    stderrHashFunction
     configuration {
       id
       configurationID
@@ -46,6 +36,12 @@ const BAZEL_INVOCATION_ACTIONS_FRAGMENT = gql(/* GraphQL */ `
       platformName
       cpu
       makeVariables
+    }
+    stdout {
+      ...FileDetails
+    }
+    stderr {
+      ...FileDetails
     }
   }
 `);
@@ -66,10 +62,8 @@ export const Route = createFileRoute(
       throw new NotFoundError("invocation", error?.message);
     }
 
-    const instanceName = data.getBazelInvocation.instanceName.name;
-
     if (!data.getBazelInvocation.actions) {
-      return { instanceName, actions: undefined };
+      return { actions: undefined };
     }
 
     const actions = getFragmentData(
@@ -77,7 +71,7 @@ export const Route = createFileRoute(
       data.getBazelInvocation?.actions,
     );
 
-    return { instanceName, actions };
+    return { actions };
   },
   head: (_ctx) => ({
     meta: [
@@ -93,12 +87,12 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  const { instanceName, actions } = Route.useLoaderData();
+  const { actions } = Route.useLoaderData();
 
   if (actions === undefined || actions.length === 0) {
     return <InvocationDataNotFoundAlert type="actions" />;
   }
 
   // TODO (isakstenstrom): Maybe we should fetch the logs here instead?
-  return <ActionsTab instanceName={instanceName} actions={actions} />;
+  return <ActionsTab actions={actions} />;
 }

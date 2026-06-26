@@ -46,12 +46,15 @@ func (Action) Fields() []ent.Field {
 		field.String("failure_code").Optional(),
 		field.String("failure_message").Optional(),
 
-		field.String("stdout_hash").Optional(),
-		field.Int64("stdout_size_bytes").Optional(),
-		field.String("stdout_hash_function").Optional(),
-		field.String("stderr_hash").Optional(),
-		field.Int64("stderr_size_bytes").Optional(),
-		field.String("stderr_hash_function").Optional(),
+		field.Int64("stdout_file_id").
+			Optional().
+			Immutable().
+			Annotations(entgql.Skip()),
+
+		field.Int64("stderr_file_id").
+			Optional().
+			Immutable().
+			Annotations(entgql.Skip()),
 	}
 }
 
@@ -72,6 +75,16 @@ func (Action) Edges() []ent.Edge {
 			Unique().
 			Required().
 			Immutable(),
+
+		edge.To("stdout", File.Type).
+			Field("stdout_file_id").
+			Unique().
+			Immutable(),
+
+		edge.To("stderr", File.Type).
+			Field("stderr_file_id").
+			Unique().
+			Immutable(),
 	}
 }
 
@@ -81,6 +94,8 @@ func (Action) Indexes() []ent.Index {
 		index.Fields("label"),
 		index.Edges("bazel_invocation"),
 		index.Edges("configuration"),
+		index.Edges("stdout"),
+		index.Edges("stderr"),
 	}
 }
 

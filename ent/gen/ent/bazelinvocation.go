@@ -99,29 +99,32 @@ type BazelInvocationEdges struct {
 	IncompleteBuildLogs []*IncompleteBuildLog `json:"incomplete_build_logs,omitempty"`
 	// BuildLogChunks holds the value of the build_log_chunks edge.
 	BuildLogChunks []*BuildLogChunk `json:"build_log_chunks,omitempty"`
-	// InvocationFiles holds the value of the invocation_files edge.
-	InvocationFiles []*InvocationFiles `json:"invocation_files,omitempty"`
+	// BuildToolLogs holds the value of the build_tool_logs edge.
+	BuildToolLogs []*File `json:"build_tool_logs,omitempty"`
 	// InvocationTargets holds the value of the invocation_targets edge.
 	InvocationTargets []*InvocationTarget `json:"invocation_targets,omitempty"`
 	// TargetKindMappings holds the value of the target_kind_mappings edge.
 	TargetKindMappings []*TargetKindMapping `json:"target_kind_mappings,omitempty"`
 	// SourceControl holds the value of the source_control edge.
 	SourceControl []*SourceControl `json:"source_control,omitempty"`
+	// ToolLogs holds the value of the tool_logs edge.
+	ToolLogs []*BuildToolLog `json:"tool_logs,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [15]bool
+	loadedTypes [16]bool
 	// totalCount holds the count of the edges above.
-	totalCount [10]map[string]int
+	totalCount [11]map[string]int
 
 	namedTags                map[string][]*InvocationTag
 	namedConfigurations      map[string][]*Configuration
 	namedActions             map[string][]*Action
 	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
 	namedBuildLogChunks      map[string][]*BuildLogChunk
-	namedInvocationFiles     map[string][]*InvocationFiles
+	namedBuildToolLogs       map[string][]*File
 	namedInvocationTargets   map[string][]*InvocationTarget
 	namedTargetKindMappings  map[string][]*TargetKindMapping
 	namedSourceControl       map[string][]*SourceControl
+	namedToolLogs            map[string][]*BuildToolLog
 }
 
 // InstanceNameOrErr returns the InstanceName value or an error if the edge
@@ -235,13 +238,13 @@ func (e BazelInvocationEdges) BuildLogChunksOrErr() ([]*BuildLogChunk, error) {
 	return nil, &NotLoadedError{edge: "build_log_chunks"}
 }
 
-// InvocationFilesOrErr returns the InvocationFiles value or an error if the edge
+// BuildToolLogsOrErr returns the BuildToolLogs value or an error if the edge
 // was not loaded in eager-loading.
-func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error) {
+func (e BazelInvocationEdges) BuildToolLogsOrErr() ([]*File, error) {
 	if e.loadedTypes[11] {
-		return e.InvocationFiles, nil
+		return e.BuildToolLogs, nil
 	}
-	return nil, &NotLoadedError{edge: "invocation_files"}
+	return nil, &NotLoadedError{edge: "build_tool_logs"}
 }
 
 // InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
@@ -269,6 +272,15 @@ func (e BazelInvocationEdges) SourceControlOrErr() ([]*SourceControl, error) {
 		return e.SourceControl, nil
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
+}
+
+// ToolLogsOrErr returns the ToolLogs value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) ToolLogsOrErr() ([]*BuildToolLog, error) {
+	if e.loadedTypes[15] {
+		return e.ToolLogs, nil
+	}
+	return nil, &NotLoadedError{edge: "tool_logs"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -533,9 +545,9 @@ func (_m *BazelInvocation) QueryBuildLogChunks() *BuildLogChunkQuery {
 	return NewBazelInvocationClient(_m.config).QueryBuildLogChunks(_m)
 }
 
-// QueryInvocationFiles queries the "invocation_files" edge of the BazelInvocation entity.
-func (_m *BazelInvocation) QueryInvocationFiles() *InvocationFilesQuery {
-	return NewBazelInvocationClient(_m.config).QueryInvocationFiles(_m)
+// QueryBuildToolLogs queries the "build_tool_logs" edge of the BazelInvocation entity.
+func (_m *BazelInvocation) QueryBuildToolLogs() *FileQuery {
+	return NewBazelInvocationClient(_m.config).QueryBuildToolLogs(_m)
 }
 
 // QueryInvocationTargets queries the "invocation_targets" edge of the BazelInvocation entity.
@@ -551,6 +563,11 @@ func (_m *BazelInvocation) QueryTargetKindMappings() *TargetKindMappingQuery {
 // QuerySourceControl queries the "source_control" edge of the BazelInvocation entity.
 func (_m *BazelInvocation) QuerySourceControl() *SourceControlQuery {
 	return NewBazelInvocationClient(_m.config).QuerySourceControl(_m)
+}
+
+// QueryToolLogs queries the "tool_logs" edge of the BazelInvocation entity.
+func (_m *BazelInvocation) QueryToolLogs() *BuildToolLogQuery {
+	return NewBazelInvocationClient(_m.config).QueryToolLogs(_m)
 }
 
 // Update returns a builder for updating this BazelInvocation.
@@ -761,27 +778,27 @@ func (_m *BazelInvocation) appendNamedBuildLogChunks(name string, edges ...*Buil
 	}
 }
 
-// NamedInvocationFiles returns the InvocationFiles named value or an error if the edge was not
+// NamedBuildToolLogs returns the BuildToolLogs named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (_m *BazelInvocation) NamedInvocationFiles(name string) ([]*InvocationFiles, error) {
-	if _m.Edges.namedInvocationFiles == nil {
+func (_m *BazelInvocation) NamedBuildToolLogs(name string) ([]*File, error) {
+	if _m.Edges.namedBuildToolLogs == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := _m.Edges.namedInvocationFiles[name]
+	nodes, ok := _m.Edges.namedBuildToolLogs[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (_m *BazelInvocation) appendNamedInvocationFiles(name string, edges ...*InvocationFiles) {
-	if _m.Edges.namedInvocationFiles == nil {
-		_m.Edges.namedInvocationFiles = make(map[string][]*InvocationFiles)
+func (_m *BazelInvocation) appendNamedBuildToolLogs(name string, edges ...*File) {
+	if _m.Edges.namedBuildToolLogs == nil {
+		_m.Edges.namedBuildToolLogs = make(map[string][]*File)
 	}
 	if len(edges) == 0 {
-		_m.Edges.namedInvocationFiles[name] = []*InvocationFiles{}
+		_m.Edges.namedBuildToolLogs[name] = []*File{}
 	} else {
-		_m.Edges.namedInvocationFiles[name] = append(_m.Edges.namedInvocationFiles[name], edges...)
+		_m.Edges.namedBuildToolLogs[name] = append(_m.Edges.namedBuildToolLogs[name], edges...)
 	}
 }
 
@@ -854,6 +871,30 @@ func (_m *BazelInvocation) appendNamedSourceControl(name string, edges ...*Sourc
 		_m.Edges.namedSourceControl[name] = []*SourceControl{}
 	} else {
 		_m.Edges.namedSourceControl[name] = append(_m.Edges.namedSourceControl[name], edges...)
+	}
+}
+
+// NamedToolLogs returns the ToolLogs named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *BazelInvocation) NamedToolLogs(name string) ([]*BuildToolLog, error) {
+	if _m.Edges.namedToolLogs == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedToolLogs[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *BazelInvocation) appendNamedToolLogs(name string, edges ...*BuildToolLog) {
+	if _m.Edges.namedToolLogs == nil {
+		_m.Edges.namedToolLogs = make(map[string][]*BuildToolLog)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedToolLogs[name] = []*BuildToolLog{}
+	} else {
+		_m.Edges.namedToolLogs[name] = append(_m.Edges.namedToolLogs[name], edges...)
 	}
 }
 

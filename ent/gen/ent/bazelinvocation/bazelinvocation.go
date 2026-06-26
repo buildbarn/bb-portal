@@ -75,14 +75,16 @@ const (
 	EdgeIncompleteBuildLogs = "incomplete_build_logs"
 	// EdgeBuildLogChunks holds the string denoting the build_log_chunks edge name in mutations.
 	EdgeBuildLogChunks = "build_log_chunks"
-	// EdgeInvocationFiles holds the string denoting the invocation_files edge name in mutations.
-	EdgeInvocationFiles = "invocation_files"
+	// EdgeBuildToolLogs holds the string denoting the build_tool_logs edge name in mutations.
+	EdgeBuildToolLogs = "build_tool_logs"
 	// EdgeInvocationTargets holds the string denoting the invocation_targets edge name in mutations.
 	EdgeInvocationTargets = "invocation_targets"
 	// EdgeTargetKindMappings holds the string denoting the target_kind_mappings edge name in mutations.
 	EdgeTargetKindMappings = "target_kind_mappings"
 	// EdgeSourceControl holds the string denoting the source_control edge name in mutations.
 	EdgeSourceControl = "source_control"
+	// EdgeToolLogs holds the string denoting the tool_logs edge name in mutations.
+	EdgeToolLogs = "tool_logs"
 	// Table holds the table name of the bazelinvocation in the database.
 	Table = "bazel_invocations"
 	// InstanceNameTable is the table that holds the instance_name relation/edge.
@@ -162,13 +164,11 @@ const (
 	BuildLogChunksInverseTable = "build_log_chunks"
 	// BuildLogChunksColumn is the table column denoting the build_log_chunks relation/edge.
 	BuildLogChunksColumn = "bazel_invocation_build_log_chunks"
-	// InvocationFilesTable is the table that holds the invocation_files relation/edge.
-	InvocationFilesTable = "invocation_files"
-	// InvocationFilesInverseTable is the table name for the InvocationFiles entity.
-	// It exists in this package in order to avoid circular dependency with the "invocationfiles" package.
-	InvocationFilesInverseTable = "invocation_files"
-	// InvocationFilesColumn is the table column denoting the invocation_files relation/edge.
-	InvocationFilesColumn = "bazel_invocation_invocation_files"
+	// BuildToolLogsTable is the table that holds the build_tool_logs relation/edge. The primary key declared below.
+	BuildToolLogsTable = "build_tool_logs"
+	// BuildToolLogsInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	BuildToolLogsInverseTable = "files"
 	// InvocationTargetsTable is the table that holds the invocation_targets relation/edge.
 	InvocationTargetsTable = "invocation_targets"
 	// InvocationTargetsInverseTable is the table name for the InvocationTarget entity.
@@ -190,6 +190,13 @@ const (
 	SourceControlInverseTable = "source_controls"
 	// SourceControlColumn is the table column denoting the source_control relation/edge.
 	SourceControlColumn = "bazel_invocation_source_control"
+	// ToolLogsTable is the table that holds the tool_logs relation/edge.
+	ToolLogsTable = "build_tool_logs"
+	// ToolLogsInverseTable is the table name for the BuildToolLog entity.
+	// It exists in this package in order to avoid circular dependency with the "buildtoollog" package.
+	ToolLogsInverseTable = "build_tool_logs"
+	// ToolLogsColumn is the table column denoting the tool_logs relation/edge.
+	ToolLogsColumn = "bazel_invocation_id"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.
@@ -224,6 +231,12 @@ var ForeignKeys = []string{
 	"build_invocations",
 	"instance_name_bazel_invocations",
 }
+
+var (
+	// BuildToolLogsPrimaryKey and BuildToolLogsColumn2 are the table columns denoting the
+	// primary key for the build_tool_logs relation (M2M).
+	BuildToolLogsPrimaryKey = []string{"bazel_invocation_id", "file_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -460,17 +473,17 @@ func ByBuildLogChunks(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByInvocationFilesCount orders the results by invocation_files count.
-func ByInvocationFilesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByBuildToolLogsCount orders the results by build_tool_logs count.
+func ByBuildToolLogsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newInvocationFilesStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newBuildToolLogsStep(), opts...)
 	}
 }
 
-// ByInvocationFiles orders the results by invocation_files terms.
-func ByInvocationFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByBuildToolLogs orders the results by build_tool_logs terms.
+func ByBuildToolLogs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newInvocationFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newBuildToolLogsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -513,6 +526,20 @@ func BySourceControlCount(opts ...sql.OrderTermOption) OrderOption {
 func BySourceControl(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByToolLogsCount orders the results by tool_logs count.
+func ByToolLogsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newToolLogsStep(), opts...)
+	}
+}
+
+// ByToolLogs orders the results by tool_logs terms.
+func ByToolLogs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newToolLogsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newInstanceNameStep() *sqlgraph.Step {
@@ -592,11 +619,11 @@ func newBuildLogChunksStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, BuildLogChunksTable, BuildLogChunksColumn),
 	)
 }
-func newInvocationFilesStep() *sqlgraph.Step {
+func newBuildToolLogsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(InvocationFilesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, InvocationFilesTable, InvocationFilesColumn),
+		sqlgraph.To(BuildToolLogsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, BuildToolLogsTable, BuildToolLogsPrimaryKey...),
 	)
 }
 func newInvocationTargetsStep() *sqlgraph.Step {
@@ -618,5 +645,12 @@ func newSourceControlStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SourceControlInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, SourceControlTable, SourceControlColumn),
+	)
+}
+func newToolLogsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ToolLogsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ToolLogsTable, ToolLogsColumn),
 	)
 }

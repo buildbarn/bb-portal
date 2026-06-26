@@ -16,12 +16,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -537,19 +538,19 @@ func (_u *BazelInvocationUpdate) AddBuildLogChunks(v ...*BuildLogChunk) *BazelIn
 	return _u.AddBuildLogChunkIDs(ids...)
 }
 
-// AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
-func (_u *BazelInvocationUpdate) AddInvocationFileIDs(ids ...int64) *BazelInvocationUpdate {
-	_u.mutation.AddInvocationFileIDs(ids...)
+// AddBuildToolLogIDs adds the "build_tool_logs" edge to the File entity by IDs.
+func (_u *BazelInvocationUpdate) AddBuildToolLogIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.AddBuildToolLogIDs(ids...)
 	return _u
 }
 
-// AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
-func (_u *BazelInvocationUpdate) AddInvocationFiles(v ...*InvocationFiles) *BazelInvocationUpdate {
+// AddBuildToolLogs adds the "build_tool_logs" edges to the File entity.
+func (_u *BazelInvocationUpdate) AddBuildToolLogs(v ...*File) *BazelInvocationUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddInvocationFileIDs(ids...)
+	return _u.AddBuildToolLogIDs(ids...)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
@@ -595,6 +596,21 @@ func (_u *BazelInvocationUpdate) AddSourceControl(v ...*SourceControl) *BazelInv
 		ids[i] = v[i].ID
 	}
 	return _u.AddSourceControlIDs(ids...)
+}
+
+// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by IDs.
+func (_u *BazelInvocationUpdate) AddToolLogIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.AddToolLogIDs(ids...)
+	return _u
+}
+
+// AddToolLogs adds the "tool_logs" edges to the BuildToolLog entity.
+func (_u *BazelInvocationUpdate) AddToolLogs(v ...*BuildToolLog) *BazelInvocationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddToolLogIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -743,25 +759,25 @@ func (_u *BazelInvocationUpdate) RemoveBuildLogChunks(v ...*BuildLogChunk) *Baze
 	return _u.RemoveBuildLogChunkIDs(ids...)
 }
 
-// ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
-func (_u *BazelInvocationUpdate) ClearInvocationFiles() *BazelInvocationUpdate {
-	_u.mutation.ClearInvocationFiles()
+// ClearBuildToolLogs clears all "build_tool_logs" edges to the File entity.
+func (_u *BazelInvocationUpdate) ClearBuildToolLogs() *BazelInvocationUpdate {
+	_u.mutation.ClearBuildToolLogs()
 	return _u
 }
 
-// RemoveInvocationFileIDs removes the "invocation_files" edge to InvocationFiles entities by IDs.
-func (_u *BazelInvocationUpdate) RemoveInvocationFileIDs(ids ...int64) *BazelInvocationUpdate {
-	_u.mutation.RemoveInvocationFileIDs(ids...)
+// RemoveBuildToolLogIDs removes the "build_tool_logs" edge to File entities by IDs.
+func (_u *BazelInvocationUpdate) RemoveBuildToolLogIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.RemoveBuildToolLogIDs(ids...)
 	return _u
 }
 
-// RemoveInvocationFiles removes "invocation_files" edges to InvocationFiles entities.
-func (_u *BazelInvocationUpdate) RemoveInvocationFiles(v ...*InvocationFiles) *BazelInvocationUpdate {
+// RemoveBuildToolLogs removes "build_tool_logs" edges to File entities.
+func (_u *BazelInvocationUpdate) RemoveBuildToolLogs(v ...*File) *BazelInvocationUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveInvocationFileIDs(ids...)
+	return _u.RemoveBuildToolLogIDs(ids...)
 }
 
 // ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
@@ -825,6 +841,27 @@ func (_u *BazelInvocationUpdate) RemoveSourceControl(v ...*SourceControl) *Bazel
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveSourceControlIDs(ids...)
+}
+
+// ClearToolLogs clears all "tool_logs" edges to the BuildToolLog entity.
+func (_u *BazelInvocationUpdate) ClearToolLogs() *BazelInvocationUpdate {
+	_u.mutation.ClearToolLogs()
+	return _u
+}
+
+// RemoveToolLogIDs removes the "tool_logs" edge to BuildToolLog entities by IDs.
+func (_u *BazelInvocationUpdate) RemoveToolLogIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.RemoveToolLogIDs(ids...)
+	return _u
+}
+
+// RemoveToolLogs removes "tool_logs" edges to BuildToolLog entities.
+func (_u *BazelInvocationUpdate) RemoveToolLogs(v ...*BuildToolLog) *BazelInvocationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveToolLogIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -1372,28 +1409,28 @@ func (_u *BazelInvocationUpdate) sqlSave(ctx context.Context) (_node int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.InvocationFilesCleared() {
+	if _u.mutation.BuildToolLogsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.BuildToolLogsTable,
+			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedInvocationFilesIDs(); len(nodes) > 0 && !_u.mutation.InvocationFilesCleared() {
+	if nodes := _u.mutation.RemovedBuildToolLogsIDs(); len(nodes) > 0 && !_u.mutation.BuildToolLogsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.BuildToolLogsTable,
+			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1401,15 +1438,15 @@ func (_u *BazelInvocationUpdate) sqlSave(ctx context.Context) (_node int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.InvocationFilesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BuildToolLogsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.BuildToolLogsTable,
+			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1545,6 +1582,51 @@ func (_u *BazelInvocationUpdate) sqlSave(ctx context.Context) (_node int, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ToolLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   bazelinvocation.ToolLogsTable,
+			Columns: []string{bazelinvocation.ToolLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedToolLogsIDs(); len(nodes) > 0 && !_u.mutation.ToolLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   bazelinvocation.ToolLogsTable,
+			Columns: []string{bazelinvocation.ToolLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ToolLogsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   bazelinvocation.ToolLogsTable,
+			Columns: []string{bazelinvocation.ToolLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2065,19 +2147,19 @@ func (_u *BazelInvocationUpdateOne) AddBuildLogChunks(v ...*BuildLogChunk) *Baze
 	return _u.AddBuildLogChunkIDs(ids...)
 }
 
-// AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
-func (_u *BazelInvocationUpdateOne) AddInvocationFileIDs(ids ...int64) *BazelInvocationUpdateOne {
-	_u.mutation.AddInvocationFileIDs(ids...)
+// AddBuildToolLogIDs adds the "build_tool_logs" edge to the File entity by IDs.
+func (_u *BazelInvocationUpdateOne) AddBuildToolLogIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.AddBuildToolLogIDs(ids...)
 	return _u
 }
 
-// AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
-func (_u *BazelInvocationUpdateOne) AddInvocationFiles(v ...*InvocationFiles) *BazelInvocationUpdateOne {
+// AddBuildToolLogs adds the "build_tool_logs" edges to the File entity.
+func (_u *BazelInvocationUpdateOne) AddBuildToolLogs(v ...*File) *BazelInvocationUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddInvocationFileIDs(ids...)
+	return _u.AddBuildToolLogIDs(ids...)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
@@ -2123,6 +2205,21 @@ func (_u *BazelInvocationUpdateOne) AddSourceControl(v ...*SourceControl) *Bazel
 		ids[i] = v[i].ID
 	}
 	return _u.AddSourceControlIDs(ids...)
+}
+
+// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by IDs.
+func (_u *BazelInvocationUpdateOne) AddToolLogIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.AddToolLogIDs(ids...)
+	return _u
+}
+
+// AddToolLogs adds the "tool_logs" edges to the BuildToolLog entity.
+func (_u *BazelInvocationUpdateOne) AddToolLogs(v ...*BuildToolLog) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddToolLogIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -2271,25 +2368,25 @@ func (_u *BazelInvocationUpdateOne) RemoveBuildLogChunks(v ...*BuildLogChunk) *B
 	return _u.RemoveBuildLogChunkIDs(ids...)
 }
 
-// ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
-func (_u *BazelInvocationUpdateOne) ClearInvocationFiles() *BazelInvocationUpdateOne {
-	_u.mutation.ClearInvocationFiles()
+// ClearBuildToolLogs clears all "build_tool_logs" edges to the File entity.
+func (_u *BazelInvocationUpdateOne) ClearBuildToolLogs() *BazelInvocationUpdateOne {
+	_u.mutation.ClearBuildToolLogs()
 	return _u
 }
 
-// RemoveInvocationFileIDs removes the "invocation_files" edge to InvocationFiles entities by IDs.
-func (_u *BazelInvocationUpdateOne) RemoveInvocationFileIDs(ids ...int64) *BazelInvocationUpdateOne {
-	_u.mutation.RemoveInvocationFileIDs(ids...)
+// RemoveBuildToolLogIDs removes the "build_tool_logs" edge to File entities by IDs.
+func (_u *BazelInvocationUpdateOne) RemoveBuildToolLogIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.RemoveBuildToolLogIDs(ids...)
 	return _u
 }
 
-// RemoveInvocationFiles removes "invocation_files" edges to InvocationFiles entities.
-func (_u *BazelInvocationUpdateOne) RemoveInvocationFiles(v ...*InvocationFiles) *BazelInvocationUpdateOne {
+// RemoveBuildToolLogs removes "build_tool_logs" edges to File entities.
+func (_u *BazelInvocationUpdateOne) RemoveBuildToolLogs(v ...*File) *BazelInvocationUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveInvocationFileIDs(ids...)
+	return _u.RemoveBuildToolLogIDs(ids...)
 }
 
 // ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
@@ -2353,6 +2450,27 @@ func (_u *BazelInvocationUpdateOne) RemoveSourceControl(v ...*SourceControl) *Ba
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveSourceControlIDs(ids...)
+}
+
+// ClearToolLogs clears all "tool_logs" edges to the BuildToolLog entity.
+func (_u *BazelInvocationUpdateOne) ClearToolLogs() *BazelInvocationUpdateOne {
+	_u.mutation.ClearToolLogs()
+	return _u
+}
+
+// RemoveToolLogIDs removes the "tool_logs" edge to BuildToolLog entities by IDs.
+func (_u *BazelInvocationUpdateOne) RemoveToolLogIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.RemoveToolLogIDs(ids...)
+	return _u
+}
+
+// RemoveToolLogs removes "tool_logs" edges to BuildToolLog entities.
+func (_u *BazelInvocationUpdateOne) RemoveToolLogs(v ...*BuildToolLog) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveToolLogIDs(ids...)
 }
 
 // Where appends a list predicates to the BazelInvocationUpdate builder.
@@ -2930,28 +3048,28 @@ func (_u *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelIn
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.InvocationFilesCleared() {
+	if _u.mutation.BuildToolLogsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.BuildToolLogsTable,
+			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedInvocationFilesIDs(); len(nodes) > 0 && !_u.mutation.InvocationFilesCleared() {
+	if nodes := _u.mutation.RemovedBuildToolLogsIDs(); len(nodes) > 0 && !_u.mutation.BuildToolLogsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.BuildToolLogsTable,
+			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2959,15 +3077,15 @@ func (_u *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelIn
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.InvocationFilesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BuildToolLogsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.BuildToolLogsTable,
+			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -3103,6 +3221,51 @@ func (_u *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelIn
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ToolLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   bazelinvocation.ToolLogsTable,
+			Columns: []string{bazelinvocation.ToolLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedToolLogsIDs(); len(nodes) > 0 && !_u.mutation.ToolLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   bazelinvocation.ToolLogsTable,
+			Columns: []string{bazelinvocation.ToolLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ToolLogsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   bazelinvocation.ToolLogsTable,
+			Columns: []string{bazelinvocation.ToolLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

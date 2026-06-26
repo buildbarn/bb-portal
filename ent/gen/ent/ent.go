@@ -23,13 +23,16 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
@@ -117,13 +120,16 @@ func checkColumn(t, c string) error {
 			buildgraphmetrics.Table:     buildgraphmetrics.ValidColumn,
 			buildlogchunk.Table:         buildlogchunk.ValidColumn,
 			buildtag.Table:              buildtag.ValidColumn,
+			buildtoollog.Table:          buildtoollog.ValidColumn,
 			configuration.Table:         configuration.ValidColumn,
 			connectionmetadata.Table:    connectionmetadata.ValidColumn,
+			digest.Table:                digest.ValidColumn,
 			eventmetadata.Table:         eventmetadata.ValidColumn,
+			file.Table:                  file.ValidColumn,
+			filepath.Table:              filepath.ValidColumn,
 			garbagemetrics.Table:        garbagemetrics.ValidColumn,
 			incompletebuildlog.Table:    incompletebuildlog.ValidColumn,
 			instancename.Table:          instancename.ValidColumn,
-			invocationfiles.Table:       invocationfiles.ValidColumn,
 			invocationtag.Table:         invocationtag.ValidColumn,
 			invocationtarget.Table:      invocationtarget.ValidColumn,
 			memorymetrics.Table:         memorymetrics.ValidColumn,

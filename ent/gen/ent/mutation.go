@@ -22,13 +22,16 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
@@ -70,13 +73,16 @@ const (
 	TypeBuildGraphMetrics     = "BuildGraphMetrics"
 	TypeBuildLogChunk         = "BuildLogChunk"
 	TypeBuildTag              = "BuildTag"
+	TypeBuildToolLog          = "BuildToolLog"
 	TypeConfiguration         = "Configuration"
 	TypeConnectionMetadata    = "ConnectionMetadata"
+	TypeDigest                = "Digest"
 	TypeEventMetadata         = "EventMetadata"
+	TypeFile                  = "File"
+	TypeFilePath              = "FilePath"
 	TypeGarbageMetrics        = "GarbageMetrics"
 	TypeIncompleteBuildLog    = "IncompleteBuildLog"
 	TypeInstanceName          = "InstanceName"
-	TypeInvocationFiles       = "InvocationFiles"
 	TypeInvocationTag         = "InvocationTag"
 	TypeInvocationTarget      = "InvocationTarget"
 	TypeMemoryMetrics         = "MemoryMetrics"
@@ -112,19 +118,15 @@ type ActionMutation struct {
 	end_time                *time.Time
 	failure_code            *string
 	failure_message         *string
-	stdout_hash             *string
-	stdout_size_bytes       *int64
-	addstdout_size_bytes    *int64
-	stdout_hash_function    *string
-	stderr_hash             *string
-	stderr_size_bytes       *int64
-	addstderr_size_bytes    *int64
-	stderr_hash_function    *string
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int64
 	clearedbazel_invocation bool
 	configuration           *int64
 	clearedconfiguration    bool
+	stdout                  *int64
+	clearedstdout           bool
+	stderr                  *int64
+	clearedstderr           bool
 	done                    bool
 	oldValue                func(context.Context) (*Action, error)
 	predicates              []predicate.Action
@@ -771,340 +773,102 @@ func (m *ActionMutation) ResetFailureMessage() {
 	delete(m.clearedFields, action.FieldFailureMessage)
 }
 
-// SetStdoutHash sets the "stdout_hash" field.
-func (m *ActionMutation) SetStdoutHash(s string) {
-	m.stdout_hash = &s
+// SetStdoutFileID sets the "stdout_file_id" field.
+func (m *ActionMutation) SetStdoutFileID(i int64) {
+	m.stdout = &i
 }
 
-// StdoutHash returns the value of the "stdout_hash" field in the mutation.
-func (m *ActionMutation) StdoutHash() (r string, exists bool) {
-	v := m.stdout_hash
+// StdoutFileID returns the value of the "stdout_file_id" field in the mutation.
+func (m *ActionMutation) StdoutFileID() (r int64, exists bool) {
+	v := m.stdout
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldStdoutHash returns the old "stdout_hash" field's value of the Action entity.
+// OldStdoutFileID returns the old "stdout_file_id" field's value of the Action entity.
 // If the Action object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStdoutHash(ctx context.Context) (v string, err error) {
+func (m *ActionMutation) OldStdoutFileID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdoutHash is only allowed on UpdateOne operations")
+		return v, errors.New("OldStdoutFileID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdoutHash requires an ID field in the mutation")
+		return v, errors.New("OldStdoutFileID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdoutHash: %w", err)
+		return v, fmt.Errorf("querying old value for OldStdoutFileID: %w", err)
 	}
-	return oldValue.StdoutHash, nil
+	return oldValue.StdoutFileID, nil
 }
 
-// ClearStdoutHash clears the value of the "stdout_hash" field.
-func (m *ActionMutation) ClearStdoutHash() {
-	m.stdout_hash = nil
-	m.clearedFields[action.FieldStdoutHash] = struct{}{}
+// ClearStdoutFileID clears the value of the "stdout_file_id" field.
+func (m *ActionMutation) ClearStdoutFileID() {
+	m.stdout = nil
+	m.clearedFields[action.FieldStdoutFileID] = struct{}{}
 }
 
-// StdoutHashCleared returns if the "stdout_hash" field was cleared in this mutation.
-func (m *ActionMutation) StdoutHashCleared() bool {
-	_, ok := m.clearedFields[action.FieldStdoutHash]
+// StdoutFileIDCleared returns if the "stdout_file_id" field was cleared in this mutation.
+func (m *ActionMutation) StdoutFileIDCleared() bool {
+	_, ok := m.clearedFields[action.FieldStdoutFileID]
 	return ok
 }
 
-// ResetStdoutHash resets all changes to the "stdout_hash" field.
-func (m *ActionMutation) ResetStdoutHash() {
-	m.stdout_hash = nil
-	delete(m.clearedFields, action.FieldStdoutHash)
+// ResetStdoutFileID resets all changes to the "stdout_file_id" field.
+func (m *ActionMutation) ResetStdoutFileID() {
+	m.stdout = nil
+	delete(m.clearedFields, action.FieldStdoutFileID)
 }
 
-// SetStdoutSizeBytes sets the "stdout_size_bytes" field.
-func (m *ActionMutation) SetStdoutSizeBytes(i int64) {
-	m.stdout_size_bytes = &i
-	m.addstdout_size_bytes = nil
+// SetStderrFileID sets the "stderr_file_id" field.
+func (m *ActionMutation) SetStderrFileID(i int64) {
+	m.stderr = &i
 }
 
-// StdoutSizeBytes returns the value of the "stdout_size_bytes" field in the mutation.
-func (m *ActionMutation) StdoutSizeBytes() (r int64, exists bool) {
-	v := m.stdout_size_bytes
+// StderrFileID returns the value of the "stderr_file_id" field in the mutation.
+func (m *ActionMutation) StderrFileID() (r int64, exists bool) {
+	v := m.stderr
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldStdoutSizeBytes returns the old "stdout_size_bytes" field's value of the Action entity.
+// OldStderrFileID returns the old "stderr_file_id" field's value of the Action entity.
 // If the Action object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStdoutSizeBytes(ctx context.Context) (v int64, err error) {
+func (m *ActionMutation) OldStderrFileID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdoutSizeBytes is only allowed on UpdateOne operations")
+		return v, errors.New("OldStderrFileID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdoutSizeBytes requires an ID field in the mutation")
+		return v, errors.New("OldStderrFileID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdoutSizeBytes: %w", err)
+		return v, fmt.Errorf("querying old value for OldStderrFileID: %w", err)
 	}
-	return oldValue.StdoutSizeBytes, nil
+	return oldValue.StderrFileID, nil
 }
 
-// AddStdoutSizeBytes adds i to the "stdout_size_bytes" field.
-func (m *ActionMutation) AddStdoutSizeBytes(i int64) {
-	if m.addstdout_size_bytes != nil {
-		*m.addstdout_size_bytes += i
-	} else {
-		m.addstdout_size_bytes = &i
-	}
+// ClearStderrFileID clears the value of the "stderr_file_id" field.
+func (m *ActionMutation) ClearStderrFileID() {
+	m.stderr = nil
+	m.clearedFields[action.FieldStderrFileID] = struct{}{}
 }
 
-// AddedStdoutSizeBytes returns the value that was added to the "stdout_size_bytes" field in this mutation.
-func (m *ActionMutation) AddedStdoutSizeBytes() (r int64, exists bool) {
-	v := m.addstdout_size_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearStdoutSizeBytes clears the value of the "stdout_size_bytes" field.
-func (m *ActionMutation) ClearStdoutSizeBytes() {
-	m.stdout_size_bytes = nil
-	m.addstdout_size_bytes = nil
-	m.clearedFields[action.FieldStdoutSizeBytes] = struct{}{}
-}
-
-// StdoutSizeBytesCleared returns if the "stdout_size_bytes" field was cleared in this mutation.
-func (m *ActionMutation) StdoutSizeBytesCleared() bool {
-	_, ok := m.clearedFields[action.FieldStdoutSizeBytes]
+// StderrFileIDCleared returns if the "stderr_file_id" field was cleared in this mutation.
+func (m *ActionMutation) StderrFileIDCleared() bool {
+	_, ok := m.clearedFields[action.FieldStderrFileID]
 	return ok
 }
 
-// ResetStdoutSizeBytes resets all changes to the "stdout_size_bytes" field.
-func (m *ActionMutation) ResetStdoutSizeBytes() {
-	m.stdout_size_bytes = nil
-	m.addstdout_size_bytes = nil
-	delete(m.clearedFields, action.FieldStdoutSizeBytes)
-}
-
-// SetStdoutHashFunction sets the "stdout_hash_function" field.
-func (m *ActionMutation) SetStdoutHashFunction(s string) {
-	m.stdout_hash_function = &s
-}
-
-// StdoutHashFunction returns the value of the "stdout_hash_function" field in the mutation.
-func (m *ActionMutation) StdoutHashFunction() (r string, exists bool) {
-	v := m.stdout_hash_function
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStdoutHashFunction returns the old "stdout_hash_function" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStdoutHashFunction(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdoutHashFunction is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdoutHashFunction requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdoutHashFunction: %w", err)
-	}
-	return oldValue.StdoutHashFunction, nil
-}
-
-// ClearStdoutHashFunction clears the value of the "stdout_hash_function" field.
-func (m *ActionMutation) ClearStdoutHashFunction() {
-	m.stdout_hash_function = nil
-	m.clearedFields[action.FieldStdoutHashFunction] = struct{}{}
-}
-
-// StdoutHashFunctionCleared returns if the "stdout_hash_function" field was cleared in this mutation.
-func (m *ActionMutation) StdoutHashFunctionCleared() bool {
-	_, ok := m.clearedFields[action.FieldStdoutHashFunction]
-	return ok
-}
-
-// ResetStdoutHashFunction resets all changes to the "stdout_hash_function" field.
-func (m *ActionMutation) ResetStdoutHashFunction() {
-	m.stdout_hash_function = nil
-	delete(m.clearedFields, action.FieldStdoutHashFunction)
-}
-
-// SetStderrHash sets the "stderr_hash" field.
-func (m *ActionMutation) SetStderrHash(s string) {
-	m.stderr_hash = &s
-}
-
-// StderrHash returns the value of the "stderr_hash" field in the mutation.
-func (m *ActionMutation) StderrHash() (r string, exists bool) {
-	v := m.stderr_hash
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStderrHash returns the old "stderr_hash" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStderrHash(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStderrHash is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStderrHash requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStderrHash: %w", err)
-	}
-	return oldValue.StderrHash, nil
-}
-
-// ClearStderrHash clears the value of the "stderr_hash" field.
-func (m *ActionMutation) ClearStderrHash() {
-	m.stderr_hash = nil
-	m.clearedFields[action.FieldStderrHash] = struct{}{}
-}
-
-// StderrHashCleared returns if the "stderr_hash" field was cleared in this mutation.
-func (m *ActionMutation) StderrHashCleared() bool {
-	_, ok := m.clearedFields[action.FieldStderrHash]
-	return ok
-}
-
-// ResetStderrHash resets all changes to the "stderr_hash" field.
-func (m *ActionMutation) ResetStderrHash() {
-	m.stderr_hash = nil
-	delete(m.clearedFields, action.FieldStderrHash)
-}
-
-// SetStderrSizeBytes sets the "stderr_size_bytes" field.
-func (m *ActionMutation) SetStderrSizeBytes(i int64) {
-	m.stderr_size_bytes = &i
-	m.addstderr_size_bytes = nil
-}
-
-// StderrSizeBytes returns the value of the "stderr_size_bytes" field in the mutation.
-func (m *ActionMutation) StderrSizeBytes() (r int64, exists bool) {
-	v := m.stderr_size_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStderrSizeBytes returns the old "stderr_size_bytes" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStderrSizeBytes(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStderrSizeBytes is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStderrSizeBytes requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStderrSizeBytes: %w", err)
-	}
-	return oldValue.StderrSizeBytes, nil
-}
-
-// AddStderrSizeBytes adds i to the "stderr_size_bytes" field.
-func (m *ActionMutation) AddStderrSizeBytes(i int64) {
-	if m.addstderr_size_bytes != nil {
-		*m.addstderr_size_bytes += i
-	} else {
-		m.addstderr_size_bytes = &i
-	}
-}
-
-// AddedStderrSizeBytes returns the value that was added to the "stderr_size_bytes" field in this mutation.
-func (m *ActionMutation) AddedStderrSizeBytes() (r int64, exists bool) {
-	v := m.addstderr_size_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearStderrSizeBytes clears the value of the "stderr_size_bytes" field.
-func (m *ActionMutation) ClearStderrSizeBytes() {
-	m.stderr_size_bytes = nil
-	m.addstderr_size_bytes = nil
-	m.clearedFields[action.FieldStderrSizeBytes] = struct{}{}
-}
-
-// StderrSizeBytesCleared returns if the "stderr_size_bytes" field was cleared in this mutation.
-func (m *ActionMutation) StderrSizeBytesCleared() bool {
-	_, ok := m.clearedFields[action.FieldStderrSizeBytes]
-	return ok
-}
-
-// ResetStderrSizeBytes resets all changes to the "stderr_size_bytes" field.
-func (m *ActionMutation) ResetStderrSizeBytes() {
-	m.stderr_size_bytes = nil
-	m.addstderr_size_bytes = nil
-	delete(m.clearedFields, action.FieldStderrSizeBytes)
-}
-
-// SetStderrHashFunction sets the "stderr_hash_function" field.
-func (m *ActionMutation) SetStderrHashFunction(s string) {
-	m.stderr_hash_function = &s
-}
-
-// StderrHashFunction returns the value of the "stderr_hash_function" field in the mutation.
-func (m *ActionMutation) StderrHashFunction() (r string, exists bool) {
-	v := m.stderr_hash_function
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStderrHashFunction returns the old "stderr_hash_function" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStderrHashFunction(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStderrHashFunction is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStderrHashFunction requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStderrHashFunction: %w", err)
-	}
-	return oldValue.StderrHashFunction, nil
-}
-
-// ClearStderrHashFunction clears the value of the "stderr_hash_function" field.
-func (m *ActionMutation) ClearStderrHashFunction() {
-	m.stderr_hash_function = nil
-	m.clearedFields[action.FieldStderrHashFunction] = struct{}{}
-}
-
-// StderrHashFunctionCleared returns if the "stderr_hash_function" field was cleared in this mutation.
-func (m *ActionMutation) StderrHashFunctionCleared() bool {
-	_, ok := m.clearedFields[action.FieldStderrHashFunction]
-	return ok
-}
-
-// ResetStderrHashFunction resets all changes to the "stderr_hash_function" field.
-func (m *ActionMutation) ResetStderrHashFunction() {
-	m.stderr_hash_function = nil
-	delete(m.clearedFields, action.FieldStderrHashFunction)
+// ResetStderrFileID resets all changes to the "stderr_file_id" field.
+func (m *ActionMutation) ResetStderrFileID() {
+	m.stderr = nil
+	delete(m.clearedFields, action.FieldStderrFileID)
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
@@ -1161,6 +925,86 @@ func (m *ActionMutation) ResetConfiguration() {
 	m.clearedconfiguration = false
 }
 
+// SetStdoutID sets the "stdout" edge to the File entity by id.
+func (m *ActionMutation) SetStdoutID(id int64) {
+	m.stdout = &id
+}
+
+// ClearStdout clears the "stdout" edge to the File entity.
+func (m *ActionMutation) ClearStdout() {
+	m.clearedstdout = true
+	m.clearedFields[action.FieldStdoutFileID] = struct{}{}
+}
+
+// StdoutCleared reports if the "stdout" edge to the File entity was cleared.
+func (m *ActionMutation) StdoutCleared() bool {
+	return m.StdoutFileIDCleared() || m.clearedstdout
+}
+
+// StdoutID returns the "stdout" edge ID in the mutation.
+func (m *ActionMutation) StdoutID() (id int64, exists bool) {
+	if m.stdout != nil {
+		return *m.stdout, true
+	}
+	return
+}
+
+// StdoutIDs returns the "stdout" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// StdoutID instead. It exists only for internal usage by the builders.
+func (m *ActionMutation) StdoutIDs() (ids []int64) {
+	if id := m.stdout; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStdout resets all changes to the "stdout" edge.
+func (m *ActionMutation) ResetStdout() {
+	m.stdout = nil
+	m.clearedstdout = false
+}
+
+// SetStderrID sets the "stderr" edge to the File entity by id.
+func (m *ActionMutation) SetStderrID(id int64) {
+	m.stderr = &id
+}
+
+// ClearStderr clears the "stderr" edge to the File entity.
+func (m *ActionMutation) ClearStderr() {
+	m.clearedstderr = true
+	m.clearedFields[action.FieldStderrFileID] = struct{}{}
+}
+
+// StderrCleared reports if the "stderr" edge to the File entity was cleared.
+func (m *ActionMutation) StderrCleared() bool {
+	return m.StderrFileIDCleared() || m.clearedstderr
+}
+
+// StderrID returns the "stderr" edge ID in the mutation.
+func (m *ActionMutation) StderrID() (id int64, exists bool) {
+	if m.stderr != nil {
+		return *m.stderr, true
+	}
+	return
+}
+
+// StderrIDs returns the "stderr" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// StderrID instead. It exists only for internal usage by the builders.
+func (m *ActionMutation) StderrIDs() (ids []int64) {
+	if id := m.stderr; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStderr resets all changes to the "stderr" edge.
+func (m *ActionMutation) ResetStderr() {
+	m.stderr = nil
+	m.clearedstderr = false
+}
+
 // Where appends a list predicates to the ActionMutation builder.
 func (m *ActionMutation) Where(ps ...predicate.Action) {
 	m.predicates = append(m.predicates, ps...)
@@ -1195,7 +1039,7 @@ func (m *ActionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ActionMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 13)
 	if m.bazel_invocation != nil {
 		fields = append(fields, action.FieldBazelInvocationID)
 	}
@@ -1229,23 +1073,11 @@ func (m *ActionMutation) Fields() []string {
 	if m.failure_message != nil {
 		fields = append(fields, action.FieldFailureMessage)
 	}
-	if m.stdout_hash != nil {
-		fields = append(fields, action.FieldStdoutHash)
+	if m.stdout != nil {
+		fields = append(fields, action.FieldStdoutFileID)
 	}
-	if m.stdout_size_bytes != nil {
-		fields = append(fields, action.FieldStdoutSizeBytes)
-	}
-	if m.stdout_hash_function != nil {
-		fields = append(fields, action.FieldStdoutHashFunction)
-	}
-	if m.stderr_hash != nil {
-		fields = append(fields, action.FieldStderrHash)
-	}
-	if m.stderr_size_bytes != nil {
-		fields = append(fields, action.FieldStderrSizeBytes)
-	}
-	if m.stderr_hash_function != nil {
-		fields = append(fields, action.FieldStderrHashFunction)
+	if m.stderr != nil {
+		fields = append(fields, action.FieldStderrFileID)
 	}
 	return fields
 }
@@ -1277,18 +1109,10 @@ func (m *ActionMutation) Field(name string) (ent.Value, bool) {
 		return m.FailureCode()
 	case action.FieldFailureMessage:
 		return m.FailureMessage()
-	case action.FieldStdoutHash:
-		return m.StdoutHash()
-	case action.FieldStdoutSizeBytes:
-		return m.StdoutSizeBytes()
-	case action.FieldStdoutHashFunction:
-		return m.StdoutHashFunction()
-	case action.FieldStderrHash:
-		return m.StderrHash()
-	case action.FieldStderrSizeBytes:
-		return m.StderrSizeBytes()
-	case action.FieldStderrHashFunction:
-		return m.StderrHashFunction()
+	case action.FieldStdoutFileID:
+		return m.StdoutFileID()
+	case action.FieldStderrFileID:
+		return m.StderrFileID()
 	}
 	return nil, false
 }
@@ -1320,18 +1144,10 @@ func (m *ActionMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldFailureCode(ctx)
 	case action.FieldFailureMessage:
 		return m.OldFailureMessage(ctx)
-	case action.FieldStdoutHash:
-		return m.OldStdoutHash(ctx)
-	case action.FieldStdoutSizeBytes:
-		return m.OldStdoutSizeBytes(ctx)
-	case action.FieldStdoutHashFunction:
-		return m.OldStdoutHashFunction(ctx)
-	case action.FieldStderrHash:
-		return m.OldStderrHash(ctx)
-	case action.FieldStderrSizeBytes:
-		return m.OldStderrSizeBytes(ctx)
-	case action.FieldStderrHashFunction:
-		return m.OldStderrHashFunction(ctx)
+	case action.FieldStdoutFileID:
+		return m.OldStdoutFileID(ctx)
+	case action.FieldStderrFileID:
+		return m.OldStderrFileID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Action field %s", name)
 }
@@ -1418,47 +1234,19 @@ func (m *ActionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetFailureMessage(v)
 		return nil
-	case action.FieldStdoutHash:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdoutHash(v)
-		return nil
-	case action.FieldStdoutSizeBytes:
+	case action.FieldStdoutFileID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetStdoutSizeBytes(v)
+		m.SetStdoutFileID(v)
 		return nil
-	case action.FieldStdoutHashFunction:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdoutHashFunction(v)
-		return nil
-	case action.FieldStderrHash:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStderrHash(v)
-		return nil
-	case action.FieldStderrSizeBytes:
+	case action.FieldStderrFileID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetStderrSizeBytes(v)
-		return nil
-	case action.FieldStderrHashFunction:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStderrHashFunction(v)
+		m.SetStderrFileID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Action field %s", name)
@@ -1471,12 +1259,6 @@ func (m *ActionMutation) AddedFields() []string {
 	if m.addexit_code != nil {
 		fields = append(fields, action.FieldExitCode)
 	}
-	if m.addstdout_size_bytes != nil {
-		fields = append(fields, action.FieldStdoutSizeBytes)
-	}
-	if m.addstderr_size_bytes != nil {
-		fields = append(fields, action.FieldStderrSizeBytes)
-	}
 	return fields
 }
 
@@ -1487,10 +1269,6 @@ func (m *ActionMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case action.FieldExitCode:
 		return m.AddedExitCode()
-	case action.FieldStdoutSizeBytes:
-		return m.AddedStdoutSizeBytes()
-	case action.FieldStderrSizeBytes:
-		return m.AddedStderrSizeBytes()
 	}
 	return nil, false
 }
@@ -1506,20 +1284,6 @@ func (m *ActionMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddExitCode(v)
-		return nil
-	case action.FieldStdoutSizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStdoutSizeBytes(v)
-		return nil
-	case action.FieldStderrSizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStderrSizeBytes(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Action numeric field %s", name)
@@ -1553,23 +1317,11 @@ func (m *ActionMutation) ClearedFields() []string {
 	if m.FieldCleared(action.FieldFailureMessage) {
 		fields = append(fields, action.FieldFailureMessage)
 	}
-	if m.FieldCleared(action.FieldStdoutHash) {
-		fields = append(fields, action.FieldStdoutHash)
+	if m.FieldCleared(action.FieldStdoutFileID) {
+		fields = append(fields, action.FieldStdoutFileID)
 	}
-	if m.FieldCleared(action.FieldStdoutSizeBytes) {
-		fields = append(fields, action.FieldStdoutSizeBytes)
-	}
-	if m.FieldCleared(action.FieldStdoutHashFunction) {
-		fields = append(fields, action.FieldStdoutHashFunction)
-	}
-	if m.FieldCleared(action.FieldStderrHash) {
-		fields = append(fields, action.FieldStderrHash)
-	}
-	if m.FieldCleared(action.FieldStderrSizeBytes) {
-		fields = append(fields, action.FieldStderrSizeBytes)
-	}
-	if m.FieldCleared(action.FieldStderrHashFunction) {
-		fields = append(fields, action.FieldStderrHashFunction)
+	if m.FieldCleared(action.FieldStderrFileID) {
+		fields = append(fields, action.FieldStderrFileID)
 	}
 	return fields
 }
@@ -1609,23 +1361,11 @@ func (m *ActionMutation) ClearField(name string) error {
 	case action.FieldFailureMessage:
 		m.ClearFailureMessage()
 		return nil
-	case action.FieldStdoutHash:
-		m.ClearStdoutHash()
+	case action.FieldStdoutFileID:
+		m.ClearStdoutFileID()
 		return nil
-	case action.FieldStdoutSizeBytes:
-		m.ClearStdoutSizeBytes()
-		return nil
-	case action.FieldStdoutHashFunction:
-		m.ClearStdoutHashFunction()
-		return nil
-	case action.FieldStderrHash:
-		m.ClearStderrHash()
-		return nil
-	case action.FieldStderrSizeBytes:
-		m.ClearStderrSizeBytes()
-		return nil
-	case action.FieldStderrHashFunction:
-		m.ClearStderrHashFunction()
+	case action.FieldStderrFileID:
+		m.ClearStderrFileID()
 		return nil
 	}
 	return fmt.Errorf("unknown Action nullable field %s", name)
@@ -1668,23 +1408,11 @@ func (m *ActionMutation) ResetField(name string) error {
 	case action.FieldFailureMessage:
 		m.ResetFailureMessage()
 		return nil
-	case action.FieldStdoutHash:
-		m.ResetStdoutHash()
+	case action.FieldStdoutFileID:
+		m.ResetStdoutFileID()
 		return nil
-	case action.FieldStdoutSizeBytes:
-		m.ResetStdoutSizeBytes()
-		return nil
-	case action.FieldStdoutHashFunction:
-		m.ResetStdoutHashFunction()
-		return nil
-	case action.FieldStderrHash:
-		m.ResetStderrHash()
-		return nil
-	case action.FieldStderrSizeBytes:
-		m.ResetStderrSizeBytes()
-		return nil
-	case action.FieldStderrHashFunction:
-		m.ResetStderrHashFunction()
+	case action.FieldStderrFileID:
+		m.ResetStderrFileID()
 		return nil
 	}
 	return fmt.Errorf("unknown Action field %s", name)
@@ -1692,12 +1420,18 @@ func (m *ActionMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ActionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.bazel_invocation != nil {
 		edges = append(edges, action.EdgeBazelInvocation)
 	}
 	if m.configuration != nil {
 		edges = append(edges, action.EdgeConfiguration)
+	}
+	if m.stdout != nil {
+		edges = append(edges, action.EdgeStdout)
+	}
+	if m.stderr != nil {
+		edges = append(edges, action.EdgeStderr)
 	}
 	return edges
 }
@@ -1714,13 +1448,21 @@ func (m *ActionMutation) AddedIDs(name string) []ent.Value {
 		if id := m.configuration; id != nil {
 			return []ent.Value{*id}
 		}
+	case action.EdgeStdout:
+		if id := m.stdout; id != nil {
+			return []ent.Value{*id}
+		}
+	case action.EdgeStderr:
+		if id := m.stderr; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ActionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	return edges
 }
 
@@ -1732,12 +1474,18 @@ func (m *ActionMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ActionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.clearedbazel_invocation {
 		edges = append(edges, action.EdgeBazelInvocation)
 	}
 	if m.clearedconfiguration {
 		edges = append(edges, action.EdgeConfiguration)
+	}
+	if m.clearedstdout {
+		edges = append(edges, action.EdgeStdout)
+	}
+	if m.clearedstderr {
+		edges = append(edges, action.EdgeStderr)
 	}
 	return edges
 }
@@ -1750,6 +1498,10 @@ func (m *ActionMutation) EdgeCleared(name string) bool {
 		return m.clearedbazel_invocation
 	case action.EdgeConfiguration:
 		return m.clearedconfiguration
+	case action.EdgeStdout:
+		return m.clearedstdout
+	case action.EdgeStderr:
+		return m.clearedstderr
 	}
 	return false
 }
@@ -1764,6 +1516,12 @@ func (m *ActionMutation) ClearEdge(name string) error {
 	case action.EdgeConfiguration:
 		m.ClearConfiguration()
 		return nil
+	case action.EdgeStdout:
+		m.ClearStdout()
+		return nil
+	case action.EdgeStderr:
+		m.ClearStderr()
+		return nil
 	}
 	return fmt.Errorf("unknown Action unique edge %s", name)
 }
@@ -1777,6 +1535,12 @@ func (m *ActionMutation) ResetEdge(name string) error {
 		return nil
 	case action.EdgeConfiguration:
 		m.ResetConfiguration()
+		return nil
+	case action.EdgeStdout:
+		m.ResetStdout()
+		return nil
+	case action.EdgeStderr:
+		m.ResetStderr()
 		return nil
 	}
 	return fmt.Errorf("unknown Action edge %s", name)
@@ -6716,9 +6480,9 @@ type BazelInvocationMutation struct {
 	build_log_chunks                 map[int64]struct{}
 	removedbuild_log_chunks          map[int64]struct{}
 	clearedbuild_log_chunks          bool
-	invocation_files                 map[int64]struct{}
-	removedinvocation_files          map[int64]struct{}
-	clearedinvocation_files          bool
+	build_tool_logs                  map[int64]struct{}
+	removedbuild_tool_logs           map[int64]struct{}
+	clearedbuild_tool_logs           bool
 	invocation_targets               map[int64]struct{}
 	removedinvocation_targets        map[int64]struct{}
 	clearedinvocation_targets        bool
@@ -6728,6 +6492,9 @@ type BazelInvocationMutation struct {
 	source_control                   map[int64]struct{}
 	removedsource_control            map[int64]struct{}
 	clearedsource_control            bool
+	tool_logs                        map[int64]struct{}
+	removedtool_logs                 map[int64]struct{}
+	clearedtool_logs                 bool
 	done                             bool
 	oldValue                         func(context.Context) (*BazelInvocation, error)
 	predicates                       []predicate.BazelInvocation
@@ -8272,58 +8039,58 @@ func (m *BazelInvocationMutation) ResetBuildLogChunks() {
 	m.removedbuild_log_chunks = nil
 }
 
-// AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by ids.
-func (m *BazelInvocationMutation) AddInvocationFileIDs(ids ...int64) {
-	if m.invocation_files == nil {
-		m.invocation_files = make(map[int64]struct{})
+// AddBuildToolLogIDs adds the "build_tool_logs" edge to the File entity by ids.
+func (m *BazelInvocationMutation) AddBuildToolLogIDs(ids ...int64) {
+	if m.build_tool_logs == nil {
+		m.build_tool_logs = make(map[int64]struct{})
 	}
 	for i := range ids {
-		m.invocation_files[ids[i]] = struct{}{}
+		m.build_tool_logs[ids[i]] = struct{}{}
 	}
 }
 
-// ClearInvocationFiles clears the "invocation_files" edge to the InvocationFiles entity.
-func (m *BazelInvocationMutation) ClearInvocationFiles() {
-	m.clearedinvocation_files = true
+// ClearBuildToolLogs clears the "build_tool_logs" edge to the File entity.
+func (m *BazelInvocationMutation) ClearBuildToolLogs() {
+	m.clearedbuild_tool_logs = true
 }
 
-// InvocationFilesCleared reports if the "invocation_files" edge to the InvocationFiles entity was cleared.
-func (m *BazelInvocationMutation) InvocationFilesCleared() bool {
-	return m.clearedinvocation_files
+// BuildToolLogsCleared reports if the "build_tool_logs" edge to the File entity was cleared.
+func (m *BazelInvocationMutation) BuildToolLogsCleared() bool {
+	return m.clearedbuild_tool_logs
 }
 
-// RemoveInvocationFileIDs removes the "invocation_files" edge to the InvocationFiles entity by IDs.
-func (m *BazelInvocationMutation) RemoveInvocationFileIDs(ids ...int64) {
-	if m.removedinvocation_files == nil {
-		m.removedinvocation_files = make(map[int64]struct{})
+// RemoveBuildToolLogIDs removes the "build_tool_logs" edge to the File entity by IDs.
+func (m *BazelInvocationMutation) RemoveBuildToolLogIDs(ids ...int64) {
+	if m.removedbuild_tool_logs == nil {
+		m.removedbuild_tool_logs = make(map[int64]struct{})
 	}
 	for i := range ids {
-		delete(m.invocation_files, ids[i])
-		m.removedinvocation_files[ids[i]] = struct{}{}
+		delete(m.build_tool_logs, ids[i])
+		m.removedbuild_tool_logs[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedInvocationFiles returns the removed IDs of the "invocation_files" edge to the InvocationFiles entity.
-func (m *BazelInvocationMutation) RemovedInvocationFilesIDs() (ids []int64) {
-	for id := range m.removedinvocation_files {
+// RemovedBuildToolLogs returns the removed IDs of the "build_tool_logs" edge to the File entity.
+func (m *BazelInvocationMutation) RemovedBuildToolLogsIDs() (ids []int64) {
+	for id := range m.removedbuild_tool_logs {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// InvocationFilesIDs returns the "invocation_files" edge IDs in the mutation.
-func (m *BazelInvocationMutation) InvocationFilesIDs() (ids []int64) {
-	for id := range m.invocation_files {
+// BuildToolLogsIDs returns the "build_tool_logs" edge IDs in the mutation.
+func (m *BazelInvocationMutation) BuildToolLogsIDs() (ids []int64) {
+	for id := range m.build_tool_logs {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetInvocationFiles resets all changes to the "invocation_files" edge.
-func (m *BazelInvocationMutation) ResetInvocationFiles() {
-	m.invocation_files = nil
-	m.clearedinvocation_files = false
-	m.removedinvocation_files = nil
+// ResetBuildToolLogs resets all changes to the "build_tool_logs" edge.
+func (m *BazelInvocationMutation) ResetBuildToolLogs() {
+	m.build_tool_logs = nil
+	m.clearedbuild_tool_logs = false
+	m.removedbuild_tool_logs = nil
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
@@ -8486,6 +8253,60 @@ func (m *BazelInvocationMutation) ResetSourceControl() {
 	m.source_control = nil
 	m.clearedsource_control = false
 	m.removedsource_control = nil
+}
+
+// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by ids.
+func (m *BazelInvocationMutation) AddToolLogIDs(ids ...int64) {
+	if m.tool_logs == nil {
+		m.tool_logs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.tool_logs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearToolLogs clears the "tool_logs" edge to the BuildToolLog entity.
+func (m *BazelInvocationMutation) ClearToolLogs() {
+	m.clearedtool_logs = true
+}
+
+// ToolLogsCleared reports if the "tool_logs" edge to the BuildToolLog entity was cleared.
+func (m *BazelInvocationMutation) ToolLogsCleared() bool {
+	return m.clearedtool_logs
+}
+
+// RemoveToolLogIDs removes the "tool_logs" edge to the BuildToolLog entity by IDs.
+func (m *BazelInvocationMutation) RemoveToolLogIDs(ids ...int64) {
+	if m.removedtool_logs == nil {
+		m.removedtool_logs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.tool_logs, ids[i])
+		m.removedtool_logs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedToolLogs returns the removed IDs of the "tool_logs" edge to the BuildToolLog entity.
+func (m *BazelInvocationMutation) RemovedToolLogsIDs() (ids []int64) {
+	for id := range m.removedtool_logs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ToolLogsIDs returns the "tool_logs" edge IDs in the mutation.
+func (m *BazelInvocationMutation) ToolLogsIDs() (ids []int64) {
+	for id := range m.tool_logs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetToolLogs resets all changes to the "tool_logs" edge.
+func (m *BazelInvocationMutation) ResetToolLogs() {
+	m.tool_logs = nil
+	m.clearedtool_logs = false
+	m.removedtool_logs = nil
 }
 
 // Where appends a list predicates to the BazelInvocationMutation builder.
@@ -9052,7 +8873,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 16)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9086,8 +8907,8 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	if m.build_log_chunks != nil {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
-	if m.invocation_files != nil {
-		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
+	if m.build_tool_logs != nil {
+		edges = append(edges, bazelinvocation.EdgeBuildToolLogs)
 	}
 	if m.invocation_targets != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -9097,6 +8918,9 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.source_control != nil {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
+	}
+	if m.tool_logs != nil {
+		edges = append(edges, bazelinvocation.EdgeToolLogs)
 	}
 	return edges
 }
@@ -9159,9 +8983,9 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeInvocationFiles:
-		ids := make([]ent.Value, 0, len(m.invocation_files))
-		for id := range m.invocation_files {
+	case bazelinvocation.EdgeBuildToolLogs:
+		ids := make([]ent.Value, 0, len(m.build_tool_logs))
+		for id := range m.build_tool_logs {
 			ids = append(ids, id)
 		}
 		return ids
@@ -9183,13 +9007,19 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeToolLogs:
+		ids := make([]ent.Value, 0, len(m.tool_logs))
+		for id := range m.tool_logs {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 16)
 	if m.removedtags != nil {
 		edges = append(edges, bazelinvocation.EdgeTags)
 	}
@@ -9205,8 +9035,8 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	if m.removedbuild_log_chunks != nil {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
-	if m.removedinvocation_files != nil {
-		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
+	if m.removedbuild_tool_logs != nil {
+		edges = append(edges, bazelinvocation.EdgeBuildToolLogs)
 	}
 	if m.removedinvocation_targets != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -9216,6 +9046,9 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	}
 	if m.removedsource_control != nil {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
+	}
+	if m.removedtool_logs != nil {
+		edges = append(edges, bazelinvocation.EdgeToolLogs)
 	}
 	return edges
 }
@@ -9254,9 +9087,9 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeInvocationFiles:
-		ids := make([]ent.Value, 0, len(m.removedinvocation_files))
-		for id := range m.removedinvocation_files {
+	case bazelinvocation.EdgeBuildToolLogs:
+		ids := make([]ent.Value, 0, len(m.removedbuild_tool_logs))
+		for id := range m.removedbuild_tool_logs {
 			ids = append(ids, id)
 		}
 		return ids
@@ -9278,13 +9111,19 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeToolLogs:
+		ids := make([]ent.Value, 0, len(m.removedtool_logs))
+		for id := range m.removedtool_logs {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 16)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9318,8 +9157,8 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	if m.clearedbuild_log_chunks {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
-	if m.clearedinvocation_files {
-		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
+	if m.clearedbuild_tool_logs {
+		edges = append(edges, bazelinvocation.EdgeBuildToolLogs)
 	}
 	if m.clearedinvocation_targets {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -9329,6 +9168,9 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedsource_control {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
+	}
+	if m.clearedtool_logs {
+		edges = append(edges, bazelinvocation.EdgeToolLogs)
 	}
 	return edges
 }
@@ -9359,14 +9201,16 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedincomplete_build_logs
 	case bazelinvocation.EdgeBuildLogChunks:
 		return m.clearedbuild_log_chunks
-	case bazelinvocation.EdgeInvocationFiles:
-		return m.clearedinvocation_files
+	case bazelinvocation.EdgeBuildToolLogs:
+		return m.clearedbuild_tool_logs
 	case bazelinvocation.EdgeInvocationTargets:
 		return m.clearedinvocation_targets
 	case bazelinvocation.EdgeTargetKindMappings:
 		return m.clearedtarget_kind_mappings
 	case bazelinvocation.EdgeSourceControl:
 		return m.clearedsource_control
+	case bazelinvocation.EdgeToolLogs:
+		return m.clearedtool_logs
 	}
 	return false
 }
@@ -9434,8 +9278,8 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 	case bazelinvocation.EdgeBuildLogChunks:
 		m.ResetBuildLogChunks()
 		return nil
-	case bazelinvocation.EdgeInvocationFiles:
-		m.ResetInvocationFiles()
+	case bazelinvocation.EdgeBuildToolLogs:
+		m.ResetBuildToolLogs()
 		return nil
 	case bazelinvocation.EdgeInvocationTargets:
 		m.ResetInvocationTargets()
@@ -9445,6 +9289,9 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeSourceControl:
 		m.ResetSourceControl()
+		return nil
+	case bazelinvocation.EdgeToolLogs:
+		m.ResetToolLogs()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation edge %s", name)
@@ -12545,6 +12392,495 @@ func (m *BuildTagMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown BuildTag edge %s", name)
 }
 
+// BuildToolLogMutation represents an operation that mutates the BuildToolLog nodes in the graph.
+type BuildToolLogMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int64
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int64
+	clearedbazel_invocation bool
+	file                    *int64
+	clearedfile             bool
+	done                    bool
+	oldValue                func(context.Context) (*BuildToolLog, error)
+	predicates              []predicate.BuildToolLog
+}
+
+var _ ent.Mutation = (*BuildToolLogMutation)(nil)
+
+// buildtoollogOption allows management of the mutation configuration using functional options.
+type buildtoollogOption func(*BuildToolLogMutation)
+
+// newBuildToolLogMutation creates new mutation for the BuildToolLog entity.
+func newBuildToolLogMutation(c config, op Op, opts ...buildtoollogOption) *BuildToolLogMutation {
+	m := &BuildToolLogMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeBuildToolLog,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withBuildToolLogID sets the ID field of the mutation.
+func withBuildToolLogID(id int64) buildtoollogOption {
+	return func(m *BuildToolLogMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *BuildToolLog
+		)
+		m.oldValue = func(ctx context.Context) (*BuildToolLog, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().BuildToolLog.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withBuildToolLog sets the old BuildToolLog of the mutation.
+func withBuildToolLog(node *BuildToolLog) buildtoollogOption {
+	return func(m *BuildToolLogMutation) {
+		m.oldValue = func(context.Context) (*BuildToolLog, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m BuildToolLogMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m BuildToolLogMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of BuildToolLog entities.
+func (m *BuildToolLogMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *BuildToolLogMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *BuildToolLogMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().BuildToolLog.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (m *BuildToolLogMutation) SetBazelInvocationID(i int64) {
+	m.bazel_invocation = &i
+}
+
+// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
+func (m *BuildToolLogMutation) BazelInvocationID() (r int64, exists bool) {
+	v := m.bazel_invocation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the BuildToolLog entity.
+// If the BuildToolLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildToolLogMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
+	}
+	return oldValue.BazelInvocationID, nil
+}
+
+// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
+func (m *BuildToolLogMutation) ResetBazelInvocationID() {
+	m.bazel_invocation = nil
+}
+
+// SetFileID sets the "file_id" field.
+func (m *BuildToolLogMutation) SetFileID(i int64) {
+	m.file = &i
+}
+
+// FileID returns the value of the "file_id" field in the mutation.
+func (m *BuildToolLogMutation) FileID() (r int64, exists bool) {
+	v := m.file
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFileID returns the old "file_id" field's value of the BuildToolLog entity.
+// If the BuildToolLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildToolLogMutation) OldFileID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFileID: %w", err)
+	}
+	return oldValue.FileID, nil
+}
+
+// ResetFileID resets all changes to the "file_id" field.
+func (m *BuildToolLogMutation) ResetFileID() {
+	m.file = nil
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *BuildToolLogMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+	m.clearedFields[buildtoollog.FieldBazelInvocationID] = struct{}{}
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *BuildToolLogMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *BuildToolLogMutation) BazelInvocationIDs() (ids []int64) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *BuildToolLogMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// ClearFile clears the "file" edge to the File entity.
+func (m *BuildToolLogMutation) ClearFile() {
+	m.clearedfile = true
+	m.clearedFields[buildtoollog.FieldFileID] = struct{}{}
+}
+
+// FileCleared reports if the "file" edge to the File entity was cleared.
+func (m *BuildToolLogMutation) FileCleared() bool {
+	return m.clearedfile
+}
+
+// FileIDs returns the "file" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FileID instead. It exists only for internal usage by the builders.
+func (m *BuildToolLogMutation) FileIDs() (ids []int64) {
+	if id := m.file; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFile resets all changes to the "file" edge.
+func (m *BuildToolLogMutation) ResetFile() {
+	m.file = nil
+	m.clearedfile = false
+}
+
+// Where appends a list predicates to the BuildToolLogMutation builder.
+func (m *BuildToolLogMutation) Where(ps ...predicate.BuildToolLog) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the BuildToolLogMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *BuildToolLogMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.BuildToolLog, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *BuildToolLogMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *BuildToolLogMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (BuildToolLog).
+func (m *BuildToolLogMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *BuildToolLogMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.bazel_invocation != nil {
+		fields = append(fields, buildtoollog.FieldBazelInvocationID)
+	}
+	if m.file != nil {
+		fields = append(fields, buildtoollog.FieldFileID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *BuildToolLogMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case buildtoollog.FieldBazelInvocationID:
+		return m.BazelInvocationID()
+	case buildtoollog.FieldFileID:
+		return m.FileID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *BuildToolLogMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case buildtoollog.FieldBazelInvocationID:
+		return m.OldBazelInvocationID(ctx)
+	case buildtoollog.FieldFileID:
+		return m.OldFileID(ctx)
+	}
+	return nil, fmt.Errorf("unknown BuildToolLog field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BuildToolLogMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case buildtoollog.FieldBazelInvocationID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBazelInvocationID(v)
+		return nil
+	case buildtoollog.FieldFileID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFileID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BuildToolLog field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *BuildToolLogMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *BuildToolLogMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BuildToolLogMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown BuildToolLog numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *BuildToolLogMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *BuildToolLogMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *BuildToolLogMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown BuildToolLog nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *BuildToolLogMutation) ResetField(name string) error {
+	switch name {
+	case buildtoollog.FieldBazelInvocationID:
+		m.ResetBazelInvocationID()
+		return nil
+	case buildtoollog.FieldFileID:
+		m.ResetFileID()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildToolLog field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *BuildToolLogMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.bazel_invocation != nil {
+		edges = append(edges, buildtoollog.EdgeBazelInvocation)
+	}
+	if m.file != nil {
+		edges = append(edges, buildtoollog.EdgeFile)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *BuildToolLogMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case buildtoollog.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	case buildtoollog.EdgeFile:
+		if id := m.file; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *BuildToolLogMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *BuildToolLogMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *BuildToolLogMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedbazel_invocation {
+		edges = append(edges, buildtoollog.EdgeBazelInvocation)
+	}
+	if m.clearedfile {
+		edges = append(edges, buildtoollog.EdgeFile)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *BuildToolLogMutation) EdgeCleared(name string) bool {
+	switch name {
+	case buildtoollog.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	case buildtoollog.EdgeFile:
+		return m.clearedfile
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *BuildToolLogMutation) ClearEdge(name string) error {
+	switch name {
+	case buildtoollog.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	case buildtoollog.EdgeFile:
+		m.ClearFile()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildToolLog unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *BuildToolLogMutation) ResetEdge(name string) error {
+	switch name {
+	case buildtoollog.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	case buildtoollog.EdgeFile:
+		m.ResetFile()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildToolLog edge %s", name)
+}
+
 // ConfigurationMutation represents an operation that mutates the Configuration nodes in the graph.
 type ConfigurationMutation struct {
 	config
@@ -13923,6 +14259,662 @@ func (m *ConnectionMetadataMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ConnectionMetadata edge %s", name)
 }
 
+// DigestMutation represents an operation that mutates the Digest nodes in the graph.
+type DigestMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *int64
+	rev2_instance_name *string
+	digest_function    *int16
+	adddigest_function *int16
+	hash               *[]byte
+	size_bytes         *int64
+	addsize_bytes      *int64
+	clearedFields      map[string]struct{}
+	files              map[int64]struct{}
+	removedfiles       map[int64]struct{}
+	clearedfiles       bool
+	done               bool
+	oldValue           func(context.Context) (*Digest, error)
+	predicates         []predicate.Digest
+}
+
+var _ ent.Mutation = (*DigestMutation)(nil)
+
+// digestOption allows management of the mutation configuration using functional options.
+type digestOption func(*DigestMutation)
+
+// newDigestMutation creates new mutation for the Digest entity.
+func newDigestMutation(c config, op Op, opts ...digestOption) *DigestMutation {
+	m := &DigestMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeDigest,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withDigestID sets the ID field of the mutation.
+func withDigestID(id int64) digestOption {
+	return func(m *DigestMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Digest
+		)
+		m.oldValue = func(ctx context.Context) (*Digest, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Digest.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withDigest sets the old Digest of the mutation.
+func withDigest(node *Digest) digestOption {
+	return func(m *DigestMutation) {
+		m.oldValue = func(context.Context) (*Digest, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m DigestMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m DigestMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Digest entities.
+func (m *DigestMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *DigestMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *DigestMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Digest.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetRev2InstanceName sets the "rev2_instance_name" field.
+func (m *DigestMutation) SetRev2InstanceName(s string) {
+	m.rev2_instance_name = &s
+}
+
+// Rev2InstanceName returns the value of the "rev2_instance_name" field in the mutation.
+func (m *DigestMutation) Rev2InstanceName() (r string, exists bool) {
+	v := m.rev2_instance_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRev2InstanceName returns the old "rev2_instance_name" field's value of the Digest entity.
+// If the Digest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DigestMutation) OldRev2InstanceName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRev2InstanceName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRev2InstanceName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRev2InstanceName: %w", err)
+	}
+	return oldValue.Rev2InstanceName, nil
+}
+
+// ResetRev2InstanceName resets all changes to the "rev2_instance_name" field.
+func (m *DigestMutation) ResetRev2InstanceName() {
+	m.rev2_instance_name = nil
+}
+
+// SetDigestFunction sets the "digest_function" field.
+func (m *DigestMutation) SetDigestFunction(i int16) {
+	m.digest_function = &i
+	m.adddigest_function = nil
+}
+
+// DigestFunction returns the value of the "digest_function" field in the mutation.
+func (m *DigestMutation) DigestFunction() (r int16, exists bool) {
+	v := m.digest_function
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDigestFunction returns the old "digest_function" field's value of the Digest entity.
+// If the Digest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DigestMutation) OldDigestFunction(ctx context.Context) (v int16, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDigestFunction is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDigestFunction requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDigestFunction: %w", err)
+	}
+	return oldValue.DigestFunction, nil
+}
+
+// AddDigestFunction adds i to the "digest_function" field.
+func (m *DigestMutation) AddDigestFunction(i int16) {
+	if m.adddigest_function != nil {
+		*m.adddigest_function += i
+	} else {
+		m.adddigest_function = &i
+	}
+}
+
+// AddedDigestFunction returns the value that was added to the "digest_function" field in this mutation.
+func (m *DigestMutation) AddedDigestFunction() (r int16, exists bool) {
+	v := m.adddigest_function
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDigestFunction resets all changes to the "digest_function" field.
+func (m *DigestMutation) ResetDigestFunction() {
+	m.digest_function = nil
+	m.adddigest_function = nil
+}
+
+// SetHash sets the "hash" field.
+func (m *DigestMutation) SetHash(b []byte) {
+	m.hash = &b
+}
+
+// Hash returns the value of the "hash" field in the mutation.
+func (m *DigestMutation) Hash() (r []byte, exists bool) {
+	v := m.hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHash returns the old "hash" field's value of the Digest entity.
+// If the Digest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DigestMutation) OldHash(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHash: %w", err)
+	}
+	return oldValue.Hash, nil
+}
+
+// ResetHash resets all changes to the "hash" field.
+func (m *DigestMutation) ResetHash() {
+	m.hash = nil
+}
+
+// SetSizeBytes sets the "size_bytes" field.
+func (m *DigestMutation) SetSizeBytes(i int64) {
+	m.size_bytes = &i
+	m.addsize_bytes = nil
+}
+
+// SizeBytes returns the value of the "size_bytes" field in the mutation.
+func (m *DigestMutation) SizeBytes() (r int64, exists bool) {
+	v := m.size_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSizeBytes returns the old "size_bytes" field's value of the Digest entity.
+// If the Digest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DigestMutation) OldSizeBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSizeBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSizeBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSizeBytes: %w", err)
+	}
+	return oldValue.SizeBytes, nil
+}
+
+// AddSizeBytes adds i to the "size_bytes" field.
+func (m *DigestMutation) AddSizeBytes(i int64) {
+	if m.addsize_bytes != nil {
+		*m.addsize_bytes += i
+	} else {
+		m.addsize_bytes = &i
+	}
+}
+
+// AddedSizeBytes returns the value that was added to the "size_bytes" field in this mutation.
+func (m *DigestMutation) AddedSizeBytes() (r int64, exists bool) {
+	v := m.addsize_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSizeBytes resets all changes to the "size_bytes" field.
+func (m *DigestMutation) ResetSizeBytes() {
+	m.size_bytes = nil
+	m.addsize_bytes = nil
+}
+
+// AddFileIDs adds the "files" edge to the File entity by ids.
+func (m *DigestMutation) AddFileIDs(ids ...int64) {
+	if m.files == nil {
+		m.files = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.files[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFiles clears the "files" edge to the File entity.
+func (m *DigestMutation) ClearFiles() {
+	m.clearedfiles = true
+}
+
+// FilesCleared reports if the "files" edge to the File entity was cleared.
+func (m *DigestMutation) FilesCleared() bool {
+	return m.clearedfiles
+}
+
+// RemoveFileIDs removes the "files" edge to the File entity by IDs.
+func (m *DigestMutation) RemoveFileIDs(ids ...int64) {
+	if m.removedfiles == nil {
+		m.removedfiles = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.files, ids[i])
+		m.removedfiles[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFiles returns the removed IDs of the "files" edge to the File entity.
+func (m *DigestMutation) RemovedFilesIDs() (ids []int64) {
+	for id := range m.removedfiles {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FilesIDs returns the "files" edge IDs in the mutation.
+func (m *DigestMutation) FilesIDs() (ids []int64) {
+	for id := range m.files {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFiles resets all changes to the "files" edge.
+func (m *DigestMutation) ResetFiles() {
+	m.files = nil
+	m.clearedfiles = false
+	m.removedfiles = nil
+}
+
+// Where appends a list predicates to the DigestMutation builder.
+func (m *DigestMutation) Where(ps ...predicate.Digest) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the DigestMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *DigestMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Digest, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *DigestMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *DigestMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Digest).
+func (m *DigestMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *DigestMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.rev2_instance_name != nil {
+		fields = append(fields, digest.FieldRev2InstanceName)
+	}
+	if m.digest_function != nil {
+		fields = append(fields, digest.FieldDigestFunction)
+	}
+	if m.hash != nil {
+		fields = append(fields, digest.FieldHash)
+	}
+	if m.size_bytes != nil {
+		fields = append(fields, digest.FieldSizeBytes)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *DigestMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case digest.FieldRev2InstanceName:
+		return m.Rev2InstanceName()
+	case digest.FieldDigestFunction:
+		return m.DigestFunction()
+	case digest.FieldHash:
+		return m.Hash()
+	case digest.FieldSizeBytes:
+		return m.SizeBytes()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *DigestMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case digest.FieldRev2InstanceName:
+		return m.OldRev2InstanceName(ctx)
+	case digest.FieldDigestFunction:
+		return m.OldDigestFunction(ctx)
+	case digest.FieldHash:
+		return m.OldHash(ctx)
+	case digest.FieldSizeBytes:
+		return m.OldSizeBytes(ctx)
+	}
+	return nil, fmt.Errorf("unknown Digest field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *DigestMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case digest.FieldRev2InstanceName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRev2InstanceName(v)
+		return nil
+	case digest.FieldDigestFunction:
+		v, ok := value.(int16)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDigestFunction(v)
+		return nil
+	case digest.FieldHash:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHash(v)
+		return nil
+	case digest.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSizeBytes(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Digest field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *DigestMutation) AddedFields() []string {
+	var fields []string
+	if m.adddigest_function != nil {
+		fields = append(fields, digest.FieldDigestFunction)
+	}
+	if m.addsize_bytes != nil {
+		fields = append(fields, digest.FieldSizeBytes)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *DigestMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case digest.FieldDigestFunction:
+		return m.AddedDigestFunction()
+	case digest.FieldSizeBytes:
+		return m.AddedSizeBytes()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *DigestMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case digest.FieldDigestFunction:
+		v, ok := value.(int16)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDigestFunction(v)
+		return nil
+	case digest.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSizeBytes(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Digest numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *DigestMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *DigestMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *DigestMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Digest nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *DigestMutation) ResetField(name string) error {
+	switch name {
+	case digest.FieldRev2InstanceName:
+		m.ResetRev2InstanceName()
+		return nil
+	case digest.FieldDigestFunction:
+		m.ResetDigestFunction()
+		return nil
+	case digest.FieldHash:
+		m.ResetHash()
+		return nil
+	case digest.FieldSizeBytes:
+		m.ResetSizeBytes()
+		return nil
+	}
+	return fmt.Errorf("unknown Digest field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *DigestMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.files != nil {
+		edges = append(edges, digest.EdgeFiles)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *DigestMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case digest.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.files))
+		for id := range m.files {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *DigestMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedfiles != nil {
+		edges = append(edges, digest.EdgeFiles)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *DigestMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case digest.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.removedfiles))
+		for id := range m.removedfiles {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *DigestMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedfiles {
+		edges = append(edges, digest.EdgeFiles)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *DigestMutation) EdgeCleared(name string) bool {
+	switch name {
+	case digest.EdgeFiles:
+		return m.clearedfiles
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *DigestMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Digest unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *DigestMutation) ResetEdge(name string) error {
+	switch name {
+	case digest.EdgeFiles:
+		m.ResetFiles()
+		return nil
+	}
+	return fmt.Errorf("unknown Digest edge %s", name)
+}
+
 // EventMetadataMutation represents an operation that mutates the EventMetadata nodes in the graph.
 type EventMetadataMutation struct {
 	config
@@ -14505,6 +15497,1357 @@ func (m *EventMetadataMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown EventMetadata edge %s", name)
+}
+
+// FileMutation represents an operation that mutates the File nodes in the graph.
+type FileMutation struct {
+	config
+	op                     Op
+	typ                    string
+	id                     *int64
+	clearedFields          map[string]struct{}
+	digest                 *int64
+	cleareddigest          bool
+	file_path              *int64
+	clearedfile_path       bool
+	action_stdout          map[int64]struct{}
+	removedaction_stdout   map[int64]struct{}
+	clearedaction_stdout   bool
+	action_stderr          map[int64]struct{}
+	removedaction_stderr   map[int64]struct{}
+	clearedaction_stderr   bool
+	build_tool_logs        map[int64]struct{}
+	removedbuild_tool_logs map[int64]struct{}
+	clearedbuild_tool_logs bool
+	tool_logs              map[int64]struct{}
+	removedtool_logs       map[int64]struct{}
+	clearedtool_logs       bool
+	done                   bool
+	oldValue               func(context.Context) (*File, error)
+	predicates             []predicate.File
+}
+
+var _ ent.Mutation = (*FileMutation)(nil)
+
+// fileOption allows management of the mutation configuration using functional options.
+type fileOption func(*FileMutation)
+
+// newFileMutation creates new mutation for the File entity.
+func newFileMutation(c config, op Op, opts ...fileOption) *FileMutation {
+	m := &FileMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFile,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFileID sets the ID field of the mutation.
+func withFileID(id int64) fileOption {
+	return func(m *FileMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *File
+		)
+		m.oldValue = func(ctx context.Context) (*File, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().File.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFile sets the old File of the mutation.
+func withFile(node *File) fileOption {
+	return func(m *FileMutation) {
+		m.oldValue = func(context.Context) (*File, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FileMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FileMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of File entities.
+func (m *FileMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FileMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FileMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().File.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetDigestID sets the "digest_id" field.
+func (m *FileMutation) SetDigestID(i int64) {
+	m.digest = &i
+}
+
+// DigestID returns the value of the "digest_id" field in the mutation.
+func (m *FileMutation) DigestID() (r int64, exists bool) {
+	v := m.digest
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDigestID returns the old "digest_id" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldDigestID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDigestID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDigestID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDigestID: %w", err)
+	}
+	return oldValue.DigestID, nil
+}
+
+// ResetDigestID resets all changes to the "digest_id" field.
+func (m *FileMutation) ResetDigestID() {
+	m.digest = nil
+}
+
+// SetFilePathID sets the "file_path_id" field.
+func (m *FileMutation) SetFilePathID(i int64) {
+	m.file_path = &i
+}
+
+// FilePathID returns the value of the "file_path_id" field in the mutation.
+func (m *FileMutation) FilePathID() (r int64, exists bool) {
+	v := m.file_path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFilePathID returns the old "file_path_id" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldFilePathID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFilePathID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFilePathID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFilePathID: %w", err)
+	}
+	return oldValue.FilePathID, nil
+}
+
+// ResetFilePathID resets all changes to the "file_path_id" field.
+func (m *FileMutation) ResetFilePathID() {
+	m.file_path = nil
+}
+
+// ClearDigest clears the "digest" edge to the Digest entity.
+func (m *FileMutation) ClearDigest() {
+	m.cleareddigest = true
+	m.clearedFields[file.FieldDigestID] = struct{}{}
+}
+
+// DigestCleared reports if the "digest" edge to the Digest entity was cleared.
+func (m *FileMutation) DigestCleared() bool {
+	return m.cleareddigest
+}
+
+// DigestIDs returns the "digest" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DigestID instead. It exists only for internal usage by the builders.
+func (m *FileMutation) DigestIDs() (ids []int64) {
+	if id := m.digest; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDigest resets all changes to the "digest" edge.
+func (m *FileMutation) ResetDigest() {
+	m.digest = nil
+	m.cleareddigest = false
+}
+
+// ClearFilePath clears the "file_path" edge to the FilePath entity.
+func (m *FileMutation) ClearFilePath() {
+	m.clearedfile_path = true
+	m.clearedFields[file.FieldFilePathID] = struct{}{}
+}
+
+// FilePathCleared reports if the "file_path" edge to the FilePath entity was cleared.
+func (m *FileMutation) FilePathCleared() bool {
+	return m.clearedfile_path
+}
+
+// FilePathIDs returns the "file_path" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FilePathID instead. It exists only for internal usage by the builders.
+func (m *FileMutation) FilePathIDs() (ids []int64) {
+	if id := m.file_path; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFilePath resets all changes to the "file_path" edge.
+func (m *FileMutation) ResetFilePath() {
+	m.file_path = nil
+	m.clearedfile_path = false
+}
+
+// AddActionStdoutIDs adds the "action_stdout" edge to the Action entity by ids.
+func (m *FileMutation) AddActionStdoutIDs(ids ...int64) {
+	if m.action_stdout == nil {
+		m.action_stdout = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.action_stdout[ids[i]] = struct{}{}
+	}
+}
+
+// ClearActionStdout clears the "action_stdout" edge to the Action entity.
+func (m *FileMutation) ClearActionStdout() {
+	m.clearedaction_stdout = true
+}
+
+// ActionStdoutCleared reports if the "action_stdout" edge to the Action entity was cleared.
+func (m *FileMutation) ActionStdoutCleared() bool {
+	return m.clearedaction_stdout
+}
+
+// RemoveActionStdoutIDs removes the "action_stdout" edge to the Action entity by IDs.
+func (m *FileMutation) RemoveActionStdoutIDs(ids ...int64) {
+	if m.removedaction_stdout == nil {
+		m.removedaction_stdout = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.action_stdout, ids[i])
+		m.removedaction_stdout[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedActionStdout returns the removed IDs of the "action_stdout" edge to the Action entity.
+func (m *FileMutation) RemovedActionStdoutIDs() (ids []int64) {
+	for id := range m.removedaction_stdout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ActionStdoutIDs returns the "action_stdout" edge IDs in the mutation.
+func (m *FileMutation) ActionStdoutIDs() (ids []int64) {
+	for id := range m.action_stdout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetActionStdout resets all changes to the "action_stdout" edge.
+func (m *FileMutation) ResetActionStdout() {
+	m.action_stdout = nil
+	m.clearedaction_stdout = false
+	m.removedaction_stdout = nil
+}
+
+// AddActionStderrIDs adds the "action_stderr" edge to the Action entity by ids.
+func (m *FileMutation) AddActionStderrIDs(ids ...int64) {
+	if m.action_stderr == nil {
+		m.action_stderr = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.action_stderr[ids[i]] = struct{}{}
+	}
+}
+
+// ClearActionStderr clears the "action_stderr" edge to the Action entity.
+func (m *FileMutation) ClearActionStderr() {
+	m.clearedaction_stderr = true
+}
+
+// ActionStderrCleared reports if the "action_stderr" edge to the Action entity was cleared.
+func (m *FileMutation) ActionStderrCleared() bool {
+	return m.clearedaction_stderr
+}
+
+// RemoveActionStderrIDs removes the "action_stderr" edge to the Action entity by IDs.
+func (m *FileMutation) RemoveActionStderrIDs(ids ...int64) {
+	if m.removedaction_stderr == nil {
+		m.removedaction_stderr = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.action_stderr, ids[i])
+		m.removedaction_stderr[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedActionStderr returns the removed IDs of the "action_stderr" edge to the Action entity.
+func (m *FileMutation) RemovedActionStderrIDs() (ids []int64) {
+	for id := range m.removedaction_stderr {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ActionStderrIDs returns the "action_stderr" edge IDs in the mutation.
+func (m *FileMutation) ActionStderrIDs() (ids []int64) {
+	for id := range m.action_stderr {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetActionStderr resets all changes to the "action_stderr" edge.
+func (m *FileMutation) ResetActionStderr() {
+	m.action_stderr = nil
+	m.clearedaction_stderr = false
+	m.removedaction_stderr = nil
+}
+
+// AddBuildToolLogIDs adds the "build_tool_logs" edge to the BazelInvocation entity by ids.
+func (m *FileMutation) AddBuildToolLogIDs(ids ...int64) {
+	if m.build_tool_logs == nil {
+		m.build_tool_logs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.build_tool_logs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearBuildToolLogs clears the "build_tool_logs" edge to the BazelInvocation entity.
+func (m *FileMutation) ClearBuildToolLogs() {
+	m.clearedbuild_tool_logs = true
+}
+
+// BuildToolLogsCleared reports if the "build_tool_logs" edge to the BazelInvocation entity was cleared.
+func (m *FileMutation) BuildToolLogsCleared() bool {
+	return m.clearedbuild_tool_logs
+}
+
+// RemoveBuildToolLogIDs removes the "build_tool_logs" edge to the BazelInvocation entity by IDs.
+func (m *FileMutation) RemoveBuildToolLogIDs(ids ...int64) {
+	if m.removedbuild_tool_logs == nil {
+		m.removedbuild_tool_logs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.build_tool_logs, ids[i])
+		m.removedbuild_tool_logs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedBuildToolLogs returns the removed IDs of the "build_tool_logs" edge to the BazelInvocation entity.
+func (m *FileMutation) RemovedBuildToolLogsIDs() (ids []int64) {
+	for id := range m.removedbuild_tool_logs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// BuildToolLogsIDs returns the "build_tool_logs" edge IDs in the mutation.
+func (m *FileMutation) BuildToolLogsIDs() (ids []int64) {
+	for id := range m.build_tool_logs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetBuildToolLogs resets all changes to the "build_tool_logs" edge.
+func (m *FileMutation) ResetBuildToolLogs() {
+	m.build_tool_logs = nil
+	m.clearedbuild_tool_logs = false
+	m.removedbuild_tool_logs = nil
+}
+
+// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by ids.
+func (m *FileMutation) AddToolLogIDs(ids ...int64) {
+	if m.tool_logs == nil {
+		m.tool_logs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.tool_logs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearToolLogs clears the "tool_logs" edge to the BuildToolLog entity.
+func (m *FileMutation) ClearToolLogs() {
+	m.clearedtool_logs = true
+}
+
+// ToolLogsCleared reports if the "tool_logs" edge to the BuildToolLog entity was cleared.
+func (m *FileMutation) ToolLogsCleared() bool {
+	return m.clearedtool_logs
+}
+
+// RemoveToolLogIDs removes the "tool_logs" edge to the BuildToolLog entity by IDs.
+func (m *FileMutation) RemoveToolLogIDs(ids ...int64) {
+	if m.removedtool_logs == nil {
+		m.removedtool_logs = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.tool_logs, ids[i])
+		m.removedtool_logs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedToolLogs returns the removed IDs of the "tool_logs" edge to the BuildToolLog entity.
+func (m *FileMutation) RemovedToolLogsIDs() (ids []int64) {
+	for id := range m.removedtool_logs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ToolLogsIDs returns the "tool_logs" edge IDs in the mutation.
+func (m *FileMutation) ToolLogsIDs() (ids []int64) {
+	for id := range m.tool_logs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetToolLogs resets all changes to the "tool_logs" edge.
+func (m *FileMutation) ResetToolLogs() {
+	m.tool_logs = nil
+	m.clearedtool_logs = false
+	m.removedtool_logs = nil
+}
+
+// Where appends a list predicates to the FileMutation builder.
+func (m *FileMutation) Where(ps ...predicate.File) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FileMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FileMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.File, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FileMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FileMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (File).
+func (m *FileMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FileMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.digest != nil {
+		fields = append(fields, file.FieldDigestID)
+	}
+	if m.file_path != nil {
+		fields = append(fields, file.FieldFilePathID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FileMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case file.FieldDigestID:
+		return m.DigestID()
+	case file.FieldFilePathID:
+		return m.FilePathID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case file.FieldDigestID:
+		return m.OldDigestID(ctx)
+	case file.FieldFilePathID:
+		return m.OldFilePathID(ctx)
+	}
+	return nil, fmt.Errorf("unknown File field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FileMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case file.FieldDigestID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDigestID(v)
+		return nil
+	case file.FieldFilePathID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFilePathID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown File field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FileMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FileMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FileMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown File numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FileMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FileMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FileMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown File nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FileMutation) ResetField(name string) error {
+	switch name {
+	case file.FieldDigestID:
+		m.ResetDigestID()
+		return nil
+	case file.FieldFilePathID:
+		m.ResetFilePathID()
+		return nil
+	}
+	return fmt.Errorf("unknown File field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FileMutation) AddedEdges() []string {
+	edges := make([]string, 0, 6)
+	if m.digest != nil {
+		edges = append(edges, file.EdgeDigest)
+	}
+	if m.file_path != nil {
+		edges = append(edges, file.EdgeFilePath)
+	}
+	if m.action_stdout != nil {
+		edges = append(edges, file.EdgeActionStdout)
+	}
+	if m.action_stderr != nil {
+		edges = append(edges, file.EdgeActionStderr)
+	}
+	if m.build_tool_logs != nil {
+		edges = append(edges, file.EdgeBuildToolLogs)
+	}
+	if m.tool_logs != nil {
+		edges = append(edges, file.EdgeToolLogs)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FileMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case file.EdgeDigest:
+		if id := m.digest; id != nil {
+			return []ent.Value{*id}
+		}
+	case file.EdgeFilePath:
+		if id := m.file_path; id != nil {
+			return []ent.Value{*id}
+		}
+	case file.EdgeActionStdout:
+		ids := make([]ent.Value, 0, len(m.action_stdout))
+		for id := range m.action_stdout {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeActionStderr:
+		ids := make([]ent.Value, 0, len(m.action_stderr))
+		for id := range m.action_stderr {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeBuildToolLogs:
+		ids := make([]ent.Value, 0, len(m.build_tool_logs))
+		for id := range m.build_tool_logs {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeToolLogs:
+		ids := make([]ent.Value, 0, len(m.tool_logs))
+		for id := range m.tool_logs {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FileMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 6)
+	if m.removedaction_stdout != nil {
+		edges = append(edges, file.EdgeActionStdout)
+	}
+	if m.removedaction_stderr != nil {
+		edges = append(edges, file.EdgeActionStderr)
+	}
+	if m.removedbuild_tool_logs != nil {
+		edges = append(edges, file.EdgeBuildToolLogs)
+	}
+	if m.removedtool_logs != nil {
+		edges = append(edges, file.EdgeToolLogs)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FileMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case file.EdgeActionStdout:
+		ids := make([]ent.Value, 0, len(m.removedaction_stdout))
+		for id := range m.removedaction_stdout {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeActionStderr:
+		ids := make([]ent.Value, 0, len(m.removedaction_stderr))
+		for id := range m.removedaction_stderr {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeBuildToolLogs:
+		ids := make([]ent.Value, 0, len(m.removedbuild_tool_logs))
+		for id := range m.removedbuild_tool_logs {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeToolLogs:
+		ids := make([]ent.Value, 0, len(m.removedtool_logs))
+		for id := range m.removedtool_logs {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FileMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 6)
+	if m.cleareddigest {
+		edges = append(edges, file.EdgeDigest)
+	}
+	if m.clearedfile_path {
+		edges = append(edges, file.EdgeFilePath)
+	}
+	if m.clearedaction_stdout {
+		edges = append(edges, file.EdgeActionStdout)
+	}
+	if m.clearedaction_stderr {
+		edges = append(edges, file.EdgeActionStderr)
+	}
+	if m.clearedbuild_tool_logs {
+		edges = append(edges, file.EdgeBuildToolLogs)
+	}
+	if m.clearedtool_logs {
+		edges = append(edges, file.EdgeToolLogs)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FileMutation) EdgeCleared(name string) bool {
+	switch name {
+	case file.EdgeDigest:
+		return m.cleareddigest
+	case file.EdgeFilePath:
+		return m.clearedfile_path
+	case file.EdgeActionStdout:
+		return m.clearedaction_stdout
+	case file.EdgeActionStderr:
+		return m.clearedaction_stderr
+	case file.EdgeBuildToolLogs:
+		return m.clearedbuild_tool_logs
+	case file.EdgeToolLogs:
+		return m.clearedtool_logs
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FileMutation) ClearEdge(name string) error {
+	switch name {
+	case file.EdgeDigest:
+		m.ClearDigest()
+		return nil
+	case file.EdgeFilePath:
+		m.ClearFilePath()
+		return nil
+	}
+	return fmt.Errorf("unknown File unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FileMutation) ResetEdge(name string) error {
+	switch name {
+	case file.EdgeDigest:
+		m.ResetDigest()
+		return nil
+	case file.EdgeFilePath:
+		m.ResetFilePath()
+		return nil
+	case file.EdgeActionStdout:
+		m.ResetActionStdout()
+		return nil
+	case file.EdgeActionStderr:
+		m.ResetActionStderr()
+		return nil
+	case file.EdgeBuildToolLogs:
+		m.ResetBuildToolLogs()
+		return nil
+	case file.EdgeToolLogs:
+		m.ResetToolLogs()
+		return nil
+	}
+	return fmt.Errorf("unknown File edge %s", name)
+}
+
+// FilePathMutation represents an operation that mutates the FilePath nodes in the graph.
+type FilePathMutation struct {
+	config
+	op                       Op
+	typ                      string
+	id                       *int64
+	_path                    *string
+	clearedFields            map[string]struct{}
+	bep_instance_name        *int64
+	clearedbep_instance_name bool
+	files                    map[int64]struct{}
+	removedfiles             map[int64]struct{}
+	clearedfiles             bool
+	done                     bool
+	oldValue                 func(context.Context) (*FilePath, error)
+	predicates               []predicate.FilePath
+}
+
+var _ ent.Mutation = (*FilePathMutation)(nil)
+
+// filepathOption allows management of the mutation configuration using functional options.
+type filepathOption func(*FilePathMutation)
+
+// newFilePathMutation creates new mutation for the FilePath entity.
+func newFilePathMutation(c config, op Op, opts ...filepathOption) *FilePathMutation {
+	m := &FilePathMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFilePath,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFilePathID sets the ID field of the mutation.
+func withFilePathID(id int64) filepathOption {
+	return func(m *FilePathMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FilePath
+		)
+		m.oldValue = func(ctx context.Context) (*FilePath, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FilePath.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFilePath sets the old FilePath of the mutation.
+func withFilePath(node *FilePath) filepathOption {
+	return func(m *FilePathMutation) {
+		m.oldValue = func(context.Context) (*FilePath, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FilePathMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FilePathMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FilePath entities.
+func (m *FilePathMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FilePathMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FilePathMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FilePath.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetBepInstanceNameID sets the "bep_instance_name_id" field.
+func (m *FilePathMutation) SetBepInstanceNameID(i int64) {
+	m.bep_instance_name = &i
+}
+
+// BepInstanceNameID returns the value of the "bep_instance_name_id" field in the mutation.
+func (m *FilePathMutation) BepInstanceNameID() (r int64, exists bool) {
+	v := m.bep_instance_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBepInstanceNameID returns the old "bep_instance_name_id" field's value of the FilePath entity.
+// If the FilePath object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FilePathMutation) OldBepInstanceNameID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBepInstanceNameID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBepInstanceNameID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBepInstanceNameID: %w", err)
+	}
+	return oldValue.BepInstanceNameID, nil
+}
+
+// ResetBepInstanceNameID resets all changes to the "bep_instance_name_id" field.
+func (m *FilePathMutation) ResetBepInstanceNameID() {
+	m.bep_instance_name = nil
+}
+
+// SetPath sets the "path" field.
+func (m *FilePathMutation) SetPath(s string) {
+	m._path = &s
+}
+
+// Path returns the value of the "path" field in the mutation.
+func (m *FilePathMutation) Path() (r string, exists bool) {
+	v := m._path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPath returns the old "path" field's value of the FilePath entity.
+// If the FilePath object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FilePathMutation) OldPath(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPath is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPath requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPath: %w", err)
+	}
+	return oldValue.Path, nil
+}
+
+// ResetPath resets all changes to the "path" field.
+func (m *FilePathMutation) ResetPath() {
+	m._path = nil
+}
+
+// ClearBepInstanceName clears the "bep_instance_name" edge to the InstanceName entity.
+func (m *FilePathMutation) ClearBepInstanceName() {
+	m.clearedbep_instance_name = true
+	m.clearedFields[filepath.FieldBepInstanceNameID] = struct{}{}
+}
+
+// BepInstanceNameCleared reports if the "bep_instance_name" edge to the InstanceName entity was cleared.
+func (m *FilePathMutation) BepInstanceNameCleared() bool {
+	return m.clearedbep_instance_name
+}
+
+// BepInstanceNameIDs returns the "bep_instance_name" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BepInstanceNameID instead. It exists only for internal usage by the builders.
+func (m *FilePathMutation) BepInstanceNameIDs() (ids []int64) {
+	if id := m.bep_instance_name; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBepInstanceName resets all changes to the "bep_instance_name" edge.
+func (m *FilePathMutation) ResetBepInstanceName() {
+	m.bep_instance_name = nil
+	m.clearedbep_instance_name = false
+}
+
+// AddFileIDs adds the "files" edge to the File entity by ids.
+func (m *FilePathMutation) AddFileIDs(ids ...int64) {
+	if m.files == nil {
+		m.files = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.files[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFiles clears the "files" edge to the File entity.
+func (m *FilePathMutation) ClearFiles() {
+	m.clearedfiles = true
+}
+
+// FilesCleared reports if the "files" edge to the File entity was cleared.
+func (m *FilePathMutation) FilesCleared() bool {
+	return m.clearedfiles
+}
+
+// RemoveFileIDs removes the "files" edge to the File entity by IDs.
+func (m *FilePathMutation) RemoveFileIDs(ids ...int64) {
+	if m.removedfiles == nil {
+		m.removedfiles = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.files, ids[i])
+		m.removedfiles[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFiles returns the removed IDs of the "files" edge to the File entity.
+func (m *FilePathMutation) RemovedFilesIDs() (ids []int64) {
+	for id := range m.removedfiles {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FilesIDs returns the "files" edge IDs in the mutation.
+func (m *FilePathMutation) FilesIDs() (ids []int64) {
+	for id := range m.files {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFiles resets all changes to the "files" edge.
+func (m *FilePathMutation) ResetFiles() {
+	m.files = nil
+	m.clearedfiles = false
+	m.removedfiles = nil
+}
+
+// Where appends a list predicates to the FilePathMutation builder.
+func (m *FilePathMutation) Where(ps ...predicate.FilePath) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FilePathMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FilePathMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FilePath, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FilePathMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FilePathMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (FilePath).
+func (m *FilePathMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FilePathMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.bep_instance_name != nil {
+		fields = append(fields, filepath.FieldBepInstanceNameID)
+	}
+	if m._path != nil {
+		fields = append(fields, filepath.FieldPath)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FilePathMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case filepath.FieldBepInstanceNameID:
+		return m.BepInstanceNameID()
+	case filepath.FieldPath:
+		return m.Path()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FilePathMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case filepath.FieldBepInstanceNameID:
+		return m.OldBepInstanceNameID(ctx)
+	case filepath.FieldPath:
+		return m.OldPath(ctx)
+	}
+	return nil, fmt.Errorf("unknown FilePath field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FilePathMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case filepath.FieldBepInstanceNameID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBepInstanceNameID(v)
+		return nil
+	case filepath.FieldPath:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPath(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FilePath field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FilePathMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FilePathMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FilePathMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown FilePath numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FilePathMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FilePathMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FilePathMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown FilePath nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FilePathMutation) ResetField(name string) error {
+	switch name {
+	case filepath.FieldBepInstanceNameID:
+		m.ResetBepInstanceNameID()
+		return nil
+	case filepath.FieldPath:
+		m.ResetPath()
+		return nil
+	}
+	return fmt.Errorf("unknown FilePath field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FilePathMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.bep_instance_name != nil {
+		edges = append(edges, filepath.EdgeBepInstanceName)
+	}
+	if m.files != nil {
+		edges = append(edges, filepath.EdgeFiles)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FilePathMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case filepath.EdgeBepInstanceName:
+		if id := m.bep_instance_name; id != nil {
+			return []ent.Value{*id}
+		}
+	case filepath.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.files))
+		for id := range m.files {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FilePathMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removedfiles != nil {
+		edges = append(edges, filepath.EdgeFiles)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FilePathMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case filepath.EdgeFiles:
+		ids := make([]ent.Value, 0, len(m.removedfiles))
+		for id := range m.removedfiles {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FilePathMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedbep_instance_name {
+		edges = append(edges, filepath.EdgeBepInstanceName)
+	}
+	if m.clearedfiles {
+		edges = append(edges, filepath.EdgeFiles)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FilePathMutation) EdgeCleared(name string) bool {
+	switch name {
+	case filepath.EdgeBepInstanceName:
+		return m.clearedbep_instance_name
+	case filepath.EdgeFiles:
+		return m.clearedfiles
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FilePathMutation) ClearEdge(name string) error {
+	switch name {
+	case filepath.EdgeBepInstanceName:
+		m.ClearBepInstanceName()
+		return nil
+	}
+	return fmt.Errorf("unknown FilePath unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FilePathMutation) ResetEdge(name string) error {
+	switch name {
+	case filepath.EdgeBepInstanceName:
+		m.ResetBepInstanceName()
+		return nil
+	case filepath.EdgeFiles:
+		m.ResetFiles()
+		return nil
+	}
+	return fmt.Errorf("unknown FilePath edge %s", name)
 }
 
 // GarbageMetricsMutation represents an operation that mutates the GarbageMetrics nodes in the graph.
@@ -15585,6 +17928,9 @@ type InstanceNameMutation struct {
 	targets                  map[int64]struct{}
 	removedtargets           map[int64]struct{}
 	clearedtargets           bool
+	file_paths               map[int64]struct{}
+	removedfile_paths        map[int64]struct{}
+	clearedfile_paths        bool
 	done                     bool
 	oldValue                 func(context.Context) (*InstanceName, error)
 	predicates               []predicate.InstanceName
@@ -15892,6 +18238,60 @@ func (m *InstanceNameMutation) ResetTargets() {
 	m.removedtargets = nil
 }
 
+// AddFilePathIDs adds the "file_paths" edge to the FilePath entity by ids.
+func (m *InstanceNameMutation) AddFilePathIDs(ids ...int64) {
+	if m.file_paths == nil {
+		m.file_paths = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.file_paths[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFilePaths clears the "file_paths" edge to the FilePath entity.
+func (m *InstanceNameMutation) ClearFilePaths() {
+	m.clearedfile_paths = true
+}
+
+// FilePathsCleared reports if the "file_paths" edge to the FilePath entity was cleared.
+func (m *InstanceNameMutation) FilePathsCleared() bool {
+	return m.clearedfile_paths
+}
+
+// RemoveFilePathIDs removes the "file_paths" edge to the FilePath entity by IDs.
+func (m *InstanceNameMutation) RemoveFilePathIDs(ids ...int64) {
+	if m.removedfile_paths == nil {
+		m.removedfile_paths = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.file_paths, ids[i])
+		m.removedfile_paths[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFilePaths returns the removed IDs of the "file_paths" edge to the FilePath entity.
+func (m *InstanceNameMutation) RemovedFilePathsIDs() (ids []int64) {
+	for id := range m.removedfile_paths {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FilePathsIDs returns the "file_paths" edge IDs in the mutation.
+func (m *InstanceNameMutation) FilePathsIDs() (ids []int64) {
+	for id := range m.file_paths {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFilePaths resets all changes to the "file_paths" edge.
+func (m *InstanceNameMutation) ResetFilePaths() {
+	m.file_paths = nil
+	m.clearedfile_paths = false
+	m.removedfile_paths = nil
+}
+
 // Where appends a list predicates to the InstanceNameMutation builder.
 func (m *InstanceNameMutation) Where(ps ...predicate.InstanceName) {
 	m.predicates = append(m.predicates, ps...)
@@ -16025,7 +18425,7 @@ func (m *InstanceNameMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *InstanceNameMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.bazel_invocations != nil {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
@@ -16034,6 +18434,9 @@ func (m *InstanceNameMutation) AddedEdges() []string {
 	}
 	if m.targets != nil {
 		edges = append(edges, instancename.EdgeTargets)
+	}
+	if m.file_paths != nil {
+		edges = append(edges, instancename.EdgeFilePaths)
 	}
 	return edges
 }
@@ -16060,13 +18463,19 @@ func (m *InstanceNameMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case instancename.EdgeFilePaths:
+		ids := make([]ent.Value, 0, len(m.file_paths))
+		for id := range m.file_paths {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *InstanceNameMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedbazel_invocations != nil {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
@@ -16075,6 +18484,9 @@ func (m *InstanceNameMutation) RemovedEdges() []string {
 	}
 	if m.removedtargets != nil {
 		edges = append(edges, instancename.EdgeTargets)
+	}
+	if m.removedfile_paths != nil {
+		edges = append(edges, instancename.EdgeFilePaths)
 	}
 	return edges
 }
@@ -16101,13 +18513,19 @@ func (m *InstanceNameMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case instancename.EdgeFilePaths:
+		ids := make([]ent.Value, 0, len(m.removedfile_paths))
+		for id := range m.removedfile_paths {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *InstanceNameMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedbazel_invocations {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
@@ -16116,6 +18534,9 @@ func (m *InstanceNameMutation) ClearedEdges() []string {
 	}
 	if m.clearedtargets {
 		edges = append(edges, instancename.EdgeTargets)
+	}
+	if m.clearedfile_paths {
+		edges = append(edges, instancename.EdgeFilePaths)
 	}
 	return edges
 }
@@ -16130,6 +18551,8 @@ func (m *InstanceNameMutation) EdgeCleared(name string) bool {
 		return m.clearedbuilds
 	case instancename.EdgeTargets:
 		return m.clearedtargets
+	case instancename.EdgeFilePaths:
+		return m.clearedfile_paths
 	}
 	return false
 }
@@ -16155,739 +18578,11 @@ func (m *InstanceNameMutation) ResetEdge(name string) error {
 	case instancename.EdgeTargets:
 		m.ResetTargets()
 		return nil
+	case instancename.EdgeFilePaths:
+		m.ResetFilePaths()
+		return nil
 	}
 	return fmt.Errorf("unknown InstanceName edge %s", name)
-}
-
-// InvocationFilesMutation represents an operation that mutates the InvocationFiles nodes in the graph.
-type InvocationFilesMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	name                    *string
-	content                 *string
-	digest                  *string
-	size_bytes              *int64
-	addsize_bytes           *int64
-	digest_function         *string
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int64
-	clearedbazel_invocation bool
-	done                    bool
-	oldValue                func(context.Context) (*InvocationFiles, error)
-	predicates              []predicate.InvocationFiles
-}
-
-var _ ent.Mutation = (*InvocationFilesMutation)(nil)
-
-// invocationfilesOption allows management of the mutation configuration using functional options.
-type invocationfilesOption func(*InvocationFilesMutation)
-
-// newInvocationFilesMutation creates new mutation for the InvocationFiles entity.
-func newInvocationFilesMutation(c config, op Op, opts ...invocationfilesOption) *InvocationFilesMutation {
-	m := &InvocationFilesMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeInvocationFiles,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withInvocationFilesID sets the ID field of the mutation.
-func withInvocationFilesID(id int64) invocationfilesOption {
-	return func(m *InvocationFilesMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *InvocationFiles
-		)
-		m.oldValue = func(ctx context.Context) (*InvocationFiles, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().InvocationFiles.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withInvocationFiles sets the old InvocationFiles of the mutation.
-func withInvocationFiles(node *InvocationFiles) invocationfilesOption {
-	return func(m *InvocationFilesMutation) {
-		m.oldValue = func(context.Context) (*InvocationFiles, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m InvocationFilesMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m InvocationFilesMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of InvocationFiles entities.
-func (m *InvocationFilesMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *InvocationFilesMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *InvocationFilesMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().InvocationFiles.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *InvocationFilesMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *InvocationFilesMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the InvocationFiles entity.
-// If the InvocationFiles object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationFilesMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *InvocationFilesMutation) ResetName() {
-	m.name = nil
-}
-
-// SetContent sets the "content" field.
-func (m *InvocationFilesMutation) SetContent(s string) {
-	m.content = &s
-}
-
-// Content returns the value of the "content" field in the mutation.
-func (m *InvocationFilesMutation) Content() (r string, exists bool) {
-	v := m.content
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldContent returns the old "content" field's value of the InvocationFiles entity.
-// If the InvocationFiles object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationFilesMutation) OldContent(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldContent is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldContent requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldContent: %w", err)
-	}
-	return oldValue.Content, nil
-}
-
-// ClearContent clears the value of the "content" field.
-func (m *InvocationFilesMutation) ClearContent() {
-	m.content = nil
-	m.clearedFields[invocationfiles.FieldContent] = struct{}{}
-}
-
-// ContentCleared returns if the "content" field was cleared in this mutation.
-func (m *InvocationFilesMutation) ContentCleared() bool {
-	_, ok := m.clearedFields[invocationfiles.FieldContent]
-	return ok
-}
-
-// ResetContent resets all changes to the "content" field.
-func (m *InvocationFilesMutation) ResetContent() {
-	m.content = nil
-	delete(m.clearedFields, invocationfiles.FieldContent)
-}
-
-// SetDigest sets the "digest" field.
-func (m *InvocationFilesMutation) SetDigest(s string) {
-	m.digest = &s
-}
-
-// Digest returns the value of the "digest" field in the mutation.
-func (m *InvocationFilesMutation) Digest() (r string, exists bool) {
-	v := m.digest
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDigest returns the old "digest" field's value of the InvocationFiles entity.
-// If the InvocationFiles object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationFilesMutation) OldDigest(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDigest is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDigest requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDigest: %w", err)
-	}
-	return oldValue.Digest, nil
-}
-
-// ClearDigest clears the value of the "digest" field.
-func (m *InvocationFilesMutation) ClearDigest() {
-	m.digest = nil
-	m.clearedFields[invocationfiles.FieldDigest] = struct{}{}
-}
-
-// DigestCleared returns if the "digest" field was cleared in this mutation.
-func (m *InvocationFilesMutation) DigestCleared() bool {
-	_, ok := m.clearedFields[invocationfiles.FieldDigest]
-	return ok
-}
-
-// ResetDigest resets all changes to the "digest" field.
-func (m *InvocationFilesMutation) ResetDigest() {
-	m.digest = nil
-	delete(m.clearedFields, invocationfiles.FieldDigest)
-}
-
-// SetSizeBytes sets the "size_bytes" field.
-func (m *InvocationFilesMutation) SetSizeBytes(i int64) {
-	m.size_bytes = &i
-	m.addsize_bytes = nil
-}
-
-// SizeBytes returns the value of the "size_bytes" field in the mutation.
-func (m *InvocationFilesMutation) SizeBytes() (r int64, exists bool) {
-	v := m.size_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSizeBytes returns the old "size_bytes" field's value of the InvocationFiles entity.
-// If the InvocationFiles object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationFilesMutation) OldSizeBytes(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSizeBytes is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSizeBytes requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSizeBytes: %w", err)
-	}
-	return oldValue.SizeBytes, nil
-}
-
-// AddSizeBytes adds i to the "size_bytes" field.
-func (m *InvocationFilesMutation) AddSizeBytes(i int64) {
-	if m.addsize_bytes != nil {
-		*m.addsize_bytes += i
-	} else {
-		m.addsize_bytes = &i
-	}
-}
-
-// AddedSizeBytes returns the value that was added to the "size_bytes" field in this mutation.
-func (m *InvocationFilesMutation) AddedSizeBytes() (r int64, exists bool) {
-	v := m.addsize_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (m *InvocationFilesMutation) ClearSizeBytes() {
-	m.size_bytes = nil
-	m.addsize_bytes = nil
-	m.clearedFields[invocationfiles.FieldSizeBytes] = struct{}{}
-}
-
-// SizeBytesCleared returns if the "size_bytes" field was cleared in this mutation.
-func (m *InvocationFilesMutation) SizeBytesCleared() bool {
-	_, ok := m.clearedFields[invocationfiles.FieldSizeBytes]
-	return ok
-}
-
-// ResetSizeBytes resets all changes to the "size_bytes" field.
-func (m *InvocationFilesMutation) ResetSizeBytes() {
-	m.size_bytes = nil
-	m.addsize_bytes = nil
-	delete(m.clearedFields, invocationfiles.FieldSizeBytes)
-}
-
-// SetDigestFunction sets the "digest_function" field.
-func (m *InvocationFilesMutation) SetDigestFunction(s string) {
-	m.digest_function = &s
-}
-
-// DigestFunction returns the value of the "digest_function" field in the mutation.
-func (m *InvocationFilesMutation) DigestFunction() (r string, exists bool) {
-	v := m.digest_function
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDigestFunction returns the old "digest_function" field's value of the InvocationFiles entity.
-// If the InvocationFiles object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *InvocationFilesMutation) OldDigestFunction(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDigestFunction is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDigestFunction requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDigestFunction: %w", err)
-	}
-	return oldValue.DigestFunction, nil
-}
-
-// ClearDigestFunction clears the value of the "digest_function" field.
-func (m *InvocationFilesMutation) ClearDigestFunction() {
-	m.digest_function = nil
-	m.clearedFields[invocationfiles.FieldDigestFunction] = struct{}{}
-}
-
-// DigestFunctionCleared returns if the "digest_function" field was cleared in this mutation.
-func (m *InvocationFilesMutation) DigestFunctionCleared() bool {
-	_, ok := m.clearedFields[invocationfiles.FieldDigestFunction]
-	return ok
-}
-
-// ResetDigestFunction resets all changes to the "digest_function" field.
-func (m *InvocationFilesMutation) ResetDigestFunction() {
-	m.digest_function = nil
-	delete(m.clearedFields, invocationfiles.FieldDigestFunction)
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *InvocationFilesMutation) SetBazelInvocationID(id int64) {
-	m.bazel_invocation = &id
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *InvocationFilesMutation) ClearBazelInvocation() {
-	m.clearedbazel_invocation = true
-}
-
-// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
-func (m *InvocationFilesMutation) BazelInvocationCleared() bool {
-	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *InvocationFilesMutation) BazelInvocationID() (id int64, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
-	}
-	return
-}
-
-// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *InvocationFilesMutation) BazelInvocationIDs() (ids []int64) {
-	if id := m.bazel_invocation; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
-func (m *InvocationFilesMutation) ResetBazelInvocation() {
-	m.bazel_invocation = nil
-	m.clearedbazel_invocation = false
-}
-
-// Where appends a list predicates to the InvocationFilesMutation builder.
-func (m *InvocationFilesMutation) Where(ps ...predicate.InvocationFiles) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the InvocationFilesMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *InvocationFilesMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.InvocationFiles, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *InvocationFilesMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *InvocationFilesMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (InvocationFiles).
-func (m *InvocationFilesMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *InvocationFilesMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.name != nil {
-		fields = append(fields, invocationfiles.FieldName)
-	}
-	if m.content != nil {
-		fields = append(fields, invocationfiles.FieldContent)
-	}
-	if m.digest != nil {
-		fields = append(fields, invocationfiles.FieldDigest)
-	}
-	if m.size_bytes != nil {
-		fields = append(fields, invocationfiles.FieldSizeBytes)
-	}
-	if m.digest_function != nil {
-		fields = append(fields, invocationfiles.FieldDigestFunction)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *InvocationFilesMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case invocationfiles.FieldName:
-		return m.Name()
-	case invocationfiles.FieldContent:
-		return m.Content()
-	case invocationfiles.FieldDigest:
-		return m.Digest()
-	case invocationfiles.FieldSizeBytes:
-		return m.SizeBytes()
-	case invocationfiles.FieldDigestFunction:
-		return m.DigestFunction()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *InvocationFilesMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case invocationfiles.FieldName:
-		return m.OldName(ctx)
-	case invocationfiles.FieldContent:
-		return m.OldContent(ctx)
-	case invocationfiles.FieldDigest:
-		return m.OldDigest(ctx)
-	case invocationfiles.FieldSizeBytes:
-		return m.OldSizeBytes(ctx)
-	case invocationfiles.FieldDigestFunction:
-		return m.OldDigestFunction(ctx)
-	}
-	return nil, fmt.Errorf("unknown InvocationFiles field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *InvocationFilesMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case invocationfiles.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case invocationfiles.FieldContent:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetContent(v)
-		return nil
-	case invocationfiles.FieldDigest:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDigest(v)
-		return nil
-	case invocationfiles.FieldSizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSizeBytes(v)
-		return nil
-	case invocationfiles.FieldDigestFunction:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDigestFunction(v)
-		return nil
-	}
-	return fmt.Errorf("unknown InvocationFiles field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *InvocationFilesMutation) AddedFields() []string {
-	var fields []string
-	if m.addsize_bytes != nil {
-		fields = append(fields, invocationfiles.FieldSizeBytes)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *InvocationFilesMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case invocationfiles.FieldSizeBytes:
-		return m.AddedSizeBytes()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *InvocationFilesMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case invocationfiles.FieldSizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddSizeBytes(v)
-		return nil
-	}
-	return fmt.Errorf("unknown InvocationFiles numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *InvocationFilesMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(invocationfiles.FieldContent) {
-		fields = append(fields, invocationfiles.FieldContent)
-	}
-	if m.FieldCleared(invocationfiles.FieldDigest) {
-		fields = append(fields, invocationfiles.FieldDigest)
-	}
-	if m.FieldCleared(invocationfiles.FieldSizeBytes) {
-		fields = append(fields, invocationfiles.FieldSizeBytes)
-	}
-	if m.FieldCleared(invocationfiles.FieldDigestFunction) {
-		fields = append(fields, invocationfiles.FieldDigestFunction)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *InvocationFilesMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *InvocationFilesMutation) ClearField(name string) error {
-	switch name {
-	case invocationfiles.FieldContent:
-		m.ClearContent()
-		return nil
-	case invocationfiles.FieldDigest:
-		m.ClearDigest()
-		return nil
-	case invocationfiles.FieldSizeBytes:
-		m.ClearSizeBytes()
-		return nil
-	case invocationfiles.FieldDigestFunction:
-		m.ClearDigestFunction()
-		return nil
-	}
-	return fmt.Errorf("unknown InvocationFiles nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *InvocationFilesMutation) ResetField(name string) error {
-	switch name {
-	case invocationfiles.FieldName:
-		m.ResetName()
-		return nil
-	case invocationfiles.FieldContent:
-		m.ResetContent()
-		return nil
-	case invocationfiles.FieldDigest:
-		m.ResetDigest()
-		return nil
-	case invocationfiles.FieldSizeBytes:
-		m.ResetSizeBytes()
-		return nil
-	case invocationfiles.FieldDigestFunction:
-		m.ResetDigestFunction()
-		return nil
-	}
-	return fmt.Errorf("unknown InvocationFiles field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *InvocationFilesMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.bazel_invocation != nil {
-		edges = append(edges, invocationfiles.EdgeBazelInvocation)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *InvocationFilesMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case invocationfiles.EdgeBazelInvocation:
-		if id := m.bazel_invocation; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *InvocationFilesMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *InvocationFilesMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *InvocationFilesMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedbazel_invocation {
-		edges = append(edges, invocationfiles.EdgeBazelInvocation)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *InvocationFilesMutation) EdgeCleared(name string) bool {
-	switch name {
-	case invocationfiles.EdgeBazelInvocation:
-		return m.clearedbazel_invocation
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *InvocationFilesMutation) ClearEdge(name string) error {
-	switch name {
-	case invocationfiles.EdgeBazelInvocation:
-		m.ClearBazelInvocation()
-		return nil
-	}
-	return fmt.Errorf("unknown InvocationFiles unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *InvocationFilesMutation) ResetEdge(name string) error {
-	switch name {
-	case invocationfiles.EdgeBazelInvocation:
-		m.ResetBazelInvocation()
-		return nil
-	}
-	return fmt.Errorf("unknown InvocationFiles edge %s", name)
 }
 
 // InvocationTagMutation represents an operation that mutates the InvocationTag nodes in the graph.

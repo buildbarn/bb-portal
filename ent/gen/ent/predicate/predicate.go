@@ -39,14 +39,26 @@ type BuildLogChunk func(*sql.Selector)
 // BuildTag is the predicate function for buildtag builders.
 type BuildTag func(*sql.Selector)
 
+// BuildToolLog is the predicate function for buildtoollog builders.
+type BuildToolLog func(*sql.Selector)
+
 // Configuration is the predicate function for configuration builders.
 type Configuration func(*sql.Selector)
 
 // ConnectionMetadata is the predicate function for connectionmetadata builders.
 type ConnectionMetadata func(*sql.Selector)
 
+// Digest is the predicate function for digest builders.
+type Digest func(*sql.Selector)
+
 // EventMetadata is the predicate function for eventmetadata builders.
 type EventMetadata func(*sql.Selector)
+
+// File is the predicate function for file builders.
+type File func(*sql.Selector)
+
+// FilePath is the predicate function for filepath builders.
+type FilePath func(*sql.Selector)
 
 // GarbageMetrics is the predicate function for garbagemetrics builders.
 type GarbageMetrics func(*sql.Selector)
@@ -56,9 +68,6 @@ type IncompleteBuildLog func(*sql.Selector)
 
 // InstanceName is the predicate function for instancename builders.
 type InstanceName func(*sql.Selector)
-
-// InvocationFiles is the predicate function for invocationfiles builders.
-type InvocationFiles func(*sql.Selector)
 
 // InvocationTag is the predicate function for invocationtag builders.
 type InvocationTag func(*sql.Selector)

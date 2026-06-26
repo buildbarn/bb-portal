@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 )
@@ -79,6 +80,21 @@ func (_c *InstanceNameCreate) AddTargets(v ...*Target) *InstanceNameCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddTargetIDs(ids...)
+}
+
+// AddFilePathIDs adds the "file_paths" edge to the FilePath entity by IDs.
+func (_c *InstanceNameCreate) AddFilePathIDs(ids ...int64) *InstanceNameCreate {
+	_c.mutation.AddFilePathIDs(ids...)
+	return _c
+}
+
+// AddFilePaths adds the "file_paths" edges to the FilePath entity.
+func (_c *InstanceNameCreate) AddFilePaths(v ...*FilePath) *InstanceNameCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddFilePathIDs(ids...)
 }
 
 // Mutation returns the InstanceNameMutation object of the builder.
@@ -196,6 +212,22 @@ func (_c *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec)
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.FilePathsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(filepath.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

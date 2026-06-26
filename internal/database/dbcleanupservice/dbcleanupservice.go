@@ -122,6 +122,15 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				if err := dc.executeTask(ctx, "RemoveOrphanedTestTargets", "removed_test_targets", dc.RemoveOrphanedTestTargets); err != nil {
 					slog.Warn("Failed to remove orphaned test targets", "err", err)
 				}
+				if err := dc.executeTask(ctx, "RemoveUnusedFiles", "removed_files", dc.RemoveUnusedFiles); err != nil {
+					slog.Warn("Failed to remove unused files", "err", err)
+				}
+				if err := dc.executeTask(ctx, "RemoveUnusedFilePaths", "removed_file_paths", dc.RemoveUnusedFilePaths); err != nil {
+					slog.Warn("Failed to remove unused file paths", "err", err)
+				}
+				if err := dc.executeTask(ctx, "RemoveUnusedDigests", "removed_digests", dc.RemoveUnusedDigests); err != nil {
+					slog.Warn("Failed to remove unused digests", "err", err)
+				}
 			}
 		}
 	})

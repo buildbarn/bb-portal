@@ -66,7 +66,7 @@ const BrowserResultDescription: React.FC<Params> = ({
             digestFunction={digestFunctionValueToString(
               browserPageParams.digestFunction,
             )}
-            digest={executeResponse.result.stdoutDigest.hash}
+            hash={executeResponse.result.stdoutDigest.hash}
             sizeBytes={Number.parseInt(
               executeResponse.result.stdoutDigest.sizeBytes,
               10,
@@ -82,7 +82,7 @@ const BrowserResultDescription: React.FC<Params> = ({
             digestFunction={digestFunctionValueToString(
               browserPageParams.digestFunction,
             )}
-            digest={executeResponse.result?.stderrDigest?.hash}
+            hash={executeResponse.result?.stderrDigest?.hash}
             sizeBytes={Number.parseInt(
               executeResponse.result?.stderrDigest?.sizeBytes,
               10,

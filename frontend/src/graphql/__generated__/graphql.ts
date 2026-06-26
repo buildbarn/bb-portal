@@ -39,12 +39,8 @@ export type Action = Node & {
   id: Scalars['ID']['output'];
   label: Scalars['String']['output'];
   startTime?: Maybe<Scalars['Time']['output']>;
-  stderrHash?: Maybe<Scalars['String']['output']>;
-  stderrHashFunction?: Maybe<Scalars['String']['output']>;
-  stderrSizeBytes?: Maybe<Scalars['Int']['output']>;
-  stdoutHash?: Maybe<Scalars['String']['output']>;
-  stdoutHashFunction?: Maybe<Scalars['String']['output']>;
-  stdoutSizeBytes?: Maybe<Scalars['Int']['output']>;
+  stderr?: Maybe<File>;
+  stdout?: Maybe<File>;
   success?: Maybe<Scalars['Boolean']['output']>;
   type?: Maybe<Scalars['String']['output']>;
 };
@@ -412,6 +408,12 @@ export type ActionWhereInput = {
   /** configuration edge predicates */
   hasConfiguration?: InputMaybe<Scalars['Boolean']['input']>;
   hasConfigurationWith?: InputMaybe<Array<ConfigurationWhereInput>>;
+  /** stderr edge predicates */
+  hasStderr?: InputMaybe<Scalars['Boolean']['input']>;
+  hasStderrWith?: InputMaybe<Array<FileWhereInput>>;
+  /** stdout edge predicates */
+  hasStdout?: InputMaybe<Scalars['Boolean']['input']>;
+  hasStdoutWith?: InputMaybe<Array<FileWhereInput>>;
   /** id field predicates */
   id?: InputMaybe<Scalars['ID']['input']>;
   idGT?: InputMaybe<Scalars['ID']['input']>;
@@ -448,92 +450,6 @@ export type ActionWhereInput = {
   startTimeNEQ?: InputMaybe<Scalars['Time']['input']>;
   startTimeNotIn?: InputMaybe<Array<Scalars['Time']['input']>>;
   startTimeNotNil?: InputMaybe<Scalars['Boolean']['input']>;
-  /** stderr_hash field predicates */
-  stderrHash?: InputMaybe<Scalars['String']['input']>;
-  stderrHashContains?: InputMaybe<Scalars['String']['input']>;
-  stderrHashContainsFold?: InputMaybe<Scalars['String']['input']>;
-  stderrHashEqualFold?: InputMaybe<Scalars['String']['input']>;
-  /** stderr_hash_function field predicates */
-  stderrHashFunction?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionContains?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionContainsFold?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionEqualFold?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionGT?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionGTE?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionHasPrefix?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionHasSuffix?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stderrHashFunctionIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stderrHashFunctionLT?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionLTE?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionNEQ?: InputMaybe<Scalars['String']['input']>;
-  stderrHashFunctionNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stderrHashFunctionNotNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stderrHashGT?: InputMaybe<Scalars['String']['input']>;
-  stderrHashGTE?: InputMaybe<Scalars['String']['input']>;
-  stderrHashHasPrefix?: InputMaybe<Scalars['String']['input']>;
-  stderrHashHasSuffix?: InputMaybe<Scalars['String']['input']>;
-  stderrHashIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stderrHashIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stderrHashLT?: InputMaybe<Scalars['String']['input']>;
-  stderrHashLTE?: InputMaybe<Scalars['String']['input']>;
-  stderrHashNEQ?: InputMaybe<Scalars['String']['input']>;
-  stderrHashNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stderrHashNotNil?: InputMaybe<Scalars['Boolean']['input']>;
-  /** stderr_size_bytes field predicates */
-  stderrSizeBytes?: InputMaybe<Scalars['Int']['input']>;
-  stderrSizeBytesGT?: InputMaybe<Scalars['Int']['input']>;
-  stderrSizeBytesGTE?: InputMaybe<Scalars['Int']['input']>;
-  stderrSizeBytesIn?: InputMaybe<Array<Scalars['Int']['input']>>;
-  stderrSizeBytesIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stderrSizeBytesLT?: InputMaybe<Scalars['Int']['input']>;
-  stderrSizeBytesLTE?: InputMaybe<Scalars['Int']['input']>;
-  stderrSizeBytesNEQ?: InputMaybe<Scalars['Int']['input']>;
-  stderrSizeBytesNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
-  stderrSizeBytesNotNil?: InputMaybe<Scalars['Boolean']['input']>;
-  /** stdout_hash field predicates */
-  stdoutHash?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashContains?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashContainsFold?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashEqualFold?: InputMaybe<Scalars['String']['input']>;
-  /** stdout_hash_function field predicates */
-  stdoutHashFunction?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionContains?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionContainsFold?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionEqualFold?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionGT?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionGTE?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionHasPrefix?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionHasSuffix?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stdoutHashFunctionIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stdoutHashFunctionLT?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionLTE?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionNEQ?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashFunctionNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stdoutHashFunctionNotNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stdoutHashGT?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashGTE?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashHasPrefix?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashHasSuffix?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stdoutHashIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stdoutHashLT?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashLTE?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashNEQ?: InputMaybe<Scalars['String']['input']>;
-  stdoutHashNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  stdoutHashNotNil?: InputMaybe<Scalars['Boolean']['input']>;
-  /** stdout_size_bytes field predicates */
-  stdoutSizeBytes?: InputMaybe<Scalars['Int']['input']>;
-  stdoutSizeBytesGT?: InputMaybe<Scalars['Int']['input']>;
-  stdoutSizeBytesGTE?: InputMaybe<Scalars['Int']['input']>;
-  stdoutSizeBytesIn?: InputMaybe<Array<Scalars['Int']['input']>>;
-  stdoutSizeBytesIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  stdoutSizeBytesLT?: InputMaybe<Scalars['Int']['input']>;
-  stdoutSizeBytesLTE?: InputMaybe<Scalars['Int']['input']>;
-  stdoutSizeBytesNEQ?: InputMaybe<Scalars['Int']['input']>;
-  stdoutSizeBytesNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
-  stdoutSizeBytesNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** success field predicates */
   success?: InputMaybe<Scalars['Boolean']['input']>;
   successIsNil?: InputMaybe<Scalars['Boolean']['input']>;
@@ -769,6 +685,7 @@ export type BazelInvocation = Node & {
   bazelVersion?: Maybe<Scalars['String']['output']>;
   bepCompleted: Scalars['Boolean']['output'];
   build?: Maybe<Build>;
+  buildToolLogs?: Maybe<Array<File>>;
   /** JSON representation of the canonical command line options. */
   canonicalCommandLine?: Maybe<Scalars['Map']['output']>;
   configurations?: Maybe<Array<Configuration>>;
@@ -788,7 +705,7 @@ export type BazelInvocation = Node & {
   optionsParsed?: Maybe<Scalars['Map']['output']>;
   /** JSON representation of the original command line options. */
   originalCommandLine?: Maybe<Scalars['Map']['output']>;
-  profile?: Maybe<Profile>;
+  profile?: Maybe<File>;
   sourceControl?: Maybe<Array<SourceControl>>;
   startedAt?: Maybe<Scalars['Time']['output']>;
   tags: InvocationTagConnection;
@@ -919,6 +836,9 @@ export type BazelInvocationWhereInput = {
   hasAuthenticatedUserWith?: InputMaybe<Array<AuthenticatedUserWhereInput>>;
   /** build edge predicates */
   hasBuild?: InputMaybe<Scalars['Boolean']['input']>;
+  /** build_tool_logs edge predicates */
+  hasBuildToolLogs?: InputMaybe<Scalars['Boolean']['input']>;
+  hasBuildToolLogsWith?: InputMaybe<Array<FileWhereInput>>;
   hasBuildWith?: InputMaybe<Array<BuildWhereInput>>;
   /** configurations edge predicates */
   hasConfigurations?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1517,6 +1437,167 @@ export type ConnectionMetadataWhereInput = {
   or?: InputMaybe<Array<ConnectionMetadataWhereInput>>;
 };
 
+export type Digest = Node & {
+  __typename?: 'Digest';
+  digestFunction: Scalars['String']['output'];
+  files?: Maybe<Array<File>>;
+  hash: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  rev2InstanceName: Scalars['String']['output'];
+  sizeBytes: Scalars['Int']['output'];
+};
+
+/**
+ * DigestWhereInput is used for filtering Digest objects.
+ * Input was generated by ent.
+ */
+export type DigestWhereInput = {
+  and?: InputMaybe<Array<DigestWhereInput>>;
+  /** digest_function field predicates */
+  digestFunction?: InputMaybe<Scalars['String']['input']>;
+  digestFunctionGT?: InputMaybe<Scalars['String']['input']>;
+  digestFunctionGTE?: InputMaybe<Scalars['String']['input']>;
+  digestFunctionIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  digestFunctionLT?: InputMaybe<Scalars['String']['input']>;
+  digestFunctionLTE?: InputMaybe<Scalars['String']['input']>;
+  digestFunctionNEQ?: InputMaybe<Scalars['String']['input']>;
+  digestFunctionNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** files edge predicates */
+  hasFiles?: InputMaybe<Scalars['Boolean']['input']>;
+  hasFilesWith?: InputMaybe<Array<FileWhereInput>>;
+  /** id field predicates */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  idGT?: InputMaybe<Scalars['ID']['input']>;
+  idGTE?: InputMaybe<Scalars['ID']['input']>;
+  idIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  idLT?: InputMaybe<Scalars['ID']['input']>;
+  idLTE?: InputMaybe<Scalars['ID']['input']>;
+  idNEQ?: InputMaybe<Scalars['ID']['input']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  not?: InputMaybe<DigestWhereInput>;
+  or?: InputMaybe<Array<DigestWhereInput>>;
+  /** rev2_instance_name field predicates */
+  rev2InstanceName?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameContains?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameContainsFold?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameEqualFold?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameGT?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameGTE?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameHasPrefix?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameHasSuffix?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  rev2InstanceNameLT?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameLTE?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameNEQ?: InputMaybe<Scalars['String']['input']>;
+  rev2InstanceNameNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** size_bytes field predicates */
+  sizeBytes?: InputMaybe<Scalars['Int']['input']>;
+  sizeBytesGT?: InputMaybe<Scalars['Int']['input']>;
+  sizeBytesGTE?: InputMaybe<Scalars['Int']['input']>;
+  sizeBytesIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  sizeBytesLT?: InputMaybe<Scalars['Int']['input']>;
+  sizeBytesLTE?: InputMaybe<Scalars['Int']['input']>;
+  sizeBytesNEQ?: InputMaybe<Scalars['Int']['input']>;
+  sizeBytesNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type File = Node & {
+  __typename?: 'File';
+  actionStderr?: Maybe<Array<Action>>;
+  actionStdout?: Maybe<Array<Action>>;
+  buildToolLogs?: Maybe<Array<BazelInvocation>>;
+  digest: Digest;
+  digestID: Scalars['ID']['output'];
+  filePath: FilePath;
+  id: Scalars['ID']['output'];
+};
+
+export type FilePath = Node & {
+  __typename?: 'FilePath';
+  bepInstanceName: InstanceName;
+  files?: Maybe<Array<File>>;
+  id: Scalars['ID']['output'];
+  path: Scalars['String']['output'];
+};
+
+/**
+ * FilePathWhereInput is used for filtering FilePath objects.
+ * Input was generated by ent.
+ */
+export type FilePathWhereInput = {
+  and?: InputMaybe<Array<FilePathWhereInput>>;
+  /** bep_instance_name edge predicates */
+  hasBepInstanceName?: InputMaybe<Scalars['Boolean']['input']>;
+  hasBepInstanceNameWith?: InputMaybe<Array<InstanceNameWhereInput>>;
+  /** files edge predicates */
+  hasFiles?: InputMaybe<Scalars['Boolean']['input']>;
+  hasFilesWith?: InputMaybe<Array<FileWhereInput>>;
+  /** id field predicates */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  idGT?: InputMaybe<Scalars['ID']['input']>;
+  idGTE?: InputMaybe<Scalars['ID']['input']>;
+  idIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  idLT?: InputMaybe<Scalars['ID']['input']>;
+  idLTE?: InputMaybe<Scalars['ID']['input']>;
+  idNEQ?: InputMaybe<Scalars['ID']['input']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  not?: InputMaybe<FilePathWhereInput>;
+  or?: InputMaybe<Array<FilePathWhereInput>>;
+  /** path field predicates */
+  path?: InputMaybe<Scalars['String']['input']>;
+  pathContains?: InputMaybe<Scalars['String']['input']>;
+  pathContainsFold?: InputMaybe<Scalars['String']['input']>;
+  pathEqualFold?: InputMaybe<Scalars['String']['input']>;
+  pathGT?: InputMaybe<Scalars['String']['input']>;
+  pathGTE?: InputMaybe<Scalars['String']['input']>;
+  pathHasPrefix?: InputMaybe<Scalars['String']['input']>;
+  pathHasSuffix?: InputMaybe<Scalars['String']['input']>;
+  pathIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  pathLT?: InputMaybe<Scalars['String']['input']>;
+  pathLTE?: InputMaybe<Scalars['String']['input']>;
+  pathNEQ?: InputMaybe<Scalars['String']['input']>;
+  pathNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/**
+ * FileWhereInput is used for filtering File objects.
+ * Input was generated by ent.
+ */
+export type FileWhereInput = {
+  and?: InputMaybe<Array<FileWhereInput>>;
+  /** digest_id field predicates */
+  digestID?: InputMaybe<Scalars['ID']['input']>;
+  digestIDIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  digestIDNEQ?: InputMaybe<Scalars['ID']['input']>;
+  digestIDNotIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** action_stderr edge predicates */
+  hasActionStderr?: InputMaybe<Scalars['Boolean']['input']>;
+  hasActionStderrWith?: InputMaybe<Array<ActionWhereInput>>;
+  /** action_stdout edge predicates */
+  hasActionStdout?: InputMaybe<Scalars['Boolean']['input']>;
+  hasActionStdoutWith?: InputMaybe<Array<ActionWhereInput>>;
+  /** build_tool_logs edge predicates */
+  hasBuildToolLogs?: InputMaybe<Scalars['Boolean']['input']>;
+  hasBuildToolLogsWith?: InputMaybe<Array<BazelInvocationWhereInput>>;
+  /** digest edge predicates */
+  hasDigest?: InputMaybe<Scalars['Boolean']['input']>;
+  hasDigestWith?: InputMaybe<Array<DigestWhereInput>>;
+  /** file_path edge predicates */
+  hasFilePath?: InputMaybe<Scalars['Boolean']['input']>;
+  hasFilePathWith?: InputMaybe<Array<FilePathWhereInput>>;
+  /** id field predicates */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  idGT?: InputMaybe<Scalars['ID']['input']>;
+  idGTE?: InputMaybe<Scalars['ID']['input']>;
+  idIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  idLT?: InputMaybe<Scalars['ID']['input']>;
+  idLTE?: InputMaybe<Scalars['ID']['input']>;
+  idNEQ?: InputMaybe<Scalars['ID']['input']>;
+  idNotIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  not?: InputMaybe<FileWhereInput>;
+  or?: InputMaybe<Array<FileWhereInput>>;
+};
+
 export type GarbageMetrics = Node & {
   __typename?: 'GarbageMetrics';
   garbageCollected?: Maybe<Scalars['Int']['output']>;
@@ -1578,6 +1659,7 @@ export type InstanceName = Node & {
   __typename?: 'InstanceName';
   bazelInvocations?: Maybe<Array<BazelInvocation>>;
   builds?: Maybe<Array<Build>>;
+  filePaths?: Maybe<Array<FilePath>>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   targets?: Maybe<Array<Target>>;
@@ -1595,6 +1677,9 @@ export type InstanceNameWhereInput = {
   /** builds edge predicates */
   hasBuilds?: InputMaybe<Scalars['Boolean']['input']>;
   hasBuildsWith?: InputMaybe<Array<BuildWhereInput>>;
+  /** file_paths edge predicates */
+  hasFilePaths?: InputMaybe<Scalars['Boolean']['input']>;
+  hasFilePathsWith?: InputMaybe<Array<FilePathWhereInput>>;
   /** targets edge predicates */
   hasTargets?: InputMaybe<Scalars['Boolean']['input']>;
   hasTargetsWith?: InputMaybe<Array<TargetWhereInput>>;
@@ -2063,15 +2148,6 @@ export type PageInfo = {
   hasPreviousPage: Scalars['Boolean']['output'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['Cursor']['output']>;
-};
-
-export type Profile = {
-  __typename?: 'Profile';
-  digest: Scalars['String']['output'];
-  digestFunction: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  sizeInBytes: Scalars['Int']['output'];
 };
 
 export type Query = {
@@ -3187,19 +3263,28 @@ export type GetBazelInvocationCommonQuery = { __typename?: 'Query', getBazelInvo
     & { ' $fragmentRefs'?: { 'BazelInvocationCommonFragment': BazelInvocationCommonFragment } }
   ) | null };
 
-export type BazelInvocationCommonFragment = { __typename?: 'BazelInvocation', id: string, invocationID: any, startedAt?: any | null, endedAt?: any | null, exitCodeName?: string | null, username?: string | null, instanceName: { __typename?: 'InstanceName', name: string }, connectionMetadata?: { __typename?: 'ConnectionMetadata', connectionLastOpenAt: any, timeSinceLastConnectionMillis: number } | null, authenticatedUser?: { __typename?: 'AuthenticatedUser', displayName?: string | null, userUUID: any } | null, build?: { __typename?: 'Build', id: string, buildUUID: any } | null, metrics?: { __typename?: 'Metrics', id: string } | null, actions?: Array<{ __typename?: 'Action', id: string }> | null, profile?: { __typename?: 'Profile', id: string, name: string, digest: string, sizeInBytes: number, digestFunction: string } | null, sourceControl?: Array<{ __typename?: 'SourceControl', id: string }> | null } & { ' $fragmentName'?: 'BazelInvocationCommonFragment' };
+export type BazelInvocationCommonFragment = { __typename?: 'BazelInvocation', id: string, invocationID: any, startedAt?: any | null, endedAt?: any | null, exitCodeName?: string | null, username?: string | null, connectionMetadata?: { __typename?: 'ConnectionMetadata', connectionLastOpenAt: any, timeSinceLastConnectionMillis: number } | null, authenticatedUser?: { __typename?: 'AuthenticatedUser', displayName?: string | null, userUUID: any } | null, build?: { __typename?: 'Build', id: string, buildUUID: any } | null, metrics?: { __typename?: 'Metrics', id: string } | null, actions?: Array<{ __typename?: 'Action', id: string }> | null, profile?: (
+    { __typename?: 'File' }
+    & { ' $fragmentRefs'?: { 'FileDetailsFragment': FileDetailsFragment } }
+  ) | null, sourceControl?: Array<{ __typename?: 'SourceControl', id: string }> | null } & { ' $fragmentName'?: 'BazelInvocationCommonFragment' };
 
 export type GetBazelInvocationActionsQueryVariables = Exact<{
   invocationID: Scalars['UUID']['input'];
 }>;
 
 
-export type GetBazelInvocationActionsQuery = { __typename?: 'Query', getBazelInvocation?: { __typename?: 'BazelInvocation', id: string, instanceName: { __typename?: 'InstanceName', id: string, name: string }, actions?: Array<(
+export type GetBazelInvocationActionsQuery = { __typename?: 'Query', getBazelInvocation?: { __typename?: 'BazelInvocation', id: string, actions?: Array<(
       { __typename?: 'Action' }
       & { ' $fragmentRefs'?: { 'BazelInvocationActionsFragment': BazelInvocationActionsFragment } }
     )> | null } | null };
 
-export type BazelInvocationActionsFragment = { __typename?: 'Action', id: string, label: string, type?: string | null, success?: boolean | null, exitCode?: number | null, commandLine?: Array<string> | null, startTime?: any | null, endTime?: any | null, failureCode?: string | null, failureMessage?: string | null, stdoutHash?: string | null, stdoutSizeBytes?: number | null, stdoutHashFunction?: string | null, stderrHash?: string | null, stderrSizeBytes?: number | null, stderrHashFunction?: string | null, configuration: { __typename?: 'Configuration', id: string, configurationID: string, mnemonic?: string | null, platformName?: string | null, cpu?: string | null, makeVariables?: any | null } } & { ' $fragmentName'?: 'BazelInvocationActionsFragment' };
+export type BazelInvocationActionsFragment = { __typename?: 'Action', id: string, label: string, type?: string | null, success?: boolean | null, exitCode?: number | null, commandLine?: Array<string> | null, startTime?: any | null, endTime?: any | null, failureCode?: string | null, failureMessage?: string | null, configuration: { __typename?: 'Configuration', id: string, configurationID: string, mnemonic?: string | null, platformName?: string | null, cpu?: string | null, makeVariables?: any | null }, stdout?: (
+    { __typename?: 'File' }
+    & { ' $fragmentRefs'?: { 'FileDetailsFragment': FileDetailsFragment } }
+  ) | null, stderr?: (
+    { __typename?: 'File' }
+    & { ' $fragmentRefs'?: { 'FileDetailsFragment': FileDetailsFragment } }
+  ) | null } & { ' $fragmentName'?: 'BazelInvocationActionsFragment' };
 
 export type GetBazelInvocationCommandlineQueryVariables = Exact<{
   invocationID: Scalars['UUID']['input'];
@@ -3499,8 +3584,11 @@ export type GetAuthenticatedUserQuery = { __typename?: 'Query', getAuthenticated
 
 export type AuthenticatedUserNodeFragmentFragment = { __typename?: 'AuthenticatedUser', id: string, displayName?: string | null, userInfo?: any | null, userUUID: any, bazelInvocations: { __typename?: 'BazelInvocationConnection', pageInfo: { __typename?: 'PageInfo', startCursor?: any | null, endCursor?: any | null, hasNextPage: boolean, hasPreviousPage: boolean }, edges?: Array<{ __typename?: 'BazelInvocationEdge', node?: { __typename?: 'BazelInvocation', id: string, invocationID: any, endedAt?: any | null, startedAt?: any | null, exitCodeName?: string | null, build?: { __typename?: 'Build', id: string, buildUUID: any } | null, connectionMetadata?: { __typename?: 'ConnectionMetadata', id: string, connectionLastOpenAt: any, timeSinceLastConnectionMillis: number } | null } | null } | null> | null } } & { ' $fragmentName'?: 'AuthenticatedUserNodeFragmentFragment' };
 
-export const BazelInvocationCommonFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationCommon"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"instanceName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatedUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"userUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"build"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"buildUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"metrics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"digest"}},{"kind":"Field","name":{"kind":"Name","value":"sizeInBytes"}},{"kind":"Field","name":{"kind":"Name","value":"digestFunction"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sourceControl"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<BazelInvocationCommonFragment, unknown>;
-export const BazelInvocationActionsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationActions"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Action"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"exitCode"}},{"kind":"Field","name":{"kind":"Name","value":"commandLine"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"failureCode"}},{"kind":"Field","name":{"kind":"Name","value":"failureMessage"}},{"kind":"Field","name":{"kind":"Name","value":"stdoutHash"}},{"kind":"Field","name":{"kind":"Name","value":"stdoutSizeBytes"}},{"kind":"Field","name":{"kind":"Name","value":"stdoutHashFunction"}},{"kind":"Field","name":{"kind":"Name","value":"stderrHash"}},{"kind":"Field","name":{"kind":"Name","value":"stderrSizeBytes"}},{"kind":"Field","name":{"kind":"Name","value":"stderrHashFunction"}},{"kind":"Field","name":{"kind":"Name","value":"configuration"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"configurationID"}},{"kind":"Field","name":{"kind":"Name","value":"mnemonic"}},{"kind":"Field","name":{"kind":"Name","value":"platformName"}},{"kind":"Field","name":{"kind":"Name","value":"cpu"}},{"kind":"Field","name":{"kind":"Name","value":"makeVariables"}}]}}]}}]} as unknown as DocumentNode<BazelInvocationActionsFragment, unknown>;
+export type FileDetailsFragment = { __typename?: 'File', id: string, filePath: { __typename?: 'FilePath', id: string, path: string }, digest: { __typename?: 'Digest', id: string, rev2InstanceName: string, digestFunction: string, hash: string, sizeBytes: number } } & { ' $fragmentName'?: 'FileDetailsFragment' };
+
+export const FileDetailsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"filePath"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}},{"kind":"Field","name":{"kind":"Name","value":"digest"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rev2InstanceName"}},{"kind":"Field","name":{"kind":"Name","value":"digestFunction"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"sizeBytes"}}]}}]}}]} as unknown as DocumentNode<FileDetailsFragment, unknown>;
+export const BazelInvocationCommonFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationCommon"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatedUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"userUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"build"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"buildUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"metrics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileDetails"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sourceControl"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"filePath"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}},{"kind":"Field","name":{"kind":"Name","value":"digest"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rev2InstanceName"}},{"kind":"Field","name":{"kind":"Name","value":"digestFunction"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"sizeBytes"}}]}}]}}]} as unknown as DocumentNode<BazelInvocationCommonFragment, unknown>;
+export const BazelInvocationActionsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationActions"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Action"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"exitCode"}},{"kind":"Field","name":{"kind":"Name","value":"commandLine"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"failureCode"}},{"kind":"Field","name":{"kind":"Name","value":"failureMessage"}},{"kind":"Field","name":{"kind":"Name","value":"configuration"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"configurationID"}},{"kind":"Field","name":{"kind":"Name","value":"mnemonic"}},{"kind":"Field","name":{"kind":"Name","value":"platformName"}},{"kind":"Field","name":{"kind":"Name","value":"cpu"}},{"kind":"Field","name":{"kind":"Name","value":"makeVariables"}}]}},{"kind":"Field","name":{"kind":"Name","value":"stdout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileDetails"}}]}},{"kind":"Field","name":{"kind":"Name","value":"stderr"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileDetails"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"filePath"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}},{"kind":"Field","name":{"kind":"Name","value":"digest"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rev2InstanceName"}},{"kind":"Field","name":{"kind":"Name","value":"digestFunction"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"sizeBytes"}}]}}]}}]} as unknown as DocumentNode<BazelInvocationActionsFragment, unknown>;
 export const BazelInvocationCommandlineFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationCommandline"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"canonicalCommandLine"}},{"kind":"Field","name":{"kind":"Name","value":"originalCommandLine"}},{"kind":"Field","name":{"kind":"Name","value":"optionsParsed"}},{"kind":"Field","name":{"kind":"Name","value":"environmentVariables"}}]}}]} as unknown as DocumentNode<BazelInvocationCommandlineFragment, unknown>;
 export const BazelInvocationOverviewFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationOverview"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"instanceName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hostname"}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}},{"kind":"Field","name":{"kind":"Name","value":"originalCommandLine"}},{"kind":"Field","name":{"kind":"Name","value":"configurations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"cpu"}},{"kind":"Field","name":{"kind":"Name","value":"mnemonic"}}]}},{"kind":"Field","name":{"kind":"Name","value":"numFetches"}},{"kind":"Field","name":{"kind":"Name","value":"bazelVersion"}}]}}]} as unknown as DocumentNode<BazelInvocationOverviewFragment, unknown>;
 export const BazelInvocationLogFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"originalCommandLine"}}]}}]} as unknown as DocumentNode<BazelInvocationLogFragment, unknown>;
@@ -3532,8 +3620,8 @@ export const CheckIfInvocationExistsDocument = {"__meta__":{"hash":"ca5231696362
 export const GetInvocationTargetsForTargetDocument = {"__meta__":{"hash":"831e739e9379b3c3c57537e735120c1337524dc1"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetInvocationTargetsForTarget"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"InvocationTargetWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTarget"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"invocationTargets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"bazelInvocation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"invocationID"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetInvocationTargetsForTargetQuery, GetInvocationTargetsForTargetQueryVariables>;
 export const GetTestsForTargetDocument = {"__meta__":{"hash":"6c1e39a0efc1fff3d86e44fa051126bd9dce1b6e"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTestsForTarget"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Cursor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"TestSummaryOrder"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"TestSummaryWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findTestSummaries"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"overallStatus"}},{"kind":"Field","name":{"kind":"Name","value":"invocationTarget"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bazelInvocation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"invocationID"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetTestsForTargetQuery, GetTestsForTargetQueryVariables>;
 export const FindBuildTimesDocument = {"__meta__":{"hash":"707420fe8ea691631ecc9c431896b8e8d6b62692"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindBuildTimes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocationWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"findBazelInvocations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FindBuildTimesQuery, FindBuildTimesQueryVariables>;
-export const GetBazelInvocationCommonDocument = {"__meta__":{"hash":"a618ecc8eaf2da379c86c074332ec5c7192593ec"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBazelInvocationCommon"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationCommon"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationCommon"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"instanceName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatedUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"userUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"build"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"buildUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"metrics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"digest"}},{"kind":"Field","name":{"kind":"Name","value":"sizeInBytes"}},{"kind":"Field","name":{"kind":"Name","value":"digestFunction"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sourceControl"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<GetBazelInvocationCommonQuery, GetBazelInvocationCommonQueryVariables>;
-export const GetBazelInvocationActionsDocument = {"__meta__":{"hash":"e8e012ca13167ab6100cdaf73d1a61f1d145afff"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBazelInvocationActions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"instanceName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationActions"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationActions"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Action"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"exitCode"}},{"kind":"Field","name":{"kind":"Name","value":"commandLine"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"failureCode"}},{"kind":"Field","name":{"kind":"Name","value":"failureMessage"}},{"kind":"Field","name":{"kind":"Name","value":"stdoutHash"}},{"kind":"Field","name":{"kind":"Name","value":"stdoutSizeBytes"}},{"kind":"Field","name":{"kind":"Name","value":"stdoutHashFunction"}},{"kind":"Field","name":{"kind":"Name","value":"stderrHash"}},{"kind":"Field","name":{"kind":"Name","value":"stderrSizeBytes"}},{"kind":"Field","name":{"kind":"Name","value":"stderrHashFunction"}},{"kind":"Field","name":{"kind":"Name","value":"configuration"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"configurationID"}},{"kind":"Field","name":{"kind":"Name","value":"mnemonic"}},{"kind":"Field","name":{"kind":"Name","value":"platformName"}},{"kind":"Field","name":{"kind":"Name","value":"cpu"}},{"kind":"Field","name":{"kind":"Name","value":"makeVariables"}}]}}]}}]} as unknown as DocumentNode<GetBazelInvocationActionsQuery, GetBazelInvocationActionsQueryVariables>;
+export const GetBazelInvocationCommonDocument = {"__meta__":{"hash":"4be700b552d9ddf7ba77107cd1ee5ab711ef1256"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBazelInvocationCommon"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationCommon"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"filePath"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}},{"kind":"Field","name":{"kind":"Name","value":"digest"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rev2InstanceName"}},{"kind":"Field","name":{"kind":"Name","value":"digestFunction"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"sizeBytes"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationCommon"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatedUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"userUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"build"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"buildUUID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"metrics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileDetails"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sourceControl"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<GetBazelInvocationCommonQuery, GetBazelInvocationCommonQueryVariables>;
+export const GetBazelInvocationActionsDocument = {"__meta__":{"hash":"b61cfa00a5a9bf542b1b110d02405c2aef7848a5"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBazelInvocationActions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"actions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationActions"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"filePath"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"path"}}]}},{"kind":"Field","name":{"kind":"Name","value":"digest"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"rev2InstanceName"}},{"kind":"Field","name":{"kind":"Name","value":"digestFunction"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"sizeBytes"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationActions"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Action"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"exitCode"}},{"kind":"Field","name":{"kind":"Name","value":"commandLine"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"failureCode"}},{"kind":"Field","name":{"kind":"Name","value":"failureMessage"}},{"kind":"Field","name":{"kind":"Name","value":"configuration"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"configurationID"}},{"kind":"Field","name":{"kind":"Name","value":"mnemonic"}},{"kind":"Field","name":{"kind":"Name","value":"platformName"}},{"kind":"Field","name":{"kind":"Name","value":"cpu"}},{"kind":"Field","name":{"kind":"Name","value":"makeVariables"}}]}},{"kind":"Field","name":{"kind":"Name","value":"stdout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileDetails"}}]}},{"kind":"Field","name":{"kind":"Name","value":"stderr"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileDetails"}}]}}]}}]} as unknown as DocumentNode<GetBazelInvocationActionsQuery, GetBazelInvocationActionsQueryVariables>;
 export const GetBazelInvocationCommandlineDocument = {"__meta__":{"hash":"9738dc3150ea89fcedfa5b02a4785bfe7a569c91"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBazelInvocationCommandline"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationCommandline"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationCommandline"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"canonicalCommandLine"}},{"kind":"Field","name":{"kind":"Name","value":"originalCommandLine"}},{"kind":"Field","name":{"kind":"Name","value":"optionsParsed"}},{"kind":"Field","name":{"kind":"Name","value":"environmentVariables"}}]}}]} as unknown as DocumentNode<GetBazelInvocationCommandlineQuery, GetBazelInvocationCommandlineQueryVariables>;
 export const GetBazelInvocationOverviewDocument = {"__meta__":{"hash":"17880e1f171c80897ac765ab4d0f38498c813b59"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBazelInvocationOverview"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationOverview"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationOverview"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"endedAt"}},{"kind":"Field","name":{"kind":"Name","value":"exitCodeName"}},{"kind":"Field","name":{"kind":"Name","value":"instanceName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hostname"}},{"kind":"Field","name":{"kind":"Name","value":"connectionMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"connectionLastOpenAt"}},{"kind":"Field","name":{"kind":"Name","value":"timeSinceLastConnectionMillis"}}]}},{"kind":"Field","name":{"kind":"Name","value":"originalCommandLine"}},{"kind":"Field","name":{"kind":"Name","value":"configurations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"cpu"}},{"kind":"Field","name":{"kind":"Name","value":"mnemonic"}}]}},{"kind":"Field","name":{"kind":"Name","value":"numFetches"}},{"kind":"Field","name":{"kind":"Name","value":"bazelVersion"}}]}}]} as unknown as DocumentNode<GetBazelInvocationOverviewQuery, GetBazelInvocationOverviewQueryVariables>;
 export const GetBazelInvocationLogDocument = {"__meta__":{"hash":"3162d3993cdf51b86107ceb155880003e6099e4c"},"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBazelInvocationLog"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getBazelInvocation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invocationID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invocationID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BazelInvocationLog"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BazelInvocationLog"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BazelInvocation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"invocationID"}},{"kind":"Field","name":{"kind":"Name","value":"originalCommandLine"}}]}}]} as unknown as DocumentNode<GetBazelInvocationLogQuery, GetBazelInvocationLogQueryVariables>;

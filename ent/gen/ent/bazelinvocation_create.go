@@ -16,12 +16,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -458,19 +459,19 @@ func (_c *BazelInvocationCreate) AddBuildLogChunks(v ...*BuildLogChunk) *BazelIn
 	return _c.AddBuildLogChunkIDs(ids...)
 }
 
-// AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
-func (_c *BazelInvocationCreate) AddInvocationFileIDs(ids ...int64) *BazelInvocationCreate {
-	_c.mutation.AddInvocationFileIDs(ids...)
+// AddBuildToolLogIDs adds the "build_tool_logs" edge to the File entity by IDs.
+func (_c *BazelInvocationCreate) AddBuildToolLogIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddBuildToolLogIDs(ids...)
 	return _c
 }
 
-// AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
-func (_c *BazelInvocationCreate) AddInvocationFiles(v ...*InvocationFiles) *BazelInvocationCreate {
+// AddBuildToolLogs adds the "build_tool_logs" edges to the File entity.
+func (_c *BazelInvocationCreate) AddBuildToolLogs(v ...*File) *BazelInvocationCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddInvocationFileIDs(ids...)
+	return _c.AddBuildToolLogIDs(ids...)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
@@ -516,6 +517,21 @@ func (_c *BazelInvocationCreate) AddSourceControl(v ...*SourceControl) *BazelInv
 		ids[i] = v[i].ID
 	}
 	return _c.AddSourceControlIDs(ids...)
+}
+
+// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by IDs.
+func (_c *BazelInvocationCreate) AddToolLogIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddToolLogIDs(ids...)
+	return _c
+}
+
+// AddToolLogs adds the "tool_logs" edges to the BuildToolLog entity.
+func (_c *BazelInvocationCreate) AddToolLogs(v ...*BuildToolLog) *BazelInvocationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddToolLogIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -896,15 +912,15 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.InvocationFilesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BuildToolLogsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.BuildToolLogsTable,
+			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -953,6 +969,22 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ToolLogsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   bazelinvocation.ToolLogsTable,
+			Columns: []string{bazelinvocation.ToolLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
