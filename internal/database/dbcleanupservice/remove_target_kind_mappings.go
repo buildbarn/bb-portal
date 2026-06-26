@@ -16,9 +16,12 @@ func (dc *DbCleanupService) RemoveTargetKindMappings(ctx context.Context) (int64
 		return 0, err
 	}
 
-	deleted, err := dc.db.Sqlc().DeleteTargetKindMappingsFromPages(ctx, sqlc.DeleteTargetKindMappingsFromPagesParams{
-		FromPage: start,
-		Pages:    count,
+	deleted, err := dc.batcher.Batch(ctx, func(ctx context.Context, limit int64) (int64, error) {
+		return dc.db.Sqlc().DeleteTargetKindMappingsFromPages(ctx, sqlc.DeleteTargetKindMappingsFromPagesParams{
+			FromPage:   start,
+			Pages:      count,
+			BatchLimit: limit,
+		})
 	})
 	if err != nil {
 		return 0, util.StatusWrap(err, "Failed to remove old TargetKindMappings")

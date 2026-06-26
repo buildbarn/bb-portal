@@ -45,13 +45,14 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func getNewDbCleanupService(db database.Client, clock clock.Clock, traceProvider trace.TracerProvider) (*dbcleanupservice.DbCleanupService, error) {
+func getNewDbCleanupService(db database.Client, c clock.Clock, traceProvider trace.TracerProvider) (*dbcleanupservice.DbCleanupService, error) {
 	cleanupConfiguration := &bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration{
 		CleanupInterval:          durationpb.New(1 * time.Minute),
 		InvocationMessageTimeout: durationpb.New(30 * time.Second),
 		InvocationRetention:      durationpb.New(30 * time.Minute),
 	}
-	return dbcleanupservice.NewDbCleanupService(db, clock, cleanupConfiguration, traceProvider)
+	batcher := dbcleanupservice.NewTimedBatcher(clock.SystemClock, 1*time.Second, 128, 1<<20)
+	return dbcleanupservice.NewDbCleanupService(db, c, batcher, cleanupConfiguration, traceProvider)
 }
 
 func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.Client, invocationDbID int64) {

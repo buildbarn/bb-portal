@@ -16,9 +16,12 @@ func (dc *DbCleanupService) RemoveUnusedTargets(ctx context.Context) (int64, err
 		return 0, err
 	}
 
-	deleted, err := dc.db.Sqlc().DeleteUnusedTargetsFromPages(ctx, sqlc.DeleteUnusedTargetsFromPagesParams{
-		FromPage: start,
-		Pages:    count,
+	deleted, err := dc.batcher.Batch(ctx, func(ctx context.Context, limit int64) (int64, error) {
+		return dc.db.Sqlc().DeleteUnusedTargetsFromPages(ctx, sqlc.DeleteUnusedTargetsFromPagesParams{
+			FromPage:   start,
+			Pages:      count,
+			BatchLimit: limit,
+		})
 	})
 	if err != nil {
 		return 0, util.StatusWrap(err, "Failed to remove unused Targets")

@@ -16,9 +16,12 @@ func (dc *DbCleanupService) RemoveOrphanedTestTargets(ctx context.Context) (int6
 		return 0, err
 	}
 
-	deleted, err := dc.db.Sqlc().DeleteOrphanedTestTargetsFromPages(ctx, sqlc.DeleteOrphanedTestTargetsFromPagesParams{
-		FromPage: start,
-		Pages:    count,
+	deleted, err := dc.batcher.Batch(ctx, func(ctx context.Context, limit int64) (int64, error) {
+		return dc.db.Sqlc().DeleteOrphanedTestTargetsFromPages(ctx, sqlc.DeleteOrphanedTestTargetsFromPagesParams{
+			FromPage:   start,
+			Pages:      count,
+			BatchLimit: limit,
+		})
 	})
 	if err != nil {
 		return 0, util.StatusWrap(err, "Failed to remove orphaned test targets")
