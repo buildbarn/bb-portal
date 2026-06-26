@@ -1,29 +1,37 @@
-import { AnsiUp } from "ansi_up";
-import React, { useEffect, useRef } from "react";
+import type React from "react";
+import { useEffect, useRef } from "react";
 import { experimental_VGrid as VGrid, type VGridHandle } from "virtua";
 import PortalAlert from "../PortalAlert";
 import styles from "./index.module.css";
-
-const ansi = new AnsiUp();
+import { LogRow } from "./logRow";
 
 interface Props {
-  log: string;
+  log: string[];
+  query: string;
+  matchIndexList: number[];
+  currentMatchIndex: number;
 }
 
 // Takes a log in ansi style, formats it to HTML, and displays it in a scrollable window with virtualization
-const AnsiScrollingWindow: React.FC<Props> = ({ log }) => {
-  const lines = React.useMemo(() => {
-    if (!log) return [];
-    return ansi.ansi_to_html(log).split("\n");
-  }, [log]);
-
+const AnsiScrollingWindow: React.FC<Props> = ({
+  log,
+  query,
+  matchIndexList,
+  currentMatchIndex,
+}) => {
   const vListRef = useRef<VGridHandle>(null);
 
   useEffect(() => {
+    if (!matchIndexList.length) return;
+    const rowIndex = matchIndexList[currentMatchIndex];
+    vListRef.current?.scrollToIndex?.(rowIndex);
+  }, [matchIndexList, currentMatchIndex]);
+
+  useEffect(() => {
     if (vListRef.current) {
-      vListRef.current.scrollToIndex(lines.length - 1);
+      vListRef.current.scrollToIndex(log.length - 1);
     }
-  }, [lines]);
+  }, [log]);
 
   if (!log) {
     return (
@@ -35,24 +43,10 @@ const AnsiScrollingWindow: React.FC<Props> = ({ log }) => {
       />
     );
   }
+
   const LINE_HEIGHT = 16.66; // 14px base font size * 0.85 font-size * 1.4 line-height
   const PADDING_HEIGHT = 14; // (Vertical padding + border) * 2
-  const MAX_VISIBLE_LINES = 27.3; // Make the top line only partially visible to convey that the view screen is scrollable
-  if (lines.length < MAX_VISIBLE_LINES) {
-    return (
-      <pre className={styles.scrollWindow}>
-        {lines.map((v, i) => (
-          <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: We have nothing better to use
-            key={i}
-            // TODO: Remove the danger
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: Should be reworked
-            dangerouslySetInnerHTML={{ __html: v }}
-          />
-        ))}
-      </pre>
-    );
-  }
+  const MAX_VISIBLE_LINES = Math.min(27.3, log.length); // Make the top line only partially visible to convey that the view screen is scrollable
   return (
     <pre>
       <VGrid
@@ -61,18 +55,18 @@ const AnsiScrollingWindow: React.FC<Props> = ({ log }) => {
           height: MAX_VISIBLE_LINES * LINE_HEIGHT + PADDING_HEIGHT,
         }}
         className={styles.scrollWindow}
-        row={lines.length}
+        row={log.length}
         col={1}
         cellHeight={LINE_HEIGHT}
       >
         {({ rowIndex }) => (
-          <span
-            // This is also using an index as key, but biome dosn't notice.
+          <LogRow
             key={rowIndex}
-            // TODO: Remove the danger
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: Should be reworked
-            dangerouslySetInnerHTML={{ __html: lines[rowIndex] }}
-          />
+            query={query}
+            rowIndex={rowIndex}
+            line={log[rowIndex]}
+            matchIndexList={matchIndexList}
+          ></LogRow>
         )}
       </VGrid>
     </pre>
