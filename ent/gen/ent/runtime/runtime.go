@@ -4,6 +4,7 @@ package runtime
 
 import (
 	"context"
+	"time"
 
 	"github.com/buildbarn/bb-portal/ent/authschema"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
@@ -42,6 +43,10 @@ func init() {
 	}
 	bazelinvocationFields := authschema.BazelInvocation{}.Fields()
 	_ = bazelinvocationFields
+	// bazelinvocationDescCreatedTimestamp is the schema descriptor for created_timestamp field.
+	bazelinvocationDescCreatedTimestamp := bazelinvocationFields[1].Descriptor()
+	// bazelinvocation.DefaultCreatedTimestamp holds the default value on creation for the created_timestamp field.
+	bazelinvocation.DefaultCreatedTimestamp = bazelinvocationDescCreatedTimestamp.Default.(func() time.Time)
 	// bazelinvocationDescBepCompleted is the schema descriptor for bep_completed field.
 	bazelinvocationDescBepCompleted := bazelinvocationFields[4].Descriptor()
 	// bazelinvocation.DefaultBepCompleted holds the default value on creation for the bep_completed field.

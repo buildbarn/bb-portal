@@ -51,6 +51,14 @@ func (_c *BazelInvocationCreate) SetCreatedTimestamp(v time.Time) *BazelInvocati
 	return _c
 }
 
+// SetNillableCreatedTimestamp sets the "created_timestamp" field if the given value is not nil.
+func (_c *BazelInvocationCreate) SetNillableCreatedTimestamp(v *time.Time) *BazelInvocationCreate {
+	if v != nil {
+		_c.SetCreatedTimestamp(*v)
+	}
+	return _c
+}
+
 // SetStartedAt sets the "started_at" field.
 func (_c *BazelInvocationCreate) SetStartedAt(v time.Time) *BazelInvocationCreate {
 	_c.mutation.SetStartedAt(v)
@@ -555,6 +563,13 @@ func (_c *BazelInvocationCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *BazelInvocationCreate) defaults() error {
+	if _, ok := _c.mutation.CreatedTimestamp(); !ok {
+		if bazelinvocation.DefaultCreatedTimestamp == nil {
+			return fmt.Errorf("ent: uninitialized bazelinvocation.DefaultCreatedTimestamp (forgotten import ent/runtime?)")
+		}
+		v := bazelinvocation.DefaultCreatedTimestamp()
+		_c.mutation.SetCreatedTimestamp(v)
+	}
 	if _, ok := _c.mutation.BepCompleted(); !ok {
 		v := bazelinvocation.DefaultBepCompleted
 		_c.mutation.SetBepCompleted(v)
