@@ -3,9 +3,18 @@ load("@bazel_lib//lib:copy_to_bin.bzl", _copy_to_bin = "copy_to_bin")
 def _vite_build_rule_impl(ctx):
     out_dir = ctx.actions.declare_directory(ctx.label.name)
 
+    # Directory to chdir into, relative to BAZEL_BINDIR. Derive it from the
+    # output directory rather than the package path so it carries the
+    # `external/<repo>` prefix when bb-portal is consumed as an external Bazel
+    # module; otherwise the chdir ("frontend") does not exist and the build fails
+    # with "cd: frontend: No such file or directory".
+    bindir = ctx.bin_dir.path
+    pkg_dir = out_dir.dirname
+    chdir = pkg_dir[len(bindir) + 1:]
+
     args = ctx.actions.args()
     args.add("build")
-    num_up = 3 + len(ctx.attr.chdir.split("/"))
+    num_up = len(pkg_dir.split("/"))
     args.add_all("--outDir", [out_dir], format_each = ("../" * num_up) + "%s", expand_directories = False)
     ctx.actions.run(
         executable = ctx.executable.vite_binary,
@@ -14,7 +23,7 @@ def _vite_build_rule_impl(ctx):
         outputs = [out_dir],
         env = {
             "BAZEL_BINDIR": "/".join(ctx.executable.vite_binary.path.split("/")[0:3]),
-            "JS_BINARY__CHDIR": ctx.attr.chdir,
+            "JS_BINARY__CHDIR": chdir,
             "JS_BINARY__SILENT_ON_SUCCESS": "1",
         } | ctx.attr.env,
     )
