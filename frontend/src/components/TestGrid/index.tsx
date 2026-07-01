@@ -11,15 +11,8 @@ import { CursorTable, getNewPaginationVariables } from "../CursorTable";
 import type { PaginationVariables } from "../CursorTable/types";
 import PortalAlert from "../PortalAlert";
 import TestGridRow from "../TestGridRow";
-import type { TestStatusEnum } from "../TestStatusTag";
 import { columns, type TestGridRowDataType } from "./columns";
 import { GET_TESTS } from "./graphql";
-
-export interface TestStatusType {
-  label: string;
-  invocationId: string;
-  status: TestStatusEnum;
-}
 
 const TestGrid: React.FC = () => {
   const [paginationVariables, setPaginationVariables] =

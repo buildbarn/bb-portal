@@ -8,7 +8,6 @@ import {
 } from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import TestGridBtn from "../TestGridBtn";
-import type { TestStatusEnum } from "../TestStatusTag";
 import { GET_TESTS_FOR_TARGET } from "./graphql";
 
 interface Props {
@@ -60,7 +59,7 @@ const TestGridRow: React.FC<Props> = ({
         <TestGridBtn
           key={`test-grid-btn${item.id}`}
           invocationId={item.invocationTarget.bazelInvocation.invocationID}
-          status={item.overallStatus as TestStatusEnum}
+          status={item.overallStatus}
         />
       ))}
     </Space>

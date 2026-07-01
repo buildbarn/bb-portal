@@ -11,7 +11,7 @@ import {
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import styles from "../../theme/theme.module.css";
 import NullBooleanTag from "../NullableBooleanTag";
-import TestStatusTag, { type TestStatusEnum } from "../TestStatusTag";
+import { TestStatusTag } from "../TestStatusTag";
 
 export type TestTabRowType = NonNullable<
   NonNullable<
@@ -31,15 +31,9 @@ export const defaultSorting: TestSummaryOrder = {
 
 export const columns: TableColumnsType<TestTabRowType> = [
   {
+    key: "overallStatus",
     title: "Status",
-    dataIndex: "overallStatus",
-    render: (x) => (
-      <TestStatusTag
-        displayText={true}
-        key="status"
-        status={x as TestStatusEnum}
-      />
-    ),
+    render: (_, record) => <TestStatusTag status={record.overallStatus} />,
     filters: [
       {
         text: "No Status",

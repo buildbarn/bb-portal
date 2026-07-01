@@ -153,17 +153,28 @@ export const BazelInvocationTabBar: React.FC<Props> = ({ invocation }) => {
 
   const menuItems = useMemo(() => getMenuItems(invocation), [invocation]);
 
-  const selectedKey = useMemo(() => {
-    const lastPathSegment = pathname.split("/").pop();
+  const selectedKeys = useMemo(() => {
+    const segments = pathname.split("/").filter((str) => str !== "");
+
+    if (
+      segments.length >= 2 &&
+      segments[segments.length - 2] === "bazel-invocations" &&
+      segments[segments.length - 1] === invocation.invocationID
+    ) {
+      return ["overview"];
+    }
+
+    const lastPathSegment = segments.pop();
     const activeItem = menuItems.find((item) => item?.key === lastPathSegment);
-    return activeItem?.key?.toString() ?? "overview";
-  }, [pathname, menuItems]);
+    const key = activeItem?.key?.toString();
+    return key ? [key] : [];
+  }, [pathname, menuItems, invocation]);
 
   return (
     <Menu
       mode="horizontal"
       style={{ background: "inherit" }}
-      selectedKeys={[selectedKey]}
+      selectedKeys={selectedKeys}
       items={menuItems}
     />
   );
