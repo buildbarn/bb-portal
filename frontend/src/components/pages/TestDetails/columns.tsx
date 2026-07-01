@@ -1,31 +1,27 @@
 import { Link } from "@tanstack/react-router";
 import type { TableColumnsType } from "antd";
+import {
+  type CacheLocation,
+  CacheLocationTag,
+} from "@/components/CacheLocationTag";
 import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
 import styles from "@/theme/theme.module.css";
 import { readableDurationFromMilliseconds } from "@/utils/time";
-import NullBooleanTag from "../../NullableBooleanTag";
-import TestStatusTag, { type TestStatusEnum } from "../../TestStatusTag";
+import { TestStatusTag } from "../../TestStatusTag";
 
 export type TestDetailsRowType = NonNullable<
   NonNullable<
     NonNullable<GetTestDetailsQuery["findTestSummaries"]["edges"]>[number]
   >["node"]
 > & {
-  cachedLocally: boolean | null;
-  cachedRemotely: boolean | null;
+  cacheLocation: CacheLocation;
 };
 
 export const columns: TableColumnsType<TestDetailsRowType> = [
   {
+    key: "status",
     title: "Status",
-    dataIndex: "status",
-    render: (_, record) => (
-      <TestStatusTag
-        displayText={true}
-        key="status"
-        status={record.overallStatus as TestStatusEnum}
-      />
-    ),
+    render: (_, record) => <TestStatusTag status={record.overallStatus} />,
   },
   {
     title: "Invocation ID",
@@ -42,14 +38,11 @@ export const columns: TableColumnsType<TestDetailsRowType> = [
     ),
   },
   {
-    title: "Cached Locally",
-    dataIndex: "cachedLocally",
-    render: (x) => <NullBooleanTag key="local" status={x as boolean | null} />,
-  },
-  {
-    title: "Cached Remotely",
-    dataIndex: "cachedRemotely",
-    render: (x) => <NullBooleanTag key="remote" status={x as boolean | null} />,
+    key: "cacheLocation",
+    title: "Cache Location",
+    render: (_, record) => (
+      <CacheLocationTag cacheLocation={record.cacheLocation} />
+    ),
   },
   {
     title: "Duration",

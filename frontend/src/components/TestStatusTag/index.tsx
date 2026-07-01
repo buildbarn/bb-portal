@@ -8,32 +8,20 @@ import {
 } from "@ant-design/icons";
 import type React from "react";
 import ResultTag, { type TagVariables } from "@/components/ResultTag";
-
-export const ALL_STATUS_VALUES = [
-  "NO_STATUS",
-  "PASSED",
-  "FLAKY",
-  "TIMEOUT",
-  "FAILED",
-  "INCOMPLETE",
-  "REMOTE_FAILURE",
-  "FAILED_TO_BUILD",
-  "TOOL_HALTED_BEFORE_TESTING",
-] as const;
-
-export type StatusTuple = typeof ALL_STATUS_VALUES;
-export type TestStatusEnum = StatusTuple[number];
+import {
+  type TestStatusEnum,
+  testStatusEnumFromString,
+} from "@/types/TestStatus";
 
 interface Props {
-  status: TestStatusEnum;
-  displayText: boolean;
+  status: string | null | undefined;
 }
 
-const TEST_RESULT_TAGS: { [key in TestStatusEnum]: TagVariables } = {
+const TEST_RESULT_TAGS: Record<TestStatusEnum, TagVariables> = {
   NO_STATUS: {
     icon: <QuestionCircleFilled />,
-    text: "No Status",
     color: "default",
+    text: "No Status",
   },
   PASSED: {
     icon: <CheckCircleFilled />,
@@ -77,14 +65,7 @@ const TEST_RESULT_TAGS: { [key in TestStatusEnum]: TagVariables } = {
   },
 };
 
-const TestStatusTag: React.FC<Props> = ({ status, displayText }) => {
-  const tagVars = TEST_RESULT_TAGS[status];
-
-  if (displayText) {
-    return <ResultTag tagVars={tagVars} />;
-  }
-
-  return <ResultTag tagVars={{ ...tagVars, text: undefined }} />;
+export const TestStatusTag: React.FC<Props> = ({ status }) => {
+  const statusEnum = testStatusEnumFromString(status);
+  return <ResultTag tagVars={TEST_RESULT_TAGS[statusEnum]} />;
 };
-
-export default TestStatusTag;

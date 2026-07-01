@@ -10,6 +10,7 @@ import {
 } from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import styles from "../../theme/theme.module.css";
+import { cacheLocationFromTestResults } from "../CacheLocationTag";
 import { CursorTable, getNewPaginationVariables } from "../CursorTable";
 import type { PaginationVariables } from "../CursorTable/types";
 import PortalAlert from "../PortalAlert";
@@ -99,33 +100,14 @@ export const TestTab: React.FC<Props> = ({ invocationId }) => {
     }
   };
 
-  const parsedData: TestTabRowType[] = useMemo(() => {
-    return parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => {
-      var cachedLocally: boolean | null = null;
-      var cachedRemotely: boolean | null = null;
-      if (
-        ts.testResults !== null &&
-        ts.testResults !== undefined &&
-        ts.testResults.length > 0
-      ) {
-        if (ts.testResults.every((tr) => tr.cachedLocally === true)) {
-          cachedLocally = true;
-        } else if (ts.testResults.some((tr) => tr.cachedLocally === false)) {
-          cachedLocally = false;
-        }
-        if (ts.testResults.every((tr) => tr.cachedRemotely === true)) {
-          cachedRemotely = true;
-        } else if (ts.testResults.some((tr) => tr.cachedRemotely === false)) {
-          cachedRemotely = false;
-        }
-      }
-      return {
+  const parsedData: TestTabRowType[] = useMemo(
+    () =>
+      parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => ({
         ...ts,
-        cachedLocally: cachedLocally,
-        cachedRemotely: cachedRemotely,
-      };
-    });
-  }, [data]);
+        cacheLocation: cacheLocationFromTestResults(ts.testResults),
+      })),
+    [data],
+  );
 
   if (error) {
     return (
