@@ -7,14 +7,15 @@ import { env } from "@/utils/env";
 import { requireFeature } from "@/utils/featureGuard";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
-export const TARGET_METADATA_QUERY = gql(`
-  query getTargetMetadata($id: ID!) {
+export const TEST_METADATA_QUERY = gql(`
+  query getTestMetadata($id: ID!) {
     findTargets(where: { id: $id }) {
       edges {
         node {
           id
           aspect
           instanceName {
+            id
             name
           }
           label
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/targets/$targetID/tests")({
   beforeLoad: requireFeature(env.featureFlags?.bes?.pageTests),
   loader: async ({ params }) => {
     const { data } = await apolloClient.query({
-      query: TARGET_METADATA_QUERY,
+      query: TEST_METADATA_QUERY,
       variables: { id: params.targetID },
       fetchPolicy: "cache-first",
     });

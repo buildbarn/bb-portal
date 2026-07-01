@@ -10,6 +10,7 @@ import (
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 
+	"github.com/buildbarn/bb-portal/internal/api/http/zstdmiddleware"
 	"github.com/buildbarn/bb-portal/internal/bep"
 	"github.com/buildbarn/bb-portal/pkg/frontend"
 	"github.com/buildbarn/bb-portal/pkg/grpcweb/blobstoreservice"
@@ -20,6 +21,7 @@ import (
 	http_server "github.com/buildbarn/bb-storage/pkg/http/server"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	bb_zstd "github.com/buildbarn/bb-storage/pkg/zstd"
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 	"go.opentelemetry.io/otel"
@@ -64,9 +66,13 @@ func main() {
 			return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
 		}
 
+		// Create a process-wide ZSTD compression pool.
+		zstdPool := bb_zstd.NewPoolFromConfiguration(configuration.ZstdPool)
+
 		router := mux.NewRouter()
 		router.NotFoundHandler = http.HandlerFunc(http.NotFound)
 		router.Use(otelmux.Middleware("bb-portal-http", otelmux.WithTracerProvider(tracerProvider)))
+		router.Use(zstdmiddleware.NewZstdMiddleware(zstdPool))
 
 		if err = blobstoreservice.NewBlobstoreService(
 			&configuration,
@@ -74,6 +80,7 @@ func main() {
 			dependenciesGroup,
 			grpcClientFactory,
 			instanceNameAuthorizer,
+			zstdPool,
 			router,
 		); err != nil {
 			return util.StatusWrap(err, "Failed to create Blobstore service")

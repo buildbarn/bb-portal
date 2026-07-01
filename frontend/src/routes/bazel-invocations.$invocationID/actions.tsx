@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ActionsTab } from "@/components/ActionsTab";
 import { apolloClient } from "@/components/ApolloWrapper";
+import { InvocationDataNotFoundAlert } from "@/components/pages/InvocationDataNotFoundAlert";
 import { getFragmentData, gql } from "@/graphql/__generated__";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
@@ -63,15 +64,18 @@ export const Route = createFileRoute(
       throw notFound();
     }
 
+    const instanceName = data.getBazelInvocation.instanceName.name;
+
     if (!data.getBazelInvocation.actions) {
-      throw notFound();
+      return { instanceName, actions: undefined };
     }
 
     const actions = getFragmentData(
       BAZEL_INVOCATION_ACTIONS_FRAGMENT,
       data.getBazelInvocation?.actions,
     );
-    return { instanceName: data.getBazelInvocation.instanceName.name, actions };
+
+    return { instanceName, actions };
   },
   head: (_ctx) => ({
     meta: [
@@ -88,6 +92,11 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { instanceName, actions } = Route.useLoaderData();
+
+  if (actions === undefined || actions.length === 0) {
+    return <InvocationDataNotFoundAlert type="actions" />;
+  }
+
   // TODO (isakstenstrom): Maybe we should fetch the logs here instead?
   return <ActionsTab instanceName={instanceName} actions={actions} />;
 }
