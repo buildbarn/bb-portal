@@ -1,6 +1,7 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { apolloClient } from "@/components/ApolloWrapper";
 import { InvocationTagTab } from "@/components/InvocationTagTab";
+import { InvocationDataNotFoundAlert } from "@/components/pages/InvocationDataNotFoundAlert";
 import { gql } from "@/graphql/__generated__";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/bazel-invocations/$invocationID/tags")({
     });
 
     if (!data?.getBazelInvocation?.tags) {
-      throw notFound();
+      return { tags: undefined };
     }
 
     const tags = parseGraphqlEdgeListWithFragment(
@@ -62,5 +63,10 @@ export const Route = createFileRoute("/bazel-invocations/$invocationID/tags")({
 
 function RouteComponent() {
   const { tags } = Route.useLoaderData();
+
+  if (tags === undefined || tags.length === 0) {
+    return <InvocationDataNotFoundAlert type="tags" />;
+  }
+
   return <InvocationTagTab tags={tags} />;
 }

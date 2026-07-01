@@ -1,5 +1,6 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { apolloClient } from "@/components/ApolloWrapper";
+import { InvocationDataNotFoundAlert } from "@/components/pages/InvocationDataNotFoundAlert";
 import SourceControlDisplay from "@/components/SourceControlDisplay";
 import { getFragmentData, gql } from "@/graphql/__generated__";
 import { generatePageTitle } from "@/utils/generatePageTitle";
@@ -39,7 +40,7 @@ export const Route = createFileRoute(
     });
 
     if (!data?.getBazelInvocation?.sourceControl) {
-      throw notFound();
+      return { sourceControl: undefined };
     }
 
     const sourceControl = getFragmentData(
@@ -63,5 +64,10 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { sourceControl } = Route.useLoaderData();
+
+  if (sourceControl === undefined || sourceControl.length === 0) {
+    return <InvocationDataNotFoundAlert type="source control data" />;
+  }
+
   return <SourceControlDisplay sourceControl={sourceControl} />;
 }
