@@ -166,7 +166,7 @@ export const BuildDetailsPage: React.FC<Props> = ({ buildUUID }) => {
               )}
               <Typography.Paragraph>
                 It could be that the build is too old and has been removed, or
-                that you don&quot;t have access to this build.
+                that you don't have access to this build.
               </Typography.Paragraph>
             </>
           }
