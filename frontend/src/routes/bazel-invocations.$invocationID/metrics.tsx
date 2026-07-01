@@ -1,6 +1,7 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { apolloClient } from "@/components/ApolloWrapper";
 import { BazelInvocationMetrics } from "@/components/pages/BazelInvocationMetrics";
+import { InvocationDataNotFoundAlert } from "@/components/pages/InvocationDataNotFoundAlert";
 import { getFragmentData, gql } from "@/graphql/__generated__";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
@@ -149,7 +150,7 @@ export const Route = createFileRoute(
     });
 
     if (!data?.getBazelInvocation?.metrics) {
-      throw notFound();
+      return { metrics: undefined };
     }
 
     const metrics = getFragmentData(
@@ -174,5 +175,10 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { metrics } = Route.useLoaderData();
+
+  if (metrics === undefined) {
+    return <InvocationDataNotFoundAlert type="metrics" />;
+  }
+
   return <BazelInvocationMetrics metrics={metrics} />;
 }
