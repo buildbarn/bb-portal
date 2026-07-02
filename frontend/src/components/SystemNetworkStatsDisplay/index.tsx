@@ -24,7 +24,7 @@ export const SystemNetworkStatsDisplay: React.FC<Props> = ({
     >
       <Space size="large">
         <MultiStatistic
-          title="Packets Recieved"
+          title="Packets Received"
           values={[
             {
               key: "count",
@@ -50,7 +50,7 @@ export const SystemNetworkStatsDisplay: React.FC<Props> = ({
           ]}
         />
         <MultiStatistic
-          title="Peak Packets Recieved(/s)"
+          title="Peak Packets Received(/s)"
           values={[
             {
               key: "count",
