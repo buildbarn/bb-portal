@@ -143,7 +143,7 @@ func (s *BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuild
 		return nil
 	}
 	if err != nil {
-		return util.StatusWrap(err, "Failed to recieve the initial event from the stream")
+		return util.StatusWrap(err, "Failed to receive the initial event from the stream")
 	}
 
 	data, err := requestToBuildEventWithInfo(req)
