@@ -10,6 +10,7 @@ import {
   type PieSectorShapeProps,
   Sector,
 } from "recharts";
+import styles from "./index.module.css";
 import { themeColor } from "./utils";
 
 // The `Legend` component uses `value`, `fill`,
@@ -149,7 +150,7 @@ const SummaryPieChart: React.FC<Props> = ({
           onMouseLeave={handleMouseLeave}
         />
       </PieChart>
-      <div style={{ breakInside: "avoid-column" }}>
+      <div className={styles.legendContainer}>
         {/* Use a React Portal to move the legend to outside of the PieChart. This makes layout easier */}
         <div ref={setPortalNode} />
       </div>

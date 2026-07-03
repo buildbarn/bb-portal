@@ -1,0 +1,6 @@
+.legendContainer li {
+  break-inside: avoid-column;
+}
+.legendContainer {
+  break-inside: avoid-column;
+}
