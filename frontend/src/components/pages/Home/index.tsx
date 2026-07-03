@@ -7,7 +7,7 @@ import styles from "./index.module.css";
 const BuildInstructions: React.FC = () => {
   const bazelrcLines = `build --bes_backend=${env.grpcBackendUrl}\nbuild --bes_results_url=${window.location.origin}/bazel-invocations/`;
   return (
-    <Space direction="vertical" size="large">
+    <Space orientation="vertical" size="large">
       <Typography.Text>
         Add the following lines to your{" "}
         <Typography.Text italic>.bazelrc</Typography.Text> to start sending
@@ -23,7 +23,7 @@ const BuildInstructions: React.FC = () => {
 
 const BepFileUploader: React.FC = () => {
   return (
-    <Space direction="vertical" size="large">
+    <Space orientation="vertical" size="large">
       <Uploader
         label="Upload Build Event Protocol (BEP) files to analyze"
         description={
@@ -56,7 +56,7 @@ const BESdisabled = () => {
 
 export function HomePage() {
   return (
-    <Space direction="vertical" size="large" className={styles.container}>
+    <Space orientation="vertical" size="large" className={styles.container}>
       {!!env.featureFlags?.home?.fileUpload && <BepFileUploader />}
       {!!env.featureFlags?.home?.instructions && <BuildInstructions />}
       {!env.featureFlags?.home?.fileUpload &&

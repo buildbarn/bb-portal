@@ -143,7 +143,7 @@ export const BuildGraphEvaluationMetricsDisplay: React.FC<Props> = ({
       icon={<ApartmentOutlined />}
       titleBits={["Build Graph Metrics"]}
     >
-      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+      <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         {evaluationRows.length > 0 && (
           <div>
             <Typography.Title level={5}>Skyframe Evaluation</Typography.Title>

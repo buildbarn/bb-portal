@@ -13,7 +13,7 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
   const stderrFile = getFragmentData(FILE_DETAILS_FRAGMENT, action.stderr);
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+    <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
       <Descriptions
         bordered
         column={1}
@@ -76,7 +76,7 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
         {action.configuration?.makeVariables &&
           Object.keys(action.configuration.makeVariables).length > 0 && (
             <Descriptions.Item label="Configuration Make Variables">
-              <Space direction="vertical" size="small">
+              <Space orientation="vertical" size="small">
                 {Object.entries(action.configuration.makeVariables).map(
                   ([key, value]) => (
                     <span key={key}>

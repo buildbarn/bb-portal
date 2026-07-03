@@ -127,7 +127,7 @@ const SummaryPieChart: React.FC<Props> = ({
   };
 
   return (
-    <Space direction="vertical" style={{ width: chartWidth }}>
+    <Space orientation="vertical" style={{ width: chartWidth }}>
       <PieChart height={OUTER_RADIUS * 3} width={chartWidth}>
         <Pie
           dataKey="count"

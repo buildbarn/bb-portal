@@ -53,7 +53,7 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({ invocation }) => {
   const parsedProfile = getFragmentData(FILE_DETAILS_FRAGMENT, profile);
 
   return (
-    <Descriptions column={1} bordered style={{ width: "max-content" }}>
+    <Descriptions column={1} bordered>
       <Descriptions.Item label="Status">
         <InvocationResultTag
           key="result"
