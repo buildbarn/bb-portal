@@ -21,7 +21,7 @@ const BrowserPreviousExecutionsDisplay: React.FC<Props> = ({
   showTitle,
   reducedActionDigest,
 }) => (
-  <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+  <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
     {showTitle && (
       <Typography.Title level={2}>
         <Link

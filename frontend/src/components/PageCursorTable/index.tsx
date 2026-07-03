@@ -34,7 +34,7 @@ export function PageCursorTable<RecordType = AnyObject>({
 }: Props<RecordType>) {
   const navigate = useNavigate();
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
+    <Space orientation="vertical" style={{ width: "100%" }}>
       <Table<RecordType>
         {...(antdTableProps as TableProps<RecordType>)}
         pagination={false}
@@ -44,7 +44,7 @@ export function PageCursorTable<RecordType = AnyObject>({
 
       <Row justify="end">
         <Col>
-          <Space direction="horizontal">
+          <Space orientation="horizontal">
             <LinkButton
               {...getPaginationUpdateLink({
                 pagination: {

@@ -102,7 +102,7 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
   );
 
   return (
-    <Space direction="vertical" size="middle">
+    <Space orientation="vertical" size="middle">
       <Flex vertical={false} gap="small" wrap={true}>
         {timingMetrics && (
           <TimingMetricsDisplay
