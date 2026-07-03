@@ -13,7 +13,7 @@ export const SchedulerStatistics: React.FC = () => {
 
   if (isPending) {
     return (
-      <Space direction="vertical" size={9.5}>
+      <Space orientation="vertical" size={9.5}>
         <Skeleton.Node active style={{ width: 180, height: 16 }} />
         <Skeleton.Node active style={{ width: 180, height: 32 }} />
       </Space>
@@ -25,7 +25,7 @@ export const SchedulerStatistics: React.FC = () => {
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching scheduler statistics"
+        title="Error fetching scheduler statistics"
         description={
           error.message ||
           "Unknown error occurred while fetching data from the server."

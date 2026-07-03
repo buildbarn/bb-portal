@@ -211,7 +211,7 @@ export const WorkerMetricsDisplay: React.FC<Props> = ({
       icon={<ToolOutlined />}
       titleBits={["Persistent Worker Metrics"]}
     >
-      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+      <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         {workerMetrics.length > 0 && (
           <Table
             columns={workerColumns}

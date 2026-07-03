@@ -93,15 +93,8 @@ export const TestSummaryPage: React.FC<Props> = ({
         </LinkButton>,
       ]}
     >
-      <Space direction="vertical" style={{ width: "100%" }} size="large">
-        <Descriptions
-          bordered
-          layout="vertical"
-          size="small"
-          // TODO: Make this break columns based on the width of the content
-          column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 6, xxl: 6 }}
-          style={{ width: "max-content" }}
-        >
+      <Space orientation="vertical" style={{ width: "100%" }} size="large">
+        <Descriptions layout="horizontal" size="small" column={1}>
           <Descriptions.Item label="Instance Name">
             {testSummary.invocationTarget.target.instanceName.name || "-"}
           </Descriptions.Item>
@@ -125,7 +118,7 @@ export const TestSummaryPage: React.FC<Props> = ({
           </Descriptions.Item>
         </Descriptions>
 
-        <Space direction="horizontal" size="large">
+        <Space orientation="horizontal" size="large">
           {testSummary.totalRunDurationInMs != null && (
             <Statistic
               title="Total duration"

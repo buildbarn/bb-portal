@@ -6,7 +6,7 @@ import themeStyles from "@/theme/theme.module.css";
 export const DisabledPage: React.FC = () => {
   return (
     <Space
-      direction="vertical"
+      orientation="vertical"
       size="large"
       className={themeStyles.errorPageContainer}
     >

@@ -139,7 +139,7 @@ export const SearchWidget: React.FC<InputFilterProps> = ({
   };
 
   return (
-    <Space direction="vertical">
+    <Space orientation="vertical">
       <Input
         placeholder={placeholder}
         value={selectedKeys[0]}
@@ -180,8 +180,8 @@ export const FilterPickerDropdown: React.FC<FilterDropdownProps> = ({
   clearFilters,
 }) => {
   return (
-    <Space.Compact direction="vertical">
-      <Space direction="vertical" style={{ padding: "4px" }} size={2}>
+    <Space.Compact orientation="vertical">
+      <Space orientation="vertical" style={{ padding: "4px" }} size={2}>
         {filters?.map((filter) => (
           <Checkbox
             key={filter.value.toString()}

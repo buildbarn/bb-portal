@@ -11,7 +11,7 @@ interface Props {
 
 export const InvocationTagTab: React.FC<Props> = ({ tags }) => {
   return (
-    <Descriptions bordered column={1} style={{ width: "max-content" }}>
+    <Descriptions bordered column={1}>
       {tags?.map((tag) => (
         <Descriptions.Item key={tag.key} label={tag.key}>
           {linkRegex.test(tag.value) ? (

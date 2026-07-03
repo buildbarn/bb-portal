@@ -73,14 +73,14 @@ const OperationDetails: React.FC<Props> = ({ operationID }) => {
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching operation"
+        title="Error fetching operation"
         description={errorMessage}
       />
     );
   }
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+    <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
       {data?.operation && <OperationStateDisplay operation={data.operation} />}
       {data?.operation?.completed && (
         <ExecuteResponseDisplay executeResponse={data.operation.completed} />

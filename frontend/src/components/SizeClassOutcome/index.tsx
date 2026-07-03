@@ -9,8 +9,8 @@ interface Props {
 
 const SizeClassOutcome: React.FC<Props> = ({ sizeClassStats }) => {
   return (
-    <Space direction="vertical" size="small">
-      <Space direction="horizontal" size="small" wrap>
+    <Space orientation="vertical" size="small">
+      <Space orientation="horizontal" size="small" wrap>
         {sizeClassStats.previousExecutions.map((val, index) => {
           if (val.succeeded) {
             return (

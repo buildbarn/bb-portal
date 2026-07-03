@@ -64,7 +64,7 @@ export const LogViewerCard: React.FC<Props> = ({
       return (
         <PortalAlert
           type="error"
-          message={error.message}
+          title={error.message}
           description={error.cause?.toString()}
           showIcon
           className={styles.alert}
@@ -75,7 +75,7 @@ export const LogViewerCard: React.FC<Props> = ({
       return (
         <PortalAlert
           type="error"
-          message="Output is too large to display."
+          title="Output is too large to display."
           description={`The size of the output is ${readableFileSize(logSizeBytes)}. Download the output to view it.`}
           showIcon
           className={styles.alert}
@@ -85,7 +85,7 @@ export const LogViewerCard: React.FC<Props> = ({
     if (!log) {
       return (
         <PortalAlert
-          message="There is no log information to display"
+          title="There is no log information to display"
           type="warning"
           showIcon
           className={styles.alert}
