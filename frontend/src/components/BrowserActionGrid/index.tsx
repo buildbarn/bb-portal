@@ -48,7 +48,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching action"
+        title="Error fetching action"
         description={
           "Error occurred while fetching data from the server; No command digest found."
         }
@@ -89,9 +89,9 @@ const BrowserActionGrid: React.FC<Params> = ({
       }
     : undefined;
   return (
-    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+    <Space orientation="vertical" size="large" style={{ width: "100%" }}>
       <Space
-        direction="vertical"
+        orientation="vertical"
         size="middle"
         style={{
           display: "flex",
@@ -132,7 +132,7 @@ const BrowserActionGrid: React.FC<Params> = ({
             showTitle={true}
           />
           {data.action.commandDigest && (
-            <Space direction="horizontal">
+            <Space orientation="horizontal">
               <CopyBbClientdCommandButton
                 digestFunction={browserPageParams.digestFunction}
                 instanceName={browserPageParams.instanceName}
@@ -152,7 +152,7 @@ const BrowserActionGrid: React.FC<Params> = ({
         </Typography.Text>
       )}
 
-      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+      <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={2}>Result</Typography.Title>
         {data.executeResponse ? (
           <BrowserResultDescription
@@ -168,7 +168,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       </Space>
 
       {data.action.inputRootDigest && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={2}>
             <Link
               to="/browser/$"
@@ -195,12 +195,12 @@ const BrowserActionGrid: React.FC<Params> = ({
               useBloomFilter={true}
             />
           )}
-          <Space direction="vertical" size="small">
+          <Space orientation="vertical" size="small">
             <DirectoryPrefetchDescription
               prefetchDataExists={!!fileStructureData?.fileSystemAccessProfile}
             />
             {fileStructureData && (
-              <Space direction="horizontal">
+              <Space orientation="horizontal">
                 <CopyBbClientdDirectoryButton
                   instanceName={fileStructureData.instanceName}
                   digestFunction={fileStructureData.digestFunction}
@@ -217,7 +217,7 @@ const BrowserActionGrid: React.FC<Params> = ({
         </Space>
       )}
 
-      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+      <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={2}>Output files</Typography.Title>
         <FilesTable
           entries={filesTableEntriesFromActionResultAndCommand(
@@ -232,7 +232,7 @@ const BrowserActionGrid: React.FC<Params> = ({
 
       {data.executeResponse?.serverLogs &&
         Object.keys(data.executeResponse.serverLogs).length !== 0 && (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
             <Typography.Title level={2}>Server logs</Typography.Title>
             <FilesTable
               entries={filesTableEntriesFromServerLogs(
@@ -246,7 +246,7 @@ const BrowserActionGrid: React.FC<Params> = ({
         )}
 
       {data.executeResponse?.result?.executionMetadata && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={2}>Execution metadata</Typography.Title>
 
           <Descriptions
@@ -279,7 +279,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       )}
 
       {data.authenticationMetadata && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={3}>Authentication metadata</Typography.Title>
 
           <Descriptions
@@ -298,7 +298,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       )}
 
       {data.requestMetadata && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={3}>Request metadata</Typography.Title>
 
           <Descriptions
@@ -337,7 +337,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       )}
 
       {data.posixResourceUsage && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={3}>POSIX resource usage</Typography.Title>
 
           <Descriptions
@@ -380,7 +380,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       )}
 
       {data.filePoolResourceUsage && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={3}>
             File pool resource usage
           </Typography.Title>
@@ -423,7 +423,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       )}
 
       {data.inputRootResourceUsage && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={3}>
             Input root resource usage
           </Typography.Title>
@@ -445,7 +445,7 @@ const BrowserActionGrid: React.FC<Params> = ({
       )}
 
       {data.monetaryResourceUsage && (
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
           <Typography.Title level={3}>Monetary resource usage</Typography.Title>
 
           <Descriptions column={1} bordered>

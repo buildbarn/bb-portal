@@ -7,7 +7,7 @@ const SourceControlDisplay: React.FC<{
   sourceControl: BazelInvocationSourceControlFragment[];
 }> = ({ sourceControl }) => {
   return (
-    <Space size="large" direction="vertical">
+    <Space size="large" orientation="vertical" style={{ display: "flex" }}>
       {sourceControl.map((sc) => (
         <Descriptions bordered column={1} key={sc.id}>
           {sc.repo ? (

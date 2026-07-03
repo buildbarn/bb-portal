@@ -17,7 +17,7 @@ const formatTimelineElement = (
   }
 
   return (
-    <Space direction="horizontal">
+    <Space orientation="horizontal">
       <Typography.Text strong>{timestamp.toISOString()}</Typography.Text>
       {previous && (
         <>

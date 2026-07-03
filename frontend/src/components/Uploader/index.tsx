@@ -25,7 +25,7 @@ const Uploader: React.FC<Props> = ({ label, description, action }) => {
       accept=".ndjson"
       multiple
     >
-      <Space direction="vertical" size="small">
+      <Space orientation="vertical" size="small">
         <Typography.Title level={1}>
           <FileAddTwoTone />
         </Typography.Title>
