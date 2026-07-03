@@ -127,7 +127,7 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
       <PortalAlert
         showIcon
         type="warning"
-        message="The provided invocations list was empty"
+        title="The provided invocations list was empty"
       />
     );
 

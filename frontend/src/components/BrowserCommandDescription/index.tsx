@@ -35,7 +35,7 @@ const InnerBrowserCommandDescription: React.FC<Params> = ({
   const screens = Grid.useBreakpoint();
 
   return (
-    <Space direction="vertical" size="middle">
+    <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
       {showTitle && (
         <Typography.Title level={2}>
           {commandDigest ? (

@@ -63,12 +63,20 @@ const ActionCacheOverview: React.FC<Props> = ({ acStatistics }) => {
       <Statistic
         title="Hits"
         value={acStatistics?.hits ?? 0}
-        valueStyle={{ color: HIT_COLOR }}
+        styles={{
+          content: {
+            color: HIT_COLOR,
+          },
+        }}
       />
       <Statistic
         title="Misses"
         value={acStatistics?.misses ?? 0}
-        valueStyle={{ color: MISS_COLOR }}
+        styles={{
+          content: {
+            color: MISS_COLOR,
+          },
+        }}
       />
       <Statistic
         title="Size"

@@ -13,7 +13,7 @@ interface Props {
 
 export const MultiStatistic: React.FC<Props> = ({ title, values }) => {
   return (
-    <Space.Compact direction="vertical">
+    <Space.Compact orientation="vertical">
       {values.map((elem, index) => (
         <Statistic
           key={elem.key}

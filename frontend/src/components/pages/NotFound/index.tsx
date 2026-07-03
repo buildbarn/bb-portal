@@ -16,7 +16,7 @@ export const NotFoundPage: React.FC<Props> = ({
 }) => {
   return (
     <Space
-      direction="vertical"
+      orientation="vertical"
       size="large"
       className={themeStyles.errorPageContainer}
     >
