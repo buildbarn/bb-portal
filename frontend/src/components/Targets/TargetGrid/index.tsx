@@ -1,4 +1,3 @@
-import { Row, Space } from "antd";
 import type React from "react";
 import { PageCursorTable } from "@/components/PageCursorTable";
 import type { GetPaginationUpdateLinkType } from "@/components/PageCursorTable/types";
@@ -27,32 +26,28 @@ const TargetGrid: React.FC<Props> = ({
   pageInfo,
 }) => {
   return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-      <Row>
-        <PageCursorTable<TargetListDetailsFragment>
-          columns={columns}
-          size="small"
-          rowKey="id"
-          expandable={{
-            rowExpandable: (_) => true,
-            expandedRowRender: (record) => (
-              <TargetGridRow
-                targetId={record.id}
-                numberOfElements={40}
-                direction={"newToOld"}
-              />
-            ),
-          }}
-          onChange={(_pagination, filters, _sorter, _extra) =>
-            onFilterChange(tableFiltersToGraphqlWhere(columns, filters))
-          }
-          dataSource={targets}
-          pageInfo={pageInfo}
-          getPaginationUpdateLink={getPaginationUpdateLink}
-          pageSize={pageSize}
-        />
-      </Row>
-    </Space>
+    <PageCursorTable<TargetListDetailsFragment>
+      columns={columns}
+      size="small"
+      rowKey="id"
+      expandable={{
+        rowExpandable: (_) => true,
+        expandedRowRender: (record) => (
+          <TargetGridRow
+            targetId={record.id}
+            numberOfElements={40}
+            direction={"newToOld"}
+          />
+        ),
+      }}
+      onChange={(_pagination, filters, _sorter, _extra) =>
+        onFilterChange(tableFiltersToGraphqlWhere(columns, filters))
+      }
+      dataSource={targets}
+      pageInfo={pageInfo}
+      getPaginationUpdateLink={getPaginationUpdateLink}
+      pageSize={pageSize}
+    />
   );
 };
 

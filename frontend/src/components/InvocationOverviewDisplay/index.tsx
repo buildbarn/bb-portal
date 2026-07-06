@@ -1,4 +1,4 @@
-import { Descriptions, Space } from "antd";
+import { Descriptions } from "antd";
 import type React from "react";
 import type { BazelInvocationOverviewFragment } from "@/graphql/__generated__/graphql";
 import { commandLineDataToString } from "@/utils/commandLineDataToString";
@@ -47,63 +47,61 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({ invocation }) => {
     .join(", ");
 
   return (
-    <Space>
-      <Descriptions column={1} bordered>
-        <Descriptions.Item label="Status">
-          <InvocationResultTag
-            key="result"
-            exitCodeName={exitCodeName}
-            timeSinceLastConnectionMillis={
-              connectionMetadata?.timeSinceLastConnectionMillis
-            }
-          />
+    <Descriptions column={1} bordered style={{ width: "max-content" }}>
+      <Descriptions.Item label="Status">
+        <InvocationResultTag
+          key="result"
+          exitCodeName={exitCodeName}
+          timeSinceLastConnectionMillis={
+            connectionMetadata?.timeSinceLastConnectionMillis
+          }
+        />
+      </Descriptions.Item>
+      <Descriptions.Item label="Invocation Id">
+        {invocationID}
+      </Descriptions.Item>
+      {instanceName.name !== "" && (
+        <Descriptions.Item label="Instance name">
+          {instanceName.name}
         </Descriptions.Item>
-        <Descriptions.Item label="Invocation Id">
-          {invocationID}
+      )}
+      <Descriptions.Item label="Duration">
+        <PortalDuration
+          key="duration"
+          from={startedAt || undefined}
+          to={
+            endedAt
+              ? endedAt
+              : connectionMetadata?.connectionLastOpenAt || undefined
+          }
+          includeIcon
+          formatConfig={{ smallestUnit: "s" }}
+        />
+      </Descriptions.Item>
+      {command !== "" && (
+        <Descriptions.Item label="Command">
+          <code>{command}</code>
         </Descriptions.Item>
-        {instanceName.name !== "" && (
-          <Descriptions.Item label="Instance name">
-            {instanceName.name}
-          </Descriptions.Item>
-        )}
-        <Descriptions.Item label="Duration">
-          <PortalDuration
-            key="duration"
-            from={startedAt || undefined}
-            to={
-              endedAt
-                ? endedAt
-                : connectionMetadata?.connectionLastOpenAt || undefined
-            }
-            includeIcon
-            formatConfig={{ smallestUnit: "s" }}
-          />
+      )}
+      {cpu !== "" && <Descriptions.Item label="CPU">{cpu}</Descriptions.Item>}
+      {mnemonics !== "" && (
+        <Descriptions.Item label="Configuration mnemonics">
+          {mnemonics}
         </Descriptions.Item>
-        {command !== "" && (
-          <Descriptions.Item label="Command">
-            <code>{command}</code>
-          </Descriptions.Item>
-        )}
-        {cpu !== "" && <Descriptions.Item label="CPU">{cpu}</Descriptions.Item>}
-        {mnemonics !== "" && (
-          <Descriptions.Item label="Configuration mnemonics">
-            {mnemonics}
-          </Descriptions.Item>
-        )}
-        {hostname !== "" && (
-          <Descriptions.Item label="Hostname">{hostname}</Descriptions.Item>
-        )}
-        {numFetches !== 0 && (
-          <Descriptions.Item label="Number of Fetches">
-            {numFetches}
-          </Descriptions.Item>
-        )}
-        {bazelVersion !== "" && (
-          <Descriptions.Item label="Bazel version">
-            {bazelVersion}
-          </Descriptions.Item>
-        )}
-      </Descriptions>
-    </Space>
+      )}
+      {hostname !== "" && (
+        <Descriptions.Item label="Hostname">{hostname}</Descriptions.Item>
+      )}
+      {numFetches !== 0 && (
+        <Descriptions.Item label="Number of Fetches">
+          {numFetches}
+        </Descriptions.Item>
+      )}
+      {bazelVersion !== "" && (
+        <Descriptions.Item label="Bazel version">
+          {bazelVersion}
+        </Descriptions.Item>
+      )}
+    </Descriptions>
   );
 };

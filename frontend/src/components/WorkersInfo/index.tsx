@@ -1,4 +1,4 @@
-import { Descriptions, Space } from "antd";
+import { Descriptions } from "antd";
 import type React from "react";
 import type { SizeClassQueueName } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import PropertyTagList from "../PropertyTagList";
@@ -9,23 +9,21 @@ interface Props {
 
 const WorkersInfo: React.FC<Props> = ({ sizeClassQueueName }) => {
   return (
-    <Space>
-      <Descriptions column={1} bordered>
-        <Descriptions.Item label="Instance name prefix">
-          {sizeClassQueueName.platformQueueName?.instanceNamePrefix}
-        </Descriptions.Item>
-        <Descriptions.Item label="Platform properties">
-          <PropertyTagList
-            propertyList={
-              sizeClassQueueName.platformQueueName?.platform?.properties
-            }
-          />
-        </Descriptions.Item>
-        <Descriptions.Item label="Size class">
-          {sizeClassQueueName.sizeClass}
-        </Descriptions.Item>
-      </Descriptions>
-    </Space>
+    <Descriptions column={1} bordered>
+      <Descriptions.Item label="Instance name prefix">
+        {sizeClassQueueName.platformQueueName?.instanceNamePrefix}
+      </Descriptions.Item>
+      <Descriptions.Item label="Platform properties">
+        <PropertyTagList
+          propertyList={
+            sizeClassQueueName.platformQueueName?.platform?.properties
+          }
+        />
+      </Descriptions.Item>
+      <Descriptions.Item label="Size class">
+        {sizeClassQueueName.sizeClass}
+      </Descriptions.Item>
+    </Descriptions>
   );
 };
 

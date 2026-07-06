@@ -87,104 +87,102 @@ export const TrendsPage: React.FC = () => {
   var min: number = Math.min(...dataPoints.map((x) => x.duration));
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+    <PortalCard
+      icon={<LineChartOutlined />}
+      titleBits={[<span key="title">Trends</span>]}
+    >
       <PortalCard
-        icon={<LineChartOutlined />}
-        titleBits={[<span key="title">Trends</span>]}
+        type="inner"
+        icon={<ClockCircleFilled />}
+        titleBits={[
+          <span key="invocation-durations">Invocation Durations</span>,
+        ]}
       >
-        <PortalCard
-          type="inner"
-          icon={<ClockCircleFilled />}
-          titleBits={[
-            <span key="invocation-durations">Invocation Durations</span>,
-          ]}
-        >
-          <Row>
-            <Space size="large">
-              <Statistic
-                title="Total"
-                value={data?.findBazelInvocations.totalCount}
-                valueStyle={{ color: "#82ca9d" }}
-              />
-              <Statistic
-                title="Average"
-                value={
-                  dataPoints.length === 0
-                    ? "-"
-                    : readableDurationFromMilliseconds(avg, {
-                        smallestUnit: "ms",
-                      })
-                }
-                valueStyle={{ color: "#82ca9d" }}
-              />
-              <Statistic
-                title="Median"
-                value={
-                  dataPoints.length === 0
-                    ? "-"
-                    : readableDurationFromMilliseconds(median, {
-                        smallestUnit: "ms",
-                      })
-                }
-                valueStyle={{ color: "#8884d8" }}
-              />
-              <Statistic
-                title="Max"
-                value={
-                  dataPoints.length === 0
-                    ? "-"
-                    : readableDurationFromMilliseconds(max, {
-                        smallestUnit: "ms",
-                      })
-                }
-              />
-              <Statistic
-                title="Min"
-                value={
-                  dataPoints.length === 0
-                    ? "-"
-                    : readableDurationFromMilliseconds(min, {
-                        smallestUnit: "ms",
-                      })
-                }
-              />
-            </Space>
-          </Row>
-          <Row>
-            <AreaChart
-              width={1500}
-              height={250}
-              data={dataPoints}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
-              <defs>
-                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="from"
-                tickFormatter={(v: string) => new Date(v).toLocaleDateString()}
-              />
-              <YAxis
-                tickFormatter={(v: number) =>
-                  readableDurationFromMilliseconds(v, { smallestUnit: "s" })
-                }
-              />
-              <CartesianGrid vertical={false} strokeDasharray="3 3" />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="duration"
-                stroke="#8884d8"
-                fillOpacity={1}
-                fill="url(#colorUv)"
-              />
-            </AreaChart>
-          </Row>
-        </PortalCard>
+        <Row>
+          <Space size="large">
+            <Statistic
+              title="Total"
+              value={data?.findBazelInvocations.totalCount}
+              valueStyle={{ color: "#82ca9d" }}
+            />
+            <Statistic
+              title="Average"
+              value={
+                dataPoints.length === 0
+                  ? "-"
+                  : readableDurationFromMilliseconds(avg, {
+                      smallestUnit: "ms",
+                    })
+              }
+              valueStyle={{ color: "#82ca9d" }}
+            />
+            <Statistic
+              title="Median"
+              value={
+                dataPoints.length === 0
+                  ? "-"
+                  : readableDurationFromMilliseconds(median, {
+                      smallestUnit: "ms",
+                    })
+              }
+              valueStyle={{ color: "#8884d8" }}
+            />
+            <Statistic
+              title="Max"
+              value={
+                dataPoints.length === 0
+                  ? "-"
+                  : readableDurationFromMilliseconds(max, {
+                      smallestUnit: "ms",
+                    })
+              }
+            />
+            <Statistic
+              title="Min"
+              value={
+                dataPoints.length === 0
+                  ? "-"
+                  : readableDurationFromMilliseconds(min, {
+                      smallestUnit: "ms",
+                    })
+              }
+            />
+          </Space>
+        </Row>
+        <Row>
+          <AreaChart
+            width={1500}
+            height={250}
+            data={dataPoints}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="from"
+              tickFormatter={(v: string) => new Date(v).toLocaleDateString()}
+            />
+            <YAxis
+              tickFormatter={(v: number) =>
+                readableDurationFromMilliseconds(v, { smallestUnit: "s" })
+              }
+            />
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="duration"
+              stroke="#8884d8"
+              fillOpacity={1}
+              fill="url(#colorUv)"
+            />
+          </AreaChart>
+        </Row>
       </PortalCard>
-    </Space>
+    </PortalCard>
   );
 };
