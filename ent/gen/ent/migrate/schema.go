@@ -89,13 +89,6 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "actioncachestatistics_action_summary_action_cache_statistics",
-				Unique:  false,
-				Columns: []*schema.Column{ActionCacheStatisticsColumns[6]},
-			},
-		},
 	}
 	// ActionDataColumns holds the columns for the "action_data" table.
 	ActionDataColumns = []*schema.Column{
@@ -152,13 +145,6 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "actionsummary_metrics_action_summary",
-				Unique:  false,
-				Columns: []*schema.Column{ActionSummariesColumns[5]},
-			},
-		},
 	}
 	// ArtifactMetricsColumns holds the columns for the "artifact_metrics" table.
 	ArtifactMetricsColumns = []*schema.Column{
@@ -186,13 +172,6 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "artifactmetrics_metrics_artifact_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{ArtifactMetricsColumns[9]},
-			},
-		},
 	}
 	// AuthenticatedUsersColumns holds the columns for the "authenticated_users" table.
 	AuthenticatedUsersColumns = []*schema.Column{
@@ -207,13 +186,6 @@ var (
 		Name:       "authenticated_users",
 		Columns:    AuthenticatedUsersColumns,
 		PrimaryKey: []*schema.Column{AuthenticatedUsersColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "authenticateduser_user_uuid",
-				Unique:  false,
-				Columns: []*schema.Column{AuthenticatedUsersColumns[1]},
-			},
-		},
 	}
 	// BazelInvocationsColumns holds the columns for the "bazel_invocations" table.
 	BazelInvocationsColumns = []*schema.Column{
@@ -269,11 +241,6 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "bazelinvocation_invocation_id",
-				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[1]},
-			},
-			{
 				Name:    "bazelinvocation_started_at",
 				Unique:  false,
 				Columns: []*schema.Column{BazelInvocationsColumns[3]},
@@ -322,11 +289,6 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "build_build_uuid",
-				Unique:  false,
-				Columns: []*schema.Column{BuildsColumns[1]},
-			},
-			{
 				Name:    "build_timestamp",
 				Unique:  false,
 				Columns: []*schema.Column{BuildsColumns[2]},
@@ -363,13 +325,6 @@ var (
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[10]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "buildgraphmetrics_metrics_build_graph_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{BuildGraphMetricsColumns[10]},
 			},
 		},
 	}
@@ -466,11 +421,6 @@ var (
 			},
 		},
 		Indexes: []*schema.Index{
-			{
-				Name:    "configuration_configuration_id",
-				Unique:  false,
-				Columns: []*schema.Column{ConfigurationsColumns[1]},
-			},
 			{
 				Name:    "configuration_bazel_invocation_id",
 				Unique:  false,
@@ -721,11 +671,6 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "invocationtarget_bazel_invocation_invocation_targets",
-				Unique:  false,
-				Columns: []*schema.Column{InvocationTargetsColumns[8]},
-			},
-			{
 				Name:    "invocationtarget_target_invocation_targets",
 				Unique:  false,
 				Columns: []*schema.Column{InvocationTargetsColumns[10]},
@@ -763,13 +708,6 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "memorymetrics_metrics_memory_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{MemoryMetricsColumns[4]},
-			},
-		},
 	}
 	// MetricsColumns holds the columns for the "metrics" table.
 	MetricsColumns = []*schema.Column{
@@ -787,13 +725,6 @@ var (
 				Columns:    []*schema.Column{MetricsColumns[1]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "metrics_bazel_invocation_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{MetricsColumns[1]},
 			},
 		},
 	}
@@ -841,13 +772,6 @@ var (
 				Columns:    []*schema.Column{NetworkMetricsColumns[1]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "networkmetrics_metrics_network_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{NetworkMetricsColumns[1]},
 			},
 		},
 	}
@@ -938,13 +862,6 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "systemnetworkstats_network_metrics_system_network_stats",
-				Unique:  false,
-				Columns: []*schema.Column{SystemNetworkStatsColumns[9]},
-			},
-		},
 	}
 	// TargetsColumns holds the columns for the "targets" table.
 	TargetsColumns = []*schema.Column{
@@ -972,11 +889,6 @@ var (
 				Name:    "target_instance_name_targets",
 				Unique:  false,
 				Columns: []*schema.Column{TargetsColumns[4]},
-			},
-			{
-				Name:    "target_label_aspect",
-				Unique:  false,
-				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[2]},
 			},
 			{
 				Name:    "target_label_aspect_instance_name_targets",
@@ -1018,11 +930,6 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "targetkindmapping_bazel_invocation_id",
-				Unique:  false,
-				Columns: []*schema.Column{TargetKindMappingsColumns[2]},
-			},
-			{
 				Name:    "targetkindmapping_target_id",
 				Unique:  false,
 				Columns: []*schema.Column{TargetKindMappingsColumns[3]},
@@ -1053,13 +960,6 @@ var (
 				Columns:    []*schema.Column{TargetMetricsColumns[4]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "targetmetrics_metrics_target_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{TargetMetricsColumns[4]},
 			},
 		},
 	}
@@ -1178,13 +1078,6 @@ var (
 				Columns:    []*schema.Column{TimingMetricsColumns[6]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "timingmetrics_metrics_timing_metrics",
-				Unique:  false,
-				Columns: []*schema.Column{TimingMetricsColumns[6]},
 			},
 		},
 	}

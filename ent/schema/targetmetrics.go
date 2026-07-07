@@ -4,7 +4,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 // TargetMetrics holds the schema definition for the Blob entity.
@@ -44,9 +43,7 @@ func (TargetMetrics) Edges() []ent.Edge {
 
 // Indexes of the TargetMetrics.
 func (TargetMetrics) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Edges("metrics"),
-	}
+	return []ent.Index{}
 }
 
 // Mixin of the TargetMetrics.

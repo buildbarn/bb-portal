@@ -50,7 +50,6 @@ func (TargetKindMapping) Edges() []ent.Edge {
 // Indexes of the TargetKindMapping.
 func (TargetKindMapping) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Edges("bazel_invocation"),
 		index.Edges("target"),
 		index.Edges("bazel_invocation", "target").
 			Unique(),

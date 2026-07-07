@@ -90,7 +90,6 @@ func (InvocationTarget) Edges() []ent.Edge {
 // Indexes of the InvocationTarget.
 func (InvocationTarget) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Edges("bazel_invocation"),
 		index.Edges("target"),
 		index.Edges("configuration"),
 		index.Edges("bazel_invocation", "target", "configuration"),

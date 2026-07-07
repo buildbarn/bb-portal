@@ -33,5 +33,6 @@ CREATE TABLE pg_index (
     indexrelid oid PRIMARY KEY,
     indrelid oid NOT NULL,
     indisvalid boolean NOT NULL,
+    indisunique boolean NOT NULL,
     indkey int2vector NOT NULL
 );

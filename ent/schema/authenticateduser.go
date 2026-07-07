@@ -5,7 +5,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 )
 
@@ -46,9 +45,7 @@ func (AuthenticatedUser) Fields() []ent.Field {
 
 // Indexes for AuthenticatedUser.
 func (AuthenticatedUser) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Fields("user_uuid"),
-	}
+	return []ent.Index{}
 }
 
 // Edges of the AuthenticatedUser.
