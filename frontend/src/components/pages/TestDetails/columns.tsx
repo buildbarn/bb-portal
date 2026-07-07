@@ -20,8 +20,8 @@ export const columns: TableColumnsType<TestDetailsRowType> = [
     render: (_, record) => <TestStatusTag status={record.overallStatus} />,
   },
   {
+    key: "invocationID",
     title: "Invocation ID",
-    dataIndex: "name",
     render: (_, record) => (
       <Link
         to="/bazel-invocations/$invocationID"
@@ -41,8 +41,8 @@ export const columns: TableColumnsType<TestDetailsRowType> = [
     ),
   },
   {
+    key: "duration",
     title: "Duration",
-    dataIndex: "duration",
     render: (_, record) => (
       <span className={styles.numberFormat}>
         {readableDurationFromMilliseconds(record.totalRunDurationInMs, {
