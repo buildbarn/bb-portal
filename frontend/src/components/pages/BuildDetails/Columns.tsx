@@ -121,7 +121,6 @@ export const getColumns = (): TableColumnTypeWithFilter<
     {
       key: "duration",
       title: "Duration",
-      dataIndex: "startedAt",
       render: (_, record) => (
         <PortalDuration
           key="duration"
@@ -138,7 +137,6 @@ export const getColumns = (): TableColumnTypeWithFilter<
     {
       key: "status",
       title: "Status",
-      dataIndex: "status",
       filterSearch: true,
       render: (_, record) => (
         <InvocationResultTag

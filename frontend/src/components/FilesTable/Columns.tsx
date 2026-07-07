@@ -11,13 +11,13 @@ export interface FilesTableEntry {
 const modeColumn: ColumnType<FilesTableEntry> = {
   key: "mode",
   title: "Mode",
-  dataIndex: "mode",
+  render: (_, record) => record.mode,
 };
 
 const sizeColumn: ColumnType<FilesTableEntry> = {
   key: "size",
   title: "Size",
-  dataIndex: "size",
+  render: (_, record) => record.size,
 };
 
 const filenameColumn: ColumnType<FilesTableEntry> = {
