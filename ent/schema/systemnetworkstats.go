@@ -4,7 +4,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 // SystemNetworkStats holds the schema definition for the SystemNetworkStats entity.
@@ -53,9 +52,7 @@ func (SystemNetworkStats) Edges() []ent.Edge {
 
 // Indexes of the SystemNetworkStats.
 func (SystemNetworkStats) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Edges("network_metrics"),
-	}
+	return []ent.Index{}
 }
 
 // Mixin of the SystemNetworkStats.

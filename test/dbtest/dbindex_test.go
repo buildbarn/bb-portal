@@ -35,4 +35,11 @@ func TestDatabaseProperties(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, rows)
 	})
+
+	t.Run("NoRedundantIndexes", func(t *testing.T) {
+		db := testutils.SetupTestDB(t, dbProvider)
+		rows, err := db.Sqlc().SelectRedundantIndexes(ctx)
+		require.NoError(t, err)
+		require.Empty(t, rows)
+	})
 }

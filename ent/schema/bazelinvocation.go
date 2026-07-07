@@ -179,7 +179,6 @@ func (BazelInvocation) Edges() []ent.Edge {
 // Indexes for Bazel Invocation.
 func (BazelInvocation) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("invocation_id"),
 		index.Fields("started_at"),
 		index.Fields("ended_at"),
 		index.Edges("build"),

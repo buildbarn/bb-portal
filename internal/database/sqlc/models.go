@@ -274,10 +274,11 @@ type PgConstraint struct {
 }
 
 type PgIndex struct {
-	Indexrelid interface{}
-	Indrelid   interface{}
-	Indisvalid bool
-	Indkey     interface{}
+	Indexrelid  interface{}
+	Indrelid    interface{}
+	Indisvalid  bool
+	Indisunique bool
+	Indkey      interface{}
 }
 
 type PgNamespace struct {

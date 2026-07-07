@@ -5,7 +5,6 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 // ActionCacheStatistics holds the schema definition for the ActionCacheStatistics entity.
@@ -53,9 +52,7 @@ func (ActionCacheStatistics) Edges() []ent.Edge {
 
 // Indexes of the ActionCacheStatistics.
 func (ActionCacheStatistics) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Edges("action_summary"),
-	}
+	return []ent.Index{}
 }
 
 // Mixin of the ActionCacheStatistics.

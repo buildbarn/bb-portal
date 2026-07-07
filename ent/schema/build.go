@@ -50,7 +50,6 @@ func (Build) Edges() []ent.Edge {
 // Indexes of the Build.
 func (Build) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("build_uuid"),
 		index.Fields("timestamp"),
 		index.Edges("instance_name"),
 	}

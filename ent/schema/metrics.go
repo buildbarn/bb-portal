@@ -4,7 +4,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
-	"entgo.io/ent/schema/index"
 )
 
 // Metrics holds the schema definition for the Metrics entity.
@@ -78,9 +77,7 @@ func (Metrics) Edges() []ent.Edge {
 
 // Indexes of the Metrics.
 func (Metrics) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Edges("bazel_invocation"),
-	}
+	return []ent.Index{}
 }
 
 // Mixin of the Metrics.
