@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
@@ -24,7 +26,13 @@ func (BazelInvocation) Fields() []ent.Field {
 		field.UUID("invocation_id", uuid.UUID{}).Unique().Immutable(),
 
 		// Time when the invocation was first inserted into the database.
-		field.Time("created_timestamp").Immutable().Annotations(entgql.Skip()),
+		field.Time("created_timestamp").
+			Default(time.Now).
+			Immutable().
+			Annotations(
+				entgql.Skip(),
+				entsql.Default("CURRENT_TIMESTAMP"),
+			),
 
 		// Time the event started.
 		field.Time("started_at").Optional().Annotations(entgql.OrderField("STARTED_AT")),

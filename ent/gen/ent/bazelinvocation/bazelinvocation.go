@@ -3,6 +3,8 @@
 package bazelinvocation
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -248,6 +250,8 @@ func ValidColumn(column string) bool {
 var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
+	// DefaultCreatedTimestamp holds the default value on creation for the "created_timestamp" field.
+	DefaultCreatedTimestamp func() time.Time
 	// DefaultBepCompleted holds the default value on creation for the "bep_completed" field.
 	DefaultBepCompleted bool
 	// DefaultProcessedEventStarted holds the default value on creation for the "processed_event_started" field.

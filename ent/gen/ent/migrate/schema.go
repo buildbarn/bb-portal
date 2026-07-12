@@ -219,7 +219,7 @@ var (
 	BazelInvocationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "invocation_id", Type: field.TypeUUID, Unique: true},
-		{Name: "created_timestamp", Type: field.TypeTime},
+		{Name: "created_timestamp", Type: field.TypeTime, Default: "CURRENT_TIMESTAMP"},
 		{Name: "started_at", Type: field.TypeTime, Nullable: true},
 		{Name: "ended_at", Type: field.TypeTime, Nullable: true},
 		{Name: "bep_completed", Type: field.TypeBool, Default: false},
