@@ -1034,18 +1034,20 @@ func (_q *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			}
 			_q.withMetrics = query
 
-		case "buildToolLogs":
+		case "profile":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
 				query = (&FileClient{config: _q.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
 				return err
 			}
-			_q.WithNamedBuildToolLogs(alias, func(wq *FileQuery) {
-				*wq = *query
-			})
+			_q.withProfile = query
+			if _, ok := fieldSeen[bazelinvocation.FieldProfileID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldProfileID)
+				fieldSeen[bazelinvocation.FieldProfileID] = struct{}{}
+			}
 
 		case "invocationTargets":
 			var (
@@ -2175,7 +2177,7 @@ func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				*wq = *query
 			})
 
-		case "buildToolLogs":
+		case "invocationProfile":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
@@ -2184,7 +2186,7 @@ func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			_q.WithNamedBuildToolLogs(alias, func(wq *BazelInvocationQuery) {
+			_q.WithNamedInvocationProfile(alias, func(wq *BazelInvocationQuery) {
 				*wq = *query
 			})
 

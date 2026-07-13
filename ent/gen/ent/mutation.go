@@ -22,7 +22,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
@@ -74,7 +73,6 @@ const (
 	TypeBuildGraphMetrics     = "BuildGraphMetrics"
 	TypeBuildLogChunk         = "BuildLogChunk"
 	TypeBuildTag              = "BuildTag"
-	TypeBuildToolLog          = "BuildToolLog"
 	TypeConfiguration         = "Configuration"
 	TypeConnectionMetadata    = "ConnectionMetadata"
 	TypeDigest                = "Digest"
@@ -6441,7 +6439,6 @@ type BazelInvocationMutation struct {
 	hostname                         *string
 	num_fetches                      *int64
 	addnum_fetches                   *int64
-	profile_name                     *string
 	bazel_version                    *string
 	exit_code_name                   *string
 	exit_code_code                   *int32
@@ -6482,9 +6479,8 @@ type BazelInvocationMutation struct {
 	build_log_chunks                 map[int64]struct{}
 	removedbuild_log_chunks          map[int64]struct{}
 	clearedbuild_log_chunks          bool
-	build_tool_logs                  map[int64]struct{}
-	removedbuild_tool_logs           map[int64]struct{}
-	clearedbuild_tool_logs           bool
+	profile                          *int64
+	clearedprofile                   bool
 	invocation_targets               map[int64]struct{}
 	removedinvocation_targets        map[int64]struct{}
 	clearedinvocation_targets        bool
@@ -6494,9 +6490,6 @@ type BazelInvocationMutation struct {
 	source_control                   map[int64]struct{}
 	removedsource_control            map[int64]struct{}
 	clearedsource_control            bool
-	tool_logs                        map[int64]struct{}
-	removedtool_logs                 map[int64]struct{}
-	clearedtool_logs                 bool
 	done                             bool
 	oldValue                         func(context.Context) (*BazelInvocation, error)
 	predicates                       []predicate.BazelInvocation
@@ -6980,53 +6973,53 @@ func (m *BazelInvocationMutation) ResetNumFetches() {
 	delete(m.clearedFields, bazelinvocation.FieldNumFetches)
 }
 
-// SetProfileName sets the "profile_name" field.
-func (m *BazelInvocationMutation) SetProfileName(s string) {
-	m.profile_name = &s
+// SetProfileID sets the "profile_id" field.
+func (m *BazelInvocationMutation) SetProfileID(i int64) {
+	m.profile = &i
 }
 
-// ProfileName returns the value of the "profile_name" field in the mutation.
-func (m *BazelInvocationMutation) ProfileName() (r string, exists bool) {
-	v := m.profile_name
+// ProfileID returns the value of the "profile_id" field in the mutation.
+func (m *BazelInvocationMutation) ProfileID() (r int64, exists bool) {
+	v := m.profile
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldProfileName returns the old "profile_name" field's value of the BazelInvocation entity.
+// OldProfileID returns the old "profile_id" field's value of the BazelInvocation entity.
 // If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldProfileName(ctx context.Context) (v string, err error) {
+func (m *BazelInvocationMutation) OldProfileID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProfileName is only allowed on UpdateOne operations")
+		return v, errors.New("OldProfileID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProfileName requires an ID field in the mutation")
+		return v, errors.New("OldProfileID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProfileName: %w", err)
+		return v, fmt.Errorf("querying old value for OldProfileID: %w", err)
 	}
-	return oldValue.ProfileName, nil
+	return oldValue.ProfileID, nil
 }
 
-// ClearProfileName clears the value of the "profile_name" field.
-func (m *BazelInvocationMutation) ClearProfileName() {
-	m.profile_name = nil
-	m.clearedFields[bazelinvocation.FieldProfileName] = struct{}{}
+// ClearProfileID clears the value of the "profile_id" field.
+func (m *BazelInvocationMutation) ClearProfileID() {
+	m.profile = nil
+	m.clearedFields[bazelinvocation.FieldProfileID] = struct{}{}
 }
 
-// ProfileNameCleared returns if the "profile_name" field was cleared in this mutation.
-func (m *BazelInvocationMutation) ProfileNameCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldProfileName]
+// ProfileIDCleared returns if the "profile_id" field was cleared in this mutation.
+func (m *BazelInvocationMutation) ProfileIDCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldProfileID]
 	return ok
 }
 
-// ResetProfileName resets all changes to the "profile_name" field.
-func (m *BazelInvocationMutation) ResetProfileName() {
-	m.profile_name = nil
-	delete(m.clearedFields, bazelinvocation.FieldProfileName)
+// ResetProfileID resets all changes to the "profile_id" field.
+func (m *BazelInvocationMutation) ResetProfileID() {
+	m.profile = nil
+	delete(m.clearedFields, bazelinvocation.FieldProfileID)
 }
 
 // SetBazelVersion sets the "bazel_version" field.
@@ -8041,58 +8034,31 @@ func (m *BazelInvocationMutation) ResetBuildLogChunks() {
 	m.removedbuild_log_chunks = nil
 }
 
-// AddBuildToolLogIDs adds the "build_tool_logs" edge to the File entity by ids.
-func (m *BazelInvocationMutation) AddBuildToolLogIDs(ids ...int64) {
-	if m.build_tool_logs == nil {
-		m.build_tool_logs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.build_tool_logs[ids[i]] = struct{}{}
-	}
+// ClearProfile clears the "profile" edge to the File entity.
+func (m *BazelInvocationMutation) ClearProfile() {
+	m.clearedprofile = true
+	m.clearedFields[bazelinvocation.FieldProfileID] = struct{}{}
 }
 
-// ClearBuildToolLogs clears the "build_tool_logs" edge to the File entity.
-func (m *BazelInvocationMutation) ClearBuildToolLogs() {
-	m.clearedbuild_tool_logs = true
+// ProfileCleared reports if the "profile" edge to the File entity was cleared.
+func (m *BazelInvocationMutation) ProfileCleared() bool {
+	return m.ProfileIDCleared() || m.clearedprofile
 }
 
-// BuildToolLogsCleared reports if the "build_tool_logs" edge to the File entity was cleared.
-func (m *BazelInvocationMutation) BuildToolLogsCleared() bool {
-	return m.clearedbuild_tool_logs
-}
-
-// RemoveBuildToolLogIDs removes the "build_tool_logs" edge to the File entity by IDs.
-func (m *BazelInvocationMutation) RemoveBuildToolLogIDs(ids ...int64) {
-	if m.removedbuild_tool_logs == nil {
-		m.removedbuild_tool_logs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.build_tool_logs, ids[i])
-		m.removedbuild_tool_logs[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBuildToolLogs returns the removed IDs of the "build_tool_logs" edge to the File entity.
-func (m *BazelInvocationMutation) RemovedBuildToolLogsIDs() (ids []int64) {
-	for id := range m.removedbuild_tool_logs {
-		ids = append(ids, id)
+// ProfileIDs returns the "profile" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ProfileID instead. It exists only for internal usage by the builders.
+func (m *BazelInvocationMutation) ProfileIDs() (ids []int64) {
+	if id := m.profile; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
 
-// BuildToolLogsIDs returns the "build_tool_logs" edge IDs in the mutation.
-func (m *BazelInvocationMutation) BuildToolLogsIDs() (ids []int64) {
-	for id := range m.build_tool_logs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetBuildToolLogs resets all changes to the "build_tool_logs" edge.
-func (m *BazelInvocationMutation) ResetBuildToolLogs() {
-	m.build_tool_logs = nil
-	m.clearedbuild_tool_logs = false
-	m.removedbuild_tool_logs = nil
+// ResetProfile resets all changes to the "profile" edge.
+func (m *BazelInvocationMutation) ResetProfile() {
+	m.profile = nil
+	m.clearedprofile = false
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
@@ -8257,60 +8223,6 @@ func (m *BazelInvocationMutation) ResetSourceControl() {
 	m.removedsource_control = nil
 }
 
-// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by ids.
-func (m *BazelInvocationMutation) AddToolLogIDs(ids ...int64) {
-	if m.tool_logs == nil {
-		m.tool_logs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.tool_logs[ids[i]] = struct{}{}
-	}
-}
-
-// ClearToolLogs clears the "tool_logs" edge to the BuildToolLog entity.
-func (m *BazelInvocationMutation) ClearToolLogs() {
-	m.clearedtool_logs = true
-}
-
-// ToolLogsCleared reports if the "tool_logs" edge to the BuildToolLog entity was cleared.
-func (m *BazelInvocationMutation) ToolLogsCleared() bool {
-	return m.clearedtool_logs
-}
-
-// RemoveToolLogIDs removes the "tool_logs" edge to the BuildToolLog entity by IDs.
-func (m *BazelInvocationMutation) RemoveToolLogIDs(ids ...int64) {
-	if m.removedtool_logs == nil {
-		m.removedtool_logs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.tool_logs, ids[i])
-		m.removedtool_logs[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedToolLogs returns the removed IDs of the "tool_logs" edge to the BuildToolLog entity.
-func (m *BazelInvocationMutation) RemovedToolLogsIDs() (ids []int64) {
-	for id := range m.removedtool_logs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ToolLogsIDs returns the "tool_logs" edge IDs in the mutation.
-func (m *BazelInvocationMutation) ToolLogsIDs() (ids []int64) {
-	for id := range m.tool_logs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetToolLogs resets all changes to the "tool_logs" edge.
-func (m *BazelInvocationMutation) ResetToolLogs() {
-	m.tool_logs = nil
-	m.clearedtool_logs = false
-	m.removedtool_logs = nil
-}
-
 // Where appends a list predicates to the BazelInvocationMutation builder.
 func (m *BazelInvocationMutation) Where(ps ...predicate.BazelInvocation) {
 	m.predicates = append(m.predicates, ps...)
@@ -8370,8 +8282,8 @@ func (m *BazelInvocationMutation) Fields() []string {
 	if m.num_fetches != nil {
 		fields = append(fields, bazelinvocation.FieldNumFetches)
 	}
-	if m.profile_name != nil {
-		fields = append(fields, bazelinvocation.FieldProfileName)
+	if m.profile != nil {
+		fields = append(fields, bazelinvocation.FieldProfileID)
 	}
 	if m.bazel_version != nil {
 		fields = append(fields, bazelinvocation.FieldBazelVersion)
@@ -8430,8 +8342,8 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.Hostname()
 	case bazelinvocation.FieldNumFetches:
 		return m.NumFetches()
-	case bazelinvocation.FieldProfileName:
-		return m.ProfileName()
+	case bazelinvocation.FieldProfileID:
+		return m.ProfileID()
 	case bazelinvocation.FieldBazelVersion:
 		return m.BazelVersion()
 	case bazelinvocation.FieldExitCodeName:
@@ -8479,8 +8391,8 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldHostname(ctx)
 	case bazelinvocation.FieldNumFetches:
 		return m.OldNumFetches(ctx)
-	case bazelinvocation.FieldProfileName:
-		return m.OldProfileName(ctx)
+	case bazelinvocation.FieldProfileID:
+		return m.OldProfileID(ctx)
 	case bazelinvocation.FieldBazelVersion:
 		return m.OldBazelVersion(ctx)
 	case bazelinvocation.FieldExitCodeName:
@@ -8568,12 +8480,12 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetNumFetches(v)
 		return nil
-	case bazelinvocation.FieldProfileName:
-		v, ok := value.(string)
+	case bazelinvocation.FieldProfileID:
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetProfileName(v)
+		m.SetProfileID(v)
 		return nil
 	case bazelinvocation.FieldBazelVersion:
 		v, ok := value.(string)
@@ -8724,8 +8636,8 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldNumFetches) {
 		fields = append(fields, bazelinvocation.FieldNumFetches)
 	}
-	if m.FieldCleared(bazelinvocation.FieldProfileName) {
-		fields = append(fields, bazelinvocation.FieldProfileName)
+	if m.FieldCleared(bazelinvocation.FieldProfileID) {
+		fields = append(fields, bazelinvocation.FieldProfileID)
 	}
 	if m.FieldCleared(bazelinvocation.FieldBazelVersion) {
 		fields = append(fields, bazelinvocation.FieldBazelVersion)
@@ -8777,8 +8689,8 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 	case bazelinvocation.FieldNumFetches:
 		m.ClearNumFetches()
 		return nil
-	case bazelinvocation.FieldProfileName:
-		m.ClearProfileName()
+	case bazelinvocation.FieldProfileID:
+		m.ClearProfileID()
 		return nil
 	case bazelinvocation.FieldBazelVersion:
 		m.ClearBazelVersion()
@@ -8833,8 +8745,8 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 	case bazelinvocation.FieldNumFetches:
 		m.ResetNumFetches()
 		return nil
-	case bazelinvocation.FieldProfileName:
-		m.ResetProfileName()
+	case bazelinvocation.FieldProfileID:
+		m.ResetProfileID()
 		return nil
 	case bazelinvocation.FieldBazelVersion:
 		m.ResetBazelVersion()
@@ -8875,7 +8787,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 15)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -8909,8 +8821,8 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	if m.build_log_chunks != nil {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
-	if m.build_tool_logs != nil {
-		edges = append(edges, bazelinvocation.EdgeBuildToolLogs)
+	if m.profile != nil {
+		edges = append(edges, bazelinvocation.EdgeProfile)
 	}
 	if m.invocation_targets != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -8920,9 +8832,6 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.source_control != nil {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
-	}
-	if m.tool_logs != nil {
-		edges = append(edges, bazelinvocation.EdgeToolLogs)
 	}
 	return edges
 }
@@ -8985,12 +8894,10 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeBuildToolLogs:
-		ids := make([]ent.Value, 0, len(m.build_tool_logs))
-		for id := range m.build_tool_logs {
-			ids = append(ids, id)
+	case bazelinvocation.EdgeProfile:
+		if id := m.profile; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case bazelinvocation.EdgeInvocationTargets:
 		ids := make([]ent.Value, 0, len(m.invocation_targets))
 		for id := range m.invocation_targets {
@@ -9009,19 +8916,13 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeToolLogs:
-		ids := make([]ent.Value, 0, len(m.tool_logs))
-		for id := range m.tool_logs {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 15)
 	if m.removedtags != nil {
 		edges = append(edges, bazelinvocation.EdgeTags)
 	}
@@ -9037,9 +8938,6 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	if m.removedbuild_log_chunks != nil {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
-	if m.removedbuild_tool_logs != nil {
-		edges = append(edges, bazelinvocation.EdgeBuildToolLogs)
-	}
 	if m.removedinvocation_targets != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
 	}
@@ -9048,9 +8946,6 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	}
 	if m.removedsource_control != nil {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
-	}
-	if m.removedtool_logs != nil {
-		edges = append(edges, bazelinvocation.EdgeToolLogs)
 	}
 	return edges
 }
@@ -9089,12 +8984,6 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeBuildToolLogs:
-		ids := make([]ent.Value, 0, len(m.removedbuild_tool_logs))
-		for id := range m.removedbuild_tool_logs {
-			ids = append(ids, id)
-		}
-		return ids
 	case bazelinvocation.EdgeInvocationTargets:
 		ids := make([]ent.Value, 0, len(m.removedinvocation_targets))
 		for id := range m.removedinvocation_targets {
@@ -9113,19 +9002,13 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeToolLogs:
-		ids := make([]ent.Value, 0, len(m.removedtool_logs))
-		for id := range m.removedtool_logs {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 15)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9159,8 +9042,8 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	if m.clearedbuild_log_chunks {
 		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
-	if m.clearedbuild_tool_logs {
-		edges = append(edges, bazelinvocation.EdgeBuildToolLogs)
+	if m.clearedprofile {
+		edges = append(edges, bazelinvocation.EdgeProfile)
 	}
 	if m.clearedinvocation_targets {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -9170,9 +9053,6 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedsource_control {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
-	}
-	if m.clearedtool_logs {
-		edges = append(edges, bazelinvocation.EdgeToolLogs)
 	}
 	return edges
 }
@@ -9203,16 +9083,14 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedincomplete_build_logs
 	case bazelinvocation.EdgeBuildLogChunks:
 		return m.clearedbuild_log_chunks
-	case bazelinvocation.EdgeBuildToolLogs:
-		return m.clearedbuild_tool_logs
+	case bazelinvocation.EdgeProfile:
+		return m.clearedprofile
 	case bazelinvocation.EdgeInvocationTargets:
 		return m.clearedinvocation_targets
 	case bazelinvocation.EdgeTargetKindMappings:
 		return m.clearedtarget_kind_mappings
 	case bazelinvocation.EdgeSourceControl:
 		return m.clearedsource_control
-	case bazelinvocation.EdgeToolLogs:
-		return m.clearedtool_logs
 	}
 	return false
 }
@@ -9238,6 +9116,9 @@ func (m *BazelInvocationMutation) ClearEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ClearMetrics()
+		return nil
+	case bazelinvocation.EdgeProfile:
+		m.ClearProfile()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation unique edge %s", name)
@@ -9280,8 +9161,8 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 	case bazelinvocation.EdgeBuildLogChunks:
 		m.ResetBuildLogChunks()
 		return nil
-	case bazelinvocation.EdgeBuildToolLogs:
-		m.ResetBuildToolLogs()
+	case bazelinvocation.EdgeProfile:
+		m.ResetProfile()
 		return nil
 	case bazelinvocation.EdgeInvocationTargets:
 		m.ResetInvocationTargets()
@@ -9291,9 +9172,6 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeSourceControl:
 		m.ResetSourceControl()
-		return nil
-	case bazelinvocation.EdgeToolLogs:
-		m.ResetToolLogs()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation edge %s", name)
@@ -12394,495 +12272,6 @@ func (m *BuildTagMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown BuildTag edge %s", name)
 }
 
-// BuildToolLogMutation represents an operation that mutates the BuildToolLog nodes in the graph.
-type BuildToolLogMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int64
-	clearedbazel_invocation bool
-	file                    *int64
-	clearedfile             bool
-	done                    bool
-	oldValue                func(context.Context) (*BuildToolLog, error)
-	predicates              []predicate.BuildToolLog
-}
-
-var _ ent.Mutation = (*BuildToolLogMutation)(nil)
-
-// buildtoollogOption allows management of the mutation configuration using functional options.
-type buildtoollogOption func(*BuildToolLogMutation)
-
-// newBuildToolLogMutation creates new mutation for the BuildToolLog entity.
-func newBuildToolLogMutation(c config, op Op, opts ...buildtoollogOption) *BuildToolLogMutation {
-	m := &BuildToolLogMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeBuildToolLog,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withBuildToolLogID sets the ID field of the mutation.
-func withBuildToolLogID(id int64) buildtoollogOption {
-	return func(m *BuildToolLogMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *BuildToolLog
-		)
-		m.oldValue = func(ctx context.Context) (*BuildToolLog, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().BuildToolLog.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withBuildToolLog sets the old BuildToolLog of the mutation.
-func withBuildToolLog(node *BuildToolLog) buildtoollogOption {
-	return func(m *BuildToolLogMutation) {
-		m.oldValue = func(context.Context) (*BuildToolLog, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m BuildToolLogMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m BuildToolLogMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of BuildToolLog entities.
-func (m *BuildToolLogMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *BuildToolLogMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *BuildToolLogMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().BuildToolLog.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (m *BuildToolLogMutation) SetBazelInvocationID(i int64) {
-	m.bazel_invocation = &i
-}
-
-// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
-func (m *BuildToolLogMutation) BazelInvocationID() (r int64, exists bool) {
-	v := m.bazel_invocation
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the BuildToolLog entity.
-// If the BuildToolLog object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BuildToolLogMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
-	}
-	return oldValue.BazelInvocationID, nil
-}
-
-// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
-func (m *BuildToolLogMutation) ResetBazelInvocationID() {
-	m.bazel_invocation = nil
-}
-
-// SetFileID sets the "file_id" field.
-func (m *BuildToolLogMutation) SetFileID(i int64) {
-	m.file = &i
-}
-
-// FileID returns the value of the "file_id" field in the mutation.
-func (m *BuildToolLogMutation) FileID() (r int64, exists bool) {
-	v := m.file
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFileID returns the old "file_id" field's value of the BuildToolLog entity.
-// If the BuildToolLog object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BuildToolLogMutation) OldFileID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFileID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFileID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFileID: %w", err)
-	}
-	return oldValue.FileID, nil
-}
-
-// ResetFileID resets all changes to the "file_id" field.
-func (m *BuildToolLogMutation) ResetFileID() {
-	m.file = nil
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *BuildToolLogMutation) ClearBazelInvocation() {
-	m.clearedbazel_invocation = true
-	m.clearedFields[buildtoollog.FieldBazelInvocationID] = struct{}{}
-}
-
-// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
-func (m *BuildToolLogMutation) BazelInvocationCleared() bool {
-	return m.clearedbazel_invocation
-}
-
-// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *BuildToolLogMutation) BazelInvocationIDs() (ids []int64) {
-	if id := m.bazel_invocation; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
-func (m *BuildToolLogMutation) ResetBazelInvocation() {
-	m.bazel_invocation = nil
-	m.clearedbazel_invocation = false
-}
-
-// ClearFile clears the "file" edge to the File entity.
-func (m *BuildToolLogMutation) ClearFile() {
-	m.clearedfile = true
-	m.clearedFields[buildtoollog.FieldFileID] = struct{}{}
-}
-
-// FileCleared reports if the "file" edge to the File entity was cleared.
-func (m *BuildToolLogMutation) FileCleared() bool {
-	return m.clearedfile
-}
-
-// FileIDs returns the "file" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// FileID instead. It exists only for internal usage by the builders.
-func (m *BuildToolLogMutation) FileIDs() (ids []int64) {
-	if id := m.file; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetFile resets all changes to the "file" edge.
-func (m *BuildToolLogMutation) ResetFile() {
-	m.file = nil
-	m.clearedfile = false
-}
-
-// Where appends a list predicates to the BuildToolLogMutation builder.
-func (m *BuildToolLogMutation) Where(ps ...predicate.BuildToolLog) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the BuildToolLogMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *BuildToolLogMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.BuildToolLog, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *BuildToolLogMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *BuildToolLogMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (BuildToolLog).
-func (m *BuildToolLogMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *BuildToolLogMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.bazel_invocation != nil {
-		fields = append(fields, buildtoollog.FieldBazelInvocationID)
-	}
-	if m.file != nil {
-		fields = append(fields, buildtoollog.FieldFileID)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *BuildToolLogMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case buildtoollog.FieldBazelInvocationID:
-		return m.BazelInvocationID()
-	case buildtoollog.FieldFileID:
-		return m.FileID()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *BuildToolLogMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case buildtoollog.FieldBazelInvocationID:
-		return m.OldBazelInvocationID(ctx)
-	case buildtoollog.FieldFileID:
-		return m.OldFileID(ctx)
-	}
-	return nil, fmt.Errorf("unknown BuildToolLog field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BuildToolLogMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case buildtoollog.FieldBazelInvocationID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBazelInvocationID(v)
-		return nil
-	case buildtoollog.FieldFileID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFileID(v)
-		return nil
-	}
-	return fmt.Errorf("unknown BuildToolLog field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *BuildToolLogMutation) AddedFields() []string {
-	var fields []string
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *BuildToolLogMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BuildToolLogMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown BuildToolLog numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *BuildToolLogMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *BuildToolLogMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *BuildToolLogMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown BuildToolLog nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *BuildToolLogMutation) ResetField(name string) error {
-	switch name {
-	case buildtoollog.FieldBazelInvocationID:
-		m.ResetBazelInvocationID()
-		return nil
-	case buildtoollog.FieldFileID:
-		m.ResetFileID()
-		return nil
-	}
-	return fmt.Errorf("unknown BuildToolLog field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *BuildToolLogMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.bazel_invocation != nil {
-		edges = append(edges, buildtoollog.EdgeBazelInvocation)
-	}
-	if m.file != nil {
-		edges = append(edges, buildtoollog.EdgeFile)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *BuildToolLogMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case buildtoollog.EdgeBazelInvocation:
-		if id := m.bazel_invocation; id != nil {
-			return []ent.Value{*id}
-		}
-	case buildtoollog.EdgeFile:
-		if id := m.file; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *BuildToolLogMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *BuildToolLogMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *BuildToolLogMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedbazel_invocation {
-		edges = append(edges, buildtoollog.EdgeBazelInvocation)
-	}
-	if m.clearedfile {
-		edges = append(edges, buildtoollog.EdgeFile)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *BuildToolLogMutation) EdgeCleared(name string) bool {
-	switch name {
-	case buildtoollog.EdgeBazelInvocation:
-		return m.clearedbazel_invocation
-	case buildtoollog.EdgeFile:
-		return m.clearedfile
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *BuildToolLogMutation) ClearEdge(name string) error {
-	switch name {
-	case buildtoollog.EdgeBazelInvocation:
-		m.ClearBazelInvocation()
-		return nil
-	case buildtoollog.EdgeFile:
-		m.ClearFile()
-		return nil
-	}
-	return fmt.Errorf("unknown BuildToolLog unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *BuildToolLogMutation) ResetEdge(name string) error {
-	switch name {
-	case buildtoollog.EdgeBazelInvocation:
-		m.ResetBazelInvocation()
-		return nil
-	case buildtoollog.EdgeFile:
-		m.ResetFile()
-		return nil
-	}
-	return fmt.Errorf("unknown BuildToolLog edge %s", name)
-}
-
 // ConfigurationMutation represents an operation that mutates the Configuration nodes in the graph.
 type ConfigurationMutation struct {
 	config
@@ -15518,15 +14907,12 @@ type FileMutation struct {
 	action_stderr                   map[int64]struct{}
 	removedaction_stderr            map[int64]struct{}
 	clearedaction_stderr            bool
-	build_tool_logs                 map[int64]struct{}
-	removedbuild_tool_logs          map[int64]struct{}
-	clearedbuild_tool_logs          bool
+	invocation_profile              map[int64]struct{}
+	removedinvocation_profile       map[int64]struct{}
+	clearedinvocation_profile       bool
 	test_action_output              map[int64]struct{}
 	removedtest_action_output       map[int64]struct{}
 	clearedtest_action_output       bool
-	tool_logs                       map[int64]struct{}
-	removedtool_logs                map[int64]struct{}
-	clearedtool_logs                bool
 	test_action_output_table        map[int64]struct{}
 	removedtest_action_output_table map[int64]struct{}
 	clearedtest_action_output_table bool
@@ -15873,58 +15259,58 @@ func (m *FileMutation) ResetActionStderr() {
 	m.removedaction_stderr = nil
 }
 
-// AddBuildToolLogIDs adds the "build_tool_logs" edge to the BazelInvocation entity by ids.
-func (m *FileMutation) AddBuildToolLogIDs(ids ...int64) {
-	if m.build_tool_logs == nil {
-		m.build_tool_logs = make(map[int64]struct{})
+// AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by ids.
+func (m *FileMutation) AddInvocationProfileIDs(ids ...int64) {
+	if m.invocation_profile == nil {
+		m.invocation_profile = make(map[int64]struct{})
 	}
 	for i := range ids {
-		m.build_tool_logs[ids[i]] = struct{}{}
+		m.invocation_profile[ids[i]] = struct{}{}
 	}
 }
 
-// ClearBuildToolLogs clears the "build_tool_logs" edge to the BazelInvocation entity.
-func (m *FileMutation) ClearBuildToolLogs() {
-	m.clearedbuild_tool_logs = true
+// ClearInvocationProfile clears the "invocation_profile" edge to the BazelInvocation entity.
+func (m *FileMutation) ClearInvocationProfile() {
+	m.clearedinvocation_profile = true
 }
 
-// BuildToolLogsCleared reports if the "build_tool_logs" edge to the BazelInvocation entity was cleared.
-func (m *FileMutation) BuildToolLogsCleared() bool {
-	return m.clearedbuild_tool_logs
+// InvocationProfileCleared reports if the "invocation_profile" edge to the BazelInvocation entity was cleared.
+func (m *FileMutation) InvocationProfileCleared() bool {
+	return m.clearedinvocation_profile
 }
 
-// RemoveBuildToolLogIDs removes the "build_tool_logs" edge to the BazelInvocation entity by IDs.
-func (m *FileMutation) RemoveBuildToolLogIDs(ids ...int64) {
-	if m.removedbuild_tool_logs == nil {
-		m.removedbuild_tool_logs = make(map[int64]struct{})
+// RemoveInvocationProfileIDs removes the "invocation_profile" edge to the BazelInvocation entity by IDs.
+func (m *FileMutation) RemoveInvocationProfileIDs(ids ...int64) {
+	if m.removedinvocation_profile == nil {
+		m.removedinvocation_profile = make(map[int64]struct{})
 	}
 	for i := range ids {
-		delete(m.build_tool_logs, ids[i])
-		m.removedbuild_tool_logs[ids[i]] = struct{}{}
+		delete(m.invocation_profile, ids[i])
+		m.removedinvocation_profile[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedBuildToolLogs returns the removed IDs of the "build_tool_logs" edge to the BazelInvocation entity.
-func (m *FileMutation) RemovedBuildToolLogsIDs() (ids []int64) {
-	for id := range m.removedbuild_tool_logs {
+// RemovedInvocationProfile returns the removed IDs of the "invocation_profile" edge to the BazelInvocation entity.
+func (m *FileMutation) RemovedInvocationProfileIDs() (ids []int64) {
+	for id := range m.removedinvocation_profile {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// BuildToolLogsIDs returns the "build_tool_logs" edge IDs in the mutation.
-func (m *FileMutation) BuildToolLogsIDs() (ids []int64) {
-	for id := range m.build_tool_logs {
+// InvocationProfileIDs returns the "invocation_profile" edge IDs in the mutation.
+func (m *FileMutation) InvocationProfileIDs() (ids []int64) {
+	for id := range m.invocation_profile {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetBuildToolLogs resets all changes to the "build_tool_logs" edge.
-func (m *FileMutation) ResetBuildToolLogs() {
-	m.build_tool_logs = nil
-	m.clearedbuild_tool_logs = false
-	m.removedbuild_tool_logs = nil
+// ResetInvocationProfile resets all changes to the "invocation_profile" edge.
+func (m *FileMutation) ResetInvocationProfile() {
+	m.invocation_profile = nil
+	m.clearedinvocation_profile = false
+	m.removedinvocation_profile = nil
 }
 
 // AddTestActionOutputIDs adds the "test_action_output" edge to the TestResult entity by ids.
@@ -15979,60 +15365,6 @@ func (m *FileMutation) ResetTestActionOutput() {
 	m.test_action_output = nil
 	m.clearedtest_action_output = false
 	m.removedtest_action_output = nil
-}
-
-// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by ids.
-func (m *FileMutation) AddToolLogIDs(ids ...int64) {
-	if m.tool_logs == nil {
-		m.tool_logs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.tool_logs[ids[i]] = struct{}{}
-	}
-}
-
-// ClearToolLogs clears the "tool_logs" edge to the BuildToolLog entity.
-func (m *FileMutation) ClearToolLogs() {
-	m.clearedtool_logs = true
-}
-
-// ToolLogsCleared reports if the "tool_logs" edge to the BuildToolLog entity was cleared.
-func (m *FileMutation) ToolLogsCleared() bool {
-	return m.clearedtool_logs
-}
-
-// RemoveToolLogIDs removes the "tool_logs" edge to the BuildToolLog entity by IDs.
-func (m *FileMutation) RemoveToolLogIDs(ids ...int64) {
-	if m.removedtool_logs == nil {
-		m.removedtool_logs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.tool_logs, ids[i])
-		m.removedtool_logs[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedToolLogs returns the removed IDs of the "tool_logs" edge to the BuildToolLog entity.
-func (m *FileMutation) RemovedToolLogsIDs() (ids []int64) {
-	for id := range m.removedtool_logs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ToolLogsIDs returns the "tool_logs" edge IDs in the mutation.
-func (m *FileMutation) ToolLogsIDs() (ids []int64) {
-	for id := range m.tool_logs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetToolLogs resets all changes to the "tool_logs" edge.
-func (m *FileMutation) ResetToolLogs() {
-	m.tool_logs = nil
-	m.clearedtool_logs = false
-	m.removedtool_logs = nil
 }
 
 // AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by ids.
@@ -16242,7 +15574,7 @@ func (m *FileMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 7)
 	if m.digest != nil {
 		edges = append(edges, file.EdgeDigest)
 	}
@@ -16255,14 +15587,11 @@ func (m *FileMutation) AddedEdges() []string {
 	if m.action_stderr != nil {
 		edges = append(edges, file.EdgeActionStderr)
 	}
-	if m.build_tool_logs != nil {
-		edges = append(edges, file.EdgeBuildToolLogs)
+	if m.invocation_profile != nil {
+		edges = append(edges, file.EdgeInvocationProfile)
 	}
 	if m.test_action_output != nil {
 		edges = append(edges, file.EdgeTestActionOutput)
-	}
-	if m.tool_logs != nil {
-		edges = append(edges, file.EdgeToolLogs)
 	}
 	if m.test_action_output_table != nil {
 		edges = append(edges, file.EdgeTestActionOutputTable)
@@ -16294,21 +15623,15 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case file.EdgeBuildToolLogs:
-		ids := make([]ent.Value, 0, len(m.build_tool_logs))
-		for id := range m.build_tool_logs {
+	case file.EdgeInvocationProfile:
+		ids := make([]ent.Value, 0, len(m.invocation_profile))
+		for id := range m.invocation_profile {
 			ids = append(ids, id)
 		}
 		return ids
 	case file.EdgeTestActionOutput:
 		ids := make([]ent.Value, 0, len(m.test_action_output))
 		for id := range m.test_action_output {
-			ids = append(ids, id)
-		}
-		return ids
-	case file.EdgeToolLogs:
-		ids := make([]ent.Value, 0, len(m.tool_logs))
-		for id := range m.tool_logs {
 			ids = append(ids, id)
 		}
 		return ids
@@ -16324,21 +15647,18 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 7)
 	if m.removedaction_stdout != nil {
 		edges = append(edges, file.EdgeActionStdout)
 	}
 	if m.removedaction_stderr != nil {
 		edges = append(edges, file.EdgeActionStderr)
 	}
-	if m.removedbuild_tool_logs != nil {
-		edges = append(edges, file.EdgeBuildToolLogs)
+	if m.removedinvocation_profile != nil {
+		edges = append(edges, file.EdgeInvocationProfile)
 	}
 	if m.removedtest_action_output != nil {
 		edges = append(edges, file.EdgeTestActionOutput)
-	}
-	if m.removedtool_logs != nil {
-		edges = append(edges, file.EdgeToolLogs)
 	}
 	if m.removedtest_action_output_table != nil {
 		edges = append(edges, file.EdgeTestActionOutputTable)
@@ -16362,21 +15682,15 @@ func (m *FileMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case file.EdgeBuildToolLogs:
-		ids := make([]ent.Value, 0, len(m.removedbuild_tool_logs))
-		for id := range m.removedbuild_tool_logs {
+	case file.EdgeInvocationProfile:
+		ids := make([]ent.Value, 0, len(m.removedinvocation_profile))
+		for id := range m.removedinvocation_profile {
 			ids = append(ids, id)
 		}
 		return ids
 	case file.EdgeTestActionOutput:
 		ids := make([]ent.Value, 0, len(m.removedtest_action_output))
 		for id := range m.removedtest_action_output {
-			ids = append(ids, id)
-		}
-		return ids
-	case file.EdgeToolLogs:
-		ids := make([]ent.Value, 0, len(m.removedtool_logs))
-		for id := range m.removedtool_logs {
 			ids = append(ids, id)
 		}
 		return ids
@@ -16392,7 +15706,7 @@ func (m *FileMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 7)
 	if m.cleareddigest {
 		edges = append(edges, file.EdgeDigest)
 	}
@@ -16405,14 +15719,11 @@ func (m *FileMutation) ClearedEdges() []string {
 	if m.clearedaction_stderr {
 		edges = append(edges, file.EdgeActionStderr)
 	}
-	if m.clearedbuild_tool_logs {
-		edges = append(edges, file.EdgeBuildToolLogs)
+	if m.clearedinvocation_profile {
+		edges = append(edges, file.EdgeInvocationProfile)
 	}
 	if m.clearedtest_action_output {
 		edges = append(edges, file.EdgeTestActionOutput)
-	}
-	if m.clearedtool_logs {
-		edges = append(edges, file.EdgeToolLogs)
 	}
 	if m.clearedtest_action_output_table {
 		edges = append(edges, file.EdgeTestActionOutputTable)
@@ -16432,12 +15743,10 @@ func (m *FileMutation) EdgeCleared(name string) bool {
 		return m.clearedaction_stdout
 	case file.EdgeActionStderr:
 		return m.clearedaction_stderr
-	case file.EdgeBuildToolLogs:
-		return m.clearedbuild_tool_logs
+	case file.EdgeInvocationProfile:
+		return m.clearedinvocation_profile
 	case file.EdgeTestActionOutput:
 		return m.clearedtest_action_output
-	case file.EdgeToolLogs:
-		return m.clearedtool_logs
 	case file.EdgeTestActionOutputTable:
 		return m.clearedtest_action_output_table
 	}
@@ -16474,14 +15783,11 @@ func (m *FileMutation) ResetEdge(name string) error {
 	case file.EdgeActionStderr:
 		m.ResetActionStderr()
 		return nil
-	case file.EdgeBuildToolLogs:
-		m.ResetBuildToolLogs()
+	case file.EdgeInvocationProfile:
+		m.ResetInvocationProfile()
 		return nil
 	case file.EdgeTestActionOutput:
 		m.ResetTestActionOutput()
-		return nil
-	case file.EdgeToolLogs:
-		m.ResetToolLogs()
 		return nil
 	case file.EdgeTestActionOutputTable:
 		m.ResetTestActionOutputTable()

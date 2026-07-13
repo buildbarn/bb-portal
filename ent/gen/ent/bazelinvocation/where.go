@@ -96,9 +96,9 @@ func NumFetches(v int64) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldNumFetches, v))
 }
 
-// ProfileName applies equality check predicate on the "profile_name" field. It's identical to ProfileNameEQ.
-func ProfileName(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileName, v))
+// ProfileID applies equality check predicate on the "profile_id" field. It's identical to ProfileIDEQ.
+func ProfileID(v int64) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileID, v))
 }
 
 // BazelVersion applies equality check predicate on the "bazel_version" field. It's identical to BazelVersionEQ.
@@ -526,79 +526,34 @@ func NumFetchesNotNil() predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldNotNull(FieldNumFetches))
 }
 
-// ProfileNameEQ applies the EQ predicate on the "profile_name" field.
-func ProfileNameEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileName, v))
+// ProfileIDEQ applies the EQ predicate on the "profile_id" field.
+func ProfileIDEQ(v int64) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileID, v))
 }
 
-// ProfileNameNEQ applies the NEQ predicate on the "profile_name" field.
-func ProfileNameNEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldProfileName, v))
+// ProfileIDNEQ applies the NEQ predicate on the "profile_id" field.
+func ProfileIDNEQ(v int64) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProfileID, v))
 }
 
-// ProfileNameIn applies the In predicate on the "profile_name" field.
-func ProfileNameIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIn(FieldProfileName, vs...))
+// ProfileIDIn applies the In predicate on the "profile_id" field.
+func ProfileIDIn(vs ...int64) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldProfileID, vs...))
 }
 
-// ProfileNameNotIn applies the NotIn predicate on the "profile_name" field.
-func ProfileNameNotIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotIn(FieldProfileName, vs...))
+// ProfileIDNotIn applies the NotIn predicate on the "profile_id" field.
+func ProfileIDNotIn(vs ...int64) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldProfileID, vs...))
 }
 
-// ProfileNameGT applies the GT predicate on the "profile_name" field.
-func ProfileNameGT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGT(FieldProfileName, v))
+// ProfileIDIsNil applies the IsNil predicate on the "profile_id" field.
+func ProfileIDIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldProfileID))
 }
 
-// ProfileNameGTE applies the GTE predicate on the "profile_name" field.
-func ProfileNameGTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGTE(FieldProfileName, v))
-}
-
-// ProfileNameLT applies the LT predicate on the "profile_name" field.
-func ProfileNameLT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLT(FieldProfileName, v))
-}
-
-// ProfileNameLTE applies the LTE predicate on the "profile_name" field.
-func ProfileNameLTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLTE(FieldProfileName, v))
-}
-
-// ProfileNameContains applies the Contains predicate on the "profile_name" field.
-func ProfileNameContains(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContains(FieldProfileName, v))
-}
-
-// ProfileNameHasPrefix applies the HasPrefix predicate on the "profile_name" field.
-func ProfileNameHasPrefix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldProfileName, v))
-}
-
-// ProfileNameHasSuffix applies the HasSuffix predicate on the "profile_name" field.
-func ProfileNameHasSuffix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldProfileName, v))
-}
-
-// ProfileNameIsNil applies the IsNil predicate on the "profile_name" field.
-func ProfileNameIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldProfileName))
-}
-
-// ProfileNameNotNil applies the NotNil predicate on the "profile_name" field.
-func ProfileNameNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldProfileName))
-}
-
-// ProfileNameEqualFold applies the EqualFold predicate on the "profile_name" field.
-func ProfileNameEqualFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEqualFold(FieldProfileName, v))
-}
-
-// ProfileNameContainsFold applies the ContainsFold predicate on the "profile_name" field.
-func ProfileNameContainsFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContainsFold(FieldProfileName, v))
+// ProfileIDNotNil applies the NotNil predicate on the "profile_id" field.
+func ProfileIDNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldProfileID))
 }
 
 // BazelVersionEQ applies the EQ predicate on the "bazel_version" field.
@@ -1134,21 +1089,21 @@ func HasBuildLogChunksWith(preds ...predicate.BuildLogChunk) predicate.BazelInvo
 	})
 }
 
-// HasBuildToolLogs applies the HasEdge predicate on the "build_tool_logs" edge.
-func HasBuildToolLogs() predicate.BazelInvocation {
+// HasProfile applies the HasEdge predicate on the "profile" edge.
+func HasProfile() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, BuildToolLogsTable, BuildToolLogsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, false, ProfileTable, ProfileColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasBuildToolLogsWith applies the HasEdge predicate on the "build_tool_logs" edge with a given conditions (other predicates).
-func HasBuildToolLogsWith(preds ...predicate.File) predicate.BazelInvocation {
+// HasProfileWith applies the HasEdge predicate on the "profile" edge with a given conditions (other predicates).
+func HasProfileWith(preds ...predicate.File) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := newBuildToolLogsStep()
+		step := newProfileStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -1218,29 +1173,6 @@ func HasSourceControl() predicate.BazelInvocation {
 func HasSourceControlWith(preds ...predicate.SourceControl) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := newSourceControlStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasToolLogs applies the HasEdge predicate on the "tool_logs" edge.
-func HasToolLogs() predicate.BazelInvocation {
-	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, ToolLogsTable, ToolLogsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasToolLogsWith applies the HasEdge predicate on the "tool_logs" edge with a given conditions (other predicates).
-func HasToolLogsWith(preds ...predicate.BuildToolLog) predicate.BazelInvocation {
-	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := newToolLogsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

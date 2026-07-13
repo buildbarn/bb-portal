@@ -2736,23 +2736,6 @@ type BazelInvocationWhereInput struct {
 	NumFetchesIsNil  bool    `json:"numFetchesIsNil,omitempty"`
 	NumFetchesNotNil bool    `json:"numFetchesNotNil,omitempty"`
 
-	// "profile_name" field predicates.
-	ProfileName             *string  `json:"profileName,omitempty"`
-	ProfileNameNEQ          *string  `json:"profileNameNEQ,omitempty"`
-	ProfileNameIn           []string `json:"profileNameIn,omitempty"`
-	ProfileNameNotIn        []string `json:"profileNameNotIn,omitempty"`
-	ProfileNameGT           *string  `json:"profileNameGT,omitempty"`
-	ProfileNameGTE          *string  `json:"profileNameGTE,omitempty"`
-	ProfileNameLT           *string  `json:"profileNameLT,omitempty"`
-	ProfileNameLTE          *string  `json:"profileNameLTE,omitempty"`
-	ProfileNameContains     *string  `json:"profileNameContains,omitempty"`
-	ProfileNameHasPrefix    *string  `json:"profileNameHasPrefix,omitempty"`
-	ProfileNameHasSuffix    *string  `json:"profileNameHasSuffix,omitempty"`
-	ProfileNameIsNil        bool     `json:"profileNameIsNil,omitempty"`
-	ProfileNameNotNil       bool     `json:"profileNameNotNil,omitempty"`
-	ProfileNameEqualFold    *string  `json:"profileNameEqualFold,omitempty"`
-	ProfileNameContainsFold *string  `json:"profileNameContainsFold,omitempty"`
-
 	// "bazel_version" field predicates.
 	BazelVersion             *string  `json:"bazelVersion,omitempty"`
 	BazelVersionNEQ          *string  `json:"bazelVersionNEQ,omitempty"`
@@ -2831,9 +2814,9 @@ type BazelInvocationWhereInput struct {
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
 	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
 
-	// "build_tool_logs" edge predicates.
-	HasBuildToolLogs     *bool             `json:"hasBuildToolLogs,omitempty"`
-	HasBuildToolLogsWith []*FileWhereInput `json:"hasBuildToolLogsWith,omitempty"`
+	// "profile" edge predicates.
+	HasProfile     *bool             `json:"hasProfile,omitempty"`
+	HasProfileWith []*FileWhereInput `json:"hasProfileWith,omitempty"`
 
 	// "invocation_targets" edge predicates.
 	HasInvocationTargets     *bool                         `json:"hasInvocationTargets,omitempty"`
@@ -3149,51 +3132,6 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	if i.NumFetchesNotNil {
 		predicates = append(predicates, bazelinvocation.NumFetchesNotNil())
 	}
-	if i.ProfileName != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameEQ(*i.ProfileName))
-	}
-	if i.ProfileNameNEQ != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameNEQ(*i.ProfileNameNEQ))
-	}
-	if len(i.ProfileNameIn) > 0 {
-		predicates = append(predicates, bazelinvocation.ProfileNameIn(i.ProfileNameIn...))
-	}
-	if len(i.ProfileNameNotIn) > 0 {
-		predicates = append(predicates, bazelinvocation.ProfileNameNotIn(i.ProfileNameNotIn...))
-	}
-	if i.ProfileNameGT != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameGT(*i.ProfileNameGT))
-	}
-	if i.ProfileNameGTE != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameGTE(*i.ProfileNameGTE))
-	}
-	if i.ProfileNameLT != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameLT(*i.ProfileNameLT))
-	}
-	if i.ProfileNameLTE != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameLTE(*i.ProfileNameLTE))
-	}
-	if i.ProfileNameContains != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameContains(*i.ProfileNameContains))
-	}
-	if i.ProfileNameHasPrefix != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameHasPrefix(*i.ProfileNameHasPrefix))
-	}
-	if i.ProfileNameHasSuffix != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameHasSuffix(*i.ProfileNameHasSuffix))
-	}
-	if i.ProfileNameIsNil {
-		predicates = append(predicates, bazelinvocation.ProfileNameIsNil())
-	}
-	if i.ProfileNameNotNil {
-		predicates = append(predicates, bazelinvocation.ProfileNameNotNil())
-	}
-	if i.ProfileNameEqualFold != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameEqualFold(*i.ProfileNameEqualFold))
-	}
-	if i.ProfileNameContainsFold != nil {
-		predicates = append(predicates, bazelinvocation.ProfileNameContainsFold(*i.ProfileNameContainsFold))
-	}
 	if i.BazelVersion != nil {
 		predicates = append(predicates, bazelinvocation.BazelVersionEQ(*i.BazelVersion))
 	}
@@ -3459,23 +3397,23 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 		}
 		predicates = append(predicates, bazelinvocation.HasMetricsWith(with...))
 	}
-	if i.HasBuildToolLogs != nil {
-		p := bazelinvocation.HasBuildToolLogs()
-		if !*i.HasBuildToolLogs {
+	if i.HasProfile != nil {
+		p := bazelinvocation.HasProfile()
+		if !*i.HasProfile {
 			p = bazelinvocation.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasBuildToolLogsWith) > 0 {
-		with := make([]predicate.File, 0, len(i.HasBuildToolLogsWith))
-		for _, w := range i.HasBuildToolLogsWith {
+	if len(i.HasProfileWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasProfileWith))
+		for _, w := range i.HasProfileWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasBuildToolLogsWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasProfileWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, bazelinvocation.HasBuildToolLogsWith(with...))
+		predicates = append(predicates, bazelinvocation.HasProfileWith(with...))
 	}
 	if i.HasInvocationTargets != nil {
 		p := bazelinvocation.HasInvocationTargets()
@@ -5494,9 +5432,9 @@ type FileWhereInput struct {
 	HasActionStderr     *bool               `json:"hasActionStderr,omitempty"`
 	HasActionStderrWith []*ActionWhereInput `json:"hasActionStderrWith,omitempty"`
 
-	// "build_tool_logs" edge predicates.
-	HasBuildToolLogs     *bool                        `json:"hasBuildToolLogs,omitempty"`
-	HasBuildToolLogsWith []*BazelInvocationWhereInput `json:"hasBuildToolLogsWith,omitempty"`
+	// "invocation_profile" edge predicates.
+	HasInvocationProfile     *bool                        `json:"hasInvocationProfile,omitempty"`
+	HasInvocationProfileWith []*BazelInvocationWhereInput `json:"hasInvocationProfileWith,omitempty"`
 
 	// "test_action_output" edge predicates.
 	HasTestActionOutput     *bool                   `json:"hasTestActionOutput,omitempty"`
@@ -5683,23 +5621,23 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 		}
 		predicates = append(predicates, file.HasActionStderrWith(with...))
 	}
-	if i.HasBuildToolLogs != nil {
-		p := file.HasBuildToolLogs()
-		if !*i.HasBuildToolLogs {
+	if i.HasInvocationProfile != nil {
+		p := file.HasInvocationProfile()
+		if !*i.HasInvocationProfile {
 			p = file.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasBuildToolLogsWith) > 0 {
-		with := make([]predicate.BazelInvocation, 0, len(i.HasBuildToolLogsWith))
-		for _, w := range i.HasBuildToolLogsWith {
+	if len(i.HasInvocationProfileWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasInvocationProfileWith))
+		for _, w := range i.HasInvocationProfileWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasBuildToolLogsWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasInvocationProfileWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, file.HasBuildToolLogsWith(with...))
+		predicates = append(predicates, file.HasInvocationProfileWith(with...))
 	}
 	if i.HasTestActionOutput != nil {
 		p := file.HasTestActionOutput()

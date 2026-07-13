@@ -685,7 +685,6 @@ export type BazelInvocation = Node & {
   bazelVersion?: Maybe<Scalars['String']['output']>;
   bepCompleted: Scalars['Boolean']['output'];
   build?: Maybe<Build>;
-  buildToolLogs?: Maybe<Array<File>>;
   /** JSON representation of the canonical command line options. */
   canonicalCommandLine?: Maybe<Scalars['Map']['output']>;
   configurations?: Maybe<Array<Configuration>>;
@@ -836,9 +835,6 @@ export type BazelInvocationWhereInput = {
   hasAuthenticatedUserWith?: InputMaybe<Array<AuthenticatedUserWhereInput>>;
   /** build edge predicates */
   hasBuild?: InputMaybe<Scalars['Boolean']['input']>;
-  /** build_tool_logs edge predicates */
-  hasBuildToolLogs?: InputMaybe<Scalars['Boolean']['input']>;
-  hasBuildToolLogsWith?: InputMaybe<Array<FileWhereInput>>;
   hasBuildWith?: InputMaybe<Array<BuildWhereInput>>;
   /** configurations edge predicates */
   hasConfigurations?: InputMaybe<Scalars['Boolean']['input']>;
@@ -855,6 +851,9 @@ export type BazelInvocationWhereInput = {
   /** metrics edge predicates */
   hasMetrics?: InputMaybe<Scalars['Boolean']['input']>;
   hasMetricsWith?: InputMaybe<Array<MetricsWhereInput>>;
+  /** profile edge predicates */
+  hasProfile?: InputMaybe<Scalars['Boolean']['input']>;
+  hasProfileWith?: InputMaybe<Array<FileWhereInput>>;
   /** source_control edge predicates */
   hasSourceControl?: InputMaybe<Scalars['Boolean']['input']>;
   hasSourceControlWith?: InputMaybe<Array<SourceControlWhereInput>>;
@@ -908,22 +907,6 @@ export type BazelInvocationWhereInput = {
   numFetchesNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
   numFetchesNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   or?: InputMaybe<Array<BazelInvocationWhereInput>>;
-  /** profile_name field predicates */
-  profileName?: InputMaybe<Scalars['String']['input']>;
-  profileNameContains?: InputMaybe<Scalars['String']['input']>;
-  profileNameContainsFold?: InputMaybe<Scalars['String']['input']>;
-  profileNameEqualFold?: InputMaybe<Scalars['String']['input']>;
-  profileNameGT?: InputMaybe<Scalars['String']['input']>;
-  profileNameGTE?: InputMaybe<Scalars['String']['input']>;
-  profileNameHasPrefix?: InputMaybe<Scalars['String']['input']>;
-  profileNameHasSuffix?: InputMaybe<Scalars['String']['input']>;
-  profileNameIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  profileNameIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  profileNameLT?: InputMaybe<Scalars['String']['input']>;
-  profileNameLTE?: InputMaybe<Scalars['String']['input']>;
-  profileNameNEQ?: InputMaybe<Scalars['String']['input']>;
-  profileNameNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
-  profileNameNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** started_at field predicates */
   startedAt?: InputMaybe<Scalars['Time']['input']>;
   startedAtGT?: InputMaybe<Scalars['Time']['input']>;
@@ -1505,11 +1488,11 @@ export type File = Node & {
   __typename?: 'File';
   actionStderr?: Maybe<Array<Action>>;
   actionStdout?: Maybe<Array<Action>>;
-  buildToolLogs?: Maybe<Array<BazelInvocation>>;
   digest: Digest;
   digestID: Scalars['ID']['output'];
   filePath: FilePath;
   id: Scalars['ID']['output'];
+  invocationProfile?: Maybe<Array<BazelInvocation>>;
   testActionOutput?: Maybe<Array<TestResult>>;
 };
 
@@ -1577,15 +1560,15 @@ export type FileWhereInput = {
   /** action_stdout edge predicates */
   hasActionStdout?: InputMaybe<Scalars['Boolean']['input']>;
   hasActionStdoutWith?: InputMaybe<Array<ActionWhereInput>>;
-  /** build_tool_logs edge predicates */
-  hasBuildToolLogs?: InputMaybe<Scalars['Boolean']['input']>;
-  hasBuildToolLogsWith?: InputMaybe<Array<BazelInvocationWhereInput>>;
   /** digest edge predicates */
   hasDigest?: InputMaybe<Scalars['Boolean']['input']>;
   hasDigestWith?: InputMaybe<Array<DigestWhereInput>>;
   /** file_path edge predicates */
   hasFilePath?: InputMaybe<Scalars['Boolean']['input']>;
   hasFilePathWith?: InputMaybe<Array<FilePathWhereInput>>;
+  /** invocation_profile edge predicates */
+  hasInvocationProfile?: InputMaybe<Scalars['Boolean']['input']>;
+  hasInvocationProfileWith?: InputMaybe<Array<BazelInvocationWhereInput>>;
   /** test_action_output edge predicates */
   hasTestActionOutput?: InputMaybe<Scalars['Boolean']['input']>;
   hasTestActionOutputWith?: InputMaybe<Array<TestResultWhereInput>>;

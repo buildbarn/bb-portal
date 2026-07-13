@@ -222,16 +222,12 @@ func (_m *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (_m *BazelInvocation) BuildToolLogs(ctx context.Context) (result []*File, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = _m.NamedBuildToolLogs(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = _m.Edges.BuildToolLogsOrErr()
-	}
+func (_m *BazelInvocation) Profile(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.ProfileOrErr()
 	if IsNotLoaded(err) {
-		result, err = _m.QueryBuildToolLogs().All(ctx)
+		result, err = _m.QueryProfile().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (_m *BazelInvocation) InvocationTargets(
@@ -424,14 +420,14 @@ func (_m *File) ActionStderr(ctx context.Context) (result []*Action, err error) 
 	return result, err
 }
 
-func (_m *File) BuildToolLogs(ctx context.Context) (result []*BazelInvocation, err error) {
+func (_m *File) InvocationProfile(ctx context.Context) (result []*BazelInvocation, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = _m.NamedBuildToolLogs(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedInvocationProfile(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = _m.Edges.BuildToolLogsOrErr()
+		result, err = _m.Edges.InvocationProfileOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = _m.QueryBuildToolLogs().All(ctx)
+		result, err = _m.QueryInvocationProfile().All(ctx)
 	}
 	return result, err
 }

@@ -26,7 +26,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
@@ -84,8 +83,6 @@ type Client struct {
 	BuildLogChunk *BuildLogChunkClient
 	// BuildTag is the client for interacting with the BuildTag builders.
 	BuildTag *BuildTagClient
-	// BuildToolLog is the client for interacting with the BuildToolLog builders.
-	BuildToolLog *BuildToolLogClient
 	// Configuration is the client for interacting with the Configuration builders.
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
@@ -162,7 +159,6 @@ func (c *Client) init() {
 	c.BuildGraphMetrics = NewBuildGraphMetricsClient(c.config)
 	c.BuildLogChunk = NewBuildLogChunkClient(c.config)
 	c.BuildTag = NewBuildTagClient(c.config)
-	c.BuildToolLog = NewBuildToolLogClient(c.config)
 	c.Configuration = NewConfigurationClient(c.config)
 	c.ConnectionMetadata = NewConnectionMetadataClient(c.config)
 	c.Digest = NewDigestClient(c.config)
@@ -292,7 +288,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
 		BuildLogChunk:         NewBuildLogChunkClient(cfg),
 		BuildTag:              NewBuildTagClient(cfg),
-		BuildToolLog:          NewBuildToolLogClient(cfg),
 		Configuration:         NewConfigurationClient(cfg),
 		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
 		Digest:                NewDigestClient(cfg),
@@ -349,7 +344,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
 		BuildLogChunk:         NewBuildLogChunkClient(cfg),
 		BuildTag:              NewBuildTagClient(cfg),
-		BuildToolLog:          NewBuildToolLogClient(cfg),
 		Configuration:         NewConfigurationClient(cfg),
 		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
 		Digest:                NewDigestClient(cfg),
@@ -407,13 +401,13 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
-		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.BuildToolLog,
-		c.Configuration, c.ConnectionMetadata, c.Digest, c.EventMetadata, c.File,
-		c.FilePath, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
-		c.InvocationTag, c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
-		c.NetworkMetrics, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestActionOutput,
-		c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
+		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.Configuration,
+		c.ConnectionMetadata, c.Digest, c.EventMetadata, c.File, c.FilePath,
+		c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName, c.InvocationTag,
+		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics,
+		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
+		c.TargetKindMapping, c.TargetMetrics, c.TestActionOutput, c.TestResult,
+		c.TestSummary, c.TestTarget, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -425,13 +419,13 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
-		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.BuildToolLog,
-		c.Configuration, c.ConnectionMetadata, c.Digest, c.EventMetadata, c.File,
-		c.FilePath, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
-		c.InvocationTag, c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
-		c.NetworkMetrics, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestActionOutput,
-		c.TestResult, c.TestSummary, c.TestTarget, c.TimingMetrics,
+		c.BuildGraphMetrics, c.BuildLogChunk, c.BuildTag, c.Configuration,
+		c.ConnectionMetadata, c.Digest, c.EventMetadata, c.File, c.FilePath,
+		c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName, c.InvocationTag,
+		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics,
+		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
+		c.TargetKindMapping, c.TargetMetrics, c.TestActionOutput, c.TestResult,
+		c.TestSummary, c.TestTarget, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -462,8 +456,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BuildLogChunk.mutate(ctx, m)
 	case *BuildTagMutation:
 		return c.BuildTag.mutate(ctx, m)
-	case *BuildToolLogMutation:
-		return c.BuildToolLog.mutate(ctx, m)
 	case *ConfigurationMutation:
 		return c.Configuration.mutate(ctx, m)
 	case *ConnectionMetadataMutation:
@@ -1812,15 +1804,15 @@ func (c *BazelInvocationClient) QueryBuildLogChunks(_m *BazelInvocation) *BuildL
 	return query
 }
 
-// QueryBuildToolLogs queries the build_tool_logs edge of a BazelInvocation.
-func (c *BazelInvocationClient) QueryBuildToolLogs(_m *BazelInvocation) *FileQuery {
+// QueryProfile queries the profile edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryProfile(_m *BazelInvocation) *FileQuery {
 	query := (&FileClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, bazelinvocation.BuildToolLogsTable, bazelinvocation.BuildToolLogsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, false, bazelinvocation.ProfileTable, bazelinvocation.ProfileColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -1869,22 +1861,6 @@ func (c *BazelInvocationClient) QuerySourceControl(_m *BazelInvocation) *SourceC
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(sourcecontrol.Table, sourcecontrol.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryToolLogs queries the tool_logs edge of a BazelInvocation.
-func (c *BazelInvocationClient) QueryToolLogs(_m *BazelInvocation) *BuildToolLogQuery {
-	query := (&BuildToolLogClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
-			sqlgraph.To(buildtoollog.Table, buildtoollog.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, bazelinvocation.ToolLogsTable, bazelinvocation.ToolLogsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -2544,171 +2520,6 @@ func (c *BuildTagClient) mutate(ctx context.Context, m *BuildTagMutation) (Value
 		return (&BuildTagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown BuildTag mutation op: %q", m.Op())
-	}
-}
-
-// BuildToolLogClient is a client for the BuildToolLog schema.
-type BuildToolLogClient struct {
-	config
-}
-
-// NewBuildToolLogClient returns a client for the BuildToolLog from the given config.
-func NewBuildToolLogClient(c config) *BuildToolLogClient {
-	return &BuildToolLogClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `buildtoollog.Hooks(f(g(h())))`.
-func (c *BuildToolLogClient) Use(hooks ...Hook) {
-	c.hooks.BuildToolLog = append(c.hooks.BuildToolLog, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `buildtoollog.Intercept(f(g(h())))`.
-func (c *BuildToolLogClient) Intercept(interceptors ...Interceptor) {
-	c.inters.BuildToolLog = append(c.inters.BuildToolLog, interceptors...)
-}
-
-// Create returns a builder for creating a BuildToolLog entity.
-func (c *BuildToolLogClient) Create() *BuildToolLogCreate {
-	mutation := newBuildToolLogMutation(c.config, OpCreate)
-	return &BuildToolLogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of BuildToolLog entities.
-func (c *BuildToolLogClient) CreateBulk(builders ...*BuildToolLogCreate) *BuildToolLogCreateBulk {
-	return &BuildToolLogCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *BuildToolLogClient) MapCreateBulk(slice any, setFunc func(*BuildToolLogCreate, int)) *BuildToolLogCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &BuildToolLogCreateBulk{err: fmt.Errorf("calling to BuildToolLogClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*BuildToolLogCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &BuildToolLogCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for BuildToolLog.
-func (c *BuildToolLogClient) Update() *BuildToolLogUpdate {
-	mutation := newBuildToolLogMutation(c.config, OpUpdate)
-	return &BuildToolLogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *BuildToolLogClient) UpdateOne(_m *BuildToolLog) *BuildToolLogUpdateOne {
-	mutation := newBuildToolLogMutation(c.config, OpUpdateOne, withBuildToolLog(_m))
-	return &BuildToolLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *BuildToolLogClient) UpdateOneID(id int64) *BuildToolLogUpdateOne {
-	mutation := newBuildToolLogMutation(c.config, OpUpdateOne, withBuildToolLogID(id))
-	return &BuildToolLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for BuildToolLog.
-func (c *BuildToolLogClient) Delete() *BuildToolLogDelete {
-	mutation := newBuildToolLogMutation(c.config, OpDelete)
-	return &BuildToolLogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *BuildToolLogClient) DeleteOne(_m *BuildToolLog) *BuildToolLogDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *BuildToolLogClient) DeleteOneID(id int64) *BuildToolLogDeleteOne {
-	builder := c.Delete().Where(buildtoollog.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &BuildToolLogDeleteOne{builder}
-}
-
-// Query returns a query builder for BuildToolLog.
-func (c *BuildToolLogClient) Query() *BuildToolLogQuery {
-	return &BuildToolLogQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeBuildToolLog},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a BuildToolLog entity by its id.
-func (c *BuildToolLogClient) Get(ctx context.Context, id int64) (*BuildToolLog, error) {
-	return c.Query().Where(buildtoollog.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *BuildToolLogClient) GetX(ctx context.Context, id int64) *BuildToolLog {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryBazelInvocation queries the bazel_invocation edge of a BuildToolLog.
-func (c *BuildToolLogClient) QueryBazelInvocation(_m *BuildToolLog) *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(buildtoollog.Table, buildtoollog.FieldID, id),
-			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, buildtoollog.BazelInvocationTable, buildtoollog.BazelInvocationColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryFile queries the file edge of a BuildToolLog.
-func (c *BuildToolLogClient) QueryFile(_m *BuildToolLog) *FileQuery {
-	query := (&FileClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(buildtoollog.Table, buildtoollog.FieldID, id),
-			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, buildtoollog.FileTable, buildtoollog.FileColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *BuildToolLogClient) Hooks() []Hook {
-	return c.hooks.BuildToolLog
-}
-
-// Interceptors returns the client interceptors.
-func (c *BuildToolLogClient) Interceptors() []Interceptor {
-	return c.inters.BuildToolLog
-}
-
-func (c *BuildToolLogClient) mutate(ctx context.Context, m *BuildToolLogMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&BuildToolLogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&BuildToolLogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&BuildToolLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&BuildToolLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown BuildToolLog mutation op: %q", m.Op())
 	}
 }
 
@@ -3512,15 +3323,15 @@ func (c *FileClient) QueryActionStderr(_m *File) *ActionQuery {
 	return query
 }
 
-// QueryBuildToolLogs queries the build_tool_logs edge of a File.
-func (c *FileClient) QueryBuildToolLogs(_m *File) *BazelInvocationQuery {
+// QueryInvocationProfile queries the invocation_profile edge of a File.
+func (c *FileClient) QueryInvocationProfile(_m *File) *BazelInvocationQuery {
 	query := (&BazelInvocationClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(file.Table, file.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, file.BuildToolLogsTable, file.BuildToolLogsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.InvocationProfileTable, file.InvocationProfileColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -3537,22 +3348,6 @@ func (c *FileClient) QueryTestActionOutput(_m *File) *TestResultQuery {
 			sqlgraph.From(file.Table, file.FieldID, id),
 			sqlgraph.To(testresult.Table, testresult.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, file.TestActionOutputTable, file.TestActionOutputPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryToolLogs queries the tool_logs edge of a File.
-func (c *FileClient) QueryToolLogs(_m *File) *BuildToolLogQuery {
-	query := (&BuildToolLogClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(file.Table, file.FieldID, id),
-			sqlgraph.To(buildtoollog.Table, buildtoollog.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, file.ToolLogsTable, file.ToolLogsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -7124,22 +6919,22 @@ type (
 	hooks struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
-		BuildTag, BuildToolLog, Configuration, ConnectionMetadata, Digest,
-		EventMetadata, File, FilePath, GarbageMetrics, IncompleteBuildLog,
-		InstanceName, InvocationTag, InvocationTarget, MemoryMetrics, Metrics,
-		MissDetail, NetworkMetrics, RunnerCount, SourceControl, SystemNetworkStats,
-		Target, TargetKindMapping, TargetMetrics, TestActionOutput, TestResult,
-		TestSummary, TestTarget, TimingMetrics []ent.Hook
+		BuildTag, Configuration, ConnectionMetadata, Digest, EventMetadata, File,
+		FilePath, GarbageMetrics, IncompleteBuildLog, InstanceName, InvocationTag,
+		InvocationTarget, MemoryMetrics, Metrics, MissDetail, NetworkMetrics,
+		RunnerCount, SourceControl, SystemNetworkStats, Target, TargetKindMapping,
+		TargetMetrics, TestActionOutput, TestResult, TestSummary, TestTarget,
+		TimingMetrics []ent.Hook
 	}
 	inters struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
-		BuildTag, BuildToolLog, Configuration, ConnectionMetadata, Digest,
-		EventMetadata, File, FilePath, GarbageMetrics, IncompleteBuildLog,
-		InstanceName, InvocationTag, InvocationTarget, MemoryMetrics, Metrics,
-		MissDetail, NetworkMetrics, RunnerCount, SourceControl, SystemNetworkStats,
-		Target, TargetKindMapping, TargetMetrics, TestActionOutput, TestResult,
-		TestSummary, TestTarget, TimingMetrics []ent.Interceptor
+		BuildTag, Configuration, ConnectionMetadata, Digest, EventMetadata, File,
+		FilePath, GarbageMetrics, IncompleteBuildLog, InstanceName, InvocationTag,
+		InvocationTarget, MemoryMetrics, Metrics, MissDetail, NetworkMetrics,
+		RunnerCount, SourceControl, SystemNetworkStats, Target, TargetKindMapping,
+		TargetMetrics, TestActionOutput, TestResult, TestSummary, TestTarget,
+		TimingMetrics []ent.Interceptor
 	}
 )
 

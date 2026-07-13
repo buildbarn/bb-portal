@@ -38,25 +38,22 @@ type FileEdges struct {
 	ActionStdout []*Action `json:"action_stdout,omitempty"`
 	// ActionStderr holds the value of the action_stderr edge.
 	ActionStderr []*Action `json:"action_stderr,omitempty"`
-	// BuildToolLogs holds the value of the build_tool_logs edge.
-	BuildToolLogs []*BazelInvocation `json:"build_tool_logs,omitempty"`
+	// InvocationProfile holds the value of the invocation_profile edge.
+	InvocationProfile []*BazelInvocation `json:"invocation_profile,omitempty"`
 	// TestActionOutput holds the value of the test_action_output edge.
 	TestActionOutput []*TestResult `json:"test_action_output,omitempty"`
-	// ToolLogs holds the value of the tool_logs edge.
-	ToolLogs []*BuildToolLog `json:"tool_logs,omitempty"`
 	// TestActionOutputTable holds the value of the test_action_output_table edge.
 	TestActionOutputTable []*TestActionOutput `json:"test_action_output_table,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [8]bool
+	loadedTypes [7]bool
 	// totalCount holds the count of the edges above.
 	totalCount [6]map[string]int
 
 	namedActionStdout          map[string][]*Action
 	namedActionStderr          map[string][]*Action
-	namedBuildToolLogs         map[string][]*BazelInvocation
+	namedInvocationProfile     map[string][]*BazelInvocation
 	namedTestActionOutput      map[string][]*TestResult
-	namedToolLogs              map[string][]*BuildToolLog
 	namedTestActionOutputTable map[string][]*TestActionOutput
 }
 
@@ -100,13 +97,13 @@ func (e FileEdges) ActionStderrOrErr() ([]*Action, error) {
 	return nil, &NotLoadedError{edge: "action_stderr"}
 }
 
-// BuildToolLogsOrErr returns the BuildToolLogs value or an error if the edge
+// InvocationProfileOrErr returns the InvocationProfile value or an error if the edge
 // was not loaded in eager-loading.
-func (e FileEdges) BuildToolLogsOrErr() ([]*BazelInvocation, error) {
+func (e FileEdges) InvocationProfileOrErr() ([]*BazelInvocation, error) {
 	if e.loadedTypes[4] {
-		return e.BuildToolLogs, nil
+		return e.InvocationProfile, nil
 	}
-	return nil, &NotLoadedError{edge: "build_tool_logs"}
+	return nil, &NotLoadedError{edge: "invocation_profile"}
 }
 
 // TestActionOutputOrErr returns the TestActionOutput value or an error if the edge
@@ -118,19 +115,10 @@ func (e FileEdges) TestActionOutputOrErr() ([]*TestResult, error) {
 	return nil, &NotLoadedError{edge: "test_action_output"}
 }
 
-// ToolLogsOrErr returns the ToolLogs value or an error if the edge
-// was not loaded in eager-loading.
-func (e FileEdges) ToolLogsOrErr() ([]*BuildToolLog, error) {
-	if e.loadedTypes[6] {
-		return e.ToolLogs, nil
-	}
-	return nil, &NotLoadedError{edge: "tool_logs"}
-}
-
 // TestActionOutputTableOrErr returns the TestActionOutputTable value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileEdges) TestActionOutputTableOrErr() ([]*TestActionOutput, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[6] {
 		return e.TestActionOutputTable, nil
 	}
 	return nil, &NotLoadedError{edge: "test_action_output_table"}
@@ -209,19 +197,14 @@ func (_m *File) QueryActionStderr() *ActionQuery {
 	return NewFileClient(_m.config).QueryActionStderr(_m)
 }
 
-// QueryBuildToolLogs queries the "build_tool_logs" edge of the File entity.
-func (_m *File) QueryBuildToolLogs() *BazelInvocationQuery {
-	return NewFileClient(_m.config).QueryBuildToolLogs(_m)
+// QueryInvocationProfile queries the "invocation_profile" edge of the File entity.
+func (_m *File) QueryInvocationProfile() *BazelInvocationQuery {
+	return NewFileClient(_m.config).QueryInvocationProfile(_m)
 }
 
 // QueryTestActionOutput queries the "test_action_output" edge of the File entity.
 func (_m *File) QueryTestActionOutput() *TestResultQuery {
 	return NewFileClient(_m.config).QueryTestActionOutput(_m)
-}
-
-// QueryToolLogs queries the "tool_logs" edge of the File entity.
-func (_m *File) QueryToolLogs() *BuildToolLogQuery {
-	return NewFileClient(_m.config).QueryToolLogs(_m)
 }
 
 // QueryTestActionOutputTable queries the "test_action_output_table" edge of the File entity.
@@ -309,27 +292,27 @@ func (_m *File) appendNamedActionStderr(name string, edges ...*Action) {
 	}
 }
 
-// NamedBuildToolLogs returns the BuildToolLogs named value or an error if the edge was not
+// NamedInvocationProfile returns the InvocationProfile named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (_m *File) NamedBuildToolLogs(name string) ([]*BazelInvocation, error) {
-	if _m.Edges.namedBuildToolLogs == nil {
+func (_m *File) NamedInvocationProfile(name string) ([]*BazelInvocation, error) {
+	if _m.Edges.namedInvocationProfile == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := _m.Edges.namedBuildToolLogs[name]
+	nodes, ok := _m.Edges.namedInvocationProfile[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (_m *File) appendNamedBuildToolLogs(name string, edges ...*BazelInvocation) {
-	if _m.Edges.namedBuildToolLogs == nil {
-		_m.Edges.namedBuildToolLogs = make(map[string][]*BazelInvocation)
+func (_m *File) appendNamedInvocationProfile(name string, edges ...*BazelInvocation) {
+	if _m.Edges.namedInvocationProfile == nil {
+		_m.Edges.namedInvocationProfile = make(map[string][]*BazelInvocation)
 	}
 	if len(edges) == 0 {
-		_m.Edges.namedBuildToolLogs[name] = []*BazelInvocation{}
+		_m.Edges.namedInvocationProfile[name] = []*BazelInvocation{}
 	} else {
-		_m.Edges.namedBuildToolLogs[name] = append(_m.Edges.namedBuildToolLogs[name], edges...)
+		_m.Edges.namedInvocationProfile[name] = append(_m.Edges.namedInvocationProfile[name], edges...)
 	}
 }
 
@@ -354,30 +337,6 @@ func (_m *File) appendNamedTestActionOutput(name string, edges ...*TestResult) {
 		_m.Edges.namedTestActionOutput[name] = []*TestResult{}
 	} else {
 		_m.Edges.namedTestActionOutput[name] = append(_m.Edges.namedTestActionOutput[name], edges...)
-	}
-}
-
-// NamedToolLogs returns the ToolLogs named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (_m *File) NamedToolLogs(name string) ([]*BuildToolLog, error) {
-	if _m.Edges.namedToolLogs == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := _m.Edges.namedToolLogs[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (_m *File) appendNamedToolLogs(name string, edges ...*BuildToolLog) {
-	if _m.Edges.namedToolLogs == nil {
-		_m.Edges.namedToolLogs = make(map[string][]*BuildToolLog)
-	}
-	if len(edges) == 0 {
-		_m.Edges.namedToolLogs[name] = []*BuildToolLog{}
-	} else {
-		_m.Edges.namedToolLogs[name] = append(_m.Edges.namedToolLogs[name], edges...)
 	}
 }
 

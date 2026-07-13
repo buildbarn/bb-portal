@@ -64,7 +64,7 @@ func TestRemoveFiles(t *testing.T) {
 		_, err = buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "5", InstanceName: "5", DigestFunction: 5, Hash: []byte{5}, SizeBytes: 5})
 		require.NoError(t, err)
 
-		inv := testutils.StartCreateInvocation(client, instanceName).AddBuildToolLogIDs(f1).SaveX(ctx)
+		inv := testutils.StartCreateInvocation(client, instanceName).SetProfileID(f1).SaveX(ctx)
 		conf := client.Configuration.Create().SetConfigurationID("1").SetBazelInvocation(inv).SaveX(ctx)
 		client.Action.Create().SetBazelInvocation(inv).SetConfiguration(conf).SetLabel("foo").SetStdoutID(f2).SetStderrID(f3).SaveX(ctx)
 

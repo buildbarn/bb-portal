@@ -108,8 +108,8 @@ WHERE ctid IN (
         )
         AND (
             NOT EXISTS (
-                SELECT 1 FROM "build_tool_logs"
-                WHERE "file_id" = "files"."id"
+                SELECT 1 FROM "bazel_invocations"
+                WHERE "profile_id" = "files"."id"
             )
         )
         AND (

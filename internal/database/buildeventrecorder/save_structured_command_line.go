@@ -43,20 +43,6 @@ func parseEnvVarsFromSectionOptions(section *bes.CommandLineSection) map[string]
 	return ret
 }
 
-func parseProfileNameFromSectionOptions(section *bes.CommandLineSection) string {
-	if section.GetOptionList() != nil {
-		options := section.GetOptionList().GetOption()
-		for _, option := range options {
-			if option.GetOptionName() == "profile" {
-				return option.GetOptionValue()
-			}
-		}
-	}
-
-	// Default value if --profile is not set
-	return "command.profile.gz"
-}
-
 func censorEnvironmentVariables(envVars map[string]string) map[string]string {
 	censored := make(map[string]string, len(envVars))
 	for k := range envVars {
@@ -204,13 +190,12 @@ func (r *buildEventRecorder) recordInvocationTags(ctx context.Context, tx *ent.C
 }
 
 func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx database.Tx, buildEvent *bes.CommandLine) error {
-	envVars, data, profileName := parseSections(buildEvent.GetSections())
+	envVars, data := parseSections(buildEvent.GetSections())
 
 	switch buildEvent.CommandLineLabel {
 	case "canonical":
 		update := tx.Ent().BazelInvocation.
 			UpdateOneID(r.InvocationDbID).
-			SetProfileName(profileName).
 			SetCanonicalCommandLine(&data).
 			SetEnvironmentVariables(censorEnvironmentVariables(envVars))
 
@@ -246,7 +231,7 @@ func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx d
 	return nil
 }
 
-func parseSections(buildEventSections []*bes.CommandLineSection) (envVars map[string]string, data invocation.CommandLineData, profileName string) {
+func parseSections(buildEventSections []*bes.CommandLineSection) (envVars map[string]string, data invocation.CommandLineData) {
 	// Explicitly set empty slices rather than rely on nil equivalence as the
 	// json encoder will explicitly map nil slices to nil rather than empty
 	// list.
@@ -271,14 +256,13 @@ func parseSections(buildEventSections []*bes.CommandLineSection) (envVars map[st
 		case "command options":
 			data.Options = extractOptions(section.GetOptionList().GetOption())
 			envVars = parseEnvVarsFromSectionOptions(section)
-			profileName = parseProfileNameFromSectionOptions(section)
 		case "residual":
 			if list := section.GetChunkList(); list != nil {
 				data.Residual = append(data.Residual, list.Chunk...)
 			}
 		}
 	}
-	return envVars, data, profileName
+	return envVars, data
 }
 
 func extractOptions(protoOptions []*bes.Option) []invocation.CommandLineOption {
