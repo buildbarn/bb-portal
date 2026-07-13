@@ -216,7 +216,6 @@ var (
 		{Name: "username", Type: field.TypeString, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
 		{Name: "num_fetches", Type: field.TypeInt64, Nullable: true},
-		{Name: "profile_name", Type: field.TypeString, Nullable: true},
 		{Name: "bazel_version", Type: field.TypeString, Nullable: true},
 		{Name: "exit_code_name", Type: field.TypeString, Nullable: true},
 		{Name: "exit_code_code", Type: field.TypeInt32, Nullable: true},
@@ -229,6 +228,7 @@ var (
 		{Name: "processed_event_build_finished", Type: field.TypeBool, Default: false},
 		{Name: "processed_event_workspace_status", Type: field.TypeBool, Default: false},
 		{Name: "authenticated_user_bazel_invocations", Type: field.TypeInt64, Nullable: true},
+		{Name: "profile_id", Type: field.TypeInt64, Nullable: true},
 		{Name: "build_invocations", Type: field.TypeInt64, Nullable: true},
 		{Name: "instance_name_bazel_invocations", Type: field.TypeInt64},
 	}
@@ -240,8 +240,14 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "bazel_invocations_authenticated_users_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[20]},
 				RefColumns: []*schema.Column{AuthenticatedUsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "bazel_invocations_files_profile",
+				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
+				RefColumns: []*schema.Column{FilesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
@@ -280,6 +286,11 @@ var (
 			},
 			{
 				Name:    "bazelinvocation_authenticated_user_bazel_invocations",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationsColumns[20]},
+			},
+			{
+				Name:    "bazelinvocation_profile_id",
 				Unique:  false,
 				Columns: []*schema.Column{BazelInvocationsColumns[21]},
 			},
@@ -411,44 +422,6 @@ var (
 				Name:    "buildtag_key_value_build_id",
 				Unique:  true,
 				Columns: []*schema.Column{BuildTagsColumns[1], BuildTagsColumns[2], BuildTagsColumns[3]},
-			},
-		},
-	}
-	// BuildToolLogsColumns holds the columns for the "build_tool_logs" table.
-	BuildToolLogsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "bazel_invocation_id", Type: field.TypeInt64},
-		{Name: "file_id", Type: field.TypeInt64},
-	}
-	// BuildToolLogsTable holds the schema information for the "build_tool_logs" table.
-	BuildToolLogsTable = &schema.Table{
-		Name:       "build_tool_logs",
-		Columns:    BuildToolLogsColumns,
-		PrimaryKey: []*schema.Column{BuildToolLogsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "build_tool_logs_bazel_invocations_bazel_invocation",
-				Columns:    []*schema.Column{BuildToolLogsColumns[1]},
-				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "build_tool_logs_files_file",
-				Columns:    []*schema.Column{BuildToolLogsColumns[2]},
-				RefColumns: []*schema.Column{FilesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "buildtoollog_bazel_invocation_id_file_id",
-				Unique:  true,
-				Columns: []*schema.Column{BuildToolLogsColumns[1], BuildToolLogsColumns[2]},
-			},
-			{
-				Name:    "buildtoollog_file_id",
-				Unique:  false,
-				Columns: []*schema.Column{BuildToolLogsColumns[2]},
 			},
 		},
 	}
@@ -1234,7 +1207,6 @@ var (
 		BuildGraphMetricsTable,
 		BuildLogChunksTable,
 		BuildTagsTable,
-		BuildToolLogsTable,
 		ConfigurationsTable,
 		ConnectionMetadataTable,
 		DigestsTable,
@@ -1274,14 +1246,13 @@ func init() {
 	ActionSummariesTable.ForeignKeys[0].RefTable = MetricsTable
 	ArtifactMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	BazelInvocationsTable.ForeignKeys[0].RefTable = AuthenticatedUsersTable
-	BazelInvocationsTable.ForeignKeys[1].RefTable = BuildsTable
-	BazelInvocationsTable.ForeignKeys[2].RefTable = InstanceNamesTable
+	BazelInvocationsTable.ForeignKeys[1].RefTable = FilesTable
+	BazelInvocationsTable.ForeignKeys[2].RefTable = BuildsTable
+	BazelInvocationsTable.ForeignKeys[3].RefTable = InstanceNamesTable
 	BuildsTable.ForeignKeys[0].RefTable = InstanceNamesTable
 	BuildGraphMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	BuildTagsTable.ForeignKeys[0].RefTable = BuildsTable
-	BuildToolLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	BuildToolLogsTable.ForeignKeys[1].RefTable = FilesTable
 	ConfigurationsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable

@@ -375,30 +375,6 @@ func (f BuildTagMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutati
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildTagMutation", m)
 }
 
-// The BuildToolLogQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type BuildToolLogQueryRuleFunc func(context.Context, *ent.BuildToolLogQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f BuildToolLogQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.BuildToolLogQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.BuildToolLogQuery", q)
-}
-
-// The BuildToolLogMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type BuildToolLogMutationRuleFunc func(context.Context, *ent.BuildToolLogMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f BuildToolLogMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.BuildToolLogMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildToolLogMutation", m)
-}
-
 // The ConfigurationQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type ConfigurationQueryRuleFunc func(context.Context, *ent.ConfigurationQuery) error
@@ -1080,8 +1056,6 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.BuildTagQuery:
 		return q.Filter(), nil
-	case *ent.BuildToolLogQuery:
-		return q.Filter(), nil
 	case *ent.ConfigurationQuery:
 		return q.Filter(), nil
 	case *ent.ConnectionMetadataQuery:
@@ -1162,8 +1136,6 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.BuildLogChunkMutation:
 		return m.Filter(), nil
 	case *ent.BuildTagMutation:
-		return m.Filter(), nil
-	case *ent.BuildToolLogMutation:
 		return m.Filter(), nil
 	case *ent.ConfigurationMutation:
 		return m.Filter(), nil

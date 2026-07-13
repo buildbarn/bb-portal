@@ -44,8 +44,7 @@ func (BazelInvocation) Fields() []ent.Field {
 		// The number of successful fetch events seen.
 		field.Int64("num_fetches").Optional(),
 
-		// The name of the build profile.
-		field.String("profile_name").Optional().Annotations(entgql.Skip(entgql.SkipType)),
+		field.Int64("profile_id").Optional().Annotations(entgql.Skip()),
 
 		field.String("bazel_version").Optional(),
 
@@ -150,8 +149,10 @@ func (BazelInvocation) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
-		edge.To("build_tool_logs", File.Type).
-			Through("tool_logs", BuildToolLog.Type),
+		// The profile of the invocation
+		edge.To("profile", File.Type).
+			Field("profile_id").
+			Unique(),
 
 		// Target Data for the completed Invocation
 		edge.To("invocation_targets", InvocationTarget.Type).
@@ -181,6 +182,7 @@ func (BazelInvocation) Indexes() []ent.Index {
 		index.Edges("build"),
 		index.Edges("instance_name"),
 		index.Edges("authenticated_user"),
+		index.Edges("profile"),
 	}
 }
 

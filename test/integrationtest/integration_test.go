@@ -184,6 +184,11 @@ var (
 							"invocationID": abortedTests.invocationID,
 						},
 					},
+					"get remote execution invocation": {
+						variables: testkit.Variables{
+							"invocationID": remoteExecutionTests.invocationID,
+						},
+					},
 				},
 				"GetBazelInvocationActions": {
 					"get successful bazel build": {

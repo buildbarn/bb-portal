@@ -1,0 +1,32 @@
+{
+  "getBazelInvocation": {
+    "actions": [],
+    "authenticatedUser": null,
+    "build": null,
+    "connectionMetadata": null,
+    "endedAt": "2026-07-13T07:54:01.866Z",
+    "exitCodeName": "SUCCESS",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjEw",
+    "invocationID": "eb510b31-a9cc-441f-8898-5104ef0025fd",
+    "metrics": {
+      "id": "TWV0cmljczoxMA=="
+    },
+    "profile": {
+      "digest": {
+        "digestFunction": "sha256",
+        "hash": "1eee69d2732ceacc1ab7fbfd3c42d20466dd35b22c1c5fa5bf21c38a0e9814f0",
+        "id": "RGlnZXN0OjM=",
+        "rev2InstanceName": "fuse",
+        "sizeBytes": 79332
+      },
+      "filePath": {
+        "id": "RmlsZVBhdGg6Mw==",
+        "path": "command.profile.gz"
+      },
+      "id": "RmlsZToz"
+    },
+    "sourceControl": [],
+    "startedAt": "2026-07-13T07:53:21.304Z",
+    "username": "root"
+  }
+}

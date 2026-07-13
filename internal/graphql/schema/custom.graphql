@@ -6,10 +6,6 @@ extend type Query {
   getTestSummary(invocationID: UUID!, testSummaryID: String!): TestSummary
 }
 
-extend type BazelInvocation {
-  profile: File
-}
-
 extend type ConnectionMetadata {
   timeSinceLastConnectionMillis: Int! @goField(forceResolver: true)
 }

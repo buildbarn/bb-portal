@@ -824,7 +824,7 @@ type BazelInvocation implements Node {
   configurations: [Configuration!]
   actions: [Action!]
   metrics: Metrics
-  buildToolLogs: [File!]
+  profile: File
   invocationTargets(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -1014,24 +1014,6 @@ input BazelInvocationWhereInput {
   numFetchesIsNil: Boolean
   numFetchesNotNil: Boolean
   """
-  profile_name field predicates
-  """
-  profileName: String
-  profileNameNEQ: String
-  profileNameIn: [String!]
-  profileNameNotIn: [String!]
-  profileNameGT: String
-  profileNameGTE: String
-  profileNameLT: String
-  profileNameLTE: String
-  profileNameContains: String
-  profileNameHasPrefix: String
-  profileNameHasSuffix: String
-  profileNameIsNil: Boolean
-  profileNameNotNil: Boolean
-  profileNameEqualFold: String
-  profileNameContainsFold: String
-  """
   bazel_version field predicates
   """
   bazelVersion: String
@@ -1121,10 +1103,10 @@ input BazelInvocationWhereInput {
   hasMetrics: Boolean
   hasMetricsWith: [MetricsWhereInput!]
   """
-  build_tool_logs edge predicates
+  profile edge predicates
   """
-  hasBuildToolLogs: Boolean
-  hasBuildToolLogsWith: [FileWhereInput!]
+  hasProfile: Boolean
+  hasProfileWith: [FileWhereInput!]
   """
   invocation_targets edge predicates
   """
@@ -1825,7 +1807,7 @@ type File implements Node {
   filePath: FilePath!
   actionStdout: [Action!]
   actionStderr: [Action!]
-  buildToolLogs: [BazelInvocation!]
+  invocationProfile: [BazelInvocation!]
   testActionOutput: [TestResult!]
 }
 type FilePath implements Node {
@@ -1927,10 +1909,10 @@ input FileWhereInput {
   hasActionStderr: Boolean
   hasActionStderrWith: [ActionWhereInput!]
   """
-  build_tool_logs edge predicates
+  invocation_profile edge predicates
   """
-  hasBuildToolLogs: Boolean
-  hasBuildToolLogsWith: [BazelInvocationWhereInput!]
+  hasInvocationProfile: Boolean
+  hasInvocationProfileWith: [BazelInvocationWhereInput!]
   """
   test_action_output edge predicates
   """
