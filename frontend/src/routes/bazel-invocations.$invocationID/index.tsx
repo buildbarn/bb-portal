@@ -24,6 +24,9 @@ const BAZEL_INVOCATION_OVERVIEW_FRAGMENT = gql(/* GraphQL */ `
       id
       name
     }
+    profile {
+      ...FileDetails
+    }
     hostname
     connectionMetadata {
       id
