@@ -36,10 +36,7 @@ const TestGrid: React.FC<Props> = ({
       expandable={{
         expandedRowRender: (record) => (
           <TestGridRow
-            instanceName={record.instanceName.name}
-            label={record.label}
-            aspect={record.aspect}
-            targetKind={record.targetKind}
+            targetId={record.id}
             numberOfElements={40}
             direction={"newToOld"}
           />
