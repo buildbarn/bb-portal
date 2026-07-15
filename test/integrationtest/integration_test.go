@@ -643,22 +643,62 @@ var (
 				"GetTestsForInvocation": {
 					"get tests for successful tests": {
 						variables: testkit.Variables{
-							"invocationID": successfulBazelTest.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": successfulBazelTest.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"get tests for failed tests": {
 						variables: testkit.Variables{
-							"invocationID": failedBazelTest.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": failedBazelTest.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"get tests for aborted tests": {
 						variables: testkit.Variables{
-							"invocationID": abortedTests.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": abortedTests.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"get tests for remote execution": {
 						variables: testkit.Variables{
-							"invocationID": remoteExecutionTests.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": remoteExecutionTests.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
