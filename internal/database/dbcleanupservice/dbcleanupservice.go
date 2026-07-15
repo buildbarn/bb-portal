@@ -75,13 +75,21 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 		ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 		for {
 			dc.counter++
-			// Add 5% jitter to the cleanup interval
-			timeToSleep := dc.cleanupInterval + time.Duration((rand.Float64()*0.1-0.05)*float64(dc.cleanupInterval))
+			startTime := dc.clock.Now()
+
+			dc.performCleanup(ctx)
+
+			// Add 5% jitter to the target interval
+			jitter := time.Duration((rand.Float64()*0.1 - 0.05) * float64(dc.cleanupInterval))
+			targetInterval := dc.cleanupInterval + jitter
+
+			elapsed := dc.clock.Now().Sub(startTime)
+			timeToSleep := max(targetInterval-elapsed, 0)
+
 			select {
 			case <-ctx.Done():
 				return nil
 			case <-time.After(timeToSleep):
-				dc.performCleanup(ctx)
 			}
 		}
 	})
