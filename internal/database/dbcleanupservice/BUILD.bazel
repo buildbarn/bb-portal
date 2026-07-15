@@ -19,6 +19,7 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/internal/database/dbcleanupservice",
     visibility = ["//:__subpackages__"],
     deps = [
+        "//ent/gen/ent",
         "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/build",

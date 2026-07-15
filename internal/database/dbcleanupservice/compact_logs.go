@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 
+	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
@@ -14,7 +15,7 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, dbID int64, invocationID uuid.UUID) (err error) {
+func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocationDbID int64, invocationID uuid.UUID) (err error) {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.normalizeInvocation")
 	defer func() {
 		if err != nil {
@@ -31,12 +32,6 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, dbID int64,
 		return util.StatusWrap(err, "Could not normalize log")
 	}
 
-	tx, err := dc.db.Ent().Tx(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Could not start transaction")
-	}
-	defer tx.Rollback()
-
 	encoder, err := zstd.NewWriter(nil)
 	if err != nil {
 		return util.StatusWrap(err, "Could not create zstd encoder")
@@ -46,6 +41,8 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, dbID int64,
 	const chunkSize = 8 * 1024 * 1024 // 8MiB
 	line := int64(0)
 	buffer := make([]byte, 0, chunkSize/50)
+
+	chunkBuilders := make([]*ent.BuildLogChunkCreate, 0)
 
 	for index := 0; index*chunkSize < len(normalizedLogs); index++ {
 		start := index * chunkSize
@@ -62,33 +59,15 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, dbID int64,
 		}
 		data = encoder.EncodeAll(data, buffer[:0])
 
-		_, err = tx.BuildLogChunk.Create().
-			SetBazelInvocationID(dbID).
-			SetData(data).
-			SetChunkIndex(index).
-			SetFirstLineIndex(firstLineIndex).
-			SetLastLineIndex(lastLineIndex).
-			Save(ctx)
-		if err != nil {
-			tx.Rollback()
-
-			alreadyNormalized, checkErr := dc.db.Ent().BazelInvocation.Query().
-				Where(
-					bazelinvocation.IDEQ(dbID),
-					bazelinvocation.BepCompleted(true),
-					bazelinvocation.HasIncompleteBuildLogs(),
-					bazelinvocation.Not(bazelinvocation.HasBuildLogChunks()),
-				).Exist(ctx)
-
-			// The invocation was already normalized so we ignore the
-			// error.
-			if checkErr == nil && alreadyNormalized {
-				return nil
-			}
-
-			return util.StatusWrap(err, "Could not save log chunk")
-		}
-
+		chunkBuilders = append(
+			chunkBuilders,
+			dc.db.Ent().BuildLogChunk.Create().
+				SetBazelInvocationID(invocationDbID).
+				SetData(data).
+				SetChunkIndex(index).
+				SetFirstLineIndex(firstLineIndex).
+				SetLastLineIndex(lastLineIndex),
+		)
 		if isLastLineComplete {
 			line = lastLineIndex + 1
 		} else {
@@ -96,10 +75,23 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, dbID int64,
 		}
 	}
 
-	if err := tx.Commit(); err != nil {
-		return util.StatusWrap(err, "Could not commit transaction")
-	}
+	if err := dc.db.Ent().BuildLogChunk.CreateBulk(chunkBuilders...).Exec(ctx); err != nil {
+		alreadyNormalized, checkErr := dc.db.Ent().BazelInvocation.Query().
+			Where(
+				bazelinvocation.IDEQ(invocationDbID),
+				bazelinvocation.BepCompleted(true),
+				bazelinvocation.HasIncompleteBuildLogs(),
+				bazelinvocation.Not(bazelinvocation.HasBuildLogChunks()),
+			).Exist(ctx)
 
+		// The invocation was already normalized so we ignore the
+		// error.
+		if checkErr == nil && alreadyNormalized {
+			return nil
+		}
+
+		return util.StatusWrap(err, "Could not save log chunk")
+	}
 	return nil
 }
 
