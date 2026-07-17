@@ -1,10 +1,10 @@
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
 import { CodeLink } from "@/components/CodeLink";
-import { operationsStateToBrowserSplat } from "@/components/OperationsGrid/utils";
 import type { WorkerState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { env } from "@/utils/env";
 import { readableDurationFromDates } from "@/utils/time";
+import { operationsStateToBrowserSplat } from "../OperationStateDisplay/utils";
 import PropertyTagList from "../PropertyTagList";
 
 const workerIdColumn: ColumnType<WorkerState> = {
