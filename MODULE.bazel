@@ -164,6 +164,7 @@ npm.npm_translate_lock(
         "//frontend:patches/vite.patch",
     ],
     npm_package_lock = "//frontend:package-lock.json",
+    npmrc = "//frontend:.npmrc",
     pnpm_lock = "//frontend:pnpm-lock.yaml",
     update_pnpm_lock = True,
 )
