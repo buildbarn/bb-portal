@@ -5,7 +5,7 @@ import type {
   BazelInvocationMetricsWorkerPoolMetricsFragment,
 } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "../PortalCard";
 
 interface Props {
   workerMetrics: BazelInvocationMetricsWorkerMetricsFragment[];

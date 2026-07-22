@@ -4,13 +4,13 @@ import type React from "react";
 import { PageCursorTable } from "@/components/PageCursorTable";
 import type { GetPaginationUpdateLinkType } from "@/components/PageCursorTable/types";
 import { tableFiltersToGraphqlWhere } from "@/components/PageCursorTable/utils";
+import { PortalCard } from "@/components/PortalCard";
 import type {
   InvocationTargetDetailsFragment,
   InvocationTargetWhereInput,
   PageInfo,
   TargetDetailsFragment,
 } from "@/graphql/__generated__/graphql";
-import PortalCard from "../../PortalCard";
 import { columns } from "./Columns";
 
 interface Props {

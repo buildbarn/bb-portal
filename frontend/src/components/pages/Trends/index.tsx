@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import type {
   BazelInvocationNodeFragment,
   FindBuildTimesQueryVariables,

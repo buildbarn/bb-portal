@@ -1,7 +1,7 @@
 import { CodeFilled } from "@ant-design/icons";
+import { PortalCard } from "@/components/PortalCard";
 import { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { protobufToObjectWithTypeField } from "@/utils/protobufToObject";
-import PortalCard from "../PortalCard";
 
 interface Props {
   executeResponse: ExecuteResponse;
