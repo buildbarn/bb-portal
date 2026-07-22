@@ -5,7 +5,7 @@ import type {
   BazelInvocationMetricsCumulativeMetricsFragment,
   BazelInvocationMetricsPackageMetricsFragment,
 } from "@/graphql/__generated__/graphql";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "../PortalCard";
 
 interface Props {
   packageMetrics?: BazelInvocationMetricsPackageMetricsFragment | null;

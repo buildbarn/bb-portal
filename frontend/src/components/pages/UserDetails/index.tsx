@@ -14,7 +14,7 @@ import type {
   OnBazelInvocationFilterChange,
 } from "@/components/PageCursorTable/types";
 import { tableFiltersToGraphqlWhere } from "@/components/PageCursorTable/utils";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import type {
   AuthenticatedUserNodeFragmentFragment,
   BazelInvocationNodeFragment,

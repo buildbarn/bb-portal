@@ -1,7 +1,7 @@
 import { RocketFilled } from "@ant-design/icons";
 import type React from "react";
 import BuildsTable from "@/components/BuildsTable";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 
 type Props = React.ComponentProps<typeof BuildsTable>;
 

@@ -1,10 +1,10 @@
 import { RadiusUprightOutlined } from "@ant-design/icons";
 import { Space } from "antd";
 import type React from "react";
+import { PortalCard } from "@/components/PortalCard";
 import type { BazelInvocationMetricsArtifactMetricsFragment } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
 import { MultiStatistic } from "../MultiStatistic";
-import PortalCard from "../PortalCard";
 
 interface Props {
   artifactMetrics: BazelInvocationMetricsArtifactMetricsFragment;

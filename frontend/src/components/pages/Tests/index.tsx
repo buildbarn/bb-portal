@@ -1,7 +1,7 @@
 import { ExperimentFilled } from "@ant-design/icons";
 import { Alert } from "antd";
 import type React from "react";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import TestGrid from "@/components/TestGrid";
 
 type Props = React.ComponentProps<typeof TestGrid>;

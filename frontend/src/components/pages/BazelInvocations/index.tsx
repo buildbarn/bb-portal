@@ -1,7 +1,7 @@
 import { BuildFilled } from "@ant-design/icons";
 import type React from "react";
 import BazelInvocationsTable from "@/components/BazelInvocationsTable";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 
 type Props = React.ComponentProps<typeof BazelInvocationsTable>;
 

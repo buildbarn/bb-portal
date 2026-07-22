@@ -192,5 +192,3 @@ export const PortalCard: React.FC<Props> = ({
     </Card>
   );
 };
-
-export default PortalCard;

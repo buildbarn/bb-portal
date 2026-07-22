@@ -1,9 +1,9 @@
 import { FieldTimeOutlined } from "@ant-design/icons";
 import { Space, Statistic } from "antd";
 import type React from "react";
+import { PortalCard } from "@/components/PortalCard";
 import type { BazelInvocationMetricsTimingMetricsFragment } from "@/graphql/__generated__/graphql";
 import { readableDurationFromMilliseconds } from "@/utils/time";
-import PortalCard from "../PortalCard";
 
 interface Props {
   timingMetrics: BazelInvocationMetricsTimingMetricsFragment;
