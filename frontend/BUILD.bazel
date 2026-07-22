@@ -79,6 +79,7 @@ FRONTEND_SRCS = glob(
 ) + [
     "index.html",
     "package.json",
+    "routeMapper.ts",
     "tsconfig.json",
     "vite.config.ts",
     ":node_modules",
