@@ -1,10 +1,10 @@
 import { RestOutlined } from "@ant-design/icons";
 import type React from "react";
+import { PortalCard } from "@/components/PortalCard";
 import type {
   BazelInvocationMetricsGarbageMetricsFragment,
   GarbageMetrics,
 } from "@/graphql/__generated__/graphql";
-import PortalCard from "../PortalCard";
 import SummaryPieChart, { type SummaryChartItem } from "../SummaryPieChart";
 import { nullPercent } from "../Utilities/nullPercent";
 

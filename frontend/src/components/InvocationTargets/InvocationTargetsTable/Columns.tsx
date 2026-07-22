@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import type { FilterValue } from "antd/es/table/interface";
 import { getInvocationTargetAbortReasonFilterOptions } from "@/components/InvocationTargetAbortReasonTag/filter";
 import NullBooleanTag from "@/components/NullableBooleanTag";
-import SearchWidget, { SearchFilterIcon } from "@/components/SearchWidgets";
+import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import type {
   BazelInvocationTargetsFragment,
   InvocationTargetAbortReason,
