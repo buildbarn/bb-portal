@@ -2,7 +2,7 @@ import { ApartmentOutlined } from "@ant-design/icons";
 import { Flex, Statistic } from "antd";
 import type React from "react";
 import type { BazelInvocationMetricsBuildGraphMetricsFragment } from "@/graphql/__generated__/graphql";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "../PortalCard";
 
 interface Props {
   buildGraphMetrics: BazelInvocationMetricsBuildGraphMetricsFragment;

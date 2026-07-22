@@ -9,7 +9,7 @@ import { BrowserActionPages } from "@/components/BrowserActionPages";
 import BrowserCommandGrid from "@/components/BrowserCommandGrid";
 import BrowserDirectoryPage from "@/components/BrowserDirectoryPage";
 import BrowserPreviousExecutionsPage from "@/components/BrowserPreviousExecutionsPage";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import type { BrowserSearchParams } from "@/routes/browser.$";
 import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import { BrowserPageType } from "@/types/BrowserPageType";

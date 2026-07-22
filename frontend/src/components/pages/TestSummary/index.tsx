@@ -10,7 +10,7 @@ import {
 } from "@/components/CacheLocationTag";
 import { LinkButton } from "@/components/LinkButton";
 import { CasGqlFileViewer } from "@/components/LogViewer/casGqlFileViewer";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import { TestStatusTag } from "@/components/TestStatusTag";
 import { getFragmentData } from "@/graphql/__generated__";
 import type {

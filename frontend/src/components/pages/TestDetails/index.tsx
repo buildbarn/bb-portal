@@ -15,11 +15,11 @@ import {
 } from "recharts";
 import { PageCursorTable } from "@/components/PageCursorTable";
 import type { GetPaginationUpdateLinkType } from "@/components/PageCursorTable/types";
+import { PortalCard } from "@/components/PortalCard";
 import type {
   PageInfo,
   TestSummaryTargetDetailsFragment,
 } from "@/graphql/__generated__/graphql";
-import PortalCard from "../../PortalCard";
 import { columns, type TestDetailsRowType } from "./columns";
 
 interface Props {
