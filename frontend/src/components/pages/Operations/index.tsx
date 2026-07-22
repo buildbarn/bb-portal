@@ -6,7 +6,7 @@ import {
   type OperationStatus,
 } from "@/components/OperationFilterSelector";
 import OperationsInvocationFilter from "@/components/OperationsInvocationFilter";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import type { OperationsFilterParams } from "@/routes/operations.index";
 import themeStyles from "@/theme/theme.module.css";

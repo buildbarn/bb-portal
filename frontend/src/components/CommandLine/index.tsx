@@ -1,7 +1,7 @@
 import { CodeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Card, Divider, Tooltip } from "antd";
 import type React from "react";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 
 // TODO: find a way to apply these interfaces automatically to the
 // output of graphql while remaining a scalar with regard to the graphql

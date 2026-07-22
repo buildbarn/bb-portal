@@ -239,5 +239,3 @@ export const FilterPickerDropdown: React.FC<FilterDropdownProps> = ({
     </Space.Compact>
   );
 };
-
-export default SearchWidget;

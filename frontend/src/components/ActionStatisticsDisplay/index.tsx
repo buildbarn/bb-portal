@@ -12,7 +12,7 @@ import ActionCacheMissMetrics from "../ActionCacheMissMetrics";
 import ActionCacheOverview from "../ActionCacheOverview";
 import ActionRunnerMetrics from "../ActionRunnerMetrics";
 import ActionTypeMetrics from "../ActionTypeMetrics";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "../PortalCard";
 
 type Props = {
   actionSummary: BazelInvocationMetricsActionSummaryFragment;

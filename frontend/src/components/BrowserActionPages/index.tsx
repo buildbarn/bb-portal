@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Spin, Typography } from "antd";
 import type React from "react";
 import { useState } from "react";
+import { PortalCard } from "@/components/PortalCard";
 import { actionCacheClient } from "@/grpc/actionCacheClient";
 import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import { fileSystemAccessCacheClient } from "@/grpc/fileSystemAccessCacheClient";
@@ -16,7 +17,6 @@ import { CompareActionButtons } from "../CompareAction/CompareTargetButton";
 import CompareActionGrid from "../CompareAction/Page";
 import ToggleCompareSideBySide from "../CompareAction/toggleCompareSideBySide";
 import PortalAlert from "../PortalAlert";
-import PortalCard from "../PortalCard";
 
 interface Params {
   params: BrowserPageParams;
