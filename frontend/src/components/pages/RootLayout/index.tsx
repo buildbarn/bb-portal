@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { ConfigProvider, Layout } from "antd";
+import { ConfigProvider } from "antd";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
 import { PageWrapper } from "@/components/PageWrapper";
@@ -12,7 +12,6 @@ import { Status } from "@/lib/grpc-client/google/rpc/status";
 import dark from "@/theme/dark";
 import light from "@/theme/light";
 import { isRetryableGrpcError } from "@/utils/grpcStatus";
-import styles from "./index.module.css";
 
 const PREFERS_DARK_KEY = "prefers-dark";
 
@@ -65,14 +64,12 @@ export const RootLayout = () => {
       <ConfigProvider theme={innerTheme === "dark" ? dark : light}>
         <QueryClientProvider client={queryClient}>
           <MessageProvider>
-            <Layout className={styles.layout}>
-              <PageWrapper
-                toggleTheme={toggleTheme}
-                prefersDark={innerTheme === "dark"}
-              >
-                <Outlet />
-              </PageWrapper>
-            </Layout>
+            <PageWrapper
+              toggleTheme={toggleTheme}
+              prefersDark={innerTheme === "dark"}
+            >
+              <Outlet />
+            </PageWrapper>
           </MessageProvider>
           {/* Devtools for Tanstack components. Automatically removed for prod builds */}
           <TanStackDevtools
