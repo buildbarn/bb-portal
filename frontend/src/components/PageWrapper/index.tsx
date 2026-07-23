@@ -17,7 +17,7 @@ export const PageWrapper: React.FC<Props> = ({
   prefersDark,
 }) => {
   return (
-    <Layout>
+    <Layout className={styles.layout}>
       <AppBar toggleTheme={toggleTheme} prefersDark={prefersDark} />
       <div className={styles.container}>
         <Breadcrumbs />
