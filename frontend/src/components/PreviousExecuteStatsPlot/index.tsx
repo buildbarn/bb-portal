@@ -125,7 +125,6 @@ const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
             key={value[0]}
             x1={index - REFERENCE_AREA_WIDTH}
             x2={index + REFERENCE_AREA_WIDTH}
-            y1={0}
             fill="gray"
             ifOverflow="extendDomain"
           />
