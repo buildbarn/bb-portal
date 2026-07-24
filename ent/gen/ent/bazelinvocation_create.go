@@ -16,7 +16,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
@@ -136,16 +135,16 @@ func (_c *BazelInvocationCreate) SetNillableNumFetches(v *int64) *BazelInvocatio
 	return _c
 }
 
-// SetProfileName sets the "profile_name" field.
-func (_c *BazelInvocationCreate) SetProfileName(v string) *BazelInvocationCreate {
-	_c.mutation.SetProfileName(v)
+// SetProfileID sets the "profile_id" field.
+func (_c *BazelInvocationCreate) SetProfileID(v int64) *BazelInvocationCreate {
+	_c.mutation.SetProfileID(v)
 	return _c
 }
 
-// SetNillableProfileName sets the "profile_name" field if the given value is not nil.
-func (_c *BazelInvocationCreate) SetNillableProfileName(v *string) *BazelInvocationCreate {
+// SetNillableProfileID sets the "profile_id" field if the given value is not nil.
+func (_c *BazelInvocationCreate) SetNillableProfileID(v *int64) *BazelInvocationCreate {
 	if v != nil {
-		_c.SetProfileName(*v)
+		_c.SetProfileID(*v)
 	}
 	return _c
 }
@@ -459,19 +458,9 @@ func (_c *BazelInvocationCreate) AddBuildLogChunks(v ...*BuildLogChunk) *BazelIn
 	return _c.AddBuildLogChunkIDs(ids...)
 }
 
-// AddBuildToolLogIDs adds the "build_tool_logs" edge to the File entity by IDs.
-func (_c *BazelInvocationCreate) AddBuildToolLogIDs(ids ...int64) *BazelInvocationCreate {
-	_c.mutation.AddBuildToolLogIDs(ids...)
-	return _c
-}
-
-// AddBuildToolLogs adds the "build_tool_logs" edges to the File entity.
-func (_c *BazelInvocationCreate) AddBuildToolLogs(v ...*File) *BazelInvocationCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddBuildToolLogIDs(ids...)
+// SetProfile sets the "profile" edge to the File entity.
+func (_c *BazelInvocationCreate) SetProfile(v *File) *BazelInvocationCreate {
+	return _c.SetProfileID(v.ID)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
@@ -517,21 +506,6 @@ func (_c *BazelInvocationCreate) AddSourceControl(v ...*SourceControl) *BazelInv
 		ids[i] = v[i].ID
 	}
 	return _c.AddSourceControlIDs(ids...)
-}
-
-// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by IDs.
-func (_c *BazelInvocationCreate) AddToolLogIDs(ids ...int64) *BazelInvocationCreate {
-	_c.mutation.AddToolLogIDs(ids...)
-	return _c
-}
-
-// AddToolLogs adds the "tool_logs" edges to the BuildToolLog entity.
-func (_c *BazelInvocationCreate) AddToolLogs(v ...*BuildToolLog) *BazelInvocationCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddToolLogIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -684,10 +658,6 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 	if value, ok := _c.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
 		_node.NumFetches = value
-	}
-	if value, ok := _c.mutation.ProfileName(); ok {
-		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
-		_node.ProfileName = value
 	}
 	if value, ok := _c.mutation.BazelVersion(); ok {
 		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
@@ -912,12 +882,12 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.BuildToolLogsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ProfileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   bazelinvocation.BuildToolLogsTable,
-			Columns: bazelinvocation.BuildToolLogsPrimaryKey,
+			Table:   bazelinvocation.ProfileTable,
+			Columns: []string{bazelinvocation.ProfileColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
@@ -926,6 +896,7 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.ProfileID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
@@ -969,22 +940,6 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.ToolLogsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   bazelinvocation.ToolLogsTable,
-			Columns: []string{bazelinvocation.ToolLogsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1152,21 +1107,21 @@ func (u *BazelInvocationUpsert) ClearNumFetches() *BazelInvocationUpsert {
 	return u
 }
 
-// SetProfileName sets the "profile_name" field.
-func (u *BazelInvocationUpsert) SetProfileName(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldProfileName, v)
+// SetProfileID sets the "profile_id" field.
+func (u *BazelInvocationUpsert) SetProfileID(v int64) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProfileID, v)
 	return u
 }
 
-// UpdateProfileName sets the "profile_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateProfileName() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldProfileName)
+// UpdateProfileID sets the "profile_id" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProfileID() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProfileID)
 	return u
 }
 
-// ClearProfileName clears the value of the "profile_name" field.
-func (u *BazelInvocationUpsert) ClearProfileName() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldProfileName)
+// ClearProfileID clears the value of the "profile_id" field.
+func (u *BazelInvocationUpsert) ClearProfileID() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldProfileID)
 	return u
 }
 
@@ -1530,24 +1485,24 @@ func (u *BazelInvocationUpsertOne) ClearNumFetches() *BazelInvocationUpsertOne {
 	})
 }
 
-// SetProfileName sets the "profile_name" field.
-func (u *BazelInvocationUpsertOne) SetProfileName(v string) *BazelInvocationUpsertOne {
+// SetProfileID sets the "profile_id" field.
+func (u *BazelInvocationUpsertOne) SetProfileID(v int64) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetProfileName(v)
+		s.SetProfileID(v)
 	})
 }
 
-// UpdateProfileName sets the "profile_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateProfileName() *BazelInvocationUpsertOne {
+// UpdateProfileID sets the "profile_id" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProfileID() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateProfileName()
+		s.UpdateProfileID()
 	})
 }
 
-// ClearProfileName clears the value of the "profile_name" field.
-func (u *BazelInvocationUpsertOne) ClearProfileName() *BazelInvocationUpsertOne {
+// ClearProfileID clears the value of the "profile_id" field.
+func (u *BazelInvocationUpsertOne) ClearProfileID() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearProfileName()
+		s.ClearProfileID()
 	})
 }
 
@@ -2107,24 +2062,24 @@ func (u *BazelInvocationUpsertBulk) ClearNumFetches() *BazelInvocationUpsertBulk
 	})
 }
 
-// SetProfileName sets the "profile_name" field.
-func (u *BazelInvocationUpsertBulk) SetProfileName(v string) *BazelInvocationUpsertBulk {
+// SetProfileID sets the "profile_id" field.
+func (u *BazelInvocationUpsertBulk) SetProfileID(v int64) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetProfileName(v)
+		s.SetProfileID(v)
 	})
 }
 
-// UpdateProfileName sets the "profile_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateProfileName() *BazelInvocationUpsertBulk {
+// UpdateProfileID sets the "profile_id" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProfileID() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateProfileName()
+		s.UpdateProfileID()
 	})
 }
 
-// ClearProfileName clears the value of the "profile_name" field.
-func (u *BazelInvocationUpsertBulk) ClearProfileName() *BazelInvocationUpsertBulk {
+// ClearProfileID clears the value of the "profile_id" field.
+func (u *BazelInvocationUpsertBulk) ClearProfileID() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearProfileName()
+		s.ClearProfileID()
 	})
 }
 

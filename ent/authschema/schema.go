@@ -23,8 +23,6 @@ type (
 	Build struct{ schema.Build }
 	// BuildTag reexport with auth policy added
 	BuildTag struct{ schema.BuildTag }
-	// BuildToolLog reexport with auth policy added
-	BuildToolLog struct{ schema.BuildToolLog }
 	// BuildLogChunk reexport with auth policy added
 	BuildLogChunk struct{ schema.BuildLogChunk }
 	// BuildGraphMetrics reexport with auth policy added

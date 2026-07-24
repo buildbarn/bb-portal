@@ -195,21 +195,21 @@ func HasActionStderrWith(preds ...predicate.Action) predicate.File {
 	})
 }
 
-// HasBuildToolLogs applies the HasEdge predicate on the "build_tool_logs" edge.
-func HasBuildToolLogs() predicate.File {
+// HasInvocationProfile applies the HasEdge predicate on the "invocation_profile" edge.
+func HasInvocationProfile() predicate.File {
 	return predicate.File(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, BuildToolLogsTable, BuildToolLogsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, true, InvocationProfileTable, InvocationProfileColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasBuildToolLogsWith applies the HasEdge predicate on the "build_tool_logs" edge with a given conditions (other predicates).
-func HasBuildToolLogsWith(preds ...predicate.BazelInvocation) predicate.File {
+// HasInvocationProfileWith applies the HasEdge predicate on the "invocation_profile" edge with a given conditions (other predicates).
+func HasInvocationProfileWith(preds ...predicate.BazelInvocation) predicate.File {
 	return predicate.File(func(s *sql.Selector) {
-		step := newBuildToolLogsStep()
+		step := newInvocationProfileStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -233,29 +233,6 @@ func HasTestActionOutput() predicate.File {
 func HasTestActionOutputWith(preds ...predicate.TestResult) predicate.File {
 	return predicate.File(func(s *sql.Selector) {
 		step := newTestActionOutputStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasToolLogs applies the HasEdge predicate on the "tool_logs" edge.
-func HasToolLogs() predicate.File {
-	return predicate.File(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, ToolLogsTable, ToolLogsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasToolLogsWith applies the HasEdge predicate on the "tool_logs" edge with a given conditions (other predicates).
-func HasToolLogsWith(preds ...predicate.BuildToolLog) predicate.File {
-	return predicate.File(func(s *sql.Selector) {
-		step := newToolLogsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtoollog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
@@ -86,19 +85,19 @@ func (_c *FileCreate) AddActionStderr(v ...*Action) *FileCreate {
 	return _c.AddActionStderrIDs(ids...)
 }
 
-// AddBuildToolLogIDs adds the "build_tool_logs" edge to the BazelInvocation entity by IDs.
-func (_c *FileCreate) AddBuildToolLogIDs(ids ...int64) *FileCreate {
-	_c.mutation.AddBuildToolLogIDs(ids...)
+// AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by IDs.
+func (_c *FileCreate) AddInvocationProfileIDs(ids ...int64) *FileCreate {
+	_c.mutation.AddInvocationProfileIDs(ids...)
 	return _c
 }
 
-// AddBuildToolLogs adds the "build_tool_logs" edges to the BazelInvocation entity.
-func (_c *FileCreate) AddBuildToolLogs(v ...*BazelInvocation) *FileCreate {
+// AddInvocationProfile adds the "invocation_profile" edges to the BazelInvocation entity.
+func (_c *FileCreate) AddInvocationProfile(v ...*BazelInvocation) *FileCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddBuildToolLogIDs(ids...)
+	return _c.AddInvocationProfileIDs(ids...)
 }
 
 // AddTestActionOutputIDs adds the "test_action_output" edge to the TestResult entity by IDs.
@@ -114,21 +113,6 @@ func (_c *FileCreate) AddTestActionOutput(v ...*TestResult) *FileCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddTestActionOutputIDs(ids...)
-}
-
-// AddToolLogIDs adds the "tool_logs" edge to the BuildToolLog entity by IDs.
-func (_c *FileCreate) AddToolLogIDs(ids ...int64) *FileCreate {
-	_c.mutation.AddToolLogIDs(ids...)
-	return _c
-}
-
-// AddToolLogs adds the "tool_logs" edges to the BuildToolLog entity.
-func (_c *FileCreate) AddToolLogs(v ...*BuildToolLog) *FileCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddToolLogIDs(ids...)
 }
 
 // AddTestActionOutputTableIDs adds the "test_action_output_table" edge to the TestActionOutput entity by IDs.
@@ -291,12 +275,12 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.BuildToolLogsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InvocationProfileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   file.BuildToolLogsTable,
-			Columns: file.BuildToolLogsPrimaryKey,
+			Table:   file.InvocationProfileTable,
+			Columns: []string{file.InvocationProfileColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt64),
@@ -316,22 +300,6 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.ToolLogsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ToolLogsTable,
-			Columns: []string{file.ToolLogsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildtoollog.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -36,8 +36,6 @@ type Tx struct {
 	BuildLogChunk *BuildLogChunkClient
 	// BuildTag is the client for interacting with the BuildTag builders.
 	BuildTag *BuildTagClient
-	// BuildToolLog is the client for interacting with the BuildToolLog builders.
-	BuildToolLog *BuildToolLogClient
 	// Configuration is the client for interacting with the Configuration builders.
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
@@ -232,7 +230,6 @@ func (tx *Tx) init() {
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
 	tx.BuildTag = NewBuildTagClient(tx.config)
-	tx.BuildToolLog = NewBuildToolLogClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
 	tx.Digest = NewDigestClient(tx.config)

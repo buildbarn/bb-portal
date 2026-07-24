@@ -91,7 +91,6 @@ type BazelInvocation struct {
 	Username                          sql.NullString
 	Hostname                          sql.NullString
 	NumFetches                        sql.NullInt64
-	ProfileName                       sql.NullString
 	BazelVersion                      sql.NullString
 	ExitCodeName                      sql.NullString
 	ExitCodeCode                      sql.NullInt32
@@ -104,6 +103,7 @@ type BazelInvocation struct {
 	ProcessedEventBuildFinished       bool
 	ProcessedEventWorkspaceStatus     bool
 	AuthenticatedUserBazelInvocations sql.NullInt64
+	ProfileID                         sql.NullInt64
 	BuildInvocations                  sql.NullInt64
 	InstanceNameBazelInvocations      int64
 }
@@ -143,12 +143,6 @@ type BuildTag struct {
 	Key     string
 	Value   string
 	BuildID int64
-}
-
-type BuildToolLog struct {
-	ID                int64
-	BazelInvocationID int64
-	FileID            int64
 }
 
 type Configuration struct {
