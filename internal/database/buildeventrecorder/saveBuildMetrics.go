@@ -250,7 +250,7 @@ func (r *buildEventRecorder) saveSystemNetworkStats(ctx context.Context, tx *ent
 		SetPeakBytesRecvPerSec(systemNetworkStats.PeakBytesRecvPerSec).
 		SetPeakBytesSentPerSec(systemNetworkStats.PeakBytesSentPerSec).
 		SetPeakPacketsRecvPerSec(systemNetworkStats.PeakPacketsRecvPerSec).
-		SetPeakBytesSentPerSec(systemNetworkStats.PeakPacketsSentPerSec).
+		SetPeakPacketsSentPerSec(systemNetworkStats.PeakPacketsSentPerSec).
 		SetNetworkMetricsID(networkMetricsDbID).
 		Exec(ctx)
 	if err != nil {
