@@ -5,6 +5,7 @@ def _unpack_impl(ctx):
     output_dir = ctx.actions.declare_directory(ctx.attr.name + ".extracted")
     args = ctx.actions.args()
     args.add("-I", ctx.executable._xz)
+    args.add("--touch")
     args.add("-xf", input_tar)
     args.add("-C", output_dir.path)
     ctx.actions.run(
