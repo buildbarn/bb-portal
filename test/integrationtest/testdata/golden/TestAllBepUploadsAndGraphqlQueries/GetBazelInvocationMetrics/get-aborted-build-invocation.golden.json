@@ -201,9 +201,9 @@
           "packetsRecv": 103033,
           "packetsSent": 88218,
           "peakBytesRecvPerSec": 446898144,
-          "peakBytesSentPerSec": 19205,
+          "peakBytesSentPerSec": 1324331,
           "peakPacketsRecvPerSec": 20403,
-          "peakPacketsSentPerSec": 0
+          "peakPacketsSentPerSec": 19205
         }
       },
       "timingMetrics": {
