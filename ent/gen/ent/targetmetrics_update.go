@@ -23,130 +23,130 @@ type TargetMetricsUpdate struct {
 }
 
 // Where appends a list predicates to the TargetMetricsUpdate builder.
-func (tmu *TargetMetricsUpdate) Where(ps ...predicate.TargetMetrics) *TargetMetricsUpdate {
-	tmu.mutation.Where(ps...)
-	return tmu
+func (_u *TargetMetricsUpdate) Where(ps ...predicate.TargetMetrics) *TargetMetricsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetTargetsLoaded sets the "targets_loaded" field.
-func (tmu *TargetMetricsUpdate) SetTargetsLoaded(i int64) *TargetMetricsUpdate {
-	tmu.mutation.ResetTargetsLoaded()
-	tmu.mutation.SetTargetsLoaded(i)
-	return tmu
+func (_u *TargetMetricsUpdate) SetTargetsLoaded(v int64) *TargetMetricsUpdate {
+	_u.mutation.ResetTargetsLoaded()
+	_u.mutation.SetTargetsLoaded(v)
+	return _u
 }
 
 // SetNillableTargetsLoaded sets the "targets_loaded" field if the given value is not nil.
-func (tmu *TargetMetricsUpdate) SetNillableTargetsLoaded(i *int64) *TargetMetricsUpdate {
-	if i != nil {
-		tmu.SetTargetsLoaded(*i)
+func (_u *TargetMetricsUpdate) SetNillableTargetsLoaded(v *int64) *TargetMetricsUpdate {
+	if v != nil {
+		_u.SetTargetsLoaded(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddTargetsLoaded adds i to the "targets_loaded" field.
-func (tmu *TargetMetricsUpdate) AddTargetsLoaded(i int64) *TargetMetricsUpdate {
-	tmu.mutation.AddTargetsLoaded(i)
-	return tmu
+// AddTargetsLoaded adds value to the "targets_loaded" field.
+func (_u *TargetMetricsUpdate) AddTargetsLoaded(v int64) *TargetMetricsUpdate {
+	_u.mutation.AddTargetsLoaded(v)
+	return _u
 }
 
 // ClearTargetsLoaded clears the value of the "targets_loaded" field.
-func (tmu *TargetMetricsUpdate) ClearTargetsLoaded() *TargetMetricsUpdate {
-	tmu.mutation.ClearTargetsLoaded()
-	return tmu
+func (_u *TargetMetricsUpdate) ClearTargetsLoaded() *TargetMetricsUpdate {
+	_u.mutation.ClearTargetsLoaded()
+	return _u
 }
 
 // SetTargetsConfigured sets the "targets_configured" field.
-func (tmu *TargetMetricsUpdate) SetTargetsConfigured(i int64) *TargetMetricsUpdate {
-	tmu.mutation.ResetTargetsConfigured()
-	tmu.mutation.SetTargetsConfigured(i)
-	return tmu
+func (_u *TargetMetricsUpdate) SetTargetsConfigured(v int64) *TargetMetricsUpdate {
+	_u.mutation.ResetTargetsConfigured()
+	_u.mutation.SetTargetsConfigured(v)
+	return _u
 }
 
 // SetNillableTargetsConfigured sets the "targets_configured" field if the given value is not nil.
-func (tmu *TargetMetricsUpdate) SetNillableTargetsConfigured(i *int64) *TargetMetricsUpdate {
-	if i != nil {
-		tmu.SetTargetsConfigured(*i)
+func (_u *TargetMetricsUpdate) SetNillableTargetsConfigured(v *int64) *TargetMetricsUpdate {
+	if v != nil {
+		_u.SetTargetsConfigured(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddTargetsConfigured adds i to the "targets_configured" field.
-func (tmu *TargetMetricsUpdate) AddTargetsConfigured(i int64) *TargetMetricsUpdate {
-	tmu.mutation.AddTargetsConfigured(i)
-	return tmu
+// AddTargetsConfigured adds value to the "targets_configured" field.
+func (_u *TargetMetricsUpdate) AddTargetsConfigured(v int64) *TargetMetricsUpdate {
+	_u.mutation.AddTargetsConfigured(v)
+	return _u
 }
 
 // ClearTargetsConfigured clears the value of the "targets_configured" field.
-func (tmu *TargetMetricsUpdate) ClearTargetsConfigured() *TargetMetricsUpdate {
-	tmu.mutation.ClearTargetsConfigured()
-	return tmu
+func (_u *TargetMetricsUpdate) ClearTargetsConfigured() *TargetMetricsUpdate {
+	_u.mutation.ClearTargetsConfigured()
+	return _u
 }
 
 // SetTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field.
-func (tmu *TargetMetricsUpdate) SetTargetsConfiguredNotIncludingAspects(i int64) *TargetMetricsUpdate {
-	tmu.mutation.ResetTargetsConfiguredNotIncludingAspects()
-	tmu.mutation.SetTargetsConfiguredNotIncludingAspects(i)
-	return tmu
+func (_u *TargetMetricsUpdate) SetTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpdate {
+	_u.mutation.ResetTargetsConfiguredNotIncludingAspects()
+	_u.mutation.SetTargetsConfiguredNotIncludingAspects(v)
+	return _u
 }
 
 // SetNillableTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field if the given value is not nil.
-func (tmu *TargetMetricsUpdate) SetNillableTargetsConfiguredNotIncludingAspects(i *int64) *TargetMetricsUpdate {
-	if i != nil {
-		tmu.SetTargetsConfiguredNotIncludingAspects(*i)
+func (_u *TargetMetricsUpdate) SetNillableTargetsConfiguredNotIncludingAspects(v *int64) *TargetMetricsUpdate {
+	if v != nil {
+		_u.SetTargetsConfiguredNotIncludingAspects(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddTargetsConfiguredNotIncludingAspects adds i to the "targets_configured_not_including_aspects" field.
-func (tmu *TargetMetricsUpdate) AddTargetsConfiguredNotIncludingAspects(i int64) *TargetMetricsUpdate {
-	tmu.mutation.AddTargetsConfiguredNotIncludingAspects(i)
-	return tmu
+// AddTargetsConfiguredNotIncludingAspects adds value to the "targets_configured_not_including_aspects" field.
+func (_u *TargetMetricsUpdate) AddTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpdate {
+	_u.mutation.AddTargetsConfiguredNotIncludingAspects(v)
+	return _u
 }
 
 // ClearTargetsConfiguredNotIncludingAspects clears the value of the "targets_configured_not_including_aspects" field.
-func (tmu *TargetMetricsUpdate) ClearTargetsConfiguredNotIncludingAspects() *TargetMetricsUpdate {
-	tmu.mutation.ClearTargetsConfiguredNotIncludingAspects()
-	return tmu
+func (_u *TargetMetricsUpdate) ClearTargetsConfiguredNotIncludingAspects() *TargetMetricsUpdate {
+	_u.mutation.ClearTargetsConfiguredNotIncludingAspects()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmu *TargetMetricsUpdate) SetMetricsID(id int64) *TargetMetricsUpdate {
-	tmu.mutation.SetMetricsID(id)
-	return tmu
+func (_u *TargetMetricsUpdate) SetMetricsID(id int64) *TargetMetricsUpdate {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmu *TargetMetricsUpdate) SetNillableMetricsID(id *int64) *TargetMetricsUpdate {
+func (_u *TargetMetricsUpdate) SetNillableMetricsID(id *int64) *TargetMetricsUpdate {
 	if id != nil {
-		tmu = tmu.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return tmu
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (tmu *TargetMetricsUpdate) SetMetrics(m *Metrics) *TargetMetricsUpdate {
-	return tmu.SetMetricsID(m.ID)
+func (_u *TargetMetricsUpdate) SetMetrics(v *Metrics) *TargetMetricsUpdate {
+	return _u.SetMetricsID(v.ID)
 }
 
 // Mutation returns the TargetMetricsMutation object of the builder.
-func (tmu *TargetMetricsUpdate) Mutation() *TargetMetricsMutation {
-	return tmu.mutation
+func (_u *TargetMetricsUpdate) Mutation() *TargetMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (tmu *TargetMetricsUpdate) ClearMetrics() *TargetMetricsUpdate {
-	tmu.mutation.ClearMetrics()
-	return tmu
+func (_u *TargetMetricsUpdate) ClearMetrics() *TargetMetricsUpdate {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tmu *TargetMetricsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tmu.sqlSave, tmu.mutation, tmu.hooks)
+func (_u *TargetMetricsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tmu *TargetMetricsUpdate) SaveX(ctx context.Context) int {
-	affected, err := tmu.Save(ctx)
+func (_u *TargetMetricsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -154,55 +154,55 @@ func (tmu *TargetMetricsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tmu *TargetMetricsUpdate) Exec(ctx context.Context) error {
-	_, err := tmu.Save(ctx)
+func (_u *TargetMetricsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmu *TargetMetricsUpdate) ExecX(ctx context.Context) {
-	if err := tmu.Exec(ctx); err != nil {
+func (_u *TargetMetricsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *TargetMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
-	if ps := tmu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tmu.mutation.TargetsLoaded(); ok {
+	if value, ok := _u.mutation.TargetsLoaded(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsLoaded, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedTargetsLoaded(); ok {
+	if value, ok := _u.mutation.AddedTargetsLoaded(); ok {
 		_spec.AddField(targetmetrics.FieldTargetsLoaded, field.TypeInt64, value)
 	}
-	if tmu.mutation.TargetsLoadedCleared() {
+	if _u.mutation.TargetsLoadedCleared() {
 		_spec.ClearField(targetmetrics.FieldTargetsLoaded, field.TypeInt64)
 	}
-	if value, ok := tmu.mutation.TargetsConfigured(); ok {
+	if value, ok := _u.mutation.TargetsConfigured(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsConfigured, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedTargetsConfigured(); ok {
+	if value, ok := _u.mutation.AddedTargetsConfigured(); ok {
 		_spec.AddField(targetmetrics.FieldTargetsConfigured, field.TypeInt64, value)
 	}
-	if tmu.mutation.TargetsConfiguredCleared() {
+	if _u.mutation.TargetsConfiguredCleared() {
 		_spec.ClearField(targetmetrics.FieldTargetsConfigured, field.TypeInt64)
 	}
-	if value, ok := tmu.mutation.TargetsConfiguredNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.TargetsConfiguredNotIncludingAspects(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedTargetsConfiguredNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.AddedTargetsConfiguredNotIncludingAspects(); ok {
 		_spec.AddField(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, field.TypeInt64, value)
 	}
-	if tmu.mutation.TargetsConfiguredNotIncludingAspectsCleared() {
+	if _u.mutation.TargetsConfiguredNotIncludingAspectsCleared() {
 		_spec.ClearField(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, field.TypeInt64)
 	}
-	if tmu.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -215,7 +215,7 @@ func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tmu.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -231,7 +231,7 @@ func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tmu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetmetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -239,8 +239,8 @@ func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	tmu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TargetMetricsUpdateOne is the builder for updating a single TargetMetrics entity.
@@ -252,137 +252,137 @@ type TargetMetricsUpdateOne struct {
 }
 
 // SetTargetsLoaded sets the "targets_loaded" field.
-func (tmuo *TargetMetricsUpdateOne) SetTargetsLoaded(i int64) *TargetMetricsUpdateOne {
-	tmuo.mutation.ResetTargetsLoaded()
-	tmuo.mutation.SetTargetsLoaded(i)
-	return tmuo
+func (_u *TargetMetricsUpdateOne) SetTargetsLoaded(v int64) *TargetMetricsUpdateOne {
+	_u.mutation.ResetTargetsLoaded()
+	_u.mutation.SetTargetsLoaded(v)
+	return _u
 }
 
 // SetNillableTargetsLoaded sets the "targets_loaded" field if the given value is not nil.
-func (tmuo *TargetMetricsUpdateOne) SetNillableTargetsLoaded(i *int64) *TargetMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetTargetsLoaded(*i)
+func (_u *TargetMetricsUpdateOne) SetNillableTargetsLoaded(v *int64) *TargetMetricsUpdateOne {
+	if v != nil {
+		_u.SetTargetsLoaded(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddTargetsLoaded adds i to the "targets_loaded" field.
-func (tmuo *TargetMetricsUpdateOne) AddTargetsLoaded(i int64) *TargetMetricsUpdateOne {
-	tmuo.mutation.AddTargetsLoaded(i)
-	return tmuo
+// AddTargetsLoaded adds value to the "targets_loaded" field.
+func (_u *TargetMetricsUpdateOne) AddTargetsLoaded(v int64) *TargetMetricsUpdateOne {
+	_u.mutation.AddTargetsLoaded(v)
+	return _u
 }
 
 // ClearTargetsLoaded clears the value of the "targets_loaded" field.
-func (tmuo *TargetMetricsUpdateOne) ClearTargetsLoaded() *TargetMetricsUpdateOne {
-	tmuo.mutation.ClearTargetsLoaded()
-	return tmuo
+func (_u *TargetMetricsUpdateOne) ClearTargetsLoaded() *TargetMetricsUpdateOne {
+	_u.mutation.ClearTargetsLoaded()
+	return _u
 }
 
 // SetTargetsConfigured sets the "targets_configured" field.
-func (tmuo *TargetMetricsUpdateOne) SetTargetsConfigured(i int64) *TargetMetricsUpdateOne {
-	tmuo.mutation.ResetTargetsConfigured()
-	tmuo.mutation.SetTargetsConfigured(i)
-	return tmuo
+func (_u *TargetMetricsUpdateOne) SetTargetsConfigured(v int64) *TargetMetricsUpdateOne {
+	_u.mutation.ResetTargetsConfigured()
+	_u.mutation.SetTargetsConfigured(v)
+	return _u
 }
 
 // SetNillableTargetsConfigured sets the "targets_configured" field if the given value is not nil.
-func (tmuo *TargetMetricsUpdateOne) SetNillableTargetsConfigured(i *int64) *TargetMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetTargetsConfigured(*i)
+func (_u *TargetMetricsUpdateOne) SetNillableTargetsConfigured(v *int64) *TargetMetricsUpdateOne {
+	if v != nil {
+		_u.SetTargetsConfigured(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddTargetsConfigured adds i to the "targets_configured" field.
-func (tmuo *TargetMetricsUpdateOne) AddTargetsConfigured(i int64) *TargetMetricsUpdateOne {
-	tmuo.mutation.AddTargetsConfigured(i)
-	return tmuo
+// AddTargetsConfigured adds value to the "targets_configured" field.
+func (_u *TargetMetricsUpdateOne) AddTargetsConfigured(v int64) *TargetMetricsUpdateOne {
+	_u.mutation.AddTargetsConfigured(v)
+	return _u
 }
 
 // ClearTargetsConfigured clears the value of the "targets_configured" field.
-func (tmuo *TargetMetricsUpdateOne) ClearTargetsConfigured() *TargetMetricsUpdateOne {
-	tmuo.mutation.ClearTargetsConfigured()
-	return tmuo
+func (_u *TargetMetricsUpdateOne) ClearTargetsConfigured() *TargetMetricsUpdateOne {
+	_u.mutation.ClearTargetsConfigured()
+	return _u
 }
 
 // SetTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field.
-func (tmuo *TargetMetricsUpdateOne) SetTargetsConfiguredNotIncludingAspects(i int64) *TargetMetricsUpdateOne {
-	tmuo.mutation.ResetTargetsConfiguredNotIncludingAspects()
-	tmuo.mutation.SetTargetsConfiguredNotIncludingAspects(i)
-	return tmuo
+func (_u *TargetMetricsUpdateOne) SetTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpdateOne {
+	_u.mutation.ResetTargetsConfiguredNotIncludingAspects()
+	_u.mutation.SetTargetsConfiguredNotIncludingAspects(v)
+	return _u
 }
 
 // SetNillableTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field if the given value is not nil.
-func (tmuo *TargetMetricsUpdateOne) SetNillableTargetsConfiguredNotIncludingAspects(i *int64) *TargetMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetTargetsConfiguredNotIncludingAspects(*i)
+func (_u *TargetMetricsUpdateOne) SetNillableTargetsConfiguredNotIncludingAspects(v *int64) *TargetMetricsUpdateOne {
+	if v != nil {
+		_u.SetTargetsConfiguredNotIncludingAspects(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddTargetsConfiguredNotIncludingAspects adds i to the "targets_configured_not_including_aspects" field.
-func (tmuo *TargetMetricsUpdateOne) AddTargetsConfiguredNotIncludingAspects(i int64) *TargetMetricsUpdateOne {
-	tmuo.mutation.AddTargetsConfiguredNotIncludingAspects(i)
-	return tmuo
+// AddTargetsConfiguredNotIncludingAspects adds value to the "targets_configured_not_including_aspects" field.
+func (_u *TargetMetricsUpdateOne) AddTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpdateOne {
+	_u.mutation.AddTargetsConfiguredNotIncludingAspects(v)
+	return _u
 }
 
 // ClearTargetsConfiguredNotIncludingAspects clears the value of the "targets_configured_not_including_aspects" field.
-func (tmuo *TargetMetricsUpdateOne) ClearTargetsConfiguredNotIncludingAspects() *TargetMetricsUpdateOne {
-	tmuo.mutation.ClearTargetsConfiguredNotIncludingAspects()
-	return tmuo
+func (_u *TargetMetricsUpdateOne) ClearTargetsConfiguredNotIncludingAspects() *TargetMetricsUpdateOne {
+	_u.mutation.ClearTargetsConfiguredNotIncludingAspects()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmuo *TargetMetricsUpdateOne) SetMetricsID(id int64) *TargetMetricsUpdateOne {
-	tmuo.mutation.SetMetricsID(id)
-	return tmuo
+func (_u *TargetMetricsUpdateOne) SetMetricsID(id int64) *TargetMetricsUpdateOne {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmuo *TargetMetricsUpdateOne) SetNillableMetricsID(id *int64) *TargetMetricsUpdateOne {
+func (_u *TargetMetricsUpdateOne) SetNillableMetricsID(id *int64) *TargetMetricsUpdateOne {
 	if id != nil {
-		tmuo = tmuo.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return tmuo
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (tmuo *TargetMetricsUpdateOne) SetMetrics(m *Metrics) *TargetMetricsUpdateOne {
-	return tmuo.SetMetricsID(m.ID)
+func (_u *TargetMetricsUpdateOne) SetMetrics(v *Metrics) *TargetMetricsUpdateOne {
+	return _u.SetMetricsID(v.ID)
 }
 
 // Mutation returns the TargetMetricsMutation object of the builder.
-func (tmuo *TargetMetricsUpdateOne) Mutation() *TargetMetricsMutation {
-	return tmuo.mutation
+func (_u *TargetMetricsUpdateOne) Mutation() *TargetMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (tmuo *TargetMetricsUpdateOne) ClearMetrics() *TargetMetricsUpdateOne {
-	tmuo.mutation.ClearMetrics()
-	return tmuo
+func (_u *TargetMetricsUpdateOne) ClearMetrics() *TargetMetricsUpdateOne {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // Where appends a list predicates to the TargetMetricsUpdate builder.
-func (tmuo *TargetMetricsUpdateOne) Where(ps ...predicate.TargetMetrics) *TargetMetricsUpdateOne {
-	tmuo.mutation.Where(ps...)
-	return tmuo
+func (_u *TargetMetricsUpdateOne) Where(ps ...predicate.TargetMetrics) *TargetMetricsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tmuo *TargetMetricsUpdateOne) Select(field string, fields ...string) *TargetMetricsUpdateOne {
-	tmuo.fields = append([]string{field}, fields...)
-	return tmuo
+func (_u *TargetMetricsUpdateOne) Select(field string, fields ...string) *TargetMetricsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TargetMetrics entity.
-func (tmuo *TargetMetricsUpdateOne) Save(ctx context.Context) (*TargetMetrics, error) {
-	return withHooks(ctx, tmuo.sqlSave, tmuo.mutation, tmuo.hooks)
+func (_u *TargetMetricsUpdateOne) Save(ctx context.Context) (*TargetMetrics, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tmuo *TargetMetricsUpdateOne) SaveX(ctx context.Context) *TargetMetrics {
-	node, err := tmuo.Save(ctx)
+func (_u *TargetMetricsUpdateOne) SaveX(ctx context.Context) *TargetMetrics {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -390,26 +390,26 @@ func (tmuo *TargetMetricsUpdateOne) SaveX(ctx context.Context) *TargetMetrics {
 }
 
 // Exec executes the query on the entity.
-func (tmuo *TargetMetricsUpdateOne) Exec(ctx context.Context) error {
-	_, err := tmuo.Save(ctx)
+func (_u *TargetMetricsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmuo *TargetMetricsUpdateOne) ExecX(ctx context.Context) {
-	if err := tmuo.Exec(ctx); err != nil {
+func (_u *TargetMetricsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetMetrics, err error) {
+func (_u *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt64))
-	id, ok := tmuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TargetMetrics.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tmuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, targetmetrics.FieldID)
 		for _, f := range fields {
@@ -421,41 +421,41 @@ func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetM
 			}
 		}
 	}
-	if ps := tmuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tmuo.mutation.TargetsLoaded(); ok {
+	if value, ok := _u.mutation.TargetsLoaded(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsLoaded, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedTargetsLoaded(); ok {
+	if value, ok := _u.mutation.AddedTargetsLoaded(); ok {
 		_spec.AddField(targetmetrics.FieldTargetsLoaded, field.TypeInt64, value)
 	}
-	if tmuo.mutation.TargetsLoadedCleared() {
+	if _u.mutation.TargetsLoadedCleared() {
 		_spec.ClearField(targetmetrics.FieldTargetsLoaded, field.TypeInt64)
 	}
-	if value, ok := tmuo.mutation.TargetsConfigured(); ok {
+	if value, ok := _u.mutation.TargetsConfigured(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsConfigured, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedTargetsConfigured(); ok {
+	if value, ok := _u.mutation.AddedTargetsConfigured(); ok {
 		_spec.AddField(targetmetrics.FieldTargetsConfigured, field.TypeInt64, value)
 	}
-	if tmuo.mutation.TargetsConfiguredCleared() {
+	if _u.mutation.TargetsConfiguredCleared() {
 		_spec.ClearField(targetmetrics.FieldTargetsConfigured, field.TypeInt64)
 	}
-	if value, ok := tmuo.mutation.TargetsConfiguredNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.TargetsConfiguredNotIncludingAspects(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedTargetsConfiguredNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.AddedTargetsConfiguredNotIncludingAspects(); ok {
 		_spec.AddField(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, field.TypeInt64, value)
 	}
-	if tmuo.mutation.TargetsConfiguredNotIncludingAspectsCleared() {
+	if _u.mutation.TargetsConfiguredNotIncludingAspectsCleared() {
 		_spec.ClearField(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, field.TypeInt64)
 	}
-	if tmuo.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -468,7 +468,7 @@ func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetM
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tmuo.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -484,10 +484,10 @@ func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &TargetMetrics{config: tmuo.config}
+	_node = &TargetMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tmuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetmetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -495,6 +495,6 @@ func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetM
 		}
 		return nil, err
 	}
-	tmuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

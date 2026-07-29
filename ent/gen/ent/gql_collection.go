@@ -22,6 +22,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
@@ -40,18 +43,18 @@ import (
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (a *ActionQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionQuery, error) {
+func (_q *ActionQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return a, nil
+		return _q, nil
 	}
-	if err := a.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return a, nil
+	return _q, nil
 }
 
-func (a *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -65,12 +68,12 @@ func (a *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: a.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			a.withBazelInvocation = query
+			_q.withBazelInvocation = query
 			if _, ok := fieldSeen[action.FieldBazelInvocationID]; !ok {
 				selectedFields = append(selectedFields, action.FieldBazelInvocationID)
 				fieldSeen[action.FieldBazelInvocationID] = struct{}{}
@@ -80,15 +83,45 @@ func (a *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ConfigurationClient{config: a.config}).Query()
+				query = (&ConfigurationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, configurationImplementors)...); err != nil {
 				return err
 			}
-			a.withConfiguration = query
+			_q.withConfiguration = query
 			if _, ok := fieldSeen[action.FieldConfigurationID]; !ok {
 				selectedFields = append(selectedFields, action.FieldConfigurationID)
 				fieldSeen[action.FieldConfigurationID] = struct{}{}
+			}
+
+		case "stdout":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.withStdout = query
+			if _, ok := fieldSeen[action.FieldStdoutFileID]; !ok {
+				selectedFields = append(selectedFields, action.FieldStdoutFileID)
+				fieldSeen[action.FieldStdoutFileID] = struct{}{}
+			}
+
+		case "stderr":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.withStderr = query
+			if _, ok := fieldSeen[action.FieldStderrFileID]; !ok {
+				selectedFields = append(selectedFields, action.FieldStderrFileID)
+				fieldSeen[action.FieldStderrFileID] = struct{}{}
 			}
 		case "label":
 			if _, ok := fieldSeen[action.FieldLabel]; !ok {
@@ -135,36 +168,6 @@ func (a *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 				selectedFields = append(selectedFields, action.FieldFailureMessage)
 				fieldSeen[action.FieldFailureMessage] = struct{}{}
 			}
-		case "stdoutHash":
-			if _, ok := fieldSeen[action.FieldStdoutHash]; !ok {
-				selectedFields = append(selectedFields, action.FieldStdoutHash)
-				fieldSeen[action.FieldStdoutHash] = struct{}{}
-			}
-		case "stdoutSizeBytes":
-			if _, ok := fieldSeen[action.FieldStdoutSizeBytes]; !ok {
-				selectedFields = append(selectedFields, action.FieldStdoutSizeBytes)
-				fieldSeen[action.FieldStdoutSizeBytes] = struct{}{}
-			}
-		case "stdoutHashFunction":
-			if _, ok := fieldSeen[action.FieldStdoutHashFunction]; !ok {
-				selectedFields = append(selectedFields, action.FieldStdoutHashFunction)
-				fieldSeen[action.FieldStdoutHashFunction] = struct{}{}
-			}
-		case "stderrHash":
-			if _, ok := fieldSeen[action.FieldStderrHash]; !ok {
-				selectedFields = append(selectedFields, action.FieldStderrHash)
-				fieldSeen[action.FieldStderrHash] = struct{}{}
-			}
-		case "stderrSizeBytes":
-			if _, ok := fieldSeen[action.FieldStderrSizeBytes]; !ok {
-				selectedFields = append(selectedFields, action.FieldStderrSizeBytes)
-				fieldSeen[action.FieldStderrSizeBytes] = struct{}{}
-			}
-		case "stderrHashFunction":
-			if _, ok := fieldSeen[action.FieldStderrHashFunction]; !ok {
-				selectedFields = append(selectedFields, action.FieldStderrHashFunction)
-				fieldSeen[action.FieldStderrHashFunction] = struct{}{}
-			}
 		case "id":
 		case "__typename":
 		default:
@@ -172,7 +175,7 @@ func (a *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 		}
 	}
 	if !unknownSeen {
-		a.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -207,18 +210,18 @@ func newActionPaginateArgs(rv map[string]any) *actionPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (acs *ActionCacheStatisticsQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionCacheStatisticsQuery, error) {
+func (_q *ActionCacheStatisticsQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionCacheStatisticsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return acs, nil
+		return _q, nil
 	}
-	if err := acs.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return acs, nil
+	return _q, nil
 }
 
-func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -232,23 +235,23 @@ func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionSummaryClient{config: acs.config}).Query()
+				query = (&ActionSummaryClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			acs.withActionSummary = query
+			_q.withActionSummary = query
 
 		case "missDetails":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MissDetailClient{config: acs.config}).Query()
+				query = (&MissDetailClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, missdetailImplementors)...); err != nil {
 				return err
 			}
-			acs.WithNamedMissDetails(alias, func(wq *MissDetailQuery) {
+			_q.WithNamedMissDetails(alias, func(wq *MissDetailQuery) {
 				*wq = *query
 			})
 		case "sizeInBytes":
@@ -288,7 +291,7 @@ func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode
 		}
 	}
 	if !unknownSeen {
-		acs.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -323,18 +326,18 @@ func newActionCacheStatisticsPaginateArgs(rv map[string]any) *actioncachestatist
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (ad *ActionDataQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionDataQuery, error) {
+func (_q *ActionDataQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionDataQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return ad, nil
+		return _q, nil
 	}
-	if err := ad.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return ad, nil
+	return _q, nil
 }
 
-func (ad *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -348,12 +351,12 @@ func (ad *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionSummaryClient{config: ad.config}).Query()
+				query = (&ActionSummaryClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			ad.withActionSummary = query
+			_q.withActionSummary = query
 		case "mnemonic":
 			if _, ok := fieldSeen[actiondata.FieldMnemonic]; !ok {
 				selectedFields = append(selectedFields, actiondata.FieldMnemonic)
@@ -396,7 +399,7 @@ func (ad *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx
 		}
 	}
 	if !unknownSeen {
-		ad.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -431,18 +434,18 @@ func newActionDataPaginateArgs(rv map[string]any) *actiondataPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (as *ActionSummaryQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionSummaryQuery, error) {
+func (_q *ActionSummaryQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionSummaryQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return as, nil
+		return _q, nil
 	}
-	if err := as.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return as, nil
+	return _q, nil
 }
 
-func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -456,23 +459,23 @@ func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: as.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			as.withMetrics = query
+			_q.withMetrics = query
 
 		case "actionData":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionDataClient{config: as.config}).Query()
+				query = (&ActionDataClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actiondataImplementors)...); err != nil {
 				return err
 			}
-			as.WithNamedActionData(alias, func(wq *ActionDataQuery) {
+			_q.WithNamedActionData(alias, func(wq *ActionDataQuery) {
 				*wq = *query
 			})
 
@@ -480,12 +483,12 @@ func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&RunnerCountClient{config: as.config}).Query()
+				query = (&RunnerCountClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, runnercountImplementors)...); err != nil {
 				return err
 			}
-			as.WithNamedRunnerCount(alias, func(wq *RunnerCountQuery) {
+			_q.WithNamedRunnerCount(alias, func(wq *RunnerCountQuery) {
 				*wq = *query
 			})
 
@@ -493,12 +496,12 @@ func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionCacheStatisticsClient{config: as.config}).Query()
+				query = (&ActionCacheStatisticsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
 				return err
 			}
-			as.withActionCacheStatistics = query
+			_q.withActionCacheStatistics = query
 		case "actionsCreated":
 			if _, ok := fieldSeen[actionsummary.FieldActionsCreated]; !ok {
 				selectedFields = append(selectedFields, actionsummary.FieldActionsCreated)
@@ -526,7 +529,7 @@ func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, op
 		}
 	}
 	if !unknownSeen {
-		as.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -561,18 +564,18 @@ func newActionSummaryPaginateArgs(rv map[string]any) *actionsummaryPaginateArgs 
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (am *ArtifactMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*ArtifactMetricsQuery, error) {
+func (_q *ArtifactMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*ArtifactMetricsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return am, nil
+		return _q, nil
 	}
-	if err := am.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return am, nil
+	return _q, nil
 }
 
-func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -586,12 +589,12 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: am.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			am.withMetrics = query
+			_q.withMetrics = query
 		case "sourceArtifactsReadSizeInBytes":
 			if _, ok := fieldSeen[artifactmetrics.FieldSourceArtifactsReadSizeInBytes]; !ok {
 				selectedFields = append(selectedFields, artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
@@ -639,7 +642,7 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 		}
 	}
 	if !unknownSeen {
-		am.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -674,18 +677,18 @@ func newArtifactMetricsPaginateArgs(rv map[string]any) *artifactmetricsPaginateA
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (au *AuthenticatedUserQuery) CollectFields(ctx context.Context, satisfies ...string) (*AuthenticatedUserQuery, error) {
+func (_q *AuthenticatedUserQuery) CollectFields(ctx context.Context, satisfies ...string) (*AuthenticatedUserQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return au, nil
+		return _q, nil
 	}
-	if err := au.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return au, nil
+	return _q, nil
 }
 
-func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -699,7 +702,7 @@ func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: au.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			args := newBazelInvocationPaginateArgs(fieldArgs(ctx, new(BazelInvocationWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -717,7 +720,7 @@ func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					au.loadTotal = append(au.loadTotal, func(ctx context.Context, nodes []*AuthenticatedUser) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*AuthenticatedUser) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -746,7 +749,7 @@ func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool
 						return nil
 					})
 				} else {
-					au.loadTotal = append(au.loadTotal, func(_ context.Context, nodes []*AuthenticatedUser) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*AuthenticatedUser) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.BazelInvocations)
 							if nodes[i].Edges.totalCount[0] == nil {
@@ -780,7 +783,7 @@ func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool
 			} else {
 				query = pager.applyOrder(query)
 			}
-			au.WithNamedBazelInvocations(alias, func(wq *BazelInvocationQuery) {
+			_q.WithNamedBazelInvocations(alias, func(wq *BazelInvocationQuery) {
 				*wq = *query
 			})
 		case "userUUID":
@@ -810,7 +813,7 @@ func (au *AuthenticatedUserQuery) collectField(ctx context.Context, oneNode bool
 		}
 	}
 	if !unknownSeen {
-		au.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -845,18 +848,18 @@ func newAuthenticatedUserPaginateArgs(rv map[string]any) *authenticateduserPagin
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (bi *BazelInvocationQuery) CollectFields(ctx context.Context, satisfies ...string) (*BazelInvocationQuery, error) {
+func (_q *BazelInvocationQuery) CollectFields(ctx context.Context, satisfies ...string) (*BazelInvocationQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return bi, nil
+		return _q, nil
 	}
-	if err := bi.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return bi, nil
+	return _q, nil
 }
 
-func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -870,40 +873,40 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InstanceNameClient{config: bi.config}).Query()
+				query = (&InstanceNameClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
 				return err
 			}
-			bi.withInstanceName = query
+			_q.withInstanceName = query
 
 		case "build":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BuildClient{config: bi.config}).Query()
+				query = (&BuildClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, buildImplementors)...); err != nil {
 				return err
 			}
-			bi.withBuild = query
+			_q.withBuild = query
 
 		case "authenticatedUser":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&AuthenticatedUserClient{config: bi.config}).Query()
+				query = (&AuthenticatedUserClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, authenticateduserImplementors)...); err != nil {
 				return err
 			}
-			bi.withAuthenticatedUser = query
+			_q.withAuthenticatedUser = query
 
 		case "tags":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InvocationTagClient{config: bi.config}).Query()
+				query = (&InvocationTagClient{config: _q.config}).Query()
 			)
 			args := newInvocationTagPaginateArgs(fieldArgs(ctx, new(InvocationTagWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -921,7 +924,7 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					bi.loadTotal = append(bi.loadTotal, func(ctx context.Context, nodes []*BazelInvocation) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*BazelInvocation) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -950,7 +953,7 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 						return nil
 					})
 				} else {
-					bi.loadTotal = append(bi.loadTotal, func(_ context.Context, nodes []*BazelInvocation) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*BazelInvocation) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Tags)
 							if nodes[i].Edges.totalCount[3] == nil {
@@ -984,7 +987,7 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			} else {
 				query = pager.applyOrder(query)
 			}
-			bi.WithNamedTags(alias, func(wq *InvocationTagQuery) {
+			_q.WithNamedTags(alias, func(wq *InvocationTagQuery) {
 				*wq = *query
 			})
 
@@ -992,23 +995,23 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ConnectionMetadataClient{config: bi.config}).Query()
+				query = (&ConnectionMetadataClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, connectionmetadataImplementors)...); err != nil {
 				return err
 			}
-			bi.withConnectionMetadata = query
+			_q.withConnectionMetadata = query
 
 		case "configurations":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ConfigurationClient{config: bi.config}).Query()
+				query = (&ConfigurationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, configurationImplementors)...); err != nil {
 				return err
 			}
-			bi.WithNamedConfigurations(alias, func(wq *ConfigurationQuery) {
+			_q.WithNamedConfigurations(alias, func(wq *ConfigurationQuery) {
 				*wq = *query
 			})
 
@@ -1016,12 +1019,12 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionClient{config: bi.config}).Query()
+				query = (&ActionClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionImplementors)...); err != nil {
 				return err
 			}
-			bi.WithNamedActions(alias, func(wq *ActionQuery) {
+			_q.WithNamedActions(alias, func(wq *ActionQuery) {
 				*wq = *query
 			})
 
@@ -1029,18 +1032,33 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: bi.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			bi.withMetrics = query
+			_q.withMetrics = query
+
+		case "profile":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.withProfile = query
+			if _, ok := fieldSeen[bazelinvocation.FieldProfileID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldProfileID)
+				fieldSeen[bazelinvocation.FieldProfileID] = struct{}{}
+			}
 
 		case "invocationTargets":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InvocationTargetClient{config: bi.config}).Query()
+				query = (&InvocationTargetClient{config: _q.config}).Query()
 			)
 			args := newInvocationTargetPaginateArgs(fieldArgs(ctx, new(InvocationTargetWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -1058,7 +1076,7 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					bi.loadTotal = append(bi.loadTotal, func(ctx context.Context, nodes []*BazelInvocation) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*BazelInvocation) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -1079,21 +1097,21 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[8] == nil {
-								nodes[i].Edges.totalCount[8] = make(map[string]int)
+							if nodes[i].Edges.totalCount[9] == nil {
+								nodes[i].Edges.totalCount[9] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[8][alias] = n
+							nodes[i].Edges.totalCount[9][alias] = n
 						}
 						return nil
 					})
 				} else {
-					bi.loadTotal = append(bi.loadTotal, func(_ context.Context, nodes []*BazelInvocation) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*BazelInvocation) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.InvocationTargets)
-							if nodes[i].Edges.totalCount[8] == nil {
-								nodes[i].Edges.totalCount[8] = make(map[string]int)
+							if nodes[i].Edges.totalCount[9] == nil {
+								nodes[i].Edges.totalCount[9] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[8][alias] = n
+							nodes[i].Edges.totalCount[9][alias] = n
 						}
 						return nil
 					})
@@ -1121,7 +1139,7 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			} else {
 				query = pager.applyOrder(query)
 			}
-			bi.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
+			_q.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
 				*wq = *query
 			})
 
@@ -1129,12 +1147,12 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&SourceControlClient{config: bi.config}).Query()
+				query = (&SourceControlClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, sourcecontrolImplementors)...); err != nil {
 				return err
 			}
-			bi.WithNamedSourceControl(alias, func(wq *SourceControlQuery) {
+			_q.WithNamedSourceControl(alias, func(wq *SourceControlQuery) {
 				*wq = *query
 			})
 		case "invocationID":
@@ -1214,7 +1232,7 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 		}
 	}
 	if !unknownSeen {
-		bi.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1271,18 +1289,18 @@ func newBazelInvocationPaginateArgs(rv map[string]any) *bazelinvocationPaginateA
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (b *BuildQuery) CollectFields(ctx context.Context, satisfies ...string) (*BuildQuery, error) {
+func (_q *BuildQuery) CollectFields(ctx context.Context, satisfies ...string) (*BuildQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return b, nil
+		return _q, nil
 	}
-	if err := b.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return b, nil
+	return _q, nil
 }
 
-func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -1296,18 +1314,18 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InstanceNameClient{config: b.config}).Query()
+				query = (&InstanceNameClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
 				return err
 			}
-			b.withInstanceName = query
+			_q.withInstanceName = query
 
 		case "invocations":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: b.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			args := newBazelInvocationPaginateArgs(fieldArgs(ctx, new(BazelInvocationWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -1325,7 +1343,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					b.loadTotal = append(b.loadTotal, func(ctx context.Context, nodes []*Build) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*Build) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -1354,7 +1372,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 						return nil
 					})
 				} else {
-					b.loadTotal = append(b.loadTotal, func(_ context.Context, nodes []*Build) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*Build) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Invocations)
 							if nodes[i].Edges.totalCount[1] == nil {
@@ -1388,7 +1406,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			} else {
 				query = pager.applyOrder(query)
 			}
-			b.WithNamedInvocations(alias, func(wq *BazelInvocationQuery) {
+			_q.WithNamedInvocations(alias, func(wq *BazelInvocationQuery) {
 				*wq = *query
 			})
 
@@ -1396,7 +1414,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BuildTagClient{config: b.config}).Query()
+				query = (&BuildTagClient{config: _q.config}).Query()
 			)
 			args := newBuildTagPaginateArgs(fieldArgs(ctx, new(BuildTagWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -1414,7 +1432,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					b.loadTotal = append(b.loadTotal, func(ctx context.Context, nodes []*Build) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*Build) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -1443,7 +1461,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 						return nil
 					})
 				} else {
-					b.loadTotal = append(b.loadTotal, func(_ context.Context, nodes []*Build) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*Build) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Tags)
 							if nodes[i].Edges.totalCount[2] == nil {
@@ -1477,7 +1495,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			} else {
 				query = pager.applyOrder(query)
 			}
-			b.WithNamedTags(alias, func(wq *BuildTagQuery) {
+			_q.WithNamedTags(alias, func(wq *BuildTagQuery) {
 				*wq = *query
 			})
 		case "buildUUID":
@@ -1497,7 +1515,7 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 		}
 	}
 	if !unknownSeen {
-		b.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1554,18 +1572,18 @@ func newBuildPaginateArgs(rv map[string]any) *buildPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (bgm *BuildGraphMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*BuildGraphMetricsQuery, error) {
+func (_q *BuildGraphMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*BuildGraphMetricsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return bgm, nil
+		return _q, nil
 	}
-	if err := bgm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return bgm, nil
+	return _q, nil
 }
 
-func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -1579,12 +1597,12 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: bgm.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			bgm.withMetrics = query
+			_q.withMetrics = query
 		case "actionLookupValueCount":
 			if _, ok := fieldSeen[buildgraphmetrics.FieldActionLookupValueCount]; !ok {
 				selectedFields = append(selectedFields, buildgraphmetrics.FieldActionLookupValueCount)
@@ -1637,7 +1655,7 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 		}
 	}
 	if !unknownSeen {
-		bgm.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1672,18 +1690,18 @@ func newBuildGraphMetricsPaginateArgs(rv map[string]any) *buildgraphmetricsPagin
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (bt *BuildTagQuery) CollectFields(ctx context.Context, satisfies ...string) (*BuildTagQuery, error) {
+func (_q *BuildTagQuery) CollectFields(ctx context.Context, satisfies ...string) (*BuildTagQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return bt, nil
+		return _q, nil
 	}
-	if err := bt.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return bt, nil
+	return _q, nil
 }
 
-func (bt *BuildTagQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *BuildTagQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -1697,12 +1715,12 @@ func (bt *BuildTagQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BuildClient{config: bt.config}).Query()
+				query = (&BuildClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, buildImplementors)...); err != nil {
 				return err
 			}
-			bt.withBuild = query
+			_q.withBuild = query
 			if _, ok := fieldSeen[buildtag.FieldBuildID]; !ok {
 				selectedFields = append(selectedFields, buildtag.FieldBuildID)
 				fieldSeen[buildtag.FieldBuildID] = struct{}{}
@@ -1724,7 +1742,7 @@ func (bt *BuildTagQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 		}
 	}
 	if !unknownSeen {
-		bt.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1781,18 +1799,18 @@ func newBuildTagPaginateArgs(rv map[string]any) *buildtagPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (c *ConfigurationQuery) CollectFields(ctx context.Context, satisfies ...string) (*ConfigurationQuery, error) {
+func (_q *ConfigurationQuery) CollectFields(ctx context.Context, satisfies ...string) (*ConfigurationQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return c, nil
+		return _q, nil
 	}
-	if err := c.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return c, nil
+	return _q, nil
 }
 
-func (c *ConfigurationQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ConfigurationQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -1806,12 +1824,12 @@ func (c *ConfigurationQuery) collectField(ctx context.Context, oneNode bool, opC
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: c.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			c.withBazelInvocation = query
+			_q.withBazelInvocation = query
 			if _, ok := fieldSeen[configuration.FieldBazelInvocationID]; !ok {
 				selectedFields = append(selectedFields, configuration.FieldBazelInvocationID)
 				fieldSeen[configuration.FieldBazelInvocationID] = struct{}{}
@@ -1821,12 +1839,12 @@ func (c *ConfigurationQuery) collectField(ctx context.Context, oneNode bool, opC
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InvocationTargetClient{config: c.config}).Query()
+				query = (&InvocationTargetClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, invocationtargetImplementors)...); err != nil {
 				return err
 			}
-			c.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
+			_q.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
 				*wq = *query
 			})
 
@@ -1834,12 +1852,12 @@ func (c *ConfigurationQuery) collectField(ctx context.Context, oneNode bool, opC
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionClient{config: c.config}).Query()
+				query = (&ActionClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionImplementors)...); err != nil {
 				return err
 			}
-			c.WithNamedActions(alias, func(wq *ActionQuery) {
+			_q.WithNamedActions(alias, func(wq *ActionQuery) {
 				*wq = *query
 			})
 		case "configurationID":
@@ -1879,7 +1897,7 @@ func (c *ConfigurationQuery) collectField(ctx context.Context, oneNode bool, opC
 		}
 	}
 	if !unknownSeen {
-		c.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1914,18 +1932,18 @@ func newConfigurationPaginateArgs(rv map[string]any) *configurationPaginateArgs 
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (cm *ConnectionMetadataQuery) CollectFields(ctx context.Context, satisfies ...string) (*ConnectionMetadataQuery, error) {
+func (_q *ConnectionMetadataQuery) CollectFields(ctx context.Context, satisfies ...string) (*ConnectionMetadataQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return cm, nil
+		return _q, nil
 	}
-	if err := cm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return cm, nil
+	return _q, nil
 }
 
-func (cm *ConnectionMetadataQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *ConnectionMetadataQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -1939,12 +1957,12 @@ func (cm *ConnectionMetadataQuery) collectField(ctx context.Context, oneNode boo
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: cm.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			cm.withBazelInvocation = query
+			_q.withBazelInvocation = query
 		case "connectionLastOpenAt":
 			if _, ok := fieldSeen[connectionmetadata.FieldConnectionLastOpenAt]; !ok {
 				selectedFields = append(selectedFields, connectionmetadata.FieldConnectionLastOpenAt)
@@ -1957,7 +1975,7 @@ func (cm *ConnectionMetadataQuery) collectField(ctx context.Context, oneNode boo
 		}
 	}
 	if !unknownSeen {
-		cm.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1992,18 +2010,357 @@ func newConnectionMetadataPaginateArgs(rv map[string]any) *connectionmetadataPag
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (gm *GarbageMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*GarbageMetricsQuery, error) {
+func (_q *DigestQuery) CollectFields(ctx context.Context, satisfies ...string) (*DigestQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return gm, nil
+		return _q, nil
 	}
-	if err := gm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return gm, nil
+	return _q, nil
 }
 
-func (gm *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *DigestQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(digest.Columns))
+		selectedFields = []string{digest.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "files":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedFiles(alias, func(wq *FileQuery) {
+				*wq = *query
+			})
+		case "rev2InstanceName":
+			if _, ok := fieldSeen[digest.FieldRev2InstanceName]; !ok {
+				selectedFields = append(selectedFields, digest.FieldRev2InstanceName)
+				fieldSeen[digest.FieldRev2InstanceName] = struct{}{}
+			}
+		case "digestFunction":
+			if _, ok := fieldSeen[digest.FieldDigestFunction]; !ok {
+				selectedFields = append(selectedFields, digest.FieldDigestFunction)
+				fieldSeen[digest.FieldDigestFunction] = struct{}{}
+			}
+		case "hash":
+			if _, ok := fieldSeen[digest.FieldHash]; !ok {
+				selectedFields = append(selectedFields, digest.FieldHash)
+				fieldSeen[digest.FieldHash] = struct{}{}
+			}
+		case "sizeBytes":
+			if _, ok := fieldSeen[digest.FieldSizeBytes]; !ok {
+				selectedFields = append(selectedFields, digest.FieldSizeBytes)
+				fieldSeen[digest.FieldSizeBytes] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		_q.Select(selectedFields...)
+	}
+	return nil
+}
+
+type digestPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []DigestPaginateOption
+}
+
+func newDigestPaginateArgs(rv map[string]any) *digestPaginateArgs {
+	args := &digestPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*DigestWhereInput); ok {
+		args.opts = append(args.opts, WithDigestFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (_q *FileQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return _q, nil
+	}
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return _q, nil
+}
+
+func (_q *FileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(file.Columns))
+		selectedFields = []string{file.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "digest":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DigestClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, digestImplementors)...); err != nil {
+				return err
+			}
+			_q.withDigest = query
+			if _, ok := fieldSeen[file.FieldDigestID]; !ok {
+				selectedFields = append(selectedFields, file.FieldDigestID)
+				fieldSeen[file.FieldDigestID] = struct{}{}
+			}
+
+		case "filePath":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FilePathClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filepathImplementors)...); err != nil {
+				return err
+			}
+			_q.withFilePath = query
+			if _, ok := fieldSeen[file.FieldFilePathID]; !ok {
+				selectedFields = append(selectedFields, file.FieldFilePathID)
+				fieldSeen[file.FieldFilePathID] = struct{}{}
+			}
+
+		case "actionStdout":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedActionStdout(alias, func(wq *ActionQuery) {
+				*wq = *query
+			})
+
+		case "actionStderr":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedActionStderr(alias, func(wq *ActionQuery) {
+				*wq = *query
+			})
+
+		case "invocationProfile":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedInvocationProfile(alias, func(wq *BazelInvocationQuery) {
+				*wq = *query
+			})
+
+		case "testActionOutput":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestResultClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedTestActionOutput(alias, func(wq *TestResultQuery) {
+				*wq = *query
+			})
+		case "digestID":
+			if _, ok := fieldSeen[file.FieldDigestID]; !ok {
+				selectedFields = append(selectedFields, file.FieldDigestID)
+				fieldSeen[file.FieldDigestID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		_q.Select(selectedFields...)
+	}
+	return nil
+}
+
+type filePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []FilePaginateOption
+}
+
+func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
+	args := &filePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*FileWhereInput); ok {
+		args.opts = append(args.opts, WithFileFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (_q *FilePathQuery) CollectFields(ctx context.Context, satisfies ...string) (*FilePathQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return _q, nil
+	}
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return _q, nil
+}
+
+func (_q *FilePathQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(filepath.Columns))
+		selectedFields = []string{filepath.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bepInstanceName":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&InstanceNameClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
+				return err
+			}
+			_q.withBepInstanceName = query
+			if _, ok := fieldSeen[filepath.FieldBepInstanceNameID]; !ok {
+				selectedFields = append(selectedFields, filepath.FieldBepInstanceNameID)
+				fieldSeen[filepath.FieldBepInstanceNameID] = struct{}{}
+			}
+
+		case "files":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedFiles(alias, func(wq *FileQuery) {
+				*wq = *query
+			})
+		case "path":
+			if _, ok := fieldSeen[filepath.FieldPath]; !ok {
+				selectedFields = append(selectedFields, filepath.FieldPath)
+				fieldSeen[filepath.FieldPath] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		_q.Select(selectedFields...)
+	}
+	return nil
+}
+
+type filepathPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []FilePathPaginateOption
+}
+
+func newFilePathPaginateArgs(rv map[string]any) *filepathPaginateArgs {
+	args := &filepathPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*FilePathWhereInput); ok {
+		args.opts = append(args.opts, WithFilePathFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (_q *GarbageMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*GarbageMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return _q, nil
+	}
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return _q, nil
+}
+
+func (_q *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2017,12 +2374,12 @@ func (gm *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MemoryMetricsClient{config: gm.config}).Query()
+				query = (&MemoryMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
 				return err
 			}
-			gm.withMemoryMetrics = query
+			_q.withMemoryMetrics = query
 		case "type":
 			if _, ok := fieldSeen[garbagemetrics.FieldType]; !ok {
 				selectedFields = append(selectedFields, garbagemetrics.FieldType)
@@ -2040,7 +2397,7 @@ func (gm *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 		}
 	}
 	if !unknownSeen {
-		gm.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2075,18 +2432,18 @@ func newGarbageMetricsPaginateArgs(rv map[string]any) *garbagemetricsPaginateArg
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (in *InstanceNameQuery) CollectFields(ctx context.Context, satisfies ...string) (*InstanceNameQuery, error) {
+func (_q *InstanceNameQuery) CollectFields(ctx context.Context, satisfies ...string) (*InstanceNameQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return in, nil
+		return _q, nil
 	}
-	if err := in.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return in, nil
+	return _q, nil
 }
 
-func (in *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2100,12 +2457,12 @@ func (in *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opC
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: in.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			in.WithNamedBazelInvocations(alias, func(wq *BazelInvocationQuery) {
+			_q.WithNamedBazelInvocations(alias, func(wq *BazelInvocationQuery) {
 				*wq = *query
 			})
 
@@ -2113,12 +2470,12 @@ func (in *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opC
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BuildClient{config: in.config}).Query()
+				query = (&BuildClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, buildImplementors)...); err != nil {
 				return err
 			}
-			in.WithNamedBuilds(alias, func(wq *BuildQuery) {
+			_q.WithNamedBuilds(alias, func(wq *BuildQuery) {
 				*wq = *query
 			})
 
@@ -2126,12 +2483,25 @@ func (in *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opC
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TargetClient{config: in.config}).Query()
+				query = (&TargetClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetImplementors)...); err != nil {
 				return err
 			}
-			in.WithNamedTargets(alias, func(wq *TargetQuery) {
+			_q.WithNamedTargets(alias, func(wq *TargetQuery) {
+				*wq = *query
+			})
+
+		case "filePaths":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FilePathClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filepathImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedFilePaths(alias, func(wq *FilePathQuery) {
 				*wq = *query
 			})
 		case "name":
@@ -2146,7 +2516,7 @@ func (in *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opC
 		}
 	}
 	if !unknownSeen {
-		in.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2181,18 +2551,18 @@ func newInstanceNamePaginateArgs(rv map[string]any) *instancenamePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (it *InvocationTagQuery) CollectFields(ctx context.Context, satisfies ...string) (*InvocationTagQuery, error) {
+func (_q *InvocationTagQuery) CollectFields(ctx context.Context, satisfies ...string) (*InvocationTagQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return it, nil
+		return _q, nil
 	}
-	if err := it.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return it, nil
+	return _q, nil
 }
 
-func (it *InvocationTagQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *InvocationTagQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2206,12 +2576,12 @@ func (it *InvocationTagQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: it.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			it.withBazelInvocation = query
+			_q.withBazelInvocation = query
 			if _, ok := fieldSeen[invocationtag.FieldBazelInvocationID]; !ok {
 				selectedFields = append(selectedFields, invocationtag.FieldBazelInvocationID)
 				fieldSeen[invocationtag.FieldBazelInvocationID] = struct{}{}
@@ -2233,7 +2603,7 @@ func (it *InvocationTagQuery) collectField(ctx context.Context, oneNode bool, op
 		}
 	}
 	if !unknownSeen {
-		it.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2290,18 +2660,18 @@ func newInvocationTagPaginateArgs(rv map[string]any) *invocationtagPaginateArgs 
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (it *InvocationTargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*InvocationTargetQuery, error) {
+func (_q *InvocationTargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*InvocationTargetQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return it, nil
+		return _q, nil
 	}
-	if err := it.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return it, nil
+	return _q, nil
 }
 
-func (it *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2315,45 +2685,45 @@ func (it *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool,
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: it.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			it.withBazelInvocation = query
+			_q.withBazelInvocation = query
 
 		case "target":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TargetClient{config: it.config}).Query()
+				query = (&TargetClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetImplementors)...); err != nil {
 				return err
 			}
-			it.withTarget = query
+			_q.withTarget = query
 
 		case "configuration":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ConfigurationClient{config: it.config}).Query()
+				query = (&ConfigurationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, configurationImplementors)...); err != nil {
 				return err
 			}
-			it.withConfiguration = query
+			_q.withConfiguration = query
 
 		case "testSummary":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TestSummaryClient{config: it.config}).Query()
+				query = (&TestSummaryClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testsummaryImplementors)...); err != nil {
 				return err
 			}
-			it.WithNamedTestSummary(alias, func(wq *TestSummaryQuery) {
+			_q.WithNamedTestSummary(alias, func(wq *TestSummaryQuery) {
 				*wq = *query
 			})
 		case "success":
@@ -2365,21 +2735,6 @@ func (it *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool,
 			if _, ok := fieldSeen[invocationtarget.FieldTags]; !ok {
 				selectedFields = append(selectedFields, invocationtarget.FieldTags)
 				fieldSeen[invocationtarget.FieldTags] = struct{}{}
-			}
-		case "startTimeInMs":
-			if _, ok := fieldSeen[invocationtarget.FieldStartTimeInMs]; !ok {
-				selectedFields = append(selectedFields, invocationtarget.FieldStartTimeInMs)
-				fieldSeen[invocationtarget.FieldStartTimeInMs] = struct{}{}
-			}
-		case "endTimeInMs":
-			if _, ok := fieldSeen[invocationtarget.FieldEndTimeInMs]; !ok {
-				selectedFields = append(selectedFields, invocationtarget.FieldEndTimeInMs)
-				fieldSeen[invocationtarget.FieldEndTimeInMs] = struct{}{}
-			}
-		case "durationInMs":
-			if _, ok := fieldSeen[invocationtarget.FieldDurationInMs]; !ok {
-				selectedFields = append(selectedFields, invocationtarget.FieldDurationInMs)
-				fieldSeen[invocationtarget.FieldDurationInMs] = struct{}{}
 			}
 		case "failureMessage":
 			if _, ok := fieldSeen[invocationtarget.FieldFailureMessage]; !ok {
@@ -2398,7 +2753,7 @@ func (it *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool,
 		}
 	}
 	if !unknownSeen {
-		it.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2426,28 +2781,6 @@ func newInvocationTargetPaginateArgs(rv map[string]any) *invocationtargetPaginat
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]any:
-			var (
-				err1, err2 error
-				order      = &InvocationTargetOrder{Field: &InvocationTargetOrderField{}, Direction: entgql.OrderDirectionAsc}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithInvocationTargetOrder(order))
-			}
-		case *InvocationTargetOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithInvocationTargetOrder(v))
-			}
-		}
-	}
 	if v, ok := rv[whereField].(*InvocationTargetWhereInput); ok {
 		args.opts = append(args.opts, WithInvocationTargetFilter(v.Filter))
 	}
@@ -2455,18 +2788,18 @@ func newInvocationTargetPaginateArgs(rv map[string]any) *invocationtargetPaginat
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (mm *MemoryMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*MemoryMetricsQuery, error) {
+func (_q *MemoryMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*MemoryMetricsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return mm, nil
+		return _q, nil
 	}
-	if err := mm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return mm, nil
+	return _q, nil
 }
 
-func (mm *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2480,23 +2813,23 @@ func (mm *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: mm.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			mm.withMetrics = query
+			_q.withMetrics = query
 
 		case "garbageMetrics":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&GarbageMetricsClient{config: mm.config}).Query()
+				query = (&GarbageMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, garbagemetricsImplementors)...); err != nil {
 				return err
 			}
-			mm.WithNamedGarbageMetrics(alias, func(wq *GarbageMetricsQuery) {
+			_q.WithNamedGarbageMetrics(alias, func(wq *GarbageMetricsQuery) {
 				*wq = *query
 			})
 		case "peakPostGcHeapSize":
@@ -2521,7 +2854,7 @@ func (mm *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 		}
 	}
 	if !unknownSeen {
-		mm.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2556,18 +2889,18 @@ func newMemoryMetricsPaginateArgs(rv map[string]any) *memorymetricsPaginateArgs 
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (m *MetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*MetricsQuery, error) {
+func (_q *MetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*MetricsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return m, nil
+		return _q, nil
 	}
-	if err := m.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return m, nil
+	return _q, nil
 }
 
-func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
@@ -2576,89 +2909,89 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: m.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			m.withBazelInvocation = query
+			_q.withBazelInvocation = query
 
 		case "actionSummary":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionSummaryClient{config: m.config}).Query()
+				query = (&ActionSummaryClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			m.withActionSummary = query
+			_q.withActionSummary = query
 
 		case "memoryMetrics":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MemoryMetricsClient{config: m.config}).Query()
+				query = (&MemoryMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
 				return err
 			}
-			m.withMemoryMetrics = query
+			_q.withMemoryMetrics = query
 
 		case "targetMetrics":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TargetMetricsClient{config: m.config}).Query()
+				query = (&TargetMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.withTargetMetrics = query
+			_q.withTargetMetrics = query
 
 		case "timingMetrics":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TimingMetricsClient{config: m.config}).Query()
+				query = (&TimingMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, timingmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.withTimingMetrics = query
+			_q.withTimingMetrics = query
 
 		case "artifactMetrics":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ArtifactMetricsClient{config: m.config}).Query()
+				query = (&ArtifactMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.withArtifactMetrics = query
+			_q.withArtifactMetrics = query
 
 		case "networkMetrics":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&NetworkMetricsClient{config: m.config}).Query()
+				query = (&NetworkMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, networkmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.withNetworkMetrics = query
+			_q.withNetworkMetrics = query
 
 		case "buildGraphMetrics":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BuildGraphMetricsClient{config: m.config}).Query()
+				query = (&BuildGraphMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, buildgraphmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.withBuildGraphMetrics = query
+			_q.withBuildGraphMetrics = query
 		}
 	}
 	return nil
@@ -2694,18 +3027,18 @@ func newMetricsPaginateArgs(rv map[string]any) *metricsPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (md *MissDetailQuery) CollectFields(ctx context.Context, satisfies ...string) (*MissDetailQuery, error) {
+func (_q *MissDetailQuery) CollectFields(ctx context.Context, satisfies ...string) (*MissDetailQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return md, nil
+		return _q, nil
 	}
-	if err := md.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return md, nil
+	return _q, nil
 }
 
-func (md *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2719,12 +3052,12 @@ func (md *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionCacheStatisticsClient{config: md.config}).Query()
+				query = (&ActionCacheStatisticsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
 				return err
 			}
-			md.withActionCacheStatistics = query
+			_q.withActionCacheStatistics = query
 		case "reason":
 			if _, ok := fieldSeen[missdetail.FieldReason]; !ok {
 				selectedFields = append(selectedFields, missdetail.FieldReason)
@@ -2742,7 +3075,7 @@ func (md *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx
 		}
 	}
 	if !unknownSeen {
-		md.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2777,18 +3110,18 @@ func newMissDetailPaginateArgs(rv map[string]any) *missdetailPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (nm *NetworkMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*NetworkMetricsQuery, error) {
+func (_q *NetworkMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*NetworkMetricsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return nm, nil
+		return _q, nil
 	}
-	if err := nm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return nm, nil
+	return _q, nil
 }
 
-func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
@@ -2797,23 +3130,23 @@ func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: nm.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			nm.withMetrics = query
+			_q.withMetrics = query
 
 		case "systemNetworkStats":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&SystemNetworkStatsClient{config: nm.config}).Query()
+				query = (&SystemNetworkStatsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, systemnetworkstatsImplementors)...); err != nil {
 				return err
 			}
-			nm.withSystemNetworkStats = query
+			_q.withSystemNetworkStats = query
 		}
 	}
 	return nil
@@ -2849,18 +3182,18 @@ func newNetworkMetricsPaginateArgs(rv map[string]any) *networkmetricsPaginateArg
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (rc *RunnerCountQuery) CollectFields(ctx context.Context, satisfies ...string) (*RunnerCountQuery, error) {
+func (_q *RunnerCountQuery) CollectFields(ctx context.Context, satisfies ...string) (*RunnerCountQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return rc, nil
+		return _q, nil
 	}
-	if err := rc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return rc, nil
+	return _q, nil
 }
 
-func (rc *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2874,12 +3207,12 @@ func (rc *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCt
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&ActionSummaryClient{config: rc.config}).Query()
+				query = (&ActionSummaryClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			rc.withActionSummary = query
+			_q.withActionSummary = query
 		case "name":
 			if _, ok := fieldSeen[runnercount.FieldName]; !ok {
 				selectedFields = append(selectedFields, runnercount.FieldName)
@@ -2902,7 +3235,7 @@ func (rc *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCt
 		}
 	}
 	if !unknownSeen {
-		rc.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2937,18 +3270,18 @@ func newRunnerCountPaginateArgs(rv map[string]any) *runnercountPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (sc *SourceControlQuery) CollectFields(ctx context.Context, satisfies ...string) (*SourceControlQuery, error) {
+func (_q *SourceControlQuery) CollectFields(ctx context.Context, satisfies ...string) (*SourceControlQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return sc, nil
+		return _q, nil
 	}
-	if err := sc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return sc, nil
+	return _q, nil
 }
 
-func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *SourceControlQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -2962,12 +3295,12 @@ func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: sc.config}).Query()
+				query = (&BazelInvocationClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			sc.withBazelInvocation = query
+			_q.withBazelInvocation = query
 		case "repo":
 			if _, ok := fieldSeen[sourcecontrol.FieldRepo]; !ok {
 				selectedFields = append(selectedFields, sourcecontrol.FieldRepo)
@@ -3005,7 +3338,7 @@ func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, op
 		}
 	}
 	if !unknownSeen {
-		sc.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3040,18 +3373,18 @@ func newSourceControlPaginateArgs(rv map[string]any) *sourcecontrolPaginateArgs 
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (sns *SystemNetworkStatsQuery) CollectFields(ctx context.Context, satisfies ...string) (*SystemNetworkStatsQuery, error) {
+func (_q *SystemNetworkStatsQuery) CollectFields(ctx context.Context, satisfies ...string) (*SystemNetworkStatsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return sns, nil
+		return _q, nil
 	}
-	if err := sns.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return sns, nil
+	return _q, nil
 }
 
-func (sns *SystemNetworkStatsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *SystemNetworkStatsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -3065,12 +3398,12 @@ func (sns *SystemNetworkStatsQuery) collectField(ctx context.Context, oneNode bo
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&NetworkMetricsClient{config: sns.config}).Query()
+				query = (&NetworkMetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, networkmetricsImplementors)...); err != nil {
 				return err
 			}
-			sns.withNetworkMetrics = query
+			_q.withNetworkMetrics = query
 		case "bytesSent":
 			if _, ok := fieldSeen[systemnetworkstats.FieldBytesSent]; !ok {
 				selectedFields = append(selectedFields, systemnetworkstats.FieldBytesSent)
@@ -3118,7 +3451,7 @@ func (sns *SystemNetworkStatsQuery) collectField(ctx context.Context, oneNode bo
 		}
 	}
 	if !unknownSeen {
-		sns.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3153,18 +3486,18 @@ func newSystemNetworkStatsPaginateArgs(rv map[string]any) *systemnetworkstatsPag
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (t *TargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetQuery, error) {
+func (_q *TargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return t, nil
+		return _q, nil
 	}
-	if err := t.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return t, nil
+	return _q, nil
 }
 
-func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -3178,18 +3511,18 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InstanceNameClient{config: t.config}).Query()
+				query = (&InstanceNameClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
 				return err
 			}
-			t.withInstanceName = query
+			_q.withInstanceName = query
 
 		case "invocationTargets":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InvocationTargetClient{config: t.config}).Query()
+				query = (&InvocationTargetClient{config: _q.config}).Query()
 			)
 			args := newInvocationTargetPaginateArgs(fieldArgs(ctx, new(InvocationTargetWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
@@ -3207,7 +3540,7 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
 				if hasPagination || ignoredEdges {
 					query := query.Clone()
-					t.loadTotal = append(t.loadTotal, func(ctx context.Context, nodes []*Target) error {
+					_q.loadTotal = append(_q.loadTotal, func(ctx context.Context, nodes []*Target) error {
 						ids := make([]driver.Value, len(nodes))
 						for i := range nodes {
 							ids[i] = nodes[i].ID
@@ -3236,7 +3569,7 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 						return nil
 					})
 				} else {
-					t.loadTotal = append(t.loadTotal, func(_ context.Context, nodes []*Target) error {
+					_q.loadTotal = append(_q.loadTotal, func(_ context.Context, nodes []*Target) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.InvocationTargets)
 							if nodes[i].Edges.totalCount[1] == nil {
@@ -3270,7 +3603,7 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			} else {
 				query = pager.applyOrder(query)
 			}
-			t.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
+			_q.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
 				*wq = *query
 			})
 
@@ -3278,12 +3611,12 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TestTargetClient{config: t.config}).Query()
+				query = (&TestTargetClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testtargetImplementors)...); err != nil {
 				return err
 			}
-			t.withTestTarget = query
+			_q.withTestTarget = query
 		case "label":
 			if _, ok := fieldSeen[target.FieldLabel]; !ok {
 				selectedFields = append(selectedFields, target.FieldLabel)
@@ -3306,7 +3639,7 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 		}
 	}
 	if !unknownSeen {
-		t.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3341,18 +3674,18 @@ func newTargetPaginateArgs(rv map[string]any) *targetPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (tm *TargetMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetMetricsQuery, error) {
+func (_q *TargetMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetMetricsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return tm, nil
+		return _q, nil
 	}
-	if err := tm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return tm, nil
+	return _q, nil
 }
 
-func (tm *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -3366,12 +3699,12 @@ func (tm *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: tm.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			tm.withMetrics = query
+			_q.withMetrics = query
 		case "targetsLoaded":
 			if _, ok := fieldSeen[targetmetrics.FieldTargetsLoaded]; !ok {
 				selectedFields = append(selectedFields, targetmetrics.FieldTargetsLoaded)
@@ -3394,7 +3727,7 @@ func (tm *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 		}
 	}
 	if !unknownSeen {
-		tm.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3429,18 +3762,18 @@ func newTargetMetricsPaginateArgs(rv map[string]any) *targetmetricsPaginateArgs 
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (tr *TestResultQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestResultQuery, error) {
+func (_q *TestResultQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestResultQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return tr, nil
+		return _q, nil
 	}
-	if err := tr.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return tr, nil
+	return _q, nil
 }
 
-func (tr *TestResultQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *TestResultQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -3454,12 +3787,25 @@ func (tr *TestResultQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TestSummaryClient{config: tr.config}).Query()
+				query = (&TestSummaryClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testsummaryImplementors)...); err != nil {
 				return err
 			}
-			tr.withTestSummary = query
+			_q.withTestSummary = query
+
+		case "testActionOutput":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedTestActionOutput(alias, func(wq *FileQuery) {
+				*wq = *query
+			})
 		case "run":
 			if _, ok := fieldSeen[testresult.FieldRun]; !ok {
 				selectedFields = append(selectedFields, testresult.FieldRun)
@@ -3537,7 +3883,7 @@ func (tr *TestResultQuery) collectField(ctx context.Context, oneNode bool, opCtx
 		}
 	}
 	if !unknownSeen {
-		tr.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3572,18 +3918,18 @@ func newTestResultPaginateArgs(rv map[string]any) *testresultPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (ts *TestSummaryQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestSummaryQuery, error) {
+func (_q *TestSummaryQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestSummaryQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return ts, nil
+		return _q, nil
 	}
-	if err := ts.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return ts, nil
+	return _q, nil
 }
 
-func (ts *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -3597,23 +3943,23 @@ func (ts *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCt
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&InvocationTargetClient{config: ts.config}).Query()
+				query = (&InvocationTargetClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, invocationtargetImplementors)...); err != nil {
 				return err
 			}
-			ts.withInvocationTarget = query
+			_q.withInvocationTarget = query
 
 		case "testResults":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TestResultClient{config: ts.config}).Query()
+				query = (&TestResultClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultImplementors)...); err != nil {
 				return err
 			}
-			ts.WithNamedTestResults(alias, func(wq *TestResultQuery) {
+			_q.WithNamedTestResults(alias, func(wq *TestResultQuery) {
 				*wq = *query
 			})
 		case "overallStatus":
@@ -3668,7 +4014,7 @@ func (ts *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCt
 		}
 	}
 	if !unknownSeen {
-		ts.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3725,18 +4071,18 @@ func newTestSummaryPaginateArgs(rv map[string]any) *testsummaryPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (tt *TestTargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestTargetQuery, error) {
+func (_q *TestTargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestTargetQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return tt, nil
+		return _q, nil
 	}
-	if err := tt.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return tt, nil
+	return _q, nil
 }
 
-func (tt *TestTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *TestTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -3750,12 +4096,12 @@ func (tt *TestTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TargetClient{config: tt.config}).Query()
+				query = (&TargetClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetImplementors)...); err != nil {
 				return err
 			}
-			tt.withTarget = query
+			_q.withTarget = query
 			if _, ok := fieldSeen[testtarget.FieldTargetID]; !ok {
 				selectedFields = append(selectedFields, testtarget.FieldTargetID)
 				fieldSeen[testtarget.FieldTargetID] = struct{}{}
@@ -3772,7 +4118,7 @@ func (tt *TestTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx
 		}
 	}
 	if !unknownSeen {
-		tt.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3807,18 +4153,18 @@ func newTestTargetPaginateArgs(rv map[string]any) *testtargetPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (tm *TimingMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*TimingMetricsQuery, error) {
+func (_q *TimingMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*TimingMetricsQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return tm, nil
+		return _q, nil
 	}
-	if err := tm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return tm, nil
+	return _q, nil
 }
 
-func (tm *TimingMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (_q *TimingMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
@@ -3832,12 +4178,12 @@ func (tm *TimingMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&MetricsClient{config: tm.config}).Query()
+				query = (&MetricsClient{config: _q.config}).Query()
 			)
 			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			tm.withMetrics = query
+			_q.withMetrics = query
 		case "cpuTimeInMs":
 			if _, ok := fieldSeen[timingmetrics.FieldCPUTimeInMs]; !ok {
 				selectedFields = append(selectedFields, timingmetrics.FieldCPUTimeInMs)
@@ -3870,7 +4216,7 @@ func (tm *TimingMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 		}
 	}
 	if !unknownSeen {
-		tm.Select(selectedFields...)
+		_q.Select(selectedFields...)
 	}
 	return nil
 }
@@ -3929,7 +4275,7 @@ func fieldArgs(ctx context.Context, whereInput any, path ...string) map[string]a
 func unmarshalArgs(ctx context.Context, whereInput any, args map[string]any) map[string]any {
 	for _, k := range []string{firstField, lastField} {
 		v, ok := args[k]
-		if !ok {
+		if !ok || v == nil {
 			continue
 		}
 		i, err := graphql.UnmarshalInt(v)

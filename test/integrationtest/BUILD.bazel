@@ -22,7 +22,7 @@ go_test(
         "//test/testutils",
         "@com_github_99designs_gqlgen//graphql",
         "@com_github_buildbarn_bb_storage//pkg/auth",
-        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
+        "@com_github_buildbarn_bb_storage//pkg/digest",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_google_uuid//:uuid",

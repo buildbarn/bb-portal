@@ -76,7 +76,7 @@ func (*AuthenticatedUser) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AuthenticatedUser fields.
-func (au *AuthenticatedUser) assignValues(columns []string, values []any) error {
+func (_m *AuthenticatedUser) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -87,35 +87,35 @@ func (au *AuthenticatedUser) assignValues(columns []string, values []any) error 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			au.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case authenticateduser.FieldUserUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_uuid", values[i])
 			} else if value != nil {
-				au.UserUUID = *value
+				_m.UserUUID = *value
 			}
 		case authenticateduser.FieldExternalID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field external_id", values[i])
 			} else if value.Valid {
-				au.ExternalID = value.String
+				_m.ExternalID = value.String
 			}
 		case authenticateduser.FieldDisplayName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field display_name", values[i])
 			} else if value.Valid {
-				au.DisplayName = value.String
+				_m.DisplayName = value.String
 			}
 		case authenticateduser.FieldUserInfo:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field user_info", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &au.UserInfo); err != nil {
+				if err := json.Unmarshal(*value, &_m.UserInfo); err != nil {
 					return fmt.Errorf("unmarshal field user_info: %w", err)
 				}
 			}
 		default:
-			au.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -123,74 +123,74 @@ func (au *AuthenticatedUser) assignValues(columns []string, values []any) error 
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AuthenticatedUser.
 // This includes values selected through modifiers, order, etc.
-func (au *AuthenticatedUser) Value(name string) (ent.Value, error) {
-	return au.selectValues.Get(name)
+func (_m *AuthenticatedUser) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocations queries the "bazel_invocations" edge of the AuthenticatedUser entity.
-func (au *AuthenticatedUser) QueryBazelInvocations() *BazelInvocationQuery {
-	return NewAuthenticatedUserClient(au.config).QueryBazelInvocations(au)
+func (_m *AuthenticatedUser) QueryBazelInvocations() *BazelInvocationQuery {
+	return NewAuthenticatedUserClient(_m.config).QueryBazelInvocations(_m)
 }
 
 // Update returns a builder for updating this AuthenticatedUser.
 // Note that you need to call AuthenticatedUser.Unwrap() before calling this method if this AuthenticatedUser
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (au *AuthenticatedUser) Update() *AuthenticatedUserUpdateOne {
-	return NewAuthenticatedUserClient(au.config).UpdateOne(au)
+func (_m *AuthenticatedUser) Update() *AuthenticatedUserUpdateOne {
+	return NewAuthenticatedUserClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AuthenticatedUser entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (au *AuthenticatedUser) Unwrap() *AuthenticatedUser {
-	_tx, ok := au.config.driver.(*txDriver)
+func (_m *AuthenticatedUser) Unwrap() *AuthenticatedUser {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AuthenticatedUser is not a transactional entity")
 	}
-	au.config.driver = _tx.drv
-	return au
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (au *AuthenticatedUser) String() string {
+func (_m *AuthenticatedUser) String() string {
 	var builder strings.Builder
 	builder.WriteString("AuthenticatedUser(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", au.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("user_uuid=")
-	builder.WriteString(fmt.Sprintf("%v", au.UserUUID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserUUID))
 	builder.WriteString(", ")
 	builder.WriteString("external_id=")
-	builder.WriteString(au.ExternalID)
+	builder.WriteString(_m.ExternalID)
 	builder.WriteString(", ")
 	builder.WriteString("display_name=")
-	builder.WriteString(au.DisplayName)
+	builder.WriteString(_m.DisplayName)
 	builder.WriteString(", ")
 	builder.WriteString("user_info=")
-	builder.WriteString(fmt.Sprintf("%v", au.UserInfo))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserInfo))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedBazelInvocations returns the BazelInvocations named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (au *AuthenticatedUser) NamedBazelInvocations(name string) ([]*BazelInvocation, error) {
-	if au.Edges.namedBazelInvocations == nil {
+func (_m *AuthenticatedUser) NamedBazelInvocations(name string) ([]*BazelInvocation, error) {
+	if _m.Edges.namedBazelInvocations == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := au.Edges.namedBazelInvocations[name]
+	nodes, ok := _m.Edges.namedBazelInvocations[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (au *AuthenticatedUser) appendNamedBazelInvocations(name string, edges ...*BazelInvocation) {
-	if au.Edges.namedBazelInvocations == nil {
-		au.Edges.namedBazelInvocations = make(map[string][]*BazelInvocation)
+func (_m *AuthenticatedUser) appendNamedBazelInvocations(name string, edges ...*BazelInvocation) {
+	if _m.Edges.namedBazelInvocations == nil {
+		_m.Edges.namedBazelInvocations = make(map[string][]*BazelInvocation)
 	}
 	if len(edges) == 0 {
-		au.Edges.namedBazelInvocations[name] = []*BazelInvocation{}
+		_m.Edges.namedBazelInvocations[name] = []*BazelInvocation{}
 	} else {
-		au.Edges.namedBazelInvocations[name] = append(au.Edges.namedBazelInvocations[name], edges...)
+		_m.Edges.namedBazelInvocations[name] = append(_m.Edges.namedBazelInvocations[name], edges...)
 	}
 }
 

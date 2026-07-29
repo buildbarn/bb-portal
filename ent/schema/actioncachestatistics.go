@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 // ActionCacheStatistics holds the schema definition for the ActionCacheStatistics entity.
@@ -22,27 +21,29 @@ func (ActionCacheStatistics) Fields() []ent.Field {
 		// represents the size of the written files, which has no direct relation to
 		// the number of entries in the cache.
 		field.Uint64("size_in_bytes").
-			Annotations(entgql.Type("Uint64")).
+			Annotations(entgql.Type("UnsignedLong")).
 			Optional(),
 
 		// Time it took to save the action cache to disk.
 		field.Uint64("save_time_in_ms").
-			Annotations(entgql.Type("Uint64")).
+			Annotations(entgql.Type("UnsignedLong")).
 			Optional(),
 
 		// Time it took to load the action cache from disk. Reported as 0 if the
 		// action cache has not been loaded in this invocation.
 		field.Uint64("load_time_in_ms").
-			Annotations(entgql.Type("Uint64")).
-			GoType(Uint64Numeric(0)).
+			Annotations(entgql.Type("UnsignedLong")).
+			ValueScanner(uint64ValueScanner).
 			Optional().
+			Immutable().
 			SchemaType(postgresUint64SchemaType),
 
 		// Time spent waiting on the cache check semaphore.
 		field.Uint64("cache_check_semaphore_wait_time_in_ms").
-			Annotations(entgql.Type("Uint64")).
-			GoType(Uint64Numeric(0)).
+			Annotations(entgql.Type("UnsignedLong")).
+			ValueScanner(uint64ValueScanner).
 			Optional().
+			Immutable().
 			SchemaType(postgresUint64SchemaType),
 
 		// Cache counters.
@@ -69,9 +70,7 @@ func (ActionCacheStatistics) Edges() []ent.Edge {
 
 // Indexes of the ActionCacheStatistics.
 func (ActionCacheStatistics) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Edges("action_summary"),
-	}
+	return []ent.Index{}
 }
 
 // Mixin of the ActionCacheStatistics.

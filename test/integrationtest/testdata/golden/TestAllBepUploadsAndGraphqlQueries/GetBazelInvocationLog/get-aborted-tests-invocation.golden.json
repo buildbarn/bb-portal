@@ -1,0 +1,28 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjg=",
+    "invocationID": "64719226-555e-494d-9918-0fd25d468b1e",
+    "originalCommandLine": {
+      "command": "test",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "jobs",
+          "value": "200"
+        },
+        {
+          "option": "test_keep_going",
+          "value": "false"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "test2.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    }
+  }
+}

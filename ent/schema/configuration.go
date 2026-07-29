@@ -63,7 +63,6 @@ func (Configuration) Edges() []ent.Edge {
 // Indexes for Configuration.
 func (Configuration) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("configuration_id"),
 		index.Edges("bazel_invocation"),
 		index.Fields("configuration_id").
 			Edges("bazel_invocation").

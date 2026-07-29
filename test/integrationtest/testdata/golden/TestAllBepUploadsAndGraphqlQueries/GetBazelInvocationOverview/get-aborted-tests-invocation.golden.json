@@ -1,0 +1,51 @@
+{
+  "getBazelInvocation": {
+    "bazelVersion": "8.1.1",
+    "configurations": [
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjoxMw==",
+        "mnemonic": "k8-fastbuild"
+      },
+      {
+        "cpu": "k8",
+        "id": "Q29uZmlndXJhdGlvbjoxNA==",
+        "mnemonic": "k8-fastbuild"
+      }
+    ],
+    "connectionMetadata": null,
+    "endedAt": "2026-02-04T09:03:27.366Z",
+    "exitCodeName": "TESTS_FAILED",
+    "hostname": "3280a8b94607",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjg=",
+    "instanceName": {
+      "id": "SW5zdGFuY2VOYW1lOjE=",
+      "name": ""
+    },
+    "invocationID": "64719226-555e-494d-9918-0fd25d468b1e",
+    "numFetches": 0,
+    "originalCommandLine": {
+      "command": "test",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "jobs",
+          "value": "200"
+        },
+        {
+          "option": "test_keep_going",
+          "value": "false"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "test2.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    },
+    "startedAt": "2026-02-04T09:03:25.376Z"
+  }
+}

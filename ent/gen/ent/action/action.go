@@ -34,22 +34,18 @@ const (
 	FieldFailureCode = "failure_code"
 	// FieldFailureMessage holds the string denoting the failure_message field in the database.
 	FieldFailureMessage = "failure_message"
-	// FieldStdoutHash holds the string denoting the stdout_hash field in the database.
-	FieldStdoutHash = "stdout_hash"
-	// FieldStdoutSizeBytes holds the string denoting the stdout_size_bytes field in the database.
-	FieldStdoutSizeBytes = "stdout_size_bytes"
-	// FieldStdoutHashFunction holds the string denoting the stdout_hash_function field in the database.
-	FieldStdoutHashFunction = "stdout_hash_function"
-	// FieldStderrHash holds the string denoting the stderr_hash field in the database.
-	FieldStderrHash = "stderr_hash"
-	// FieldStderrSizeBytes holds the string denoting the stderr_size_bytes field in the database.
-	FieldStderrSizeBytes = "stderr_size_bytes"
-	// FieldStderrHashFunction holds the string denoting the stderr_hash_function field in the database.
-	FieldStderrHashFunction = "stderr_hash_function"
+	// FieldStdoutFileID holds the string denoting the stdout_file_id field in the database.
+	FieldStdoutFileID = "stdout_file_id"
+	// FieldStderrFileID holds the string denoting the stderr_file_id field in the database.
+	FieldStderrFileID = "stderr_file_id"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeConfiguration holds the string denoting the configuration edge name in mutations.
 	EdgeConfiguration = "configuration"
+	// EdgeStdout holds the string denoting the stdout edge name in mutations.
+	EdgeStdout = "stdout"
+	// EdgeStderr holds the string denoting the stderr edge name in mutations.
+	EdgeStderr = "stderr"
 	// Table holds the table name of the action in the database.
 	Table = "actions"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -66,6 +62,20 @@ const (
 	ConfigurationInverseTable = "configurations"
 	// ConfigurationColumn is the table column denoting the configuration relation/edge.
 	ConfigurationColumn = "configuration_id"
+	// StdoutTable is the table that holds the stdout relation/edge.
+	StdoutTable = "actions"
+	// StdoutInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	StdoutInverseTable = "files"
+	// StdoutColumn is the table column denoting the stdout relation/edge.
+	StdoutColumn = "stdout_file_id"
+	// StderrTable is the table that holds the stderr relation/edge.
+	StderrTable = "actions"
+	// StderrInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	StderrInverseTable = "files"
+	// StderrColumn is the table column denoting the stderr relation/edge.
+	StderrColumn = "stderr_file_id"
 )
 
 // Columns holds all SQL columns for action fields.
@@ -82,12 +92,8 @@ var Columns = []string{
 	FieldEndTime,
 	FieldFailureCode,
 	FieldFailureMessage,
-	FieldStdoutHash,
-	FieldStdoutSizeBytes,
-	FieldStdoutHashFunction,
-	FieldStderrHash,
-	FieldStderrSizeBytes,
-	FieldStderrHashFunction,
+	FieldStdoutFileID,
+	FieldStderrFileID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -158,34 +164,14 @@ func ByFailureMessage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFailureMessage, opts...).ToFunc()
 }
 
-// ByStdoutHash orders the results by the stdout_hash field.
-func ByStdoutHash(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStdoutHash, opts...).ToFunc()
+// ByStdoutFileID orders the results by the stdout_file_id field.
+func ByStdoutFileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStdoutFileID, opts...).ToFunc()
 }
 
-// ByStdoutSizeBytes orders the results by the stdout_size_bytes field.
-func ByStdoutSizeBytes(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStdoutSizeBytes, opts...).ToFunc()
-}
-
-// ByStdoutHashFunction orders the results by the stdout_hash_function field.
-func ByStdoutHashFunction(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStdoutHashFunction, opts...).ToFunc()
-}
-
-// ByStderrHash orders the results by the stderr_hash field.
-func ByStderrHash(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStderrHash, opts...).ToFunc()
-}
-
-// ByStderrSizeBytes orders the results by the stderr_size_bytes field.
-func ByStderrSizeBytes(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStderrSizeBytes, opts...).ToFunc()
-}
-
-// ByStderrHashFunction orders the results by the stderr_hash_function field.
-func ByStderrHashFunction(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStderrHashFunction, opts...).ToFunc()
+// ByStderrFileID orders the results by the stderr_file_id field.
+func ByStderrFileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStderrFileID, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.
@@ -201,6 +187,20 @@ func ByConfigurationField(field string, opts ...sql.OrderTermOption) OrderOption
 		sqlgraph.OrderByNeighborTerms(s, newConfigurationStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByStdoutField orders the results by stdout field.
+func ByStdoutField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStdoutStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByStderrField orders the results by stderr field.
+func ByStderrField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStderrStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -213,5 +213,19 @@ func newConfigurationStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ConfigurationInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
+	)
+}
+func newStdoutStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StdoutInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, StdoutTable, StdoutColumn),
+	)
+}
+func newStderrStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StderrInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, StderrTable, StderrColumn),
 	)
 }

@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/lib/pq"
 )
@@ -15,48 +14,49 @@ import (
 const createTargetKindMappingsBulk = `-- name: CreateTargetKindMappingsBulk :exec
 INSERT INTO target_kind_mappings (
     bazel_invocation_id,
-    target_id,
-    start_time_in_ms
+    target_id
 )
 SELECT
     $1,
-    target_id,
-    NULLIF(start_time, 0)
+    target_id
 FROM (
-    SELECT 
-        unnest($2::bigint[]) AS target_id,
-        unnest($3::bigint[]) AS start_time
+    SELECT unnest($2::bigint[]) AS target_id
 ) AS input
 `
 
 type CreateTargetKindMappingsBulkParams struct {
 	BazelInvocationID int64
 	TargetIds         []int64
-	StartTimes        []int64
 }
 
 func (q *Queries) CreateTargetKindMappingsBulk(ctx context.Context, arg CreateTargetKindMappingsBulkParams) error {
-	_, err := q.db.ExecContext(ctx, createTargetKindMappingsBulk, arg.BazelInvocationID, pq.Array(arg.TargetIds), pq.Array(arg.StartTimes))
+	_, err := q.db.ExecContext(ctx, createTargetKindMappingsBulk, arg.BazelInvocationID, pq.Array(arg.TargetIds))
 	return err
 }
 
 const deleteTargetKindMappingsFromPages = `-- name: DeleteTargetKindMappingsFromPages :execrows
-DELETE FROM target_kind_mappings m
-USING bazel_invocations AS i
-WHERE
-    m.bazel_invocation_id = i.id
-    AND m.ctid >= format('(%s,0)', $1::bigint)::tid
-    AND m.ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND i.bep_completed = true
+DELETE FROM target_kind_mappings
+WHERE ctid IN (
+    SELECT m.ctid FROM target_kind_mappings m
+    JOIN bazel_invocations AS i ON i.id = m.bazel_invocation_id
+    WHERE
+        m.bazel_invocation_id = i.id
+        AND m.ctid >= format('(%s,0)', $1::bigint)::tid
+        AND m.ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+        AND i.bep_completed = true
+    FOR UPDATE SKIP LOCKED
+    LIMIT $3::bigint
+)
 `
 
 type DeleteTargetKindMappingsFromPagesParams struct {
-	FromPage int64
-	Pages    int64
+	FromPage   int64
+	Pages      int64
+	BatchLimit int64
 }
 
 func (q *Queries) DeleteTargetKindMappingsFromPages(ctx context.Context, arg DeleteTargetKindMappingsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteTargetKindMappingsFromPages, arg.FromPage, arg.Pages)
+	result, err := q.db.ExecContext(ctx, deleteTargetKindMappingsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
@@ -64,18 +64,17 @@ func (q *Queries) DeleteTargetKindMappingsFromPages(ctx context.Context, arg Del
 }
 
 const findMappedTargets = `-- name: FindMappedTargets :many
-SELECT 
-    t.label, 
-    t.aspect, 
-    m.target_id, 
-    m.start_time_in_ms
+SELECT
+    t.label,
+    t.aspect,
+    m.target_id
 FROM (
-    SELECT 
+    SELECT
         unnest($1::text[]) AS label,
         unnest($2::text[]) AS aspect
 ) AS input
-JOIN targets t ON 
-    t.label = input.label AND 
+JOIN targets t ON
+    t.label = input.label AND
     t.aspect = input.aspect
 JOIN target_kind_mappings m ON
     m.target_id = t.id AND
@@ -89,10 +88,9 @@ type FindMappedTargetsParams struct {
 }
 
 type FindMappedTargetsRow struct {
-	Label         string
-	Aspect        string
-	TargetID      int64
-	StartTimeInMs sql.NullInt64
+	Label    string
+	Aspect   string
+	TargetID int64
 }
 
 func (q *Queries) FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error) {
@@ -104,12 +102,7 @@ func (q *Queries) FindMappedTargets(ctx context.Context, arg FindMappedTargetsPa
 	var items []FindMappedTargetsRow
 	for rows.Next() {
 		var i FindMappedTargetsRow
-		if err := rows.Scan(
-			&i.Label,
-			&i.Aspect,
-			&i.TargetID,
-			&i.StartTimeInMs,
-		); err != nil {
+		if err := rows.Scan(&i.Label, &i.Aspect, &i.TargetID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

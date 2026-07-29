@@ -6,9 +6,10 @@ import (
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/bazelbuild/bazel/src/main/protobuf"
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/internal/database"
+	"github.com/buildbarn/bb-portal/pkg/invocation/files"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -49,7 +50,7 @@ func getErrorCodeFromFailureDetail(failureDetail *protobuf.FailureDetail) string
 	return ""
 }
 
-func (r *buildEventRecorder) saveActionExecuted(ctx context.Context, tx *ent.Client, actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) error {
+func (r *buildEventRecorder) saveActionExecuted(ctx context.Context, tx database.Handle, actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) error {
 	if actionExecuted == nil || actionCompletedID == nil {
 		return nil
 	}
@@ -62,7 +63,7 @@ func (r *buildEventRecorder) saveActionExecuted(ctx context.Context, tx *ent.Cli
 		return nil
 	}
 
-	create := tx.Action.Create().
+	create := tx.Ent().Action.Create().
 		SetBazelInvocationID(r.InvocationDbID).
 		SetLabel(actionCompletedID.Label).
 		SetSuccess(actionExecuted.Success).
@@ -74,7 +75,7 @@ func (r *buildEventRecorder) saveActionExecuted(ctx context.Context, tx *ent.Cli
 		// acceptable since we only care about failed actions, which are
 		// relatively rare. If we ever care about successful actions as well,
 		// we should batch this work.
-		configDbID, err := tx.Configuration.Query().
+		configDbID, err := tx.Ent().Configuration.Query().
 			Where(
 				configuration.ConfigurationID(configID),
 				configuration.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
@@ -101,26 +102,22 @@ func (r *buildEventRecorder) saveActionExecuted(ctx context.Context, tx *ent.Cli
 	if actionExecuted.EndTime != nil {
 		create.SetEndTime(actionExecuted.EndTime.AsTime())
 	}
-	if stdoutFile := actionExecuted.GetStdout(); stdoutFile != nil {
-		if digest := getFileDigestFromBesFile(stdoutFile); digest != nil {
-			create.SetStdoutHash(*digest)
-		}
-		if length := getFileSizeBytesFromBesFile(stdoutFile); length != nil {
-			create.SetStdoutSizeBytes(*length)
-		}
-		if digestFunction := getFileDigestFunctionFromBesFile(stdoutFile); digestFunction != nil {
-			create.SetStdoutHashFunction(*digestFunction)
+	if file := actionExecuted.GetStdout(); file != nil {
+		if parsedFile := files.ParseBepFile(file); parsedFile != nil {
+			fileDbID, err := SaveSingleFile(ctx, tx, r.InstanceNameDbID, *parsedFile)
+			if err != nil {
+				return util.StatusWrap(err, "Failed to save stdout to database")
+			}
+			create.SetStdoutID(fileDbID)
 		}
 	}
-	if stderrFile := actionExecuted.GetStderr(); stderrFile != nil {
-		if digest := getFileDigestFromBesFile(stderrFile); digest != nil {
-			create.SetStderrHash(*digest)
-		}
-		if length := getFileSizeBytesFromBesFile(stderrFile); length != nil {
-			create.SetStderrSizeBytes(*length)
-		}
-		if digestFunction := getFileDigestFunctionFromBesFile(stderrFile); digestFunction != nil {
-			create.SetStderrHashFunction(*digestFunction)
+	if file := actionExecuted.GetStderr(); file != nil {
+		if parsedFile := files.ParseBepFile(file); parsedFile != nil {
+			fileDbID, err := SaveSingleFile(ctx, tx, r.InstanceNameDbID, *parsedFile)
+			if err != nil {
+				return util.StatusWrap(err, "Failed to save stderr to database")
+			}
+			create.SetStderrID(fileDbID)
 		}
 	}
 	err := create.Exec(ctx)

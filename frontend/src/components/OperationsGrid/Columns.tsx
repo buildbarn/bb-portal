@@ -14,6 +14,7 @@ const operationNameColumn: ColumnType<OperationState> = {
   title: "Operation name",
   render: (_, record) => (
     <CodeLink
+      truncate
       text={record.name}
       link={{
         to: "/operations/$operationID",
@@ -48,6 +49,7 @@ const actionDigestColumn: ColumnType<OperationState> = {
     if (historicalExecuteResponseBrowserPageParams) {
       return (
         <CodeLink
+          truncate
           text={historicalExecuteResponseBrowserPageParams.digest.hash}
           link={{
             to: "/browser/$",
@@ -66,6 +68,7 @@ const actionDigestColumn: ColumnType<OperationState> = {
 
     return (
       <CodeLink
+        truncate
         text={`${record.actionDigest?.hash}-${record.actionDigest?.sizeBytes}`}
         link={{
           to: "/browser/$",
@@ -77,13 +80,14 @@ const actionDigestColumn: ColumnType<OperationState> = {
 };
 
 const targetIdColumn: ColumnType<OperationState> = {
+  key: "targetID",
   title: "Target ID",
-  dataIndex: "targetId",
+  render: (_, record) => record.targetId,
 };
 
 const statusColumn: ColumnType<OperationState> = {
-  title: "Status",
   key: "status",
+  title: "Status",
   render: (record: OperationState) => <OperationStatusTag operation={record} />,
 };
 

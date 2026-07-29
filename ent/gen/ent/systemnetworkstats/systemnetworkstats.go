@@ -5,6 +5,7 @@ package systemnetworkstats
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 )
 
 const (
@@ -74,6 +75,20 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// ValueScanner of all SystemNetworkStats fields.
+	ValueScanner struct {
+		BytesSent             field.TypeValueScanner[uint64]
+		BytesRecv             field.TypeValueScanner[uint64]
+		PacketsSent           field.TypeValueScanner[uint64]
+		PacketsRecv           field.TypeValueScanner[uint64]
+		PeakBytesSentPerSec   field.TypeValueScanner[uint64]
+		PeakBytesRecvPerSec   field.TypeValueScanner[uint64]
+		PeakPacketsSentPerSec field.TypeValueScanner[uint64]
+		PeakPacketsRecvPerSec field.TypeValueScanner[uint64]
+	}
+)
 
 // OrderOption defines the ordering options for the SystemNetworkStats queries.
 type OrderOption func(*sql.Selector)

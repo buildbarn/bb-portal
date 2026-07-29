@@ -1,25 +1,30 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
-import { Tooltip, theme } from "antd";
+import { theme } from "antd";
 import type { BazelInvocationNodeFragment } from "@/graphql/__generated__/graphql";
 
 const { useToken } = theme;
 interface Props {
   authenticatedUser?: BazelInvocationNodeFragment["authenticatedUser"];
+  showIcon?: boolean;
   username?: string;
 }
 
 const UserStatusIndicator: React.FC<Props> = ({
   authenticatedUser,
+  showIcon,
   username,
 }) => {
   const { token } = useToken();
   if (authenticatedUser) {
     return (
       <>
-        <Tooltip title="This user is authenticated">
-          <UserOutlined style={{ color: token.colorText }} />
-        </Tooltip>{" "}
+        {showIcon && (
+          <UserOutlined
+            style={{ color: token.colorText, marginRight: "5px" }}
+            title="This user is authenticated"
+          />
+        )}
         <span style={{ color: token.colorLink }}>
           <Link
             to="/users/$userUUID"
@@ -38,9 +43,12 @@ const UserStatusIndicator: React.FC<Props> = ({
 
   return (
     <>
-      <Tooltip title="This user is unauthenticated">
-        <UserOutlined style={{ color: "red" }} />
-      </Tooltip>{" "}
+      {showIcon && (
+        <UserOutlined
+          style={{ color: token.red, marginRight: "5px" }}
+          title="This user is unauthenticated"
+        />
+      )}
       {username || <i>No display name</i>}
     </>
   );

@@ -65,6 +65,9 @@ func (TestResult) Edges() []ent.Edge {
 			Ref("test_results").
 			Required().
 			Unique(),
+
+		edge.To("test_action_output", File.Type).
+			Through("test_action_output_table", TestActionOutput.Type),
 	}
 }
 

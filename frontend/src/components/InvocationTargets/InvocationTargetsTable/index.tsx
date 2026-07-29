@@ -1,124 +1,47 @@
-import { useQuery } from "@apollo/client/react";
 import { Space } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
-import React from "react";
-import {
-  CursorTable,
-  getNewPaginationVariables,
-} from "@/components/CursorTable";
-import type { PaginationVariables } from "@/components/CursorTable/types";
-import PortalAlert from "@/components/PortalAlert";
+import type React from "react";
+import { PageCursorTable } from "@/components/PageCursorTable";
+import type { GetPaginationUpdateLinkType } from "@/components/PageCursorTable/types";
+import { tableFiltersToGraphqlWhere } from "@/components/PageCursorTable/utils";
 import type {
-  GetInvocationTargetsForInvocationQuery,
-  InvocationTargetAbortReason,
+  BazelInvocationTargetCountsFragment,
+  BazelInvocationTargetMetricsFragment,
+  BazelInvocationTargetsFragment,
   InvocationTargetWhereInput,
-  TargetMetrics,
+  PageInfo,
 } from "@/graphql/__generated__/graphql";
-import styles from "@/theme/theme.module.css";
-import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import { InvocationTargetsMetrics } from "../InvocationTargetsMetrics";
-import { columns, type InvocationTargetsTableRowType } from "./Columns";
-import { GET_INVOCATION_TARGETS_FOR_INVOCATION } from "./graphql";
+import { columns } from "./Columns";
 
 interface Props {
-  invocationId: string;
-  targetMetrics: TargetMetrics | undefined;
+  targetMetrics: BazelInvocationTargetMetricsFragment | null | undefined;
+  invocationTargets: BazelInvocationTargetsFragment[];
+  targetCounts: BazelInvocationTargetCountsFragment;
+  onFilterChange: (where: InvocationTargetWhereInput[]) => void;
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
+  pageSize: number;
+  pageInfo: PageInfo;
 }
 
 export const InvocationTargetsTable: React.FC<Props> = ({
-  invocationId,
   targetMetrics,
+  invocationTargets,
+  targetCounts,
+  onFilterChange,
+  getPaginationUpdateLink,
+  pageSize,
+  pageInfo,
 }) => {
-  const [paginationVariables, setPaginationVariables] =
-    React.useState<PaginationVariables>(getNewPaginationVariables());
-  const [filterVariables, setFilterVariables] =
-    React.useState<InvocationTargetWhereInput>({});
-
-  const { data, error, loading } =
-    useQuery<GetInvocationTargetsForInvocationQuery>(
-      GET_INVOCATION_TARGETS_FOR_INVOCATION,
-      {
-        variables: {
-          invocationID: invocationId,
-          where: filterVariables,
-          ...paginationVariables,
-        },
-        fetchPolicy: "cache-first",
-        notifyOnNetworkStatusChange: true,
-      },
-    );
-
-  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
-    const newFilters: InvocationTargetWhereInput[] = [];
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && value.length > 0) {
-        switch (key) {
-          case "target-kind":
-            newFilters.push({
-              hasTargetWith: [{ targetKindContainsFold: value[0] as string }],
-            });
-            break;
-          case "label":
-            newFilters.push({
-              hasTargetWith: [{ labelContainsFold: value[0] as string }],
-            });
-            break;
-          case "aspect":
-            newFilters.push({
-              hasTargetWith: [{ aspectContainsFold: value[0] as string }],
-            });
-            break;
-          case "success":
-            if (value.length === 1) {
-              newFilters.push({ success: value[0] as boolean });
-            }
-            break;
-          case "abort-reason":
-            newFilters.push({
-              abortReasonIn: value as InvocationTargetAbortReason[],
-            });
-            break;
-        }
-      }
-    });
-    setFilterVariables({ and: newFilters });
-  };
-
-  if (error) {
-    return (
-      <PortalAlert
-        type="error"
-        message={
-          error?.message ||
-          "An unknown error occurred while fetching invocation targets."
-        }
-        showIcon
-        className={styles.alert}
-      />
-    );
-  }
-
-  const invocationTargets = parseGraphqlEdgeList<InvocationTargetsTableRowType>(
-    data?.getBazelInvocation?.invocationTargets,
-  );
-
   return (
     <>
       <InvocationTargetsMetrics
         targetMetrics={targetMetrics}
-        invocationTargetsCount={data?.getBazelInvocation?.numTotal.totalCount}
-        invocationTargetsBuiltSuccessfully={
-          data?.getBazelInvocation?.numSuccessful.totalCount
-        }
-        invocationTargetsSkipped={
-          data?.getBazelInvocation?.numSkipped.totalCount
-        }
+        targetCounts={targetCounts}
       />
-      <CursorTable<InvocationTargetsTableRowType>
+      <PageCursorTable<BazelInvocationTargetsFragment>
         rowKey={"id"}
         size="small"
         columns={columns}
-        loading={loading}
         dataSource={invocationTargets}
         expandable={{
           rowExpandable: (record) =>
@@ -138,26 +61,11 @@ export const InvocationTargetsTable: React.FC<Props> = ({
         }}
         showSorterTooltip={{ target: "sorter-icon" }}
         onChange={(_pagination, filters, _sorter, _extra) =>
-          onFilterChange(filters)
+          onFilterChange(tableFiltersToGraphqlWhere(columns, filters))
         }
-        pagination={{
-          position: "bottom",
-          justify: "end",
-          size: "middle",
-        }}
-        pageInfo={{
-          startCursor:
-            data?.getBazelInvocation?.invocationTargets.pageInfo.startCursor,
-          endCursor:
-            data?.getBazelInvocation?.invocationTargets.pageInfo.endCursor,
-          hasNextPage:
-            data?.getBazelInvocation?.invocationTargets.pageInfo.hasNextPage,
-          hasPreviousPage:
-            data?.getBazelInvocation?.invocationTargets.pageInfo
-              .hasPreviousPage,
-        }}
-        paginationVariables={paginationVariables}
-        setPaginationVariables={setPaginationVariables}
+        pageInfo={pageInfo}
+        getPaginationUpdateLink={getPaginationUpdateLink}
+        pageSize={pageSize}
       />
     </>
   );

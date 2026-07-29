@@ -70,7 +70,7 @@ func (*GarbageMetrics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the GarbageMetrics fields.
-func (gm *GarbageMetrics) assignValues(columns []string, values []any) error {
+func (_m *GarbageMetrics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -81,28 +81,28 @@ func (gm *GarbageMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			gm.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case garbagemetrics.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				gm.Type = value.String
+				_m.Type = value.String
 			}
 		case garbagemetrics.FieldGarbageCollected:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field garbage_collected", values[i])
 			} else if value.Valid {
-				gm.GarbageCollected = value.Int64
+				_m.GarbageCollected = value.Int64
 			}
 		case garbagemetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field memory_metrics_garbage_metrics", value)
 			} else if value.Valid {
-				gm.memory_metrics_garbage_metrics = new(int64)
-				*gm.memory_metrics_garbage_metrics = int64(value.Int64)
+				_m.memory_metrics_garbage_metrics = new(int64)
+				*_m.memory_metrics_garbage_metrics = int64(value.Int64)
 			}
 		default:
-			gm.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -110,43 +110,43 @@ func (gm *GarbageMetrics) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the GarbageMetrics.
 // This includes values selected through modifiers, order, etc.
-func (gm *GarbageMetrics) Value(name string) (ent.Value, error) {
-	return gm.selectValues.Get(name)
+func (_m *GarbageMetrics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMemoryMetrics queries the "memory_metrics" edge of the GarbageMetrics entity.
-func (gm *GarbageMetrics) QueryMemoryMetrics() *MemoryMetricsQuery {
-	return NewGarbageMetricsClient(gm.config).QueryMemoryMetrics(gm)
+func (_m *GarbageMetrics) QueryMemoryMetrics() *MemoryMetricsQuery {
+	return NewGarbageMetricsClient(_m.config).QueryMemoryMetrics(_m)
 }
 
 // Update returns a builder for updating this GarbageMetrics.
 // Note that you need to call GarbageMetrics.Unwrap() before calling this method if this GarbageMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (gm *GarbageMetrics) Update() *GarbageMetricsUpdateOne {
-	return NewGarbageMetricsClient(gm.config).UpdateOne(gm)
+func (_m *GarbageMetrics) Update() *GarbageMetricsUpdateOne {
+	return NewGarbageMetricsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the GarbageMetrics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (gm *GarbageMetrics) Unwrap() *GarbageMetrics {
-	_tx, ok := gm.config.driver.(*txDriver)
+func (_m *GarbageMetrics) Unwrap() *GarbageMetrics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: GarbageMetrics is not a transactional entity")
 	}
-	gm.config.driver = _tx.drv
-	return gm
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (gm *GarbageMetrics) String() string {
+func (_m *GarbageMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("GarbageMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", gm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("type=")
-	builder.WriteString(gm.Type)
+	builder.WriteString(_m.Type)
 	builder.WriteString(", ")
 	builder.WriteString("garbage_collected=")
-	builder.WriteString(fmt.Sprintf("%v", gm.GarbageCollected))
+	builder.WriteString(fmt.Sprintf("%v", _m.GarbageCollected))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -6,22 +6,35 @@ import (
 	"context"
 
 	"github.com/buildbarn/bb-portal/ent/authschema"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 
 	"entgo.io/ent"
 	"entgo.io/ent/privacy"
+	"entgo.io/ent/schema/field"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	actioncachestatisticsFields := authschema.ActionCacheStatistics{}.Fields()
+	_ = actioncachestatisticsFields
+	// actioncachestatisticsDescLoadTimeInMs is the schema descriptor for load_time_in_ms field.
+	actioncachestatisticsDescLoadTimeInMs := actioncachestatisticsFields[2].Descriptor()
+	actioncachestatistics.ValueScanner.LoadTimeInMs = actioncachestatisticsDescLoadTimeInMs.ValueScanner.(field.TypeValueScanner[uint64])
+	// actioncachestatisticsDescCacheCheckSemaphoreWaitTimeInMs is the schema descriptor for cache_check_semaphore_wait_time_in_ms field.
+	actioncachestatisticsDescCacheCheckSemaphoreWaitTimeInMs := actioncachestatisticsFields[3].Descriptor()
+	actioncachestatistics.ValueScanner.CacheCheckSemaphoreWaitTimeInMs = actioncachestatisticsDescCacheCheckSemaphoreWaitTimeInMs.ValueScanner.(field.TypeValueScanner[uint64])
 	authenticateduser.Policy = privacy.NewPolicies(authschema.AuthenticatedUser{})
 	authenticateduser.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
@@ -71,12 +84,56 @@ func init() {
 			return next.Mutate(ctx, m)
 		})
 	}
+	file.Policy = privacy.NewPolicies(authschema.File{})
+	file.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := file.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	filepath.Policy = privacy.NewPolicies(authschema.FilePath{})
+	filepath.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := filepath.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
 	invocationtargetFields := authschema.InvocationTarget{}.Fields()
 	_ = invocationtargetFields
 	// invocationtargetDescSuccess is the schema descriptor for success field.
 	invocationtargetDescSuccess := invocationtargetFields[0].Descriptor()
 	// invocationtarget.DefaultSuccess holds the default value on creation for the success field.
 	invocationtarget.DefaultSuccess = invocationtargetDescSuccess.Default.(bool)
+	systemnetworkstatsFields := authschema.SystemNetworkStats{}.Fields()
+	_ = systemnetworkstatsFields
+	// systemnetworkstatsDescBytesSent is the schema descriptor for bytes_sent field.
+	systemnetworkstatsDescBytesSent := systemnetworkstatsFields[0].Descriptor()
+	systemnetworkstats.ValueScanner.BytesSent = systemnetworkstatsDescBytesSent.ValueScanner.(field.TypeValueScanner[uint64])
+	// systemnetworkstatsDescBytesRecv is the schema descriptor for bytes_recv field.
+	systemnetworkstatsDescBytesRecv := systemnetworkstatsFields[1].Descriptor()
+	systemnetworkstats.ValueScanner.BytesRecv = systemnetworkstatsDescBytesRecv.ValueScanner.(field.TypeValueScanner[uint64])
+	// systemnetworkstatsDescPacketsSent is the schema descriptor for packets_sent field.
+	systemnetworkstatsDescPacketsSent := systemnetworkstatsFields[2].Descriptor()
+	systemnetworkstats.ValueScanner.PacketsSent = systemnetworkstatsDescPacketsSent.ValueScanner.(field.TypeValueScanner[uint64])
+	// systemnetworkstatsDescPacketsRecv is the schema descriptor for packets_recv field.
+	systemnetworkstatsDescPacketsRecv := systemnetworkstatsFields[3].Descriptor()
+	systemnetworkstats.ValueScanner.PacketsRecv = systemnetworkstatsDescPacketsRecv.ValueScanner.(field.TypeValueScanner[uint64])
+	// systemnetworkstatsDescPeakBytesSentPerSec is the schema descriptor for peak_bytes_sent_per_sec field.
+	systemnetworkstatsDescPeakBytesSentPerSec := systemnetworkstatsFields[4].Descriptor()
+	systemnetworkstats.ValueScanner.PeakBytesSentPerSec = systemnetworkstatsDescPeakBytesSentPerSec.ValueScanner.(field.TypeValueScanner[uint64])
+	// systemnetworkstatsDescPeakBytesRecvPerSec is the schema descriptor for peak_bytes_recv_per_sec field.
+	systemnetworkstatsDescPeakBytesRecvPerSec := systemnetworkstatsFields[5].Descriptor()
+	systemnetworkstats.ValueScanner.PeakBytesRecvPerSec = systemnetworkstatsDescPeakBytesRecvPerSec.ValueScanner.(field.TypeValueScanner[uint64])
+	// systemnetworkstatsDescPeakPacketsSentPerSec is the schema descriptor for peak_packets_sent_per_sec field.
+	systemnetworkstatsDescPeakPacketsSentPerSec := systemnetworkstatsFields[6].Descriptor()
+	systemnetworkstats.ValueScanner.PeakPacketsSentPerSec = systemnetworkstatsDescPeakPacketsSentPerSec.ValueScanner.(field.TypeValueScanner[uint64])
+	// systemnetworkstatsDescPeakPacketsRecvPerSec is the schema descriptor for peak_packets_recv_per_sec field.
+	systemnetworkstatsDescPeakPacketsRecvPerSec := systemnetworkstatsFields[7].Descriptor()
+	systemnetworkstats.ValueScanner.PeakPacketsRecvPerSec = systemnetworkstatsDescPeakPacketsRecvPerSec.ValueScanner.(field.TypeValueScanner[uint64])
 	target.Policy = privacy.NewPolicies(authschema.Target{})
 	target.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
@@ -107,6 +164,6 @@ func init() {
 }
 
 const (
-	Version = "v0.14.4"                                         // Version of ent codegen.
-	Sum     = "h1:/DhDraSLXIkBhyiVoJeSshr4ZYi7femzhj6/TckzZuI=" // Sum of ent codegen.
+	Version = "v0.14.6"                                         // Version of ent codegen.
+	Sum     = "h1:/f2696BpwuWAEEG6PVGWflg6+Inrpq4pRWuNlWz/Skk=" // Sum of ent codegen.
 )

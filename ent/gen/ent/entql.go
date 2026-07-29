@@ -16,11 +16,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
@@ -34,6 +36,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
@@ -47,7 +50,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 34)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 37)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   action.Table,
@@ -59,23 +62,19 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Action",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			action.FieldBazelInvocationID:  {Type: field.TypeInt64, Column: action.FieldBazelInvocationID},
-			action.FieldConfigurationID:    {Type: field.TypeInt64, Column: action.FieldConfigurationID},
-			action.FieldLabel:              {Type: field.TypeString, Column: action.FieldLabel},
-			action.FieldType:               {Type: field.TypeString, Column: action.FieldType},
-			action.FieldSuccess:            {Type: field.TypeBool, Column: action.FieldSuccess},
-			action.FieldExitCode:           {Type: field.TypeInt32, Column: action.FieldExitCode},
-			action.FieldCommandLine:        {Type: field.TypeJSON, Column: action.FieldCommandLine},
-			action.FieldStartTime:          {Type: field.TypeTime, Column: action.FieldStartTime},
-			action.FieldEndTime:            {Type: field.TypeTime, Column: action.FieldEndTime},
-			action.FieldFailureCode:        {Type: field.TypeString, Column: action.FieldFailureCode},
-			action.FieldFailureMessage:     {Type: field.TypeString, Column: action.FieldFailureMessage},
-			action.FieldStdoutHash:         {Type: field.TypeString, Column: action.FieldStdoutHash},
-			action.FieldStdoutSizeBytes:    {Type: field.TypeInt64, Column: action.FieldStdoutSizeBytes},
-			action.FieldStdoutHashFunction: {Type: field.TypeString, Column: action.FieldStdoutHashFunction},
-			action.FieldStderrHash:         {Type: field.TypeString, Column: action.FieldStderrHash},
-			action.FieldStderrSizeBytes:    {Type: field.TypeInt64, Column: action.FieldStderrSizeBytes},
-			action.FieldStderrHashFunction: {Type: field.TypeString, Column: action.FieldStderrHashFunction},
+			action.FieldBazelInvocationID: {Type: field.TypeInt64, Column: action.FieldBazelInvocationID},
+			action.FieldConfigurationID:   {Type: field.TypeInt64, Column: action.FieldConfigurationID},
+			action.FieldLabel:             {Type: field.TypeString, Column: action.FieldLabel},
+			action.FieldType:              {Type: field.TypeString, Column: action.FieldType},
+			action.FieldSuccess:           {Type: field.TypeBool, Column: action.FieldSuccess},
+			action.FieldExitCode:          {Type: field.TypeInt32, Column: action.FieldExitCode},
+			action.FieldCommandLine:       {Type: field.TypeJSON, Column: action.FieldCommandLine},
+			action.FieldStartTime:         {Type: field.TypeTime, Column: action.FieldStartTime},
+			action.FieldEndTime:           {Type: field.TypeTime, Column: action.FieldEndTime},
+			action.FieldFailureCode:       {Type: field.TypeString, Column: action.FieldFailureCode},
+			action.FieldFailureMessage:    {Type: field.TypeString, Column: action.FieldFailureMessage},
+			action.FieldStdoutFileID:      {Type: field.TypeInt64, Column: action.FieldStdoutFileID},
+			action.FieldStderrFileID:      {Type: field.TypeInt64, Column: action.FieldStderrFileID},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -191,7 +190,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			bazelinvocation.FieldUsername:                      {Type: field.TypeString, Column: bazelinvocation.FieldUsername},
 			bazelinvocation.FieldHostname:                      {Type: field.TypeString, Column: bazelinvocation.FieldHostname},
 			bazelinvocation.FieldNumFetches:                    {Type: field.TypeInt64, Column: bazelinvocation.FieldNumFetches},
-			bazelinvocation.FieldProfileName:                   {Type: field.TypeString, Column: bazelinvocation.FieldProfileName},
+			bazelinvocation.FieldProfileID:                     {Type: field.TypeInt64, Column: bazelinvocation.FieldProfileID},
 			bazelinvocation.FieldBazelVersion:                  {Type: field.TypeString, Column: bazelinvocation.FieldBazelVersion},
 			bazelinvocation.FieldExitCodeName:                  {Type: field.TypeString, Column: bazelinvocation.FieldExitCodeName},
 			bazelinvocation.FieldExitCodeCode:                  {Type: field.TypeInt32, Column: bazelinvocation.FieldExitCodeCode},
@@ -311,6 +310,23 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[13] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
+			Table:   digest.Table,
+			Columns: digest.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: digest.FieldID,
+			},
+		},
+		Type: "Digest",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			digest.FieldRev2InstanceName: {Type: field.TypeString, Column: digest.FieldRev2InstanceName},
+			digest.FieldDigestFunction:   {Type: field.TypeInt16, Column: digest.FieldDigestFunction},
+			digest.FieldHash:             {Type: field.TypeBytes, Column: digest.FieldHash},
+			digest.FieldSizeBytes:        {Type: field.TypeInt64, Column: digest.FieldSizeBytes},
+		},
+	}
+	graph.Nodes[14] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
 			Table:   eventmetadata.Table,
 			Columns: eventmetadata.Columns,
 			ID: &sqlgraph.FieldSpec{
@@ -326,7 +342,37 @@ var schemaGraph = func() *sqlgraph.Schema {
 			eventmetadata.FieldBazelInvocationID: {Type: field.TypeInt64, Column: eventmetadata.FieldBazelInvocationID},
 		},
 	}
-	graph.Nodes[14] = &sqlgraph.Node{
+	graph.Nodes[15] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   file.Table,
+			Columns: file.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: file.FieldID,
+			},
+		},
+		Type: "File",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			file.FieldDigestID:   {Type: field.TypeInt64, Column: file.FieldDigestID},
+			file.FieldFilePathID: {Type: field.TypeInt64, Column: file.FieldFilePathID},
+		},
+	}
+	graph.Nodes[16] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   filepath.Table,
+			Columns: filepath.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: filepath.FieldID,
+			},
+		},
+		Type: "FilePath",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			filepath.FieldBepInstanceNameID: {Type: field.TypeInt64, Column: filepath.FieldBepInstanceNameID},
+			filepath.FieldPath:              {Type: field.TypeString, Column: filepath.FieldPath},
+		},
+	}
+	graph.Nodes[17] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   garbagemetrics.Table,
 			Columns: garbagemetrics.Columns,
@@ -341,7 +387,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			garbagemetrics.FieldGarbageCollected: {Type: field.TypeInt64, Column: garbagemetrics.FieldGarbageCollected},
 		},
 	}
-	graph.Nodes[15] = &sqlgraph.Node{
+	graph.Nodes[18] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   incompletebuildlog.Table,
 			Columns: incompletebuildlog.Columns,
@@ -357,7 +403,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			incompletebuildlog.FieldBazelInvocationID: {Type: field.TypeInt64, Column: incompletebuildlog.FieldBazelInvocationID},
 		},
 	}
-	graph.Nodes[16] = &sqlgraph.Node{
+	graph.Nodes[19] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   instancename.Table,
 			Columns: instancename.Columns,
@@ -371,25 +417,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			instancename.FieldName: {Type: field.TypeString, Column: instancename.FieldName},
 		},
 	}
-	graph.Nodes[17] = &sqlgraph.Node{
-		NodeSpec: sqlgraph.NodeSpec{
-			Table:   invocationfiles.Table,
-			Columns: invocationfiles.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt64,
-				Column: invocationfiles.FieldID,
-			},
-		},
-		Type: "InvocationFiles",
-		Fields: map[string]*sqlgraph.FieldSpec{
-			invocationfiles.FieldName:           {Type: field.TypeString, Column: invocationfiles.FieldName},
-			invocationfiles.FieldContent:        {Type: field.TypeString, Column: invocationfiles.FieldContent},
-			invocationfiles.FieldDigest:         {Type: field.TypeString, Column: invocationfiles.FieldDigest},
-			invocationfiles.FieldSizeBytes:      {Type: field.TypeInt64, Column: invocationfiles.FieldSizeBytes},
-			invocationfiles.FieldDigestFunction: {Type: field.TypeString, Column: invocationfiles.FieldDigestFunction},
-		},
-	}
-	graph.Nodes[18] = &sqlgraph.Node{
+	graph.Nodes[20] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   invocationtag.Table,
 			Columns: invocationtag.Columns,
@@ -405,7 +433,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			invocationtag.FieldValue:             {Type: field.TypeString, Column: invocationtag.FieldValue},
 		},
 	}
-	graph.Nodes[19] = &sqlgraph.Node{
+	graph.Nodes[21] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   invocationtarget.Table,
 			Columns: invocationtarget.Columns,
@@ -418,14 +446,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			invocationtarget.FieldSuccess:        {Type: field.TypeBool, Column: invocationtarget.FieldSuccess},
 			invocationtarget.FieldTags:           {Type: field.TypeJSON, Column: invocationtarget.FieldTags},
-			invocationtarget.FieldStartTimeInMs:  {Type: field.TypeInt64, Column: invocationtarget.FieldStartTimeInMs},
-			invocationtarget.FieldEndTimeInMs:    {Type: field.TypeInt64, Column: invocationtarget.FieldEndTimeInMs},
-			invocationtarget.FieldDurationInMs:   {Type: field.TypeInt64, Column: invocationtarget.FieldDurationInMs},
 			invocationtarget.FieldFailureMessage: {Type: field.TypeString, Column: invocationtarget.FieldFailureMessage},
 			invocationtarget.FieldAbortReason:    {Type: field.TypeEnum, Column: invocationtarget.FieldAbortReason},
 		},
 	}
-	graph.Nodes[20] = &sqlgraph.Node{
+	graph.Nodes[22] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   memorymetrics.Table,
 			Columns: memorymetrics.Columns,
@@ -441,7 +466,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize: {Type: field.TypeInt64, Column: memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize},
 		},
 	}
-	graph.Nodes[21] = &sqlgraph.Node{
+	graph.Nodes[23] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   metrics.Table,
 			Columns: metrics.Columns,
@@ -453,7 +478,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Type:   "Metrics",
 		Fields: map[string]*sqlgraph.FieldSpec{},
 	}
-	graph.Nodes[22] = &sqlgraph.Node{
+	graph.Nodes[24] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   missdetail.Table,
 			Columns: missdetail.Columns,
@@ -468,7 +493,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			missdetail.FieldCount:  {Type: field.TypeInt32, Column: missdetail.FieldCount},
 		},
 	}
-	graph.Nodes[23] = &sqlgraph.Node{
+	graph.Nodes[25] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   networkmetrics.Table,
 			Columns: networkmetrics.Columns,
@@ -480,7 +505,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Type:   "NetworkMetrics",
 		Fields: map[string]*sqlgraph.FieldSpec{},
 	}
-	graph.Nodes[24] = &sqlgraph.Node{
+	graph.Nodes[26] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   runnercount.Table,
 			Columns: runnercount.Columns,
@@ -496,7 +521,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			runnercount.FieldActionsExecuted: {Type: field.TypeInt64, Column: runnercount.FieldActionsExecuted},
 		},
 	}
-	graph.Nodes[25] = &sqlgraph.Node{
+	graph.Nodes[27] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   sourcecontrol.Table,
 			Columns: sourcecontrol.Columns,
@@ -515,7 +540,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			sourcecontrol.FieldCommitURL: {Type: field.TypeString, Column: sourcecontrol.FieldCommitURL},
 		},
 	}
-	graph.Nodes[26] = &sqlgraph.Node{
+	graph.Nodes[28] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   systemnetworkstats.Table,
 			Columns: systemnetworkstats.Columns,
@@ -536,7 +561,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			systemnetworkstats.FieldPeakPacketsRecvPerSec: {Type: field.TypeUint64, Column: systemnetworkstats.FieldPeakPacketsRecvPerSec},
 		},
 	}
-	graph.Nodes[27] = &sqlgraph.Node{
+	graph.Nodes[29] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   target.Table,
 			Columns: target.Columns,
@@ -552,7 +577,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			target.FieldTargetKind: {Type: field.TypeString, Column: target.FieldTargetKind},
 		},
 	}
-	graph.Nodes[28] = &sqlgraph.Node{
+	graph.Nodes[30] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   targetkindmapping.Table,
 			Columns: targetkindmapping.Columns,
@@ -565,10 +590,9 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			targetkindmapping.FieldBazelInvocationID: {Type: field.TypeInt64, Column: targetkindmapping.FieldBazelInvocationID},
 			targetkindmapping.FieldTargetID:          {Type: field.TypeInt64, Column: targetkindmapping.FieldTargetID},
-			targetkindmapping.FieldStartTimeInMs:     {Type: field.TypeInt64, Column: targetkindmapping.FieldStartTimeInMs},
 		},
 	}
-	graph.Nodes[29] = &sqlgraph.Node{
+	graph.Nodes[31] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   targetmetrics.Table,
 			Columns: targetmetrics.Columns,
@@ -584,7 +608,22 @@ var schemaGraph = func() *sqlgraph.Schema {
 			targetmetrics.FieldTargetsConfiguredNotIncludingAspects: {Type: field.TypeInt64, Column: targetmetrics.FieldTargetsConfiguredNotIncludingAspects},
 		},
 	}
-	graph.Nodes[30] = &sqlgraph.Node{
+	graph.Nodes[32] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   testactionoutput.Table,
+			Columns: testactionoutput.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: testactionoutput.FieldID,
+			},
+		},
+		Type: "TestActionOutput",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			testactionoutput.FieldTestResultID: {Type: field.TypeInt64, Column: testactionoutput.FieldTestResultID},
+			testactionoutput.FieldFileID:       {Type: field.TypeInt64, Column: testactionoutput.FieldFileID},
+		},
+	}
+	graph.Nodes[33] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   testresult.Table,
 			Columns: testresult.Columns,
@@ -611,7 +650,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			testresult.FieldTimingBreakdown:         {Type: field.TypeJSON, Column: testresult.FieldTimingBreakdown},
 		},
 	}
-	graph.Nodes[31] = &sqlgraph.Node{
+	graph.Nodes[34] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   testsummary.Table,
 			Columns: testsummary.Columns,
@@ -633,7 +672,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			testsummary.FieldTotalRunDurationInMs: {Type: field.TypeInt64, Column: testsummary.FieldTotalRunDurationInMs},
 		},
 	}
-	graph.Nodes[32] = &sqlgraph.Node{
+	graph.Nodes[35] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   testtarget.Table,
 			Columns: testtarget.Columns,
@@ -647,7 +686,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			testtarget.FieldTargetID: {Type: field.TypeInt64, Column: testtarget.FieldTargetID},
 		},
 	}
-	graph.Nodes[33] = &sqlgraph.Node{
+	graph.Nodes[36] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   timingmetrics.Table,
 			Columns: timingmetrics.Columns,
@@ -688,6 +727,30 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"Action",
 		"Configuration",
+	)
+	graph.MustAddE(
+		"stdout",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   action.StdoutTable,
+			Columns: []string{action.StdoutColumn},
+			Bidi:    false,
+		},
+		"Action",
+		"File",
+	)
+	graph.MustAddE(
+		"stderr",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   action.StderrTable,
+			Columns: []string{action.StderrColumn},
+			Bidi:    false,
+		},
+		"Action",
+		"File",
 	)
 	graph.MustAddE(
 		"action_summary",
@@ -930,16 +993,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"BuildLogChunk",
 	)
 	graph.MustAddE(
-		"invocation_files",
+		"profile",
 		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   bazelinvocation.InvocationFilesTable,
-			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Table:   bazelinvocation.ProfileTable,
+			Columns: []string{bazelinvocation.ProfileColumn},
 			Bidi:    false,
 		},
 		"BazelInvocation",
-		"InvocationFiles",
+		"File",
 	)
 	graph.MustAddE(
 		"invocation_targets",
@@ -1098,6 +1161,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"BazelInvocation",
 	)
 	graph.MustAddE(
+		"files",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.FilesTable,
+			Columns: []string{digest.FilesColumn},
+			Bidi:    false,
+		},
+		"Digest",
+		"File",
+	)
+	graph.MustAddE(
 		"bazel_invocation",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -1108,6 +1183,114 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"EventMetadata",
 		"BazelInvocation",
+	)
+	graph.MustAddE(
+		"digest",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   file.DigestTable,
+			Columns: []string{file.DigestColumn},
+			Bidi:    false,
+		},
+		"File",
+		"Digest",
+	)
+	graph.MustAddE(
+		"file_path",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   file.FilePathTable,
+			Columns: []string{file.FilePathColumn},
+			Bidi:    false,
+		},
+		"File",
+		"FilePath",
+	)
+	graph.MustAddE(
+		"action_stdout",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionStdoutTable,
+			Columns: []string{file.ActionStdoutColumn},
+			Bidi:    false,
+		},
+		"File",
+		"Action",
+	)
+	graph.MustAddE(
+		"action_stderr",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionStderrTable,
+			Columns: []string{file.ActionStderrColumn},
+			Bidi:    false,
+		},
+		"File",
+		"Action",
+	)
+	graph.MustAddE(
+		"invocation_profile",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.InvocationProfileTable,
+			Columns: []string{file.InvocationProfileColumn},
+			Bidi:    false,
+		},
+		"File",
+		"BazelInvocation",
+	)
+	graph.MustAddE(
+		"test_action_output",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   file.TestActionOutputTable,
+			Columns: file.TestActionOutputPrimaryKey,
+			Bidi:    false,
+		},
+		"File",
+		"TestResult",
+	)
+	graph.MustAddE(
+		"test_action_output_table",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.TestActionOutputTableTable,
+			Columns: []string{file.TestActionOutputTableColumn},
+			Bidi:    false,
+		},
+		"File",
+		"TestActionOutput",
+	)
+	graph.MustAddE(
+		"bep_instance_name",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   filepath.BepInstanceNameTable,
+			Columns: []string{filepath.BepInstanceNameColumn},
+			Bidi:    false,
+		},
+		"FilePath",
+		"InstanceName",
+	)
+	graph.MustAddE(
+		"files",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   filepath.FilesTable,
+			Columns: []string{filepath.FilesColumn},
+			Bidi:    false,
+		},
+		"FilePath",
+		"File",
 	)
 	graph.MustAddE(
 		"memory_metrics",
@@ -1170,16 +1353,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"Target",
 	)
 	graph.MustAddE(
-		"bazel_invocation",
+		"file_paths",
 		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   invocationfiles.BazelInvocationTable,
-			Columns: []string{invocationfiles.BazelInvocationColumn},
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.FilePathsTable,
+			Columns: []string{instancename.FilePathsColumn},
 			Bidi:    false,
 		},
-		"InvocationFiles",
-		"BazelInvocation",
+		"InstanceName",
+		"FilePath",
 	)
 	graph.MustAddE(
 		"bazel_invocation",
@@ -1518,6 +1701,30 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"Metrics",
 	)
 	graph.MustAddE(
+		"test_result",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   testactionoutput.TestResultTable,
+			Columns: []string{testactionoutput.TestResultColumn},
+			Bidi:    false,
+		},
+		"TestActionOutput",
+		"TestResult",
+	)
+	graph.MustAddE(
+		"file",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   testactionoutput.FileTable,
+			Columns: []string{testactionoutput.FileColumn},
+			Bidi:    false,
+		},
+		"TestActionOutput",
+		"File",
+	)
+	graph.MustAddE(
 		"test_summary",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -1528,6 +1735,30 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"TestResult",
 		"TestSummary",
+	)
+	graph.MustAddE(
+		"test_action_output",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   testresult.TestActionOutputTable,
+			Columns: testresult.TestActionOutputPrimaryKey,
+			Bidi:    false,
+		},
+		"TestResult",
+		"File",
+	)
+	graph.MustAddE(
+		"test_action_output_table",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   testresult.TestActionOutputTableTable,
+			Columns: []string{testresult.TestActionOutputTableColumn},
+			Bidi:    false,
+		},
+		"TestResult",
+		"TestActionOutput",
 	)
 	graph.MustAddE(
 		"invocation_target",
@@ -1587,13 +1818,13 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (aq *ActionQuery) addPredicate(pred func(s *sql.Selector)) {
-	aq.predicates = append(aq.predicates, pred)
+func (_q *ActionQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionQuery builder.
-func (aq *ActionQuery) Filter() *ActionFilter {
-	return &ActionFilter{config: aq.config, predicateAdder: aq}
+func (_q *ActionQuery) Filter() *ActionFilter {
+	return &ActionFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -1681,34 +1912,14 @@ func (f *ActionFilter) WhereFailureMessage(p entql.StringP) {
 	f.Where(p.Field(action.FieldFailureMessage))
 }
 
-// WhereStdoutHash applies the entql string predicate on the stdout_hash field.
-func (f *ActionFilter) WhereStdoutHash(p entql.StringP) {
-	f.Where(p.Field(action.FieldStdoutHash))
+// WhereStdoutFileID applies the entql int64 predicate on the stdout_file_id field.
+func (f *ActionFilter) WhereStdoutFileID(p entql.Int64P) {
+	f.Where(p.Field(action.FieldStdoutFileID))
 }
 
-// WhereStdoutSizeBytes applies the entql int64 predicate on the stdout_size_bytes field.
-func (f *ActionFilter) WhereStdoutSizeBytes(p entql.Int64P) {
-	f.Where(p.Field(action.FieldStdoutSizeBytes))
-}
-
-// WhereStdoutHashFunction applies the entql string predicate on the stdout_hash_function field.
-func (f *ActionFilter) WhereStdoutHashFunction(p entql.StringP) {
-	f.Where(p.Field(action.FieldStdoutHashFunction))
-}
-
-// WhereStderrHash applies the entql string predicate on the stderr_hash field.
-func (f *ActionFilter) WhereStderrHash(p entql.StringP) {
-	f.Where(p.Field(action.FieldStderrHash))
-}
-
-// WhereStderrSizeBytes applies the entql int64 predicate on the stderr_size_bytes field.
-func (f *ActionFilter) WhereStderrSizeBytes(p entql.Int64P) {
-	f.Where(p.Field(action.FieldStderrSizeBytes))
-}
-
-// WhereStderrHashFunction applies the entql string predicate on the stderr_hash_function field.
-func (f *ActionFilter) WhereStderrHashFunction(p entql.StringP) {
-	f.Where(p.Field(action.FieldStderrHashFunction))
+// WhereStderrFileID applies the entql int64 predicate on the stderr_file_id field.
+func (f *ActionFilter) WhereStderrFileID(p entql.Int64P) {
+	f.Where(p.Field(action.FieldStderrFileID))
 }
 
 // WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
@@ -1739,14 +1950,42 @@ func (f *ActionFilter) WhereHasConfigurationWith(preds ...predicate.Configuratio
 	})))
 }
 
+// WhereHasStdout applies a predicate to check if query has an edge stdout.
+func (f *ActionFilter) WhereHasStdout() {
+	f.Where(entql.HasEdge("stdout"))
+}
+
+// WhereHasStdoutWith applies a predicate to check if query has an edge stdout with a given conditions (other predicates).
+func (f *ActionFilter) WhereHasStdoutWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("stdout", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasStderr applies a predicate to check if query has an edge stderr.
+func (f *ActionFilter) WhereHasStderr() {
+	f.Where(entql.HasEdge("stderr"))
+}
+
+// WhereHasStderrWith applies a predicate to check if query has an edge stderr with a given conditions (other predicates).
+func (f *ActionFilter) WhereHasStderrWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("stderr", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
 // addPredicate implements the predicateAdder interface.
-func (acsq *ActionCacheStatisticsQuery) addPredicate(pred func(s *sql.Selector)) {
-	acsq.predicates = append(acsq.predicates, pred)
+func (_q *ActionCacheStatisticsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionCacheStatisticsQuery builder.
-func (acsq *ActionCacheStatisticsQuery) Filter() *ActionCacheStatisticsFilter {
-	return &ActionCacheStatisticsFilter{config: acsq.config, predicateAdder: acsq}
+func (_q *ActionCacheStatisticsQuery) Filter() *ActionCacheStatisticsFilter {
+	return &ActionCacheStatisticsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -1838,13 +2077,13 @@ func (f *ActionCacheStatisticsFilter) WhereHasMissDetailsWith(preds ...predicate
 }
 
 // addPredicate implements the predicateAdder interface.
-func (adq *ActionDataQuery) addPredicate(pred func(s *sql.Selector)) {
-	adq.predicates = append(adq.predicates, pred)
+func (_q *ActionDataQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionDataQuery builder.
-func (adq *ActionDataQuery) Filter() *ActionDataFilter {
-	return &ActionDataFilter{config: adq.config, predicateAdder: adq}
+func (_q *ActionDataQuery) Filter() *ActionDataFilter {
+	return &ActionDataFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -1927,13 +2166,13 @@ func (f *ActionDataFilter) WhereHasActionSummaryWith(preds ...predicate.ActionSu
 }
 
 // addPredicate implements the predicateAdder interface.
-func (asq *ActionSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
-	asq.predicates = append(asq.predicates, pred)
+func (_q *ActionSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ActionSummaryQuery builder.
-func (asq *ActionSummaryQuery) Filter() *ActionSummaryFilter {
-	return &ActionSummaryFilter{config: asq.config, predicateAdder: asq}
+func (_q *ActionSummaryQuery) Filter() *ActionSummaryFilter {
+	return &ActionSummaryFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2043,13 +2282,13 @@ func (f *ActionSummaryFilter) WhereHasActionCacheStatisticsWith(preds ...predica
 }
 
 // addPredicate implements the predicateAdder interface.
-func (amq *ArtifactMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	amq.predicates = append(amq.predicates, pred)
+func (_q *ArtifactMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ArtifactMetricsQuery builder.
-func (amq *ArtifactMetricsQuery) Filter() *ArtifactMetricsFilter {
-	return &ArtifactMetricsFilter{config: amq.config, predicateAdder: amq}
+func (_q *ArtifactMetricsQuery) Filter() *ArtifactMetricsFilter {
+	return &ArtifactMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2137,13 +2376,13 @@ func (f *ArtifactMetricsFilter) WhereHasMetricsWith(preds ...predicate.Metrics) 
 }
 
 // addPredicate implements the predicateAdder interface.
-func (auq *AuthenticatedUserQuery) addPredicate(pred func(s *sql.Selector)) {
-	auq.predicates = append(auq.predicates, pred)
+func (_q *AuthenticatedUserQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the AuthenticatedUserQuery builder.
-func (auq *AuthenticatedUserQuery) Filter() *AuthenticatedUserFilter {
-	return &AuthenticatedUserFilter{config: auq.config, predicateAdder: auq}
+func (_q *AuthenticatedUserQuery) Filter() *AuthenticatedUserFilter {
+	return &AuthenticatedUserFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2211,13 +2450,13 @@ func (f *AuthenticatedUserFilter) WhereHasBazelInvocationsWith(preds ...predicat
 }
 
 // addPredicate implements the predicateAdder interface.
-func (biq *BazelInvocationQuery) addPredicate(pred func(s *sql.Selector)) {
-	biq.predicates = append(biq.predicates, pred)
+func (_q *BazelInvocationQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BazelInvocationQuery builder.
-func (biq *BazelInvocationQuery) Filter() *BazelInvocationFilter {
-	return &BazelInvocationFilter{config: biq.config, predicateAdder: biq}
+func (_q *BazelInvocationQuery) Filter() *BazelInvocationFilter {
+	return &BazelInvocationFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2290,9 +2529,9 @@ func (f *BazelInvocationFilter) WhereNumFetches(p entql.Int64P) {
 	f.Where(p.Field(bazelinvocation.FieldNumFetches))
 }
 
-// WhereProfileName applies the entql string predicate on the profile_name field.
-func (f *BazelInvocationFilter) WhereProfileName(p entql.StringP) {
-	f.Where(p.Field(bazelinvocation.FieldProfileName))
+// WhereProfileID applies the entql int64 predicate on the profile_id field.
+func (f *BazelInvocationFilter) WhereProfileID(p entql.Int64P) {
+	f.Where(p.Field(bazelinvocation.FieldProfileID))
 }
 
 // WhereBazelVersion applies the entql string predicate on the bazel_version field.
@@ -2504,14 +2743,14 @@ func (f *BazelInvocationFilter) WhereHasBuildLogChunksWith(preds ...predicate.Bu
 	})))
 }
 
-// WhereHasInvocationFiles applies a predicate to check if query has an edge invocation_files.
-func (f *BazelInvocationFilter) WhereHasInvocationFiles() {
-	f.Where(entql.HasEdge("invocation_files"))
+// WhereHasProfile applies a predicate to check if query has an edge profile.
+func (f *BazelInvocationFilter) WhereHasProfile() {
+	f.Where(entql.HasEdge("profile"))
 }
 
-// WhereHasInvocationFilesWith applies a predicate to check if query has an edge invocation_files with a given conditions (other predicates).
-func (f *BazelInvocationFilter) WhereHasInvocationFilesWith(preds ...predicate.InvocationFiles) {
-	f.Where(entql.HasEdgeWith("invocation_files", sqlgraph.WrapFunc(func(s *sql.Selector) {
+// WhereHasProfileWith applies a predicate to check if query has an edge profile with a given conditions (other predicates).
+func (f *BazelInvocationFilter) WhereHasProfileWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("profile", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -2561,13 +2800,13 @@ func (f *BazelInvocationFilter) WhereHasSourceControlWith(preds ...predicate.Sou
 }
 
 // addPredicate implements the predicateAdder interface.
-func (bq *BuildQuery) addPredicate(pred func(s *sql.Selector)) {
-	bq.predicates = append(bq.predicates, pred)
+func (_q *BuildQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildQuery builder.
-func (bq *BuildQuery) Filter() *BuildFilter {
-	return &BuildFilter{config: bq.config, predicateAdder: bq}
+func (_q *BuildQuery) Filter() *BuildFilter {
+	return &BuildFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2653,13 +2892,13 @@ func (f *BuildFilter) WhereHasTagsWith(preds ...predicate.BuildTag) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (bgmq *BuildGraphMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	bgmq.predicates = append(bgmq.predicates, pred)
+func (_q *BuildGraphMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildGraphMetricsQuery builder.
-func (bgmq *BuildGraphMetricsQuery) Filter() *BuildGraphMetricsFilter {
-	return &BuildGraphMetricsFilter{config: bgmq.config, predicateAdder: bgmq}
+func (_q *BuildGraphMetricsQuery) Filter() *BuildGraphMetricsFilter {
+	return &BuildGraphMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2752,13 +2991,13 @@ func (f *BuildGraphMetricsFilter) WhereHasMetricsWith(preds ...predicate.Metrics
 }
 
 // addPredicate implements the predicateAdder interface.
-func (blcq *BuildLogChunkQuery) addPredicate(pred func(s *sql.Selector)) {
-	blcq.predicates = append(blcq.predicates, pred)
+func (_q *BuildLogChunkQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildLogChunkQuery builder.
-func (blcq *BuildLogChunkQuery) Filter() *BuildLogChunkFilter {
-	return &BuildLogChunkFilter{config: blcq.config, predicateAdder: blcq}
+func (_q *BuildLogChunkQuery) Filter() *BuildLogChunkFilter {
+	return &BuildLogChunkFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2826,13 +3065,13 @@ func (f *BuildLogChunkFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (btq *BuildTagQuery) addPredicate(pred func(s *sql.Selector)) {
-	btq.predicates = append(btq.predicates, pred)
+func (_q *BuildTagQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the BuildTagQuery builder.
-func (btq *BuildTagQuery) Filter() *BuildTagFilter {
-	return &BuildTagFilter{config: btq.config, predicateAdder: btq}
+func (_q *BuildTagQuery) Filter() *BuildTagFilter {
+	return &BuildTagFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -2895,13 +3134,13 @@ func (f *BuildTagFilter) WhereHasBuildWith(preds ...predicate.Build) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (cq *ConfigurationQuery) addPredicate(pred func(s *sql.Selector)) {
-	cq.predicates = append(cq.predicates, pred)
+func (_q *ConfigurationQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ConfigurationQuery builder.
-func (cq *ConfigurationQuery) Filter() *ConfigurationFilter {
-	return &ConfigurationFilter{config: cq.config, predicateAdder: cq}
+func (_q *ConfigurationQuery) Filter() *ConfigurationFilter {
+	return &ConfigurationFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3012,13 +3251,13 @@ func (f *ConfigurationFilter) WhereHasActionsWith(preds ...predicate.Action) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (cmq *ConnectionMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
-	cmq.predicates = append(cmq.predicates, pred)
+func (_q *ConnectionMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the ConnectionMetadataQuery builder.
-func (cmq *ConnectionMetadataQuery) Filter() *ConnectionMetadataFilter {
-	return &ConnectionMetadataFilter{config: cmq.config, predicateAdder: cmq}
+func (_q *ConnectionMetadataQuery) Filter() *ConnectionMetadataFilter {
+	return &ConnectionMetadataFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3071,13 +3310,87 @@ func (f *ConnectionMetadataFilter) WhereHasBazelInvocationWith(preds ...predicat
 }
 
 // addPredicate implements the predicateAdder interface.
-func (emq *EventMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
-	emq.predicates = append(emq.predicates, pred)
+func (_q *DigestQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the DigestQuery builder.
+func (_q *DigestQuery) Filter() *DigestFilter {
+	return &DigestFilter{config: _q.config, predicateAdder: _q}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *DigestMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the DigestMutation builder.
+func (m *DigestMutation) Filter() *DigestFilter {
+	return &DigestFilter{config: m.config, predicateAdder: m}
+}
+
+// DigestFilter provides a generic filtering capability at runtime for DigestQuery.
+type DigestFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *DigestFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[13].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *DigestFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(digest.FieldID))
+}
+
+// WhereRev2InstanceName applies the entql string predicate on the rev2_instance_name field.
+func (f *DigestFilter) WhereRev2InstanceName(p entql.StringP) {
+	f.Where(p.Field(digest.FieldRev2InstanceName))
+}
+
+// WhereDigestFunction applies the entql int16 predicate on the digest_function field.
+func (f *DigestFilter) WhereDigestFunction(p entql.Int16P) {
+	f.Where(p.Field(digest.FieldDigestFunction))
+}
+
+// WhereHash applies the entql []byte predicate on the hash field.
+func (f *DigestFilter) WhereHash(p entql.BytesP) {
+	f.Where(p.Field(digest.FieldHash))
+}
+
+// WhereSizeBytes applies the entql int64 predicate on the size_bytes field.
+func (f *DigestFilter) WhereSizeBytes(p entql.Int64P) {
+	f.Where(p.Field(digest.FieldSizeBytes))
+}
+
+// WhereHasFiles applies a predicate to check if query has an edge files.
+func (f *DigestFilter) WhereHasFiles() {
+	f.Where(entql.HasEdge("files"))
+}
+
+// WhereHasFilesWith applies a predicate to check if query has an edge files with a given conditions (other predicates).
+func (f *DigestFilter) WhereHasFilesWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("files", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (_q *EventMetadataQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the EventMetadataQuery builder.
-func (emq *EventMetadataQuery) Filter() *EventMetadataFilter {
-	return &EventMetadataFilter{config: emq.config, predicateAdder: emq}
+func (_q *EventMetadataQuery) Filter() *EventMetadataFilter {
+	return &EventMetadataFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3099,7 +3412,7 @@ type EventMetadataFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *EventMetadataFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[13].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[14].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3145,13 +3458,239 @@ func (f *EventMetadataFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (gmq *GarbageMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	gmq.predicates = append(gmq.predicates, pred)
+func (_q *FileQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the FileQuery builder.
+func (_q *FileQuery) Filter() *FileFilter {
+	return &FileFilter{config: _q.config, predicateAdder: _q}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *FileMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the FileMutation builder.
+func (m *FileMutation) Filter() *FileFilter {
+	return &FileFilter{config: m.config, predicateAdder: m}
+}
+
+// FileFilter provides a generic filtering capability at runtime for FileQuery.
+type FileFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *FileFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[15].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *FileFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(file.FieldID))
+}
+
+// WhereDigestID applies the entql int64 predicate on the digest_id field.
+func (f *FileFilter) WhereDigestID(p entql.Int64P) {
+	f.Where(p.Field(file.FieldDigestID))
+}
+
+// WhereFilePathID applies the entql int64 predicate on the file_path_id field.
+func (f *FileFilter) WhereFilePathID(p entql.Int64P) {
+	f.Where(p.Field(file.FieldFilePathID))
+}
+
+// WhereHasDigest applies a predicate to check if query has an edge digest.
+func (f *FileFilter) WhereHasDigest() {
+	f.Where(entql.HasEdge("digest"))
+}
+
+// WhereHasDigestWith applies a predicate to check if query has an edge digest with a given conditions (other predicates).
+func (f *FileFilter) WhereHasDigestWith(preds ...predicate.Digest) {
+	f.Where(entql.HasEdgeWith("digest", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasFilePath applies a predicate to check if query has an edge file_path.
+func (f *FileFilter) WhereHasFilePath() {
+	f.Where(entql.HasEdge("file_path"))
+}
+
+// WhereHasFilePathWith applies a predicate to check if query has an edge file_path with a given conditions (other predicates).
+func (f *FileFilter) WhereHasFilePathWith(preds ...predicate.FilePath) {
+	f.Where(entql.HasEdgeWith("file_path", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActionStdout applies a predicate to check if query has an edge action_stdout.
+func (f *FileFilter) WhereHasActionStdout() {
+	f.Where(entql.HasEdge("action_stdout"))
+}
+
+// WhereHasActionStdoutWith applies a predicate to check if query has an edge action_stdout with a given conditions (other predicates).
+func (f *FileFilter) WhereHasActionStdoutWith(preds ...predicate.Action) {
+	f.Where(entql.HasEdgeWith("action_stdout", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActionStderr applies a predicate to check if query has an edge action_stderr.
+func (f *FileFilter) WhereHasActionStderr() {
+	f.Where(entql.HasEdge("action_stderr"))
+}
+
+// WhereHasActionStderrWith applies a predicate to check if query has an edge action_stderr with a given conditions (other predicates).
+func (f *FileFilter) WhereHasActionStderrWith(preds ...predicate.Action) {
+	f.Where(entql.HasEdgeWith("action_stderr", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasInvocationProfile applies a predicate to check if query has an edge invocation_profile.
+func (f *FileFilter) WhereHasInvocationProfile() {
+	f.Where(entql.HasEdge("invocation_profile"))
+}
+
+// WhereHasInvocationProfileWith applies a predicate to check if query has an edge invocation_profile with a given conditions (other predicates).
+func (f *FileFilter) WhereHasInvocationProfileWith(preds ...predicate.BazelInvocation) {
+	f.Where(entql.HasEdgeWith("invocation_profile", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasTestActionOutput applies a predicate to check if query has an edge test_action_output.
+func (f *FileFilter) WhereHasTestActionOutput() {
+	f.Where(entql.HasEdge("test_action_output"))
+}
+
+// WhereHasTestActionOutputWith applies a predicate to check if query has an edge test_action_output with a given conditions (other predicates).
+func (f *FileFilter) WhereHasTestActionOutputWith(preds ...predicate.TestResult) {
+	f.Where(entql.HasEdgeWith("test_action_output", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasTestActionOutputTable applies a predicate to check if query has an edge test_action_output_table.
+func (f *FileFilter) WhereHasTestActionOutputTable() {
+	f.Where(entql.HasEdge("test_action_output_table"))
+}
+
+// WhereHasTestActionOutputTableWith applies a predicate to check if query has an edge test_action_output_table with a given conditions (other predicates).
+func (f *FileFilter) WhereHasTestActionOutputTableWith(preds ...predicate.TestActionOutput) {
+	f.Where(entql.HasEdgeWith("test_action_output_table", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (_q *FilePathQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the FilePathQuery builder.
+func (_q *FilePathQuery) Filter() *FilePathFilter {
+	return &FilePathFilter{config: _q.config, predicateAdder: _q}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *FilePathMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the FilePathMutation builder.
+func (m *FilePathMutation) Filter() *FilePathFilter {
+	return &FilePathFilter{config: m.config, predicateAdder: m}
+}
+
+// FilePathFilter provides a generic filtering capability at runtime for FilePathQuery.
+type FilePathFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *FilePathFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[16].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *FilePathFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(filepath.FieldID))
+}
+
+// WhereBepInstanceNameID applies the entql int64 predicate on the bep_instance_name_id field.
+func (f *FilePathFilter) WhereBepInstanceNameID(p entql.Int64P) {
+	f.Where(p.Field(filepath.FieldBepInstanceNameID))
+}
+
+// WherePath applies the entql string predicate on the path field.
+func (f *FilePathFilter) WherePath(p entql.StringP) {
+	f.Where(p.Field(filepath.FieldPath))
+}
+
+// WhereHasBepInstanceName applies a predicate to check if query has an edge bep_instance_name.
+func (f *FilePathFilter) WhereHasBepInstanceName() {
+	f.Where(entql.HasEdge("bep_instance_name"))
+}
+
+// WhereHasBepInstanceNameWith applies a predicate to check if query has an edge bep_instance_name with a given conditions (other predicates).
+func (f *FilePathFilter) WhereHasBepInstanceNameWith(preds ...predicate.InstanceName) {
+	f.Where(entql.HasEdgeWith("bep_instance_name", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasFiles applies a predicate to check if query has an edge files.
+func (f *FilePathFilter) WhereHasFiles() {
+	f.Where(entql.HasEdge("files"))
+}
+
+// WhereHasFilesWith applies a predicate to check if query has an edge files with a given conditions (other predicates).
+func (f *FilePathFilter) WhereHasFilesWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("files", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (_q *GarbageMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the GarbageMetricsQuery builder.
-func (gmq *GarbageMetricsQuery) Filter() *GarbageMetricsFilter {
-	return &GarbageMetricsFilter{config: gmq.config, predicateAdder: gmq}
+func (_q *GarbageMetricsQuery) Filter() *GarbageMetricsFilter {
+	return &GarbageMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3173,7 +3712,7 @@ type GarbageMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *GarbageMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[14].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[17].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3209,13 +3748,13 @@ func (f *GarbageMetricsFilter) WhereHasMemoryMetricsWith(preds ...predicate.Memo
 }
 
 // addPredicate implements the predicateAdder interface.
-func (iblq *IncompleteBuildLogQuery) addPredicate(pred func(s *sql.Selector)) {
-	iblq.predicates = append(iblq.predicates, pred)
+func (_q *IncompleteBuildLogQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the IncompleteBuildLogQuery builder.
-func (iblq *IncompleteBuildLogQuery) Filter() *IncompleteBuildLogFilter {
-	return &IncompleteBuildLogFilter{config: iblq.config, predicateAdder: iblq}
+func (_q *IncompleteBuildLogQuery) Filter() *IncompleteBuildLogFilter {
+	return &IncompleteBuildLogFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3237,7 +3776,7 @@ type IncompleteBuildLogFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *IncompleteBuildLogFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[15].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[18].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3278,13 +3817,13 @@ func (f *IncompleteBuildLogFilter) WhereHasBazelInvocationWith(preds ...predicat
 }
 
 // addPredicate implements the predicateAdder interface.
-func (inq *InstanceNameQuery) addPredicate(pred func(s *sql.Selector)) {
-	inq.predicates = append(inq.predicates, pred)
+func (_q *InstanceNameQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the InstanceNameQuery builder.
-func (inq *InstanceNameQuery) Filter() *InstanceNameFilter {
-	return &InstanceNameFilter{config: inq.config, predicateAdder: inq}
+func (_q *InstanceNameQuery) Filter() *InstanceNameFilter {
+	return &InstanceNameFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3306,7 +3845,7 @@ type InstanceNameFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *InstanceNameFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[16].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[19].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3364,79 +3903,14 @@ func (f *InstanceNameFilter) WhereHasTargetsWith(preds ...predicate.Target) {
 	})))
 }
 
-// addPredicate implements the predicateAdder interface.
-func (ifq *InvocationFilesQuery) addPredicate(pred func(s *sql.Selector)) {
-	ifq.predicates = append(ifq.predicates, pred)
+// WhereHasFilePaths applies a predicate to check if query has an edge file_paths.
+func (f *InstanceNameFilter) WhereHasFilePaths() {
+	f.Where(entql.HasEdge("file_paths"))
 }
 
-// Filter returns a Filter implementation to apply filters on the InvocationFilesQuery builder.
-func (ifq *InvocationFilesQuery) Filter() *InvocationFilesFilter {
-	return &InvocationFilesFilter{config: ifq.config, predicateAdder: ifq}
-}
-
-// addPredicate implements the predicateAdder interface.
-func (m *InvocationFilesMutation) addPredicate(pred func(s *sql.Selector)) {
-	m.predicates = append(m.predicates, pred)
-}
-
-// Filter returns an entql.Where implementation to apply filters on the InvocationFilesMutation builder.
-func (m *InvocationFilesMutation) Filter() *InvocationFilesFilter {
-	return &InvocationFilesFilter{config: m.config, predicateAdder: m}
-}
-
-// InvocationFilesFilter provides a generic filtering capability at runtime for InvocationFilesQuery.
-type InvocationFilesFilter struct {
-	predicateAdder
-	config
-}
-
-// Where applies the entql predicate on the query filter.
-func (f *InvocationFilesFilter) Where(p entql.P) {
-	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[17].Type, p, s); err != nil {
-			s.AddError(err)
-		}
-	})
-}
-
-// WhereID applies the entql int64 predicate on the id field.
-func (f *InvocationFilesFilter) WhereID(p entql.Int64P) {
-	f.Where(p.Field(invocationfiles.FieldID))
-}
-
-// WhereName applies the entql string predicate on the name field.
-func (f *InvocationFilesFilter) WhereName(p entql.StringP) {
-	f.Where(p.Field(invocationfiles.FieldName))
-}
-
-// WhereContent applies the entql string predicate on the content field.
-func (f *InvocationFilesFilter) WhereContent(p entql.StringP) {
-	f.Where(p.Field(invocationfiles.FieldContent))
-}
-
-// WhereDigest applies the entql string predicate on the digest field.
-func (f *InvocationFilesFilter) WhereDigest(p entql.StringP) {
-	f.Where(p.Field(invocationfiles.FieldDigest))
-}
-
-// WhereSizeBytes applies the entql int64 predicate on the size_bytes field.
-func (f *InvocationFilesFilter) WhereSizeBytes(p entql.Int64P) {
-	f.Where(p.Field(invocationfiles.FieldSizeBytes))
-}
-
-// WhereDigestFunction applies the entql string predicate on the digest_function field.
-func (f *InvocationFilesFilter) WhereDigestFunction(p entql.StringP) {
-	f.Where(p.Field(invocationfiles.FieldDigestFunction))
-}
-
-// WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
-func (f *InvocationFilesFilter) WhereHasBazelInvocation() {
-	f.Where(entql.HasEdge("bazel_invocation"))
-}
-
-// WhereHasBazelInvocationWith applies a predicate to check if query has an edge bazel_invocation with a given conditions (other predicates).
-func (f *InvocationFilesFilter) WhereHasBazelInvocationWith(preds ...predicate.BazelInvocation) {
-	f.Where(entql.HasEdgeWith("bazel_invocation", sqlgraph.WrapFunc(func(s *sql.Selector) {
+// WhereHasFilePathsWith applies a predicate to check if query has an edge file_paths with a given conditions (other predicates).
+func (f *InstanceNameFilter) WhereHasFilePathsWith(preds ...predicate.FilePath) {
+	f.Where(entql.HasEdgeWith("file_paths", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -3444,13 +3918,13 @@ func (f *InvocationFilesFilter) WhereHasBazelInvocationWith(preds ...predicate.B
 }
 
 // addPredicate implements the predicateAdder interface.
-func (itq *InvocationTagQuery) addPredicate(pred func(s *sql.Selector)) {
-	itq.predicates = append(itq.predicates, pred)
+func (_q *InvocationTagQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the InvocationTagQuery builder.
-func (itq *InvocationTagQuery) Filter() *InvocationTagFilter {
-	return &InvocationTagFilter{config: itq.config, predicateAdder: itq}
+func (_q *InvocationTagQuery) Filter() *InvocationTagFilter {
+	return &InvocationTagFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3472,7 +3946,7 @@ type InvocationTagFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *InvocationTagFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[18].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[20].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3513,13 +3987,13 @@ func (f *InvocationTagFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (itq *InvocationTargetQuery) addPredicate(pred func(s *sql.Selector)) {
-	itq.predicates = append(itq.predicates, pred)
+func (_q *InvocationTargetQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the InvocationTargetQuery builder.
-func (itq *InvocationTargetQuery) Filter() *InvocationTargetFilter {
-	return &InvocationTargetFilter{config: itq.config, predicateAdder: itq}
+func (_q *InvocationTargetQuery) Filter() *InvocationTargetFilter {
+	return &InvocationTargetFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3541,7 +4015,7 @@ type InvocationTargetFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *InvocationTargetFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[19].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[21].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3560,21 +4034,6 @@ func (f *InvocationTargetFilter) WhereSuccess(p entql.BoolP) {
 // WhereTags applies the entql json.RawMessage predicate on the tags field.
 func (f *InvocationTargetFilter) WhereTags(p entql.BytesP) {
 	f.Where(p.Field(invocationtarget.FieldTags))
-}
-
-// WhereStartTimeInMs applies the entql int64 predicate on the start_time_in_ms field.
-func (f *InvocationTargetFilter) WhereStartTimeInMs(p entql.Int64P) {
-	f.Where(p.Field(invocationtarget.FieldStartTimeInMs))
-}
-
-// WhereEndTimeInMs applies the entql int64 predicate on the end_time_in_ms field.
-func (f *InvocationTargetFilter) WhereEndTimeInMs(p entql.Int64P) {
-	f.Where(p.Field(invocationtarget.FieldEndTimeInMs))
-}
-
-// WhereDurationInMs applies the entql int64 predicate on the duration_in_ms field.
-func (f *InvocationTargetFilter) WhereDurationInMs(p entql.Int64P) {
-	f.Where(p.Field(invocationtarget.FieldDurationInMs))
 }
 
 // WhereFailureMessage applies the entql string predicate on the failure_message field.
@@ -3644,13 +4103,13 @@ func (f *InvocationTargetFilter) WhereHasTestSummaryWith(preds ...predicate.Test
 }
 
 // addPredicate implements the predicateAdder interface.
-func (mmq *MemoryMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	mmq.predicates = append(mmq.predicates, pred)
+func (_q *MemoryMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the MemoryMetricsQuery builder.
-func (mmq *MemoryMetricsQuery) Filter() *MemoryMetricsFilter {
-	return &MemoryMetricsFilter{config: mmq.config, predicateAdder: mmq}
+func (_q *MemoryMetricsQuery) Filter() *MemoryMetricsFilter {
+	return &MemoryMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3672,7 +4131,7 @@ type MemoryMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MemoryMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[20].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[22].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3727,13 +4186,13 @@ func (f *MemoryMetricsFilter) WhereHasGarbageMetricsWith(preds ...predicate.Garb
 }
 
 // addPredicate implements the predicateAdder interface.
-func (mq *MetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	mq.predicates = append(mq.predicates, pred)
+func (_q *MetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the MetricsQuery builder.
-func (mq *MetricsQuery) Filter() *MetricsFilter {
-	return &MetricsFilter{config: mq.config, predicateAdder: mq}
+func (_q *MetricsQuery) Filter() *MetricsFilter {
+	return &MetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3755,7 +4214,7 @@ type MetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[21].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[23].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3879,13 +4338,13 @@ func (f *MetricsFilter) WhereHasBuildGraphMetricsWith(preds ...predicate.BuildGr
 }
 
 // addPredicate implements the predicateAdder interface.
-func (mdq *MissDetailQuery) addPredicate(pred func(s *sql.Selector)) {
-	mdq.predicates = append(mdq.predicates, pred)
+func (_q *MissDetailQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the MissDetailQuery builder.
-func (mdq *MissDetailQuery) Filter() *MissDetailFilter {
-	return &MissDetailFilter{config: mdq.config, predicateAdder: mdq}
+func (_q *MissDetailQuery) Filter() *MissDetailFilter {
+	return &MissDetailFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3907,7 +4366,7 @@ type MissDetailFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *MissDetailFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[22].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[24].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -3943,13 +4402,13 @@ func (f *MissDetailFilter) WhereHasActionCacheStatisticsWith(preds ...predicate.
 }
 
 // addPredicate implements the predicateAdder interface.
-func (nmq *NetworkMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	nmq.predicates = append(nmq.predicates, pred)
+func (_q *NetworkMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the NetworkMetricsQuery builder.
-func (nmq *NetworkMetricsQuery) Filter() *NetworkMetricsFilter {
-	return &NetworkMetricsFilter{config: nmq.config, predicateAdder: nmq}
+func (_q *NetworkMetricsQuery) Filter() *NetworkMetricsFilter {
+	return &NetworkMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -3971,7 +4430,7 @@ type NetworkMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *NetworkMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[23].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[25].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4011,13 +4470,13 @@ func (f *NetworkMetricsFilter) WhereHasSystemNetworkStatsWith(preds ...predicate
 }
 
 // addPredicate implements the predicateAdder interface.
-func (rcq *RunnerCountQuery) addPredicate(pred func(s *sql.Selector)) {
-	rcq.predicates = append(rcq.predicates, pred)
+func (_q *RunnerCountQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the RunnerCountQuery builder.
-func (rcq *RunnerCountQuery) Filter() *RunnerCountFilter {
-	return &RunnerCountFilter{config: rcq.config, predicateAdder: rcq}
+func (_q *RunnerCountQuery) Filter() *RunnerCountFilter {
+	return &RunnerCountFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4039,7 +4498,7 @@ type RunnerCountFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *RunnerCountFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[24].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[26].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4080,13 +4539,13 @@ func (f *RunnerCountFilter) WhereHasActionSummaryWith(preds ...predicate.ActionS
 }
 
 // addPredicate implements the predicateAdder interface.
-func (scq *SourceControlQuery) addPredicate(pred func(s *sql.Selector)) {
-	scq.predicates = append(scq.predicates, pred)
+func (_q *SourceControlQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the SourceControlQuery builder.
-func (scq *SourceControlQuery) Filter() *SourceControlFilter {
-	return &SourceControlFilter{config: scq.config, predicateAdder: scq}
+func (_q *SourceControlQuery) Filter() *SourceControlFilter {
+	return &SourceControlFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4108,7 +4567,7 @@ type SourceControlFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SourceControlFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[25].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[27].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4164,13 +4623,13 @@ func (f *SourceControlFilter) WhereHasBazelInvocationWith(preds ...predicate.Baz
 }
 
 // addPredicate implements the predicateAdder interface.
-func (snsq *SystemNetworkStatsQuery) addPredicate(pred func(s *sql.Selector)) {
-	snsq.predicates = append(snsq.predicates, pred)
+func (_q *SystemNetworkStatsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the SystemNetworkStatsQuery builder.
-func (snsq *SystemNetworkStatsQuery) Filter() *SystemNetworkStatsFilter {
-	return &SystemNetworkStatsFilter{config: snsq.config, predicateAdder: snsq}
+func (_q *SystemNetworkStatsQuery) Filter() *SystemNetworkStatsFilter {
+	return &SystemNetworkStatsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4192,7 +4651,7 @@ type SystemNetworkStatsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SystemNetworkStatsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[26].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[28].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4258,13 +4717,13 @@ func (f *SystemNetworkStatsFilter) WhereHasNetworkMetricsWith(preds ...predicate
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tq *TargetQuery) addPredicate(pred func(s *sql.Selector)) {
-	tq.predicates = append(tq.predicates, pred)
+func (_q *TargetQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TargetQuery builder.
-func (tq *TargetQuery) Filter() *TargetFilter {
-	return &TargetFilter{config: tq.config, predicateAdder: tq}
+func (_q *TargetQuery) Filter() *TargetFilter {
+	return &TargetFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4286,7 +4745,7 @@ type TargetFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TargetFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[27].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[29].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4369,13 +4828,13 @@ func (f *TargetFilter) WhereHasTestTargetWith(preds ...predicate.TestTarget) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tkmq *TargetKindMappingQuery) addPredicate(pred func(s *sql.Selector)) {
-	tkmq.predicates = append(tkmq.predicates, pred)
+func (_q *TargetKindMappingQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TargetKindMappingQuery builder.
-func (tkmq *TargetKindMappingQuery) Filter() *TargetKindMappingFilter {
-	return &TargetKindMappingFilter{config: tkmq.config, predicateAdder: tkmq}
+func (_q *TargetKindMappingQuery) Filter() *TargetKindMappingFilter {
+	return &TargetKindMappingFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4397,7 +4856,7 @@ type TargetKindMappingFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TargetKindMappingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[28].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[30].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4416,11 +4875,6 @@ func (f *TargetKindMappingFilter) WhereBazelInvocationID(p entql.Int64P) {
 // WhereTargetID applies the entql int64 predicate on the target_id field.
 func (f *TargetKindMappingFilter) WhereTargetID(p entql.Int64P) {
 	f.Where(p.Field(targetkindmapping.FieldTargetID))
-}
-
-// WhereStartTimeInMs applies the entql int64 predicate on the start_time_in_ms field.
-func (f *TargetKindMappingFilter) WhereStartTimeInMs(p entql.Int64P) {
-	f.Where(p.Field(targetkindmapping.FieldStartTimeInMs))
 }
 
 // WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
@@ -4452,13 +4906,13 @@ func (f *TargetKindMappingFilter) WhereHasTargetWith(preds ...predicate.Target) 
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tmq *TargetMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	tmq.predicates = append(tmq.predicates, pred)
+func (_q *TargetMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TargetMetricsQuery builder.
-func (tmq *TargetMetricsQuery) Filter() *TargetMetricsFilter {
-	return &TargetMetricsFilter{config: tmq.config, predicateAdder: tmq}
+func (_q *TargetMetricsQuery) Filter() *TargetMetricsFilter {
+	return &TargetMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4480,7 +4934,7 @@ type TargetMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TargetMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[29].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[31].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4521,13 +4975,91 @@ func (f *TargetMetricsFilter) WhereHasMetricsWith(preds ...predicate.Metrics) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (trq *TestResultQuery) addPredicate(pred func(s *sql.Selector)) {
-	trq.predicates = append(trq.predicates, pred)
+func (_q *TestActionOutputQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the TestActionOutputQuery builder.
+func (_q *TestActionOutputQuery) Filter() *TestActionOutputFilter {
+	return &TestActionOutputFilter{config: _q.config, predicateAdder: _q}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *TestActionOutputMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the TestActionOutputMutation builder.
+func (m *TestActionOutputMutation) Filter() *TestActionOutputFilter {
+	return &TestActionOutputFilter{config: m.config, predicateAdder: m}
+}
+
+// TestActionOutputFilter provides a generic filtering capability at runtime for TestActionOutputQuery.
+type TestActionOutputFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *TestActionOutputFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[32].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *TestActionOutputFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(testactionoutput.FieldID))
+}
+
+// WhereTestResultID applies the entql int64 predicate on the test_result_id field.
+func (f *TestActionOutputFilter) WhereTestResultID(p entql.Int64P) {
+	f.Where(p.Field(testactionoutput.FieldTestResultID))
+}
+
+// WhereFileID applies the entql int64 predicate on the file_id field.
+func (f *TestActionOutputFilter) WhereFileID(p entql.Int64P) {
+	f.Where(p.Field(testactionoutput.FieldFileID))
+}
+
+// WhereHasTestResult applies a predicate to check if query has an edge test_result.
+func (f *TestActionOutputFilter) WhereHasTestResult() {
+	f.Where(entql.HasEdge("test_result"))
+}
+
+// WhereHasTestResultWith applies a predicate to check if query has an edge test_result with a given conditions (other predicates).
+func (f *TestActionOutputFilter) WhereHasTestResultWith(preds ...predicate.TestResult) {
+	f.Where(entql.HasEdgeWith("test_result", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasFile applies a predicate to check if query has an edge file.
+func (f *TestActionOutputFilter) WhereHasFile() {
+	f.Where(entql.HasEdge("file"))
+}
+
+// WhereHasFileWith applies a predicate to check if query has an edge file with a given conditions (other predicates).
+func (f *TestActionOutputFilter) WhereHasFileWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("file", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (_q *TestResultQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TestResultQuery builder.
-func (trq *TestResultQuery) Filter() *TestResultFilter {
-	return &TestResultFilter{config: trq.config, predicateAdder: trq}
+func (_q *TestResultQuery) Filter() *TestResultFilter {
+	return &TestResultFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4549,7 +5081,7 @@ type TestResultFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TestResultFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[30].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[33].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4644,14 +5176,42 @@ func (f *TestResultFilter) WhereHasTestSummaryWith(preds ...predicate.TestSummar
 	})))
 }
 
+// WhereHasTestActionOutput applies a predicate to check if query has an edge test_action_output.
+func (f *TestResultFilter) WhereHasTestActionOutput() {
+	f.Where(entql.HasEdge("test_action_output"))
+}
+
+// WhereHasTestActionOutputWith applies a predicate to check if query has an edge test_action_output with a given conditions (other predicates).
+func (f *TestResultFilter) WhereHasTestActionOutputWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("test_action_output", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasTestActionOutputTable applies a predicate to check if query has an edge test_action_output_table.
+func (f *TestResultFilter) WhereHasTestActionOutputTable() {
+	f.Where(entql.HasEdge("test_action_output_table"))
+}
+
+// WhereHasTestActionOutputTableWith applies a predicate to check if query has an edge test_action_output_table with a given conditions (other predicates).
+func (f *TestResultFilter) WhereHasTestActionOutputTableWith(preds ...predicate.TestActionOutput) {
+	f.Where(entql.HasEdgeWith("test_action_output_table", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
 // addPredicate implements the predicateAdder interface.
-func (tsq *TestSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
-	tsq.predicates = append(tsq.predicates, pred)
+func (_q *TestSummaryQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TestSummaryQuery builder.
-func (tsq *TestSummaryQuery) Filter() *TestSummaryFilter {
-	return &TestSummaryFilter{config: tsq.config, predicateAdder: tsq}
+func (_q *TestSummaryQuery) Filter() *TestSummaryFilter {
+	return &TestSummaryFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4673,7 +5233,7 @@ type TestSummaryFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TestSummaryFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[31].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[34].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4758,13 +5318,13 @@ func (f *TestSummaryFilter) WhereHasTestResultsWith(preds ...predicate.TestResul
 }
 
 // addPredicate implements the predicateAdder interface.
-func (ttq *TestTargetQuery) addPredicate(pred func(s *sql.Selector)) {
-	ttq.predicates = append(ttq.predicates, pred)
+func (_q *TestTargetQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TestTargetQuery builder.
-func (ttq *TestTargetQuery) Filter() *TestTargetFilter {
-	return &TestTargetFilter{config: ttq.config, predicateAdder: ttq}
+func (_q *TestTargetQuery) Filter() *TestTargetFilter {
+	return &TestTargetFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4786,7 +5346,7 @@ type TestTargetFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TestTargetFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[32].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[35].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -4817,13 +5377,13 @@ func (f *TestTargetFilter) WhereHasTargetWith(preds ...predicate.Target) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (tmq *TimingMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
-	tmq.predicates = append(tmq.predicates, pred)
+func (_q *TimingMetricsQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
 }
 
 // Filter returns a Filter implementation to apply filters on the TimingMetricsQuery builder.
-func (tmq *TimingMetricsQuery) Filter() *TimingMetricsFilter {
-	return &TimingMetricsFilter{config: tmq.config, predicateAdder: tmq}
+func (_q *TimingMetricsQuery) Filter() *TimingMetricsFilter {
+	return &TimingMetricsFilter{config: _q.config, predicateAdder: _q}
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -4845,7 +5405,7 @@ type TimingMetricsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TimingMetricsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[33].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[36].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

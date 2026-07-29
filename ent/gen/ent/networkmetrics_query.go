@@ -36,44 +36,44 @@ type NetworkMetricsQuery struct {
 }
 
 // Where adds a new predicate for the NetworkMetricsQuery builder.
-func (nmq *NetworkMetricsQuery) Where(ps ...predicate.NetworkMetrics) *NetworkMetricsQuery {
-	nmq.predicates = append(nmq.predicates, ps...)
-	return nmq
+func (_q *NetworkMetricsQuery) Where(ps ...predicate.NetworkMetrics) *NetworkMetricsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (nmq *NetworkMetricsQuery) Limit(limit int) *NetworkMetricsQuery {
-	nmq.ctx.Limit = &limit
-	return nmq
+func (_q *NetworkMetricsQuery) Limit(limit int) *NetworkMetricsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (nmq *NetworkMetricsQuery) Offset(offset int) *NetworkMetricsQuery {
-	nmq.ctx.Offset = &offset
-	return nmq
+func (_q *NetworkMetricsQuery) Offset(offset int) *NetworkMetricsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (nmq *NetworkMetricsQuery) Unique(unique bool) *NetworkMetricsQuery {
-	nmq.ctx.Unique = &unique
-	return nmq
+func (_q *NetworkMetricsQuery) Unique(unique bool) *NetworkMetricsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (nmq *NetworkMetricsQuery) Order(o ...networkmetrics.OrderOption) *NetworkMetricsQuery {
-	nmq.order = append(nmq.order, o...)
-	return nmq
+func (_q *NetworkMetricsQuery) Order(o ...networkmetrics.OrderOption) *NetworkMetricsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryMetrics chains the current query on the "metrics" edge.
-func (nmq *NetworkMetricsQuery) QueryMetrics() *MetricsQuery {
-	query := (&MetricsClient{config: nmq.config}).Query()
+func (_q *NetworkMetricsQuery) QueryMetrics() *MetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := nmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := nmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -82,20 +82,20 @@ func (nmq *NetworkMetricsQuery) QueryMetrics() *MetricsQuery {
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, networkmetrics.MetricsTable, networkmetrics.MetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(nmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QuerySystemNetworkStats chains the current query on the "system_network_stats" edge.
-func (nmq *NetworkMetricsQuery) QuerySystemNetworkStats() *SystemNetworkStatsQuery {
-	query := (&SystemNetworkStatsClient{config: nmq.config}).Query()
+func (_q *NetworkMetricsQuery) QuerySystemNetworkStats() *SystemNetworkStatsQuery {
+	query := (&SystemNetworkStatsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := nmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := nmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -104,7 +104,7 @@ func (nmq *NetworkMetricsQuery) QuerySystemNetworkStats() *SystemNetworkStatsQue
 			sqlgraph.To(systemnetworkstats.Table, systemnetworkstats.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, networkmetrics.SystemNetworkStatsTable, networkmetrics.SystemNetworkStatsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(nmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -112,8 +112,8 @@ func (nmq *NetworkMetricsQuery) QuerySystemNetworkStats() *SystemNetworkStatsQue
 
 // First returns the first NetworkMetrics entity from the query.
 // Returns a *NotFoundError when no NetworkMetrics was found.
-func (nmq *NetworkMetricsQuery) First(ctx context.Context) (*NetworkMetrics, error) {
-	nodes, err := nmq.Limit(1).All(setContextOp(ctx, nmq.ctx, ent.OpQueryFirst))
+func (_q *NetworkMetricsQuery) First(ctx context.Context) (*NetworkMetrics, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -124,8 +124,8 @@ func (nmq *NetworkMetricsQuery) First(ctx context.Context) (*NetworkMetrics, err
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) FirstX(ctx context.Context) *NetworkMetrics {
-	node, err := nmq.First(ctx)
+func (_q *NetworkMetricsQuery) FirstX(ctx context.Context) *NetworkMetrics {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -134,9 +134,9 @@ func (nmq *NetworkMetricsQuery) FirstX(ctx context.Context) *NetworkMetrics {
 
 // FirstID returns the first NetworkMetrics ID from the query.
 // Returns a *NotFoundError when no NetworkMetrics ID was found.
-func (nmq *NetworkMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *NetworkMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = nmq.Limit(1).IDs(setContextOp(ctx, nmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -147,8 +147,8 @@ func (nmq *NetworkMetricsQuery) FirstID(ctx context.Context) (id int64, err erro
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := nmq.FirstID(ctx)
+func (_q *NetworkMetricsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -158,8 +158,8 @@ func (nmq *NetworkMetricsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single NetworkMetrics entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one NetworkMetrics entity is found.
 // Returns a *NotFoundError when no NetworkMetrics entities are found.
-func (nmq *NetworkMetricsQuery) Only(ctx context.Context) (*NetworkMetrics, error) {
-	nodes, err := nmq.Limit(2).All(setContextOp(ctx, nmq.ctx, ent.OpQueryOnly))
+func (_q *NetworkMetricsQuery) Only(ctx context.Context) (*NetworkMetrics, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -174,8 +174,8 @@ func (nmq *NetworkMetricsQuery) Only(ctx context.Context) (*NetworkMetrics, erro
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) OnlyX(ctx context.Context) *NetworkMetrics {
-	node, err := nmq.Only(ctx)
+func (_q *NetworkMetricsQuery) OnlyX(ctx context.Context) *NetworkMetrics {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -185,9 +185,9 @@ func (nmq *NetworkMetricsQuery) OnlyX(ctx context.Context) *NetworkMetrics {
 // OnlyID is like Only, but returns the only NetworkMetrics ID in the query.
 // Returns a *NotSingularError when more than one NetworkMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (nmq *NetworkMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *NetworkMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = nmq.Limit(2).IDs(setContextOp(ctx, nmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -202,8 +202,8 @@ func (nmq *NetworkMetricsQuery) OnlyID(ctx context.Context) (id int64, err error
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := nmq.OnlyID(ctx)
+func (_q *NetworkMetricsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -211,18 +211,18 @@ func (nmq *NetworkMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of NetworkMetricsSlice.
-func (nmq *NetworkMetricsQuery) All(ctx context.Context) ([]*NetworkMetrics, error) {
-	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryAll)
-	if err := nmq.prepareQuery(ctx); err != nil {
+func (_q *NetworkMetricsQuery) All(ctx context.Context) ([]*NetworkMetrics, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*NetworkMetrics, *NetworkMetricsQuery]()
-	return withInterceptors[[]*NetworkMetrics](ctx, nmq, qr, nmq.inters)
+	return withInterceptors[[]*NetworkMetrics](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) AllX(ctx context.Context) []*NetworkMetrics {
-	nodes, err := nmq.All(ctx)
+func (_q *NetworkMetricsQuery) AllX(ctx context.Context) []*NetworkMetrics {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -230,20 +230,20 @@ func (nmq *NetworkMetricsQuery) AllX(ctx context.Context) []*NetworkMetrics {
 }
 
 // IDs executes the query and returns a list of NetworkMetrics IDs.
-func (nmq *NetworkMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if nmq.ctx.Unique == nil && nmq.path != nil {
-		nmq.Unique(true)
+func (_q *NetworkMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryIDs)
-	if err = nmq.Select(networkmetrics.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(networkmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := nmq.IDs(ctx)
+func (_q *NetworkMetricsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -251,17 +251,17 @@ func (nmq *NetworkMetricsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (nmq *NetworkMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryCount)
-	if err := nmq.prepareQuery(ctx); err != nil {
+func (_q *NetworkMetricsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, nmq, querierCount[*NetworkMetricsQuery](), nmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*NetworkMetricsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) CountX(ctx context.Context) int {
-	count, err := nmq.Count(ctx)
+func (_q *NetworkMetricsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -269,9 +269,9 @@ func (nmq *NetworkMetricsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (nmq *NetworkMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryExist)
-	switch _, err := nmq.FirstID(ctx); {
+func (_q *NetworkMetricsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -282,8 +282,8 @@ func (nmq *NetworkMetricsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (nmq *NetworkMetricsQuery) ExistX(ctx context.Context) bool {
-	exist, err := nmq.Exist(ctx)
+func (_q *NetworkMetricsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -292,52 +292,52 @@ func (nmq *NetworkMetricsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the NetworkMetricsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (nmq *NetworkMetricsQuery) Clone() *NetworkMetricsQuery {
-	if nmq == nil {
+func (_q *NetworkMetricsQuery) Clone() *NetworkMetricsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &NetworkMetricsQuery{
-		config:                 nmq.config,
-		ctx:                    nmq.ctx.Clone(),
-		order:                  append([]networkmetrics.OrderOption{}, nmq.order...),
-		inters:                 append([]Interceptor{}, nmq.inters...),
-		predicates:             append([]predicate.NetworkMetrics{}, nmq.predicates...),
-		withMetrics:            nmq.withMetrics.Clone(),
-		withSystemNetworkStats: nmq.withSystemNetworkStats.Clone(),
+		config:                 _q.config,
+		ctx:                    _q.ctx.Clone(),
+		order:                  append([]networkmetrics.OrderOption{}, _q.order...),
+		inters:                 append([]Interceptor{}, _q.inters...),
+		predicates:             append([]predicate.NetworkMetrics{}, _q.predicates...),
+		withMetrics:            _q.withMetrics.Clone(),
+		withSystemNetworkStats: _q.withSystemNetworkStats.Clone(),
 		// clone intermediate query.
-		sql:  nmq.sql.Clone(),
-		path: nmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (nmq *NetworkMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *NetworkMetricsQuery {
-	query := (&MetricsClient{config: nmq.config}).Query()
+func (_q *NetworkMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *NetworkMetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	nmq.withMetrics = query
-	return nmq
+	_q.withMetrics = query
+	return _q
 }
 
 // WithSystemNetworkStats tells the query-builder to eager-load the nodes that are connected to
 // the "system_network_stats" edge. The optional arguments are used to configure the query builder of the edge.
-func (nmq *NetworkMetricsQuery) WithSystemNetworkStats(opts ...func(*SystemNetworkStatsQuery)) *NetworkMetricsQuery {
-	query := (&SystemNetworkStatsClient{config: nmq.config}).Query()
+func (_q *NetworkMetricsQuery) WithSystemNetworkStats(opts ...func(*SystemNetworkStatsQuery)) *NetworkMetricsQuery {
+	query := (&SystemNetworkStatsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	nmq.withSystemNetworkStats = query
-	return nmq
+	_q.withSystemNetworkStats = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
-func (nmq *NetworkMetricsQuery) GroupBy(field string, fields ...string) *NetworkMetricsGroupBy {
-	nmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &NetworkMetricsGroupBy{build: nmq}
-	grbuild.flds = &nmq.ctx.Fields
+func (_q *NetworkMetricsQuery) GroupBy(field string, fields ...string) *NetworkMetricsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &NetworkMetricsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = networkmetrics.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -345,56 +345,56 @@ func (nmq *NetworkMetricsQuery) GroupBy(field string, fields ...string) *Network
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
-func (nmq *NetworkMetricsQuery) Select(fields ...string) *NetworkMetricsSelect {
-	nmq.ctx.Fields = append(nmq.ctx.Fields, fields...)
-	sbuild := &NetworkMetricsSelect{NetworkMetricsQuery: nmq}
+func (_q *NetworkMetricsQuery) Select(fields ...string) *NetworkMetricsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &NetworkMetricsSelect{NetworkMetricsQuery: _q}
 	sbuild.label = networkmetrics.Label
-	sbuild.flds, sbuild.scan = &nmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a NetworkMetricsSelect configured with the given aggregations.
-func (nmq *NetworkMetricsQuery) Aggregate(fns ...AggregateFunc) *NetworkMetricsSelect {
-	return nmq.Select().Aggregate(fns...)
+func (_q *NetworkMetricsQuery) Aggregate(fns ...AggregateFunc) *NetworkMetricsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (nmq *NetworkMetricsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range nmq.inters {
+func (_q *NetworkMetricsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, nmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range nmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !networkmetrics.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if nmq.path != nil {
-		prev, err := nmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		nmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (nmq *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NetworkMetrics, error) {
+func (_q *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NetworkMetrics, error) {
 	var (
 		nodes       = []*NetworkMetrics{}
-		withFKs     = nmq.withFKs
-		_spec       = nmq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			nmq.withMetrics != nil,
-			nmq.withSystemNetworkStats != nil,
+			_q.withMetrics != nil,
+			_q.withSystemNetworkStats != nil,
 		}
 	)
-	if nmq.withMetrics != nil {
+	if _q.withMetrics != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -404,44 +404,44 @@ func (nmq *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return (*NetworkMetrics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &NetworkMetrics{config: nmq.config}
+		node := &NetworkMetrics{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(nmq.modifiers) > 0 {
-		_spec.Modifiers = nmq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, nmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := nmq.withMetrics; query != nil {
-		if err := nmq.loadMetrics(ctx, query, nodes, nil,
+	if query := _q.withMetrics; query != nil {
+		if err := _q.loadMetrics(ctx, query, nodes, nil,
 			func(n *NetworkMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := nmq.withSystemNetworkStats; query != nil {
-		if err := nmq.loadSystemNetworkStats(ctx, query, nodes, nil,
+	if query := _q.withSystemNetworkStats; query != nil {
+		if err := _q.loadSystemNetworkStats(ctx, query, nodes, nil,
 			func(n *NetworkMetrics, e *SystemNetworkStats) { n.Edges.SystemNetworkStats = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range nmq.loadTotal {
-		if err := nmq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (nmq *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*NetworkMetrics, init func(*NetworkMetrics), assign func(*NetworkMetrics, *Metrics)) error {
+func (_q *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*NetworkMetrics, init func(*NetworkMetrics), assign func(*NetworkMetrics, *Metrics)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*NetworkMetrics)
 	for i := range nodes {
@@ -473,7 +473,7 @@ func (nmq *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQ
 	}
 	return nil
 }
-func (nmq *NetworkMetricsQuery) loadSystemNetworkStats(ctx context.Context, query *SystemNetworkStatsQuery, nodes []*NetworkMetrics, init func(*NetworkMetrics), assign func(*NetworkMetrics, *SystemNetworkStats)) error {
+func (_q *NetworkMetricsQuery) loadSystemNetworkStats(ctx context.Context, query *SystemNetworkStatsQuery, nodes []*NetworkMetrics, init func(*NetworkMetrics), assign func(*NetworkMetrics, *SystemNetworkStats)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*NetworkMetrics)
 	for i := range nodes {
@@ -502,27 +502,27 @@ func (nmq *NetworkMetricsQuery) loadSystemNetworkStats(ctx context.Context, quer
 	return nil
 }
 
-func (nmq *NetworkMetricsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := nmq.querySpec()
-	if len(nmq.modifiers) > 0 {
-		_spec.Modifiers = nmq.modifiers
+func (_q *NetworkMetricsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = nmq.ctx.Fields
-	if len(nmq.ctx.Fields) > 0 {
-		_spec.Unique = nmq.ctx.Unique != nil && *nmq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, nmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (nmq *NetworkMetricsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *NetworkMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
-	_spec.From = nmq.sql
-	if unique := nmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if nmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := nmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, networkmetrics.FieldID)
 		for i := range fields {
@@ -531,20 +531,20 @@ func (nmq *NetworkMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := nmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := nmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := nmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := nmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -554,33 +554,33 @@ func (nmq *NetworkMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (nmq *NetworkMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(nmq.driver.Dialect())
+func (_q *NetworkMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(networkmetrics.Table)
-	columns := nmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = networkmetrics.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if nmq.sql != nil {
-		selector = nmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if nmq.ctx.Unique != nil && *nmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range nmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range nmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := nmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := nmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -593,41 +593,41 @@ type NetworkMetricsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (nmgb *NetworkMetricsGroupBy) Aggregate(fns ...AggregateFunc) *NetworkMetricsGroupBy {
-	nmgb.fns = append(nmgb.fns, fns...)
-	return nmgb
+func (_g *NetworkMetricsGroupBy) Aggregate(fns ...AggregateFunc) *NetworkMetricsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (nmgb *NetworkMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := nmgb.build.prepareQuery(ctx); err != nil {
+func (_g *NetworkMetricsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*NetworkMetricsQuery, *NetworkMetricsGroupBy](ctx, nmgb.build, nmgb, nmgb.build.inters, v)
+	return scanWithInterceptors[*NetworkMetricsQuery, *NetworkMetricsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (nmgb *NetworkMetricsGroupBy) sqlScan(ctx context.Context, root *NetworkMetricsQuery, v any) error {
+func (_g *NetworkMetricsGroupBy) sqlScan(ctx context.Context, root *NetworkMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(nmgb.fns))
-	for _, fn := range nmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*nmgb.flds)+len(nmgb.fns))
-		for _, f := range *nmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*nmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := nmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -641,27 +641,27 @@ type NetworkMetricsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (nms *NetworkMetricsSelect) Aggregate(fns ...AggregateFunc) *NetworkMetricsSelect {
-	nms.fns = append(nms.fns, fns...)
-	return nms
+func (_s *NetworkMetricsSelect) Aggregate(fns ...AggregateFunc) *NetworkMetricsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (nms *NetworkMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nms.ctx, ent.OpQuerySelect)
-	if err := nms.prepareQuery(ctx); err != nil {
+func (_s *NetworkMetricsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*NetworkMetricsQuery, *NetworkMetricsSelect](ctx, nms.NetworkMetricsQuery, nms, nms.inters, v)
+	return scanWithInterceptors[*NetworkMetricsQuery, *NetworkMetricsSelect](ctx, _s.NetworkMetricsQuery, _s, _s.inters, v)
 }
 
-func (nms *NetworkMetricsSelect) sqlScan(ctx context.Context, root *NetworkMetricsQuery, v any) error {
+func (_s *NetworkMetricsSelect) sqlScan(ctx context.Context, root *NetworkMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(nms.fns))
-	for _, fn := range nms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*nms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -669,7 +669,7 @@ func (nms *NetworkMetricsSelect) sqlScan(ctx context.Context, root *NetworkMetri
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := nms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

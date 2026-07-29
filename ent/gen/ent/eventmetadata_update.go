@@ -23,65 +23,65 @@ type EventMetadataUpdate struct {
 }
 
 // Where appends a list predicates to the EventMetadataUpdate builder.
-func (emu *EventMetadataUpdate) Where(ps ...predicate.EventMetadata) *EventMetadataUpdate {
-	emu.mutation.Where(ps...)
-	return emu
+func (_u *EventMetadataUpdate) Where(ps ...predicate.EventMetadata) *EventMetadataUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetHandled sets the "handled" field.
-func (emu *EventMetadataUpdate) SetHandled(b []byte) *EventMetadataUpdate {
-	emu.mutation.SetHandled(b)
-	return emu
+func (_u *EventMetadataUpdate) SetHandled(v []byte) *EventMetadataUpdate {
+	_u.mutation.SetHandled(v)
+	return _u
 }
 
 // SetEventReceivedAt sets the "event_received_at" field.
-func (emu *EventMetadataUpdate) SetEventReceivedAt(t time.Time) *EventMetadataUpdate {
-	emu.mutation.SetEventReceivedAt(t)
-	return emu
+func (_u *EventMetadataUpdate) SetEventReceivedAt(v time.Time) *EventMetadataUpdate {
+	_u.mutation.SetEventReceivedAt(v)
+	return _u
 }
 
 // SetNillableEventReceivedAt sets the "event_received_at" field if the given value is not nil.
-func (emu *EventMetadataUpdate) SetNillableEventReceivedAt(t *time.Time) *EventMetadataUpdate {
-	if t != nil {
-		emu.SetEventReceivedAt(*t)
+func (_u *EventMetadataUpdate) SetNillableEventReceivedAt(v *time.Time) *EventMetadataUpdate {
+	if v != nil {
+		_u.SetEventReceivedAt(*v)
 	}
-	return emu
+	return _u
 }
 
 // SetVersion sets the "version" field.
-func (emu *EventMetadataUpdate) SetVersion(i int64) *EventMetadataUpdate {
-	emu.mutation.ResetVersion()
-	emu.mutation.SetVersion(i)
-	return emu
+func (_u *EventMetadataUpdate) SetVersion(v int64) *EventMetadataUpdate {
+	_u.mutation.ResetVersion()
+	_u.mutation.SetVersion(v)
+	return _u
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (emu *EventMetadataUpdate) SetNillableVersion(i *int64) *EventMetadataUpdate {
-	if i != nil {
-		emu.SetVersion(*i)
+func (_u *EventMetadataUpdate) SetNillableVersion(v *int64) *EventMetadataUpdate {
+	if v != nil {
+		_u.SetVersion(*v)
 	}
-	return emu
+	return _u
 }
 
-// AddVersion adds i to the "version" field.
-func (emu *EventMetadataUpdate) AddVersion(i int64) *EventMetadataUpdate {
-	emu.mutation.AddVersion(i)
-	return emu
+// AddVersion adds value to the "version" field.
+func (_u *EventMetadataUpdate) AddVersion(v int64) *EventMetadataUpdate {
+	_u.mutation.AddVersion(v)
+	return _u
 }
 
 // Mutation returns the EventMetadataMutation object of the builder.
-func (emu *EventMetadataUpdate) Mutation() *EventMetadataMutation {
-	return emu.mutation
+func (_u *EventMetadataUpdate) Mutation() *EventMetadataMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (emu *EventMetadataUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, emu.sqlSave, emu.mutation, emu.hooks)
+func (_u *EventMetadataUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (emu *EventMetadataUpdate) SaveX(ctx context.Context) int {
-	affected, err := emu.Save(ctx)
+func (_u *EventMetadataUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -89,51 +89,51 @@ func (emu *EventMetadataUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (emu *EventMetadataUpdate) Exec(ctx context.Context) error {
-	_, err := emu.Save(ctx)
+func (_u *EventMetadataUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (emu *EventMetadataUpdate) ExecX(ctx context.Context) {
-	if err := emu.Exec(ctx); err != nil {
+func (_u *EventMetadataUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (emu *EventMetadataUpdate) check() error {
-	if emu.mutation.BazelInvocationCleared() && len(emu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *EventMetadataUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "EventMetadata.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := emu.check(); err != nil {
-		return n, err
+func (_u *EventMetadataUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
-	if ps := emu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := emu.mutation.Handled(); ok {
+	if value, ok := _u.mutation.Handled(); ok {
 		_spec.SetField(eventmetadata.FieldHandled, field.TypeBytes, value)
 	}
-	if value, ok := emu.mutation.EventReceivedAt(); ok {
+	if value, ok := _u.mutation.EventReceivedAt(); ok {
 		_spec.SetField(eventmetadata.FieldEventReceivedAt, field.TypeTime, value)
 	}
-	if value, ok := emu.mutation.Version(); ok {
+	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
-	if value, ok := emu.mutation.AddedVersion(); ok {
+	if value, ok := _u.mutation.AddedVersion(); ok {
 		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, emu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{eventmetadata.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -141,8 +141,8 @@ func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	emu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // EventMetadataUpdateOne is the builder for updating a single EventMetadata entity.
@@ -154,72 +154,72 @@ type EventMetadataUpdateOne struct {
 }
 
 // SetHandled sets the "handled" field.
-func (emuo *EventMetadataUpdateOne) SetHandled(b []byte) *EventMetadataUpdateOne {
-	emuo.mutation.SetHandled(b)
-	return emuo
+func (_u *EventMetadataUpdateOne) SetHandled(v []byte) *EventMetadataUpdateOne {
+	_u.mutation.SetHandled(v)
+	return _u
 }
 
 // SetEventReceivedAt sets the "event_received_at" field.
-func (emuo *EventMetadataUpdateOne) SetEventReceivedAt(t time.Time) *EventMetadataUpdateOne {
-	emuo.mutation.SetEventReceivedAt(t)
-	return emuo
+func (_u *EventMetadataUpdateOne) SetEventReceivedAt(v time.Time) *EventMetadataUpdateOne {
+	_u.mutation.SetEventReceivedAt(v)
+	return _u
 }
 
 // SetNillableEventReceivedAt sets the "event_received_at" field if the given value is not nil.
-func (emuo *EventMetadataUpdateOne) SetNillableEventReceivedAt(t *time.Time) *EventMetadataUpdateOne {
-	if t != nil {
-		emuo.SetEventReceivedAt(*t)
+func (_u *EventMetadataUpdateOne) SetNillableEventReceivedAt(v *time.Time) *EventMetadataUpdateOne {
+	if v != nil {
+		_u.SetEventReceivedAt(*v)
 	}
-	return emuo
+	return _u
 }
 
 // SetVersion sets the "version" field.
-func (emuo *EventMetadataUpdateOne) SetVersion(i int64) *EventMetadataUpdateOne {
-	emuo.mutation.ResetVersion()
-	emuo.mutation.SetVersion(i)
-	return emuo
+func (_u *EventMetadataUpdateOne) SetVersion(v int64) *EventMetadataUpdateOne {
+	_u.mutation.ResetVersion()
+	_u.mutation.SetVersion(v)
+	return _u
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (emuo *EventMetadataUpdateOne) SetNillableVersion(i *int64) *EventMetadataUpdateOne {
-	if i != nil {
-		emuo.SetVersion(*i)
+func (_u *EventMetadataUpdateOne) SetNillableVersion(v *int64) *EventMetadataUpdateOne {
+	if v != nil {
+		_u.SetVersion(*v)
 	}
-	return emuo
+	return _u
 }
 
-// AddVersion adds i to the "version" field.
-func (emuo *EventMetadataUpdateOne) AddVersion(i int64) *EventMetadataUpdateOne {
-	emuo.mutation.AddVersion(i)
-	return emuo
+// AddVersion adds value to the "version" field.
+func (_u *EventMetadataUpdateOne) AddVersion(v int64) *EventMetadataUpdateOne {
+	_u.mutation.AddVersion(v)
+	return _u
 }
 
 // Mutation returns the EventMetadataMutation object of the builder.
-func (emuo *EventMetadataUpdateOne) Mutation() *EventMetadataMutation {
-	return emuo.mutation
+func (_u *EventMetadataUpdateOne) Mutation() *EventMetadataMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the EventMetadataUpdate builder.
-func (emuo *EventMetadataUpdateOne) Where(ps ...predicate.EventMetadata) *EventMetadataUpdateOne {
-	emuo.mutation.Where(ps...)
-	return emuo
+func (_u *EventMetadataUpdateOne) Where(ps ...predicate.EventMetadata) *EventMetadataUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (emuo *EventMetadataUpdateOne) Select(field string, fields ...string) *EventMetadataUpdateOne {
-	emuo.fields = append([]string{field}, fields...)
-	return emuo
+func (_u *EventMetadataUpdateOne) Select(field string, fields ...string) *EventMetadataUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated EventMetadata entity.
-func (emuo *EventMetadataUpdateOne) Save(ctx context.Context) (*EventMetadata, error) {
-	return withHooks(ctx, emuo.sqlSave, emuo.mutation, emuo.hooks)
+func (_u *EventMetadataUpdateOne) Save(ctx context.Context) (*EventMetadata, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (emuo *EventMetadataUpdateOne) SaveX(ctx context.Context) *EventMetadata {
-	node, err := emuo.Save(ctx)
+func (_u *EventMetadataUpdateOne) SaveX(ctx context.Context) *EventMetadata {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -227,37 +227,37 @@ func (emuo *EventMetadataUpdateOne) SaveX(ctx context.Context) *EventMetadata {
 }
 
 // Exec executes the query on the entity.
-func (emuo *EventMetadataUpdateOne) Exec(ctx context.Context) error {
-	_, err := emuo.Save(ctx)
+func (_u *EventMetadataUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (emuo *EventMetadataUpdateOne) ExecX(ctx context.Context) {
-	if err := emuo.Exec(ctx); err != nil {
+func (_u *EventMetadataUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (emuo *EventMetadataUpdateOne) check() error {
-	if emuo.mutation.BazelInvocationCleared() && len(emuo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *EventMetadataUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "EventMetadata.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMetadata, err error) {
-	if err := emuo.check(); err != nil {
+func (_u *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMetadata, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(eventmetadata.Table, eventmetadata.Columns, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
-	id, ok := emuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "EventMetadata.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := emuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, eventmetadata.FieldID)
 		for _, f := range fields {
@@ -269,29 +269,29 @@ func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMe
 			}
 		}
 	}
-	if ps := emuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := emuo.mutation.Handled(); ok {
+	if value, ok := _u.mutation.Handled(); ok {
 		_spec.SetField(eventmetadata.FieldHandled, field.TypeBytes, value)
 	}
-	if value, ok := emuo.mutation.EventReceivedAt(); ok {
+	if value, ok := _u.mutation.EventReceivedAt(); ok {
 		_spec.SetField(eventmetadata.FieldEventReceivedAt, field.TypeTime, value)
 	}
-	if value, ok := emuo.mutation.Version(); ok {
+	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
-	if value, ok := emuo.mutation.AddedVersion(); ok {
+	if value, ok := _u.mutation.AddedVersion(); ok {
 		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
-	_node = &EventMetadata{config: emuo.config}
+	_node = &EventMetadata{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, emuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{eventmetadata.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -299,6 +299,6 @@ func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMe
 		}
 		return nil, err
 	}
-	emuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

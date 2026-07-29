@@ -1,9 +1,13 @@
+import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
 import type {
   Digest,
   DigestFunction_Value,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { BrowserPageType } from "@/types/BrowserPageType";
-import { digestFunctionValueToString } from "./digestFunctionUtils";
+import {
+  digestFunctionValueFromString,
+  digestFunctionValueToString,
+} from "./digestFunctionUtils";
 
 /////////////////////////////////////////////////////////////
 // Frontend internal URLs
@@ -53,7 +57,24 @@ export function generateFileUrl(
   digest: Digest,
   fileName: string,
 ): string {
-  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${fileName}`;
+  // The link will not work if there are slashes in the filename. So we take
+  // just the last segment from the file name.
+  const lastFileNameSegment = fileName.split("/").pop() ?? fileName;
+  return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${lastFileNameSegment}`;
+}
+
+export function generateFileUrlFromGraphqlFile(
+  file: FileDetailsFragment,
+): string {
+  return generateFileUrl(
+    file.digest.rev2InstanceName,
+    digestFunctionValueFromString(file.digest.digestFunction),
+    {
+      hash: file.digest.hash,
+      sizeBytes: file.digest.sizeBytes.toString(),
+    },
+    file.filePath.path,
+  );
 }
 
 export function generateCommandShellScriptUrl(

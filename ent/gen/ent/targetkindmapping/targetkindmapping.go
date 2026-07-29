@@ -16,8 +16,6 @@ const (
 	FieldBazelInvocationID = "bazel_invocation_id"
 	// FieldTargetID holds the string denoting the target_id field in the database.
 	FieldTargetID = "target_id"
-	// FieldStartTimeInMs holds the string denoting the start_time_in_ms field in the database.
-	FieldStartTimeInMs = "start_time_in_ms"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeTarget holds the string denoting the target edge name in mutations.
@@ -45,7 +43,6 @@ var Columns = []string{
 	FieldID,
 	FieldBazelInvocationID,
 	FieldTargetID,
-	FieldStartTimeInMs,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -74,11 +71,6 @@ func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
 // ByTargetID orders the results by the target_id field.
 func ByTargetID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTargetID, opts...).ToFunc()
-}
-
-// ByStartTimeInMs orders the results by the start_time_in_ms field.
-func ByStartTimeInMs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStartTimeInMs, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

@@ -70,25 +70,89 @@ func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvo
 
 const deleteOldInvocationsFromPages = `-- name: DeleteOldInvocationsFromPages :execrows
 DELETE FROM bazel_invocations
-WHERE
-    ctid >= format('(%s,0)', $1::bigint)::tid
-    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND created_timestamp < $3::timestamptz
-    AND bep_completed = true
+WHERE ctid IN(
+    SELECT ctid
+    FROM bazel_invocations
+    WHERE
+      ctid >= format('(%s,0)', $1::bigint)::tid
+      AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+      AND created_timestamp < $3::timestamptz
+      AND bep_completed = true
+    FOR UPDATE SKIP LOCKED
+    LIMIT $4::bigint
+)
 `
 
 type DeleteOldInvocationsFromPagesParams struct {
 	FromPage   int64
 	Pages      int64
 	CutoffTime time.Time
+	BatchLimit int64
 }
 
 func (q *Queries) DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteOldInvocationsFromPages, arg.FromPage, arg.Pages, arg.CutoffTime)
+	result, err := q.db.ExecContext(ctx, deleteOldInvocationsFromPages,
+		arg.FromPage,
+		arg.Pages,
+		arg.CutoffTime,
+		arg.BatchLimit,
+	)
 	if err != nil {
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const getInvocationsForLogCompactionFromPages = `-- name: GetInvocationsForLogCompactionFromPages :many
+SELECT id, invocation_id
+FROM bazel_invocations
+WHERE
+    ctid >= format('(%s,0)', $1::bigint)::tid
+    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+    AND bep_completed = true
+    AND EXISTS (
+        SELECT 1 FROM incomplete_build_logs
+        WHERE bazel_invocation_id = bazel_invocations.id
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM build_log_chunks
+        WHERE bazel_invocation_build_log_chunks = bazel_invocations.id
+    )
+LIMIT $3::bigint
+`
+
+type GetInvocationsForLogCompactionFromPagesParams struct {
+	FromPage   int64
+	Pages      int64
+	BatchLimit int64
+}
+
+type GetInvocationsForLogCompactionFromPagesRow struct {
+	ID           int64
+	InvocationID uuid.UUID
+}
+
+func (q *Queries) GetInvocationsForLogCompactionFromPages(ctx context.Context, arg GetInvocationsForLogCompactionFromPagesParams) ([]GetInvocationsForLogCompactionFromPagesRow, error) {
+	rows, err := q.db.QueryContext(ctx, getInvocationsForLogCompactionFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetInvocationsForLogCompactionFromPagesRow
+	for rows.Next() {
+		var i GetInvocationsForLogCompactionFromPagesRow
+		if err := rows.Scan(&i.ID, &i.InvocationID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const lockBazelInvocationCompletion = `-- name: LockBazelInvocationCompletion :one
@@ -113,25 +177,37 @@ func (q *Queries) LockBazelInvocationCompletion(ctx context.Context, id int64) (
 const lockStaleInvocationsFromPages = `-- name: LockStaleInvocationsFromPages :execrows
 UPDATE bazel_invocations
 SET bep_completed = true
-WHERE
-    ctid >= format('(%s,0)', $1::bigint)::tid
-    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND bep_completed = false
-    AND EXISTS (
-        SELECT 1 FROM event_metadata em
-        WHERE em.bazel_invocation_id = bazel_invocations.id
-        AND em.event_received_at <= $3::timestamptz
-    )
+WHERE ctid IN (
+    SELECT ctid 
+    FROM bazel_invocations
+    WHERE
+        ctid >= format('(%s,0)', $1::bigint)::tid
+        AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+        AND bep_completed = false
+        AND EXISTS (
+            SELECT 1 FROM event_metadata em
+            WHERE em.bazel_invocation_id = bazel_invocations.id
+            AND em.event_received_at <= $3::timestamptz
+        )
+    FOR UPDATE SKIP LOCKED
+    LIMIT $4::bigint
+)
 `
 
 type LockStaleInvocationsFromPagesParams struct {
 	FromPage   int64
 	Pages      int64
 	CutoffTime time.Time
+	BatchLimit int64
 }
 
 func (q *Queries) LockStaleInvocationsFromPages(ctx context.Context, arg LockStaleInvocationsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, lockStaleInvocationsFromPages, arg.FromPage, arg.Pages, arg.CutoffTime)
+	result, err := q.db.ExecContext(ctx, lockStaleInvocationsFromPages,
+		arg.FromPage,
+		arg.Pages,
+		arg.CutoffTime,
+		arg.BatchLimit,
+	)
 	if err != nil {
 		return 0, err
 	}

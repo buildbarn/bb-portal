@@ -3,8 +3,8 @@ import {
   CloseCircleFilled,
   QuestionCircleFilled,
 } from "@ant-design/icons";
-import { Button } from "antd";
 import type React from "react";
+import { LinkButton } from "@/components/LinkButton";
 import themeStyles from "@/theme/theme.module.css";
 
 interface Props {
@@ -33,14 +33,14 @@ function getClassForStatus(status: boolean | null) {
 }
 
 const TargetGridBtn: React.FC<Props> = ({ status, invocationId }) => {
-  const resultTag = (
-    <Button
-      href={`/bazel-invocations/${invocationId}`}
+  return (
+    <LinkButton
+      to="/bazel-invocations/$invocationID"
+      params={{ invocationID: invocationId }}
       icon={getIconForStatus(status)}
       className={getClassForStatus(status)}
     />
   );
-  return <>{resultTag}</>;
 };
 
 export default TargetGridBtn;

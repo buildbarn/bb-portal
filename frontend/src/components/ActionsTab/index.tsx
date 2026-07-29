@@ -1,12 +1,11 @@
 import { Collapse } from "antd";
+import { useMemo } from "react";
+import type { BazelInvocationActionsFragment } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
 import PortalDuration from "../PortalDuration";
-import { ActionDetails, type ActionDetailsData } from "./action";
+import { ActionDetails } from "./action";
 
-const items = (
-  instanceName: string,
-  actions: ActionDetailsData[] | undefined | null,
-) => {
+const getCollapseItems = (actions: BazelInvocationActionsFragment[]) => {
   return actions?.map((action) => {
     return {
       key: action.id,
@@ -15,24 +14,23 @@ const items = (
         <PortalDuration
           from={action.startTime || undefined}
           to={action.endTime || undefined}
-          includePopover
           formatConfig={{ smallestUnit: "ms" }}
         />
       ),
-      children: <ActionDetails instanceName={instanceName} action={action} />,
+      children: <ActionDetails action={action} />,
     };
   });
 };
 
 interface Props {
-  instanceName: string;
-  actions: ActionDetailsData[] | undefined | null;
+  actions: BazelInvocationActionsFragment[];
 }
 
-export const ActionsTab: React.FC<Props> = ({ instanceName, actions }) => {
+export const ActionsTab: React.FC<Props> = ({ actions }) => {
+  const items = useMemo(() => getCollapseItems(actions), [actions]);
   return (
     <Collapse
-      items={items(instanceName, actions)}
+      items={items}
       bordered={true}
       defaultActiveKey={actions && actions.length === 1 ? [actions[0].id] : []}
       className={themeStyles.collapse}

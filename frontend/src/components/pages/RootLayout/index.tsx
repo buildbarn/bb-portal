@@ -6,8 +6,8 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ConfigProvider, Layout } from "antd";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
-import AppBar from "@/components/AppBar";
-import GrpcClientsProvider from "@/context/GrpcClientsProvider";
+import { PageWrapper } from "@/components/PageWrapper";
+import MessageProvider from "@/context/MessageProvider";
 import { Status } from "@/lib/grpc-client/google/rpc/status";
 import dark from "@/theme/dark";
 import light from "@/theme/light";
@@ -44,31 +44,36 @@ export const RootLayout = () => {
     setInnerTheme(opposite);
   }, []);
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: (failureCount: number, error: Error) => {
-          if (failureCount >= 3) {
-            return false;
-          }
-          return isRetryableGrpcError(Status.fromJSON(error));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: (failureCount: number, error: Error) => {
+              if (failureCount >= 3) {
+                return false;
+              }
+              return isRetryableGrpcError(Status.fromJSON(error));
+            },
+          },
         },
-      },
-    },
-  });
+      }),
+  );
+
   return (
     <ApolloWrapper>
       <ConfigProvider theme={innerTheme === "dark" ? dark : light}>
         <QueryClientProvider client={queryClient}>
-          <GrpcClientsProvider>
+          <MessageProvider>
             <Layout className={styles.layout}>
-              <AppBar
+              <PageWrapper
                 toggleTheme={toggleTheme}
                 prefersDark={innerTheme === "dark"}
-              />
-              <Outlet />
+              >
+                <Outlet />
+              </PageWrapper>
             </Layout>
-          </GrpcClientsProvider>
+          </MessageProvider>
           {/* Devtools for Tanstack components. Automatically removed for prod builds */}
           <TanStackDevtools
             plugins={[

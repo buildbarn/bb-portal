@@ -1,4 +1,4 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client/core";
 import { ApolloProvider } from "@apollo/client/react";
 import type React from "react";
 import possibleTypes from "./possibleTypes.json";

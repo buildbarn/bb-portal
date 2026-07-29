@@ -26,254 +26,254 @@ type ActionSummaryUpdate struct {
 }
 
 // Where appends a list predicates to the ActionSummaryUpdate builder.
-func (asu *ActionSummaryUpdate) Where(ps ...predicate.ActionSummary) *ActionSummaryUpdate {
-	asu.mutation.Where(ps...)
-	return asu
+func (_u *ActionSummaryUpdate) Where(ps ...predicate.ActionSummary) *ActionSummaryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetActionsCreated sets the "actions_created" field.
-func (asu *ActionSummaryUpdate) SetActionsCreated(i int64) *ActionSummaryUpdate {
-	asu.mutation.ResetActionsCreated()
-	asu.mutation.SetActionsCreated(i)
-	return asu
+func (_u *ActionSummaryUpdate) SetActionsCreated(v int64) *ActionSummaryUpdate {
+	_u.mutation.ResetActionsCreated()
+	_u.mutation.SetActionsCreated(v)
+	return _u
 }
 
 // SetNillableActionsCreated sets the "actions_created" field if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableActionsCreated(i *int64) *ActionSummaryUpdate {
-	if i != nil {
-		asu.SetActionsCreated(*i)
+func (_u *ActionSummaryUpdate) SetNillableActionsCreated(v *int64) *ActionSummaryUpdate {
+	if v != nil {
+		_u.SetActionsCreated(*v)
 	}
-	return asu
+	return _u
 }
 
-// AddActionsCreated adds i to the "actions_created" field.
-func (asu *ActionSummaryUpdate) AddActionsCreated(i int64) *ActionSummaryUpdate {
-	asu.mutation.AddActionsCreated(i)
-	return asu
+// AddActionsCreated adds value to the "actions_created" field.
+func (_u *ActionSummaryUpdate) AddActionsCreated(v int64) *ActionSummaryUpdate {
+	_u.mutation.AddActionsCreated(v)
+	return _u
 }
 
 // ClearActionsCreated clears the value of the "actions_created" field.
-func (asu *ActionSummaryUpdate) ClearActionsCreated() *ActionSummaryUpdate {
-	asu.mutation.ClearActionsCreated()
-	return asu
+func (_u *ActionSummaryUpdate) ClearActionsCreated() *ActionSummaryUpdate {
+	_u.mutation.ClearActionsCreated()
+	return _u
 }
 
 // SetActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field.
-func (asu *ActionSummaryUpdate) SetActionsCreatedNotIncludingAspects(i int64) *ActionSummaryUpdate {
-	asu.mutation.ResetActionsCreatedNotIncludingAspects()
-	asu.mutation.SetActionsCreatedNotIncludingAspects(i)
-	return asu
+func (_u *ActionSummaryUpdate) SetActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpdate {
+	_u.mutation.ResetActionsCreatedNotIncludingAspects()
+	_u.mutation.SetActionsCreatedNotIncludingAspects(v)
+	return _u
 }
 
 // SetNillableActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableActionsCreatedNotIncludingAspects(i *int64) *ActionSummaryUpdate {
-	if i != nil {
-		asu.SetActionsCreatedNotIncludingAspects(*i)
+func (_u *ActionSummaryUpdate) SetNillableActionsCreatedNotIncludingAspects(v *int64) *ActionSummaryUpdate {
+	if v != nil {
+		_u.SetActionsCreatedNotIncludingAspects(*v)
 	}
-	return asu
+	return _u
 }
 
-// AddActionsCreatedNotIncludingAspects adds i to the "actions_created_not_including_aspects" field.
-func (asu *ActionSummaryUpdate) AddActionsCreatedNotIncludingAspects(i int64) *ActionSummaryUpdate {
-	asu.mutation.AddActionsCreatedNotIncludingAspects(i)
-	return asu
+// AddActionsCreatedNotIncludingAspects adds value to the "actions_created_not_including_aspects" field.
+func (_u *ActionSummaryUpdate) AddActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpdate {
+	_u.mutation.AddActionsCreatedNotIncludingAspects(v)
+	return _u
 }
 
 // ClearActionsCreatedNotIncludingAspects clears the value of the "actions_created_not_including_aspects" field.
-func (asu *ActionSummaryUpdate) ClearActionsCreatedNotIncludingAspects() *ActionSummaryUpdate {
-	asu.mutation.ClearActionsCreatedNotIncludingAspects()
-	return asu
+func (_u *ActionSummaryUpdate) ClearActionsCreatedNotIncludingAspects() *ActionSummaryUpdate {
+	_u.mutation.ClearActionsCreatedNotIncludingAspects()
+	return _u
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (asu *ActionSummaryUpdate) SetActionsExecuted(i int64) *ActionSummaryUpdate {
-	asu.mutation.ResetActionsExecuted()
-	asu.mutation.SetActionsExecuted(i)
-	return asu
+func (_u *ActionSummaryUpdate) SetActionsExecuted(v int64) *ActionSummaryUpdate {
+	_u.mutation.ResetActionsExecuted()
+	_u.mutation.SetActionsExecuted(v)
+	return _u
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableActionsExecuted(i *int64) *ActionSummaryUpdate {
-	if i != nil {
-		asu.SetActionsExecuted(*i)
+func (_u *ActionSummaryUpdate) SetNillableActionsExecuted(v *int64) *ActionSummaryUpdate {
+	if v != nil {
+		_u.SetActionsExecuted(*v)
 	}
-	return asu
+	return _u
 }
 
-// AddActionsExecuted adds i to the "actions_executed" field.
-func (asu *ActionSummaryUpdate) AddActionsExecuted(i int64) *ActionSummaryUpdate {
-	asu.mutation.AddActionsExecuted(i)
-	return asu
+// AddActionsExecuted adds value to the "actions_executed" field.
+func (_u *ActionSummaryUpdate) AddActionsExecuted(v int64) *ActionSummaryUpdate {
+	_u.mutation.AddActionsExecuted(v)
+	return _u
 }
 
 // ClearActionsExecuted clears the value of the "actions_executed" field.
-func (asu *ActionSummaryUpdate) ClearActionsExecuted() *ActionSummaryUpdate {
-	asu.mutation.ClearActionsExecuted()
-	return asu
+func (_u *ActionSummaryUpdate) ClearActionsExecuted() *ActionSummaryUpdate {
+	_u.mutation.ClearActionsExecuted()
+	return _u
 }
 
 // SetRemoteCacheHits sets the "remote_cache_hits" field.
-func (asu *ActionSummaryUpdate) SetRemoteCacheHits(i int64) *ActionSummaryUpdate {
-	asu.mutation.ResetRemoteCacheHits()
-	asu.mutation.SetRemoteCacheHits(i)
-	return asu
+func (_u *ActionSummaryUpdate) SetRemoteCacheHits(v int64) *ActionSummaryUpdate {
+	_u.mutation.ResetRemoteCacheHits()
+	_u.mutation.SetRemoteCacheHits(v)
+	return _u
 }
 
 // SetNillableRemoteCacheHits sets the "remote_cache_hits" field if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableRemoteCacheHits(i *int64) *ActionSummaryUpdate {
-	if i != nil {
-		asu.SetRemoteCacheHits(*i)
+func (_u *ActionSummaryUpdate) SetNillableRemoteCacheHits(v *int64) *ActionSummaryUpdate {
+	if v != nil {
+		_u.SetRemoteCacheHits(*v)
 	}
-	return asu
+	return _u
 }
 
-// AddRemoteCacheHits adds i to the "remote_cache_hits" field.
-func (asu *ActionSummaryUpdate) AddRemoteCacheHits(i int64) *ActionSummaryUpdate {
-	asu.mutation.AddRemoteCacheHits(i)
-	return asu
+// AddRemoteCacheHits adds value to the "remote_cache_hits" field.
+func (_u *ActionSummaryUpdate) AddRemoteCacheHits(v int64) *ActionSummaryUpdate {
+	_u.mutation.AddRemoteCacheHits(v)
+	return _u
 }
 
 // ClearRemoteCacheHits clears the value of the "remote_cache_hits" field.
-func (asu *ActionSummaryUpdate) ClearRemoteCacheHits() *ActionSummaryUpdate {
-	asu.mutation.ClearRemoteCacheHits()
-	return asu
+func (_u *ActionSummaryUpdate) ClearRemoteCacheHits() *ActionSummaryUpdate {
+	_u.mutation.ClearRemoteCacheHits()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asu *ActionSummaryUpdate) SetMetricsID(id int64) *ActionSummaryUpdate {
-	asu.mutation.SetMetricsID(id)
-	return asu
+func (_u *ActionSummaryUpdate) SetMetricsID(id int64) *ActionSummaryUpdate {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableMetricsID(id *int64) *ActionSummaryUpdate {
+func (_u *ActionSummaryUpdate) SetNillableMetricsID(id *int64) *ActionSummaryUpdate {
 	if id != nil {
-		asu = asu.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return asu
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (asu *ActionSummaryUpdate) SetMetrics(m *Metrics) *ActionSummaryUpdate {
-	return asu.SetMetricsID(m.ID)
+func (_u *ActionSummaryUpdate) SetMetrics(v *Metrics) *ActionSummaryUpdate {
+	return _u.SetMetricsID(v.ID)
 }
 
 // AddActionDatumIDs adds the "action_data" edge to the ActionData entity by IDs.
-func (asu *ActionSummaryUpdate) AddActionDatumIDs(ids ...int64) *ActionSummaryUpdate {
-	asu.mutation.AddActionDatumIDs(ids...)
-	return asu
+func (_u *ActionSummaryUpdate) AddActionDatumIDs(ids ...int64) *ActionSummaryUpdate {
+	_u.mutation.AddActionDatumIDs(ids...)
+	return _u
 }
 
 // AddActionData adds the "action_data" edges to the ActionData entity.
-func (asu *ActionSummaryUpdate) AddActionData(a ...*ActionData) *ActionSummaryUpdate {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ActionSummaryUpdate) AddActionData(v ...*ActionData) *ActionSummaryUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asu.AddActionDatumIDs(ids...)
+	return _u.AddActionDatumIDs(ids...)
 }
 
 // AddRunnerCountIDs adds the "runner_count" edge to the RunnerCount entity by IDs.
-func (asu *ActionSummaryUpdate) AddRunnerCountIDs(ids ...int64) *ActionSummaryUpdate {
-	asu.mutation.AddRunnerCountIDs(ids...)
-	return asu
+func (_u *ActionSummaryUpdate) AddRunnerCountIDs(ids ...int64) *ActionSummaryUpdate {
+	_u.mutation.AddRunnerCountIDs(ids...)
+	return _u
 }
 
 // AddRunnerCount adds the "runner_count" edges to the RunnerCount entity.
-func (asu *ActionSummaryUpdate) AddRunnerCount(r ...*RunnerCount) *ActionSummaryUpdate {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *ActionSummaryUpdate) AddRunnerCount(v ...*RunnerCount) *ActionSummaryUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asu.AddRunnerCountIDs(ids...)
+	return _u.AddRunnerCountIDs(ids...)
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (asu *ActionSummaryUpdate) SetActionCacheStatisticsID(id int64) *ActionSummaryUpdate {
-	asu.mutation.SetActionCacheStatisticsID(id)
-	return asu
+func (_u *ActionSummaryUpdate) SetActionCacheStatisticsID(id int64) *ActionSummaryUpdate {
+	_u.mutation.SetActionCacheStatisticsID(id)
+	return _u
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryUpdate {
+func (_u *ActionSummaryUpdate) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryUpdate {
 	if id != nil {
-		asu = asu.SetActionCacheStatisticsID(*id)
+		_u = _u.SetActionCacheStatisticsID(*id)
 	}
-	return asu
+	return _u
 }
 
 // SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (asu *ActionSummaryUpdate) SetActionCacheStatistics(a *ActionCacheStatistics) *ActionSummaryUpdate {
-	return asu.SetActionCacheStatisticsID(a.ID)
+func (_u *ActionSummaryUpdate) SetActionCacheStatistics(v *ActionCacheStatistics) *ActionSummaryUpdate {
+	return _u.SetActionCacheStatisticsID(v.ID)
 }
 
 // Mutation returns the ActionSummaryMutation object of the builder.
-func (asu *ActionSummaryUpdate) Mutation() *ActionSummaryMutation {
-	return asu.mutation
+func (_u *ActionSummaryUpdate) Mutation() *ActionSummaryMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (asu *ActionSummaryUpdate) ClearMetrics() *ActionSummaryUpdate {
-	asu.mutation.ClearMetrics()
-	return asu
+func (_u *ActionSummaryUpdate) ClearMetrics() *ActionSummaryUpdate {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // ClearActionData clears all "action_data" edges to the ActionData entity.
-func (asu *ActionSummaryUpdate) ClearActionData() *ActionSummaryUpdate {
-	asu.mutation.ClearActionData()
-	return asu
+func (_u *ActionSummaryUpdate) ClearActionData() *ActionSummaryUpdate {
+	_u.mutation.ClearActionData()
+	return _u
 }
 
 // RemoveActionDatumIDs removes the "action_data" edge to ActionData entities by IDs.
-func (asu *ActionSummaryUpdate) RemoveActionDatumIDs(ids ...int64) *ActionSummaryUpdate {
-	asu.mutation.RemoveActionDatumIDs(ids...)
-	return asu
+func (_u *ActionSummaryUpdate) RemoveActionDatumIDs(ids ...int64) *ActionSummaryUpdate {
+	_u.mutation.RemoveActionDatumIDs(ids...)
+	return _u
 }
 
 // RemoveActionData removes "action_data" edges to ActionData entities.
-func (asu *ActionSummaryUpdate) RemoveActionData(a ...*ActionData) *ActionSummaryUpdate {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ActionSummaryUpdate) RemoveActionData(v ...*ActionData) *ActionSummaryUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asu.RemoveActionDatumIDs(ids...)
+	return _u.RemoveActionDatumIDs(ids...)
 }
 
 // ClearRunnerCount clears all "runner_count" edges to the RunnerCount entity.
-func (asu *ActionSummaryUpdate) ClearRunnerCount() *ActionSummaryUpdate {
-	asu.mutation.ClearRunnerCount()
-	return asu
+func (_u *ActionSummaryUpdate) ClearRunnerCount() *ActionSummaryUpdate {
+	_u.mutation.ClearRunnerCount()
+	return _u
 }
 
 // RemoveRunnerCountIDs removes the "runner_count" edge to RunnerCount entities by IDs.
-func (asu *ActionSummaryUpdate) RemoveRunnerCountIDs(ids ...int64) *ActionSummaryUpdate {
-	asu.mutation.RemoveRunnerCountIDs(ids...)
-	return asu
+func (_u *ActionSummaryUpdate) RemoveRunnerCountIDs(ids ...int64) *ActionSummaryUpdate {
+	_u.mutation.RemoveRunnerCountIDs(ids...)
+	return _u
 }
 
 // RemoveRunnerCount removes "runner_count" edges to RunnerCount entities.
-func (asu *ActionSummaryUpdate) RemoveRunnerCount(r ...*RunnerCount) *ActionSummaryUpdate {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *ActionSummaryUpdate) RemoveRunnerCount(v ...*RunnerCount) *ActionSummaryUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asu.RemoveRunnerCountIDs(ids...)
+	return _u.RemoveRunnerCountIDs(ids...)
 }
 
 // ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (asu *ActionSummaryUpdate) ClearActionCacheStatistics() *ActionSummaryUpdate {
-	asu.mutation.ClearActionCacheStatistics()
-	return asu
+func (_u *ActionSummaryUpdate) ClearActionCacheStatistics() *ActionSummaryUpdate {
+	_u.mutation.ClearActionCacheStatistics()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (asu *ActionSummaryUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, asu.sqlSave, asu.mutation, asu.hooks)
+func (_u *ActionSummaryUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (asu *ActionSummaryUpdate) SaveX(ctx context.Context) int {
-	affected, err := asu.Save(ctx)
+func (_u *ActionSummaryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -281,64 +281,64 @@ func (asu *ActionSummaryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (asu *ActionSummaryUpdate) Exec(ctx context.Context) error {
-	_, err := asu.Save(ctx)
+func (_u *ActionSummaryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (asu *ActionSummaryUpdate) ExecX(ctx context.Context) {
-	if err := asu.Exec(ctx); err != nil {
+func (_u *ActionSummaryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *ActionSummaryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
-	if ps := asu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := asu.mutation.ActionsCreated(); ok {
+	if value, ok := _u.mutation.ActionsCreated(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if value, ok := asu.mutation.AddedActionsCreated(); ok {
+	if value, ok := _u.mutation.AddedActionsCreated(); ok {
 		_spec.AddField(actionsummary.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if asu.mutation.ActionsCreatedCleared() {
+	if _u.mutation.ActionsCreatedCleared() {
 		_spec.ClearField(actionsummary.FieldActionsCreated, field.TypeInt64)
 	}
-	if value, ok := asu.mutation.ActionsCreatedNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.ActionsCreatedNotIncludingAspects(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreatedNotIncludingAspects, field.TypeInt64, value)
 	}
-	if value, ok := asu.mutation.AddedActionsCreatedNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.AddedActionsCreatedNotIncludingAspects(); ok {
 		_spec.AddField(actionsummary.FieldActionsCreatedNotIncludingAspects, field.TypeInt64, value)
 	}
-	if asu.mutation.ActionsCreatedNotIncludingAspectsCleared() {
+	if _u.mutation.ActionsCreatedNotIncludingAspectsCleared() {
 		_spec.ClearField(actionsummary.FieldActionsCreatedNotIncludingAspects, field.TypeInt64)
 	}
-	if value, ok := asu.mutation.ActionsExecuted(); ok {
+	if value, ok := _u.mutation.ActionsExecuted(); ok {
 		_spec.SetField(actionsummary.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if value, ok := asu.mutation.AddedActionsExecuted(); ok {
+	if value, ok := _u.mutation.AddedActionsExecuted(); ok {
 		_spec.AddField(actionsummary.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if asu.mutation.ActionsExecutedCleared() {
+	if _u.mutation.ActionsExecutedCleared() {
 		_spec.ClearField(actionsummary.FieldActionsExecuted, field.TypeInt64)
 	}
-	if value, ok := asu.mutation.RemoteCacheHits(); ok {
+	if value, ok := _u.mutation.RemoteCacheHits(); ok {
 		_spec.SetField(actionsummary.FieldRemoteCacheHits, field.TypeInt64, value)
 	}
-	if value, ok := asu.mutation.AddedRemoteCacheHits(); ok {
+	if value, ok := _u.mutation.AddedRemoteCacheHits(); ok {
 		_spec.AddField(actionsummary.FieldRemoteCacheHits, field.TypeInt64, value)
 	}
-	if asu.mutation.RemoteCacheHitsCleared() {
+	if _u.mutation.RemoteCacheHitsCleared() {
 		_spec.ClearField(actionsummary.FieldRemoteCacheHits, field.TypeInt64)
 	}
-	if asu.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -351,7 +351,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asu.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -367,7 +367,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if asu.mutation.ActionDataCleared() {
+	if _u.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -380,7 +380,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asu.mutation.RemovedActionDataIDs(); len(nodes) > 0 && !asu.mutation.ActionDataCleared() {
+	if nodes := _u.mutation.RemovedActionDataIDs(); len(nodes) > 0 && !_u.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -396,7 +396,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asu.mutation.ActionDataIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionDataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -412,7 +412,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if asu.mutation.RunnerCountCleared() {
+	if _u.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -425,7 +425,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asu.mutation.RemovedRunnerCountIDs(); len(nodes) > 0 && !asu.mutation.RunnerCountCleared() {
+	if nodes := _u.mutation.RemovedRunnerCountIDs(); len(nodes) > 0 && !_u.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -441,7 +441,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asu.mutation.RunnerCountIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RunnerCountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -457,7 +457,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if asu.mutation.ActionCacheStatisticsCleared() {
+	if _u.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -470,7 +470,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asu.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -486,7 +486,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, asu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actionsummary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -494,8 +494,8 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	asu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ActionSummaryUpdateOne is the builder for updating a single ActionSummary entity.
@@ -507,261 +507,261 @@ type ActionSummaryUpdateOne struct {
 }
 
 // SetActionsCreated sets the "actions_created" field.
-func (asuo *ActionSummaryUpdateOne) SetActionsCreated(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.ResetActionsCreated()
-	asuo.mutation.SetActionsCreated(i)
-	return asuo
+func (_u *ActionSummaryUpdateOne) SetActionsCreated(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.ResetActionsCreated()
+	_u.mutation.SetActionsCreated(v)
+	return _u
 }
 
 // SetNillableActionsCreated sets the "actions_created" field if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableActionsCreated(i *int64) *ActionSummaryUpdateOne {
-	if i != nil {
-		asuo.SetActionsCreated(*i)
+func (_u *ActionSummaryUpdateOne) SetNillableActionsCreated(v *int64) *ActionSummaryUpdateOne {
+	if v != nil {
+		_u.SetActionsCreated(*v)
 	}
-	return asuo
+	return _u
 }
 
-// AddActionsCreated adds i to the "actions_created" field.
-func (asuo *ActionSummaryUpdateOne) AddActionsCreated(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.AddActionsCreated(i)
-	return asuo
+// AddActionsCreated adds value to the "actions_created" field.
+func (_u *ActionSummaryUpdateOne) AddActionsCreated(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.AddActionsCreated(v)
+	return _u
 }
 
 // ClearActionsCreated clears the value of the "actions_created" field.
-func (asuo *ActionSummaryUpdateOne) ClearActionsCreated() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearActionsCreated()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearActionsCreated() *ActionSummaryUpdateOne {
+	_u.mutation.ClearActionsCreated()
+	return _u
 }
 
 // SetActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field.
-func (asuo *ActionSummaryUpdateOne) SetActionsCreatedNotIncludingAspects(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.ResetActionsCreatedNotIncludingAspects()
-	asuo.mutation.SetActionsCreatedNotIncludingAspects(i)
-	return asuo
+func (_u *ActionSummaryUpdateOne) SetActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.ResetActionsCreatedNotIncludingAspects()
+	_u.mutation.SetActionsCreatedNotIncludingAspects(v)
+	return _u
 }
 
 // SetNillableActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableActionsCreatedNotIncludingAspects(i *int64) *ActionSummaryUpdateOne {
-	if i != nil {
-		asuo.SetActionsCreatedNotIncludingAspects(*i)
+func (_u *ActionSummaryUpdateOne) SetNillableActionsCreatedNotIncludingAspects(v *int64) *ActionSummaryUpdateOne {
+	if v != nil {
+		_u.SetActionsCreatedNotIncludingAspects(*v)
 	}
-	return asuo
+	return _u
 }
 
-// AddActionsCreatedNotIncludingAspects adds i to the "actions_created_not_including_aspects" field.
-func (asuo *ActionSummaryUpdateOne) AddActionsCreatedNotIncludingAspects(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.AddActionsCreatedNotIncludingAspects(i)
-	return asuo
+// AddActionsCreatedNotIncludingAspects adds value to the "actions_created_not_including_aspects" field.
+func (_u *ActionSummaryUpdateOne) AddActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.AddActionsCreatedNotIncludingAspects(v)
+	return _u
 }
 
 // ClearActionsCreatedNotIncludingAspects clears the value of the "actions_created_not_including_aspects" field.
-func (asuo *ActionSummaryUpdateOne) ClearActionsCreatedNotIncludingAspects() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearActionsCreatedNotIncludingAspects()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearActionsCreatedNotIncludingAspects() *ActionSummaryUpdateOne {
+	_u.mutation.ClearActionsCreatedNotIncludingAspects()
+	return _u
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (asuo *ActionSummaryUpdateOne) SetActionsExecuted(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.ResetActionsExecuted()
-	asuo.mutation.SetActionsExecuted(i)
-	return asuo
+func (_u *ActionSummaryUpdateOne) SetActionsExecuted(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.ResetActionsExecuted()
+	_u.mutation.SetActionsExecuted(v)
+	return _u
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableActionsExecuted(i *int64) *ActionSummaryUpdateOne {
-	if i != nil {
-		asuo.SetActionsExecuted(*i)
+func (_u *ActionSummaryUpdateOne) SetNillableActionsExecuted(v *int64) *ActionSummaryUpdateOne {
+	if v != nil {
+		_u.SetActionsExecuted(*v)
 	}
-	return asuo
+	return _u
 }
 
-// AddActionsExecuted adds i to the "actions_executed" field.
-func (asuo *ActionSummaryUpdateOne) AddActionsExecuted(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.AddActionsExecuted(i)
-	return asuo
+// AddActionsExecuted adds value to the "actions_executed" field.
+func (_u *ActionSummaryUpdateOne) AddActionsExecuted(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.AddActionsExecuted(v)
+	return _u
 }
 
 // ClearActionsExecuted clears the value of the "actions_executed" field.
-func (asuo *ActionSummaryUpdateOne) ClearActionsExecuted() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearActionsExecuted()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearActionsExecuted() *ActionSummaryUpdateOne {
+	_u.mutation.ClearActionsExecuted()
+	return _u
 }
 
 // SetRemoteCacheHits sets the "remote_cache_hits" field.
-func (asuo *ActionSummaryUpdateOne) SetRemoteCacheHits(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.ResetRemoteCacheHits()
-	asuo.mutation.SetRemoteCacheHits(i)
-	return asuo
+func (_u *ActionSummaryUpdateOne) SetRemoteCacheHits(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.ResetRemoteCacheHits()
+	_u.mutation.SetRemoteCacheHits(v)
+	return _u
 }
 
 // SetNillableRemoteCacheHits sets the "remote_cache_hits" field if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableRemoteCacheHits(i *int64) *ActionSummaryUpdateOne {
-	if i != nil {
-		asuo.SetRemoteCacheHits(*i)
+func (_u *ActionSummaryUpdateOne) SetNillableRemoteCacheHits(v *int64) *ActionSummaryUpdateOne {
+	if v != nil {
+		_u.SetRemoteCacheHits(*v)
 	}
-	return asuo
+	return _u
 }
 
-// AddRemoteCacheHits adds i to the "remote_cache_hits" field.
-func (asuo *ActionSummaryUpdateOne) AddRemoteCacheHits(i int64) *ActionSummaryUpdateOne {
-	asuo.mutation.AddRemoteCacheHits(i)
-	return asuo
+// AddRemoteCacheHits adds value to the "remote_cache_hits" field.
+func (_u *ActionSummaryUpdateOne) AddRemoteCacheHits(v int64) *ActionSummaryUpdateOne {
+	_u.mutation.AddRemoteCacheHits(v)
+	return _u
 }
 
 // ClearRemoteCacheHits clears the value of the "remote_cache_hits" field.
-func (asuo *ActionSummaryUpdateOne) ClearRemoteCacheHits() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearRemoteCacheHits()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearRemoteCacheHits() *ActionSummaryUpdateOne {
+	_u.mutation.ClearRemoteCacheHits()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asuo *ActionSummaryUpdateOne) SetMetricsID(id int64) *ActionSummaryUpdateOne {
-	asuo.mutation.SetMetricsID(id)
-	return asuo
+func (_u *ActionSummaryUpdateOne) SetMetricsID(id int64) *ActionSummaryUpdateOne {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableMetricsID(id *int64) *ActionSummaryUpdateOne {
+func (_u *ActionSummaryUpdateOne) SetNillableMetricsID(id *int64) *ActionSummaryUpdateOne {
 	if id != nil {
-		asuo = asuo.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return asuo
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (asuo *ActionSummaryUpdateOne) SetMetrics(m *Metrics) *ActionSummaryUpdateOne {
-	return asuo.SetMetricsID(m.ID)
+func (_u *ActionSummaryUpdateOne) SetMetrics(v *Metrics) *ActionSummaryUpdateOne {
+	return _u.SetMetricsID(v.ID)
 }
 
 // AddActionDatumIDs adds the "action_data" edge to the ActionData entity by IDs.
-func (asuo *ActionSummaryUpdateOne) AddActionDatumIDs(ids ...int64) *ActionSummaryUpdateOne {
-	asuo.mutation.AddActionDatumIDs(ids...)
-	return asuo
+func (_u *ActionSummaryUpdateOne) AddActionDatumIDs(ids ...int64) *ActionSummaryUpdateOne {
+	_u.mutation.AddActionDatumIDs(ids...)
+	return _u
 }
 
 // AddActionData adds the "action_data" edges to the ActionData entity.
-func (asuo *ActionSummaryUpdateOne) AddActionData(a ...*ActionData) *ActionSummaryUpdateOne {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ActionSummaryUpdateOne) AddActionData(v ...*ActionData) *ActionSummaryUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asuo.AddActionDatumIDs(ids...)
+	return _u.AddActionDatumIDs(ids...)
 }
 
 // AddRunnerCountIDs adds the "runner_count" edge to the RunnerCount entity by IDs.
-func (asuo *ActionSummaryUpdateOne) AddRunnerCountIDs(ids ...int64) *ActionSummaryUpdateOne {
-	asuo.mutation.AddRunnerCountIDs(ids...)
-	return asuo
+func (_u *ActionSummaryUpdateOne) AddRunnerCountIDs(ids ...int64) *ActionSummaryUpdateOne {
+	_u.mutation.AddRunnerCountIDs(ids...)
+	return _u
 }
 
 // AddRunnerCount adds the "runner_count" edges to the RunnerCount entity.
-func (asuo *ActionSummaryUpdateOne) AddRunnerCount(r ...*RunnerCount) *ActionSummaryUpdateOne {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *ActionSummaryUpdateOne) AddRunnerCount(v ...*RunnerCount) *ActionSummaryUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asuo.AddRunnerCountIDs(ids...)
+	return _u.AddRunnerCountIDs(ids...)
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (asuo *ActionSummaryUpdateOne) SetActionCacheStatisticsID(id int64) *ActionSummaryUpdateOne {
-	asuo.mutation.SetActionCacheStatisticsID(id)
-	return asuo
+func (_u *ActionSummaryUpdateOne) SetActionCacheStatisticsID(id int64) *ActionSummaryUpdateOne {
+	_u.mutation.SetActionCacheStatisticsID(id)
+	return _u
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryUpdateOne {
+func (_u *ActionSummaryUpdateOne) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryUpdateOne {
 	if id != nil {
-		asuo = asuo.SetActionCacheStatisticsID(*id)
+		_u = _u.SetActionCacheStatisticsID(*id)
 	}
-	return asuo
+	return _u
 }
 
 // SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (asuo *ActionSummaryUpdateOne) SetActionCacheStatistics(a *ActionCacheStatistics) *ActionSummaryUpdateOne {
-	return asuo.SetActionCacheStatisticsID(a.ID)
+func (_u *ActionSummaryUpdateOne) SetActionCacheStatistics(v *ActionCacheStatistics) *ActionSummaryUpdateOne {
+	return _u.SetActionCacheStatisticsID(v.ID)
 }
 
 // Mutation returns the ActionSummaryMutation object of the builder.
-func (asuo *ActionSummaryUpdateOne) Mutation() *ActionSummaryMutation {
-	return asuo.mutation
+func (_u *ActionSummaryUpdateOne) Mutation() *ActionSummaryMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (asuo *ActionSummaryUpdateOne) ClearMetrics() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearMetrics()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearMetrics() *ActionSummaryUpdateOne {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // ClearActionData clears all "action_data" edges to the ActionData entity.
-func (asuo *ActionSummaryUpdateOne) ClearActionData() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearActionData()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearActionData() *ActionSummaryUpdateOne {
+	_u.mutation.ClearActionData()
+	return _u
 }
 
 // RemoveActionDatumIDs removes the "action_data" edge to ActionData entities by IDs.
-func (asuo *ActionSummaryUpdateOne) RemoveActionDatumIDs(ids ...int64) *ActionSummaryUpdateOne {
-	asuo.mutation.RemoveActionDatumIDs(ids...)
-	return asuo
+func (_u *ActionSummaryUpdateOne) RemoveActionDatumIDs(ids ...int64) *ActionSummaryUpdateOne {
+	_u.mutation.RemoveActionDatumIDs(ids...)
+	return _u
 }
 
 // RemoveActionData removes "action_data" edges to ActionData entities.
-func (asuo *ActionSummaryUpdateOne) RemoveActionData(a ...*ActionData) *ActionSummaryUpdateOne {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ActionSummaryUpdateOne) RemoveActionData(v ...*ActionData) *ActionSummaryUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asuo.RemoveActionDatumIDs(ids...)
+	return _u.RemoveActionDatumIDs(ids...)
 }
 
 // ClearRunnerCount clears all "runner_count" edges to the RunnerCount entity.
-func (asuo *ActionSummaryUpdateOne) ClearRunnerCount() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearRunnerCount()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearRunnerCount() *ActionSummaryUpdateOne {
+	_u.mutation.ClearRunnerCount()
+	return _u
 }
 
 // RemoveRunnerCountIDs removes the "runner_count" edge to RunnerCount entities by IDs.
-func (asuo *ActionSummaryUpdateOne) RemoveRunnerCountIDs(ids ...int64) *ActionSummaryUpdateOne {
-	asuo.mutation.RemoveRunnerCountIDs(ids...)
-	return asuo
+func (_u *ActionSummaryUpdateOne) RemoveRunnerCountIDs(ids ...int64) *ActionSummaryUpdateOne {
+	_u.mutation.RemoveRunnerCountIDs(ids...)
+	return _u
 }
 
 // RemoveRunnerCount removes "runner_count" edges to RunnerCount entities.
-func (asuo *ActionSummaryUpdateOne) RemoveRunnerCount(r ...*RunnerCount) *ActionSummaryUpdateOne {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *ActionSummaryUpdateOne) RemoveRunnerCount(v ...*RunnerCount) *ActionSummaryUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asuo.RemoveRunnerCountIDs(ids...)
+	return _u.RemoveRunnerCountIDs(ids...)
 }
 
 // ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (asuo *ActionSummaryUpdateOne) ClearActionCacheStatistics() *ActionSummaryUpdateOne {
-	asuo.mutation.ClearActionCacheStatistics()
-	return asuo
+func (_u *ActionSummaryUpdateOne) ClearActionCacheStatistics() *ActionSummaryUpdateOne {
+	_u.mutation.ClearActionCacheStatistics()
+	return _u
 }
 
 // Where appends a list predicates to the ActionSummaryUpdate builder.
-func (asuo *ActionSummaryUpdateOne) Where(ps ...predicate.ActionSummary) *ActionSummaryUpdateOne {
-	asuo.mutation.Where(ps...)
-	return asuo
+func (_u *ActionSummaryUpdateOne) Where(ps ...predicate.ActionSummary) *ActionSummaryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (asuo *ActionSummaryUpdateOne) Select(field string, fields ...string) *ActionSummaryUpdateOne {
-	asuo.fields = append([]string{field}, fields...)
-	return asuo
+func (_u *ActionSummaryUpdateOne) Select(field string, fields ...string) *ActionSummaryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated ActionSummary entity.
-func (asuo *ActionSummaryUpdateOne) Save(ctx context.Context) (*ActionSummary, error) {
-	return withHooks(ctx, asuo.sqlSave, asuo.mutation, asuo.hooks)
+func (_u *ActionSummaryUpdateOne) Save(ctx context.Context) (*ActionSummary, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (asuo *ActionSummaryUpdateOne) SaveX(ctx context.Context) *ActionSummary {
-	node, err := asuo.Save(ctx)
+func (_u *ActionSummaryUpdateOne) SaveX(ctx context.Context) *ActionSummary {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -769,26 +769,26 @@ func (asuo *ActionSummaryUpdateOne) SaveX(ctx context.Context) *ActionSummary {
 }
 
 // Exec executes the query on the entity.
-func (asuo *ActionSummaryUpdateOne) Exec(ctx context.Context) error {
-	_, err := asuo.Save(ctx)
+func (_u *ActionSummaryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (asuo *ActionSummaryUpdateOne) ExecX(ctx context.Context) {
-	if err := asuo.Exec(ctx); err != nil {
+func (_u *ActionSummaryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionSummary, err error) {
+func (_u *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionSummary, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
-	id, ok := asuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ActionSummary.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := asuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, actionsummary.FieldID)
 		for _, f := range fields {
@@ -800,50 +800,50 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 			}
 		}
 	}
-	if ps := asuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := asuo.mutation.ActionsCreated(); ok {
+	if value, ok := _u.mutation.ActionsCreated(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if value, ok := asuo.mutation.AddedActionsCreated(); ok {
+	if value, ok := _u.mutation.AddedActionsCreated(); ok {
 		_spec.AddField(actionsummary.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if asuo.mutation.ActionsCreatedCleared() {
+	if _u.mutation.ActionsCreatedCleared() {
 		_spec.ClearField(actionsummary.FieldActionsCreated, field.TypeInt64)
 	}
-	if value, ok := asuo.mutation.ActionsCreatedNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.ActionsCreatedNotIncludingAspects(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreatedNotIncludingAspects, field.TypeInt64, value)
 	}
-	if value, ok := asuo.mutation.AddedActionsCreatedNotIncludingAspects(); ok {
+	if value, ok := _u.mutation.AddedActionsCreatedNotIncludingAspects(); ok {
 		_spec.AddField(actionsummary.FieldActionsCreatedNotIncludingAspects, field.TypeInt64, value)
 	}
-	if asuo.mutation.ActionsCreatedNotIncludingAspectsCleared() {
+	if _u.mutation.ActionsCreatedNotIncludingAspectsCleared() {
 		_spec.ClearField(actionsummary.FieldActionsCreatedNotIncludingAspects, field.TypeInt64)
 	}
-	if value, ok := asuo.mutation.ActionsExecuted(); ok {
+	if value, ok := _u.mutation.ActionsExecuted(); ok {
 		_spec.SetField(actionsummary.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if value, ok := asuo.mutation.AddedActionsExecuted(); ok {
+	if value, ok := _u.mutation.AddedActionsExecuted(); ok {
 		_spec.AddField(actionsummary.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if asuo.mutation.ActionsExecutedCleared() {
+	if _u.mutation.ActionsExecutedCleared() {
 		_spec.ClearField(actionsummary.FieldActionsExecuted, field.TypeInt64)
 	}
-	if value, ok := asuo.mutation.RemoteCacheHits(); ok {
+	if value, ok := _u.mutation.RemoteCacheHits(); ok {
 		_spec.SetField(actionsummary.FieldRemoteCacheHits, field.TypeInt64, value)
 	}
-	if value, ok := asuo.mutation.AddedRemoteCacheHits(); ok {
+	if value, ok := _u.mutation.AddedRemoteCacheHits(); ok {
 		_spec.AddField(actionsummary.FieldRemoteCacheHits, field.TypeInt64, value)
 	}
-	if asuo.mutation.RemoteCacheHitsCleared() {
+	if _u.mutation.RemoteCacheHitsCleared() {
 		_spec.ClearField(actionsummary.FieldRemoteCacheHits, field.TypeInt64)
 	}
-	if asuo.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -856,7 +856,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asuo.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -872,7 +872,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if asuo.mutation.ActionDataCleared() {
+	if _u.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -885,7 +885,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asuo.mutation.RemovedActionDataIDs(); len(nodes) > 0 && !asuo.mutation.ActionDataCleared() {
+	if nodes := _u.mutation.RemovedActionDataIDs(); len(nodes) > 0 && !_u.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -901,7 +901,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asuo.mutation.ActionDataIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionDataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -917,7 +917,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if asuo.mutation.RunnerCountCleared() {
+	if _u.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -930,7 +930,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asuo.mutation.RemovedRunnerCountIDs(); len(nodes) > 0 && !asuo.mutation.RunnerCountCleared() {
+	if nodes := _u.mutation.RemovedRunnerCountIDs(); len(nodes) > 0 && !_u.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -946,7 +946,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asuo.mutation.RunnerCountIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RunnerCountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -962,7 +962,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if asuo.mutation.ActionCacheStatisticsCleared() {
+	if _u.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -975,7 +975,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := asuo.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -991,10 +991,10 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &ActionSummary{config: asuo.config}
+	_node = &ActionSummary{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, asuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actionsummary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1002,6 +1002,6 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 		}
 		return nil, err
 	}
-	asuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

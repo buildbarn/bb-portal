@@ -5,6 +5,7 @@ package actioncachestatistics
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 )
 
 const (
@@ -77,6 +78,14 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// ValueScanner of all ActionCacheStatistics fields.
+	ValueScanner struct {
+		LoadTimeInMs                    field.TypeValueScanner[uint64]
+		CacheCheckSemaphoreWaitTimeInMs field.TypeValueScanner[uint64]
+	}
+)
 
 // OrderOption defines the ordering options for the ActionCacheStatistics queries.
 type OrderOption func(*sql.Selector)

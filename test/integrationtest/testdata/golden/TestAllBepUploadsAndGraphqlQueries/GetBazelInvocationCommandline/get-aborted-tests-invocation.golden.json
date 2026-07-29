@@ -1,0 +1,124 @@
+{
+  "getBazelInvocation": {
+    "canonicalCommandLine": {
+      "command": "test",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "jobs",
+          "value": "200"
+        },
+        {
+          "option": "test_keep_going",
+          "value": "false"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "test2.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": [
+        {
+          "option": "max_idle_secs",
+          "value": "10800"
+        },
+        {
+          "option": "shutdown_on_low_sys_mem",
+          "value": "0"
+        },
+        {
+          "option": "connect_timeout_secs",
+          "value": "30"
+        },
+        {
+          "option": "output_user_root",
+          "value": "/root/.cache/bazel/_bazel_root"
+        },
+        {
+          "option": "output_base",
+          "value": "/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c"
+        },
+        {
+          "option": "failure_detail_out",
+          "value": "/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c/failure_detail.rawproto"
+        },
+        {
+          "option": "idle_server_tasks",
+          "value": "1"
+        },
+        {
+          "option": "write_command_log",
+          "value": "1"
+        },
+        {
+          "option": "watchfs",
+          "value": "0"
+        },
+        {
+          "option": "fatal_event_bus_exceptions",
+          "value": "0"
+        },
+        {
+          "option": "windows_enable_symlinks",
+          "value": "0"
+        },
+        {
+          "option": "client_debug",
+          "value": "false"
+        },
+        {
+          "option": "ignore_all_rc_files",
+          "value": "1"
+        }
+      ]
+    },
+    "environmentVariables": {
+      "HOME": "[REDACTED]",
+      "HOSTNAME": "[REDACTED]",
+      "OLDPWD": "[REDACTED]",
+      "PATH": "[REDACTED]",
+      "PWD": "[REDACTED]",
+      "SHLVL": "[REDACTED]",
+      "_": "[REDACTED]"
+    },
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjg=",
+    "invocationID": "64719226-555e-494d-9918-0fd25d468b1e",
+    "optionsParsed": {
+      "explicitOptions": [
+        "--jobs=200",
+        "--notest_keep_going",
+        "--build_event_json_file=test2.bep.ndjson"
+      ],
+      "options": [
+        "--jobs=200",
+        "--notest_keep_going",
+        "--build_event_json_file=test2.bep.ndjson"
+      ]
+    },
+    "originalCommandLine": {
+      "command": "test",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "jobs",
+          "value": "200"
+        },
+        {
+          "option": "test_keep_going",
+          "value": "false"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "test2.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    }
+  }
+}

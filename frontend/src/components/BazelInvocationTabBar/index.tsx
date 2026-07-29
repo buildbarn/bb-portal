@@ -1,0 +1,179 @@
+import {
+  BranchesOutlined,
+  CodeOutlined,
+  DatabaseOutlined,
+  DeploymentUnitOutlined,
+  ExperimentOutlined,
+  FileSearchOutlined,
+  InfoCircleOutlined,
+  LineChartOutlined,
+  TagsOutlined,
+} from "@ant-design/icons";
+import { Link, useLocation } from "@tanstack/react-router";
+import { Menu } from "antd";
+import type { ItemType } from "antd/lib/menu/interface";
+import type React from "react";
+import { useMemo } from "react";
+import type { BazelInvocationCommonFragment } from "@/graphql/__generated__/graphql";
+import { env } from "@/utils/env";
+
+const getMenuItems = (
+  invocation: BazelInvocationCommonFragment,
+): ItemType[] => {
+  const { invocationID } = invocation;
+
+  const showActionsTab = !!invocation.actions?.length;
+  const showMetricsTab = !!invocation.metrics;
+  const showSourceControlTab = !!invocation.sourceControl?.length;
+  const showTargetsTab = !!env.featureFlags?.bes?.pageTargets;
+  const showTestsTab = !!env.featureFlags?.bes?.pageTests;
+
+  const items: ItemType[] = [];
+  items.push({
+    key: "overview",
+    icon: <InfoCircleOutlined />,
+    label: (
+      <Link to="/bazel-invocations/$invocationID" params={{ invocationID }}>
+        Overview
+      </Link>
+    ),
+  });
+  items.push({
+    key: "log",
+    icon: <FileSearchOutlined />,
+    label: (
+      <Link to="/bazel-invocations/$invocationID/log" params={{ invocationID }}>
+        Log
+      </Link>
+    ),
+  });
+  if (showMetricsTab)
+    items.push({
+      key: "metrics",
+      icon: <LineChartOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/metrics"
+          params={{ invocationID }}
+        >
+          Metrics
+        </Link>
+      ),
+    });
+  if (showTargetsTab)
+    items.push({
+      key: "targets",
+      icon: <DeploymentUnitOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/targets"
+          params={{ invocationID }}
+        >
+          Targets
+        </Link>
+      ),
+    });
+  if (showTestsTab)
+    items.push({
+      key: "tests",
+      icon: <ExperimentOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/tests"
+          params={{ invocationID }}
+        >
+          Tests
+        </Link>
+      ),
+    });
+  items.push({
+    key: "command-line",
+    icon: <CodeOutlined />,
+    label: (
+      <Link
+        to="/bazel-invocations/$invocationID/command-line"
+        params={{ invocationID }}
+      >
+        Command Line
+      </Link>
+    ),
+  });
+  if (showSourceControlTab)
+    items.push({
+      key: "source-control",
+      icon: <BranchesOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/source-control"
+          params={{ invocationID }}
+        >
+          Source Control
+        </Link>
+      ),
+    });
+  // Previously we counted the number of tags to determine if we should show
+  // this link, but due to a bug in (probably) ApolloClient, this was removed.
+  // The bug caused a cache warning when fetching the count, which in turn
+  // caused a rerender of the build details page when you hovered over a link
+  // to a invocation.
+  items.push({
+    key: "tags",
+    icon: <TagsOutlined />,
+    label: (
+      <Link
+        to="/bazel-invocations/$invocationID/tags"
+        params={{ invocationID }}
+      >
+        Tags
+      </Link>
+    ),
+  });
+  if (showActionsTab)
+    items.push({
+      key: "actions",
+      icon: <DatabaseOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/actions"
+          params={{ invocationID }}
+        >
+          Failed Actions
+        </Link>
+      ),
+    });
+  return items;
+};
+
+interface Props {
+  invocation: BazelInvocationCommonFragment;
+}
+
+export const BazelInvocationTabBar: React.FC<Props> = ({ invocation }) => {
+  const { pathname } = useLocation();
+
+  const menuItems = useMemo(() => getMenuItems(invocation), [invocation]);
+
+  const selectedKeys: string[] = useMemo(() => {
+    const segments = pathname.split("/").filter(Boolean);
+    const invocationsIndex = segments.lastIndexOf("bazel-invocations");
+
+    if (invocationsIndex === -1) return [];
+
+    const pageSegment = segments.at(invocationsIndex + 2);
+    if (!pageSegment) return ["overview"];
+
+    if (menuItems.some((item) => item?.key === pageSegment)) {
+      return [pageSegment];
+    }
+    return [];
+  }, [pathname, menuItems]);
+
+  return (
+    <Menu
+      mode="horizontal"
+      style={{ background: "inherit" }}
+      selectedKeys={selectedKeys}
+      items={menuItems}
+    />
+  );
+};

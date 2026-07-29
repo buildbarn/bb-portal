@@ -83,7 +83,7 @@ func (*MemoryMetrics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the MemoryMetrics fields.
-func (mm *MemoryMetrics) assignValues(columns []string, values []any) error {
+func (_m *MemoryMetrics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -94,34 +94,34 @@ func (mm *MemoryMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			mm.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case memorymetrics.FieldPeakPostGcHeapSize:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_post_gc_heap_size", values[i])
 			} else if value.Valid {
-				mm.PeakPostGcHeapSize = value.Int64
+				_m.PeakPostGcHeapSize = value.Int64
 			}
 		case memorymetrics.FieldUsedHeapSizePostBuild:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field used_heap_size_post_build", values[i])
 			} else if value.Valid {
-				mm.UsedHeapSizePostBuild = value.Int64
+				_m.UsedHeapSizePostBuild = value.Int64
 			}
 		case memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field peak_post_gc_tenured_space_heap_size", values[i])
 			} else if value.Valid {
-				mm.PeakPostGcTenuredSpaceHeapSize = value.Int64
+				_m.PeakPostGcTenuredSpaceHeapSize = value.Int64
 			}
 		case memorymetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_memory_metrics", value)
 			} else if value.Valid {
-				mm.metrics_memory_metrics = new(int64)
-				*mm.metrics_memory_metrics = int64(value.Int64)
+				_m.metrics_memory_metrics = new(int64)
+				*_m.metrics_memory_metrics = int64(value.Int64)
 			}
 		default:
-			mm.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -129,76 +129,76 @@ func (mm *MemoryMetrics) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the MemoryMetrics.
 // This includes values selected through modifiers, order, etc.
-func (mm *MemoryMetrics) Value(name string) (ent.Value, error) {
-	return mm.selectValues.Get(name)
+func (_m *MemoryMetrics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMetrics queries the "metrics" edge of the MemoryMetrics entity.
-func (mm *MemoryMetrics) QueryMetrics() *MetricsQuery {
-	return NewMemoryMetricsClient(mm.config).QueryMetrics(mm)
+func (_m *MemoryMetrics) QueryMetrics() *MetricsQuery {
+	return NewMemoryMetricsClient(_m.config).QueryMetrics(_m)
 }
 
 // QueryGarbageMetrics queries the "garbage_metrics" edge of the MemoryMetrics entity.
-func (mm *MemoryMetrics) QueryGarbageMetrics() *GarbageMetricsQuery {
-	return NewMemoryMetricsClient(mm.config).QueryGarbageMetrics(mm)
+func (_m *MemoryMetrics) QueryGarbageMetrics() *GarbageMetricsQuery {
+	return NewMemoryMetricsClient(_m.config).QueryGarbageMetrics(_m)
 }
 
 // Update returns a builder for updating this MemoryMetrics.
 // Note that you need to call MemoryMetrics.Unwrap() before calling this method if this MemoryMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (mm *MemoryMetrics) Update() *MemoryMetricsUpdateOne {
-	return NewMemoryMetricsClient(mm.config).UpdateOne(mm)
+func (_m *MemoryMetrics) Update() *MemoryMetricsUpdateOne {
+	return NewMemoryMetricsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the MemoryMetrics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (mm *MemoryMetrics) Unwrap() *MemoryMetrics {
-	_tx, ok := mm.config.driver.(*txDriver)
+func (_m *MemoryMetrics) Unwrap() *MemoryMetrics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: MemoryMetrics is not a transactional entity")
 	}
-	mm.config.driver = _tx.drv
-	return mm
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (mm *MemoryMetrics) String() string {
+func (_m *MemoryMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("MemoryMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", mm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("peak_post_gc_heap_size=")
-	builder.WriteString(fmt.Sprintf("%v", mm.PeakPostGcHeapSize))
+	builder.WriteString(fmt.Sprintf("%v", _m.PeakPostGcHeapSize))
 	builder.WriteString(", ")
 	builder.WriteString("used_heap_size_post_build=")
-	builder.WriteString(fmt.Sprintf("%v", mm.UsedHeapSizePostBuild))
+	builder.WriteString(fmt.Sprintf("%v", _m.UsedHeapSizePostBuild))
 	builder.WriteString(", ")
 	builder.WriteString("peak_post_gc_tenured_space_heap_size=")
-	builder.WriteString(fmt.Sprintf("%v", mm.PeakPostGcTenuredSpaceHeapSize))
+	builder.WriteString(fmt.Sprintf("%v", _m.PeakPostGcTenuredSpaceHeapSize))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedGarbageMetrics returns the GarbageMetrics named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (mm *MemoryMetrics) NamedGarbageMetrics(name string) ([]*GarbageMetrics, error) {
-	if mm.Edges.namedGarbageMetrics == nil {
+func (_m *MemoryMetrics) NamedGarbageMetrics(name string) ([]*GarbageMetrics, error) {
+	if _m.Edges.namedGarbageMetrics == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := mm.Edges.namedGarbageMetrics[name]
+	nodes, ok := _m.Edges.namedGarbageMetrics[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (mm *MemoryMetrics) appendNamedGarbageMetrics(name string, edges ...*GarbageMetrics) {
-	if mm.Edges.namedGarbageMetrics == nil {
-		mm.Edges.namedGarbageMetrics = make(map[string][]*GarbageMetrics)
+func (_m *MemoryMetrics) appendNamedGarbageMetrics(name string, edges ...*GarbageMetrics) {
+	if _m.Edges.namedGarbageMetrics == nil {
+		_m.Edges.namedGarbageMetrics = make(map[string][]*GarbageMetrics)
 	}
 	if len(edges) == 0 {
-		mm.Edges.namedGarbageMetrics[name] = []*GarbageMetrics{}
+		_m.Edges.namedGarbageMetrics[name] = []*GarbageMetrics{}
 	} else {
-		mm.Edges.namedGarbageMetrics[name] = append(mm.Edges.namedGarbageMetrics[name], edges...)
+		_m.Edges.namedGarbageMetrics[name] = append(_m.Edges.namedGarbageMetrics[name], edges...)
 	}
 }
 

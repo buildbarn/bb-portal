@@ -192,6 +192,29 @@ func HasTargetsWith(preds ...predicate.Target) predicate.InstanceName {
 	})
 }
 
+// HasFilePaths applies the HasEdge predicate on the "file_paths" edge.
+func HasFilePaths() predicate.InstanceName {
+	return predicate.InstanceName(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FilePathsTable, FilePathsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFilePathsWith applies the HasEdge predicate on the "file_paths" edge with a given conditions (other predicates).
+func HasFilePathsWith(preds ...predicate.FilePath) predicate.InstanceName {
+	return predicate.InstanceName(func(s *sql.Selector) {
+		step := newFilePathsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.InstanceName) predicate.InstanceName {
 	return predicate.InstanceName(sql.AndPredicates(predicates...))

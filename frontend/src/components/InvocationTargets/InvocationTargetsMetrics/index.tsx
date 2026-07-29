@@ -1,36 +1,38 @@
 import { Space, Statistic } from "antd";
 import type React from "react";
-import type { TargetMetrics } from "@/graphql/__generated__/graphql";
+import type {
+  BazelInvocationTargetCountsFragment,
+  BazelInvocationTargetMetricsFragment,
+} from "@/graphql/__generated__/graphql";
 
 interface Props {
-  targetMetrics: TargetMetrics | undefined;
-  invocationTargetsCount: number | undefined;
-  invocationTargetsBuiltSuccessfully: number | undefined;
-  invocationTargetsSkipped: number | undefined;
+  targetMetrics: BazelInvocationTargetMetricsFragment | null | undefined;
+  targetCounts: BazelInvocationTargetCountsFragment;
 }
 
 export const InvocationTargetsMetrics: React.FC<Props> = ({
   targetMetrics,
-  invocationTargetsCount,
-  invocationTargetsBuiltSuccessfully,
-  invocationTargetsSkipped,
+  targetCounts,
 }) => {
   return (
     <Space size="large">
-      {invocationTargetsCount !== undefined && (
-        <Statistic title="Targets Analyzed" value={invocationTargetsCount} />
+      {targetCounts.numTotal.totalCount !== undefined && (
+        <Statistic
+          title="Targets Analyzed"
+          value={targetCounts.numTotal.totalCount}
+        />
       )}
-      {invocationTargetsBuiltSuccessfully !== undefined && (
+      {targetCounts.numSuccessful.totalCount !== undefined && (
         <Statistic
           title="Targets Built Successfully"
-          value={invocationTargetsBuiltSuccessfully}
+          value={targetCounts.numSuccessful.totalCount}
           valueStyle={{ color: "green" }}
         />
       )}
-      {invocationTargetsSkipped !== undefined && (
+      {targetCounts.numSkipped.totalCount !== undefined && (
         <Statistic
           title="Targets Skipped"
-          value={invocationTargetsSkipped}
+          value={targetCounts.numSkipped.totalCount}
           valueStyle={{ color: "purple" }}
         />
       )}

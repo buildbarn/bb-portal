@@ -25,176 +25,176 @@ type TestSummaryCreate struct {
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (tsc *TestSummaryCreate) SetOverallStatus(s string) *TestSummaryCreate {
-	tsc.mutation.SetOverallStatus(s)
-	return tsc
+func (_c *TestSummaryCreate) SetOverallStatus(v string) *TestSummaryCreate {
+	_c.mutation.SetOverallStatus(v)
+	return _c
 }
 
 // SetNillableOverallStatus sets the "overall_status" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableOverallStatus(s *string) *TestSummaryCreate {
-	if s != nil {
-		tsc.SetOverallStatus(*s)
+func (_c *TestSummaryCreate) SetNillableOverallStatus(v *string) *TestSummaryCreate {
+	if v != nil {
+		_c.SetOverallStatus(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetTotalRunCount sets the "total_run_count" field.
-func (tsc *TestSummaryCreate) SetTotalRunCount(i int32) *TestSummaryCreate {
-	tsc.mutation.SetTotalRunCount(i)
-	return tsc
+func (_c *TestSummaryCreate) SetTotalRunCount(v int32) *TestSummaryCreate {
+	_c.mutation.SetTotalRunCount(v)
+	return _c
 }
 
 // SetNillableTotalRunCount sets the "total_run_count" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableTotalRunCount(i *int32) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetTotalRunCount(*i)
+func (_c *TestSummaryCreate) SetNillableTotalRunCount(v *int32) *TestSummaryCreate {
+	if v != nil {
+		_c.SetTotalRunCount(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetRunCount sets the "run_count" field.
-func (tsc *TestSummaryCreate) SetRunCount(i int32) *TestSummaryCreate {
-	tsc.mutation.SetRunCount(i)
-	return tsc
+func (_c *TestSummaryCreate) SetRunCount(v int32) *TestSummaryCreate {
+	_c.mutation.SetRunCount(v)
+	return _c
 }
 
 // SetNillableRunCount sets the "run_count" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableRunCount(i *int32) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetRunCount(*i)
+func (_c *TestSummaryCreate) SetNillableRunCount(v *int32) *TestSummaryCreate {
+	if v != nil {
+		_c.SetRunCount(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetAttemptCount sets the "attempt_count" field.
-func (tsc *TestSummaryCreate) SetAttemptCount(i int32) *TestSummaryCreate {
-	tsc.mutation.SetAttemptCount(i)
-	return tsc
+func (_c *TestSummaryCreate) SetAttemptCount(v int32) *TestSummaryCreate {
+	_c.mutation.SetAttemptCount(v)
+	return _c
 }
 
 // SetNillableAttemptCount sets the "attempt_count" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableAttemptCount(i *int32) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetAttemptCount(*i)
+func (_c *TestSummaryCreate) SetNillableAttemptCount(v *int32) *TestSummaryCreate {
+	if v != nil {
+		_c.SetAttemptCount(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetShardCount sets the "shard_count" field.
-func (tsc *TestSummaryCreate) SetShardCount(i int32) *TestSummaryCreate {
-	tsc.mutation.SetShardCount(i)
-	return tsc
+func (_c *TestSummaryCreate) SetShardCount(v int32) *TestSummaryCreate {
+	_c.mutation.SetShardCount(v)
+	return _c
 }
 
 // SetNillableShardCount sets the "shard_count" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableShardCount(i *int32) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetShardCount(*i)
+func (_c *TestSummaryCreate) SetNillableShardCount(v *int32) *TestSummaryCreate {
+	if v != nil {
+		_c.SetShardCount(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetTotalNumCached sets the "total_num_cached" field.
-func (tsc *TestSummaryCreate) SetTotalNumCached(i int32) *TestSummaryCreate {
-	tsc.mutation.SetTotalNumCached(i)
-	return tsc
+func (_c *TestSummaryCreate) SetTotalNumCached(v int32) *TestSummaryCreate {
+	_c.mutation.SetTotalNumCached(v)
+	return _c
 }
 
 // SetNillableTotalNumCached sets the "total_num_cached" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableTotalNumCached(i *int32) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetTotalNumCached(*i)
+func (_c *TestSummaryCreate) SetNillableTotalNumCached(v *int32) *TestSummaryCreate {
+	if v != nil {
+		_c.SetTotalNumCached(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (tsc *TestSummaryCreate) SetFirstStartTime(t time.Time) *TestSummaryCreate {
-	tsc.mutation.SetFirstStartTime(t)
-	return tsc
+func (_c *TestSummaryCreate) SetFirstStartTime(v time.Time) *TestSummaryCreate {
+	_c.mutation.SetFirstStartTime(v)
+	return _c
 }
 
 // SetNillableFirstStartTime sets the "first_start_time" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableFirstStartTime(t *time.Time) *TestSummaryCreate {
-	if t != nil {
-		tsc.SetFirstStartTime(*t)
+func (_c *TestSummaryCreate) SetNillableFirstStartTime(v *time.Time) *TestSummaryCreate {
+	if v != nil {
+		_c.SetFirstStartTime(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (tsc *TestSummaryCreate) SetLastStopTime(t time.Time) *TestSummaryCreate {
-	tsc.mutation.SetLastStopTime(t)
-	return tsc
+func (_c *TestSummaryCreate) SetLastStopTime(v time.Time) *TestSummaryCreate {
+	_c.mutation.SetLastStopTime(v)
+	return _c
 }
 
 // SetNillableLastStopTime sets the "last_stop_time" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableLastStopTime(t *time.Time) *TestSummaryCreate {
-	if t != nil {
-		tsc.SetLastStopTime(*t)
+func (_c *TestSummaryCreate) SetNillableLastStopTime(v *time.Time) *TestSummaryCreate {
+	if v != nil {
+		_c.SetLastStopTime(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
-func (tsc *TestSummaryCreate) SetTotalRunDurationInMs(i int64) *TestSummaryCreate {
-	tsc.mutation.SetTotalRunDurationInMs(i)
-	return tsc
+func (_c *TestSummaryCreate) SetTotalRunDurationInMs(v int64) *TestSummaryCreate {
+	_c.mutation.SetTotalRunDurationInMs(v)
+	return _c
 }
 
 // SetNillableTotalRunDurationInMs sets the "total_run_duration_in_ms" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableTotalRunDurationInMs(i *int64) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetTotalRunDurationInMs(*i)
+func (_c *TestSummaryCreate) SetNillableTotalRunDurationInMs(v *int64) *TestSummaryCreate {
+	if v != nil {
+		_c.SetTotalRunDurationInMs(*v)
 	}
-	return tsc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tsc *TestSummaryCreate) SetID(i int64) *TestSummaryCreate {
-	tsc.mutation.SetID(i)
-	return tsc
+func (_c *TestSummaryCreate) SetID(v int64) *TestSummaryCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetInvocationTargetID sets the "invocation_target" edge to the InvocationTarget entity by ID.
-func (tsc *TestSummaryCreate) SetInvocationTargetID(id int64) *TestSummaryCreate {
-	tsc.mutation.SetInvocationTargetID(id)
-	return tsc
+func (_c *TestSummaryCreate) SetInvocationTargetID(id int64) *TestSummaryCreate {
+	_c.mutation.SetInvocationTargetID(id)
+	return _c
 }
 
 // SetInvocationTarget sets the "invocation_target" edge to the InvocationTarget entity.
-func (tsc *TestSummaryCreate) SetInvocationTarget(i *InvocationTarget) *TestSummaryCreate {
-	return tsc.SetInvocationTargetID(i.ID)
+func (_c *TestSummaryCreate) SetInvocationTarget(v *InvocationTarget) *TestSummaryCreate {
+	return _c.SetInvocationTargetID(v.ID)
 }
 
 // AddTestResultIDs adds the "test_results" edge to the TestResult entity by IDs.
-func (tsc *TestSummaryCreate) AddTestResultIDs(ids ...int64) *TestSummaryCreate {
-	tsc.mutation.AddTestResultIDs(ids...)
-	return tsc
+func (_c *TestSummaryCreate) AddTestResultIDs(ids ...int64) *TestSummaryCreate {
+	_c.mutation.AddTestResultIDs(ids...)
+	return _c
 }
 
 // AddTestResults adds the "test_results" edges to the TestResult entity.
-func (tsc *TestSummaryCreate) AddTestResults(t ...*TestResult) *TestSummaryCreate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_c *TestSummaryCreate) AddTestResults(v ...*TestResult) *TestSummaryCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tsc.AddTestResultIDs(ids...)
+	return _c.AddTestResultIDs(ids...)
 }
 
 // Mutation returns the TestSummaryMutation object of the builder.
-func (tsc *TestSummaryCreate) Mutation() *TestSummaryMutation {
-	return tsc.mutation
+func (_c *TestSummaryCreate) Mutation() *TestSummaryMutation {
+	return _c.mutation
 }
 
 // Save creates the TestSummary in the database.
-func (tsc *TestSummaryCreate) Save(ctx context.Context) (*TestSummary, error) {
-	return withHooks(ctx, tsc.sqlSave, tsc.mutation, tsc.hooks)
+func (_c *TestSummaryCreate) Save(ctx context.Context) (*TestSummary, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tsc *TestSummaryCreate) SaveX(ctx context.Context) *TestSummary {
-	v, err := tsc.Save(ctx)
+func (_c *TestSummaryCreate) SaveX(ctx context.Context) *TestSummary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -202,32 +202,32 @@ func (tsc *TestSummaryCreate) SaveX(ctx context.Context) *TestSummary {
 }
 
 // Exec executes the query.
-func (tsc *TestSummaryCreate) Exec(ctx context.Context) error {
-	_, err := tsc.Save(ctx)
+func (_c *TestSummaryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsc *TestSummaryCreate) ExecX(ctx context.Context) {
-	if err := tsc.Exec(ctx); err != nil {
+func (_c *TestSummaryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tsc *TestSummaryCreate) check() error {
-	if len(tsc.mutation.InvocationTargetIDs()) == 0 {
+func (_c *TestSummaryCreate) check() error {
+	if len(_c.mutation.InvocationTargetIDs()) == 0 {
 		return &ValidationError{Name: "invocation_target", err: errors.New(`ent: missing required edge "TestSummary.invocation_target"`)}
 	}
 	return nil
 }
 
-func (tsc *TestSummaryCreate) sqlSave(ctx context.Context) (*TestSummary, error) {
-	if err := tsc.check(); err != nil {
+func (_c *TestSummaryCreate) sqlSave(ctx context.Context) (*TestSummary, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tsc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tsc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -237,58 +237,58 @@ func (tsc *TestSummaryCreate) sqlSave(ctx context.Context) (*TestSummary, error)
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	tsc.mutation.id = &_node.ID
-	tsc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) {
+func (_c *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TestSummary{config: tsc.config}
+		_node = &TestSummary{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(testsummary.Table, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = tsc.conflict
-	if id, ok := tsc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := tsc.mutation.OverallStatus(); ok {
+	if value, ok := _c.mutation.OverallStatus(); ok {
 		_spec.SetField(testsummary.FieldOverallStatus, field.TypeString, value)
 		_node.OverallStatus = value
 	}
-	if value, ok := tsc.mutation.TotalRunCount(); ok {
+	if value, ok := _c.mutation.TotalRunCount(); ok {
 		_spec.SetField(testsummary.FieldTotalRunCount, field.TypeInt32, value)
 		_node.TotalRunCount = value
 	}
-	if value, ok := tsc.mutation.RunCount(); ok {
+	if value, ok := _c.mutation.RunCount(); ok {
 		_spec.SetField(testsummary.FieldRunCount, field.TypeInt32, value)
 		_node.RunCount = value
 	}
-	if value, ok := tsc.mutation.AttemptCount(); ok {
+	if value, ok := _c.mutation.AttemptCount(); ok {
 		_spec.SetField(testsummary.FieldAttemptCount, field.TypeInt32, value)
 		_node.AttemptCount = value
 	}
-	if value, ok := tsc.mutation.ShardCount(); ok {
+	if value, ok := _c.mutation.ShardCount(); ok {
 		_spec.SetField(testsummary.FieldShardCount, field.TypeInt32, value)
 		_node.ShardCount = value
 	}
-	if value, ok := tsc.mutation.TotalNumCached(); ok {
+	if value, ok := _c.mutation.TotalNumCached(); ok {
 		_spec.SetField(testsummary.FieldTotalNumCached, field.TypeInt32, value)
 		_node.TotalNumCached = value
 	}
-	if value, ok := tsc.mutation.FirstStartTime(); ok {
+	if value, ok := _c.mutation.FirstStartTime(); ok {
 		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeTime, value)
 		_node.FirstStartTime = value
 	}
-	if value, ok := tsc.mutation.LastStopTime(); ok {
+	if value, ok := _c.mutation.LastStopTime(); ok {
 		_spec.SetField(testsummary.FieldLastStopTime, field.TypeTime, value)
 		_node.LastStopTime = value
 	}
-	if value, ok := tsc.mutation.TotalRunDurationInMs(); ok {
+	if value, ok := _c.mutation.TotalRunDurationInMs(); ok {
 		_spec.SetField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 		_node.TotalRunDurationInMs = &value
 	}
-	if nodes := tsc.mutation.InvocationTargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InvocationTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -305,7 +305,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 		_node.invocation_target_test_summary = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tsc.mutation.TestResultsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TestResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -340,10 +340,10 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 //			SetOverallStatus(v+v).
 //		}).
 //		Exec(ctx)
-func (tsc *TestSummaryCreate) OnConflict(opts ...sql.ConflictOption) *TestSummaryUpsertOne {
-	tsc.conflict = opts
+func (_c *TestSummaryCreate) OnConflict(opts ...sql.ConflictOption) *TestSummaryUpsertOne {
+	_c.conflict = opts
 	return &TestSummaryUpsertOne{
-		create: tsc,
+		create: _c,
 	}
 }
 
@@ -353,10 +353,10 @@ func (tsc *TestSummaryCreate) OnConflict(opts ...sql.ConflictOption) *TestSummar
 //	client.TestSummary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tsc *TestSummaryCreate) OnConflictColumns(columns ...string) *TestSummaryUpsertOne {
-	tsc.conflict = append(tsc.conflict, sql.ConflictColumns(columns...))
+func (_c *TestSummaryCreate) OnConflictColumns(columns ...string) *TestSummaryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TestSummaryUpsertOne{
-		create: tsc,
+		create: _c,
 	}
 }
 
@@ -892,16 +892,16 @@ type TestSummaryCreateBulk struct {
 }
 
 // Save creates the TestSummary entities in the database.
-func (tscb *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, error) {
-	if tscb.err != nil {
-		return nil, tscb.err
+func (_c *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tscb.builders))
-	nodes := make([]*TestSummary, len(tscb.builders))
-	mutators := make([]Mutator, len(tscb.builders))
-	for i := range tscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TestSummary, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tscb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TestSummaryMutation)
 				if !ok {
@@ -914,12 +914,12 @@ func (tscb *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, er
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -943,7 +943,7 @@ func (tscb *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, er
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -951,8 +951,8 @@ func (tscb *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, er
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tscb *TestSummaryCreateBulk) SaveX(ctx context.Context) []*TestSummary {
-	v, err := tscb.Save(ctx)
+func (_c *TestSummaryCreateBulk) SaveX(ctx context.Context) []*TestSummary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -960,14 +960,14 @@ func (tscb *TestSummaryCreateBulk) SaveX(ctx context.Context) []*TestSummary {
 }
 
 // Exec executes the query.
-func (tscb *TestSummaryCreateBulk) Exec(ctx context.Context) error {
-	_, err := tscb.Save(ctx)
+func (_c *TestSummaryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tscb *TestSummaryCreateBulk) ExecX(ctx context.Context) {
-	if err := tscb.Exec(ctx); err != nil {
+func (_c *TestSummaryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -987,10 +987,10 @@ func (tscb *TestSummaryCreateBulk) ExecX(ctx context.Context) {
 //			SetOverallStatus(v+v).
 //		}).
 //		Exec(ctx)
-func (tscb *TestSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestSummaryUpsertBulk {
-	tscb.conflict = opts
+func (_c *TestSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestSummaryUpsertBulk {
+	_c.conflict = opts
 	return &TestSummaryUpsertBulk{
-		create: tscb,
+		create: _c,
 	}
 }
 
@@ -1000,10 +1000,10 @@ func (tscb *TestSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestS
 //	client.TestSummary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tscb *TestSummaryCreateBulk) OnConflictColumns(columns ...string) *TestSummaryUpsertBulk {
-	tscb.conflict = append(tscb.conflict, sql.ConflictColumns(columns...))
+func (_c *TestSummaryCreateBulk) OnConflictColumns(columns ...string) *TestSummaryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TestSummaryUpsertBulk{
-		create: tscb,
+		create: _c,
 	}
 }
 

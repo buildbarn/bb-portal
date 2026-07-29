@@ -1,8 +1,10 @@
 import { blue } from "@ant-design/colors";
 import {
   Button,
+  Checkbox,
   DatePicker,
   Divider,
+  Flex,
   Input,
   Space,
   type TimeRangePickerProps,
@@ -167,6 +169,74 @@ export const SearchWidget: React.FC<InputFilterProps> = ({
         </Tooltip>
       </div>
     </Space>
+  );
+};
+
+export const FilterPickerDropdown: React.FC<FilterDropdownProps> = ({
+  filters,
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+}) => {
+  return (
+    <Space.Compact direction="vertical">
+      <Space direction="vertical" style={{ padding: "4px" }} size={2}>
+        {filters?.map((filter) => (
+          <Checkbox
+            key={filter.value.toString()}
+            checked={selectedKeys.includes(filter.value.toString())}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedKeys([
+                  ...selectedKeys,
+                  filter.value.toString() || "",
+                ]);
+              } else {
+                setSelectedKeys(
+                  selectedKeys.filter((key) => key !== filter.value.toString()),
+                );
+              }
+            }}
+            className={`${styles.searchWidgetCheckBoxItem} ${
+              selectedKeys.includes(filter.value.toString())
+                ? styles.searchWidgetCheckBoxItemActive
+                : ""
+            }`}
+          >
+            {filter.text}
+          </Checkbox>
+        ))}
+      </Space>
+
+      <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+      <Flex justify="space-between" style={{ padding: "8px" }}>
+        <Button
+          size="small"
+          type="link"
+          onClick={() => {
+            if (selectedKeys.length > 0) {
+              clearFilters?.();
+            } else {
+              setSelectedKeys(
+                filters?.map((filter) => filter.value.toString() || "") || [],
+              );
+            }
+          }}
+        >
+          {selectedKeys.length ? "Clear" : "Select"} All
+        </Button>
+        <Button
+          size="small"
+          type="primary"
+          onClick={() => {
+            confirm?.();
+          }}
+        >
+          OK
+        </Button>
+      </Flex>
+    </Space.Compact>
   );
 };
 

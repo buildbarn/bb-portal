@@ -3,11 +3,13 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "dbcleanupservice",
     srcs = [
+        "batcher.go",
         "compact_logs.go",
         "dbcleanupservice.go",
         "delete_incomplete_logs.go",
         "lockinvocations.go",
         "next_slice.go",
+        "remove_files.go",
         "remove_old_invocations.go",
         "remove_orphaned_test_targets.go",
         "remove_target_kind_mappings.go",
@@ -17,7 +19,6 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/internal/database/dbcleanupservice",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//ent/gen/ent",
         "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/build",
@@ -34,6 +35,7 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/clock",
         "@com_github_buildbarn_bb_storage//pkg/program",
         "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_google_uuid//:uuid",
         "@com_github_klauspost_compress//zstd",
         "@io_opentelemetry_go_otel//attribute",
         "@io_opentelemetry_go_otel//codes",
@@ -44,8 +46,11 @@ go_library(
 go_test(
     name = "dbcleanupservice_test",
     srcs = [
+        "batcher_test.go",
         "dbcleanupservice_test.go",
         "lockinvocations_test.go",
+        "next_slice_test.go",
+        "remove_files_test.go",
         "remove_old_invocations_test.go",
         "remove_orphaned_test_targets_test.go",
         "remove_target_kind_mappings_test.go",
@@ -62,9 +67,11 @@ go_test(
         "//ent/gen/ent/runtime",
         "//ent/gen/ent/testtarget",
         "//internal/database",
+        "//internal/database/buildeventrecorder",
         "//internal/database/dbauthservice",
         "//internal/database/embedded",
         "//internal/mock",
+        "//pkg/invocation/files",
         "//pkg/proto/configuration/bb_portal",
         "//test/testutils",
         "@com_github_buildbarn_bb_storage//pkg/clock",

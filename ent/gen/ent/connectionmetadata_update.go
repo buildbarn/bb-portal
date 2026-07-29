@@ -24,55 +24,55 @@ type ConnectionMetadataUpdate struct {
 }
 
 // Where appends a list predicates to the ConnectionMetadataUpdate builder.
-func (cmu *ConnectionMetadataUpdate) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataUpdate {
-	cmu.mutation.Where(ps...)
-	return cmu
+func (_u *ConnectionMetadataUpdate) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetConnectionLastOpenAt sets the "connection_last_open_at" field.
-func (cmu *ConnectionMetadataUpdate) SetConnectionLastOpenAt(t time.Time) *ConnectionMetadataUpdate {
-	cmu.mutation.SetConnectionLastOpenAt(t)
-	return cmu
+func (_u *ConnectionMetadataUpdate) SetConnectionLastOpenAt(v time.Time) *ConnectionMetadataUpdate {
+	_u.mutation.SetConnectionLastOpenAt(v)
+	return _u
 }
 
 // SetNillableConnectionLastOpenAt sets the "connection_last_open_at" field if the given value is not nil.
-func (cmu *ConnectionMetadataUpdate) SetNillableConnectionLastOpenAt(t *time.Time) *ConnectionMetadataUpdate {
-	if t != nil {
-		cmu.SetConnectionLastOpenAt(*t)
+func (_u *ConnectionMetadataUpdate) SetNillableConnectionLastOpenAt(v *time.Time) *ConnectionMetadataUpdate {
+	if v != nil {
+		_u.SetConnectionLastOpenAt(*v)
 	}
-	return cmu
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (cmu *ConnectionMetadataUpdate) SetBazelInvocationID(id int64) *ConnectionMetadataUpdate {
-	cmu.mutation.SetBazelInvocationID(id)
-	return cmu
+func (_u *ConnectionMetadataUpdate) SetBazelInvocationID(id int64) *ConnectionMetadataUpdate {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (cmu *ConnectionMetadataUpdate) SetBazelInvocation(b *BazelInvocation) *ConnectionMetadataUpdate {
-	return cmu.SetBazelInvocationID(b.ID)
+func (_u *ConnectionMetadataUpdate) SetBazelInvocation(v *BazelInvocation) *ConnectionMetadataUpdate {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the ConnectionMetadataMutation object of the builder.
-func (cmu *ConnectionMetadataUpdate) Mutation() *ConnectionMetadataMutation {
-	return cmu.mutation
+func (_u *ConnectionMetadataUpdate) Mutation() *ConnectionMetadataMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (cmu *ConnectionMetadataUpdate) ClearBazelInvocation() *ConnectionMetadataUpdate {
-	cmu.mutation.ClearBazelInvocation()
-	return cmu
+func (_u *ConnectionMetadataUpdate) ClearBazelInvocation() *ConnectionMetadataUpdate {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (cmu *ConnectionMetadataUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, cmu.sqlSave, cmu.mutation, cmu.hooks)
+func (_u *ConnectionMetadataUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cmu *ConnectionMetadataUpdate) SaveX(ctx context.Context) int {
-	affected, err := cmu.Save(ctx)
+func (_u *ConnectionMetadataUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -80,42 +80,42 @@ func (cmu *ConnectionMetadataUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (cmu *ConnectionMetadataUpdate) Exec(ctx context.Context) error {
-	_, err := cmu.Save(ctx)
+func (_u *ConnectionMetadataUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cmu *ConnectionMetadataUpdate) ExecX(ctx context.Context) {
-	if err := cmu.Exec(ctx); err != nil {
+func (_u *ConnectionMetadataUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cmu *ConnectionMetadataUpdate) check() error {
-	if cmu.mutation.BazelInvocationCleared() && len(cmu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *ConnectionMetadataUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "ConnectionMetadata.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := cmu.check(); err != nil {
-		return n, err
+func (_u *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
-	if ps := cmu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cmu.mutation.ConnectionLastOpenAt(); ok {
+	if value, ok := _u.mutation.ConnectionLastOpenAt(); ok {
 		_spec.SetField(connectionmetadata.FieldConnectionLastOpenAt, field.TypeTime, value)
 	}
-	if cmu.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -128,7 +128,7 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cmu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -144,7 +144,7 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, cmu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{connectionmetadata.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -152,8 +152,8 @@ func (cmu *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		return 0, err
 	}
-	cmu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ConnectionMetadataUpdateOne is the builder for updating a single ConnectionMetadata entity.
@@ -165,62 +165,62 @@ type ConnectionMetadataUpdateOne struct {
 }
 
 // SetConnectionLastOpenAt sets the "connection_last_open_at" field.
-func (cmuo *ConnectionMetadataUpdateOne) SetConnectionLastOpenAt(t time.Time) *ConnectionMetadataUpdateOne {
-	cmuo.mutation.SetConnectionLastOpenAt(t)
-	return cmuo
+func (_u *ConnectionMetadataUpdateOne) SetConnectionLastOpenAt(v time.Time) *ConnectionMetadataUpdateOne {
+	_u.mutation.SetConnectionLastOpenAt(v)
+	return _u
 }
 
 // SetNillableConnectionLastOpenAt sets the "connection_last_open_at" field if the given value is not nil.
-func (cmuo *ConnectionMetadataUpdateOne) SetNillableConnectionLastOpenAt(t *time.Time) *ConnectionMetadataUpdateOne {
-	if t != nil {
-		cmuo.SetConnectionLastOpenAt(*t)
+func (_u *ConnectionMetadataUpdateOne) SetNillableConnectionLastOpenAt(v *time.Time) *ConnectionMetadataUpdateOne {
+	if v != nil {
+		_u.SetConnectionLastOpenAt(*v)
 	}
-	return cmuo
+	return _u
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (cmuo *ConnectionMetadataUpdateOne) SetBazelInvocationID(id int64) *ConnectionMetadataUpdateOne {
-	cmuo.mutation.SetBazelInvocationID(id)
-	return cmuo
+func (_u *ConnectionMetadataUpdateOne) SetBazelInvocationID(id int64) *ConnectionMetadataUpdateOne {
+	_u.mutation.SetBazelInvocationID(id)
+	return _u
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (cmuo *ConnectionMetadataUpdateOne) SetBazelInvocation(b *BazelInvocation) *ConnectionMetadataUpdateOne {
-	return cmuo.SetBazelInvocationID(b.ID)
+func (_u *ConnectionMetadataUpdateOne) SetBazelInvocation(v *BazelInvocation) *ConnectionMetadataUpdateOne {
+	return _u.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the ConnectionMetadataMutation object of the builder.
-func (cmuo *ConnectionMetadataUpdateOne) Mutation() *ConnectionMetadataMutation {
-	return cmuo.mutation
+func (_u *ConnectionMetadataUpdateOne) Mutation() *ConnectionMetadataMutation {
+	return _u.mutation
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (cmuo *ConnectionMetadataUpdateOne) ClearBazelInvocation() *ConnectionMetadataUpdateOne {
-	cmuo.mutation.ClearBazelInvocation()
-	return cmuo
+func (_u *ConnectionMetadataUpdateOne) ClearBazelInvocation() *ConnectionMetadataUpdateOne {
+	_u.mutation.ClearBazelInvocation()
+	return _u
 }
 
 // Where appends a list predicates to the ConnectionMetadataUpdate builder.
-func (cmuo *ConnectionMetadataUpdateOne) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataUpdateOne {
-	cmuo.mutation.Where(ps...)
-	return cmuo
+func (_u *ConnectionMetadataUpdateOne) Where(ps ...predicate.ConnectionMetadata) *ConnectionMetadataUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (cmuo *ConnectionMetadataUpdateOne) Select(field string, fields ...string) *ConnectionMetadataUpdateOne {
-	cmuo.fields = append([]string{field}, fields...)
-	return cmuo
+func (_u *ConnectionMetadataUpdateOne) Select(field string, fields ...string) *ConnectionMetadataUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated ConnectionMetadata entity.
-func (cmuo *ConnectionMetadataUpdateOne) Save(ctx context.Context) (*ConnectionMetadata, error) {
-	return withHooks(ctx, cmuo.sqlSave, cmuo.mutation, cmuo.hooks)
+func (_u *ConnectionMetadataUpdateOne) Save(ctx context.Context) (*ConnectionMetadata, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cmuo *ConnectionMetadataUpdateOne) SaveX(ctx context.Context) *ConnectionMetadata {
-	node, err := cmuo.Save(ctx)
+func (_u *ConnectionMetadataUpdateOne) SaveX(ctx context.Context) *ConnectionMetadata {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,37 +228,37 @@ func (cmuo *ConnectionMetadataUpdateOne) SaveX(ctx context.Context) *ConnectionM
 }
 
 // Exec executes the query on the entity.
-func (cmuo *ConnectionMetadataUpdateOne) Exec(ctx context.Context) error {
-	_, err := cmuo.Save(ctx)
+func (_u *ConnectionMetadataUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cmuo *ConnectionMetadataUpdateOne) ExecX(ctx context.Context) {
-	if err := cmuo.Exec(ctx); err != nil {
+func (_u *ConnectionMetadataUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cmuo *ConnectionMetadataUpdateOne) check() error {
-	if cmuo.mutation.BazelInvocationCleared() && len(cmuo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *ConnectionMetadataUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "ConnectionMetadata.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *ConnectionMetadata, err error) {
-	if err := cmuo.check(); err != nil {
+func (_u *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *ConnectionMetadata, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(connectionmetadata.Table, connectionmetadata.Columns, sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64))
-	id, ok := cmuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ConnectionMetadata.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := cmuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, connectionmetadata.FieldID)
 		for _, f := range fields {
@@ -270,17 +270,17 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 			}
 		}
 	}
-	if ps := cmuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cmuo.mutation.ConnectionLastOpenAt(); ok {
+	if value, ok := _u.mutation.ConnectionLastOpenAt(); ok {
 		_spec.SetField(connectionmetadata.FieldConnectionLastOpenAt, field.TypeTime, value)
 	}
-	if cmuo.mutation.BazelInvocationCleared() {
+	if _u.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -293,7 +293,7 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cmuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -309,10 +309,10 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &ConnectionMetadata{config: cmuo.config}
+	_node = &ConnectionMetadata{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, cmuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{connectionmetadata.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -320,6 +320,6 @@ func (cmuo *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Co
 		}
 		return nil, err
 	}
-	cmuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

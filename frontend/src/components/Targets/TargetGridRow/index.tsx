@@ -1,42 +1,25 @@
 import { useQuery } from "@apollo/client/react";
 import { Space } from "antd";
 import type React from "react";
-import {
-  InvocationTargetOrderField,
-  OrderDirection,
-} from "@/graphql/__generated__/graphql";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 import TargetGridBtn from "../TargetGridBtn";
 import { GET_INVOCATION_TARGETS_FOR_TARGET } from "./graphql";
 
 interface Props {
-  instanceName: string;
-  label: string;
-  aspect: string;
-  targetKind: string;
+  targetId: string;
   numberOfElements: number;
   direction: "oldToNew" | "newToOld";
 }
 
 const TargetGridRow: React.FC<Props> = ({
-  instanceName,
-  label,
-  aspect,
-  targetKind,
+  targetId,
   numberOfElements,
   direction: reverseOrder,
 }) => {
   var { data } = useQuery(GET_INVOCATION_TARGETS_FOR_TARGET, {
     variables: {
-      instanceName,
-      label,
-      aspect,
-      targetKind,
+      targetId,
       first: numberOfElements,
-      orderBy: {
-        field: InvocationTargetOrderField.StartedAt,
-        direction: OrderDirection.Desc,
-      },
     },
     fetchPolicy: "cache-and-network",
   });

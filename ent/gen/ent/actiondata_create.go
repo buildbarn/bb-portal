@@ -23,141 +23,141 @@ type ActionDataCreate struct {
 }
 
 // SetMnemonic sets the "mnemonic" field.
-func (adc *ActionDataCreate) SetMnemonic(s string) *ActionDataCreate {
-	adc.mutation.SetMnemonic(s)
-	return adc
+func (_c *ActionDataCreate) SetMnemonic(v string) *ActionDataCreate {
+	_c.mutation.SetMnemonic(v)
+	return _c
 }
 
 // SetNillableMnemonic sets the "mnemonic" field if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableMnemonic(s *string) *ActionDataCreate {
-	if s != nil {
-		adc.SetMnemonic(*s)
+func (_c *ActionDataCreate) SetNillableMnemonic(v *string) *ActionDataCreate {
+	if v != nil {
+		_c.SetMnemonic(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (adc *ActionDataCreate) SetActionsExecuted(i int64) *ActionDataCreate {
-	adc.mutation.SetActionsExecuted(i)
-	return adc
+func (_c *ActionDataCreate) SetActionsExecuted(v int64) *ActionDataCreate {
+	_c.mutation.SetActionsExecuted(v)
+	return _c
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableActionsExecuted(i *int64) *ActionDataCreate {
-	if i != nil {
-		adc.SetActionsExecuted(*i)
+func (_c *ActionDataCreate) SetNillableActionsExecuted(v *int64) *ActionDataCreate {
+	if v != nil {
+		_c.SetActionsExecuted(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetActionsCreated sets the "actions_created" field.
-func (adc *ActionDataCreate) SetActionsCreated(i int64) *ActionDataCreate {
-	adc.mutation.SetActionsCreated(i)
-	return adc
+func (_c *ActionDataCreate) SetActionsCreated(v int64) *ActionDataCreate {
+	_c.mutation.SetActionsCreated(v)
+	return _c
 }
 
 // SetNillableActionsCreated sets the "actions_created" field if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableActionsCreated(i *int64) *ActionDataCreate {
-	if i != nil {
-		adc.SetActionsCreated(*i)
+func (_c *ActionDataCreate) SetNillableActionsCreated(v *int64) *ActionDataCreate {
+	if v != nil {
+		_c.SetActionsCreated(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetFirstStartedMs sets the "first_started_ms" field.
-func (adc *ActionDataCreate) SetFirstStartedMs(i int64) *ActionDataCreate {
-	adc.mutation.SetFirstStartedMs(i)
-	return adc
+func (_c *ActionDataCreate) SetFirstStartedMs(v int64) *ActionDataCreate {
+	_c.mutation.SetFirstStartedMs(v)
+	return _c
 }
 
 // SetNillableFirstStartedMs sets the "first_started_ms" field if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableFirstStartedMs(i *int64) *ActionDataCreate {
-	if i != nil {
-		adc.SetFirstStartedMs(*i)
+func (_c *ActionDataCreate) SetNillableFirstStartedMs(v *int64) *ActionDataCreate {
+	if v != nil {
+		_c.SetFirstStartedMs(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetLastEndedMs sets the "last_ended_ms" field.
-func (adc *ActionDataCreate) SetLastEndedMs(i int64) *ActionDataCreate {
-	adc.mutation.SetLastEndedMs(i)
-	return adc
+func (_c *ActionDataCreate) SetLastEndedMs(v int64) *ActionDataCreate {
+	_c.mutation.SetLastEndedMs(v)
+	return _c
 }
 
 // SetNillableLastEndedMs sets the "last_ended_ms" field if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableLastEndedMs(i *int64) *ActionDataCreate {
-	if i != nil {
-		adc.SetLastEndedMs(*i)
+func (_c *ActionDataCreate) SetNillableLastEndedMs(v *int64) *ActionDataCreate {
+	if v != nil {
+		_c.SetLastEndedMs(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetSystemTime sets the "system_time" field.
-func (adc *ActionDataCreate) SetSystemTime(i int64) *ActionDataCreate {
-	adc.mutation.SetSystemTime(i)
-	return adc
+func (_c *ActionDataCreate) SetSystemTime(v int64) *ActionDataCreate {
+	_c.mutation.SetSystemTime(v)
+	return _c
 }
 
 // SetNillableSystemTime sets the "system_time" field if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableSystemTime(i *int64) *ActionDataCreate {
-	if i != nil {
-		adc.SetSystemTime(*i)
+func (_c *ActionDataCreate) SetNillableSystemTime(v *int64) *ActionDataCreate {
+	if v != nil {
+		_c.SetSystemTime(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetUserTime sets the "user_time" field.
-func (adc *ActionDataCreate) SetUserTime(i int64) *ActionDataCreate {
-	adc.mutation.SetUserTime(i)
-	return adc
+func (_c *ActionDataCreate) SetUserTime(v int64) *ActionDataCreate {
+	_c.mutation.SetUserTime(v)
+	return _c
 }
 
 // SetNillableUserTime sets the "user_time" field if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableUserTime(i *int64) *ActionDataCreate {
-	if i != nil {
-		adc.SetUserTime(*i)
+func (_c *ActionDataCreate) SetNillableUserTime(v *int64) *ActionDataCreate {
+	if v != nil {
+		_c.SetUserTime(*v)
 	}
-	return adc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (adc *ActionDataCreate) SetID(i int64) *ActionDataCreate {
-	adc.mutation.SetID(i)
-	return adc
+func (_c *ActionDataCreate) SetID(v int64) *ActionDataCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (adc *ActionDataCreate) SetActionSummaryID(id int64) *ActionDataCreate {
-	adc.mutation.SetActionSummaryID(id)
-	return adc
+func (_c *ActionDataCreate) SetActionSummaryID(id int64) *ActionDataCreate {
+	_c.mutation.SetActionSummaryID(id)
+	return _c
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableActionSummaryID(id *int64) *ActionDataCreate {
+func (_c *ActionDataCreate) SetNillableActionSummaryID(id *int64) *ActionDataCreate {
 	if id != nil {
-		adc = adc.SetActionSummaryID(*id)
+		_c = _c.SetActionSummaryID(*id)
 	}
-	return adc
+	return _c
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (adc *ActionDataCreate) SetActionSummary(a *ActionSummary) *ActionDataCreate {
-	return adc.SetActionSummaryID(a.ID)
+func (_c *ActionDataCreate) SetActionSummary(v *ActionSummary) *ActionDataCreate {
+	return _c.SetActionSummaryID(v.ID)
 }
 
 // Mutation returns the ActionDataMutation object of the builder.
-func (adc *ActionDataCreate) Mutation() *ActionDataMutation {
-	return adc.mutation
+func (_c *ActionDataCreate) Mutation() *ActionDataMutation {
+	return _c.mutation
 }
 
 // Save creates the ActionData in the database.
-func (adc *ActionDataCreate) Save(ctx context.Context) (*ActionData, error) {
-	return withHooks(ctx, adc.sqlSave, adc.mutation, adc.hooks)
+func (_c *ActionDataCreate) Save(ctx context.Context) (*ActionData, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (adc *ActionDataCreate) SaveX(ctx context.Context) *ActionData {
-	v, err := adc.Save(ctx)
+func (_c *ActionDataCreate) SaveX(ctx context.Context) *ActionData {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -165,29 +165,29 @@ func (adc *ActionDataCreate) SaveX(ctx context.Context) *ActionData {
 }
 
 // Exec executes the query.
-func (adc *ActionDataCreate) Exec(ctx context.Context) error {
-	_, err := adc.Save(ctx)
+func (_c *ActionDataCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adc *ActionDataCreate) ExecX(ctx context.Context) {
-	if err := adc.Exec(ctx); err != nil {
+func (_c *ActionDataCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (adc *ActionDataCreate) check() error {
+func (_c *ActionDataCreate) check() error {
 	return nil
 }
 
-func (adc *ActionDataCreate) sqlSave(ctx context.Context) (*ActionData, error) {
-	if err := adc.check(); err != nil {
+func (_c *ActionDataCreate) sqlSave(ctx context.Context) (*ActionData, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := adc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, adc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -197,50 +197,50 @@ func (adc *ActionDataCreate) sqlSave(ctx context.Context) (*ActionData, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	adc.mutation.id = &_node.ID
-	adc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
+func (_c *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 	var (
-		_node = &ActionData{config: adc.config}
+		_node = &ActionData{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(actiondata.Table, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = adc.conflict
-	if id, ok := adc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := adc.mutation.Mnemonic(); ok {
+	if value, ok := _c.mutation.Mnemonic(); ok {
 		_spec.SetField(actiondata.FieldMnemonic, field.TypeString, value)
 		_node.Mnemonic = value
 	}
-	if value, ok := adc.mutation.ActionsExecuted(); ok {
+	if value, ok := _c.mutation.ActionsExecuted(); ok {
 		_spec.SetField(actiondata.FieldActionsExecuted, field.TypeInt64, value)
 		_node.ActionsExecuted = value
 	}
-	if value, ok := adc.mutation.ActionsCreated(); ok {
+	if value, ok := _c.mutation.ActionsCreated(); ok {
 		_spec.SetField(actiondata.FieldActionsCreated, field.TypeInt64, value)
 		_node.ActionsCreated = value
 	}
-	if value, ok := adc.mutation.FirstStartedMs(); ok {
+	if value, ok := _c.mutation.FirstStartedMs(); ok {
 		_spec.SetField(actiondata.FieldFirstStartedMs, field.TypeInt64, value)
 		_node.FirstStartedMs = value
 	}
-	if value, ok := adc.mutation.LastEndedMs(); ok {
+	if value, ok := _c.mutation.LastEndedMs(); ok {
 		_spec.SetField(actiondata.FieldLastEndedMs, field.TypeInt64, value)
 		_node.LastEndedMs = value
 	}
-	if value, ok := adc.mutation.SystemTime(); ok {
+	if value, ok := _c.mutation.SystemTime(); ok {
 		_spec.SetField(actiondata.FieldSystemTime, field.TypeInt64, value)
 		_node.SystemTime = value
 	}
-	if value, ok := adc.mutation.UserTime(); ok {
+	if value, ok := _c.mutation.UserTime(); ok {
 		_spec.SetField(actiondata.FieldUserTime, field.TypeInt64, value)
 		_node.UserTime = value
 	}
-	if nodes := adc.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -276,10 +276,10 @@ func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 //			SetMnemonic(v+v).
 //		}).
 //		Exec(ctx)
-func (adc *ActionDataCreate) OnConflict(opts ...sql.ConflictOption) *ActionDataUpsertOne {
-	adc.conflict = opts
+func (_c *ActionDataCreate) OnConflict(opts ...sql.ConflictOption) *ActionDataUpsertOne {
+	_c.conflict = opts
 	return &ActionDataUpsertOne{
-		create: adc,
+		create: _c,
 	}
 }
 
@@ -289,10 +289,10 @@ func (adc *ActionDataCreate) OnConflict(opts ...sql.ConflictOption) *ActionDataU
 //	client.ActionData.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (adc *ActionDataCreate) OnConflictColumns(columns ...string) *ActionDataUpsertOne {
-	adc.conflict = append(adc.conflict, sql.ConflictColumns(columns...))
+func (_c *ActionDataCreate) OnConflictColumns(columns ...string) *ActionDataUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ActionDataUpsertOne{
-		create: adc,
+		create: _c,
 	}
 }
 
@@ -750,16 +750,16 @@ type ActionDataCreateBulk struct {
 }
 
 // Save creates the ActionData entities in the database.
-func (adcb *ActionDataCreateBulk) Save(ctx context.Context) ([]*ActionData, error) {
-	if adcb.err != nil {
-		return nil, adcb.err
+func (_c *ActionDataCreateBulk) Save(ctx context.Context) ([]*ActionData, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(adcb.builders))
-	nodes := make([]*ActionData, len(adcb.builders))
-	mutators := make([]Mutator, len(adcb.builders))
-	for i := range adcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*ActionData, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := adcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ActionDataMutation)
 				if !ok {
@@ -772,12 +772,12 @@ func (adcb *ActionDataCreateBulk) Save(ctx context.Context) ([]*ActionData, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, adcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = adcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, adcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -801,7 +801,7 @@ func (adcb *ActionDataCreateBulk) Save(ctx context.Context) ([]*ActionData, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, adcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -809,8 +809,8 @@ func (adcb *ActionDataCreateBulk) Save(ctx context.Context) ([]*ActionData, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (adcb *ActionDataCreateBulk) SaveX(ctx context.Context) []*ActionData {
-	v, err := adcb.Save(ctx)
+func (_c *ActionDataCreateBulk) SaveX(ctx context.Context) []*ActionData {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -818,14 +818,14 @@ func (adcb *ActionDataCreateBulk) SaveX(ctx context.Context) []*ActionData {
 }
 
 // Exec executes the query.
-func (adcb *ActionDataCreateBulk) Exec(ctx context.Context) error {
-	_, err := adcb.Save(ctx)
+func (_c *ActionDataCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adcb *ActionDataCreateBulk) ExecX(ctx context.Context) {
-	if err := adcb.Exec(ctx); err != nil {
+func (_c *ActionDataCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -845,10 +845,10 @@ func (adcb *ActionDataCreateBulk) ExecX(ctx context.Context) {
 //			SetMnemonic(v+v).
 //		}).
 //		Exec(ctx)
-func (adcb *ActionDataCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionDataUpsertBulk {
-	adcb.conflict = opts
+func (_c *ActionDataCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionDataUpsertBulk {
+	_c.conflict = opts
 	return &ActionDataUpsertBulk{
-		create: adcb,
+		create: _c,
 	}
 }
 
@@ -858,10 +858,10 @@ func (adcb *ActionDataCreateBulk) OnConflict(opts ...sql.ConflictOption) *Action
 //	client.ActionData.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (adcb *ActionDataCreateBulk) OnConflictColumns(columns ...string) *ActionDataUpsertBulk {
-	adcb.conflict = append(adcb.conflict, sql.ConflictColumns(columns...))
+func (_c *ActionDataCreateBulk) OnConflictColumns(columns ...string) *ActionDataUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ActionDataUpsertBulk{
-		create: adcb,
+		create: _c,
 	}
 }
 

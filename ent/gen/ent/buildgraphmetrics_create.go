@@ -23,169 +23,169 @@ type BuildGraphMetricsCreate struct {
 }
 
 // SetActionLookupValueCount sets the "action_lookup_value_count" field.
-func (bgmc *BuildGraphMetricsCreate) SetActionLookupValueCount(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetActionLookupValueCount(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetActionLookupValueCount(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetActionLookupValueCount(v)
+	return _c
 }
 
 // SetNillableActionLookupValueCount sets the "action_lookup_value_count" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableActionLookupValueCount(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetActionLookupValueCount(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableActionLookupValueCount(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetActionLookupValueCount(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field.
-func (bgmc *BuildGraphMetricsCreate) SetActionLookupValueCountNotIncludingAspects(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetActionLookupValueCountNotIncludingAspects(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetActionLookupValueCountNotIncludingAspects(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetActionLookupValueCountNotIncludingAspects(v)
+	return _c
 }
 
 // SetNillableActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableActionLookupValueCountNotIncludingAspects(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetActionLookupValueCountNotIncludingAspects(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableActionLookupValueCountNotIncludingAspects(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetActionLookupValueCountNotIncludingAspects(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetActionCount sets the "action_count" field.
-func (bgmc *BuildGraphMetricsCreate) SetActionCount(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetActionCount(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetActionCount(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetActionCount(v)
+	return _c
 }
 
 // SetNillableActionCount sets the "action_count" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableActionCount(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetActionCount(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableActionCount(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetActionCount(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field.
-func (bgmc *BuildGraphMetricsCreate) SetActionCountNotIncludingAspects(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetActionCountNotIncludingAspects(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetActionCountNotIncludingAspects(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetActionCountNotIncludingAspects(v)
+	return _c
 }
 
 // SetNillableActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableActionCountNotIncludingAspects(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetActionCountNotIncludingAspects(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableActionCountNotIncludingAspects(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetActionCountNotIncludingAspects(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field.
-func (bgmc *BuildGraphMetricsCreate) SetInputFileConfiguredTargetCount(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetInputFileConfiguredTargetCount(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetInputFileConfiguredTargetCount(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetInputFileConfiguredTargetCount(v)
+	return _c
 }
 
 // SetNillableInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableInputFileConfiguredTargetCount(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetInputFileConfiguredTargetCount(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableInputFileConfiguredTargetCount(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetInputFileConfiguredTargetCount(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field.
-func (bgmc *BuildGraphMetricsCreate) SetOutputFileConfiguredTargetCount(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetOutputFileConfiguredTargetCount(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetOutputFileConfiguredTargetCount(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetOutputFileConfiguredTargetCount(v)
+	return _c
 }
 
 // SetNillableOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableOutputFileConfiguredTargetCount(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetOutputFileConfiguredTargetCount(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableOutputFileConfiguredTargetCount(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetOutputFileConfiguredTargetCount(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetOtherConfiguredTargetCount sets the "other_configured_target_count" field.
-func (bgmc *BuildGraphMetricsCreate) SetOtherConfiguredTargetCount(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetOtherConfiguredTargetCount(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetOtherConfiguredTargetCount(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetOtherConfiguredTargetCount(v)
+	return _c
 }
 
 // SetNillableOtherConfiguredTargetCount sets the "other_configured_target_count" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableOtherConfiguredTargetCount(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetOtherConfiguredTargetCount(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableOtherConfiguredTargetCount(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetOtherConfiguredTargetCount(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetOutputArtifactCount sets the "output_artifact_count" field.
-func (bgmc *BuildGraphMetricsCreate) SetOutputArtifactCount(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetOutputArtifactCount(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetOutputArtifactCount(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetOutputArtifactCount(v)
+	return _c
 }
 
 // SetNillableOutputArtifactCount sets the "output_artifact_count" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableOutputArtifactCount(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetOutputArtifactCount(*i)
+func (_c *BuildGraphMetricsCreate) SetNillableOutputArtifactCount(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetOutputArtifactCount(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetPostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field.
-func (bgmc *BuildGraphMetricsCreate) SetPostInvocationSkyframeNodeCount(i int32) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetPostInvocationSkyframeNodeCount(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetPostInvocationSkyframeNodeCount(v int32) *BuildGraphMetricsCreate {
+	_c.mutation.SetPostInvocationSkyframeNodeCount(v)
+	return _c
 }
 
 // SetNillablePostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillablePostInvocationSkyframeNodeCount(i *int32) *BuildGraphMetricsCreate {
-	if i != nil {
-		bgmc.SetPostInvocationSkyframeNodeCount(*i)
+func (_c *BuildGraphMetricsCreate) SetNillablePostInvocationSkyframeNodeCount(v *int32) *BuildGraphMetricsCreate {
+	if v != nil {
+		_c.SetPostInvocationSkyframeNodeCount(*v)
 	}
-	return bgmc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (bgmc *BuildGraphMetricsCreate) SetID(i int64) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetID(i)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetID(v int64) *BuildGraphMetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetMetricsID(id int64) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetMetricsID(id)
-	return bgmc
+func (_c *BuildGraphMetricsCreate) SetMetricsID(id int64) *BuildGraphMetricsCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableMetricsID(id *int64) *BuildGraphMetricsCreate {
+func (_c *BuildGraphMetricsCreate) SetNillableMetricsID(id *int64) *BuildGraphMetricsCreate {
 	if id != nil {
-		bgmc = bgmc.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return bgmc
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (bgmc *BuildGraphMetricsCreate) SetMetrics(m *Metrics) *BuildGraphMetricsCreate {
-	return bgmc.SetMetricsID(m.ID)
+func (_c *BuildGraphMetricsCreate) SetMetrics(v *Metrics) *BuildGraphMetricsCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
-func (bgmc *BuildGraphMetricsCreate) Mutation() *BuildGraphMetricsMutation {
-	return bgmc.mutation
+func (_c *BuildGraphMetricsCreate) Mutation() *BuildGraphMetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the BuildGraphMetrics in the database.
-func (bgmc *BuildGraphMetricsCreate) Save(ctx context.Context) (*BuildGraphMetrics, error) {
-	return withHooks(ctx, bgmc.sqlSave, bgmc.mutation, bgmc.hooks)
+func (_c *BuildGraphMetricsCreate) Save(ctx context.Context) (*BuildGraphMetrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (bgmc *BuildGraphMetricsCreate) SaveX(ctx context.Context) *BuildGraphMetrics {
-	v, err := bgmc.Save(ctx)
+func (_c *BuildGraphMetricsCreate) SaveX(ctx context.Context) *BuildGraphMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -193,29 +193,29 @@ func (bgmc *BuildGraphMetricsCreate) SaveX(ctx context.Context) *BuildGraphMetri
 }
 
 // Exec executes the query.
-func (bgmc *BuildGraphMetricsCreate) Exec(ctx context.Context) error {
-	_, err := bgmc.Save(ctx)
+func (_c *BuildGraphMetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bgmc *BuildGraphMetricsCreate) ExecX(ctx context.Context) {
-	if err := bgmc.Exec(ctx); err != nil {
+func (_c *BuildGraphMetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (bgmc *BuildGraphMetricsCreate) check() error {
+func (_c *BuildGraphMetricsCreate) check() error {
 	return nil
 }
 
-func (bgmc *BuildGraphMetricsCreate) sqlSave(ctx context.Context) (*BuildGraphMetrics, error) {
-	if err := bgmc.check(); err != nil {
+func (_c *BuildGraphMetricsCreate) sqlSave(ctx context.Context) (*BuildGraphMetrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := bgmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, bgmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -225,58 +225,58 @@ func (bgmc *BuildGraphMetricsCreate) sqlSave(ctx context.Context) (*BuildGraphMe
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	bgmc.mutation.id = &_node.ID
-	bgmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph.CreateSpec) {
+func (_c *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &BuildGraphMetrics{config: bgmc.config}
+		_node = &BuildGraphMetrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(buildgraphmetrics.Table, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = bgmc.conflict
-	if id, ok := bgmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := bgmc.mutation.ActionLookupValueCount(); ok {
+	if value, ok := _c.mutation.ActionLookupValueCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldActionLookupValueCount, field.TypeInt32, value)
 		_node.ActionLookupValueCount = value
 	}
-	if value, ok := bgmc.mutation.ActionLookupValueCountNotIncludingAspects(); ok {
+	if value, ok := _c.mutation.ActionLookupValueCountNotIncludingAspects(); ok {
 		_spec.SetField(buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects, field.TypeInt32, value)
 		_node.ActionLookupValueCountNotIncludingAspects = value
 	}
-	if value, ok := bgmc.mutation.ActionCount(); ok {
+	if value, ok := _c.mutation.ActionCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldActionCount, field.TypeInt32, value)
 		_node.ActionCount = value
 	}
-	if value, ok := bgmc.mutation.ActionCountNotIncludingAspects(); ok {
+	if value, ok := _c.mutation.ActionCountNotIncludingAspects(); ok {
 		_spec.SetField(buildgraphmetrics.FieldActionCountNotIncludingAspects, field.TypeInt32, value)
 		_node.ActionCountNotIncludingAspects = value
 	}
-	if value, ok := bgmc.mutation.InputFileConfiguredTargetCount(); ok {
+	if value, ok := _c.mutation.InputFileConfiguredTargetCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldInputFileConfiguredTargetCount, field.TypeInt32, value)
 		_node.InputFileConfiguredTargetCount = value
 	}
-	if value, ok := bgmc.mutation.OutputFileConfiguredTargetCount(); ok {
+	if value, ok := _c.mutation.OutputFileConfiguredTargetCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldOutputFileConfiguredTargetCount, field.TypeInt32, value)
 		_node.OutputFileConfiguredTargetCount = value
 	}
-	if value, ok := bgmc.mutation.OtherConfiguredTargetCount(); ok {
+	if value, ok := _c.mutation.OtherConfiguredTargetCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldOtherConfiguredTargetCount, field.TypeInt32, value)
 		_node.OtherConfiguredTargetCount = value
 	}
-	if value, ok := bgmc.mutation.OutputArtifactCount(); ok {
+	if value, ok := _c.mutation.OutputArtifactCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldOutputArtifactCount, field.TypeInt32, value)
 		_node.OutputArtifactCount = value
 	}
-	if value, ok := bgmc.mutation.PostInvocationSkyframeNodeCount(); ok {
+	if value, ok := _c.mutation.PostInvocationSkyframeNodeCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldPostInvocationSkyframeNodeCount, field.TypeInt32, value)
 		_node.PostInvocationSkyframeNodeCount = value
 	}
-	if nodes := bgmc.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -312,10 +312,10 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 //			SetActionLookupValueCount(v+v).
 //		}).
 //		Exec(ctx)
-func (bgmc *BuildGraphMetricsCreate) OnConflict(opts ...sql.ConflictOption) *BuildGraphMetricsUpsertOne {
-	bgmc.conflict = opts
+func (_c *BuildGraphMetricsCreate) OnConflict(opts ...sql.ConflictOption) *BuildGraphMetricsUpsertOne {
+	_c.conflict = opts
 	return &BuildGraphMetricsUpsertOne{
-		create: bgmc,
+		create: _c,
 	}
 }
 
@@ -325,10 +325,10 @@ func (bgmc *BuildGraphMetricsCreate) OnConflict(opts ...sql.ConflictOption) *Bui
 //	client.BuildGraphMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (bgmc *BuildGraphMetricsCreate) OnConflictColumns(columns ...string) *BuildGraphMetricsUpsertOne {
-	bgmc.conflict = append(bgmc.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildGraphMetricsCreate) OnConflictColumns(columns ...string) *BuildGraphMetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildGraphMetricsUpsertOne{
-		create: bgmc,
+		create: _c,
 	}
 }
 
@@ -903,16 +903,16 @@ type BuildGraphMetricsCreateBulk struct {
 }
 
 // Save creates the BuildGraphMetrics entities in the database.
-func (bgmcb *BuildGraphMetricsCreateBulk) Save(ctx context.Context) ([]*BuildGraphMetrics, error) {
-	if bgmcb.err != nil {
-		return nil, bgmcb.err
+func (_c *BuildGraphMetricsCreateBulk) Save(ctx context.Context) ([]*BuildGraphMetrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(bgmcb.builders))
-	nodes := make([]*BuildGraphMetrics, len(bgmcb.builders))
-	mutators := make([]Mutator, len(bgmcb.builders))
-	for i := range bgmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*BuildGraphMetrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := bgmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*BuildGraphMetricsMutation)
 				if !ok {
@@ -925,12 +925,12 @@ func (bgmcb *BuildGraphMetricsCreateBulk) Save(ctx context.Context) ([]*BuildGra
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, bgmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = bgmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, bgmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -954,7 +954,7 @@ func (bgmcb *BuildGraphMetricsCreateBulk) Save(ctx context.Context) ([]*BuildGra
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, bgmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -962,8 +962,8 @@ func (bgmcb *BuildGraphMetricsCreateBulk) Save(ctx context.Context) ([]*BuildGra
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (bgmcb *BuildGraphMetricsCreateBulk) SaveX(ctx context.Context) []*BuildGraphMetrics {
-	v, err := bgmcb.Save(ctx)
+func (_c *BuildGraphMetricsCreateBulk) SaveX(ctx context.Context) []*BuildGraphMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -971,14 +971,14 @@ func (bgmcb *BuildGraphMetricsCreateBulk) SaveX(ctx context.Context) []*BuildGra
 }
 
 // Exec executes the query.
-func (bgmcb *BuildGraphMetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := bgmcb.Save(ctx)
+func (_c *BuildGraphMetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bgmcb *BuildGraphMetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := bgmcb.Exec(ctx); err != nil {
+func (_c *BuildGraphMetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -998,10 +998,10 @@ func (bgmcb *BuildGraphMetricsCreateBulk) ExecX(ctx context.Context) {
 //			SetActionLookupValueCount(v+v).
 //		}).
 //		Exec(ctx)
-func (bgmcb *BuildGraphMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildGraphMetricsUpsertBulk {
-	bgmcb.conflict = opts
+func (_c *BuildGraphMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildGraphMetricsUpsertBulk {
+	_c.conflict = opts
 	return &BuildGraphMetricsUpsertBulk{
-		create: bgmcb,
+		create: _c,
 	}
 }
 
@@ -1011,10 +1011,10 @@ func (bgmcb *BuildGraphMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption)
 //	client.BuildGraphMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (bgmcb *BuildGraphMetricsCreateBulk) OnConflictColumns(columns ...string) *BuildGraphMetricsUpsertBulk {
-	bgmcb.conflict = append(bgmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildGraphMetricsCreateBulk) OnConflictColumns(columns ...string) *BuildGraphMetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildGraphMetricsUpsertBulk{
-		create: bgmcb,
+		create: _c,
 	}
 }
 

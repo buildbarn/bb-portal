@@ -1,30 +1,25 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
-import type { TableColumnsType } from "antd";
+import type { FilterValue } from "antd/es/table/interface";
 import { getInvocationTargetAbortReasonFilterOptions } from "@/components/InvocationTargetAbortReasonTag/filter";
 import NullBooleanTag from "@/components/NullableBooleanTag";
 import SearchWidget, { SearchFilterIcon } from "@/components/SearchWidgets";
-import { TargetDurationWarning } from "@/components/TargetDurationWarning";
-import type { GetInvocationTargetsForInvocationQuery } from "@/graphql/__generated__/graphql";
-import styles from "@/theme/theme.module.css";
-import { readableDurationFromMilliseconds } from "@/utils/time";
+import type {
+  BazelInvocationTargetsFragment,
+  InvocationTargetAbortReason,
+  InvocationTargetWhereInput,
+} from "@/graphql/__generated__/graphql";
+import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
 import { InvocationTargetAbortReasonTag } from "../../InvocationTargetAbortReasonTag";
 import { InvocationTargetTagList } from "../InvocationTargetTagList";
 
-export type InvocationTargetsTableRowType = NonNullable<
-  NonNullable<
-    NonNullable<
-      NonNullable<
-        GetInvocationTargetsForInvocationQuery["getBazelInvocation"]
-      >["invocationTargets"]["edges"]
-    >[number]
-  >["node"]
->;
-
-export const columns: TableColumnsType<InvocationTargetsTableRowType> = [
+export const columns: TableColumnTypeWithFilter<
+  BazelInvocationTargetsFragment,
+  InvocationTargetWhereInput
+>[] = [
   {
     title: "Target kind",
-    dataIndex: "target-kind",
+    key: "target-kind",
     filterSearch: true,
     render: (_, record) => (
       <span>
@@ -39,10 +34,20 @@ export const columns: TableColumnsType<InvocationTargetsTableRowType> = [
     filterIcon: (filtered) => (
       <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length === 0) {
+        return undefined;
+      }
+      return [
+        {
+          hasTargetWith: [{ targetKindContainsFold: value[0] as string }],
+        },
+      ];
+    },
   },
   {
     title: "Label",
-    dataIndex: "label",
+    key: "label",
     filterSearch: true,
     render: (_, record) => (
       <Link to="/targets/$targetID" params={{ targetID: record.target.id }}>
@@ -55,23 +60,20 @@ export const columns: TableColumnsType<InvocationTargetsTableRowType> = [
     filterIcon: (filtered) => (
       <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
-  },
-  {
-    title: <TargetDurationWarning text="Duration" />,
-    dataIndex: "duration",
-    align: "right",
-    render: (_, record) =>
-      record.durationInMs && (
-        <span className={styles.numberFormat}>
-          {readableDurationFromMilliseconds(record.durationInMs, {
-            smallestUnit: "ms",
-          })}
-        </span>
-      ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length === 0) {
+        return undefined;
+      }
+      return [
+        {
+          hasTargetWith: [{ labelContainsFold: value[0] as string }],
+        },
+      ];
+    },
   },
   {
     title: "Overall Success",
-    dataIndex: "success",
+    key: "success",
     render: (_, record) => (
       <NullBooleanTag key="success" status={record.success} />
     ),
@@ -88,10 +90,16 @@ export const columns: TableColumnsType<InvocationTargetsTableRowType> = [
     filterIcon: (filtered) => (
       <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length === 0) {
+        return undefined;
+      }
+      return [{ success: value[0] as boolean }];
+    },
   },
   {
     title: "Abort Reason",
-    dataIndex: "abort-reason",
+    key: "abort-reason",
     filters: getInvocationTargetAbortReasonFilterOptions(),
     render: (_, record) => (
       <InvocationTargetAbortReasonTag reason={record.abortReason} />
@@ -99,10 +107,20 @@ export const columns: TableColumnsType<InvocationTargetsTableRowType> = [
     filterIcon: (filtered) => (
       <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length === 0) {
+        return undefined;
+      }
+      return [
+        {
+          abortReasonIn: value as InvocationTargetAbortReason[],
+        },
+      ];
+    },
   },
   {
     title: "Tags",
-    dataIndex: "tags",
+    key: "tags",
     render: (_, record) => <InvocationTargetTagList tags={record.tags} />,
   },
 ];

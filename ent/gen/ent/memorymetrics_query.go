@@ -37,44 +37,44 @@ type MemoryMetricsQuery struct {
 }
 
 // Where adds a new predicate for the MemoryMetricsQuery builder.
-func (mmq *MemoryMetricsQuery) Where(ps ...predicate.MemoryMetrics) *MemoryMetricsQuery {
-	mmq.predicates = append(mmq.predicates, ps...)
-	return mmq
+func (_q *MemoryMetricsQuery) Where(ps ...predicate.MemoryMetrics) *MemoryMetricsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (mmq *MemoryMetricsQuery) Limit(limit int) *MemoryMetricsQuery {
-	mmq.ctx.Limit = &limit
-	return mmq
+func (_q *MemoryMetricsQuery) Limit(limit int) *MemoryMetricsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (mmq *MemoryMetricsQuery) Offset(offset int) *MemoryMetricsQuery {
-	mmq.ctx.Offset = &offset
-	return mmq
+func (_q *MemoryMetricsQuery) Offset(offset int) *MemoryMetricsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (mmq *MemoryMetricsQuery) Unique(unique bool) *MemoryMetricsQuery {
-	mmq.ctx.Unique = &unique
-	return mmq
+func (_q *MemoryMetricsQuery) Unique(unique bool) *MemoryMetricsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (mmq *MemoryMetricsQuery) Order(o ...memorymetrics.OrderOption) *MemoryMetricsQuery {
-	mmq.order = append(mmq.order, o...)
-	return mmq
+func (_q *MemoryMetricsQuery) Order(o ...memorymetrics.OrderOption) *MemoryMetricsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryMetrics chains the current query on the "metrics" edge.
-func (mmq *MemoryMetricsQuery) QueryMetrics() *MetricsQuery {
-	query := (&MetricsClient{config: mmq.config}).Query()
+func (_q *MemoryMetricsQuery) QueryMetrics() *MetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -83,20 +83,20 @@ func (mmq *MemoryMetricsQuery) QueryMetrics() *MetricsQuery {
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, memorymetrics.MetricsTable, memorymetrics.MetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryGarbageMetrics chains the current query on the "garbage_metrics" edge.
-func (mmq *MemoryMetricsQuery) QueryGarbageMetrics() *GarbageMetricsQuery {
-	query := (&GarbageMetricsClient{config: mmq.config}).Query()
+func (_q *MemoryMetricsQuery) QueryGarbageMetrics() *GarbageMetricsQuery {
+	query := (&GarbageMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -105,7 +105,7 @@ func (mmq *MemoryMetricsQuery) QueryGarbageMetrics() *GarbageMetricsQuery {
 			sqlgraph.To(garbagemetrics.Table, garbagemetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, memorymetrics.GarbageMetricsTable, memorymetrics.GarbageMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -113,8 +113,8 @@ func (mmq *MemoryMetricsQuery) QueryGarbageMetrics() *GarbageMetricsQuery {
 
 // First returns the first MemoryMetrics entity from the query.
 // Returns a *NotFoundError when no MemoryMetrics was found.
-func (mmq *MemoryMetricsQuery) First(ctx context.Context) (*MemoryMetrics, error) {
-	nodes, err := mmq.Limit(1).All(setContextOp(ctx, mmq.ctx, ent.OpQueryFirst))
+func (_q *MemoryMetricsQuery) First(ctx context.Context) (*MemoryMetrics, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +125,8 @@ func (mmq *MemoryMetricsQuery) First(ctx context.Context) (*MemoryMetrics, error
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) FirstX(ctx context.Context) *MemoryMetrics {
-	node, err := mmq.First(ctx)
+func (_q *MemoryMetricsQuery) FirstX(ctx context.Context) *MemoryMetrics {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -135,9 +135,9 @@ func (mmq *MemoryMetricsQuery) FirstX(ctx context.Context) *MemoryMetrics {
 
 // FirstID returns the first MemoryMetrics ID from the query.
 // Returns a *NotFoundError when no MemoryMetrics ID was found.
-func (mmq *MemoryMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *MemoryMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = mmq.Limit(1).IDs(setContextOp(ctx, mmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -148,8 +148,8 @@ func (mmq *MemoryMetricsQuery) FirstID(ctx context.Context) (id int64, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := mmq.FirstID(ctx)
+func (_q *MemoryMetricsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -159,8 +159,8 @@ func (mmq *MemoryMetricsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single MemoryMetrics entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one MemoryMetrics entity is found.
 // Returns a *NotFoundError when no MemoryMetrics entities are found.
-func (mmq *MemoryMetricsQuery) Only(ctx context.Context) (*MemoryMetrics, error) {
-	nodes, err := mmq.Limit(2).All(setContextOp(ctx, mmq.ctx, ent.OpQueryOnly))
+func (_q *MemoryMetricsQuery) Only(ctx context.Context) (*MemoryMetrics, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -175,8 +175,8 @@ func (mmq *MemoryMetricsQuery) Only(ctx context.Context) (*MemoryMetrics, error)
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) OnlyX(ctx context.Context) *MemoryMetrics {
-	node, err := mmq.Only(ctx)
+func (_q *MemoryMetricsQuery) OnlyX(ctx context.Context) *MemoryMetrics {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,9 +186,9 @@ func (mmq *MemoryMetricsQuery) OnlyX(ctx context.Context) *MemoryMetrics {
 // OnlyID is like Only, but returns the only MemoryMetrics ID in the query.
 // Returns a *NotSingularError when more than one MemoryMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (mmq *MemoryMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *MemoryMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = mmq.Limit(2).IDs(setContextOp(ctx, mmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -203,8 +203,8 @@ func (mmq *MemoryMetricsQuery) OnlyID(ctx context.Context) (id int64, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := mmq.OnlyID(ctx)
+func (_q *MemoryMetricsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -212,18 +212,18 @@ func (mmq *MemoryMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of MemoryMetricsSlice.
-func (mmq *MemoryMetricsQuery) All(ctx context.Context) ([]*MemoryMetrics, error) {
-	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryAll)
-	if err := mmq.prepareQuery(ctx); err != nil {
+func (_q *MemoryMetricsQuery) All(ctx context.Context) ([]*MemoryMetrics, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*MemoryMetrics, *MemoryMetricsQuery]()
-	return withInterceptors[[]*MemoryMetrics](ctx, mmq, qr, mmq.inters)
+	return withInterceptors[[]*MemoryMetrics](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) AllX(ctx context.Context) []*MemoryMetrics {
-	nodes, err := mmq.All(ctx)
+func (_q *MemoryMetricsQuery) AllX(ctx context.Context) []*MemoryMetrics {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -231,20 +231,20 @@ func (mmq *MemoryMetricsQuery) AllX(ctx context.Context) []*MemoryMetrics {
 }
 
 // IDs executes the query and returns a list of MemoryMetrics IDs.
-func (mmq *MemoryMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if mmq.ctx.Unique == nil && mmq.path != nil {
-		mmq.Unique(true)
+func (_q *MemoryMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryIDs)
-	if err = mmq.Select(memorymetrics.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(memorymetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := mmq.IDs(ctx)
+func (_q *MemoryMetricsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -252,17 +252,17 @@ func (mmq *MemoryMetricsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (mmq *MemoryMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryCount)
-	if err := mmq.prepareQuery(ctx); err != nil {
+func (_q *MemoryMetricsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, mmq, querierCount[*MemoryMetricsQuery](), mmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*MemoryMetricsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) CountX(ctx context.Context) int {
-	count, err := mmq.Count(ctx)
+func (_q *MemoryMetricsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -270,9 +270,9 @@ func (mmq *MemoryMetricsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (mmq *MemoryMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryExist)
-	switch _, err := mmq.FirstID(ctx); {
+func (_q *MemoryMetricsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -283,8 +283,8 @@ func (mmq *MemoryMetricsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (mmq *MemoryMetricsQuery) ExistX(ctx context.Context) bool {
-	exist, err := mmq.Exist(ctx)
+func (_q *MemoryMetricsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -293,44 +293,44 @@ func (mmq *MemoryMetricsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the MemoryMetricsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (mmq *MemoryMetricsQuery) Clone() *MemoryMetricsQuery {
-	if mmq == nil {
+func (_q *MemoryMetricsQuery) Clone() *MemoryMetricsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &MemoryMetricsQuery{
-		config:             mmq.config,
-		ctx:                mmq.ctx.Clone(),
-		order:              append([]memorymetrics.OrderOption{}, mmq.order...),
-		inters:             append([]Interceptor{}, mmq.inters...),
-		predicates:         append([]predicate.MemoryMetrics{}, mmq.predicates...),
-		withMetrics:        mmq.withMetrics.Clone(),
-		withGarbageMetrics: mmq.withGarbageMetrics.Clone(),
+		config:             _q.config,
+		ctx:                _q.ctx.Clone(),
+		order:              append([]memorymetrics.OrderOption{}, _q.order...),
+		inters:             append([]Interceptor{}, _q.inters...),
+		predicates:         append([]predicate.MemoryMetrics{}, _q.predicates...),
+		withMetrics:        _q.withMetrics.Clone(),
+		withGarbageMetrics: _q.withGarbageMetrics.Clone(),
 		// clone intermediate query.
-		sql:  mmq.sql.Clone(),
-		path: mmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mmq *MemoryMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *MemoryMetricsQuery {
-	query := (&MetricsClient{config: mmq.config}).Query()
+func (_q *MemoryMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *MemoryMetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mmq.withMetrics = query
-	return mmq
+	_q.withMetrics = query
+	return _q
 }
 
 // WithGarbageMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "garbage_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mmq *MemoryMetricsQuery) WithGarbageMetrics(opts ...func(*GarbageMetricsQuery)) *MemoryMetricsQuery {
-	query := (&GarbageMetricsClient{config: mmq.config}).Query()
+func (_q *MemoryMetricsQuery) WithGarbageMetrics(opts ...func(*GarbageMetricsQuery)) *MemoryMetricsQuery {
+	query := (&GarbageMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mmq.withGarbageMetrics = query
-	return mmq
+	_q.withGarbageMetrics = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -347,10 +347,10 @@ func (mmq *MemoryMetricsQuery) WithGarbageMetrics(opts ...func(*GarbageMetricsQu
 //		GroupBy(memorymetrics.FieldPeakPostGcHeapSize).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (mmq *MemoryMetricsQuery) GroupBy(field string, fields ...string) *MemoryMetricsGroupBy {
-	mmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &MemoryMetricsGroupBy{build: mmq}
-	grbuild.flds = &mmq.ctx.Fields
+func (_q *MemoryMetricsQuery) GroupBy(field string, fields ...string) *MemoryMetricsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &MemoryMetricsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = memorymetrics.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -368,56 +368,56 @@ func (mmq *MemoryMetricsQuery) GroupBy(field string, fields ...string) *MemoryMe
 //	client.MemoryMetrics.Query().
 //		Select(memorymetrics.FieldPeakPostGcHeapSize).
 //		Scan(ctx, &v)
-func (mmq *MemoryMetricsQuery) Select(fields ...string) *MemoryMetricsSelect {
-	mmq.ctx.Fields = append(mmq.ctx.Fields, fields...)
-	sbuild := &MemoryMetricsSelect{MemoryMetricsQuery: mmq}
+func (_q *MemoryMetricsQuery) Select(fields ...string) *MemoryMetricsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &MemoryMetricsSelect{MemoryMetricsQuery: _q}
 	sbuild.label = memorymetrics.Label
-	sbuild.flds, sbuild.scan = &mmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a MemoryMetricsSelect configured with the given aggregations.
-func (mmq *MemoryMetricsQuery) Aggregate(fns ...AggregateFunc) *MemoryMetricsSelect {
-	return mmq.Select().Aggregate(fns...)
+func (_q *MemoryMetricsQuery) Aggregate(fns ...AggregateFunc) *MemoryMetricsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (mmq *MemoryMetricsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range mmq.inters {
+func (_q *MemoryMetricsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, mmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range mmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !memorymetrics.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if mmq.path != nil {
-		prev, err := mmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		mmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (mmq *MemoryMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MemoryMetrics, error) {
+func (_q *MemoryMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MemoryMetrics, error) {
 	var (
 		nodes       = []*MemoryMetrics{}
-		withFKs     = mmq.withFKs
-		_spec       = mmq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			mmq.withMetrics != nil,
-			mmq.withGarbageMetrics != nil,
+			_q.withMetrics != nil,
+			_q.withGarbageMetrics != nil,
 		}
 	)
-	if mmq.withMetrics != nil {
+	if _q.withMetrics != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -427,52 +427,52 @@ func (mmq *MemoryMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		return (*MemoryMetrics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &MemoryMetrics{config: mmq.config}
+		node := &MemoryMetrics{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(mmq.modifiers) > 0 {
-		_spec.Modifiers = mmq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, mmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := mmq.withMetrics; query != nil {
-		if err := mmq.loadMetrics(ctx, query, nodes, nil,
+	if query := _q.withMetrics; query != nil {
+		if err := _q.loadMetrics(ctx, query, nodes, nil,
 			func(n *MemoryMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mmq.withGarbageMetrics; query != nil {
-		if err := mmq.loadGarbageMetrics(ctx, query, nodes,
+	if query := _q.withGarbageMetrics; query != nil {
+		if err := _q.loadGarbageMetrics(ctx, query, nodes,
 			func(n *MemoryMetrics) { n.Edges.GarbageMetrics = []*GarbageMetrics{} },
 			func(n *MemoryMetrics, e *GarbageMetrics) { n.Edges.GarbageMetrics = append(n.Edges.GarbageMetrics, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range mmq.withNamedGarbageMetrics {
-		if err := mmq.loadGarbageMetrics(ctx, query, nodes,
+	for name, query := range _q.withNamedGarbageMetrics {
+		if err := _q.loadGarbageMetrics(ctx, query, nodes,
 			func(n *MemoryMetrics) { n.appendNamedGarbageMetrics(name) },
 			func(n *MemoryMetrics, e *GarbageMetrics) { n.appendNamedGarbageMetrics(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range mmq.loadTotal {
-		if err := mmq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (mmq *MemoryMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*MemoryMetrics, init func(*MemoryMetrics), assign func(*MemoryMetrics, *Metrics)) error {
+func (_q *MemoryMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*MemoryMetrics, init func(*MemoryMetrics), assign func(*MemoryMetrics, *Metrics)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*MemoryMetrics)
 	for i := range nodes {
@@ -504,7 +504,7 @@ func (mmq *MemoryMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	}
 	return nil
 }
-func (mmq *MemoryMetricsQuery) loadGarbageMetrics(ctx context.Context, query *GarbageMetricsQuery, nodes []*MemoryMetrics, init func(*MemoryMetrics), assign func(*MemoryMetrics, *GarbageMetrics)) error {
+func (_q *MemoryMetricsQuery) loadGarbageMetrics(ctx context.Context, query *GarbageMetricsQuery, nodes []*MemoryMetrics, init func(*MemoryMetrics), assign func(*MemoryMetrics, *GarbageMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*MemoryMetrics)
 	for i := range nodes {
@@ -536,27 +536,27 @@ func (mmq *MemoryMetricsQuery) loadGarbageMetrics(ctx context.Context, query *Ga
 	return nil
 }
 
-func (mmq *MemoryMetricsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := mmq.querySpec()
-	if len(mmq.modifiers) > 0 {
-		_spec.Modifiers = mmq.modifiers
+func (_q *MemoryMetricsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = mmq.ctx.Fields
-	if len(mmq.ctx.Fields) > 0 {
-		_spec.Unique = mmq.ctx.Unique != nil && *mmq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, mmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (mmq *MemoryMetricsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *MemoryMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
-	_spec.From = mmq.sql
-	if unique := mmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if mmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := mmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, memorymetrics.FieldID)
 		for i := range fields {
@@ -565,20 +565,20 @@ func (mmq *MemoryMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := mmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := mmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := mmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := mmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -588,33 +588,33 @@ func (mmq *MemoryMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (mmq *MemoryMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(mmq.driver.Dialect())
+func (_q *MemoryMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(memorymetrics.Table)
-	columns := mmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = memorymetrics.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if mmq.sql != nil {
-		selector = mmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if mmq.ctx.Unique != nil && *mmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range mmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range mmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := mmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := mmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -622,16 +622,16 @@ func (mmq *MemoryMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedGarbageMetrics tells the query-builder to eager-load the nodes that are connected to the "garbage_metrics"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mmq *MemoryMetricsQuery) WithNamedGarbageMetrics(name string, opts ...func(*GarbageMetricsQuery)) *MemoryMetricsQuery {
-	query := (&GarbageMetricsClient{config: mmq.config}).Query()
+func (_q *MemoryMetricsQuery) WithNamedGarbageMetrics(name string, opts ...func(*GarbageMetricsQuery)) *MemoryMetricsQuery {
+	query := (&GarbageMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if mmq.withNamedGarbageMetrics == nil {
-		mmq.withNamedGarbageMetrics = make(map[string]*GarbageMetricsQuery)
+	if _q.withNamedGarbageMetrics == nil {
+		_q.withNamedGarbageMetrics = make(map[string]*GarbageMetricsQuery)
 	}
-	mmq.withNamedGarbageMetrics[name] = query
-	return mmq
+	_q.withNamedGarbageMetrics[name] = query
+	return _q
 }
 
 // MemoryMetricsGroupBy is the group-by builder for MemoryMetrics entities.
@@ -641,41 +641,41 @@ type MemoryMetricsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (mmgb *MemoryMetricsGroupBy) Aggregate(fns ...AggregateFunc) *MemoryMetricsGroupBy {
-	mmgb.fns = append(mmgb.fns, fns...)
-	return mmgb
+func (_g *MemoryMetricsGroupBy) Aggregate(fns ...AggregateFunc) *MemoryMetricsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (mmgb *MemoryMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, mmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := mmgb.build.prepareQuery(ctx); err != nil {
+func (_g *MemoryMetricsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*MemoryMetricsQuery, *MemoryMetricsGroupBy](ctx, mmgb.build, mmgb, mmgb.build.inters, v)
+	return scanWithInterceptors[*MemoryMetricsQuery, *MemoryMetricsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (mmgb *MemoryMetricsGroupBy) sqlScan(ctx context.Context, root *MemoryMetricsQuery, v any) error {
+func (_g *MemoryMetricsGroupBy) sqlScan(ctx context.Context, root *MemoryMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(mmgb.fns))
-	for _, fn := range mmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*mmgb.flds)+len(mmgb.fns))
-		for _, f := range *mmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*mmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := mmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -689,27 +689,27 @@ type MemoryMetricsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (mms *MemoryMetricsSelect) Aggregate(fns ...AggregateFunc) *MemoryMetricsSelect {
-	mms.fns = append(mms.fns, fns...)
-	return mms
+func (_s *MemoryMetricsSelect) Aggregate(fns ...AggregateFunc) *MemoryMetricsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (mms *MemoryMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, mms.ctx, ent.OpQuerySelect)
-	if err := mms.prepareQuery(ctx); err != nil {
+func (_s *MemoryMetricsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*MemoryMetricsQuery, *MemoryMetricsSelect](ctx, mms.MemoryMetricsQuery, mms, mms.inters, v)
+	return scanWithInterceptors[*MemoryMetricsQuery, *MemoryMetricsSelect](ctx, _s.MemoryMetricsQuery, _s, _s.inters, v)
 }
 
-func (mms *MemoryMetricsSelect) sqlScan(ctx context.Context, root *MemoryMetricsQuery, v any) error {
+func (_s *MemoryMetricsSelect) sqlScan(ctx context.Context, root *MemoryMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(mms.fns))
-	for _, fn := range mms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*mms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -717,7 +717,7 @@ func (mms *MemoryMetricsSelect) sqlScan(ctx context.Context, root *MemoryMetrics
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := mms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

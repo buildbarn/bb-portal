@@ -23,116 +23,116 @@ type RunnerCountUpdate struct {
 }
 
 // Where appends a list predicates to the RunnerCountUpdate builder.
-func (rcu *RunnerCountUpdate) Where(ps ...predicate.RunnerCount) *RunnerCountUpdate {
-	rcu.mutation.Where(ps...)
-	return rcu
+func (_u *RunnerCountUpdate) Where(ps ...predicate.RunnerCount) *RunnerCountUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (rcu *RunnerCountUpdate) SetName(s string) *RunnerCountUpdate {
-	rcu.mutation.SetName(s)
-	return rcu
+func (_u *RunnerCountUpdate) SetName(v string) *RunnerCountUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (rcu *RunnerCountUpdate) SetNillableName(s *string) *RunnerCountUpdate {
-	if s != nil {
-		rcu.SetName(*s)
+func (_u *RunnerCountUpdate) SetNillableName(v *string) *RunnerCountUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return rcu
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (rcu *RunnerCountUpdate) ClearName() *RunnerCountUpdate {
-	rcu.mutation.ClearName()
-	return rcu
+func (_u *RunnerCountUpdate) ClearName() *RunnerCountUpdate {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetExecKind sets the "exec_kind" field.
-func (rcu *RunnerCountUpdate) SetExecKind(s string) *RunnerCountUpdate {
-	rcu.mutation.SetExecKind(s)
-	return rcu
+func (_u *RunnerCountUpdate) SetExecKind(v string) *RunnerCountUpdate {
+	_u.mutation.SetExecKind(v)
+	return _u
 }
 
 // SetNillableExecKind sets the "exec_kind" field if the given value is not nil.
-func (rcu *RunnerCountUpdate) SetNillableExecKind(s *string) *RunnerCountUpdate {
-	if s != nil {
-		rcu.SetExecKind(*s)
+func (_u *RunnerCountUpdate) SetNillableExecKind(v *string) *RunnerCountUpdate {
+	if v != nil {
+		_u.SetExecKind(*v)
 	}
-	return rcu
+	return _u
 }
 
 // ClearExecKind clears the value of the "exec_kind" field.
-func (rcu *RunnerCountUpdate) ClearExecKind() *RunnerCountUpdate {
-	rcu.mutation.ClearExecKind()
-	return rcu
+func (_u *RunnerCountUpdate) ClearExecKind() *RunnerCountUpdate {
+	_u.mutation.ClearExecKind()
+	return _u
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (rcu *RunnerCountUpdate) SetActionsExecuted(i int64) *RunnerCountUpdate {
-	rcu.mutation.ResetActionsExecuted()
-	rcu.mutation.SetActionsExecuted(i)
-	return rcu
+func (_u *RunnerCountUpdate) SetActionsExecuted(v int64) *RunnerCountUpdate {
+	_u.mutation.ResetActionsExecuted()
+	_u.mutation.SetActionsExecuted(v)
+	return _u
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (rcu *RunnerCountUpdate) SetNillableActionsExecuted(i *int64) *RunnerCountUpdate {
-	if i != nil {
-		rcu.SetActionsExecuted(*i)
+func (_u *RunnerCountUpdate) SetNillableActionsExecuted(v *int64) *RunnerCountUpdate {
+	if v != nil {
+		_u.SetActionsExecuted(*v)
 	}
-	return rcu
+	return _u
 }
 
-// AddActionsExecuted adds i to the "actions_executed" field.
-func (rcu *RunnerCountUpdate) AddActionsExecuted(i int64) *RunnerCountUpdate {
-	rcu.mutation.AddActionsExecuted(i)
-	return rcu
+// AddActionsExecuted adds value to the "actions_executed" field.
+func (_u *RunnerCountUpdate) AddActionsExecuted(v int64) *RunnerCountUpdate {
+	_u.mutation.AddActionsExecuted(v)
+	return _u
 }
 
 // ClearActionsExecuted clears the value of the "actions_executed" field.
-func (rcu *RunnerCountUpdate) ClearActionsExecuted() *RunnerCountUpdate {
-	rcu.mutation.ClearActionsExecuted()
-	return rcu
+func (_u *RunnerCountUpdate) ClearActionsExecuted() *RunnerCountUpdate {
+	_u.mutation.ClearActionsExecuted()
+	return _u
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcu *RunnerCountUpdate) SetActionSummaryID(id int64) *RunnerCountUpdate {
-	rcu.mutation.SetActionSummaryID(id)
-	return rcu
+func (_u *RunnerCountUpdate) SetActionSummaryID(id int64) *RunnerCountUpdate {
+	_u.mutation.SetActionSummaryID(id)
+	return _u
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcu *RunnerCountUpdate) SetNillableActionSummaryID(id *int64) *RunnerCountUpdate {
+func (_u *RunnerCountUpdate) SetNillableActionSummaryID(id *int64) *RunnerCountUpdate {
 	if id != nil {
-		rcu = rcu.SetActionSummaryID(*id)
+		_u = _u.SetActionSummaryID(*id)
 	}
-	return rcu
+	return _u
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (rcu *RunnerCountUpdate) SetActionSummary(a *ActionSummary) *RunnerCountUpdate {
-	return rcu.SetActionSummaryID(a.ID)
+func (_u *RunnerCountUpdate) SetActionSummary(v *ActionSummary) *RunnerCountUpdate {
+	return _u.SetActionSummaryID(v.ID)
 }
 
 // Mutation returns the RunnerCountMutation object of the builder.
-func (rcu *RunnerCountUpdate) Mutation() *RunnerCountMutation {
-	return rcu.mutation
+func (_u *RunnerCountUpdate) Mutation() *RunnerCountMutation {
+	return _u.mutation
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
-func (rcu *RunnerCountUpdate) ClearActionSummary() *RunnerCountUpdate {
-	rcu.mutation.ClearActionSummary()
-	return rcu
+func (_u *RunnerCountUpdate) ClearActionSummary() *RunnerCountUpdate {
+	_u.mutation.ClearActionSummary()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (rcu *RunnerCountUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, rcu.sqlSave, rcu.mutation, rcu.hooks)
+func (_u *RunnerCountUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rcu *RunnerCountUpdate) SaveX(ctx context.Context) int {
-	affected, err := rcu.Save(ctx)
+func (_u *RunnerCountUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -140,49 +140,49 @@ func (rcu *RunnerCountUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (rcu *RunnerCountUpdate) Exec(ctx context.Context) error {
-	_, err := rcu.Save(ctx)
+func (_u *RunnerCountUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcu *RunnerCountUpdate) ExecX(ctx context.Context) {
-	if err := rcu.Exec(ctx); err != nil {
+func (_u *RunnerCountUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *RunnerCountUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
-	if ps := rcu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := rcu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(runnercount.FieldName, field.TypeString, value)
 	}
-	if rcu.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(runnercount.FieldName, field.TypeString)
 	}
-	if value, ok := rcu.mutation.ExecKind(); ok {
+	if value, ok := _u.mutation.ExecKind(); ok {
 		_spec.SetField(runnercount.FieldExecKind, field.TypeString, value)
 	}
-	if rcu.mutation.ExecKindCleared() {
+	if _u.mutation.ExecKindCleared() {
 		_spec.ClearField(runnercount.FieldExecKind, field.TypeString)
 	}
-	if value, ok := rcu.mutation.ActionsExecuted(); ok {
+	if value, ok := _u.mutation.ActionsExecuted(); ok {
 		_spec.SetField(runnercount.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if value, ok := rcu.mutation.AddedActionsExecuted(); ok {
+	if value, ok := _u.mutation.AddedActionsExecuted(); ok {
 		_spec.AddField(runnercount.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if rcu.mutation.ActionsExecutedCleared() {
+	if _u.mutation.ActionsExecutedCleared() {
 		_spec.ClearField(runnercount.FieldActionsExecuted, field.TypeInt64)
 	}
-	if rcu.mutation.ActionSummaryCleared() {
+	if _u.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -195,7 +195,7 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := rcu.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -211,7 +211,7 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, rcu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{runnercount.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -219,8 +219,8 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	rcu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // RunnerCountUpdateOne is the builder for updating a single RunnerCount entity.
@@ -232,123 +232,123 @@ type RunnerCountUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (rcuo *RunnerCountUpdateOne) SetName(s string) *RunnerCountUpdateOne {
-	rcuo.mutation.SetName(s)
-	return rcuo
+func (_u *RunnerCountUpdateOne) SetName(v string) *RunnerCountUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (rcuo *RunnerCountUpdateOne) SetNillableName(s *string) *RunnerCountUpdateOne {
-	if s != nil {
-		rcuo.SetName(*s)
+func (_u *RunnerCountUpdateOne) SetNillableName(v *string) *RunnerCountUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return rcuo
+	return _u
 }
 
 // ClearName clears the value of the "name" field.
-func (rcuo *RunnerCountUpdateOne) ClearName() *RunnerCountUpdateOne {
-	rcuo.mutation.ClearName()
-	return rcuo
+func (_u *RunnerCountUpdateOne) ClearName() *RunnerCountUpdateOne {
+	_u.mutation.ClearName()
+	return _u
 }
 
 // SetExecKind sets the "exec_kind" field.
-func (rcuo *RunnerCountUpdateOne) SetExecKind(s string) *RunnerCountUpdateOne {
-	rcuo.mutation.SetExecKind(s)
-	return rcuo
+func (_u *RunnerCountUpdateOne) SetExecKind(v string) *RunnerCountUpdateOne {
+	_u.mutation.SetExecKind(v)
+	return _u
 }
 
 // SetNillableExecKind sets the "exec_kind" field if the given value is not nil.
-func (rcuo *RunnerCountUpdateOne) SetNillableExecKind(s *string) *RunnerCountUpdateOne {
-	if s != nil {
-		rcuo.SetExecKind(*s)
+func (_u *RunnerCountUpdateOne) SetNillableExecKind(v *string) *RunnerCountUpdateOne {
+	if v != nil {
+		_u.SetExecKind(*v)
 	}
-	return rcuo
+	return _u
 }
 
 // ClearExecKind clears the value of the "exec_kind" field.
-func (rcuo *RunnerCountUpdateOne) ClearExecKind() *RunnerCountUpdateOne {
-	rcuo.mutation.ClearExecKind()
-	return rcuo
+func (_u *RunnerCountUpdateOne) ClearExecKind() *RunnerCountUpdateOne {
+	_u.mutation.ClearExecKind()
+	return _u
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (rcuo *RunnerCountUpdateOne) SetActionsExecuted(i int64) *RunnerCountUpdateOne {
-	rcuo.mutation.ResetActionsExecuted()
-	rcuo.mutation.SetActionsExecuted(i)
-	return rcuo
+func (_u *RunnerCountUpdateOne) SetActionsExecuted(v int64) *RunnerCountUpdateOne {
+	_u.mutation.ResetActionsExecuted()
+	_u.mutation.SetActionsExecuted(v)
+	return _u
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (rcuo *RunnerCountUpdateOne) SetNillableActionsExecuted(i *int64) *RunnerCountUpdateOne {
-	if i != nil {
-		rcuo.SetActionsExecuted(*i)
+func (_u *RunnerCountUpdateOne) SetNillableActionsExecuted(v *int64) *RunnerCountUpdateOne {
+	if v != nil {
+		_u.SetActionsExecuted(*v)
 	}
-	return rcuo
+	return _u
 }
 
-// AddActionsExecuted adds i to the "actions_executed" field.
-func (rcuo *RunnerCountUpdateOne) AddActionsExecuted(i int64) *RunnerCountUpdateOne {
-	rcuo.mutation.AddActionsExecuted(i)
-	return rcuo
+// AddActionsExecuted adds value to the "actions_executed" field.
+func (_u *RunnerCountUpdateOne) AddActionsExecuted(v int64) *RunnerCountUpdateOne {
+	_u.mutation.AddActionsExecuted(v)
+	return _u
 }
 
 // ClearActionsExecuted clears the value of the "actions_executed" field.
-func (rcuo *RunnerCountUpdateOne) ClearActionsExecuted() *RunnerCountUpdateOne {
-	rcuo.mutation.ClearActionsExecuted()
-	return rcuo
+func (_u *RunnerCountUpdateOne) ClearActionsExecuted() *RunnerCountUpdateOne {
+	_u.mutation.ClearActionsExecuted()
+	return _u
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcuo *RunnerCountUpdateOne) SetActionSummaryID(id int64) *RunnerCountUpdateOne {
-	rcuo.mutation.SetActionSummaryID(id)
-	return rcuo
+func (_u *RunnerCountUpdateOne) SetActionSummaryID(id int64) *RunnerCountUpdateOne {
+	_u.mutation.SetActionSummaryID(id)
+	return _u
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcuo *RunnerCountUpdateOne) SetNillableActionSummaryID(id *int64) *RunnerCountUpdateOne {
+func (_u *RunnerCountUpdateOne) SetNillableActionSummaryID(id *int64) *RunnerCountUpdateOne {
 	if id != nil {
-		rcuo = rcuo.SetActionSummaryID(*id)
+		_u = _u.SetActionSummaryID(*id)
 	}
-	return rcuo
+	return _u
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (rcuo *RunnerCountUpdateOne) SetActionSummary(a *ActionSummary) *RunnerCountUpdateOne {
-	return rcuo.SetActionSummaryID(a.ID)
+func (_u *RunnerCountUpdateOne) SetActionSummary(v *ActionSummary) *RunnerCountUpdateOne {
+	return _u.SetActionSummaryID(v.ID)
 }
 
 // Mutation returns the RunnerCountMutation object of the builder.
-func (rcuo *RunnerCountUpdateOne) Mutation() *RunnerCountMutation {
-	return rcuo.mutation
+func (_u *RunnerCountUpdateOne) Mutation() *RunnerCountMutation {
+	return _u.mutation
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
-func (rcuo *RunnerCountUpdateOne) ClearActionSummary() *RunnerCountUpdateOne {
-	rcuo.mutation.ClearActionSummary()
-	return rcuo
+func (_u *RunnerCountUpdateOne) ClearActionSummary() *RunnerCountUpdateOne {
+	_u.mutation.ClearActionSummary()
+	return _u
 }
 
 // Where appends a list predicates to the RunnerCountUpdate builder.
-func (rcuo *RunnerCountUpdateOne) Where(ps ...predicate.RunnerCount) *RunnerCountUpdateOne {
-	rcuo.mutation.Where(ps...)
-	return rcuo
+func (_u *RunnerCountUpdateOne) Where(ps ...predicate.RunnerCount) *RunnerCountUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (rcuo *RunnerCountUpdateOne) Select(field string, fields ...string) *RunnerCountUpdateOne {
-	rcuo.fields = append([]string{field}, fields...)
-	return rcuo
+func (_u *RunnerCountUpdateOne) Select(field string, fields ...string) *RunnerCountUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated RunnerCount entity.
-func (rcuo *RunnerCountUpdateOne) Save(ctx context.Context) (*RunnerCount, error) {
-	return withHooks(ctx, rcuo.sqlSave, rcuo.mutation, rcuo.hooks)
+func (_u *RunnerCountUpdateOne) Save(ctx context.Context) (*RunnerCount, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rcuo *RunnerCountUpdateOne) SaveX(ctx context.Context) *RunnerCount {
-	node, err := rcuo.Save(ctx)
+func (_u *RunnerCountUpdateOne) SaveX(ctx context.Context) *RunnerCount {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -356,26 +356,26 @@ func (rcuo *RunnerCountUpdateOne) SaveX(ctx context.Context) *RunnerCount {
 }
 
 // Exec executes the query on the entity.
-func (rcuo *RunnerCountUpdateOne) Exec(ctx context.Context) error {
-	_, err := rcuo.Save(ctx)
+func (_u *RunnerCountUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcuo *RunnerCountUpdateOne) ExecX(ctx context.Context) {
-	if err := rcuo.Exec(ctx); err != nil {
+func (_u *RunnerCountUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCount, err error) {
+func (_u *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCount, err error) {
 	_spec := sqlgraph.NewUpdateSpec(runnercount.Table, runnercount.Columns, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt64))
-	id, ok := rcuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "RunnerCount.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := rcuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, runnercount.FieldID)
 		for _, f := range fields {
@@ -387,35 +387,35 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 			}
 		}
 	}
-	if ps := rcuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := rcuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(runnercount.FieldName, field.TypeString, value)
 	}
-	if rcuo.mutation.NameCleared() {
+	if _u.mutation.NameCleared() {
 		_spec.ClearField(runnercount.FieldName, field.TypeString)
 	}
-	if value, ok := rcuo.mutation.ExecKind(); ok {
+	if value, ok := _u.mutation.ExecKind(); ok {
 		_spec.SetField(runnercount.FieldExecKind, field.TypeString, value)
 	}
-	if rcuo.mutation.ExecKindCleared() {
+	if _u.mutation.ExecKindCleared() {
 		_spec.ClearField(runnercount.FieldExecKind, field.TypeString)
 	}
-	if value, ok := rcuo.mutation.ActionsExecuted(); ok {
+	if value, ok := _u.mutation.ActionsExecuted(); ok {
 		_spec.SetField(runnercount.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if value, ok := rcuo.mutation.AddedActionsExecuted(); ok {
+	if value, ok := _u.mutation.AddedActionsExecuted(); ok {
 		_spec.AddField(runnercount.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if rcuo.mutation.ActionsExecutedCleared() {
+	if _u.mutation.ActionsExecutedCleared() {
 		_spec.ClearField(runnercount.FieldActionsExecuted, field.TypeInt64)
 	}
-	if rcuo.mutation.ActionSummaryCleared() {
+	if _u.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -428,7 +428,7 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := rcuo.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -444,10 +444,10 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &RunnerCount{config: rcuo.config}
+	_node = &RunnerCount{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, rcuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{runnercount.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -455,6 +455,6 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 		}
 		return nil, err
 	}
-	rcuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

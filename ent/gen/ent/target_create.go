@@ -26,102 +26,102 @@ type TargetCreate struct {
 }
 
 // SetLabel sets the "label" field.
-func (tc *TargetCreate) SetLabel(s string) *TargetCreate {
-	tc.mutation.SetLabel(s)
-	return tc
+func (_c *TargetCreate) SetLabel(v string) *TargetCreate {
+	_c.mutation.SetLabel(v)
+	return _c
 }
 
 // SetAspect sets the "aspect" field.
-func (tc *TargetCreate) SetAspect(s string) *TargetCreate {
-	tc.mutation.SetAspect(s)
-	return tc
+func (_c *TargetCreate) SetAspect(v string) *TargetCreate {
+	_c.mutation.SetAspect(v)
+	return _c
 }
 
 // SetTargetKind sets the "target_kind" field.
-func (tc *TargetCreate) SetTargetKind(s string) *TargetCreate {
-	tc.mutation.SetTargetKind(s)
-	return tc
+func (_c *TargetCreate) SetTargetKind(v string) *TargetCreate {
+	_c.mutation.SetTargetKind(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tc *TargetCreate) SetID(i int64) *TargetCreate {
-	tc.mutation.SetID(i)
-	return tc
+func (_c *TargetCreate) SetID(v int64) *TargetCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (tc *TargetCreate) SetInstanceNameID(id int64) *TargetCreate {
-	tc.mutation.SetInstanceNameID(id)
-	return tc
+func (_c *TargetCreate) SetInstanceNameID(id int64) *TargetCreate {
+	_c.mutation.SetInstanceNameID(id)
+	return _c
 }
 
 // SetInstanceName sets the "instance_name" edge to the InstanceName entity.
-func (tc *TargetCreate) SetInstanceName(i *InstanceName) *TargetCreate {
-	return tc.SetInstanceNameID(i.ID)
+func (_c *TargetCreate) SetInstanceName(v *InstanceName) *TargetCreate {
+	return _c.SetInstanceNameID(v.ID)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (tc *TargetCreate) AddInvocationTargetIDs(ids ...int64) *TargetCreate {
-	tc.mutation.AddInvocationTargetIDs(ids...)
-	return tc
+func (_c *TargetCreate) AddInvocationTargetIDs(ids ...int64) *TargetCreate {
+	_c.mutation.AddInvocationTargetIDs(ids...)
+	return _c
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
-func (tc *TargetCreate) AddInvocationTargets(i ...*InvocationTarget) *TargetCreate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_c *TargetCreate) AddInvocationTargets(v ...*InvocationTarget) *TargetCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tc.AddInvocationTargetIDs(ids...)
+	return _c.AddInvocationTargetIDs(ids...)
 }
 
 // AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
-func (tc *TargetCreate) AddTargetKindMappingIDs(ids ...int64) *TargetCreate {
-	tc.mutation.AddTargetKindMappingIDs(ids...)
-	return tc
+func (_c *TargetCreate) AddTargetKindMappingIDs(ids ...int64) *TargetCreate {
+	_c.mutation.AddTargetKindMappingIDs(ids...)
+	return _c
 }
 
 // AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
-func (tc *TargetCreate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetCreate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_c *TargetCreate) AddTargetKindMappings(v ...*TargetKindMapping) *TargetCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tc.AddTargetKindMappingIDs(ids...)
+	return _c.AddTargetKindMappingIDs(ids...)
 }
 
 // SetTestTargetID sets the "test_target" edge to the TestTarget entity by ID.
-func (tc *TargetCreate) SetTestTargetID(id int64) *TargetCreate {
-	tc.mutation.SetTestTargetID(id)
-	return tc
+func (_c *TargetCreate) SetTestTargetID(id int64) *TargetCreate {
+	_c.mutation.SetTestTargetID(id)
+	return _c
 }
 
 // SetNillableTestTargetID sets the "test_target" edge to the TestTarget entity by ID if the given value is not nil.
-func (tc *TargetCreate) SetNillableTestTargetID(id *int64) *TargetCreate {
+func (_c *TargetCreate) SetNillableTestTargetID(id *int64) *TargetCreate {
 	if id != nil {
-		tc = tc.SetTestTargetID(*id)
+		_c = _c.SetTestTargetID(*id)
 	}
-	return tc
+	return _c
 }
 
 // SetTestTarget sets the "test_target" edge to the TestTarget entity.
-func (tc *TargetCreate) SetTestTarget(t *TestTarget) *TargetCreate {
-	return tc.SetTestTargetID(t.ID)
+func (_c *TargetCreate) SetTestTarget(v *TestTarget) *TargetCreate {
+	return _c.SetTestTargetID(v.ID)
 }
 
 // Mutation returns the TargetMutation object of the builder.
-func (tc *TargetCreate) Mutation() *TargetMutation {
-	return tc.mutation
+func (_c *TargetCreate) Mutation() *TargetMutation {
+	return _c.mutation
 }
 
 // Save creates the Target in the database.
-func (tc *TargetCreate) Save(ctx context.Context) (*Target, error) {
-	return withHooks(ctx, tc.sqlSave, tc.mutation, tc.hooks)
+func (_c *TargetCreate) Save(ctx context.Context) (*Target, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tc *TargetCreate) SaveX(ctx context.Context) *Target {
-	v, err := tc.Save(ctx)
+func (_c *TargetCreate) SaveX(ctx context.Context) *Target {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -129,41 +129,41 @@ func (tc *TargetCreate) SaveX(ctx context.Context) *Target {
 }
 
 // Exec executes the query.
-func (tc *TargetCreate) Exec(ctx context.Context) error {
-	_, err := tc.Save(ctx)
+func (_c *TargetCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tc *TargetCreate) ExecX(ctx context.Context) {
-	if err := tc.Exec(ctx); err != nil {
+func (_c *TargetCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tc *TargetCreate) check() error {
-	if _, ok := tc.mutation.Label(); !ok {
+func (_c *TargetCreate) check() error {
+	if _, ok := _c.mutation.Label(); !ok {
 		return &ValidationError{Name: "label", err: errors.New(`ent: missing required field "Target.label"`)}
 	}
-	if _, ok := tc.mutation.Aspect(); !ok {
+	if _, ok := _c.mutation.Aspect(); !ok {
 		return &ValidationError{Name: "aspect", err: errors.New(`ent: missing required field "Target.aspect"`)}
 	}
-	if _, ok := tc.mutation.TargetKind(); !ok {
+	if _, ok := _c.mutation.TargetKind(); !ok {
 		return &ValidationError{Name: "target_kind", err: errors.New(`ent: missing required field "Target.target_kind"`)}
 	}
-	if len(tc.mutation.InstanceNameIDs()) == 0 {
+	if len(_c.mutation.InstanceNameIDs()) == 0 {
 		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required edge "Target.instance_name"`)}
 	}
 	return nil
 }
 
-func (tc *TargetCreate) sqlSave(ctx context.Context) (*Target, error) {
-	if err := tc.check(); err != nil {
+func (_c *TargetCreate) sqlSave(ctx context.Context) (*Target, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -173,34 +173,34 @@ func (tc *TargetCreate) sqlSave(ctx context.Context) (*Target, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	tc.mutation.id = &_node.ID
-	tc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
+func (_c *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Target{config: tc.config}
+		_node = &Target{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(target.Table, sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = tc.conflict
-	if id, ok := tc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := tc.mutation.Label(); ok {
+	if value, ok := _c.mutation.Label(); ok {
 		_spec.SetField(target.FieldLabel, field.TypeString, value)
 		_node.Label = value
 	}
-	if value, ok := tc.mutation.Aspect(); ok {
+	if value, ok := _c.mutation.Aspect(); ok {
 		_spec.SetField(target.FieldAspect, field.TypeString, value)
 		_node.Aspect = value
 	}
-	if value, ok := tc.mutation.TargetKind(); ok {
+	if value, ok := _c.mutation.TargetKind(); ok {
 		_spec.SetField(target.FieldTargetKind, field.TypeString, value)
 		_node.TargetKind = value
 	}
-	if nodes := tc.mutation.InstanceNameIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -217,7 +217,7 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 		_node.instance_name_targets = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tc.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -233,7 +233,7 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tc.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -249,7 +249,7 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tc.mutation.TestTargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TestTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -284,10 +284,10 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 //			SetLabel(v+v).
 //		}).
 //		Exec(ctx)
-func (tc *TargetCreate) OnConflict(opts ...sql.ConflictOption) *TargetUpsertOne {
-	tc.conflict = opts
+func (_c *TargetCreate) OnConflict(opts ...sql.ConflictOption) *TargetUpsertOne {
+	_c.conflict = opts
 	return &TargetUpsertOne{
-		create: tc,
+		create: _c,
 	}
 }
 
@@ -297,10 +297,10 @@ func (tc *TargetCreate) OnConflict(opts ...sql.ConflictOption) *TargetUpsertOne 
 //	client.Target.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tc *TargetCreate) OnConflictColumns(columns ...string) *TargetUpsertOne {
-	tc.conflict = append(tc.conflict, sql.ConflictColumns(columns...))
+func (_c *TargetCreate) OnConflictColumns(columns ...string) *TargetUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TargetUpsertOne{
-		create: tc,
+		create: _c,
 	}
 }
 
@@ -485,16 +485,16 @@ type TargetCreateBulk struct {
 }
 
 // Save creates the Target entities in the database.
-func (tcb *TargetCreateBulk) Save(ctx context.Context) ([]*Target, error) {
-	if tcb.err != nil {
-		return nil, tcb.err
+func (_c *TargetCreateBulk) Save(ctx context.Context) ([]*Target, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tcb.builders))
-	nodes := make([]*Target, len(tcb.builders))
-	mutators := make([]Mutator, len(tcb.builders))
-	for i := range tcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Target, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TargetMutation)
 				if !ok {
@@ -507,12 +507,12 @@ func (tcb *TargetCreateBulk) Save(ctx context.Context) ([]*Target, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -536,7 +536,7 @@ func (tcb *TargetCreateBulk) Save(ctx context.Context) ([]*Target, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -544,8 +544,8 @@ func (tcb *TargetCreateBulk) Save(ctx context.Context) ([]*Target, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tcb *TargetCreateBulk) SaveX(ctx context.Context) []*Target {
-	v, err := tcb.Save(ctx)
+func (_c *TargetCreateBulk) SaveX(ctx context.Context) []*Target {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -553,14 +553,14 @@ func (tcb *TargetCreateBulk) SaveX(ctx context.Context) []*Target {
 }
 
 // Exec executes the query.
-func (tcb *TargetCreateBulk) Exec(ctx context.Context) error {
-	_, err := tcb.Save(ctx)
+func (_c *TargetCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcb *TargetCreateBulk) ExecX(ctx context.Context) {
-	if err := tcb.Exec(ctx); err != nil {
+func (_c *TargetCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -580,10 +580,10 @@ func (tcb *TargetCreateBulk) ExecX(ctx context.Context) {
 //			SetLabel(v+v).
 //		}).
 //		Exec(ctx)
-func (tcb *TargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetUpsertBulk {
-	tcb.conflict = opts
+func (_c *TargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetUpsertBulk {
+	_c.conflict = opts
 	return &TargetUpsertBulk{
-		create: tcb,
+		create: _c,
 	}
 }
 
@@ -593,10 +593,10 @@ func (tcb *TargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetUpser
 //	client.Target.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tcb *TargetCreateBulk) OnConflictColumns(columns ...string) *TargetUpsertBulk {
-	tcb.conflict = append(tcb.conflict, sql.ConflictColumns(columns...))
+func (_c *TargetCreateBulk) OnConflictColumns(columns ...string) *TargetUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TargetUpsertBulk{
-		create: tcb,
+		create: _c,
 	}
 }
 

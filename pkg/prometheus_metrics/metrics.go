@@ -17,30 +17,51 @@ const (
 
 	// AuthenticatedUsersLabel The label for authenticated users in Invocations
 	AuthenticatedUsersLabel = "Authenticated"
+
+	namespace = "buildbarn"
+	subsystem = "portal"
 )
 
 var (
 	// Invocations A gauge for invocations
 	Invocations = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: "buildbarn",
-		Subsystem: "portal",
+		Namespace: namespace,
+		Subsystem: subsystem,
 		Name:      "invocations",
 		Help:      "Number of Invocations by authentication status",
 	}, []string{"AuthStatus"})
 
 	// AuthenticatedUsersCount A gauge for the number of authenticated users
 	AuthenticatedUsersCount = prometheus.NewGauge(prometheus.GaugeOpts{
-		Namespace: "buildbarn",
-		Subsystem: "portal",
+		Namespace: namespace,
+		Subsystem: subsystem,
 		Name:      "authenticated_user_count",
 		Help:      "Number of Unique Authenticated Users",
 	})
+
+	// CleanupDurations A counter for recording durations of the cleanup service
+	CleanupDurations = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Namespace: namespace,
+		Subsystem: subsystem,
+		Name:      "cleanup_service_duration_seconds_total",
+		Help:      "Duration of each cleanup service run in seconds",
+	}, []string{"Service"})
+
+	// CleanupVolumes A counter for recording the number of entries affected by the cleanup service
+	CleanupVolumes = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Namespace: namespace,
+		Subsystem: subsystem,
+		Name:      "cleanup_service_volume_total",
+		Help:      "Number of entries affected by each cleanup service run",
+	}, []string{"Service"})
 )
 
 // RegisterMetrics registers the metrics with Prometheus
 func init() {
 	prometheus.MustRegister(Invocations)
 	prometheus.MustRegister(AuthenticatedUsersCount)
+	prometheus.MustRegister(CleanupDurations)
+	prometheus.MustRegister(CleanupVolumes)
 }
 
 // SyncMetrics synchronizes the Prometheus service with

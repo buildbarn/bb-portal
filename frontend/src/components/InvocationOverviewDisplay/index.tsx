@@ -1,40 +1,31 @@
-import { Descriptions, Space } from "antd";
+import { Descriptions } from "antd";
 import type React from "react";
-import type { Configuration as BazelConfiguration } from "@/graphql/__generated__/graphql";
+import type { BazelInvocationOverviewFragment } from "@/graphql/__generated__/graphql";
+import { commandLineDataToString } from "@/utils/commandLineDataToString";
 import { InvocationResultTag } from "../InvocationResultTag";
 import PortalDuration from "../PortalDuration";
 
-type Configuration = Pick<BazelConfiguration, "cpu" | "mnemonic">;
-
 interface Props {
-  command: string;
-  exitCodeName: string | undefined;
-  connectionLastOpenAt: string | undefined;
-  timeSinceLastConnectionMillis: number | undefined;
-  invocationId: string;
-  instanceName: string | undefined;
-  configurations: Configuration[] | undefined;
-  startedAt: string;
-  endedAt: string;
-  hostname: string;
-  numFetches: number;
-  bazelVersion: string;
+  invocation: BazelInvocationOverviewFragment;
 }
 
-export const InvocationOverviewDisplay: React.FC<Props> = ({
-  command,
-  exitCodeName,
-  connectionLastOpenAt,
-  timeSinceLastConnectionMillis,
-  invocationId,
-  instanceName,
-  configurations,
-  startedAt,
-  endedAt,
-  hostname,
-  numFetches,
-  bazelVersion,
-}) => {
+export const InvocationOverviewDisplay: React.FC<Props> = ({ invocation }) => {
+  const {
+    invocationID,
+    startedAt,
+    endedAt,
+    exitCodeName,
+    configurations,
+    instanceName,
+    connectionMetadata,
+    originalCommandLine,
+    numFetches,
+    hostname,
+    bazelVersion,
+  } = invocation;
+
+  const command = commandLineDataToString(originalCommandLine);
+
   // TODO: Determine how to best display multiple configurations
   const cpu = Array.from(
     new Set(
@@ -56,60 +47,61 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
     .join(", ");
 
   return (
-    <Space>
-      <Descriptions column={1} bordered>
-        <Descriptions.Item label="Status">
-          <InvocationResultTag
-            key="result"
-            exitCodeName={exitCodeName}
-            timeSinceLastConnectionMillis={timeSinceLastConnectionMillis}
-          />
+    <Descriptions column={1} bordered style={{ width: "max-content" }}>
+      <Descriptions.Item label="Status">
+        <InvocationResultTag
+          key="result"
+          exitCodeName={exitCodeName}
+          timeSinceLastConnectionMillis={
+            connectionMetadata?.timeSinceLastConnectionMillis
+          }
+        />
+      </Descriptions.Item>
+      <Descriptions.Item label="Invocation Id">
+        {invocationID}
+      </Descriptions.Item>
+      {instanceName.name !== "" && (
+        <Descriptions.Item label="Instance name">
+          {instanceName.name}
         </Descriptions.Item>
-        <Descriptions.Item label="Invocation Id">
-          {invocationId}
+      )}
+      <Descriptions.Item label="Duration">
+        <PortalDuration
+          key="duration"
+          from={startedAt || undefined}
+          to={
+            endedAt
+              ? endedAt
+              : connectionMetadata?.connectionLastOpenAt || undefined
+          }
+          includeIcon
+          formatConfig={{ smallestUnit: "s" }}
+        />
+      </Descriptions.Item>
+      {command !== "" && (
+        <Descriptions.Item label="Command">
+          <code>{command}</code>
         </Descriptions.Item>
-        {instanceName !== undefined && instanceName !== "" && (
-          <Descriptions.Item label="Instance name">
-            {instanceName}
-          </Descriptions.Item>
-        )}
-        <Descriptions.Item label="Duration">
-          <PortalDuration
-            key="duration"
-            from={startedAt || undefined}
-            to={endedAt ? endedAt : connectionLastOpenAt || undefined}
-            includeIcon
-            includePopover
-            formatConfig={{ smallestUnit: "s" }}
-          />
+      )}
+      {cpu !== "" && <Descriptions.Item label="CPU">{cpu}</Descriptions.Item>}
+      {mnemonics !== "" && (
+        <Descriptions.Item label="Configuration mnemonics">
+          {mnemonics}
         </Descriptions.Item>
-        {command !== "" && (
-          <Descriptions.Item label="Command">
-            <code>{command}</code>
-          </Descriptions.Item>
-        )}
-        {cpu !== "" && <Descriptions.Item label="CPU">{cpu}</Descriptions.Item>}
-        {mnemonics !== "" && (
-          <Descriptions.Item label="Configuration mnemonics">
-            {mnemonics}
-          </Descriptions.Item>
-        )}
-        {hostname !== "" && (
-          <Descriptions.Item label="Hostname">{hostname}</Descriptions.Item>
-        )}
-        {numFetches !== 0 && (
-          <Descriptions.Item label="Number of Fetches">
-            {numFetches}
-          </Descriptions.Item>
-        )}
-        {bazelVersion !== "" && (
-          <Descriptions.Item label="Bazel version">
-            {bazelVersion}
-          </Descriptions.Item>
-        )}
-      </Descriptions>
-    </Space>
+      )}
+      {hostname !== "" && (
+        <Descriptions.Item label="Hostname">{hostname}</Descriptions.Item>
+      )}
+      {numFetches !== 0 && (
+        <Descriptions.Item label="Number of Fetches">
+          {numFetches}
+        </Descriptions.Item>
+      )}
+      {bazelVersion !== "" && (
+        <Descriptions.Item label="Bazel version">
+          {bazelVersion}
+        </Descriptions.Item>
+      )}
+    </Descriptions>
   );
 };
-
-export default InvocationOverviewDisplay;

@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strconv"
 
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend"
@@ -82,26 +81,32 @@ func setupProxyHandler(router *mux.Router, sourceConfig *bb_portal.FrontendServi
 		return util.StatusWrap(err, "Could not parse proxy url")
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(remote)
-	proxy.ModifyResponse = func(r *http.Response) error {
-		if r.Header.Get("Content-Type") != "text/html" {
+	proxy := &httputil.ReverseProxy{
+		Rewrite: func(request *httputil.ProxyRequest) {
+			request.SetURL(remote)
+			request.Out.Host = remote.Host
+			// Do not accept compression from vite.
+			request.Out.Header.Del("Accept-Encoding")
+		},
+		ModifyResponse: func(r *http.Response) error {
+			if r.Header.Get("Content-Type") != "text/html" {
+				return nil
+			}
+
+			oldIndexContent, err := io.ReadAll(r.Body)
+			if err != nil {
+				return err
+			}
+			defer r.Body.Close()
+
+			newIndexContent, err := injectFrontendConfigScript(oldIndexContent, frontendConfig)
+			if err != nil {
+				return err
+			}
+
+			r.Body = io.NopCloser(bytes.NewReader(newIndexContent))
 			return nil
-		}
-
-		oldIndexContent, err := io.ReadAll(r.Body)
-		if err != nil {
-			return err
-		}
-		defer r.Body.Close()
-
-		newIndexContent, err := injectFrontendConfigScript(oldIndexContent, frontendConfig)
-		if err != nil {
-			return err
-		}
-
-		r.Body = io.NopCloser(bytes.NewReader(newIndexContent))
-		r.Header.Set("Content-Length", strconv.Itoa(len(newIndexContent)))
-		return nil
+		},
 	}
 
 	router.PathPrefix("/").Handler(proxy)

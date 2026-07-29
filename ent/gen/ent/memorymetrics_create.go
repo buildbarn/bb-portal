@@ -24,100 +24,100 @@ type MemoryMetricsCreate struct {
 }
 
 // SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
-func (mmc *MemoryMetricsCreate) SetPeakPostGcHeapSize(i int64) *MemoryMetricsCreate {
-	mmc.mutation.SetPeakPostGcHeapSize(i)
-	return mmc
+func (_c *MemoryMetricsCreate) SetPeakPostGcHeapSize(v int64) *MemoryMetricsCreate {
+	_c.mutation.SetPeakPostGcHeapSize(v)
+	return _c
 }
 
 // SetNillablePeakPostGcHeapSize sets the "peak_post_gc_heap_size" field if the given value is not nil.
-func (mmc *MemoryMetricsCreate) SetNillablePeakPostGcHeapSize(i *int64) *MemoryMetricsCreate {
-	if i != nil {
-		mmc.SetPeakPostGcHeapSize(*i)
+func (_c *MemoryMetricsCreate) SetNillablePeakPostGcHeapSize(v *int64) *MemoryMetricsCreate {
+	if v != nil {
+		_c.SetPeakPostGcHeapSize(*v)
 	}
-	return mmc
+	return _c
 }
 
 // SetUsedHeapSizePostBuild sets the "used_heap_size_post_build" field.
-func (mmc *MemoryMetricsCreate) SetUsedHeapSizePostBuild(i int64) *MemoryMetricsCreate {
-	mmc.mutation.SetUsedHeapSizePostBuild(i)
-	return mmc
+func (_c *MemoryMetricsCreate) SetUsedHeapSizePostBuild(v int64) *MemoryMetricsCreate {
+	_c.mutation.SetUsedHeapSizePostBuild(v)
+	return _c
 }
 
 // SetNillableUsedHeapSizePostBuild sets the "used_heap_size_post_build" field if the given value is not nil.
-func (mmc *MemoryMetricsCreate) SetNillableUsedHeapSizePostBuild(i *int64) *MemoryMetricsCreate {
-	if i != nil {
-		mmc.SetUsedHeapSizePostBuild(*i)
+func (_c *MemoryMetricsCreate) SetNillableUsedHeapSizePostBuild(v *int64) *MemoryMetricsCreate {
+	if v != nil {
+		_c.SetUsedHeapSizePostBuild(*v)
 	}
-	return mmc
+	return _c
 }
 
 // SetPeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field.
-func (mmc *MemoryMetricsCreate) SetPeakPostGcTenuredSpaceHeapSize(i int64) *MemoryMetricsCreate {
-	mmc.mutation.SetPeakPostGcTenuredSpaceHeapSize(i)
-	return mmc
+func (_c *MemoryMetricsCreate) SetPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsCreate {
+	_c.mutation.SetPeakPostGcTenuredSpaceHeapSize(v)
+	return _c
 }
 
 // SetNillablePeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field if the given value is not nil.
-func (mmc *MemoryMetricsCreate) SetNillablePeakPostGcTenuredSpaceHeapSize(i *int64) *MemoryMetricsCreate {
-	if i != nil {
-		mmc.SetPeakPostGcTenuredSpaceHeapSize(*i)
+func (_c *MemoryMetricsCreate) SetNillablePeakPostGcTenuredSpaceHeapSize(v *int64) *MemoryMetricsCreate {
+	if v != nil {
+		_c.SetPeakPostGcTenuredSpaceHeapSize(*v)
 	}
-	return mmc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (mmc *MemoryMetricsCreate) SetID(i int64) *MemoryMetricsCreate {
-	mmc.mutation.SetID(i)
-	return mmc
+func (_c *MemoryMetricsCreate) SetID(v int64) *MemoryMetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmc *MemoryMetricsCreate) SetMetricsID(id int64) *MemoryMetricsCreate {
-	mmc.mutation.SetMetricsID(id)
-	return mmc
+func (_c *MemoryMetricsCreate) SetMetricsID(id int64) *MemoryMetricsCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmc *MemoryMetricsCreate) SetNillableMetricsID(id *int64) *MemoryMetricsCreate {
+func (_c *MemoryMetricsCreate) SetNillableMetricsID(id *int64) *MemoryMetricsCreate {
 	if id != nil {
-		mmc = mmc.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return mmc
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (mmc *MemoryMetricsCreate) SetMetrics(m *Metrics) *MemoryMetricsCreate {
-	return mmc.SetMetricsID(m.ID)
+func (_c *MemoryMetricsCreate) SetMetrics(v *Metrics) *MemoryMetricsCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
-func (mmc *MemoryMetricsCreate) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsCreate {
-	mmc.mutation.AddGarbageMetricIDs(ids...)
-	return mmc
+func (_c *MemoryMetricsCreate) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsCreate {
+	_c.mutation.AddGarbageMetricIDs(ids...)
+	return _c
 }
 
 // AddGarbageMetrics adds the "garbage_metrics" edges to the GarbageMetrics entity.
-func (mmc *MemoryMetricsCreate) AddGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsCreate {
-	ids := make([]int64, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_c *MemoryMetricsCreate) AddGarbageMetrics(v ...*GarbageMetrics) *MemoryMetricsCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return mmc.AddGarbageMetricIDs(ids...)
+	return _c.AddGarbageMetricIDs(ids...)
 }
 
 // Mutation returns the MemoryMetricsMutation object of the builder.
-func (mmc *MemoryMetricsCreate) Mutation() *MemoryMetricsMutation {
-	return mmc.mutation
+func (_c *MemoryMetricsCreate) Mutation() *MemoryMetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the MemoryMetrics in the database.
-func (mmc *MemoryMetricsCreate) Save(ctx context.Context) (*MemoryMetrics, error) {
-	return withHooks(ctx, mmc.sqlSave, mmc.mutation, mmc.hooks)
+func (_c *MemoryMetricsCreate) Save(ctx context.Context) (*MemoryMetrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (mmc *MemoryMetricsCreate) SaveX(ctx context.Context) *MemoryMetrics {
-	v, err := mmc.Save(ctx)
+func (_c *MemoryMetricsCreate) SaveX(ctx context.Context) *MemoryMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -125,29 +125,29 @@ func (mmc *MemoryMetricsCreate) SaveX(ctx context.Context) *MemoryMetrics {
 }
 
 // Exec executes the query.
-func (mmc *MemoryMetricsCreate) Exec(ctx context.Context) error {
-	_, err := mmc.Save(ctx)
+func (_c *MemoryMetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mmc *MemoryMetricsCreate) ExecX(ctx context.Context) {
-	if err := mmc.Exec(ctx); err != nil {
+func (_c *MemoryMetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (mmc *MemoryMetricsCreate) check() error {
+func (_c *MemoryMetricsCreate) check() error {
 	return nil
 }
 
-func (mmc *MemoryMetricsCreate) sqlSave(ctx context.Context) (*MemoryMetrics, error) {
-	if err := mmc.check(); err != nil {
+func (_c *MemoryMetricsCreate) sqlSave(ctx context.Context) (*MemoryMetrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := mmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, mmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -157,34 +157,34 @@ func (mmc *MemoryMetricsCreate) sqlSave(ctx context.Context) (*MemoryMetrics, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	mmc.mutation.id = &_node.ID
-	mmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSpec) {
+func (_c *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &MemoryMetrics{config: mmc.config}
+		_node = &MemoryMetrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(memorymetrics.Table, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = mmc.conflict
-	if id, ok := mmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := mmc.mutation.PeakPostGcHeapSize(); ok {
+	if value, ok := _c.mutation.PeakPostGcHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64, value)
 		_node.PeakPostGcHeapSize = value
 	}
-	if value, ok := mmc.mutation.UsedHeapSizePostBuild(); ok {
+	if value, ok := _c.mutation.UsedHeapSizePostBuild(); ok {
 		_spec.SetField(memorymetrics.FieldUsedHeapSizePostBuild, field.TypeInt64, value)
 		_node.UsedHeapSizePostBuild = value
 	}
-	if value, ok := mmc.mutation.PeakPostGcTenuredSpaceHeapSize(); ok {
+	if value, ok := _c.mutation.PeakPostGcTenuredSpaceHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, field.TypeInt64, value)
 		_node.PeakPostGcTenuredSpaceHeapSize = value
 	}
-	if nodes := mmc.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -201,7 +201,7 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 		_node.metrics_memory_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := mmc.mutation.GarbageMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.GarbageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -236,10 +236,10 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 //			SetPeakPostGcHeapSize(v+v).
 //		}).
 //		Exec(ctx)
-func (mmc *MemoryMetricsCreate) OnConflict(opts ...sql.ConflictOption) *MemoryMetricsUpsertOne {
-	mmc.conflict = opts
+func (_c *MemoryMetricsCreate) OnConflict(opts ...sql.ConflictOption) *MemoryMetricsUpsertOne {
+	_c.conflict = opts
 	return &MemoryMetricsUpsertOne{
-		create: mmc,
+		create: _c,
 	}
 }
 
@@ -249,10 +249,10 @@ func (mmc *MemoryMetricsCreate) OnConflict(opts ...sql.ConflictOption) *MemoryMe
 //	client.MemoryMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (mmc *MemoryMetricsCreate) OnConflictColumns(columns ...string) *MemoryMetricsUpsertOne {
-	mmc.conflict = append(mmc.conflict, sql.ConflictColumns(columns...))
+func (_c *MemoryMetricsCreate) OnConflictColumns(columns ...string) *MemoryMetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &MemoryMetricsUpsertOne{
-		create: mmc,
+		create: _c,
 	}
 }
 
@@ -515,16 +515,16 @@ type MemoryMetricsCreateBulk struct {
 }
 
 // Save creates the MemoryMetrics entities in the database.
-func (mmcb *MemoryMetricsCreateBulk) Save(ctx context.Context) ([]*MemoryMetrics, error) {
-	if mmcb.err != nil {
-		return nil, mmcb.err
+func (_c *MemoryMetricsCreateBulk) Save(ctx context.Context) ([]*MemoryMetrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(mmcb.builders))
-	nodes := make([]*MemoryMetrics, len(mmcb.builders))
-	mutators := make([]Mutator, len(mmcb.builders))
-	for i := range mmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*MemoryMetrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := mmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*MemoryMetricsMutation)
 				if !ok {
@@ -537,12 +537,12 @@ func (mmcb *MemoryMetricsCreateBulk) Save(ctx context.Context) ([]*MemoryMetrics
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, mmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = mmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, mmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -566,7 +566,7 @@ func (mmcb *MemoryMetricsCreateBulk) Save(ctx context.Context) ([]*MemoryMetrics
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, mmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -574,8 +574,8 @@ func (mmcb *MemoryMetricsCreateBulk) Save(ctx context.Context) ([]*MemoryMetrics
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mmcb *MemoryMetricsCreateBulk) SaveX(ctx context.Context) []*MemoryMetrics {
-	v, err := mmcb.Save(ctx)
+func (_c *MemoryMetricsCreateBulk) SaveX(ctx context.Context) []*MemoryMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -583,14 +583,14 @@ func (mmcb *MemoryMetricsCreateBulk) SaveX(ctx context.Context) []*MemoryMetrics
 }
 
 // Exec executes the query.
-func (mmcb *MemoryMetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := mmcb.Save(ctx)
+func (_c *MemoryMetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mmcb *MemoryMetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := mmcb.Exec(ctx); err != nil {
+func (_c *MemoryMetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -610,10 +610,10 @@ func (mmcb *MemoryMetricsCreateBulk) ExecX(ctx context.Context) {
 //			SetPeakPostGcHeapSize(v+v).
 //		}).
 //		Exec(ctx)
-func (mmcb *MemoryMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *MemoryMetricsUpsertBulk {
-	mmcb.conflict = opts
+func (_c *MemoryMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *MemoryMetricsUpsertBulk {
+	_c.conflict = opts
 	return &MemoryMetricsUpsertBulk{
-		create: mmcb,
+		create: _c,
 	}
 }
 
@@ -623,10 +623,10 @@ func (mmcb *MemoryMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *Mem
 //	client.MemoryMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (mmcb *MemoryMetricsCreateBulk) OnConflictColumns(columns ...string) *MemoryMetricsUpsertBulk {
-	mmcb.conflict = append(mmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *MemoryMetricsCreateBulk) OnConflictColumns(columns ...string) *MemoryMetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &MemoryMetricsUpsertBulk{
-		create: mmcb,
+		create: _c,
 	}
 }
 

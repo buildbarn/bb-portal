@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
-	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // ActionCacheStatistics is the model entity for the ActionCacheStatistics schema.
@@ -23,9 +22,9 @@ type ActionCacheStatistics struct {
 	// SaveTimeInMs holds the value of the "save_time_in_ms" field.
 	SaveTimeInMs uint64 `json:"save_time_in_ms,omitempty"`
 	// LoadTimeInMs holds the value of the "load_time_in_ms" field.
-	LoadTimeInMs schema.Uint64Numeric `json:"load_time_in_ms,omitempty"`
+	LoadTimeInMs uint64 `json:"load_time_in_ms,omitempty"`
 	// CacheCheckSemaphoreWaitTimeInMs holds the value of the "cache_check_semaphore_wait_time_in_ms" field.
-	CacheCheckSemaphoreWaitTimeInMs schema.Uint64Numeric `json:"cache_check_semaphore_wait_time_in_ms,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMs uint64 `json:"cache_check_semaphore_wait_time_in_ms,omitempty"`
 	// Hits holds the value of the "hits" field.
 	Hits int32 `json:"hits,omitempty"`
 	// Misses holds the value of the "misses" field.
@@ -77,10 +76,12 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
-			values[i] = new(schema.Uint64Numeric)
 		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
 			values[i] = new(sql.NullInt64)
+		case actioncachestatistics.FieldLoadTimeInMs:
+			values[i] = actioncachestatistics.ValueScanner.LoadTimeInMs.ScanValue()
+		case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+			values[i] = actioncachestatistics.ValueScanner.CacheCheckSemaphoreWaitTimeInMs.ScanValue()
 		case actioncachestatistics.ForeignKeys[0]: // action_summary_action_cache_statistics
 			values[i] = new(sql.NullInt64)
 		default:
@@ -92,7 +93,7 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the ActionCacheStatistics fields.
-func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) error {
+func (_m *ActionCacheStatistics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -103,52 +104,52 @@ func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) e
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			acs.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case actioncachestatistics.FieldSizeInBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field size_in_bytes", values[i])
 			} else if value.Valid {
-				acs.SizeInBytes = uint64(value.Int64)
+				_m.SizeInBytes = uint64(value.Int64)
 			}
 		case actioncachestatistics.FieldSaveTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field save_time_in_ms", values[i])
 			} else if value.Valid {
-				acs.SaveTimeInMs = uint64(value.Int64)
+				_m.SaveTimeInMs = uint64(value.Int64)
 			}
 		case actioncachestatistics.FieldLoadTimeInMs:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field load_time_in_ms", values[i])
-			} else if value != nil {
-				acs.LoadTimeInMs = *value
+			if value, err := actioncachestatistics.ValueScanner.LoadTimeInMs.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.LoadTimeInMs = value
 			}
 		case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field cache_check_semaphore_wait_time_in_ms", values[i])
-			} else if value != nil {
-				acs.CacheCheckSemaphoreWaitTimeInMs = *value
+			if value, err := actioncachestatistics.ValueScanner.CacheCheckSemaphoreWaitTimeInMs.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.CacheCheckSemaphoreWaitTimeInMs = value
 			}
 		case actioncachestatistics.FieldHits:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field hits", values[i])
 			} else if value.Valid {
-				acs.Hits = int32(value.Int64)
+				_m.Hits = int32(value.Int64)
 			}
 		case actioncachestatistics.FieldMisses:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field misses", values[i])
 			} else if value.Valid {
-				acs.Misses = int32(value.Int64)
+				_m.Misses = int32(value.Int64)
 			}
 		case actioncachestatistics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_cache_statistics", value)
 			} else if value.Valid {
-				acs.action_summary_action_cache_statistics = new(int64)
-				*acs.action_summary_action_cache_statistics = int64(value.Int64)
+				_m.action_summary_action_cache_statistics = new(int64)
+				*_m.action_summary_action_cache_statistics = int64(value.Int64)
 			}
 		default:
-			acs.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -156,85 +157,85 @@ func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) e
 
 // Value returns the ent.Value that was dynamically selected and assigned to the ActionCacheStatistics.
 // This includes values selected through modifiers, order, etc.
-func (acs *ActionCacheStatistics) Value(name string) (ent.Value, error) {
-	return acs.selectValues.Get(name)
+func (_m *ActionCacheStatistics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryActionSummary queries the "action_summary" edge of the ActionCacheStatistics entity.
-func (acs *ActionCacheStatistics) QueryActionSummary() *ActionSummaryQuery {
-	return NewActionCacheStatisticsClient(acs.config).QueryActionSummary(acs)
+func (_m *ActionCacheStatistics) QueryActionSummary() *ActionSummaryQuery {
+	return NewActionCacheStatisticsClient(_m.config).QueryActionSummary(_m)
 }
 
 // QueryMissDetails queries the "miss_details" edge of the ActionCacheStatistics entity.
-func (acs *ActionCacheStatistics) QueryMissDetails() *MissDetailQuery {
-	return NewActionCacheStatisticsClient(acs.config).QueryMissDetails(acs)
+func (_m *ActionCacheStatistics) QueryMissDetails() *MissDetailQuery {
+	return NewActionCacheStatisticsClient(_m.config).QueryMissDetails(_m)
 }
 
 // Update returns a builder for updating this ActionCacheStatistics.
 // Note that you need to call ActionCacheStatistics.Unwrap() before calling this method if this ActionCacheStatistics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (acs *ActionCacheStatistics) Update() *ActionCacheStatisticsUpdateOne {
-	return NewActionCacheStatisticsClient(acs.config).UpdateOne(acs)
+func (_m *ActionCacheStatistics) Update() *ActionCacheStatisticsUpdateOne {
+	return NewActionCacheStatisticsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the ActionCacheStatistics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (acs *ActionCacheStatistics) Unwrap() *ActionCacheStatistics {
-	_tx, ok := acs.config.driver.(*txDriver)
+func (_m *ActionCacheStatistics) Unwrap() *ActionCacheStatistics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: ActionCacheStatistics is not a transactional entity")
 	}
-	acs.config.driver = _tx.drv
-	return acs
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (acs *ActionCacheStatistics) String() string {
+func (_m *ActionCacheStatistics) String() string {
 	var builder strings.Builder
 	builder.WriteString("ActionCacheStatistics(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", acs.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("size_in_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", acs.SizeInBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.SizeInBytes))
 	builder.WriteString(", ")
 	builder.WriteString("save_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", acs.SaveTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.SaveTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("load_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", acs.LoadTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.LoadTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("cache_check_semaphore_wait_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", acs.CacheCheckSemaphoreWaitTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.CacheCheckSemaphoreWaitTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("hits=")
-	builder.WriteString(fmt.Sprintf("%v", acs.Hits))
+	builder.WriteString(fmt.Sprintf("%v", _m.Hits))
 	builder.WriteString(", ")
 	builder.WriteString("misses=")
-	builder.WriteString(fmt.Sprintf("%v", acs.Misses))
+	builder.WriteString(fmt.Sprintf("%v", _m.Misses))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedMissDetails returns the MissDetails named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (acs *ActionCacheStatistics) NamedMissDetails(name string) ([]*MissDetail, error) {
-	if acs.Edges.namedMissDetails == nil {
+func (_m *ActionCacheStatistics) NamedMissDetails(name string) ([]*MissDetail, error) {
+	if _m.Edges.namedMissDetails == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := acs.Edges.namedMissDetails[name]
+	nodes, ok := _m.Edges.namedMissDetails[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (acs *ActionCacheStatistics) appendNamedMissDetails(name string, edges ...*MissDetail) {
-	if acs.Edges.namedMissDetails == nil {
-		acs.Edges.namedMissDetails = make(map[string][]*MissDetail)
+func (_m *ActionCacheStatistics) appendNamedMissDetails(name string, edges ...*MissDetail) {
+	if _m.Edges.namedMissDetails == nil {
+		_m.Edges.namedMissDetails = make(map[string][]*MissDetail)
 	}
 	if len(edges) == 0 {
-		acs.Edges.namedMissDetails[name] = []*MissDetail{}
+		_m.Edges.namedMissDetails[name] = []*MissDetail{}
 	} else {
-		acs.Edges.namedMissDetails[name] = append(acs.Edges.namedMissDetails[name], edges...)
+		_m.Edges.namedMissDetails[name] = append(_m.Edges.namedMissDetails[name], edges...)
 	}
 }
 

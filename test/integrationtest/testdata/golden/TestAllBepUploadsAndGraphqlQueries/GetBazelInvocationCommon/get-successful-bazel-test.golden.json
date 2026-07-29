@@ -1,0 +1,19 @@
+{
+  "getBazelInvocation": {
+    "actions": [],
+    "authenticatedUser": null,
+    "build": null,
+    "connectionMetadata": null,
+    "endedAt": "2024-05-03T00:23:40.441Z",
+    "exitCodeName": "SUCCESS",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "invocationID": "10a37e86-6e2b-4adb-83dd-c2906f42bdd6",
+    "metrics": {
+      "id": "TWV0cmljczoz"
+    },
+    "profile": null,
+    "sourceControl": [],
+    "startedAt": "2024-05-03T00:23:37.843Z",
+    "username": "nameless"
+  }
+}

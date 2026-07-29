@@ -69,7 +69,7 @@ func (*InvocationTag) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the InvocationTag fields.
-func (it *InvocationTag) assignValues(columns []string, values []any) error {
+func (_m *InvocationTag) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -80,27 +80,27 @@ func (it *InvocationTag) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			it.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case invocationtag.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				it.BazelInvocationID = value.Int64
+				_m.BazelInvocationID = value.Int64
 			}
 		case invocationtag.FieldKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field key", values[i])
 			} else if value.Valid {
-				it.Key = value.String
+				_m.Key = value.String
 			}
 		case invocationtag.FieldValue:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value.Valid {
-				it.Value = value.String
+				_m.Value = value.String
 			}
 		default:
-			it.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -108,46 +108,46 @@ func (it *InvocationTag) assignValues(columns []string, values []any) error {
 
 // GetValue returns the ent.Value that was dynamically selected and assigned to the InvocationTag.
 // This includes values selected through modifiers, order, etc.
-func (it *InvocationTag) GetValue(name string) (ent.Value, error) {
-	return it.selectValues.Get(name)
+func (_m *InvocationTag) GetValue(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the InvocationTag entity.
-func (it *InvocationTag) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewInvocationTagClient(it.config).QueryBazelInvocation(it)
+func (_m *InvocationTag) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewInvocationTagClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // Update returns a builder for updating this InvocationTag.
 // Note that you need to call InvocationTag.Unwrap() before calling this method if this InvocationTag
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (it *InvocationTag) Update() *InvocationTagUpdateOne {
-	return NewInvocationTagClient(it.config).UpdateOne(it)
+func (_m *InvocationTag) Update() *InvocationTagUpdateOne {
+	return NewInvocationTagClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the InvocationTag entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (it *InvocationTag) Unwrap() *InvocationTag {
-	_tx, ok := it.config.driver.(*txDriver)
+func (_m *InvocationTag) Unwrap() *InvocationTag {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: InvocationTag is not a transactional entity")
 	}
-	it.config.driver = _tx.drv
-	return it
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (it *InvocationTag) String() string {
+func (_m *InvocationTag) String() string {
 	var builder strings.Builder
 	builder.WriteString("InvocationTag(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", it.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("bazel_invocation_id=")
-	builder.WriteString(fmt.Sprintf("%v", it.BazelInvocationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BazelInvocationID))
 	builder.WriteString(", ")
 	builder.WriteString("key=")
-	builder.WriteString(it.Key)
+	builder.WriteString(_m.Key)
 	builder.WriteString(", ")
 	builder.WriteString("value=")
-	builder.WriteString(it.Value)
+	builder.WriteString(_m.Value)
 	builder.WriteByte(')')
 	return builder.String()
 }

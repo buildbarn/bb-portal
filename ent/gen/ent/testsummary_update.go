@@ -25,299 +25,299 @@ type TestSummaryUpdate struct {
 }
 
 // Where appends a list predicates to the TestSummaryUpdate builder.
-func (tsu *TestSummaryUpdate) Where(ps ...predicate.TestSummary) *TestSummaryUpdate {
-	tsu.mutation.Where(ps...)
-	return tsu
+func (_u *TestSummaryUpdate) Where(ps ...predicate.TestSummary) *TestSummaryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (tsu *TestSummaryUpdate) SetOverallStatus(s string) *TestSummaryUpdate {
-	tsu.mutation.SetOverallStatus(s)
-	return tsu
+func (_u *TestSummaryUpdate) SetOverallStatus(v string) *TestSummaryUpdate {
+	_u.mutation.SetOverallStatus(v)
+	return _u
 }
 
 // SetNillableOverallStatus sets the "overall_status" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableOverallStatus(s *string) *TestSummaryUpdate {
-	if s != nil {
-		tsu.SetOverallStatus(*s)
+func (_u *TestSummaryUpdate) SetNillableOverallStatus(v *string) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetOverallStatus(*v)
 	}
-	return tsu
+	return _u
 }
 
 // ClearOverallStatus clears the value of the "overall_status" field.
-func (tsu *TestSummaryUpdate) ClearOverallStatus() *TestSummaryUpdate {
-	tsu.mutation.ClearOverallStatus()
-	return tsu
+func (_u *TestSummaryUpdate) ClearOverallStatus() *TestSummaryUpdate {
+	_u.mutation.ClearOverallStatus()
+	return _u
 }
 
 // SetTotalRunCount sets the "total_run_count" field.
-func (tsu *TestSummaryUpdate) SetTotalRunCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.ResetTotalRunCount()
-	tsu.mutation.SetTotalRunCount(i)
-	return tsu
+func (_u *TestSummaryUpdate) SetTotalRunCount(v int32) *TestSummaryUpdate {
+	_u.mutation.ResetTotalRunCount()
+	_u.mutation.SetTotalRunCount(v)
+	return _u
 }
 
 // SetNillableTotalRunCount sets the "total_run_count" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableTotalRunCount(i *int32) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetTotalRunCount(*i)
+func (_u *TestSummaryUpdate) SetNillableTotalRunCount(v *int32) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetTotalRunCount(*v)
 	}
-	return tsu
+	return _u
 }
 
-// AddTotalRunCount adds i to the "total_run_count" field.
-func (tsu *TestSummaryUpdate) AddTotalRunCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.AddTotalRunCount(i)
-	return tsu
+// AddTotalRunCount adds value to the "total_run_count" field.
+func (_u *TestSummaryUpdate) AddTotalRunCount(v int32) *TestSummaryUpdate {
+	_u.mutation.AddTotalRunCount(v)
+	return _u
 }
 
 // ClearTotalRunCount clears the value of the "total_run_count" field.
-func (tsu *TestSummaryUpdate) ClearTotalRunCount() *TestSummaryUpdate {
-	tsu.mutation.ClearTotalRunCount()
-	return tsu
+func (_u *TestSummaryUpdate) ClearTotalRunCount() *TestSummaryUpdate {
+	_u.mutation.ClearTotalRunCount()
+	return _u
 }
 
 // SetRunCount sets the "run_count" field.
-func (tsu *TestSummaryUpdate) SetRunCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.ResetRunCount()
-	tsu.mutation.SetRunCount(i)
-	return tsu
+func (_u *TestSummaryUpdate) SetRunCount(v int32) *TestSummaryUpdate {
+	_u.mutation.ResetRunCount()
+	_u.mutation.SetRunCount(v)
+	return _u
 }
 
 // SetNillableRunCount sets the "run_count" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableRunCount(i *int32) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetRunCount(*i)
+func (_u *TestSummaryUpdate) SetNillableRunCount(v *int32) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetRunCount(*v)
 	}
-	return tsu
+	return _u
 }
 
-// AddRunCount adds i to the "run_count" field.
-func (tsu *TestSummaryUpdate) AddRunCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.AddRunCount(i)
-	return tsu
+// AddRunCount adds value to the "run_count" field.
+func (_u *TestSummaryUpdate) AddRunCount(v int32) *TestSummaryUpdate {
+	_u.mutation.AddRunCount(v)
+	return _u
 }
 
 // ClearRunCount clears the value of the "run_count" field.
-func (tsu *TestSummaryUpdate) ClearRunCount() *TestSummaryUpdate {
-	tsu.mutation.ClearRunCount()
-	return tsu
+func (_u *TestSummaryUpdate) ClearRunCount() *TestSummaryUpdate {
+	_u.mutation.ClearRunCount()
+	return _u
 }
 
 // SetAttemptCount sets the "attempt_count" field.
-func (tsu *TestSummaryUpdate) SetAttemptCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.ResetAttemptCount()
-	tsu.mutation.SetAttemptCount(i)
-	return tsu
+func (_u *TestSummaryUpdate) SetAttemptCount(v int32) *TestSummaryUpdate {
+	_u.mutation.ResetAttemptCount()
+	_u.mutation.SetAttemptCount(v)
+	return _u
 }
 
 // SetNillableAttemptCount sets the "attempt_count" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableAttemptCount(i *int32) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetAttemptCount(*i)
+func (_u *TestSummaryUpdate) SetNillableAttemptCount(v *int32) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetAttemptCount(*v)
 	}
-	return tsu
+	return _u
 }
 
-// AddAttemptCount adds i to the "attempt_count" field.
-func (tsu *TestSummaryUpdate) AddAttemptCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.AddAttemptCount(i)
-	return tsu
+// AddAttemptCount adds value to the "attempt_count" field.
+func (_u *TestSummaryUpdate) AddAttemptCount(v int32) *TestSummaryUpdate {
+	_u.mutation.AddAttemptCount(v)
+	return _u
 }
 
 // ClearAttemptCount clears the value of the "attempt_count" field.
-func (tsu *TestSummaryUpdate) ClearAttemptCount() *TestSummaryUpdate {
-	tsu.mutation.ClearAttemptCount()
-	return tsu
+func (_u *TestSummaryUpdate) ClearAttemptCount() *TestSummaryUpdate {
+	_u.mutation.ClearAttemptCount()
+	return _u
 }
 
 // SetShardCount sets the "shard_count" field.
-func (tsu *TestSummaryUpdate) SetShardCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.ResetShardCount()
-	tsu.mutation.SetShardCount(i)
-	return tsu
+func (_u *TestSummaryUpdate) SetShardCount(v int32) *TestSummaryUpdate {
+	_u.mutation.ResetShardCount()
+	_u.mutation.SetShardCount(v)
+	return _u
 }
 
 // SetNillableShardCount sets the "shard_count" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableShardCount(i *int32) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetShardCount(*i)
+func (_u *TestSummaryUpdate) SetNillableShardCount(v *int32) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetShardCount(*v)
 	}
-	return tsu
+	return _u
 }
 
-// AddShardCount adds i to the "shard_count" field.
-func (tsu *TestSummaryUpdate) AddShardCount(i int32) *TestSummaryUpdate {
-	tsu.mutation.AddShardCount(i)
-	return tsu
+// AddShardCount adds value to the "shard_count" field.
+func (_u *TestSummaryUpdate) AddShardCount(v int32) *TestSummaryUpdate {
+	_u.mutation.AddShardCount(v)
+	return _u
 }
 
 // ClearShardCount clears the value of the "shard_count" field.
-func (tsu *TestSummaryUpdate) ClearShardCount() *TestSummaryUpdate {
-	tsu.mutation.ClearShardCount()
-	return tsu
+func (_u *TestSummaryUpdate) ClearShardCount() *TestSummaryUpdate {
+	_u.mutation.ClearShardCount()
+	return _u
 }
 
 // SetTotalNumCached sets the "total_num_cached" field.
-func (tsu *TestSummaryUpdate) SetTotalNumCached(i int32) *TestSummaryUpdate {
-	tsu.mutation.ResetTotalNumCached()
-	tsu.mutation.SetTotalNumCached(i)
-	return tsu
+func (_u *TestSummaryUpdate) SetTotalNumCached(v int32) *TestSummaryUpdate {
+	_u.mutation.ResetTotalNumCached()
+	_u.mutation.SetTotalNumCached(v)
+	return _u
 }
 
 // SetNillableTotalNumCached sets the "total_num_cached" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableTotalNumCached(i *int32) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetTotalNumCached(*i)
+func (_u *TestSummaryUpdate) SetNillableTotalNumCached(v *int32) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetTotalNumCached(*v)
 	}
-	return tsu
+	return _u
 }
 
-// AddTotalNumCached adds i to the "total_num_cached" field.
-func (tsu *TestSummaryUpdate) AddTotalNumCached(i int32) *TestSummaryUpdate {
-	tsu.mutation.AddTotalNumCached(i)
-	return tsu
+// AddTotalNumCached adds value to the "total_num_cached" field.
+func (_u *TestSummaryUpdate) AddTotalNumCached(v int32) *TestSummaryUpdate {
+	_u.mutation.AddTotalNumCached(v)
+	return _u
 }
 
 // ClearTotalNumCached clears the value of the "total_num_cached" field.
-func (tsu *TestSummaryUpdate) ClearTotalNumCached() *TestSummaryUpdate {
-	tsu.mutation.ClearTotalNumCached()
-	return tsu
+func (_u *TestSummaryUpdate) ClearTotalNumCached() *TestSummaryUpdate {
+	_u.mutation.ClearTotalNumCached()
+	return _u
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (tsu *TestSummaryUpdate) SetFirstStartTime(t time.Time) *TestSummaryUpdate {
-	tsu.mutation.SetFirstStartTime(t)
-	return tsu
+func (_u *TestSummaryUpdate) SetFirstStartTime(v time.Time) *TestSummaryUpdate {
+	_u.mutation.SetFirstStartTime(v)
+	return _u
 }
 
 // SetNillableFirstStartTime sets the "first_start_time" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableFirstStartTime(t *time.Time) *TestSummaryUpdate {
-	if t != nil {
-		tsu.SetFirstStartTime(*t)
+func (_u *TestSummaryUpdate) SetNillableFirstStartTime(v *time.Time) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetFirstStartTime(*v)
 	}
-	return tsu
+	return _u
 }
 
 // ClearFirstStartTime clears the value of the "first_start_time" field.
-func (tsu *TestSummaryUpdate) ClearFirstStartTime() *TestSummaryUpdate {
-	tsu.mutation.ClearFirstStartTime()
-	return tsu
+func (_u *TestSummaryUpdate) ClearFirstStartTime() *TestSummaryUpdate {
+	_u.mutation.ClearFirstStartTime()
+	return _u
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (tsu *TestSummaryUpdate) SetLastStopTime(t time.Time) *TestSummaryUpdate {
-	tsu.mutation.SetLastStopTime(t)
-	return tsu
+func (_u *TestSummaryUpdate) SetLastStopTime(v time.Time) *TestSummaryUpdate {
+	_u.mutation.SetLastStopTime(v)
+	return _u
 }
 
 // SetNillableLastStopTime sets the "last_stop_time" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableLastStopTime(t *time.Time) *TestSummaryUpdate {
-	if t != nil {
-		tsu.SetLastStopTime(*t)
+func (_u *TestSummaryUpdate) SetNillableLastStopTime(v *time.Time) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetLastStopTime(*v)
 	}
-	return tsu
+	return _u
 }
 
 // ClearLastStopTime clears the value of the "last_stop_time" field.
-func (tsu *TestSummaryUpdate) ClearLastStopTime() *TestSummaryUpdate {
-	tsu.mutation.ClearLastStopTime()
-	return tsu
+func (_u *TestSummaryUpdate) ClearLastStopTime() *TestSummaryUpdate {
+	_u.mutation.ClearLastStopTime()
+	return _u
 }
 
 // SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
-func (tsu *TestSummaryUpdate) SetTotalRunDurationInMs(i int64) *TestSummaryUpdate {
-	tsu.mutation.ResetTotalRunDurationInMs()
-	tsu.mutation.SetTotalRunDurationInMs(i)
-	return tsu
+func (_u *TestSummaryUpdate) SetTotalRunDurationInMs(v int64) *TestSummaryUpdate {
+	_u.mutation.ResetTotalRunDurationInMs()
+	_u.mutation.SetTotalRunDurationInMs(v)
+	return _u
 }
 
 // SetNillableTotalRunDurationInMs sets the "total_run_duration_in_ms" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableTotalRunDurationInMs(i *int64) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetTotalRunDurationInMs(*i)
+func (_u *TestSummaryUpdate) SetNillableTotalRunDurationInMs(v *int64) *TestSummaryUpdate {
+	if v != nil {
+		_u.SetTotalRunDurationInMs(*v)
 	}
-	return tsu
+	return _u
 }
 
-// AddTotalRunDurationInMs adds i to the "total_run_duration_in_ms" field.
-func (tsu *TestSummaryUpdate) AddTotalRunDurationInMs(i int64) *TestSummaryUpdate {
-	tsu.mutation.AddTotalRunDurationInMs(i)
-	return tsu
+// AddTotalRunDurationInMs adds value to the "total_run_duration_in_ms" field.
+func (_u *TestSummaryUpdate) AddTotalRunDurationInMs(v int64) *TestSummaryUpdate {
+	_u.mutation.AddTotalRunDurationInMs(v)
+	return _u
 }
 
 // ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
-func (tsu *TestSummaryUpdate) ClearTotalRunDurationInMs() *TestSummaryUpdate {
-	tsu.mutation.ClearTotalRunDurationInMs()
-	return tsu
+func (_u *TestSummaryUpdate) ClearTotalRunDurationInMs() *TestSummaryUpdate {
+	_u.mutation.ClearTotalRunDurationInMs()
+	return _u
 }
 
 // SetInvocationTargetID sets the "invocation_target" edge to the InvocationTarget entity by ID.
-func (tsu *TestSummaryUpdate) SetInvocationTargetID(id int64) *TestSummaryUpdate {
-	tsu.mutation.SetInvocationTargetID(id)
-	return tsu
+func (_u *TestSummaryUpdate) SetInvocationTargetID(id int64) *TestSummaryUpdate {
+	_u.mutation.SetInvocationTargetID(id)
+	return _u
 }
 
 // SetInvocationTarget sets the "invocation_target" edge to the InvocationTarget entity.
-func (tsu *TestSummaryUpdate) SetInvocationTarget(i *InvocationTarget) *TestSummaryUpdate {
-	return tsu.SetInvocationTargetID(i.ID)
+func (_u *TestSummaryUpdate) SetInvocationTarget(v *InvocationTarget) *TestSummaryUpdate {
+	return _u.SetInvocationTargetID(v.ID)
 }
 
 // AddTestResultIDs adds the "test_results" edge to the TestResult entity by IDs.
-func (tsu *TestSummaryUpdate) AddTestResultIDs(ids ...int64) *TestSummaryUpdate {
-	tsu.mutation.AddTestResultIDs(ids...)
-	return tsu
+func (_u *TestSummaryUpdate) AddTestResultIDs(ids ...int64) *TestSummaryUpdate {
+	_u.mutation.AddTestResultIDs(ids...)
+	return _u
 }
 
 // AddTestResults adds the "test_results" edges to the TestResult entity.
-func (tsu *TestSummaryUpdate) AddTestResults(t ...*TestResult) *TestSummaryUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TestSummaryUpdate) AddTestResults(v ...*TestResult) *TestSummaryUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tsu.AddTestResultIDs(ids...)
+	return _u.AddTestResultIDs(ids...)
 }
 
 // Mutation returns the TestSummaryMutation object of the builder.
-func (tsu *TestSummaryUpdate) Mutation() *TestSummaryMutation {
-	return tsu.mutation
+func (_u *TestSummaryUpdate) Mutation() *TestSummaryMutation {
+	return _u.mutation
 }
 
 // ClearInvocationTarget clears the "invocation_target" edge to the InvocationTarget entity.
-func (tsu *TestSummaryUpdate) ClearInvocationTarget() *TestSummaryUpdate {
-	tsu.mutation.ClearInvocationTarget()
-	return tsu
+func (_u *TestSummaryUpdate) ClearInvocationTarget() *TestSummaryUpdate {
+	_u.mutation.ClearInvocationTarget()
+	return _u
 }
 
 // ClearTestResults clears all "test_results" edges to the TestResult entity.
-func (tsu *TestSummaryUpdate) ClearTestResults() *TestSummaryUpdate {
-	tsu.mutation.ClearTestResults()
-	return tsu
+func (_u *TestSummaryUpdate) ClearTestResults() *TestSummaryUpdate {
+	_u.mutation.ClearTestResults()
+	return _u
 }
 
 // RemoveTestResultIDs removes the "test_results" edge to TestResult entities by IDs.
-func (tsu *TestSummaryUpdate) RemoveTestResultIDs(ids ...int64) *TestSummaryUpdate {
-	tsu.mutation.RemoveTestResultIDs(ids...)
-	return tsu
+func (_u *TestSummaryUpdate) RemoveTestResultIDs(ids ...int64) *TestSummaryUpdate {
+	_u.mutation.RemoveTestResultIDs(ids...)
+	return _u
 }
 
 // RemoveTestResults removes "test_results" edges to TestResult entities.
-func (tsu *TestSummaryUpdate) RemoveTestResults(t ...*TestResult) *TestSummaryUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TestSummaryUpdate) RemoveTestResults(v ...*TestResult) *TestSummaryUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tsu.RemoveTestResultIDs(ids...)
+	return _u.RemoveTestResultIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tsu *TestSummaryUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tsu.sqlSave, tsu.mutation, tsu.hooks)
+func (_u *TestSummaryUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tsu *TestSummaryUpdate) SaveX(ctx context.Context) int {
-	affected, err := tsu.Save(ctx)
+func (_u *TestSummaryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -325,111 +325,111 @@ func (tsu *TestSummaryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tsu *TestSummaryUpdate) Exec(ctx context.Context) error {
-	_, err := tsu.Save(ctx)
+func (_u *TestSummaryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsu *TestSummaryUpdate) ExecX(ctx context.Context) {
-	if err := tsu.Exec(ctx); err != nil {
+func (_u *TestSummaryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tsu *TestSummaryUpdate) check() error {
-	if tsu.mutation.InvocationTargetCleared() && len(tsu.mutation.InvocationTargetIDs()) > 0 {
+func (_u *TestSummaryUpdate) check() error {
+	if _u.mutation.InvocationTargetCleared() && len(_u.mutation.InvocationTargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TestSummary.invocation_target"`)
 	}
 	return nil
 }
 
-func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := tsu.check(); err != nil {
-		return n, err
+func (_u *TestSummaryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
-	if ps := tsu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tsu.mutation.OverallStatus(); ok {
+	if value, ok := _u.mutation.OverallStatus(); ok {
 		_spec.SetField(testsummary.FieldOverallStatus, field.TypeString, value)
 	}
-	if tsu.mutation.OverallStatusCleared() {
+	if _u.mutation.OverallStatusCleared() {
 		_spec.ClearField(testsummary.FieldOverallStatus, field.TypeString)
 	}
-	if value, ok := tsu.mutation.TotalRunCount(); ok {
+	if value, ok := _u.mutation.TotalRunCount(); ok {
 		_spec.SetField(testsummary.FieldTotalRunCount, field.TypeInt32, value)
 	}
-	if value, ok := tsu.mutation.AddedTotalRunCount(); ok {
+	if value, ok := _u.mutation.AddedTotalRunCount(); ok {
 		_spec.AddField(testsummary.FieldTotalRunCount, field.TypeInt32, value)
 	}
-	if tsu.mutation.TotalRunCountCleared() {
+	if _u.mutation.TotalRunCountCleared() {
 		_spec.ClearField(testsummary.FieldTotalRunCount, field.TypeInt32)
 	}
-	if value, ok := tsu.mutation.RunCount(); ok {
+	if value, ok := _u.mutation.RunCount(); ok {
 		_spec.SetField(testsummary.FieldRunCount, field.TypeInt32, value)
 	}
-	if value, ok := tsu.mutation.AddedRunCount(); ok {
+	if value, ok := _u.mutation.AddedRunCount(); ok {
 		_spec.AddField(testsummary.FieldRunCount, field.TypeInt32, value)
 	}
-	if tsu.mutation.RunCountCleared() {
+	if _u.mutation.RunCountCleared() {
 		_spec.ClearField(testsummary.FieldRunCount, field.TypeInt32)
 	}
-	if value, ok := tsu.mutation.AttemptCount(); ok {
+	if value, ok := _u.mutation.AttemptCount(); ok {
 		_spec.SetField(testsummary.FieldAttemptCount, field.TypeInt32, value)
 	}
-	if value, ok := tsu.mutation.AddedAttemptCount(); ok {
+	if value, ok := _u.mutation.AddedAttemptCount(); ok {
 		_spec.AddField(testsummary.FieldAttemptCount, field.TypeInt32, value)
 	}
-	if tsu.mutation.AttemptCountCleared() {
+	if _u.mutation.AttemptCountCleared() {
 		_spec.ClearField(testsummary.FieldAttemptCount, field.TypeInt32)
 	}
-	if value, ok := tsu.mutation.ShardCount(); ok {
+	if value, ok := _u.mutation.ShardCount(); ok {
 		_spec.SetField(testsummary.FieldShardCount, field.TypeInt32, value)
 	}
-	if value, ok := tsu.mutation.AddedShardCount(); ok {
+	if value, ok := _u.mutation.AddedShardCount(); ok {
 		_spec.AddField(testsummary.FieldShardCount, field.TypeInt32, value)
 	}
-	if tsu.mutation.ShardCountCleared() {
+	if _u.mutation.ShardCountCleared() {
 		_spec.ClearField(testsummary.FieldShardCount, field.TypeInt32)
 	}
-	if value, ok := tsu.mutation.TotalNumCached(); ok {
+	if value, ok := _u.mutation.TotalNumCached(); ok {
 		_spec.SetField(testsummary.FieldTotalNumCached, field.TypeInt32, value)
 	}
-	if value, ok := tsu.mutation.AddedTotalNumCached(); ok {
+	if value, ok := _u.mutation.AddedTotalNumCached(); ok {
 		_spec.AddField(testsummary.FieldTotalNumCached, field.TypeInt32, value)
 	}
-	if tsu.mutation.TotalNumCachedCleared() {
+	if _u.mutation.TotalNumCachedCleared() {
 		_spec.ClearField(testsummary.FieldTotalNumCached, field.TypeInt32)
 	}
-	if value, ok := tsu.mutation.FirstStartTime(); ok {
+	if value, ok := _u.mutation.FirstStartTime(); ok {
 		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeTime, value)
 	}
-	if tsu.mutation.FirstStartTimeCleared() {
+	if _u.mutation.FirstStartTimeCleared() {
 		_spec.ClearField(testsummary.FieldFirstStartTime, field.TypeTime)
 	}
-	if value, ok := tsu.mutation.LastStopTime(); ok {
+	if value, ok := _u.mutation.LastStopTime(); ok {
 		_spec.SetField(testsummary.FieldLastStopTime, field.TypeTime, value)
 	}
-	if tsu.mutation.LastStopTimeCleared() {
+	if _u.mutation.LastStopTimeCleared() {
 		_spec.ClearField(testsummary.FieldLastStopTime, field.TypeTime)
 	}
-	if value, ok := tsu.mutation.TotalRunDurationInMs(); ok {
+	if value, ok := _u.mutation.TotalRunDurationInMs(); ok {
 		_spec.SetField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := tsu.mutation.AddedTotalRunDurationInMs(); ok {
+	if value, ok := _u.mutation.AddedTotalRunDurationInMs(); ok {
 		_spec.AddField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if tsu.mutation.TotalRunDurationInMsCleared() {
+	if _u.mutation.TotalRunDurationInMsCleared() {
 		_spec.ClearField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64)
 	}
-	if tsu.mutation.InvocationTargetCleared() {
+	if _u.mutation.InvocationTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -442,7 +442,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsu.mutation.InvocationTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InvocationTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -458,7 +458,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tsu.mutation.TestResultsCleared() {
+	if _u.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -471,7 +471,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsu.mutation.RemovedTestResultsIDs(); len(nodes) > 0 && !tsu.mutation.TestResultsCleared() {
+	if nodes := _u.mutation.RemovedTestResultsIDs(); len(nodes) > 0 && !_u.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -487,7 +487,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsu.mutation.TestResultsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -503,7 +503,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tsu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testsummary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -511,8 +511,8 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	tsu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TestSummaryUpdateOne is the builder for updating a single TestSummary entity.
@@ -524,306 +524,306 @@ type TestSummaryUpdateOne struct {
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (tsuo *TestSummaryUpdateOne) SetOverallStatus(s string) *TestSummaryUpdateOne {
-	tsuo.mutation.SetOverallStatus(s)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetOverallStatus(v string) *TestSummaryUpdateOne {
+	_u.mutation.SetOverallStatus(v)
+	return _u
 }
 
 // SetNillableOverallStatus sets the "overall_status" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableOverallStatus(s *string) *TestSummaryUpdateOne {
-	if s != nil {
-		tsuo.SetOverallStatus(*s)
+func (_u *TestSummaryUpdateOne) SetNillableOverallStatus(v *string) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetOverallStatus(*v)
 	}
-	return tsuo
+	return _u
 }
 
 // ClearOverallStatus clears the value of the "overall_status" field.
-func (tsuo *TestSummaryUpdateOne) ClearOverallStatus() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearOverallStatus()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearOverallStatus() *TestSummaryUpdateOne {
+	_u.mutation.ClearOverallStatus()
+	return _u
 }
 
 // SetTotalRunCount sets the "total_run_count" field.
-func (tsuo *TestSummaryUpdateOne) SetTotalRunCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetTotalRunCount()
-	tsuo.mutation.SetTotalRunCount(i)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetTotalRunCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.ResetTotalRunCount()
+	_u.mutation.SetTotalRunCount(v)
+	return _u
 }
 
 // SetNillableTotalRunCount sets the "total_run_count" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableTotalRunCount(i *int32) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetTotalRunCount(*i)
+func (_u *TestSummaryUpdateOne) SetNillableTotalRunCount(v *int32) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetTotalRunCount(*v)
 	}
-	return tsuo
+	return _u
 }
 
-// AddTotalRunCount adds i to the "total_run_count" field.
-func (tsuo *TestSummaryUpdateOne) AddTotalRunCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.AddTotalRunCount(i)
-	return tsuo
+// AddTotalRunCount adds value to the "total_run_count" field.
+func (_u *TestSummaryUpdateOne) AddTotalRunCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.AddTotalRunCount(v)
+	return _u
 }
 
 // ClearTotalRunCount clears the value of the "total_run_count" field.
-func (tsuo *TestSummaryUpdateOne) ClearTotalRunCount() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearTotalRunCount()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearTotalRunCount() *TestSummaryUpdateOne {
+	_u.mutation.ClearTotalRunCount()
+	return _u
 }
 
 // SetRunCount sets the "run_count" field.
-func (tsuo *TestSummaryUpdateOne) SetRunCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetRunCount()
-	tsuo.mutation.SetRunCount(i)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetRunCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.ResetRunCount()
+	_u.mutation.SetRunCount(v)
+	return _u
 }
 
 // SetNillableRunCount sets the "run_count" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableRunCount(i *int32) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetRunCount(*i)
+func (_u *TestSummaryUpdateOne) SetNillableRunCount(v *int32) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetRunCount(*v)
 	}
-	return tsuo
+	return _u
 }
 
-// AddRunCount adds i to the "run_count" field.
-func (tsuo *TestSummaryUpdateOne) AddRunCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.AddRunCount(i)
-	return tsuo
+// AddRunCount adds value to the "run_count" field.
+func (_u *TestSummaryUpdateOne) AddRunCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.AddRunCount(v)
+	return _u
 }
 
 // ClearRunCount clears the value of the "run_count" field.
-func (tsuo *TestSummaryUpdateOne) ClearRunCount() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearRunCount()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearRunCount() *TestSummaryUpdateOne {
+	_u.mutation.ClearRunCount()
+	return _u
 }
 
 // SetAttemptCount sets the "attempt_count" field.
-func (tsuo *TestSummaryUpdateOne) SetAttemptCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetAttemptCount()
-	tsuo.mutation.SetAttemptCount(i)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetAttemptCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.ResetAttemptCount()
+	_u.mutation.SetAttemptCount(v)
+	return _u
 }
 
 // SetNillableAttemptCount sets the "attempt_count" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableAttemptCount(i *int32) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetAttemptCount(*i)
+func (_u *TestSummaryUpdateOne) SetNillableAttemptCount(v *int32) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetAttemptCount(*v)
 	}
-	return tsuo
+	return _u
 }
 
-// AddAttemptCount adds i to the "attempt_count" field.
-func (tsuo *TestSummaryUpdateOne) AddAttemptCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.AddAttemptCount(i)
-	return tsuo
+// AddAttemptCount adds value to the "attempt_count" field.
+func (_u *TestSummaryUpdateOne) AddAttemptCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.AddAttemptCount(v)
+	return _u
 }
 
 // ClearAttemptCount clears the value of the "attempt_count" field.
-func (tsuo *TestSummaryUpdateOne) ClearAttemptCount() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearAttemptCount()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearAttemptCount() *TestSummaryUpdateOne {
+	_u.mutation.ClearAttemptCount()
+	return _u
 }
 
 // SetShardCount sets the "shard_count" field.
-func (tsuo *TestSummaryUpdateOne) SetShardCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetShardCount()
-	tsuo.mutation.SetShardCount(i)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetShardCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.ResetShardCount()
+	_u.mutation.SetShardCount(v)
+	return _u
 }
 
 // SetNillableShardCount sets the "shard_count" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableShardCount(i *int32) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetShardCount(*i)
+func (_u *TestSummaryUpdateOne) SetNillableShardCount(v *int32) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetShardCount(*v)
 	}
-	return tsuo
+	return _u
 }
 
-// AddShardCount adds i to the "shard_count" field.
-func (tsuo *TestSummaryUpdateOne) AddShardCount(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.AddShardCount(i)
-	return tsuo
+// AddShardCount adds value to the "shard_count" field.
+func (_u *TestSummaryUpdateOne) AddShardCount(v int32) *TestSummaryUpdateOne {
+	_u.mutation.AddShardCount(v)
+	return _u
 }
 
 // ClearShardCount clears the value of the "shard_count" field.
-func (tsuo *TestSummaryUpdateOne) ClearShardCount() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearShardCount()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearShardCount() *TestSummaryUpdateOne {
+	_u.mutation.ClearShardCount()
+	return _u
 }
 
 // SetTotalNumCached sets the "total_num_cached" field.
-func (tsuo *TestSummaryUpdateOne) SetTotalNumCached(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetTotalNumCached()
-	tsuo.mutation.SetTotalNumCached(i)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetTotalNumCached(v int32) *TestSummaryUpdateOne {
+	_u.mutation.ResetTotalNumCached()
+	_u.mutation.SetTotalNumCached(v)
+	return _u
 }
 
 // SetNillableTotalNumCached sets the "total_num_cached" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableTotalNumCached(i *int32) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetTotalNumCached(*i)
+func (_u *TestSummaryUpdateOne) SetNillableTotalNumCached(v *int32) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetTotalNumCached(*v)
 	}
-	return tsuo
+	return _u
 }
 
-// AddTotalNumCached adds i to the "total_num_cached" field.
-func (tsuo *TestSummaryUpdateOne) AddTotalNumCached(i int32) *TestSummaryUpdateOne {
-	tsuo.mutation.AddTotalNumCached(i)
-	return tsuo
+// AddTotalNumCached adds value to the "total_num_cached" field.
+func (_u *TestSummaryUpdateOne) AddTotalNumCached(v int32) *TestSummaryUpdateOne {
+	_u.mutation.AddTotalNumCached(v)
+	return _u
 }
 
 // ClearTotalNumCached clears the value of the "total_num_cached" field.
-func (tsuo *TestSummaryUpdateOne) ClearTotalNumCached() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearTotalNumCached()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearTotalNumCached() *TestSummaryUpdateOne {
+	_u.mutation.ClearTotalNumCached()
+	return _u
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (tsuo *TestSummaryUpdateOne) SetFirstStartTime(t time.Time) *TestSummaryUpdateOne {
-	tsuo.mutation.SetFirstStartTime(t)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetFirstStartTime(v time.Time) *TestSummaryUpdateOne {
+	_u.mutation.SetFirstStartTime(v)
+	return _u
 }
 
 // SetNillableFirstStartTime sets the "first_start_time" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableFirstStartTime(t *time.Time) *TestSummaryUpdateOne {
-	if t != nil {
-		tsuo.SetFirstStartTime(*t)
+func (_u *TestSummaryUpdateOne) SetNillableFirstStartTime(v *time.Time) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetFirstStartTime(*v)
 	}
-	return tsuo
+	return _u
 }
 
 // ClearFirstStartTime clears the value of the "first_start_time" field.
-func (tsuo *TestSummaryUpdateOne) ClearFirstStartTime() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearFirstStartTime()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearFirstStartTime() *TestSummaryUpdateOne {
+	_u.mutation.ClearFirstStartTime()
+	return _u
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (tsuo *TestSummaryUpdateOne) SetLastStopTime(t time.Time) *TestSummaryUpdateOne {
-	tsuo.mutation.SetLastStopTime(t)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetLastStopTime(v time.Time) *TestSummaryUpdateOne {
+	_u.mutation.SetLastStopTime(v)
+	return _u
 }
 
 // SetNillableLastStopTime sets the "last_stop_time" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableLastStopTime(t *time.Time) *TestSummaryUpdateOne {
-	if t != nil {
-		tsuo.SetLastStopTime(*t)
+func (_u *TestSummaryUpdateOne) SetNillableLastStopTime(v *time.Time) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetLastStopTime(*v)
 	}
-	return tsuo
+	return _u
 }
 
 // ClearLastStopTime clears the value of the "last_stop_time" field.
-func (tsuo *TestSummaryUpdateOne) ClearLastStopTime() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearLastStopTime()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearLastStopTime() *TestSummaryUpdateOne {
+	_u.mutation.ClearLastStopTime()
+	return _u
 }
 
 // SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
-func (tsuo *TestSummaryUpdateOne) SetTotalRunDurationInMs(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetTotalRunDurationInMs()
-	tsuo.mutation.SetTotalRunDurationInMs(i)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetTotalRunDurationInMs(v int64) *TestSummaryUpdateOne {
+	_u.mutation.ResetTotalRunDurationInMs()
+	_u.mutation.SetTotalRunDurationInMs(v)
+	return _u
 }
 
 // SetNillableTotalRunDurationInMs sets the "total_run_duration_in_ms" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableTotalRunDurationInMs(i *int64) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetTotalRunDurationInMs(*i)
+func (_u *TestSummaryUpdateOne) SetNillableTotalRunDurationInMs(v *int64) *TestSummaryUpdateOne {
+	if v != nil {
+		_u.SetTotalRunDurationInMs(*v)
 	}
-	return tsuo
+	return _u
 }
 
-// AddTotalRunDurationInMs adds i to the "total_run_duration_in_ms" field.
-func (tsuo *TestSummaryUpdateOne) AddTotalRunDurationInMs(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.AddTotalRunDurationInMs(i)
-	return tsuo
+// AddTotalRunDurationInMs adds value to the "total_run_duration_in_ms" field.
+func (_u *TestSummaryUpdateOne) AddTotalRunDurationInMs(v int64) *TestSummaryUpdateOne {
+	_u.mutation.AddTotalRunDurationInMs(v)
+	return _u
 }
 
 // ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
-func (tsuo *TestSummaryUpdateOne) ClearTotalRunDurationInMs() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearTotalRunDurationInMs()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearTotalRunDurationInMs() *TestSummaryUpdateOne {
+	_u.mutation.ClearTotalRunDurationInMs()
+	return _u
 }
 
 // SetInvocationTargetID sets the "invocation_target" edge to the InvocationTarget entity by ID.
-func (tsuo *TestSummaryUpdateOne) SetInvocationTargetID(id int64) *TestSummaryUpdateOne {
-	tsuo.mutation.SetInvocationTargetID(id)
-	return tsuo
+func (_u *TestSummaryUpdateOne) SetInvocationTargetID(id int64) *TestSummaryUpdateOne {
+	_u.mutation.SetInvocationTargetID(id)
+	return _u
 }
 
 // SetInvocationTarget sets the "invocation_target" edge to the InvocationTarget entity.
-func (tsuo *TestSummaryUpdateOne) SetInvocationTarget(i *InvocationTarget) *TestSummaryUpdateOne {
-	return tsuo.SetInvocationTargetID(i.ID)
+func (_u *TestSummaryUpdateOne) SetInvocationTarget(v *InvocationTarget) *TestSummaryUpdateOne {
+	return _u.SetInvocationTargetID(v.ID)
 }
 
 // AddTestResultIDs adds the "test_results" edge to the TestResult entity by IDs.
-func (tsuo *TestSummaryUpdateOne) AddTestResultIDs(ids ...int64) *TestSummaryUpdateOne {
-	tsuo.mutation.AddTestResultIDs(ids...)
-	return tsuo
+func (_u *TestSummaryUpdateOne) AddTestResultIDs(ids ...int64) *TestSummaryUpdateOne {
+	_u.mutation.AddTestResultIDs(ids...)
+	return _u
 }
 
 // AddTestResults adds the "test_results" edges to the TestResult entity.
-func (tsuo *TestSummaryUpdateOne) AddTestResults(t ...*TestResult) *TestSummaryUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TestSummaryUpdateOne) AddTestResults(v ...*TestResult) *TestSummaryUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tsuo.AddTestResultIDs(ids...)
+	return _u.AddTestResultIDs(ids...)
 }
 
 // Mutation returns the TestSummaryMutation object of the builder.
-func (tsuo *TestSummaryUpdateOne) Mutation() *TestSummaryMutation {
-	return tsuo.mutation
+func (_u *TestSummaryUpdateOne) Mutation() *TestSummaryMutation {
+	return _u.mutation
 }
 
 // ClearInvocationTarget clears the "invocation_target" edge to the InvocationTarget entity.
-func (tsuo *TestSummaryUpdateOne) ClearInvocationTarget() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearInvocationTarget()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearInvocationTarget() *TestSummaryUpdateOne {
+	_u.mutation.ClearInvocationTarget()
+	return _u
 }
 
 // ClearTestResults clears all "test_results" edges to the TestResult entity.
-func (tsuo *TestSummaryUpdateOne) ClearTestResults() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearTestResults()
-	return tsuo
+func (_u *TestSummaryUpdateOne) ClearTestResults() *TestSummaryUpdateOne {
+	_u.mutation.ClearTestResults()
+	return _u
 }
 
 // RemoveTestResultIDs removes the "test_results" edge to TestResult entities by IDs.
-func (tsuo *TestSummaryUpdateOne) RemoveTestResultIDs(ids ...int64) *TestSummaryUpdateOne {
-	tsuo.mutation.RemoveTestResultIDs(ids...)
-	return tsuo
+func (_u *TestSummaryUpdateOne) RemoveTestResultIDs(ids ...int64) *TestSummaryUpdateOne {
+	_u.mutation.RemoveTestResultIDs(ids...)
+	return _u
 }
 
 // RemoveTestResults removes "test_results" edges to TestResult entities.
-func (tsuo *TestSummaryUpdateOne) RemoveTestResults(t ...*TestResult) *TestSummaryUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TestSummaryUpdateOne) RemoveTestResults(v ...*TestResult) *TestSummaryUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tsuo.RemoveTestResultIDs(ids...)
+	return _u.RemoveTestResultIDs(ids...)
 }
 
 // Where appends a list predicates to the TestSummaryUpdate builder.
-func (tsuo *TestSummaryUpdateOne) Where(ps ...predicate.TestSummary) *TestSummaryUpdateOne {
-	tsuo.mutation.Where(ps...)
-	return tsuo
+func (_u *TestSummaryUpdateOne) Where(ps ...predicate.TestSummary) *TestSummaryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tsuo *TestSummaryUpdateOne) Select(field string, fields ...string) *TestSummaryUpdateOne {
-	tsuo.fields = append([]string{field}, fields...)
-	return tsuo
+func (_u *TestSummaryUpdateOne) Select(field string, fields ...string) *TestSummaryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TestSummary entity.
-func (tsuo *TestSummaryUpdateOne) Save(ctx context.Context) (*TestSummary, error) {
-	return withHooks(ctx, tsuo.sqlSave, tsuo.mutation, tsuo.hooks)
+func (_u *TestSummaryUpdateOne) Save(ctx context.Context) (*TestSummary, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tsuo *TestSummaryUpdateOne) SaveX(ctx context.Context) *TestSummary {
-	node, err := tsuo.Save(ctx)
+func (_u *TestSummaryUpdateOne) SaveX(ctx context.Context) *TestSummary {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -831,37 +831,37 @@ func (tsuo *TestSummaryUpdateOne) SaveX(ctx context.Context) *TestSummary {
 }
 
 // Exec executes the query on the entity.
-func (tsuo *TestSummaryUpdateOne) Exec(ctx context.Context) error {
-	_, err := tsuo.Save(ctx)
+func (_u *TestSummaryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsuo *TestSummaryUpdateOne) ExecX(ctx context.Context) {
-	if err := tsuo.Exec(ctx); err != nil {
+func (_u *TestSummaryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tsuo *TestSummaryUpdateOne) check() error {
-	if tsuo.mutation.InvocationTargetCleared() && len(tsuo.mutation.InvocationTargetIDs()) > 0 {
+func (_u *TestSummaryUpdateOne) check() error {
+	if _u.mutation.InvocationTargetCleared() && len(_u.mutation.InvocationTargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TestSummary.invocation_target"`)
 	}
 	return nil
 }
 
-func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSummary, err error) {
-	if err := tsuo.check(); err != nil {
+func (_u *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSummary, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(testsummary.Table, testsummary.Columns, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64))
-	id, ok := tsuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TestSummary.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tsuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, testsummary.FieldID)
 		for _, f := range fields {
@@ -873,86 +873,86 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			}
 		}
 	}
-	if ps := tsuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tsuo.mutation.OverallStatus(); ok {
+	if value, ok := _u.mutation.OverallStatus(); ok {
 		_spec.SetField(testsummary.FieldOverallStatus, field.TypeString, value)
 	}
-	if tsuo.mutation.OverallStatusCleared() {
+	if _u.mutation.OverallStatusCleared() {
 		_spec.ClearField(testsummary.FieldOverallStatus, field.TypeString)
 	}
-	if value, ok := tsuo.mutation.TotalRunCount(); ok {
+	if value, ok := _u.mutation.TotalRunCount(); ok {
 		_spec.SetField(testsummary.FieldTotalRunCount, field.TypeInt32, value)
 	}
-	if value, ok := tsuo.mutation.AddedTotalRunCount(); ok {
+	if value, ok := _u.mutation.AddedTotalRunCount(); ok {
 		_spec.AddField(testsummary.FieldTotalRunCount, field.TypeInt32, value)
 	}
-	if tsuo.mutation.TotalRunCountCleared() {
+	if _u.mutation.TotalRunCountCleared() {
 		_spec.ClearField(testsummary.FieldTotalRunCount, field.TypeInt32)
 	}
-	if value, ok := tsuo.mutation.RunCount(); ok {
+	if value, ok := _u.mutation.RunCount(); ok {
 		_spec.SetField(testsummary.FieldRunCount, field.TypeInt32, value)
 	}
-	if value, ok := tsuo.mutation.AddedRunCount(); ok {
+	if value, ok := _u.mutation.AddedRunCount(); ok {
 		_spec.AddField(testsummary.FieldRunCount, field.TypeInt32, value)
 	}
-	if tsuo.mutation.RunCountCleared() {
+	if _u.mutation.RunCountCleared() {
 		_spec.ClearField(testsummary.FieldRunCount, field.TypeInt32)
 	}
-	if value, ok := tsuo.mutation.AttemptCount(); ok {
+	if value, ok := _u.mutation.AttemptCount(); ok {
 		_spec.SetField(testsummary.FieldAttemptCount, field.TypeInt32, value)
 	}
-	if value, ok := tsuo.mutation.AddedAttemptCount(); ok {
+	if value, ok := _u.mutation.AddedAttemptCount(); ok {
 		_spec.AddField(testsummary.FieldAttemptCount, field.TypeInt32, value)
 	}
-	if tsuo.mutation.AttemptCountCleared() {
+	if _u.mutation.AttemptCountCleared() {
 		_spec.ClearField(testsummary.FieldAttemptCount, field.TypeInt32)
 	}
-	if value, ok := tsuo.mutation.ShardCount(); ok {
+	if value, ok := _u.mutation.ShardCount(); ok {
 		_spec.SetField(testsummary.FieldShardCount, field.TypeInt32, value)
 	}
-	if value, ok := tsuo.mutation.AddedShardCount(); ok {
+	if value, ok := _u.mutation.AddedShardCount(); ok {
 		_spec.AddField(testsummary.FieldShardCount, field.TypeInt32, value)
 	}
-	if tsuo.mutation.ShardCountCleared() {
+	if _u.mutation.ShardCountCleared() {
 		_spec.ClearField(testsummary.FieldShardCount, field.TypeInt32)
 	}
-	if value, ok := tsuo.mutation.TotalNumCached(); ok {
+	if value, ok := _u.mutation.TotalNumCached(); ok {
 		_spec.SetField(testsummary.FieldTotalNumCached, field.TypeInt32, value)
 	}
-	if value, ok := tsuo.mutation.AddedTotalNumCached(); ok {
+	if value, ok := _u.mutation.AddedTotalNumCached(); ok {
 		_spec.AddField(testsummary.FieldTotalNumCached, field.TypeInt32, value)
 	}
-	if tsuo.mutation.TotalNumCachedCleared() {
+	if _u.mutation.TotalNumCachedCleared() {
 		_spec.ClearField(testsummary.FieldTotalNumCached, field.TypeInt32)
 	}
-	if value, ok := tsuo.mutation.FirstStartTime(); ok {
+	if value, ok := _u.mutation.FirstStartTime(); ok {
 		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeTime, value)
 	}
-	if tsuo.mutation.FirstStartTimeCleared() {
+	if _u.mutation.FirstStartTimeCleared() {
 		_spec.ClearField(testsummary.FieldFirstStartTime, field.TypeTime)
 	}
-	if value, ok := tsuo.mutation.LastStopTime(); ok {
+	if value, ok := _u.mutation.LastStopTime(); ok {
 		_spec.SetField(testsummary.FieldLastStopTime, field.TypeTime, value)
 	}
-	if tsuo.mutation.LastStopTimeCleared() {
+	if _u.mutation.LastStopTimeCleared() {
 		_spec.ClearField(testsummary.FieldLastStopTime, field.TypeTime)
 	}
-	if value, ok := tsuo.mutation.TotalRunDurationInMs(); ok {
+	if value, ok := _u.mutation.TotalRunDurationInMs(); ok {
 		_spec.SetField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := tsuo.mutation.AddedTotalRunDurationInMs(); ok {
+	if value, ok := _u.mutation.AddedTotalRunDurationInMs(); ok {
 		_spec.AddField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if tsuo.mutation.TotalRunDurationInMsCleared() {
+	if _u.mutation.TotalRunDurationInMsCleared() {
 		_spec.ClearField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64)
 	}
-	if tsuo.mutation.InvocationTargetCleared() {
+	if _u.mutation.InvocationTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -965,7 +965,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsuo.mutation.InvocationTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InvocationTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -981,7 +981,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tsuo.mutation.TestResultsCleared() {
+	if _u.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -994,7 +994,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsuo.mutation.RemovedTestResultsIDs(); len(nodes) > 0 && !tsuo.mutation.TestResultsCleared() {
+	if nodes := _u.mutation.RemovedTestResultsIDs(); len(nodes) > 0 && !_u.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1010,7 +1010,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsuo.mutation.TestResultsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.TestResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1026,10 +1026,10 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &TestSummary{config: tsuo.config}
+	_node = &TestSummary{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tsuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testsummary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1037,6 +1037,6 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		return nil, err
 	}
-	tsuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

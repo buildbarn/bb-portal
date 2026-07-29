@@ -23,184 +23,184 @@ type TimingMetricsUpdate struct {
 }
 
 // Where appends a list predicates to the TimingMetricsUpdate builder.
-func (tmu *TimingMetricsUpdate) Where(ps ...predicate.TimingMetrics) *TimingMetricsUpdate {
-	tmu.mutation.Where(ps...)
-	return tmu
+func (_u *TimingMetricsUpdate) Where(ps ...predicate.TimingMetrics) *TimingMetricsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetCPUTimeInMs sets the "cpu_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) SetCPUTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.ResetCPUTimeInMs()
-	tmu.mutation.SetCPUTimeInMs(i)
-	return tmu
+func (_u *TimingMetricsUpdate) SetCPUTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.ResetCPUTimeInMs()
+	_u.mutation.SetCPUTimeInMs(v)
+	return _u
 }
 
 // SetNillableCPUTimeInMs sets the "cpu_time_in_ms" field if the given value is not nil.
-func (tmu *TimingMetricsUpdate) SetNillableCPUTimeInMs(i *int64) *TimingMetricsUpdate {
-	if i != nil {
-		tmu.SetCPUTimeInMs(*i)
+func (_u *TimingMetricsUpdate) SetNillableCPUTimeInMs(v *int64) *TimingMetricsUpdate {
+	if v != nil {
+		_u.SetCPUTimeInMs(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddCPUTimeInMs adds i to the "cpu_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) AddCPUTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.AddCPUTimeInMs(i)
-	return tmu
+// AddCPUTimeInMs adds value to the "cpu_time_in_ms" field.
+func (_u *TimingMetricsUpdate) AddCPUTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.AddCPUTimeInMs(v)
+	return _u
 }
 
 // ClearCPUTimeInMs clears the value of the "cpu_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) ClearCPUTimeInMs() *TimingMetricsUpdate {
-	tmu.mutation.ClearCPUTimeInMs()
-	return tmu
+func (_u *TimingMetricsUpdate) ClearCPUTimeInMs() *TimingMetricsUpdate {
+	_u.mutation.ClearCPUTimeInMs()
+	return _u
 }
 
 // SetWallTimeInMs sets the "wall_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) SetWallTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.ResetWallTimeInMs()
-	tmu.mutation.SetWallTimeInMs(i)
-	return tmu
+func (_u *TimingMetricsUpdate) SetWallTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.ResetWallTimeInMs()
+	_u.mutation.SetWallTimeInMs(v)
+	return _u
 }
 
 // SetNillableWallTimeInMs sets the "wall_time_in_ms" field if the given value is not nil.
-func (tmu *TimingMetricsUpdate) SetNillableWallTimeInMs(i *int64) *TimingMetricsUpdate {
-	if i != nil {
-		tmu.SetWallTimeInMs(*i)
+func (_u *TimingMetricsUpdate) SetNillableWallTimeInMs(v *int64) *TimingMetricsUpdate {
+	if v != nil {
+		_u.SetWallTimeInMs(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddWallTimeInMs adds i to the "wall_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) AddWallTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.AddWallTimeInMs(i)
-	return tmu
+// AddWallTimeInMs adds value to the "wall_time_in_ms" field.
+func (_u *TimingMetricsUpdate) AddWallTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.AddWallTimeInMs(v)
+	return _u
 }
 
 // ClearWallTimeInMs clears the value of the "wall_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) ClearWallTimeInMs() *TimingMetricsUpdate {
-	tmu.mutation.ClearWallTimeInMs()
-	return tmu
+func (_u *TimingMetricsUpdate) ClearWallTimeInMs() *TimingMetricsUpdate {
+	_u.mutation.ClearWallTimeInMs()
+	return _u
 }
 
 // SetAnalysisPhaseTimeInMs sets the "analysis_phase_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) SetAnalysisPhaseTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.ResetAnalysisPhaseTimeInMs()
-	tmu.mutation.SetAnalysisPhaseTimeInMs(i)
-	return tmu
+func (_u *TimingMetricsUpdate) SetAnalysisPhaseTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.ResetAnalysisPhaseTimeInMs()
+	_u.mutation.SetAnalysisPhaseTimeInMs(v)
+	return _u
 }
 
 // SetNillableAnalysisPhaseTimeInMs sets the "analysis_phase_time_in_ms" field if the given value is not nil.
-func (tmu *TimingMetricsUpdate) SetNillableAnalysisPhaseTimeInMs(i *int64) *TimingMetricsUpdate {
-	if i != nil {
-		tmu.SetAnalysisPhaseTimeInMs(*i)
+func (_u *TimingMetricsUpdate) SetNillableAnalysisPhaseTimeInMs(v *int64) *TimingMetricsUpdate {
+	if v != nil {
+		_u.SetAnalysisPhaseTimeInMs(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddAnalysisPhaseTimeInMs adds i to the "analysis_phase_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) AddAnalysisPhaseTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.AddAnalysisPhaseTimeInMs(i)
-	return tmu
+// AddAnalysisPhaseTimeInMs adds value to the "analysis_phase_time_in_ms" field.
+func (_u *TimingMetricsUpdate) AddAnalysisPhaseTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.AddAnalysisPhaseTimeInMs(v)
+	return _u
 }
 
 // ClearAnalysisPhaseTimeInMs clears the value of the "analysis_phase_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) ClearAnalysisPhaseTimeInMs() *TimingMetricsUpdate {
-	tmu.mutation.ClearAnalysisPhaseTimeInMs()
-	return tmu
+func (_u *TimingMetricsUpdate) ClearAnalysisPhaseTimeInMs() *TimingMetricsUpdate {
+	_u.mutation.ClearAnalysisPhaseTimeInMs()
+	return _u
 }
 
 // SetExecutionPhaseTimeInMs sets the "execution_phase_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) SetExecutionPhaseTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.ResetExecutionPhaseTimeInMs()
-	tmu.mutation.SetExecutionPhaseTimeInMs(i)
-	return tmu
+func (_u *TimingMetricsUpdate) SetExecutionPhaseTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.ResetExecutionPhaseTimeInMs()
+	_u.mutation.SetExecutionPhaseTimeInMs(v)
+	return _u
 }
 
 // SetNillableExecutionPhaseTimeInMs sets the "execution_phase_time_in_ms" field if the given value is not nil.
-func (tmu *TimingMetricsUpdate) SetNillableExecutionPhaseTimeInMs(i *int64) *TimingMetricsUpdate {
-	if i != nil {
-		tmu.SetExecutionPhaseTimeInMs(*i)
+func (_u *TimingMetricsUpdate) SetNillableExecutionPhaseTimeInMs(v *int64) *TimingMetricsUpdate {
+	if v != nil {
+		_u.SetExecutionPhaseTimeInMs(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddExecutionPhaseTimeInMs adds i to the "execution_phase_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) AddExecutionPhaseTimeInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.AddExecutionPhaseTimeInMs(i)
-	return tmu
+// AddExecutionPhaseTimeInMs adds value to the "execution_phase_time_in_ms" field.
+func (_u *TimingMetricsUpdate) AddExecutionPhaseTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.AddExecutionPhaseTimeInMs(v)
+	return _u
 }
 
 // ClearExecutionPhaseTimeInMs clears the value of the "execution_phase_time_in_ms" field.
-func (tmu *TimingMetricsUpdate) ClearExecutionPhaseTimeInMs() *TimingMetricsUpdate {
-	tmu.mutation.ClearExecutionPhaseTimeInMs()
-	return tmu
+func (_u *TimingMetricsUpdate) ClearExecutionPhaseTimeInMs() *TimingMetricsUpdate {
+	_u.mutation.ClearExecutionPhaseTimeInMs()
+	return _u
 }
 
 // SetActionsExecutionStartInMs sets the "actions_execution_start_in_ms" field.
-func (tmu *TimingMetricsUpdate) SetActionsExecutionStartInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.ResetActionsExecutionStartInMs()
-	tmu.mutation.SetActionsExecutionStartInMs(i)
-	return tmu
+func (_u *TimingMetricsUpdate) SetActionsExecutionStartInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.ResetActionsExecutionStartInMs()
+	_u.mutation.SetActionsExecutionStartInMs(v)
+	return _u
 }
 
 // SetNillableActionsExecutionStartInMs sets the "actions_execution_start_in_ms" field if the given value is not nil.
-func (tmu *TimingMetricsUpdate) SetNillableActionsExecutionStartInMs(i *int64) *TimingMetricsUpdate {
-	if i != nil {
-		tmu.SetActionsExecutionStartInMs(*i)
+func (_u *TimingMetricsUpdate) SetNillableActionsExecutionStartInMs(v *int64) *TimingMetricsUpdate {
+	if v != nil {
+		_u.SetActionsExecutionStartInMs(*v)
 	}
-	return tmu
+	return _u
 }
 
-// AddActionsExecutionStartInMs adds i to the "actions_execution_start_in_ms" field.
-func (tmu *TimingMetricsUpdate) AddActionsExecutionStartInMs(i int64) *TimingMetricsUpdate {
-	tmu.mutation.AddActionsExecutionStartInMs(i)
-	return tmu
+// AddActionsExecutionStartInMs adds value to the "actions_execution_start_in_ms" field.
+func (_u *TimingMetricsUpdate) AddActionsExecutionStartInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.AddActionsExecutionStartInMs(v)
+	return _u
 }
 
 // ClearActionsExecutionStartInMs clears the value of the "actions_execution_start_in_ms" field.
-func (tmu *TimingMetricsUpdate) ClearActionsExecutionStartInMs() *TimingMetricsUpdate {
-	tmu.mutation.ClearActionsExecutionStartInMs()
-	return tmu
+func (_u *TimingMetricsUpdate) ClearActionsExecutionStartInMs() *TimingMetricsUpdate {
+	_u.mutation.ClearActionsExecutionStartInMs()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmu *TimingMetricsUpdate) SetMetricsID(id int64) *TimingMetricsUpdate {
-	tmu.mutation.SetMetricsID(id)
-	return tmu
+func (_u *TimingMetricsUpdate) SetMetricsID(id int64) *TimingMetricsUpdate {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmu *TimingMetricsUpdate) SetNillableMetricsID(id *int64) *TimingMetricsUpdate {
+func (_u *TimingMetricsUpdate) SetNillableMetricsID(id *int64) *TimingMetricsUpdate {
 	if id != nil {
-		tmu = tmu.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return tmu
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (tmu *TimingMetricsUpdate) SetMetrics(m *Metrics) *TimingMetricsUpdate {
-	return tmu.SetMetricsID(m.ID)
+func (_u *TimingMetricsUpdate) SetMetrics(v *Metrics) *TimingMetricsUpdate {
+	return _u.SetMetricsID(v.ID)
 }
 
 // Mutation returns the TimingMetricsMutation object of the builder.
-func (tmu *TimingMetricsUpdate) Mutation() *TimingMetricsMutation {
-	return tmu.mutation
+func (_u *TimingMetricsUpdate) Mutation() *TimingMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (tmu *TimingMetricsUpdate) ClearMetrics() *TimingMetricsUpdate {
-	tmu.mutation.ClearMetrics()
-	return tmu
+func (_u *TimingMetricsUpdate) ClearMetrics() *TimingMetricsUpdate {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tmu *TimingMetricsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tmu.sqlSave, tmu.mutation, tmu.hooks)
+func (_u *TimingMetricsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tmu *TimingMetricsUpdate) SaveX(ctx context.Context) int {
-	affected, err := tmu.Save(ctx)
+func (_u *TimingMetricsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -208,73 +208,73 @@ func (tmu *TimingMetricsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tmu *TimingMetricsUpdate) Exec(ctx context.Context) error {
-	_, err := tmu.Save(ctx)
+func (_u *TimingMetricsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmu *TimingMetricsUpdate) ExecX(ctx context.Context) {
-	if err := tmu.Exec(ctx); err != nil {
+func (_u *TimingMetricsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *TimingMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
-	if ps := tmu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tmu.mutation.CPUTimeInMs(); ok {
+	if value, ok := _u.mutation.CPUTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedCPUTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedCPUTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64, value)
 	}
-	if tmu.mutation.CPUTimeInMsCleared() {
+	if _u.mutation.CPUTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmu.mutation.WallTimeInMs(); ok {
+	if value, ok := _u.mutation.WallTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldWallTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedWallTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedWallTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldWallTimeInMs, field.TypeInt64, value)
 	}
-	if tmu.mutation.WallTimeInMsCleared() {
+	if _u.mutation.WallTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldWallTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmu.mutation.AnalysisPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.AnalysisPhaseTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldAnalysisPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedAnalysisPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedAnalysisPhaseTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldAnalysisPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if tmu.mutation.AnalysisPhaseTimeInMsCleared() {
+	if _u.mutation.AnalysisPhaseTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldAnalysisPhaseTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmu.mutation.ExecutionPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.ExecutionPhaseTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldExecutionPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedExecutionPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedExecutionPhaseTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldExecutionPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if tmu.mutation.ExecutionPhaseTimeInMsCleared() {
+	if _u.mutation.ExecutionPhaseTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldExecutionPhaseTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmu.mutation.ActionsExecutionStartInMs(); ok {
+	if value, ok := _u.mutation.ActionsExecutionStartInMs(); ok {
 		_spec.SetField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmu.mutation.AddedActionsExecutionStartInMs(); ok {
+	if value, ok := _u.mutation.AddedActionsExecutionStartInMs(); ok {
 		_spec.AddField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64, value)
 	}
-	if tmu.mutation.ActionsExecutionStartInMsCleared() {
+	if _u.mutation.ActionsExecutionStartInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64)
 	}
-	if tmu.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -287,7 +287,7 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tmu.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -303,7 +303,7 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tmu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{timingmetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -311,8 +311,8 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	tmu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TimingMetricsUpdateOne is the builder for updating a single TimingMetrics entity.
@@ -324,191 +324,191 @@ type TimingMetricsUpdateOne struct {
 }
 
 // SetCPUTimeInMs sets the "cpu_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) SetCPUTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.ResetCPUTimeInMs()
-	tmuo.mutation.SetCPUTimeInMs(i)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) SetCPUTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.ResetCPUTimeInMs()
+	_u.mutation.SetCPUTimeInMs(v)
+	return _u
 }
 
 // SetNillableCPUTimeInMs sets the "cpu_time_in_ms" field if the given value is not nil.
-func (tmuo *TimingMetricsUpdateOne) SetNillableCPUTimeInMs(i *int64) *TimingMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetCPUTimeInMs(*i)
+func (_u *TimingMetricsUpdateOne) SetNillableCPUTimeInMs(v *int64) *TimingMetricsUpdateOne {
+	if v != nil {
+		_u.SetCPUTimeInMs(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddCPUTimeInMs adds i to the "cpu_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) AddCPUTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.AddCPUTimeInMs(i)
-	return tmuo
+// AddCPUTimeInMs adds value to the "cpu_time_in_ms" field.
+func (_u *TimingMetricsUpdateOne) AddCPUTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.AddCPUTimeInMs(v)
+	return _u
 }
 
 // ClearCPUTimeInMs clears the value of the "cpu_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) ClearCPUTimeInMs() *TimingMetricsUpdateOne {
-	tmuo.mutation.ClearCPUTimeInMs()
-	return tmuo
+func (_u *TimingMetricsUpdateOne) ClearCPUTimeInMs() *TimingMetricsUpdateOne {
+	_u.mutation.ClearCPUTimeInMs()
+	return _u
 }
 
 // SetWallTimeInMs sets the "wall_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) SetWallTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.ResetWallTimeInMs()
-	tmuo.mutation.SetWallTimeInMs(i)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) SetWallTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.ResetWallTimeInMs()
+	_u.mutation.SetWallTimeInMs(v)
+	return _u
 }
 
 // SetNillableWallTimeInMs sets the "wall_time_in_ms" field if the given value is not nil.
-func (tmuo *TimingMetricsUpdateOne) SetNillableWallTimeInMs(i *int64) *TimingMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetWallTimeInMs(*i)
+func (_u *TimingMetricsUpdateOne) SetNillableWallTimeInMs(v *int64) *TimingMetricsUpdateOne {
+	if v != nil {
+		_u.SetWallTimeInMs(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddWallTimeInMs adds i to the "wall_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) AddWallTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.AddWallTimeInMs(i)
-	return tmuo
+// AddWallTimeInMs adds value to the "wall_time_in_ms" field.
+func (_u *TimingMetricsUpdateOne) AddWallTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.AddWallTimeInMs(v)
+	return _u
 }
 
 // ClearWallTimeInMs clears the value of the "wall_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) ClearWallTimeInMs() *TimingMetricsUpdateOne {
-	tmuo.mutation.ClearWallTimeInMs()
-	return tmuo
+func (_u *TimingMetricsUpdateOne) ClearWallTimeInMs() *TimingMetricsUpdateOne {
+	_u.mutation.ClearWallTimeInMs()
+	return _u
 }
 
 // SetAnalysisPhaseTimeInMs sets the "analysis_phase_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) SetAnalysisPhaseTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.ResetAnalysisPhaseTimeInMs()
-	tmuo.mutation.SetAnalysisPhaseTimeInMs(i)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) SetAnalysisPhaseTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.ResetAnalysisPhaseTimeInMs()
+	_u.mutation.SetAnalysisPhaseTimeInMs(v)
+	return _u
 }
 
 // SetNillableAnalysisPhaseTimeInMs sets the "analysis_phase_time_in_ms" field if the given value is not nil.
-func (tmuo *TimingMetricsUpdateOne) SetNillableAnalysisPhaseTimeInMs(i *int64) *TimingMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetAnalysisPhaseTimeInMs(*i)
+func (_u *TimingMetricsUpdateOne) SetNillableAnalysisPhaseTimeInMs(v *int64) *TimingMetricsUpdateOne {
+	if v != nil {
+		_u.SetAnalysisPhaseTimeInMs(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddAnalysisPhaseTimeInMs adds i to the "analysis_phase_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) AddAnalysisPhaseTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.AddAnalysisPhaseTimeInMs(i)
-	return tmuo
+// AddAnalysisPhaseTimeInMs adds value to the "analysis_phase_time_in_ms" field.
+func (_u *TimingMetricsUpdateOne) AddAnalysisPhaseTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.AddAnalysisPhaseTimeInMs(v)
+	return _u
 }
 
 // ClearAnalysisPhaseTimeInMs clears the value of the "analysis_phase_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) ClearAnalysisPhaseTimeInMs() *TimingMetricsUpdateOne {
-	tmuo.mutation.ClearAnalysisPhaseTimeInMs()
-	return tmuo
+func (_u *TimingMetricsUpdateOne) ClearAnalysisPhaseTimeInMs() *TimingMetricsUpdateOne {
+	_u.mutation.ClearAnalysisPhaseTimeInMs()
+	return _u
 }
 
 // SetExecutionPhaseTimeInMs sets the "execution_phase_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) SetExecutionPhaseTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.ResetExecutionPhaseTimeInMs()
-	tmuo.mutation.SetExecutionPhaseTimeInMs(i)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) SetExecutionPhaseTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.ResetExecutionPhaseTimeInMs()
+	_u.mutation.SetExecutionPhaseTimeInMs(v)
+	return _u
 }
 
 // SetNillableExecutionPhaseTimeInMs sets the "execution_phase_time_in_ms" field if the given value is not nil.
-func (tmuo *TimingMetricsUpdateOne) SetNillableExecutionPhaseTimeInMs(i *int64) *TimingMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetExecutionPhaseTimeInMs(*i)
+func (_u *TimingMetricsUpdateOne) SetNillableExecutionPhaseTimeInMs(v *int64) *TimingMetricsUpdateOne {
+	if v != nil {
+		_u.SetExecutionPhaseTimeInMs(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddExecutionPhaseTimeInMs adds i to the "execution_phase_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) AddExecutionPhaseTimeInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.AddExecutionPhaseTimeInMs(i)
-	return tmuo
+// AddExecutionPhaseTimeInMs adds value to the "execution_phase_time_in_ms" field.
+func (_u *TimingMetricsUpdateOne) AddExecutionPhaseTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.AddExecutionPhaseTimeInMs(v)
+	return _u
 }
 
 // ClearExecutionPhaseTimeInMs clears the value of the "execution_phase_time_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) ClearExecutionPhaseTimeInMs() *TimingMetricsUpdateOne {
-	tmuo.mutation.ClearExecutionPhaseTimeInMs()
-	return tmuo
+func (_u *TimingMetricsUpdateOne) ClearExecutionPhaseTimeInMs() *TimingMetricsUpdateOne {
+	_u.mutation.ClearExecutionPhaseTimeInMs()
+	return _u
 }
 
 // SetActionsExecutionStartInMs sets the "actions_execution_start_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) SetActionsExecutionStartInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.ResetActionsExecutionStartInMs()
-	tmuo.mutation.SetActionsExecutionStartInMs(i)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) SetActionsExecutionStartInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.ResetActionsExecutionStartInMs()
+	_u.mutation.SetActionsExecutionStartInMs(v)
+	return _u
 }
 
 // SetNillableActionsExecutionStartInMs sets the "actions_execution_start_in_ms" field if the given value is not nil.
-func (tmuo *TimingMetricsUpdateOne) SetNillableActionsExecutionStartInMs(i *int64) *TimingMetricsUpdateOne {
-	if i != nil {
-		tmuo.SetActionsExecutionStartInMs(*i)
+func (_u *TimingMetricsUpdateOne) SetNillableActionsExecutionStartInMs(v *int64) *TimingMetricsUpdateOne {
+	if v != nil {
+		_u.SetActionsExecutionStartInMs(*v)
 	}
-	return tmuo
+	return _u
 }
 
-// AddActionsExecutionStartInMs adds i to the "actions_execution_start_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) AddActionsExecutionStartInMs(i int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.AddActionsExecutionStartInMs(i)
-	return tmuo
+// AddActionsExecutionStartInMs adds value to the "actions_execution_start_in_ms" field.
+func (_u *TimingMetricsUpdateOne) AddActionsExecutionStartInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.AddActionsExecutionStartInMs(v)
+	return _u
 }
 
 // ClearActionsExecutionStartInMs clears the value of the "actions_execution_start_in_ms" field.
-func (tmuo *TimingMetricsUpdateOne) ClearActionsExecutionStartInMs() *TimingMetricsUpdateOne {
-	tmuo.mutation.ClearActionsExecutionStartInMs()
-	return tmuo
+func (_u *TimingMetricsUpdateOne) ClearActionsExecutionStartInMs() *TimingMetricsUpdateOne {
+	_u.mutation.ClearActionsExecutionStartInMs()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmuo *TimingMetricsUpdateOne) SetMetricsID(id int64) *TimingMetricsUpdateOne {
-	tmuo.mutation.SetMetricsID(id)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) SetMetricsID(id int64) *TimingMetricsUpdateOne {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmuo *TimingMetricsUpdateOne) SetNillableMetricsID(id *int64) *TimingMetricsUpdateOne {
+func (_u *TimingMetricsUpdateOne) SetNillableMetricsID(id *int64) *TimingMetricsUpdateOne {
 	if id != nil {
-		tmuo = tmuo.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return tmuo
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (tmuo *TimingMetricsUpdateOne) SetMetrics(m *Metrics) *TimingMetricsUpdateOne {
-	return tmuo.SetMetricsID(m.ID)
+func (_u *TimingMetricsUpdateOne) SetMetrics(v *Metrics) *TimingMetricsUpdateOne {
+	return _u.SetMetricsID(v.ID)
 }
 
 // Mutation returns the TimingMetricsMutation object of the builder.
-func (tmuo *TimingMetricsUpdateOne) Mutation() *TimingMetricsMutation {
-	return tmuo.mutation
+func (_u *TimingMetricsUpdateOne) Mutation() *TimingMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (tmuo *TimingMetricsUpdateOne) ClearMetrics() *TimingMetricsUpdateOne {
-	tmuo.mutation.ClearMetrics()
-	return tmuo
+func (_u *TimingMetricsUpdateOne) ClearMetrics() *TimingMetricsUpdateOne {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // Where appends a list predicates to the TimingMetricsUpdate builder.
-func (tmuo *TimingMetricsUpdateOne) Where(ps ...predicate.TimingMetrics) *TimingMetricsUpdateOne {
-	tmuo.mutation.Where(ps...)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) Where(ps ...predicate.TimingMetrics) *TimingMetricsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tmuo *TimingMetricsUpdateOne) Select(field string, fields ...string) *TimingMetricsUpdateOne {
-	tmuo.fields = append([]string{field}, fields...)
-	return tmuo
+func (_u *TimingMetricsUpdateOne) Select(field string, fields ...string) *TimingMetricsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TimingMetrics entity.
-func (tmuo *TimingMetricsUpdateOne) Save(ctx context.Context) (*TimingMetrics, error) {
-	return withHooks(ctx, tmuo.sqlSave, tmuo.mutation, tmuo.hooks)
+func (_u *TimingMetricsUpdateOne) Save(ctx context.Context) (*TimingMetrics, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tmuo *TimingMetricsUpdateOne) SaveX(ctx context.Context) *TimingMetrics {
-	node, err := tmuo.Save(ctx)
+func (_u *TimingMetricsUpdateOne) SaveX(ctx context.Context) *TimingMetrics {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -516,26 +516,26 @@ func (tmuo *TimingMetricsUpdateOne) SaveX(ctx context.Context) *TimingMetrics {
 }
 
 // Exec executes the query on the entity.
-func (tmuo *TimingMetricsUpdateOne) Exec(ctx context.Context) error {
-	_, err := tmuo.Save(ctx)
+func (_u *TimingMetricsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tmuo *TimingMetricsUpdateOne) ExecX(ctx context.Context) {
-	if err := tmuo.Exec(ctx); err != nil {
+func (_u *TimingMetricsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingMetrics, err error) {
+func (_u *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
-	id, ok := tmuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TimingMetrics.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tmuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, timingmetrics.FieldID)
 		for _, f := range fields {
@@ -547,59 +547,59 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 			}
 		}
 	}
-	if ps := tmuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tmuo.mutation.CPUTimeInMs(); ok {
+	if value, ok := _u.mutation.CPUTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedCPUTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedCPUTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64, value)
 	}
-	if tmuo.mutation.CPUTimeInMsCleared() {
+	if _u.mutation.CPUTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldCPUTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmuo.mutation.WallTimeInMs(); ok {
+	if value, ok := _u.mutation.WallTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldWallTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedWallTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedWallTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldWallTimeInMs, field.TypeInt64, value)
 	}
-	if tmuo.mutation.WallTimeInMsCleared() {
+	if _u.mutation.WallTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldWallTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmuo.mutation.AnalysisPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.AnalysisPhaseTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldAnalysisPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedAnalysisPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedAnalysisPhaseTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldAnalysisPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if tmuo.mutation.AnalysisPhaseTimeInMsCleared() {
+	if _u.mutation.AnalysisPhaseTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldAnalysisPhaseTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmuo.mutation.ExecutionPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.ExecutionPhaseTimeInMs(); ok {
 		_spec.SetField(timingmetrics.FieldExecutionPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedExecutionPhaseTimeInMs(); ok {
+	if value, ok := _u.mutation.AddedExecutionPhaseTimeInMs(); ok {
 		_spec.AddField(timingmetrics.FieldExecutionPhaseTimeInMs, field.TypeInt64, value)
 	}
-	if tmuo.mutation.ExecutionPhaseTimeInMsCleared() {
+	if _u.mutation.ExecutionPhaseTimeInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldExecutionPhaseTimeInMs, field.TypeInt64)
 	}
-	if value, ok := tmuo.mutation.ActionsExecutionStartInMs(); ok {
+	if value, ok := _u.mutation.ActionsExecutionStartInMs(); ok {
 		_spec.SetField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64, value)
 	}
-	if value, ok := tmuo.mutation.AddedActionsExecutionStartInMs(); ok {
+	if value, ok := _u.mutation.AddedActionsExecutionStartInMs(); ok {
 		_spec.AddField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64, value)
 	}
-	if tmuo.mutation.ActionsExecutionStartInMsCleared() {
+	if _u.mutation.ActionsExecutionStartInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64)
 	}
-	if tmuo.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -612,7 +612,7 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tmuo.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -628,10 +628,10 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &TimingMetrics{config: tmuo.config}
+	_node = &TimingMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tmuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{timingmetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -639,6 +639,6 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 		}
 		return nil, err
 	}
-	tmuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

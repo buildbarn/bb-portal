@@ -9,6 +9,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/privacy"
@@ -74,6 +76,33 @@ func (Build) Policy() ent.Policy {
 		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
 			return entql.HasEdgeWith(
 				build.EdgeInstanceName,
+				entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+			)
+		})
+	})
+}
+
+// Policy for File.
+func (File) Policy() ent.Policy {
+	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				file.EdgeFilePath,
+				entql.HasEdgeWith(
+					filepath.EdgeBepInstanceName,
+					entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+				),
+			)
+		})
+	})
+}
+
+// Policy for FilePath.
+func (FilePath) Policy() ent.Policy {
+	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				filepath.EdgeBepInstanceName,
 				entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
 			)
 		})

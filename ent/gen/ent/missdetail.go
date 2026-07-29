@@ -70,7 +70,7 @@ func (*MissDetail) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the MissDetail fields.
-func (md *MissDetail) assignValues(columns []string, values []any) error {
+func (_m *MissDetail) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -81,28 +81,28 @@ func (md *MissDetail) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			md.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case missdetail.FieldReason:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field reason", values[i])
 			} else if value.Valid {
-				md.Reason = value.String
+				_m.Reason = value.String
 			}
 		case missdetail.FieldCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field count", values[i])
 			} else if value.Valid {
-				md.Count = int32(value.Int64)
+				_m.Count = int32(value.Int64)
 			}
 		case missdetail.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_cache_statistics_miss_details", value)
 			} else if value.Valid {
-				md.action_cache_statistics_miss_details = new(int64)
-				*md.action_cache_statistics_miss_details = int64(value.Int64)
+				_m.action_cache_statistics_miss_details = new(int64)
+				*_m.action_cache_statistics_miss_details = int64(value.Int64)
 			}
 		default:
-			md.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -110,43 +110,43 @@ func (md *MissDetail) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the MissDetail.
 // This includes values selected through modifiers, order, etc.
-func (md *MissDetail) Value(name string) (ent.Value, error) {
-	return md.selectValues.Get(name)
+func (_m *MissDetail) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryActionCacheStatistics queries the "action_cache_statistics" edge of the MissDetail entity.
-func (md *MissDetail) QueryActionCacheStatistics() *ActionCacheStatisticsQuery {
-	return NewMissDetailClient(md.config).QueryActionCacheStatistics(md)
+func (_m *MissDetail) QueryActionCacheStatistics() *ActionCacheStatisticsQuery {
+	return NewMissDetailClient(_m.config).QueryActionCacheStatistics(_m)
 }
 
 // Update returns a builder for updating this MissDetail.
 // Note that you need to call MissDetail.Unwrap() before calling this method if this MissDetail
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (md *MissDetail) Update() *MissDetailUpdateOne {
-	return NewMissDetailClient(md.config).UpdateOne(md)
+func (_m *MissDetail) Update() *MissDetailUpdateOne {
+	return NewMissDetailClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the MissDetail entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (md *MissDetail) Unwrap() *MissDetail {
-	_tx, ok := md.config.driver.(*txDriver)
+func (_m *MissDetail) Unwrap() *MissDetail {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: MissDetail is not a transactional entity")
 	}
-	md.config.driver = _tx.drv
-	return md
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (md *MissDetail) String() string {
+func (_m *MissDetail) String() string {
 	var builder strings.Builder
 	builder.WriteString("MissDetail(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", md.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("reason=")
-	builder.WriteString(md.Reason)
+	builder.WriteString(_m.Reason)
 	builder.WriteString(", ")
 	builder.WriteString("count=")
-	builder.WriteString(fmt.Sprintf("%v", md.Count))
+	builder.WriteString(fmt.Sprintf("%v", _m.Count))
 	builder.WriteByte(')')
 	return builder.String()
 }

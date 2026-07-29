@@ -24,6 +24,11 @@
                "run": "bazel test --test_output=errors //..."
             },
             {
+               "if": "matrix.host.platform_name == 'macos_arm64'",
+               "name": "macos_arm64: build and test",
+               "run": "bazel test --test_output=errors //..."
+            },
+            {
                "if": "matrix.host.cross_compile",
                "name": "Cross-platform builds",
                "run": "bazel build --platforms=@com_github_buildbarn_bb_storage//tools/platforms:darwin_amd64,@com_github_buildbarn_bb_storage//tools/platforms:darwin_arm64,@com_github_buildbarn_bb_storage//tools/platforms:freebsd_amd64,@com_github_buildbarn_bb_storage//tools/platforms:windows_amd64 --@bazel_tools//tools/test:incompatible_use_default_test_toolchain=False //..."
@@ -45,6 +50,13 @@
                      "cross_compile": false,
                      "platform_name": "linux_arm64",
                      "runs_on": "ubuntu-24.04-arm"
+                  },
+                  {
+                     "bazel_arch": "arm64",
+                     "bazel_os": "darwin",
+                     "cross_compile": false,
+                     "platform_name": "macos_arm64",
+                     "runs_on": "macos-26"
                   },
                   {
                      "bazel_arch": "arm64",

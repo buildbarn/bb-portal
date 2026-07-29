@@ -356,7 +356,6 @@ func (s *instanceSeeder) seedBuildInvocationTargets(ctx context.Context, invocat
 					SetBazelInvocation(invocation).
 					SetTarget(target).
 					SetSuccess(true).
-					SetDurationInMs(int64(1500 + (target.ID * 10))).
 					SetAbortReason("NONE"),
 			)
 			if err != nil {
@@ -447,7 +446,6 @@ func (s *instanceSeeder) seedTestInvocationTargets(ctx context.Context, invocati
 				SetBazelInvocation(invocation).
 				SetTarget(target).
 				SetSuccess(true).
-				SetDurationInMs(int64(1500 + (target.ID * 10))).
 				SetAbortReason("NONE"))
 			if err != nil {
 				return err

@@ -37,8 +37,10 @@ type Querier interface {
 	// instantiations, otherwise golden file generation may have a different
 	// order than what's used during the test.
 	CreateTargets(ctx context.Context, arg CreateTargetsParams) ([]CreateTargetsRow, error)
+	CreateTestActionOutputAssociation(ctx context.Context, arg CreateTestActionOutputAssociationParams) (int64, error)
 	// STAGE 2: Join the rest using the specific Target IDs we found
-	CreateTestResultsBulk(ctx context.Context, arg CreateTestResultsBulkParams) (int64, error)
+	// Order the results by the input order
+	CreateTestResultsBulk(ctx context.Context, arg CreateTestResultsBulkParams) ([]int64, error)
 	// STAGE 2: Join the rest using the specific Target IDs we found
 	CreateTestSummariesBulk(ctx context.Context, arg CreateTestSummariesBulkParams) (int64, error)
 	CreateTestTargetsBulk(ctx context.Context, targetIds []int64) error
@@ -46,16 +48,24 @@ type Querier interface {
 	DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error)
 	DeleteOrphanedTestTargetsFromPages(ctx context.Context, arg DeleteOrphanedTestTargetsFromPagesParams) (int64, error)
 	DeleteTargetKindMappingsFromPages(ctx context.Context, arg DeleteTargetKindMappingsFromPagesParams) (int64, error)
+	DeleteUnusedDigestFromPages(ctx context.Context, arg DeleteUnusedDigestFromPagesParams) (int64, error)
+	DeleteUnusedFilePathsFromPages(ctx context.Context, arg DeleteUnusedFilePathsFromPagesParams) (int64, error)
+	DeleteUnusedFilesFromPages(ctx context.Context, arg DeleteUnusedFilesFromPagesParams) (int64, error)
 	DeleteUnusedTargetsFromPages(ctx context.Context, arg DeleteUnusedTargetsFromPagesParams) (int64, error)
 	FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error)
 	FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error)
+	GetInvocationsForLogCompactionFromPages(ctx context.Context, arg GetInvocationsForLogCompactionFromPagesParams) ([]GetInvocationsForLogCompactionFromPagesRow, error)
 	GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error)
+	InsertMissingDigests(ctx context.Context, arg InsertMissingDigestsParams) error
+	InsertMissingFilePaths(ctx context.Context, arg InsertMissingFilePathsParams) error
+	InsertMissingFiles(ctx context.Context, arg InsertMissingFilesParams) error
 	LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error)
 	LockStaleInvocationsFromPages(ctx context.Context, arg LockStaleInvocationsFromPagesParams) (int64, error)
 	SelectForeignKeysWithoutIndexes(ctx context.Context) ([]SelectForeignKeysWithoutIndexesRow, error)
 	//
 	// Returns the number of physical blocks of a table
 	SelectPages(ctx context.Context, tableName string) (int32, error)
+	SelectRedundantIndexes(ctx context.Context) ([]SelectRedundantIndexesRow, error)
 	UpdateBuildTimestampFromInvocation(ctx context.Context, invocationID int64) error
 	UpdateCompletedInvocationWithEndTimeFromEventMetadata(ctx context.Context) (int64, error)
 	UpdateEventMetadata(ctx context.Context, arg UpdateEventMetadataParams) (int64, error)

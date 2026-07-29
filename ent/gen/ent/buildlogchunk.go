@@ -74,7 +74,7 @@ func (*BuildLogChunk) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the BuildLogChunk fields.
-func (blc *BuildLogChunk) assignValues(columns []string, values []any) error {
+func (_m *BuildLogChunk) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -85,40 +85,40 @@ func (blc *BuildLogChunk) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			blc.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case buildlogchunk.FieldData:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field data", values[i])
 			} else if value != nil {
-				blc.Data = *value
+				_m.Data = *value
 			}
 		case buildlogchunk.FieldChunkIndex:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field chunk_index", values[i])
 			} else if value.Valid {
-				blc.ChunkIndex = int(value.Int64)
+				_m.ChunkIndex = int(value.Int64)
 			}
 		case buildlogchunk.FieldFirstLineIndex:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field first_line_index", values[i])
 			} else if value.Valid {
-				blc.FirstLineIndex = value.Int64
+				_m.FirstLineIndex = value.Int64
 			}
 		case buildlogchunk.FieldLastLineIndex:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field last_line_index", values[i])
 			} else if value.Valid {
-				blc.LastLineIndex = value.Int64
+				_m.LastLineIndex = value.Int64
 			}
 		case buildlogchunk.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_build_log_chunks", value)
 			} else if value.Valid {
-				blc.bazel_invocation_build_log_chunks = new(int64)
-				*blc.bazel_invocation_build_log_chunks = int64(value.Int64)
+				_m.bazel_invocation_build_log_chunks = new(int64)
+				*_m.bazel_invocation_build_log_chunks = int64(value.Int64)
 			}
 		default:
-			blc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -126,49 +126,49 @@ func (blc *BuildLogChunk) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the BuildLogChunk.
 // This includes values selected through modifiers, order, etc.
-func (blc *BuildLogChunk) Value(name string) (ent.Value, error) {
-	return blc.selectValues.Get(name)
+func (_m *BuildLogChunk) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the BuildLogChunk entity.
-func (blc *BuildLogChunk) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewBuildLogChunkClient(blc.config).QueryBazelInvocation(blc)
+func (_m *BuildLogChunk) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewBuildLogChunkClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // Update returns a builder for updating this BuildLogChunk.
 // Note that you need to call BuildLogChunk.Unwrap() before calling this method if this BuildLogChunk
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (blc *BuildLogChunk) Update() *BuildLogChunkUpdateOne {
-	return NewBuildLogChunkClient(blc.config).UpdateOne(blc)
+func (_m *BuildLogChunk) Update() *BuildLogChunkUpdateOne {
+	return NewBuildLogChunkClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the BuildLogChunk entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (blc *BuildLogChunk) Unwrap() *BuildLogChunk {
-	_tx, ok := blc.config.driver.(*txDriver)
+func (_m *BuildLogChunk) Unwrap() *BuildLogChunk {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: BuildLogChunk is not a transactional entity")
 	}
-	blc.config.driver = _tx.drv
-	return blc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (blc *BuildLogChunk) String() string {
+func (_m *BuildLogChunk) String() string {
 	var builder strings.Builder
 	builder.WriteString("BuildLogChunk(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", blc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("data=")
-	builder.WriteString(fmt.Sprintf("%v", blc.Data))
+	builder.WriteString(fmt.Sprintf("%v", _m.Data))
 	builder.WriteString(", ")
 	builder.WriteString("chunk_index=")
-	builder.WriteString(fmt.Sprintf("%v", blc.ChunkIndex))
+	builder.WriteString(fmt.Sprintf("%v", _m.ChunkIndex))
 	builder.WriteString(", ")
 	builder.WriteString("first_line_index=")
-	builder.WriteString(fmt.Sprintf("%v", blc.FirstLineIndex))
+	builder.WriteString(fmt.Sprintf("%v", _m.FirstLineIndex))
 	builder.WriteString(", ")
 	builder.WriteString("last_line_index=")
-	builder.WriteString(fmt.Sprintf("%v", blc.LastLineIndex))
+	builder.WriteString(fmt.Sprintf("%v", _m.LastLineIndex))
 	builder.WriteByte(')')
 	return builder.String()
 }

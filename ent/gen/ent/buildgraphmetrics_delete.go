@@ -20,56 +20,56 @@ type BuildGraphMetricsDelete struct {
 }
 
 // Where appends a list predicates to the BuildGraphMetricsDelete builder.
-func (bgmd *BuildGraphMetricsDelete) Where(ps ...predicate.BuildGraphMetrics) *BuildGraphMetricsDelete {
-	bgmd.mutation.Where(ps...)
-	return bgmd
+func (_d *BuildGraphMetricsDelete) Where(ps ...predicate.BuildGraphMetrics) *BuildGraphMetricsDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (bgmd *BuildGraphMetricsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, bgmd.sqlExec, bgmd.mutation, bgmd.hooks)
+func (_d *BuildGraphMetricsDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bgmd *BuildGraphMetricsDelete) ExecX(ctx context.Context) int {
-	n, err := bgmd.Exec(ctx)
+func (_d *BuildGraphMetricsDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (bgmd *BuildGraphMetricsDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *BuildGraphMetricsDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(buildgraphmetrics.Table, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64))
-	if ps := bgmd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, bgmd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	bgmd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // BuildGraphMetricsDeleteOne is the builder for deleting a single BuildGraphMetrics entity.
 type BuildGraphMetricsDeleteOne struct {
-	bgmd *BuildGraphMetricsDelete
+	_d *BuildGraphMetricsDelete
 }
 
 // Where appends a list predicates to the BuildGraphMetricsDelete builder.
-func (bgmdo *BuildGraphMetricsDeleteOne) Where(ps ...predicate.BuildGraphMetrics) *BuildGraphMetricsDeleteOne {
-	bgmdo.bgmd.mutation.Where(ps...)
-	return bgmdo
+func (_d *BuildGraphMetricsDeleteOne) Where(ps ...predicate.BuildGraphMetrics) *BuildGraphMetricsDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (bgmdo *BuildGraphMetricsDeleteOne) Exec(ctx context.Context) error {
-	n, err := bgmdo.bgmd.Exec(ctx)
+func (_d *BuildGraphMetricsDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (bgmdo *BuildGraphMetricsDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bgmdo *BuildGraphMetricsDeleteOne) ExecX(ctx context.Context) {
-	if err := bgmdo.Exec(ctx); err != nil {
+func (_d *BuildGraphMetricsDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

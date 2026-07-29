@@ -38,15 +38,21 @@ LIMIT 1;
 -- name: LockStaleInvocationsFromPages :execrows
 UPDATE bazel_invocations
 SET bep_completed = true
-WHERE
-    ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
-    AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
-    AND bep_completed = false
-    AND EXISTS (
-        SELECT 1 FROM event_metadata em
-        WHERE em.bazel_invocation_id = bazel_invocations.id
-        AND em.event_received_at <= sqlc.arg(cutoff_time)::timestamptz
-    );
+WHERE ctid IN (
+    SELECT ctid 
+    FROM bazel_invocations
+    WHERE
+        ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
+        AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
+        AND bep_completed = false
+        AND EXISTS (
+            SELECT 1 FROM event_metadata em
+            WHERE em.bazel_invocation_id = bazel_invocations.id
+            AND em.event_received_at <= sqlc.arg(cutoff_time)::timestamptz
+        )
+    FOR UPDATE SKIP LOCKED
+    LIMIT sqlc.arg(batch_limit)::bigint
+);
 
 -- name: UpdateCompletedInvocationWithEndTimeFromEventMetadata :execrows
 UPDATE bazel_invocations bi
@@ -59,8 +65,32 @@ WHERE bi.id = em.bazel_invocation_id
 
 -- name: DeleteOldInvocationsFromPages :execrows
 DELETE FROM bazel_invocations
+WHERE ctid IN(
+    SELECT ctid
+    FROM bazel_invocations
+    WHERE
+      ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
+      AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
+      AND created_timestamp < sqlc.arg(cutoff_time)::timestamptz
+      AND bep_completed = true
+    FOR UPDATE SKIP LOCKED
+    LIMIT sqlc.arg(batch_limit)::bigint
+);
+
+-- name: GetInvocationsForLogCompactionFromPages :many
+SELECT id, invocation_id
+FROM bazel_invocations
 WHERE
     ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
     AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
-    AND created_timestamp < sqlc.arg(cutoff_time)::timestamptz
-    AND bep_completed = true;
+    AND bep_completed = true
+    AND EXISTS (
+        SELECT 1 FROM incomplete_build_logs
+        WHERE bazel_invocation_id = bazel_invocations.id
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM build_log_chunks
+        WHERE bazel_invocation_build_log_chunks = bazel_invocations.id
+    )
+LIMIT sqlc.arg(batch_limit)::bigint;
+

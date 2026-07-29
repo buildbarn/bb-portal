@@ -33,44 +33,44 @@ type BuildLogChunkQuery struct {
 }
 
 // Where adds a new predicate for the BuildLogChunkQuery builder.
-func (blcq *BuildLogChunkQuery) Where(ps ...predicate.BuildLogChunk) *BuildLogChunkQuery {
-	blcq.predicates = append(blcq.predicates, ps...)
-	return blcq
+func (_q *BuildLogChunkQuery) Where(ps ...predicate.BuildLogChunk) *BuildLogChunkQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (blcq *BuildLogChunkQuery) Limit(limit int) *BuildLogChunkQuery {
-	blcq.ctx.Limit = &limit
-	return blcq
+func (_q *BuildLogChunkQuery) Limit(limit int) *BuildLogChunkQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (blcq *BuildLogChunkQuery) Offset(offset int) *BuildLogChunkQuery {
-	blcq.ctx.Offset = &offset
-	return blcq
+func (_q *BuildLogChunkQuery) Offset(offset int) *BuildLogChunkQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (blcq *BuildLogChunkQuery) Unique(unique bool) *BuildLogChunkQuery {
-	blcq.ctx.Unique = &unique
-	return blcq
+func (_q *BuildLogChunkQuery) Unique(unique bool) *BuildLogChunkQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (blcq *BuildLogChunkQuery) Order(o ...buildlogchunk.OrderOption) *BuildLogChunkQuery {
-	blcq.order = append(blcq.order, o...)
-	return blcq
+func (_q *BuildLogChunkQuery) Order(o ...buildlogchunk.OrderOption) *BuildLogChunkQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (blcq *BuildLogChunkQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: blcq.config}).Query()
+func (_q *BuildLogChunkQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := blcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := blcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (blcq *BuildLogChunkQuery) QueryBazelInvocation() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, buildlogchunk.BazelInvocationTable, buildlogchunk.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(blcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (blcq *BuildLogChunkQuery) QueryBazelInvocation() *BazelInvocationQuery {
 
 // First returns the first BuildLogChunk entity from the query.
 // Returns a *NotFoundError when no BuildLogChunk was found.
-func (blcq *BuildLogChunkQuery) First(ctx context.Context) (*BuildLogChunk, error) {
-	nodes, err := blcq.Limit(1).All(setContextOp(ctx, blcq.ctx, ent.OpQueryFirst))
+func (_q *BuildLogChunkQuery) First(ctx context.Context) (*BuildLogChunk, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (blcq *BuildLogChunkQuery) First(ctx context.Context) (*BuildLogChunk, erro
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) FirstX(ctx context.Context) *BuildLogChunk {
-	node, err := blcq.First(ctx)
+func (_q *BuildLogChunkQuery) FirstX(ctx context.Context) *BuildLogChunk {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (blcq *BuildLogChunkQuery) FirstX(ctx context.Context) *BuildLogChunk {
 
 // FirstID returns the first BuildLogChunk ID from the query.
 // Returns a *NotFoundError when no BuildLogChunk ID was found.
-func (blcq *BuildLogChunkQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *BuildLogChunkQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = blcq.Limit(1).IDs(setContextOp(ctx, blcq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (blcq *BuildLogChunkQuery) FirstID(ctx context.Context) (id int64, err erro
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := blcq.FirstID(ctx)
+func (_q *BuildLogChunkQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (blcq *BuildLogChunkQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single BuildLogChunk entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one BuildLogChunk entity is found.
 // Returns a *NotFoundError when no BuildLogChunk entities are found.
-func (blcq *BuildLogChunkQuery) Only(ctx context.Context) (*BuildLogChunk, error) {
-	nodes, err := blcq.Limit(2).All(setContextOp(ctx, blcq.ctx, ent.OpQueryOnly))
+func (_q *BuildLogChunkQuery) Only(ctx context.Context) (*BuildLogChunk, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (blcq *BuildLogChunkQuery) Only(ctx context.Context) (*BuildLogChunk, error
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) OnlyX(ctx context.Context) *BuildLogChunk {
-	node, err := blcq.Only(ctx)
+func (_q *BuildLogChunkQuery) OnlyX(ctx context.Context) *BuildLogChunk {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (blcq *BuildLogChunkQuery) OnlyX(ctx context.Context) *BuildLogChunk {
 // OnlyID is like Only, but returns the only BuildLogChunk ID in the query.
 // Returns a *NotSingularError when more than one BuildLogChunk ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (blcq *BuildLogChunkQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *BuildLogChunkQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = blcq.Limit(2).IDs(setContextOp(ctx, blcq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (blcq *BuildLogChunkQuery) OnlyID(ctx context.Context) (id int64, err error
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := blcq.OnlyID(ctx)
+func (_q *BuildLogChunkQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (blcq *BuildLogChunkQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of BuildLogChunks.
-func (blcq *BuildLogChunkQuery) All(ctx context.Context) ([]*BuildLogChunk, error) {
-	ctx = setContextOp(ctx, blcq.ctx, ent.OpQueryAll)
-	if err := blcq.prepareQuery(ctx); err != nil {
+func (_q *BuildLogChunkQuery) All(ctx context.Context) ([]*BuildLogChunk, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*BuildLogChunk, *BuildLogChunkQuery]()
-	return withInterceptors[[]*BuildLogChunk](ctx, blcq, qr, blcq.inters)
+	return withInterceptors[[]*BuildLogChunk](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) AllX(ctx context.Context) []*BuildLogChunk {
-	nodes, err := blcq.All(ctx)
+func (_q *BuildLogChunkQuery) AllX(ctx context.Context) []*BuildLogChunk {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (blcq *BuildLogChunkQuery) AllX(ctx context.Context) []*BuildLogChunk {
 }
 
 // IDs executes the query and returns a list of BuildLogChunk IDs.
-func (blcq *BuildLogChunkQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if blcq.ctx.Unique == nil && blcq.path != nil {
-		blcq.Unique(true)
+func (_q *BuildLogChunkQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, blcq.ctx, ent.OpQueryIDs)
-	if err = blcq.Select(buildlogchunk.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(buildlogchunk.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := blcq.IDs(ctx)
+func (_q *BuildLogChunkQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (blcq *BuildLogChunkQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (blcq *BuildLogChunkQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, blcq.ctx, ent.OpQueryCount)
-	if err := blcq.prepareQuery(ctx); err != nil {
+func (_q *BuildLogChunkQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, blcq, querierCount[*BuildLogChunkQuery](), blcq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*BuildLogChunkQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) CountX(ctx context.Context) int {
-	count, err := blcq.Count(ctx)
+func (_q *BuildLogChunkQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (blcq *BuildLogChunkQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (blcq *BuildLogChunkQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, blcq.ctx, ent.OpQueryExist)
-	switch _, err := blcq.FirstID(ctx); {
+func (_q *BuildLogChunkQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (blcq *BuildLogChunkQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (blcq *BuildLogChunkQuery) ExistX(ctx context.Context) bool {
-	exist, err := blcq.Exist(ctx)
+func (_q *BuildLogChunkQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (blcq *BuildLogChunkQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the BuildLogChunkQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (blcq *BuildLogChunkQuery) Clone() *BuildLogChunkQuery {
-	if blcq == nil {
+func (_q *BuildLogChunkQuery) Clone() *BuildLogChunkQuery {
+	if _q == nil {
 		return nil
 	}
 	return &BuildLogChunkQuery{
-		config:              blcq.config,
-		ctx:                 blcq.ctx.Clone(),
-		order:               append([]buildlogchunk.OrderOption{}, blcq.order...),
-		inters:              append([]Interceptor{}, blcq.inters...),
-		predicates:          append([]predicate.BuildLogChunk{}, blcq.predicates...),
-		withBazelInvocation: blcq.withBazelInvocation.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]buildlogchunk.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.BuildLogChunk{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  blcq.sql.Clone(),
-		path: blcq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (blcq *BuildLogChunkQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *BuildLogChunkQuery {
-	query := (&BazelInvocationClient{config: blcq.config}).Query()
+func (_q *BuildLogChunkQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *BuildLogChunkQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	blcq.withBazelInvocation = query
-	return blcq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (blcq *BuildLogChunkQuery) WithBazelInvocation(opts ...func(*BazelInvocatio
 //		GroupBy(buildlogchunk.FieldData).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (blcq *BuildLogChunkQuery) GroupBy(field string, fields ...string) *BuildLogChunkGroupBy {
-	blcq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &BuildLogChunkGroupBy{build: blcq}
-	grbuild.flds = &blcq.ctx.Fields
+func (_q *BuildLogChunkQuery) GroupBy(field string, fields ...string) *BuildLogChunkGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &BuildLogChunkGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = buildlogchunk.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (blcq *BuildLogChunkQuery) GroupBy(field string, fields ...string) *BuildLo
 //	client.BuildLogChunk.Query().
 //		Select(buildlogchunk.FieldData).
 //		Scan(ctx, &v)
-func (blcq *BuildLogChunkQuery) Select(fields ...string) *BuildLogChunkSelect {
-	blcq.ctx.Fields = append(blcq.ctx.Fields, fields...)
-	sbuild := &BuildLogChunkSelect{BuildLogChunkQuery: blcq}
+func (_q *BuildLogChunkQuery) Select(fields ...string) *BuildLogChunkSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &BuildLogChunkSelect{BuildLogChunkQuery: _q}
 	sbuild.label = buildlogchunk.Label
-	sbuild.flds, sbuild.scan = &blcq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a BuildLogChunkSelect configured with the given aggregations.
-func (blcq *BuildLogChunkQuery) Aggregate(fns ...AggregateFunc) *BuildLogChunkSelect {
-	return blcq.Select().Aggregate(fns...)
+func (_q *BuildLogChunkQuery) Aggregate(fns ...AggregateFunc) *BuildLogChunkSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (blcq *BuildLogChunkQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range blcq.inters {
+func (_q *BuildLogChunkQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, blcq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range blcq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !buildlogchunk.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if blcq.path != nil {
-		prev, err := blcq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		blcq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (blcq *BuildLogChunkQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*BuildLogChunk, error) {
+func (_q *BuildLogChunkQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*BuildLogChunk, error) {
 	var (
 		nodes       = []*BuildLogChunk{}
-		withFKs     = blcq.withFKs
-		_spec       = blcq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			blcq.withBazelInvocation != nil,
+			_q.withBazelInvocation != nil,
 		}
 	)
-	if blcq.withBazelInvocation != nil {
+	if _q.withBazelInvocation != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (blcq *BuildLogChunkQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return (*BuildLogChunk).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &BuildLogChunk{config: blcq.config}
+		node := &BuildLogChunk{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(blcq.modifiers) > 0 {
-		_spec.Modifiers = blcq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, blcq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := blcq.withBazelInvocation; query != nil {
-		if err := blcq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *BuildLogChunk, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range blcq.loadTotal {
-		if err := blcq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (blcq *BuildLogChunkQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*BuildLogChunk, init func(*BuildLogChunk), assign func(*BuildLogChunk, *BazelInvocation)) error {
+func (_q *BuildLogChunkQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*BuildLogChunk, init func(*BuildLogChunk), assign func(*BuildLogChunk, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*BuildLogChunk)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (blcq *BuildLogChunkQuery) loadBazelInvocation(ctx context.Context, query *
 	return nil
 }
 
-func (blcq *BuildLogChunkQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := blcq.querySpec()
-	if len(blcq.modifiers) > 0 {
-		_spec.Modifiers = blcq.modifiers
+func (_q *BuildLogChunkQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = blcq.ctx.Fields
-	if len(blcq.ctx.Fields) > 0 {
-		_spec.Unique = blcq.ctx.Unique != nil && *blcq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, blcq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (blcq *BuildLogChunkQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *BuildLogChunkQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(buildlogchunk.Table, buildlogchunk.Columns, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
-	_spec.From = blcq.sql
-	if unique := blcq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if blcq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := blcq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, buildlogchunk.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (blcq *BuildLogChunkQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := blcq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := blcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := blcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := blcq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (blcq *BuildLogChunkQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (blcq *BuildLogChunkQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(blcq.driver.Dialect())
+func (_q *BuildLogChunkQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(buildlogchunk.Table)
-	columns := blcq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = buildlogchunk.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if blcq.sql != nil {
-		selector = blcq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if blcq.ctx.Unique != nil && *blcq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range blcq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range blcq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := blcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := blcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type BuildLogChunkGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (blcgb *BuildLogChunkGroupBy) Aggregate(fns ...AggregateFunc) *BuildLogChunkGroupBy {
-	blcgb.fns = append(blcgb.fns, fns...)
-	return blcgb
+func (_g *BuildLogChunkGroupBy) Aggregate(fns ...AggregateFunc) *BuildLogChunkGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (blcgb *BuildLogChunkGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, blcgb.build.ctx, ent.OpQueryGroupBy)
-	if err := blcgb.build.prepareQuery(ctx); err != nil {
+func (_g *BuildLogChunkGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*BuildLogChunkQuery, *BuildLogChunkGroupBy](ctx, blcgb.build, blcgb, blcgb.build.inters, v)
+	return scanWithInterceptors[*BuildLogChunkQuery, *BuildLogChunkGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (blcgb *BuildLogChunkGroupBy) sqlScan(ctx context.Context, root *BuildLogChunkQuery, v any) error {
+func (_g *BuildLogChunkGroupBy) sqlScan(ctx context.Context, root *BuildLogChunkQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(blcgb.fns))
-	for _, fn := range blcgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*blcgb.flds)+len(blcgb.fns))
-		for _, f := range *blcgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*blcgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := blcgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type BuildLogChunkSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (blcs *BuildLogChunkSelect) Aggregate(fns ...AggregateFunc) *BuildLogChunkSelect {
-	blcs.fns = append(blcs.fns, fns...)
-	return blcs
+func (_s *BuildLogChunkSelect) Aggregate(fns ...AggregateFunc) *BuildLogChunkSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (blcs *BuildLogChunkSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, blcs.ctx, ent.OpQuerySelect)
-	if err := blcs.prepareQuery(ctx); err != nil {
+func (_s *BuildLogChunkSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*BuildLogChunkQuery, *BuildLogChunkSelect](ctx, blcs.BuildLogChunkQuery, blcs, blcs.inters, v)
+	return scanWithInterceptors[*BuildLogChunkQuery, *BuildLogChunkSelect](ctx, _s.BuildLogChunkQuery, _s, _s.inters, v)
 }
 
-func (blcs *BuildLogChunkSelect) sqlScan(ctx context.Context, root *BuildLogChunkQuery, v any) error {
+func (_s *BuildLogChunkSelect) sqlScan(ctx context.Context, root *BuildLogChunkQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(blcs.fns))
-	for _, fn := range blcs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*blcs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (blcs *BuildLogChunkSelect) sqlScan(ctx context.Context, root *BuildLogChun
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := blcs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

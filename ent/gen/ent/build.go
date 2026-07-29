@@ -99,7 +99,7 @@ func (*Build) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Build fields.
-func (b *Build) assignValues(columns []string, values []any) error {
+func (_m *Build) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -110,28 +110,28 @@ func (b *Build) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			b.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case build.FieldBuildUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field build_uuid", values[i])
 			} else if value != nil {
-				b.BuildUUID = *value
+				_m.BuildUUID = *value
 			}
 		case build.FieldTimestamp:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field timestamp", values[i])
 			} else if value.Valid {
-				b.Timestamp = value.Time
+				_m.Timestamp = value.Time
 			}
 		case build.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_builds", value)
 			} else if value.Valid {
-				b.instance_name_builds = new(int64)
-				*b.instance_name_builds = int64(value.Int64)
+				_m.instance_name_builds = new(int64)
+				*_m.instance_name_builds = int64(value.Int64)
 			}
 		default:
-			b.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -139,102 +139,102 @@ func (b *Build) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Build.
 // This includes values selected through modifiers, order, etc.
-func (b *Build) Value(name string) (ent.Value, error) {
-	return b.selectValues.Get(name)
+func (_m *Build) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryInstanceName queries the "instance_name" edge of the Build entity.
-func (b *Build) QueryInstanceName() *InstanceNameQuery {
-	return NewBuildClient(b.config).QueryInstanceName(b)
+func (_m *Build) QueryInstanceName() *InstanceNameQuery {
+	return NewBuildClient(_m.config).QueryInstanceName(_m)
 }
 
 // QueryInvocations queries the "invocations" edge of the Build entity.
-func (b *Build) QueryInvocations() *BazelInvocationQuery {
-	return NewBuildClient(b.config).QueryInvocations(b)
+func (_m *Build) QueryInvocations() *BazelInvocationQuery {
+	return NewBuildClient(_m.config).QueryInvocations(_m)
 }
 
 // QueryTags queries the "tags" edge of the Build entity.
-func (b *Build) QueryTags() *BuildTagQuery {
-	return NewBuildClient(b.config).QueryTags(b)
+func (_m *Build) QueryTags() *BuildTagQuery {
+	return NewBuildClient(_m.config).QueryTags(_m)
 }
 
 // Update returns a builder for updating this Build.
 // Note that you need to call Build.Unwrap() before calling this method if this Build
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (b *Build) Update() *BuildUpdateOne {
-	return NewBuildClient(b.config).UpdateOne(b)
+func (_m *Build) Update() *BuildUpdateOne {
+	return NewBuildClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Build entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (b *Build) Unwrap() *Build {
-	_tx, ok := b.config.driver.(*txDriver)
+func (_m *Build) Unwrap() *Build {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Build is not a transactional entity")
 	}
-	b.config.driver = _tx.drv
-	return b
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (b *Build) String() string {
+func (_m *Build) String() string {
 	var builder strings.Builder
 	builder.WriteString("Build(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", b.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("build_uuid=")
-	builder.WriteString(fmt.Sprintf("%v", b.BuildUUID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BuildUUID))
 	builder.WriteString(", ")
 	builder.WriteString("timestamp=")
-	builder.WriteString(b.Timestamp.Format(time.ANSIC))
+	builder.WriteString(_m.Timestamp.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedInvocations returns the Invocations named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (b *Build) NamedInvocations(name string) ([]*BazelInvocation, error) {
-	if b.Edges.namedInvocations == nil {
+func (_m *Build) NamedInvocations(name string) ([]*BazelInvocation, error) {
+	if _m.Edges.namedInvocations == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := b.Edges.namedInvocations[name]
+	nodes, ok := _m.Edges.namedInvocations[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (b *Build) appendNamedInvocations(name string, edges ...*BazelInvocation) {
-	if b.Edges.namedInvocations == nil {
-		b.Edges.namedInvocations = make(map[string][]*BazelInvocation)
+func (_m *Build) appendNamedInvocations(name string, edges ...*BazelInvocation) {
+	if _m.Edges.namedInvocations == nil {
+		_m.Edges.namedInvocations = make(map[string][]*BazelInvocation)
 	}
 	if len(edges) == 0 {
-		b.Edges.namedInvocations[name] = []*BazelInvocation{}
+		_m.Edges.namedInvocations[name] = []*BazelInvocation{}
 	} else {
-		b.Edges.namedInvocations[name] = append(b.Edges.namedInvocations[name], edges...)
+		_m.Edges.namedInvocations[name] = append(_m.Edges.namedInvocations[name], edges...)
 	}
 }
 
 // NamedTags returns the Tags named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (b *Build) NamedTags(name string) ([]*BuildTag, error) {
-	if b.Edges.namedTags == nil {
+func (_m *Build) NamedTags(name string) ([]*BuildTag, error) {
+	if _m.Edges.namedTags == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := b.Edges.namedTags[name]
+	nodes, ok := _m.Edges.namedTags[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (b *Build) appendNamedTags(name string, edges ...*BuildTag) {
-	if b.Edges.namedTags == nil {
-		b.Edges.namedTags = make(map[string][]*BuildTag)
+func (_m *Build) appendNamedTags(name string, edges ...*BuildTag) {
+	if _m.Edges.namedTags == nil {
+		_m.Edges.namedTags = make(map[string][]*BuildTag)
 	}
 	if len(edges) == 0 {
-		b.Edges.namedTags[name] = []*BuildTag{}
+		_m.Edges.namedTags[name] = []*BuildTag{}
 	} else {
-		b.Edges.namedTags[name] = append(b.Edges.namedTags[name], edges...)
+		_m.Edges.namedTags[name] = append(_m.Edges.namedTags[name], edges...)
 	}
 }
 

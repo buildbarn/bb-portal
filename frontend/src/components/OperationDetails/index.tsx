@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Space, Spin } from "antd";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import { Code } from "@/lib/grpc-client/google/rpc/code";
 import ExecuteResponseDisplay from "../ExecutionResponseDisplay";
 import OperationStateDisplay from "../OperationStateDisplay";
@@ -11,7 +11,6 @@ interface Props {
 }
 
 const OperationDetails: React.FC<Props> = ({ operationID }) => {
-  const { buildQueueStateClient } = useGrpcClients();
   const queryClient = useQueryClient();
 
   const killOperationMutation = useMutation({

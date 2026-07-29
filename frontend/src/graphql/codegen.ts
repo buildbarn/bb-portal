@@ -15,6 +15,26 @@ const config: CodegenConfig = {
         fragmentMasking: { unmaskFunctionName: "getFragmentData" },
         persistedDocuments: true,
       },
+      config: {
+        scalars: {
+          UnsignedLong: "number",
+        },
+        useTypeImports: true,
+      },
+    },
+    "./src/graphql/__generated__/zod.ts": {
+      plugins: ["typescript-validation-schema"],
+      config: {
+        schema: "zodv4",
+        scalarSchemas: {
+          Time: "z.iso.datetime({ offset: true })",
+          UnsignedLong: "z.number().int().nonnegative()",
+          UUID: "z.uuid()",
+        },
+        importFrom: "./graphql",
+        notAllowEmptyString: true,
+        useEnumTypeAsDefaultValue: true,
+      },
     },
   },
 };

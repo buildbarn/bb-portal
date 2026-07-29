@@ -33,44 +33,44 @@ type GarbageMetricsQuery struct {
 }
 
 // Where adds a new predicate for the GarbageMetricsQuery builder.
-func (gmq *GarbageMetricsQuery) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsQuery {
-	gmq.predicates = append(gmq.predicates, ps...)
-	return gmq
+func (_q *GarbageMetricsQuery) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (gmq *GarbageMetricsQuery) Limit(limit int) *GarbageMetricsQuery {
-	gmq.ctx.Limit = &limit
-	return gmq
+func (_q *GarbageMetricsQuery) Limit(limit int) *GarbageMetricsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (gmq *GarbageMetricsQuery) Offset(offset int) *GarbageMetricsQuery {
-	gmq.ctx.Offset = &offset
-	return gmq
+func (_q *GarbageMetricsQuery) Offset(offset int) *GarbageMetricsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (gmq *GarbageMetricsQuery) Unique(unique bool) *GarbageMetricsQuery {
-	gmq.ctx.Unique = &unique
-	return gmq
+func (_q *GarbageMetricsQuery) Unique(unique bool) *GarbageMetricsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (gmq *GarbageMetricsQuery) Order(o ...garbagemetrics.OrderOption) *GarbageMetricsQuery {
-	gmq.order = append(gmq.order, o...)
-	return gmq
+func (_q *GarbageMetricsQuery) Order(o ...garbagemetrics.OrderOption) *GarbageMetricsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryMemoryMetrics chains the current query on the "memory_metrics" edge.
-func (gmq *GarbageMetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
-	query := (&MemoryMetricsClient{config: gmq.config}).Query()
+func (_q *GarbageMetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
+	query := (&MemoryMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := gmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := gmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (gmq *GarbageMetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
 			sqlgraph.To(memorymetrics.Table, memorymetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, garbagemetrics.MemoryMetricsTable, garbagemetrics.MemoryMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(gmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (gmq *GarbageMetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
 
 // First returns the first GarbageMetrics entity from the query.
 // Returns a *NotFoundError when no GarbageMetrics was found.
-func (gmq *GarbageMetricsQuery) First(ctx context.Context) (*GarbageMetrics, error) {
-	nodes, err := gmq.Limit(1).All(setContextOp(ctx, gmq.ctx, ent.OpQueryFirst))
+func (_q *GarbageMetricsQuery) First(ctx context.Context) (*GarbageMetrics, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (gmq *GarbageMetricsQuery) First(ctx context.Context) (*GarbageMetrics, err
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) FirstX(ctx context.Context) *GarbageMetrics {
-	node, err := gmq.First(ctx)
+func (_q *GarbageMetricsQuery) FirstX(ctx context.Context) *GarbageMetrics {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (gmq *GarbageMetricsQuery) FirstX(ctx context.Context) *GarbageMetrics {
 
 // FirstID returns the first GarbageMetrics ID from the query.
 // Returns a *NotFoundError when no GarbageMetrics ID was found.
-func (gmq *GarbageMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *GarbageMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = gmq.Limit(1).IDs(setContextOp(ctx, gmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (gmq *GarbageMetricsQuery) FirstID(ctx context.Context) (id int64, err erro
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := gmq.FirstID(ctx)
+func (_q *GarbageMetricsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (gmq *GarbageMetricsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single GarbageMetrics entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one GarbageMetrics entity is found.
 // Returns a *NotFoundError when no GarbageMetrics entities are found.
-func (gmq *GarbageMetricsQuery) Only(ctx context.Context) (*GarbageMetrics, error) {
-	nodes, err := gmq.Limit(2).All(setContextOp(ctx, gmq.ctx, ent.OpQueryOnly))
+func (_q *GarbageMetricsQuery) Only(ctx context.Context) (*GarbageMetrics, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (gmq *GarbageMetricsQuery) Only(ctx context.Context) (*GarbageMetrics, erro
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) OnlyX(ctx context.Context) *GarbageMetrics {
-	node, err := gmq.Only(ctx)
+func (_q *GarbageMetricsQuery) OnlyX(ctx context.Context) *GarbageMetrics {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (gmq *GarbageMetricsQuery) OnlyX(ctx context.Context) *GarbageMetrics {
 // OnlyID is like Only, but returns the only GarbageMetrics ID in the query.
 // Returns a *NotSingularError when more than one GarbageMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (gmq *GarbageMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *GarbageMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = gmq.Limit(2).IDs(setContextOp(ctx, gmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (gmq *GarbageMetricsQuery) OnlyID(ctx context.Context) (id int64, err error
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := gmq.OnlyID(ctx)
+func (_q *GarbageMetricsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (gmq *GarbageMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of GarbageMetricsSlice.
-func (gmq *GarbageMetricsQuery) All(ctx context.Context) ([]*GarbageMetrics, error) {
-	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryAll)
-	if err := gmq.prepareQuery(ctx); err != nil {
+func (_q *GarbageMetricsQuery) All(ctx context.Context) ([]*GarbageMetrics, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*GarbageMetrics, *GarbageMetricsQuery]()
-	return withInterceptors[[]*GarbageMetrics](ctx, gmq, qr, gmq.inters)
+	return withInterceptors[[]*GarbageMetrics](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) AllX(ctx context.Context) []*GarbageMetrics {
-	nodes, err := gmq.All(ctx)
+func (_q *GarbageMetricsQuery) AllX(ctx context.Context) []*GarbageMetrics {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (gmq *GarbageMetricsQuery) AllX(ctx context.Context) []*GarbageMetrics {
 }
 
 // IDs executes the query and returns a list of GarbageMetrics IDs.
-func (gmq *GarbageMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if gmq.ctx.Unique == nil && gmq.path != nil {
-		gmq.Unique(true)
+func (_q *GarbageMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryIDs)
-	if err = gmq.Select(garbagemetrics.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(garbagemetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := gmq.IDs(ctx)
+func (_q *GarbageMetricsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (gmq *GarbageMetricsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (gmq *GarbageMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryCount)
-	if err := gmq.prepareQuery(ctx); err != nil {
+func (_q *GarbageMetricsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, gmq, querierCount[*GarbageMetricsQuery](), gmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*GarbageMetricsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) CountX(ctx context.Context) int {
-	count, err := gmq.Count(ctx)
+func (_q *GarbageMetricsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (gmq *GarbageMetricsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (gmq *GarbageMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryExist)
-	switch _, err := gmq.FirstID(ctx); {
+func (_q *GarbageMetricsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (gmq *GarbageMetricsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (gmq *GarbageMetricsQuery) ExistX(ctx context.Context) bool {
-	exist, err := gmq.Exist(ctx)
+func (_q *GarbageMetricsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (gmq *GarbageMetricsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the GarbageMetricsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (gmq *GarbageMetricsQuery) Clone() *GarbageMetricsQuery {
-	if gmq == nil {
+func (_q *GarbageMetricsQuery) Clone() *GarbageMetricsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &GarbageMetricsQuery{
-		config:            gmq.config,
-		ctx:               gmq.ctx.Clone(),
-		order:             append([]garbagemetrics.OrderOption{}, gmq.order...),
-		inters:            append([]Interceptor{}, gmq.inters...),
-		predicates:        append([]predicate.GarbageMetrics{}, gmq.predicates...),
-		withMemoryMetrics: gmq.withMemoryMetrics.Clone(),
+		config:            _q.config,
+		ctx:               _q.ctx.Clone(),
+		order:             append([]garbagemetrics.OrderOption{}, _q.order...),
+		inters:            append([]Interceptor{}, _q.inters...),
+		predicates:        append([]predicate.GarbageMetrics{}, _q.predicates...),
+		withMemoryMetrics: _q.withMemoryMetrics.Clone(),
 		// clone intermediate query.
-		sql:  gmq.sql.Clone(),
-		path: gmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithMemoryMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "memory_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (gmq *GarbageMetricsQuery) WithMemoryMetrics(opts ...func(*MemoryMetricsQuery)) *GarbageMetricsQuery {
-	query := (&MemoryMetricsClient{config: gmq.config}).Query()
+func (_q *GarbageMetricsQuery) WithMemoryMetrics(opts ...func(*MemoryMetricsQuery)) *GarbageMetricsQuery {
+	query := (&MemoryMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	gmq.withMemoryMetrics = query
-	return gmq
+	_q.withMemoryMetrics = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (gmq *GarbageMetricsQuery) WithMemoryMetrics(opts ...func(*MemoryMetricsQue
 //		GroupBy(garbagemetrics.FieldType).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (gmq *GarbageMetricsQuery) GroupBy(field string, fields ...string) *GarbageMetricsGroupBy {
-	gmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &GarbageMetricsGroupBy{build: gmq}
-	grbuild.flds = &gmq.ctx.Fields
+func (_q *GarbageMetricsQuery) GroupBy(field string, fields ...string) *GarbageMetricsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &GarbageMetricsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = garbagemetrics.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (gmq *GarbageMetricsQuery) GroupBy(field string, fields ...string) *Garbage
 //	client.GarbageMetrics.Query().
 //		Select(garbagemetrics.FieldType).
 //		Scan(ctx, &v)
-func (gmq *GarbageMetricsQuery) Select(fields ...string) *GarbageMetricsSelect {
-	gmq.ctx.Fields = append(gmq.ctx.Fields, fields...)
-	sbuild := &GarbageMetricsSelect{GarbageMetricsQuery: gmq}
+func (_q *GarbageMetricsQuery) Select(fields ...string) *GarbageMetricsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &GarbageMetricsSelect{GarbageMetricsQuery: _q}
 	sbuild.label = garbagemetrics.Label
-	sbuild.flds, sbuild.scan = &gmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a GarbageMetricsSelect configured with the given aggregations.
-func (gmq *GarbageMetricsQuery) Aggregate(fns ...AggregateFunc) *GarbageMetricsSelect {
-	return gmq.Select().Aggregate(fns...)
+func (_q *GarbageMetricsQuery) Aggregate(fns ...AggregateFunc) *GarbageMetricsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (gmq *GarbageMetricsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range gmq.inters {
+func (_q *GarbageMetricsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, gmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range gmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !garbagemetrics.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if gmq.path != nil {
-		prev, err := gmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		gmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (gmq *GarbageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*GarbageMetrics, error) {
+func (_q *GarbageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*GarbageMetrics, error) {
 	var (
 		nodes       = []*GarbageMetrics{}
-		withFKs     = gmq.withFKs
-		_spec       = gmq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			gmq.withMemoryMetrics != nil,
+			_q.withMemoryMetrics != nil,
 		}
 	)
-	if gmq.withMemoryMetrics != nil {
+	if _q.withMemoryMetrics != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (gmq *GarbageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return (*GarbageMetrics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &GarbageMetrics{config: gmq.config}
+		node := &GarbageMetrics{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(gmq.modifiers) > 0 {
-		_spec.Modifiers = gmq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, gmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := gmq.withMemoryMetrics; query != nil {
-		if err := gmq.loadMemoryMetrics(ctx, query, nodes, nil,
+	if query := _q.withMemoryMetrics; query != nil {
+		if err := _q.loadMemoryMetrics(ctx, query, nodes, nil,
 			func(n *GarbageMetrics, e *MemoryMetrics) { n.Edges.MemoryMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range gmq.loadTotal {
-		if err := gmq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (gmq *GarbageMetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetricsQuery, nodes []*GarbageMetrics, init func(*GarbageMetrics), assign func(*GarbageMetrics, *MemoryMetrics)) error {
+func (_q *GarbageMetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetricsQuery, nodes []*GarbageMetrics, init func(*GarbageMetrics), assign func(*GarbageMetrics, *MemoryMetrics)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*GarbageMetrics)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (gmq *GarbageMetricsQuery) loadMemoryMetrics(ctx context.Context, query *Me
 	return nil
 }
 
-func (gmq *GarbageMetricsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := gmq.querySpec()
-	if len(gmq.modifiers) > 0 {
-		_spec.Modifiers = gmq.modifiers
+func (_q *GarbageMetricsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = gmq.ctx.Fields
-	if len(gmq.ctx.Fields) > 0 {
-		_spec.Unique = gmq.ctx.Unique != nil && *gmq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, gmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (gmq *GarbageMetricsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *GarbageMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(garbagemetrics.Table, garbagemetrics.Columns, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64))
-	_spec.From = gmq.sql
-	if unique := gmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if gmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := gmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, garbagemetrics.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (gmq *GarbageMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := gmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := gmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := gmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := gmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (gmq *GarbageMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (gmq *GarbageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(gmq.driver.Dialect())
+func (_q *GarbageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(garbagemetrics.Table)
-	columns := gmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = garbagemetrics.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if gmq.sql != nil {
-		selector = gmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if gmq.ctx.Unique != nil && *gmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range gmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range gmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := gmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := gmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type GarbageMetricsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (gmgb *GarbageMetricsGroupBy) Aggregate(fns ...AggregateFunc) *GarbageMetricsGroupBy {
-	gmgb.fns = append(gmgb.fns, fns...)
-	return gmgb
+func (_g *GarbageMetricsGroupBy) Aggregate(fns ...AggregateFunc) *GarbageMetricsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (gmgb *GarbageMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, gmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := gmgb.build.prepareQuery(ctx); err != nil {
+func (_g *GarbageMetricsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*GarbageMetricsQuery, *GarbageMetricsGroupBy](ctx, gmgb.build, gmgb, gmgb.build.inters, v)
+	return scanWithInterceptors[*GarbageMetricsQuery, *GarbageMetricsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (gmgb *GarbageMetricsGroupBy) sqlScan(ctx context.Context, root *GarbageMetricsQuery, v any) error {
+func (_g *GarbageMetricsGroupBy) sqlScan(ctx context.Context, root *GarbageMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(gmgb.fns))
-	for _, fn := range gmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*gmgb.flds)+len(gmgb.fns))
-		for _, f := range *gmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*gmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := gmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type GarbageMetricsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (gms *GarbageMetricsSelect) Aggregate(fns ...AggregateFunc) *GarbageMetricsSelect {
-	gms.fns = append(gms.fns, fns...)
-	return gms
+func (_s *GarbageMetricsSelect) Aggregate(fns ...AggregateFunc) *GarbageMetricsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (gms *GarbageMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, gms.ctx, ent.OpQuerySelect)
-	if err := gms.prepareQuery(ctx); err != nil {
+func (_s *GarbageMetricsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*GarbageMetricsQuery, *GarbageMetricsSelect](ctx, gms.GarbageMetricsQuery, gms, gms.inters, v)
+	return scanWithInterceptors[*GarbageMetricsQuery, *GarbageMetricsSelect](ctx, _s.GarbageMetricsQuery, _s, _s.inters, v)
 }
 
-func (gms *GarbageMetricsSelect) sqlScan(ctx context.Context, root *GarbageMetricsQuery, v any) error {
+func (_s *GarbageMetricsSelect) sqlScan(ctx context.Context, root *GarbageMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(gms.fns))
-	for _, fn := range gms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*gms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (gms *GarbageMetricsSelect) sqlScan(ctx context.Context, root *GarbageMetri
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := gms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

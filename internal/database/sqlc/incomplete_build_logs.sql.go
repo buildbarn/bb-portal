@@ -40,26 +40,33 @@ func (q *Queries) CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncom
 }
 
 const deleteIncompleteLogsFromPages = `-- name: DeleteIncompleteLogsFromPages :execrows
-DELETE FROM incomplete_build_logs l
-USING bazel_invocations AS i
-WHERE
-    l.bazel_invocation_id = i.id
-    AND l.ctid >= format('(%s,0)', $1::bigint)::tid
-    AND l.ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND i.bep_completed = true
-    AND EXISTS (
-        SELECT 1 FROM build_log_chunks c
-        WHERE c.bazel_invocation_build_log_chunks = i.id
-    )
+DELETE FROM incomplete_build_logs
+WHERE ctid IN (
+    SELECT l.ctid
+    FROM incomplete_build_logs l
+    JOIN bazel_invocations AS i ON i.id = l.bazel_invocation_id
+    WHERE
+        l.bazel_invocation_id = i.id
+        AND l.ctid >= format('(%s,0)', $1::bigint)::tid
+        AND l.ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+        AND i.bep_completed = true
+        AND EXISTS (
+            SELECT 1 FROM build_log_chunks c
+            WHERE c.bazel_invocation_build_log_chunks = i.id
+        )
+    FOR UPDATE SKIP LOCKED
+    LIMIT $3::bigint
+)
 `
 
 type DeleteIncompleteLogsFromPagesParams struct {
-	FromPage int64
-	Pages    int64
+	FromPage   int64
+	Pages      int64
+	BatchLimit int64
 }
 
 func (q *Queries) DeleteIncompleteLogsFromPages(ctx context.Context, arg DeleteIncompleteLogsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteIncompleteLogsFromPages, arg.FromPage, arg.Pages)
+	result, err := q.db.ExecContext(ctx, deleteIncompleteLogsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}

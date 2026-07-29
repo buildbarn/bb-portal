@@ -33,6 +33,7 @@ export enum Edition {
    */
   EDITION_2023 = 1000,
   EDITION_2024 = 1001,
+  EDITION_2026 = 1002,
   /** EDITION_UNSTABLE - A placeholder edition for developing and testing unscheduled features. */
   EDITION_UNSTABLE = 9999,
   /**
@@ -73,6 +74,9 @@ export function editionFromJSON(object: any): Edition {
     case 1001:
     case "EDITION_2024":
       return Edition.EDITION_2024;
+    case 1002:
+    case "EDITION_2026":
+      return Edition.EDITION_2026;
     case 9999:
     case "EDITION_UNSTABLE":
       return Edition.EDITION_UNSTABLE;
@@ -115,6 +119,8 @@ export function editionToJSON(object: Edition): string {
       return "EDITION_2023";
     case Edition.EDITION_2024:
       return "EDITION_2024";
+    case Edition.EDITION_2026:
+      return "EDITION_2026";
     case Edition.EDITION_UNSTABLE:
       return "EDITION_UNSTABLE";
     case Edition.EDITION_1_TEST_ONLY:
@@ -1421,7 +1427,14 @@ export interface FieldOptions_FeatureSupport {
    * this one, the last default assigned will be used, and proto files will
    * not be able to override it.
    */
-  editionRemoved?: Edition | undefined;
+  editionRemoved?:
+    | Edition
+    | undefined;
+  /**
+   * The removal error text if this feature is used after the edition it was
+   * removed in.
+   */
+  removalError?: string | undefined;
 }
 
 export interface OneofOptions {
@@ -1906,6 +1919,7 @@ export enum FeatureSet_EnforceNamingStyle {
   ENFORCE_NAMING_STYLE_UNKNOWN = 0,
   STYLE2024 = 1,
   STYLE_LEGACY = 2,
+  STYLE2026 = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -1920,6 +1934,9 @@ export function featureSet_EnforceNamingStyleFromJSON(object: any): FeatureSet_E
     case 2:
     case "STYLE_LEGACY":
       return FeatureSet_EnforceNamingStyle.STYLE_LEGACY;
+    case 3:
+    case "STYLE2026":
+      return FeatureSet_EnforceNamingStyle.STYLE2026;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -1935,6 +1952,8 @@ export function featureSet_EnforceNamingStyleToJSON(object: FeatureSet_EnforceNa
       return "STYLE2024";
     case FeatureSet_EnforceNamingStyle.STYLE_LEGACY:
       return "STYLE_LEGACY";
+    case FeatureSet_EnforceNamingStyle.STYLE2026:
+      return "STYLE2026";
     case FeatureSet_EnforceNamingStyle.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -5331,7 +5350,7 @@ export const FieldOptions_EditionDefault: MessageFns<FieldOptions_EditionDefault
 };
 
 function createBaseFieldOptions_FeatureSupport(): FieldOptions_FeatureSupport {
-  return { editionIntroduced: 0, editionDeprecated: 0, deprecationWarning: "", editionRemoved: 0 };
+  return { editionIntroduced: 0, editionDeprecated: 0, deprecationWarning: "", editionRemoved: 0, removalError: "" };
 }
 
 export const FieldOptions_FeatureSupport: MessageFns<FieldOptions_FeatureSupport> = {
@@ -5347,6 +5366,9 @@ export const FieldOptions_FeatureSupport: MessageFns<FieldOptions_FeatureSupport
     }
     if (message.editionRemoved !== undefined && message.editionRemoved !== 0) {
       writer.uint32(32).int32(message.editionRemoved);
+    }
+    if (message.removalError !== undefined && message.removalError !== "") {
+      writer.uint32(42).string(message.removalError);
     }
     return writer;
   },
@@ -5390,6 +5412,14 @@ export const FieldOptions_FeatureSupport: MessageFns<FieldOptions_FeatureSupport
           message.editionRemoved = reader.int32() as any;
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.removalError = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -5421,6 +5451,11 @@ export const FieldOptions_FeatureSupport: MessageFns<FieldOptions_FeatureSupport
         : isSet(object.edition_removed)
         ? editionFromJSON(object.edition_removed)
         : 0,
+      removalError: isSet(object.removalError)
+        ? globalThis.String(object.removalError)
+        : isSet(object.removal_error)
+        ? globalThis.String(object.removal_error)
+        : "",
     };
   },
 
@@ -5438,6 +5473,9 @@ export const FieldOptions_FeatureSupport: MessageFns<FieldOptions_FeatureSupport
     if (message.editionRemoved !== undefined && message.editionRemoved !== 0) {
       obj.editionRemoved = editionToJSON(message.editionRemoved);
     }
+    if (message.removalError !== undefined && message.removalError !== "") {
+      obj.removalError = message.removalError;
+    }
     return obj;
   },
 
@@ -5450,6 +5488,7 @@ export const FieldOptions_FeatureSupport: MessageFns<FieldOptions_FeatureSupport
     message.editionDeprecated = object.editionDeprecated ?? 0;
     message.deprecationWarning = object.deprecationWarning ?? "";
     message.editionRemoved = object.editionRemoved ?? 0;
+    message.removalError = object.removalError ?? "";
     return message;
   },
 };

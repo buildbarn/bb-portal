@@ -22,24 +22,24 @@ type BuildTagUpdate struct {
 }
 
 // Where appends a list predicates to the BuildTagUpdate builder.
-func (btu *BuildTagUpdate) Where(ps ...predicate.BuildTag) *BuildTagUpdate {
-	btu.mutation.Where(ps...)
-	return btu
+func (_u *BuildTagUpdate) Where(ps ...predicate.BuildTag) *BuildTagUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Mutation returns the BuildTagMutation object of the builder.
-func (btu *BuildTagUpdate) Mutation() *BuildTagMutation {
-	return btu.mutation
+func (_u *BuildTagUpdate) Mutation() *BuildTagMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (btu *BuildTagUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, btu.sqlSave, btu.mutation, btu.hooks)
+func (_u *BuildTagUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (btu *BuildTagUpdate) SaveX(ctx context.Context) int {
-	affected, err := btu.Save(ctx)
+func (_u *BuildTagUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -47,39 +47,39 @@ func (btu *BuildTagUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (btu *BuildTagUpdate) Exec(ctx context.Context) error {
-	_, err := btu.Save(ctx)
+func (_u *BuildTagUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (btu *BuildTagUpdate) ExecX(ctx context.Context) {
-	if err := btu.Exec(ctx); err != nil {
+func (_u *BuildTagUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (btu *BuildTagUpdate) check() error {
-	if btu.mutation.BuildCleared() && len(btu.mutation.BuildIDs()) > 0 {
+func (_u *BuildTagUpdate) check() error {
+	if _u.mutation.BuildCleared() && len(_u.mutation.BuildIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BuildTag.build"`)
 	}
 	return nil
 }
 
-func (btu *BuildTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := btu.check(); err != nil {
-		return n, err
+func (_u *BuildTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(buildtag.Table, buildtag.Columns, sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64))
-	if ps := btu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, btu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildtag.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -87,8 +87,8 @@ func (btu *BuildTagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	btu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // BuildTagUpdateOne is the builder for updating a single BuildTag entity.
@@ -100,31 +100,31 @@ type BuildTagUpdateOne struct {
 }
 
 // Mutation returns the BuildTagMutation object of the builder.
-func (btuo *BuildTagUpdateOne) Mutation() *BuildTagMutation {
-	return btuo.mutation
+func (_u *BuildTagUpdateOne) Mutation() *BuildTagMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the BuildTagUpdate builder.
-func (btuo *BuildTagUpdateOne) Where(ps ...predicate.BuildTag) *BuildTagUpdateOne {
-	btuo.mutation.Where(ps...)
-	return btuo
+func (_u *BuildTagUpdateOne) Where(ps ...predicate.BuildTag) *BuildTagUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (btuo *BuildTagUpdateOne) Select(field string, fields ...string) *BuildTagUpdateOne {
-	btuo.fields = append([]string{field}, fields...)
-	return btuo
+func (_u *BuildTagUpdateOne) Select(field string, fields ...string) *BuildTagUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated BuildTag entity.
-func (btuo *BuildTagUpdateOne) Save(ctx context.Context) (*BuildTag, error) {
-	return withHooks(ctx, btuo.sqlSave, btuo.mutation, btuo.hooks)
+func (_u *BuildTagUpdateOne) Save(ctx context.Context) (*BuildTag, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (btuo *BuildTagUpdateOne) SaveX(ctx context.Context) *BuildTag {
-	node, err := btuo.Save(ctx)
+func (_u *BuildTagUpdateOne) SaveX(ctx context.Context) *BuildTag {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -132,37 +132,37 @@ func (btuo *BuildTagUpdateOne) SaveX(ctx context.Context) *BuildTag {
 }
 
 // Exec executes the query on the entity.
-func (btuo *BuildTagUpdateOne) Exec(ctx context.Context) error {
-	_, err := btuo.Save(ctx)
+func (_u *BuildTagUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (btuo *BuildTagUpdateOne) ExecX(ctx context.Context) {
-	if err := btuo.Exec(ctx); err != nil {
+func (_u *BuildTagUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (btuo *BuildTagUpdateOne) check() error {
-	if btuo.mutation.BuildCleared() && len(btuo.mutation.BuildIDs()) > 0 {
+func (_u *BuildTagUpdateOne) check() error {
+	if _u.mutation.BuildCleared() && len(_u.mutation.BuildIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BuildTag.build"`)
 	}
 	return nil
 }
 
-func (btuo *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, err error) {
-	if err := btuo.check(); err != nil {
+func (_u *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(buildtag.Table, buildtag.Columns, sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64))
-	id, ok := btuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "BuildTag.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := btuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, buildtag.FieldID)
 		for _, f := range fields {
@@ -174,17 +174,17 @@ func (btuo *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, er
 			}
 		}
 	}
-	if ps := btuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	_node = &BuildTag{config: btuo.config}
+	_node = &BuildTag{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, btuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildtag.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -192,6 +192,6 @@ func (btuo *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, er
 		}
 		return nil, err
 	}
-	btuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

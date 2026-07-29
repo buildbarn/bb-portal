@@ -4,7 +4,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 // TimingMetrics holds the schema definition for the TimingMetrics entity.
@@ -52,9 +51,7 @@ func (TimingMetrics) Edges() []ent.Edge {
 
 // Indexes of the TimingMetrics.
 func (TimingMetrics) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Edges("metrics"),
-	}
+	return []ent.Index{}
 }
 
 // Mixin of the TimingMetrics.

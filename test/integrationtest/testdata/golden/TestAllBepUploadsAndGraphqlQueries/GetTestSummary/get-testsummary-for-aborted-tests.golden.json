@@ -1,0 +1,42 @@
+{
+  "getTestSummary": {
+    "attemptCount": 1,
+    "firstStartTime": "2026-02-04T09:03:25.743Z",
+    "id": "VGVzdFN1bW1hcnk6NDQ=",
+    "invocationTarget": {
+      "id": "SW52b2NhdGlvblRhcmdldDo0ODM=",
+      "target": {
+        "aspect": "",
+        "id": "VGFyZ2V0OjE1Mw==",
+        "instanceName": {
+          "id": "SW5zdGFuY2VOYW1lOjE=",
+          "name": ""
+        },
+        "label": "//frontend:buildbarn_resourceusage_proto_test",
+        "targetKind": "_diff_test rule"
+      }
+    },
+    "lastStopTime": "2026-02-04T09:03:25.809Z",
+    "overallStatus": "PASSED",
+    "runCount": 1,
+    "shardCount": 0,
+    "testResults": [
+      {
+        "attempt": 1,
+        "cachedLocally": false,
+        "cachedRemotely": false,
+        "exitCode": 0,
+        "id": "VGVzdFJlc3VsdDo0MA==",
+        "run": 1,
+        "shard": 1,
+        "status": "PASSED",
+        "strategy": "processwrapper-sandbox",
+        "testActionOutput": [],
+        "testAttemptDurationInMs": 66
+      }
+    ],
+    "totalNumCached": 0,
+    "totalRunCount": 1,
+    "totalRunDurationInMs": 66
+  }
+}

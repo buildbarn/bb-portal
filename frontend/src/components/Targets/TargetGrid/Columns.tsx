@@ -1,21 +1,20 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
-import type { TableColumnsType } from "antd/lib";
+import type { FilterValue } from "antd/es/table/interface";
 import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
-import type { GetTargetsListQuery } from "@/graphql/__generated__/graphql";
+import type {
+  TargetListDetailsFragment,
+  TargetWhereInput,
+} from "@/graphql/__generated__/graphql";
+import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
 
-export type TargetGridRowType = NonNullable<
-  NonNullable<
-    NonNullable<
-      NonNullable<GetTargetsListQuery["findTargets"]>["edges"]
-    >[number]
-  >["node"]
->;
-
-export const columns: TableColumnsType<TargetGridRowType> = [
+export const columns: TableColumnTypeWithFilter<
+  TargetListDetailsFragment,
+  TargetWhereInput
+>[] = [
   {
     title: "Target kind",
-    dataIndex: "target-kind",
+    key: "target-kind",
     filterSearch: true,
     render: (_, record) => (
       <span>
@@ -30,10 +29,16 @@ export const columns: TableColumnsType<TargetGridRowType> = [
     filterIcon: (filtered) => (
       <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length === 0) {
+        return undefined;
+      }
+      return [{ targetKindContainsFold: value[0] as string }];
+    },
   },
   {
     title: "Label",
-    dataIndex: "label",
+    key: "label",
     filterSearch: true,
     render: (_, record) => (
       <Link to="/targets/$targetID" params={{ targetID: record.id }}>
@@ -46,5 +51,11 @@ export const columns: TableColumnsType<TargetGridRowType> = [
     filterIcon: (filtered) => (
       <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
     ),
+    applyFilter: (value: FilterValue) => {
+      if (value.length === 0) {
+        return undefined;
+      }
+      return [{ labelContainsFold: value[0] as string }];
+    },
   },
 ];

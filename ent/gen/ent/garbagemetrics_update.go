@@ -23,96 +23,96 @@ type GarbageMetricsUpdate struct {
 }
 
 // Where appends a list predicates to the GarbageMetricsUpdate builder.
-func (gmu *GarbageMetricsUpdate) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsUpdate {
-	gmu.mutation.Where(ps...)
-	return gmu
+func (_u *GarbageMetricsUpdate) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetType sets the "type" field.
-func (gmu *GarbageMetricsUpdate) SetType(s string) *GarbageMetricsUpdate {
-	gmu.mutation.SetType(s)
-	return gmu
+func (_u *GarbageMetricsUpdate) SetType(v string) *GarbageMetricsUpdate {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (gmu *GarbageMetricsUpdate) SetNillableType(s *string) *GarbageMetricsUpdate {
-	if s != nil {
-		gmu.SetType(*s)
+func (_u *GarbageMetricsUpdate) SetNillableType(v *string) *GarbageMetricsUpdate {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return gmu
+	return _u
 }
 
 // ClearType clears the value of the "type" field.
-func (gmu *GarbageMetricsUpdate) ClearType() *GarbageMetricsUpdate {
-	gmu.mutation.ClearType()
-	return gmu
+func (_u *GarbageMetricsUpdate) ClearType() *GarbageMetricsUpdate {
+	_u.mutation.ClearType()
+	return _u
 }
 
 // SetGarbageCollected sets the "garbage_collected" field.
-func (gmu *GarbageMetricsUpdate) SetGarbageCollected(i int64) *GarbageMetricsUpdate {
-	gmu.mutation.ResetGarbageCollected()
-	gmu.mutation.SetGarbageCollected(i)
-	return gmu
+func (_u *GarbageMetricsUpdate) SetGarbageCollected(v int64) *GarbageMetricsUpdate {
+	_u.mutation.ResetGarbageCollected()
+	_u.mutation.SetGarbageCollected(v)
+	return _u
 }
 
 // SetNillableGarbageCollected sets the "garbage_collected" field if the given value is not nil.
-func (gmu *GarbageMetricsUpdate) SetNillableGarbageCollected(i *int64) *GarbageMetricsUpdate {
-	if i != nil {
-		gmu.SetGarbageCollected(*i)
+func (_u *GarbageMetricsUpdate) SetNillableGarbageCollected(v *int64) *GarbageMetricsUpdate {
+	if v != nil {
+		_u.SetGarbageCollected(*v)
 	}
-	return gmu
+	return _u
 }
 
-// AddGarbageCollected adds i to the "garbage_collected" field.
-func (gmu *GarbageMetricsUpdate) AddGarbageCollected(i int64) *GarbageMetricsUpdate {
-	gmu.mutation.AddGarbageCollected(i)
-	return gmu
+// AddGarbageCollected adds value to the "garbage_collected" field.
+func (_u *GarbageMetricsUpdate) AddGarbageCollected(v int64) *GarbageMetricsUpdate {
+	_u.mutation.AddGarbageCollected(v)
+	return _u
 }
 
 // ClearGarbageCollected clears the value of the "garbage_collected" field.
-func (gmu *GarbageMetricsUpdate) ClearGarbageCollected() *GarbageMetricsUpdate {
-	gmu.mutation.ClearGarbageCollected()
-	return gmu
+func (_u *GarbageMetricsUpdate) ClearGarbageCollected() *GarbageMetricsUpdate {
+	_u.mutation.ClearGarbageCollected()
+	return _u
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (gmu *GarbageMetricsUpdate) SetMemoryMetricsID(id int64) *GarbageMetricsUpdate {
-	gmu.mutation.SetMemoryMetricsID(id)
-	return gmu
+func (_u *GarbageMetricsUpdate) SetMemoryMetricsID(id int64) *GarbageMetricsUpdate {
+	_u.mutation.SetMemoryMetricsID(id)
+	return _u
 }
 
 // SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (gmu *GarbageMetricsUpdate) SetNillableMemoryMetricsID(id *int64) *GarbageMetricsUpdate {
+func (_u *GarbageMetricsUpdate) SetNillableMemoryMetricsID(id *int64) *GarbageMetricsUpdate {
 	if id != nil {
-		gmu = gmu.SetMemoryMetricsID(*id)
+		_u = _u.SetMemoryMetricsID(*id)
 	}
-	return gmu
+	return _u
 }
 
 // SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
-func (gmu *GarbageMetricsUpdate) SetMemoryMetrics(m *MemoryMetrics) *GarbageMetricsUpdate {
-	return gmu.SetMemoryMetricsID(m.ID)
+func (_u *GarbageMetricsUpdate) SetMemoryMetrics(v *MemoryMetrics) *GarbageMetricsUpdate {
+	return _u.SetMemoryMetricsID(v.ID)
 }
 
 // Mutation returns the GarbageMetricsMutation object of the builder.
-func (gmu *GarbageMetricsUpdate) Mutation() *GarbageMetricsMutation {
-	return gmu.mutation
+func (_u *GarbageMetricsUpdate) Mutation() *GarbageMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMemoryMetrics clears the "memory_metrics" edge to the MemoryMetrics entity.
-func (gmu *GarbageMetricsUpdate) ClearMemoryMetrics() *GarbageMetricsUpdate {
-	gmu.mutation.ClearMemoryMetrics()
-	return gmu
+func (_u *GarbageMetricsUpdate) ClearMemoryMetrics() *GarbageMetricsUpdate {
+	_u.mutation.ClearMemoryMetrics()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (gmu *GarbageMetricsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, gmu.sqlSave, gmu.mutation, gmu.hooks)
+func (_u *GarbageMetricsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gmu *GarbageMetricsUpdate) SaveX(ctx context.Context) int {
-	affected, err := gmu.Save(ctx)
+func (_u *GarbageMetricsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -120,43 +120,43 @@ func (gmu *GarbageMetricsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (gmu *GarbageMetricsUpdate) Exec(ctx context.Context) error {
-	_, err := gmu.Save(ctx)
+func (_u *GarbageMetricsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gmu *GarbageMetricsUpdate) ExecX(ctx context.Context) {
-	if err := gmu.Exec(ctx); err != nil {
+func (_u *GarbageMetricsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (gmu *GarbageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *GarbageMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(garbagemetrics.Table, garbagemetrics.Columns, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64))
-	if ps := gmu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := gmu.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(garbagemetrics.FieldType, field.TypeString, value)
 	}
-	if gmu.mutation.TypeCleared() {
+	if _u.mutation.TypeCleared() {
 		_spec.ClearField(garbagemetrics.FieldType, field.TypeString)
 	}
-	if value, ok := gmu.mutation.GarbageCollected(); ok {
+	if value, ok := _u.mutation.GarbageCollected(); ok {
 		_spec.SetField(garbagemetrics.FieldGarbageCollected, field.TypeInt64, value)
 	}
-	if value, ok := gmu.mutation.AddedGarbageCollected(); ok {
+	if value, ok := _u.mutation.AddedGarbageCollected(); ok {
 		_spec.AddField(garbagemetrics.FieldGarbageCollected, field.TypeInt64, value)
 	}
-	if gmu.mutation.GarbageCollectedCleared() {
+	if _u.mutation.GarbageCollectedCleared() {
 		_spec.ClearField(garbagemetrics.FieldGarbageCollected, field.TypeInt64)
 	}
-	if gmu.mutation.MemoryMetricsCleared() {
+	if _u.mutation.MemoryMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -169,7 +169,7 @@ func (gmu *GarbageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gmu.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -185,7 +185,7 @@ func (gmu *GarbageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, gmu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{garbagemetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -193,8 +193,8 @@ func (gmu *GarbageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		return 0, err
 	}
-	gmu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // GarbageMetricsUpdateOne is the builder for updating a single GarbageMetrics entity.
@@ -206,103 +206,103 @@ type GarbageMetricsUpdateOne struct {
 }
 
 // SetType sets the "type" field.
-func (gmuo *GarbageMetricsUpdateOne) SetType(s string) *GarbageMetricsUpdateOne {
-	gmuo.mutation.SetType(s)
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) SetType(v string) *GarbageMetricsUpdateOne {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (gmuo *GarbageMetricsUpdateOne) SetNillableType(s *string) *GarbageMetricsUpdateOne {
-	if s != nil {
-		gmuo.SetType(*s)
+func (_u *GarbageMetricsUpdateOne) SetNillableType(v *string) *GarbageMetricsUpdateOne {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return gmuo
+	return _u
 }
 
 // ClearType clears the value of the "type" field.
-func (gmuo *GarbageMetricsUpdateOne) ClearType() *GarbageMetricsUpdateOne {
-	gmuo.mutation.ClearType()
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) ClearType() *GarbageMetricsUpdateOne {
+	_u.mutation.ClearType()
+	return _u
 }
 
 // SetGarbageCollected sets the "garbage_collected" field.
-func (gmuo *GarbageMetricsUpdateOne) SetGarbageCollected(i int64) *GarbageMetricsUpdateOne {
-	gmuo.mutation.ResetGarbageCollected()
-	gmuo.mutation.SetGarbageCollected(i)
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) SetGarbageCollected(v int64) *GarbageMetricsUpdateOne {
+	_u.mutation.ResetGarbageCollected()
+	_u.mutation.SetGarbageCollected(v)
+	return _u
 }
 
 // SetNillableGarbageCollected sets the "garbage_collected" field if the given value is not nil.
-func (gmuo *GarbageMetricsUpdateOne) SetNillableGarbageCollected(i *int64) *GarbageMetricsUpdateOne {
-	if i != nil {
-		gmuo.SetGarbageCollected(*i)
+func (_u *GarbageMetricsUpdateOne) SetNillableGarbageCollected(v *int64) *GarbageMetricsUpdateOne {
+	if v != nil {
+		_u.SetGarbageCollected(*v)
 	}
-	return gmuo
+	return _u
 }
 
-// AddGarbageCollected adds i to the "garbage_collected" field.
-func (gmuo *GarbageMetricsUpdateOne) AddGarbageCollected(i int64) *GarbageMetricsUpdateOne {
-	gmuo.mutation.AddGarbageCollected(i)
-	return gmuo
+// AddGarbageCollected adds value to the "garbage_collected" field.
+func (_u *GarbageMetricsUpdateOne) AddGarbageCollected(v int64) *GarbageMetricsUpdateOne {
+	_u.mutation.AddGarbageCollected(v)
+	return _u
 }
 
 // ClearGarbageCollected clears the value of the "garbage_collected" field.
-func (gmuo *GarbageMetricsUpdateOne) ClearGarbageCollected() *GarbageMetricsUpdateOne {
-	gmuo.mutation.ClearGarbageCollected()
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) ClearGarbageCollected() *GarbageMetricsUpdateOne {
+	_u.mutation.ClearGarbageCollected()
+	return _u
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (gmuo *GarbageMetricsUpdateOne) SetMemoryMetricsID(id int64) *GarbageMetricsUpdateOne {
-	gmuo.mutation.SetMemoryMetricsID(id)
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) SetMemoryMetricsID(id int64) *GarbageMetricsUpdateOne {
+	_u.mutation.SetMemoryMetricsID(id)
+	return _u
 }
 
 // SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (gmuo *GarbageMetricsUpdateOne) SetNillableMemoryMetricsID(id *int64) *GarbageMetricsUpdateOne {
+func (_u *GarbageMetricsUpdateOne) SetNillableMemoryMetricsID(id *int64) *GarbageMetricsUpdateOne {
 	if id != nil {
-		gmuo = gmuo.SetMemoryMetricsID(*id)
+		_u = _u.SetMemoryMetricsID(*id)
 	}
-	return gmuo
+	return _u
 }
 
 // SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
-func (gmuo *GarbageMetricsUpdateOne) SetMemoryMetrics(m *MemoryMetrics) *GarbageMetricsUpdateOne {
-	return gmuo.SetMemoryMetricsID(m.ID)
+func (_u *GarbageMetricsUpdateOne) SetMemoryMetrics(v *MemoryMetrics) *GarbageMetricsUpdateOne {
+	return _u.SetMemoryMetricsID(v.ID)
 }
 
 // Mutation returns the GarbageMetricsMutation object of the builder.
-func (gmuo *GarbageMetricsUpdateOne) Mutation() *GarbageMetricsMutation {
-	return gmuo.mutation
+func (_u *GarbageMetricsUpdateOne) Mutation() *GarbageMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMemoryMetrics clears the "memory_metrics" edge to the MemoryMetrics entity.
-func (gmuo *GarbageMetricsUpdateOne) ClearMemoryMetrics() *GarbageMetricsUpdateOne {
-	gmuo.mutation.ClearMemoryMetrics()
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) ClearMemoryMetrics() *GarbageMetricsUpdateOne {
+	_u.mutation.ClearMemoryMetrics()
+	return _u
 }
 
 // Where appends a list predicates to the GarbageMetricsUpdate builder.
-func (gmuo *GarbageMetricsUpdateOne) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsUpdateOne {
-	gmuo.mutation.Where(ps...)
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) Where(ps ...predicate.GarbageMetrics) *GarbageMetricsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (gmuo *GarbageMetricsUpdateOne) Select(field string, fields ...string) *GarbageMetricsUpdateOne {
-	gmuo.fields = append([]string{field}, fields...)
-	return gmuo
+func (_u *GarbageMetricsUpdateOne) Select(field string, fields ...string) *GarbageMetricsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated GarbageMetrics entity.
-func (gmuo *GarbageMetricsUpdateOne) Save(ctx context.Context) (*GarbageMetrics, error) {
-	return withHooks(ctx, gmuo.sqlSave, gmuo.mutation, gmuo.hooks)
+func (_u *GarbageMetricsUpdateOne) Save(ctx context.Context) (*GarbageMetrics, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gmuo *GarbageMetricsUpdateOne) SaveX(ctx context.Context) *GarbageMetrics {
-	node, err := gmuo.Save(ctx)
+func (_u *GarbageMetricsUpdateOne) SaveX(ctx context.Context) *GarbageMetrics {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -310,26 +310,26 @@ func (gmuo *GarbageMetricsUpdateOne) SaveX(ctx context.Context) *GarbageMetrics 
 }
 
 // Exec executes the query on the entity.
-func (gmuo *GarbageMetricsUpdateOne) Exec(ctx context.Context) error {
-	_, err := gmuo.Save(ctx)
+func (_u *GarbageMetricsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gmuo *GarbageMetricsUpdateOne) ExecX(ctx context.Context) {
-	if err := gmuo.Exec(ctx); err != nil {
+func (_u *GarbageMetricsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (gmuo *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *GarbageMetrics, err error) {
+func (_u *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *GarbageMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(garbagemetrics.Table, garbagemetrics.Columns, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64))
-	id, ok := gmuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "GarbageMetrics.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := gmuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, garbagemetrics.FieldID)
 		for _, f := range fields {
@@ -341,29 +341,29 @@ func (gmuo *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Garbag
 			}
 		}
 	}
-	if ps := gmuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := gmuo.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(garbagemetrics.FieldType, field.TypeString, value)
 	}
-	if gmuo.mutation.TypeCleared() {
+	if _u.mutation.TypeCleared() {
 		_spec.ClearField(garbagemetrics.FieldType, field.TypeString)
 	}
-	if value, ok := gmuo.mutation.GarbageCollected(); ok {
+	if value, ok := _u.mutation.GarbageCollected(); ok {
 		_spec.SetField(garbagemetrics.FieldGarbageCollected, field.TypeInt64, value)
 	}
-	if value, ok := gmuo.mutation.AddedGarbageCollected(); ok {
+	if value, ok := _u.mutation.AddedGarbageCollected(); ok {
 		_spec.AddField(garbagemetrics.FieldGarbageCollected, field.TypeInt64, value)
 	}
-	if gmuo.mutation.GarbageCollectedCleared() {
+	if _u.mutation.GarbageCollectedCleared() {
 		_spec.ClearField(garbagemetrics.FieldGarbageCollected, field.TypeInt64)
 	}
-	if gmuo.mutation.MemoryMetricsCleared() {
+	if _u.mutation.MemoryMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -376,7 +376,7 @@ func (gmuo *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Garbag
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gmuo.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -392,10 +392,10 @@ func (gmuo *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Garbag
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &GarbageMetrics{config: gmuo.config}
+	_node = &GarbageMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, gmuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{garbagemetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -403,6 +403,6 @@ func (gmuo *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Garbag
 		}
 		return nil, err
 	}
-	gmuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

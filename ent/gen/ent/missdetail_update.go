@@ -23,90 +23,90 @@ type MissDetailUpdate struct {
 }
 
 // Where appends a list predicates to the MissDetailUpdate builder.
-func (mdu *MissDetailUpdate) Where(ps ...predicate.MissDetail) *MissDetailUpdate {
-	mdu.mutation.Where(ps...)
-	return mdu
+func (_u *MissDetailUpdate) Where(ps ...predicate.MissDetail) *MissDetailUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetReason sets the "reason" field.
-func (mdu *MissDetailUpdate) SetReason(s string) *MissDetailUpdate {
-	mdu.mutation.SetReason(s)
-	return mdu
+func (_u *MissDetailUpdate) SetReason(v string) *MissDetailUpdate {
+	_u.mutation.SetReason(v)
+	return _u
 }
 
 // SetNillableReason sets the "reason" field if the given value is not nil.
-func (mdu *MissDetailUpdate) SetNillableReason(s *string) *MissDetailUpdate {
-	if s != nil {
-		mdu.SetReason(*s)
+func (_u *MissDetailUpdate) SetNillableReason(v *string) *MissDetailUpdate {
+	if v != nil {
+		_u.SetReason(*v)
 	}
-	return mdu
+	return _u
 }
 
 // SetCount sets the "count" field.
-func (mdu *MissDetailUpdate) SetCount(i int32) *MissDetailUpdate {
-	mdu.mutation.ResetCount()
-	mdu.mutation.SetCount(i)
-	return mdu
+func (_u *MissDetailUpdate) SetCount(v int32) *MissDetailUpdate {
+	_u.mutation.ResetCount()
+	_u.mutation.SetCount(v)
+	return _u
 }
 
 // SetNillableCount sets the "count" field if the given value is not nil.
-func (mdu *MissDetailUpdate) SetNillableCount(i *int32) *MissDetailUpdate {
-	if i != nil {
-		mdu.SetCount(*i)
+func (_u *MissDetailUpdate) SetNillableCount(v *int32) *MissDetailUpdate {
+	if v != nil {
+		_u.SetCount(*v)
 	}
-	return mdu
+	return _u
 }
 
-// AddCount adds i to the "count" field.
-func (mdu *MissDetailUpdate) AddCount(i int32) *MissDetailUpdate {
-	mdu.mutation.AddCount(i)
-	return mdu
+// AddCount adds value to the "count" field.
+func (_u *MissDetailUpdate) AddCount(v int32) *MissDetailUpdate {
+	_u.mutation.AddCount(v)
+	return _u
 }
 
 // ClearCount clears the value of the "count" field.
-func (mdu *MissDetailUpdate) ClearCount() *MissDetailUpdate {
-	mdu.mutation.ClearCount()
-	return mdu
+func (_u *MissDetailUpdate) ClearCount() *MissDetailUpdate {
+	_u.mutation.ClearCount()
+	return _u
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mdu *MissDetailUpdate) SetActionCacheStatisticsID(id int64) *MissDetailUpdate {
-	mdu.mutation.SetActionCacheStatisticsID(id)
-	return mdu
+func (_u *MissDetailUpdate) SetActionCacheStatisticsID(id int64) *MissDetailUpdate {
+	_u.mutation.SetActionCacheStatisticsID(id)
+	return _u
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mdu *MissDetailUpdate) SetNillableActionCacheStatisticsID(id *int64) *MissDetailUpdate {
+func (_u *MissDetailUpdate) SetNillableActionCacheStatisticsID(id *int64) *MissDetailUpdate {
 	if id != nil {
-		mdu = mdu.SetActionCacheStatisticsID(*id)
+		_u = _u.SetActionCacheStatisticsID(*id)
 	}
-	return mdu
+	return _u
 }
 
 // SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (mdu *MissDetailUpdate) SetActionCacheStatistics(a *ActionCacheStatistics) *MissDetailUpdate {
-	return mdu.SetActionCacheStatisticsID(a.ID)
+func (_u *MissDetailUpdate) SetActionCacheStatistics(v *ActionCacheStatistics) *MissDetailUpdate {
+	return _u.SetActionCacheStatisticsID(v.ID)
 }
 
 // Mutation returns the MissDetailMutation object of the builder.
-func (mdu *MissDetailUpdate) Mutation() *MissDetailMutation {
-	return mdu.mutation
+func (_u *MissDetailUpdate) Mutation() *MissDetailMutation {
+	return _u.mutation
 }
 
 // ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (mdu *MissDetailUpdate) ClearActionCacheStatistics() *MissDetailUpdate {
-	mdu.mutation.ClearActionCacheStatistics()
-	return mdu
+func (_u *MissDetailUpdate) ClearActionCacheStatistics() *MissDetailUpdate {
+	_u.mutation.ClearActionCacheStatistics()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (mdu *MissDetailUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, mdu.sqlSave, mdu.mutation, mdu.hooks)
+func (_u *MissDetailUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mdu *MissDetailUpdate) SaveX(ctx context.Context) int {
-	affected, err := mdu.Save(ctx)
+func (_u *MissDetailUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -114,40 +114,40 @@ func (mdu *MissDetailUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (mdu *MissDetailUpdate) Exec(ctx context.Context) error {
-	_, err := mdu.Save(ctx)
+func (_u *MissDetailUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mdu *MissDetailUpdate) ExecX(ctx context.Context) {
-	if err := mdu.Exec(ctx); err != nil {
+func (_u *MissDetailUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *MissDetailUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
-	if ps := mdu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := mdu.mutation.Reason(); ok {
+	if value, ok := _u.mutation.Reason(); ok {
 		_spec.SetField(missdetail.FieldReason, field.TypeString, value)
 	}
-	if value, ok := mdu.mutation.Count(); ok {
+	if value, ok := _u.mutation.Count(); ok {
 		_spec.SetField(missdetail.FieldCount, field.TypeInt32, value)
 	}
-	if value, ok := mdu.mutation.AddedCount(); ok {
+	if value, ok := _u.mutation.AddedCount(); ok {
 		_spec.AddField(missdetail.FieldCount, field.TypeInt32, value)
 	}
-	if mdu.mutation.CountCleared() {
+	if _u.mutation.CountCleared() {
 		_spec.ClearField(missdetail.FieldCount, field.TypeInt32)
 	}
-	if mdu.mutation.ActionCacheStatisticsCleared() {
+	if _u.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -160,7 +160,7 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mdu.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -176,7 +176,7 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, mdu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{missdetail.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -184,8 +184,8 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	mdu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // MissDetailUpdateOne is the builder for updating a single MissDetail entity.
@@ -197,97 +197,97 @@ type MissDetailUpdateOne struct {
 }
 
 // SetReason sets the "reason" field.
-func (mduo *MissDetailUpdateOne) SetReason(s string) *MissDetailUpdateOne {
-	mduo.mutation.SetReason(s)
-	return mduo
+func (_u *MissDetailUpdateOne) SetReason(v string) *MissDetailUpdateOne {
+	_u.mutation.SetReason(v)
+	return _u
 }
 
 // SetNillableReason sets the "reason" field if the given value is not nil.
-func (mduo *MissDetailUpdateOne) SetNillableReason(s *string) *MissDetailUpdateOne {
-	if s != nil {
-		mduo.SetReason(*s)
+func (_u *MissDetailUpdateOne) SetNillableReason(v *string) *MissDetailUpdateOne {
+	if v != nil {
+		_u.SetReason(*v)
 	}
-	return mduo
+	return _u
 }
 
 // SetCount sets the "count" field.
-func (mduo *MissDetailUpdateOne) SetCount(i int32) *MissDetailUpdateOne {
-	mduo.mutation.ResetCount()
-	mduo.mutation.SetCount(i)
-	return mduo
+func (_u *MissDetailUpdateOne) SetCount(v int32) *MissDetailUpdateOne {
+	_u.mutation.ResetCount()
+	_u.mutation.SetCount(v)
+	return _u
 }
 
 // SetNillableCount sets the "count" field if the given value is not nil.
-func (mduo *MissDetailUpdateOne) SetNillableCount(i *int32) *MissDetailUpdateOne {
-	if i != nil {
-		mduo.SetCount(*i)
+func (_u *MissDetailUpdateOne) SetNillableCount(v *int32) *MissDetailUpdateOne {
+	if v != nil {
+		_u.SetCount(*v)
 	}
-	return mduo
+	return _u
 }
 
-// AddCount adds i to the "count" field.
-func (mduo *MissDetailUpdateOne) AddCount(i int32) *MissDetailUpdateOne {
-	mduo.mutation.AddCount(i)
-	return mduo
+// AddCount adds value to the "count" field.
+func (_u *MissDetailUpdateOne) AddCount(v int32) *MissDetailUpdateOne {
+	_u.mutation.AddCount(v)
+	return _u
 }
 
 // ClearCount clears the value of the "count" field.
-func (mduo *MissDetailUpdateOne) ClearCount() *MissDetailUpdateOne {
-	mduo.mutation.ClearCount()
-	return mduo
+func (_u *MissDetailUpdateOne) ClearCount() *MissDetailUpdateOne {
+	_u.mutation.ClearCount()
+	return _u
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mduo *MissDetailUpdateOne) SetActionCacheStatisticsID(id int64) *MissDetailUpdateOne {
-	mduo.mutation.SetActionCacheStatisticsID(id)
-	return mduo
+func (_u *MissDetailUpdateOne) SetActionCacheStatisticsID(id int64) *MissDetailUpdateOne {
+	_u.mutation.SetActionCacheStatisticsID(id)
+	return _u
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mduo *MissDetailUpdateOne) SetNillableActionCacheStatisticsID(id *int64) *MissDetailUpdateOne {
+func (_u *MissDetailUpdateOne) SetNillableActionCacheStatisticsID(id *int64) *MissDetailUpdateOne {
 	if id != nil {
-		mduo = mduo.SetActionCacheStatisticsID(*id)
+		_u = _u.SetActionCacheStatisticsID(*id)
 	}
-	return mduo
+	return _u
 }
 
 // SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (mduo *MissDetailUpdateOne) SetActionCacheStatistics(a *ActionCacheStatistics) *MissDetailUpdateOne {
-	return mduo.SetActionCacheStatisticsID(a.ID)
+func (_u *MissDetailUpdateOne) SetActionCacheStatistics(v *ActionCacheStatistics) *MissDetailUpdateOne {
+	return _u.SetActionCacheStatisticsID(v.ID)
 }
 
 // Mutation returns the MissDetailMutation object of the builder.
-func (mduo *MissDetailUpdateOne) Mutation() *MissDetailMutation {
-	return mduo.mutation
+func (_u *MissDetailUpdateOne) Mutation() *MissDetailMutation {
+	return _u.mutation
 }
 
 // ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (mduo *MissDetailUpdateOne) ClearActionCacheStatistics() *MissDetailUpdateOne {
-	mduo.mutation.ClearActionCacheStatistics()
-	return mduo
+func (_u *MissDetailUpdateOne) ClearActionCacheStatistics() *MissDetailUpdateOne {
+	_u.mutation.ClearActionCacheStatistics()
+	return _u
 }
 
 // Where appends a list predicates to the MissDetailUpdate builder.
-func (mduo *MissDetailUpdateOne) Where(ps ...predicate.MissDetail) *MissDetailUpdateOne {
-	mduo.mutation.Where(ps...)
-	return mduo
+func (_u *MissDetailUpdateOne) Where(ps ...predicate.MissDetail) *MissDetailUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (mduo *MissDetailUpdateOne) Select(field string, fields ...string) *MissDetailUpdateOne {
-	mduo.fields = append([]string{field}, fields...)
-	return mduo
+func (_u *MissDetailUpdateOne) Select(field string, fields ...string) *MissDetailUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated MissDetail entity.
-func (mduo *MissDetailUpdateOne) Save(ctx context.Context) (*MissDetail, error) {
-	return withHooks(ctx, mduo.sqlSave, mduo.mutation, mduo.hooks)
+func (_u *MissDetailUpdateOne) Save(ctx context.Context) (*MissDetail, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mduo *MissDetailUpdateOne) SaveX(ctx context.Context) *MissDetail {
-	node, err := mduo.Save(ctx)
+func (_u *MissDetailUpdateOne) SaveX(ctx context.Context) *MissDetail {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -295,26 +295,26 @@ func (mduo *MissDetailUpdateOne) SaveX(ctx context.Context) *MissDetail {
 }
 
 // Exec executes the query on the entity.
-func (mduo *MissDetailUpdateOne) Exec(ctx context.Context) error {
-	_, err := mduo.Save(ctx)
+func (_u *MissDetailUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mduo *MissDetailUpdateOne) ExecX(ctx context.Context) {
-	if err := mduo.Exec(ctx); err != nil {
+func (_u *MissDetailUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, err error) {
+func (_u *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, err error) {
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
-	id, ok := mduo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "MissDetail.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := mduo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, missdetail.FieldID)
 		for _, f := range fields {
@@ -326,26 +326,26 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 			}
 		}
 	}
-	if ps := mduo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := mduo.mutation.Reason(); ok {
+	if value, ok := _u.mutation.Reason(); ok {
 		_spec.SetField(missdetail.FieldReason, field.TypeString, value)
 	}
-	if value, ok := mduo.mutation.Count(); ok {
+	if value, ok := _u.mutation.Count(); ok {
 		_spec.SetField(missdetail.FieldCount, field.TypeInt32, value)
 	}
-	if value, ok := mduo.mutation.AddedCount(); ok {
+	if value, ok := _u.mutation.AddedCount(); ok {
 		_spec.AddField(missdetail.FieldCount, field.TypeInt32, value)
 	}
-	if mduo.mutation.CountCleared() {
+	if _u.mutation.CountCleared() {
 		_spec.ClearField(missdetail.FieldCount, field.TypeInt32)
 	}
-	if mduo.mutation.ActionCacheStatisticsCleared() {
+	if _u.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -358,7 +358,7 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mduo.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -374,10 +374,10 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &MissDetail{config: mduo.config}
+	_node = &MissDetail{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, mduo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{missdetail.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -385,6 +385,6 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 		}
 		return nil, err
 	}
-	mduo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

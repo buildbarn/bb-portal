@@ -162,7 +162,7 @@ func (*Metrics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Metrics fields.
-func (m *Metrics) assignValues(columns []string, values []any) error {
+func (_m *Metrics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -173,16 +173,16 @@ func (m *Metrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			m.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case metrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_metrics", value)
 			} else if value.Valid {
-				m.bazel_invocation_metrics = new(int64)
-				*m.bazel_invocation_metrics = int64(value.Int64)
+				_m.bazel_invocation_metrics = new(int64)
+				*_m.bazel_invocation_metrics = int64(value.Int64)
 			}
 		default:
-			m.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -190,73 +190,73 @@ func (m *Metrics) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Metrics.
 // This includes values selected through modifiers, order, etc.
-func (m *Metrics) Value(name string) (ent.Value, error) {
-	return m.selectValues.Get(name)
+func (_m *Metrics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the Metrics entity.
-func (m *Metrics) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewMetricsClient(m.config).QueryBazelInvocation(m)
+func (_m *Metrics) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewMetricsClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // QueryActionSummary queries the "action_summary" edge of the Metrics entity.
-func (m *Metrics) QueryActionSummary() *ActionSummaryQuery {
-	return NewMetricsClient(m.config).QueryActionSummary(m)
+func (_m *Metrics) QueryActionSummary() *ActionSummaryQuery {
+	return NewMetricsClient(_m.config).QueryActionSummary(_m)
 }
 
 // QueryMemoryMetrics queries the "memory_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryMemoryMetrics() *MemoryMetricsQuery {
-	return NewMetricsClient(m.config).QueryMemoryMetrics(m)
+func (_m *Metrics) QueryMemoryMetrics() *MemoryMetricsQuery {
+	return NewMetricsClient(_m.config).QueryMemoryMetrics(_m)
 }
 
 // QueryTargetMetrics queries the "target_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryTargetMetrics() *TargetMetricsQuery {
-	return NewMetricsClient(m.config).QueryTargetMetrics(m)
+func (_m *Metrics) QueryTargetMetrics() *TargetMetricsQuery {
+	return NewMetricsClient(_m.config).QueryTargetMetrics(_m)
 }
 
 // QueryTimingMetrics queries the "timing_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryTimingMetrics() *TimingMetricsQuery {
-	return NewMetricsClient(m.config).QueryTimingMetrics(m)
+func (_m *Metrics) QueryTimingMetrics() *TimingMetricsQuery {
+	return NewMetricsClient(_m.config).QueryTimingMetrics(_m)
 }
 
 // QueryArtifactMetrics queries the "artifact_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryArtifactMetrics() *ArtifactMetricsQuery {
-	return NewMetricsClient(m.config).QueryArtifactMetrics(m)
+func (_m *Metrics) QueryArtifactMetrics() *ArtifactMetricsQuery {
+	return NewMetricsClient(_m.config).QueryArtifactMetrics(_m)
 }
 
 // QueryNetworkMetrics queries the "network_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryNetworkMetrics() *NetworkMetricsQuery {
-	return NewMetricsClient(m.config).QueryNetworkMetrics(m)
+func (_m *Metrics) QueryNetworkMetrics() *NetworkMetricsQuery {
+	return NewMetricsClient(_m.config).QueryNetworkMetrics(_m)
 }
 
 // QueryBuildGraphMetrics queries the "build_graph_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
-	return NewMetricsClient(m.config).QueryBuildGraphMetrics(m)
+func (_m *Metrics) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
+	return NewMetricsClient(_m.config).QueryBuildGraphMetrics(_m)
 }
 
 // Update returns a builder for updating this Metrics.
 // Note that you need to call Metrics.Unwrap() before calling this method if this Metrics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (m *Metrics) Update() *MetricsUpdateOne {
-	return NewMetricsClient(m.config).UpdateOne(m)
+func (_m *Metrics) Update() *MetricsUpdateOne {
+	return NewMetricsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Metrics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (m *Metrics) Unwrap() *Metrics {
-	_tx, ok := m.config.driver.(*txDriver)
+func (_m *Metrics) Unwrap() *Metrics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Metrics is not a transactional entity")
 	}
-	m.config.driver = _tx.drv
-	return m
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (m *Metrics) String() string {
+func (_m *Metrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("Metrics(")
-	builder.WriteString(fmt.Sprintf("id=%v", m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v", _m.ID))
 	builder.WriteByte(')')
 	return builder.String()
 }

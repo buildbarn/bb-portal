@@ -2,30 +2,10 @@ extend type Query {
   getAuthenticatedUser(userUUID: UUID!): AuthenticatedUser
   getBazelInvocation(invocationID: UUID!): BazelInvocation
   getBuild(buildUUID: UUID!): Build
-  getTarget(
-    instanceName: String!
-    label: String!
-    aspect: String!
-    targetKind: String!
-  ): Target
-}
-
-type Profile {
-  id: ID!
-  name: String!
-  digest: String!
-  sizeInBytes: Int!
-  digestFunction: String!
-}
-
-extend type BazelInvocation {
-  profile: Profile
+  getTarget(id: ID!): Target
+  getTestSummary(invocationID: UUID!, testSummaryID: String!): TestSummary
 }
 
 extend type ConnectionMetadata {
   timeSinceLastConnectionMillis: Int! @goField(forceResolver: true)
-}
-
-extend type Target {
-  invocationTargetsTotalDurationMillis: Int! @goField(forceResolver: true)
 }

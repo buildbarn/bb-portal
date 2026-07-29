@@ -1,26 +1,27 @@
 import { ClockCircleFilled, SearchOutlined } from "@ant-design/icons";
 import { Link } from "@tanstack/react-router";
-import { Typography } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import dayjs from "dayjs";
+import { validate as uuidValidate } from "uuid";
+import CodeText from "@/components/CodeText";
+import { InvocationResultTag } from "@/components/InvocationResultTag";
+import {
+  applyInvocationResultTagFilter,
+  invocationResultTagFilters,
+} from "@/components/InvocationResultTag/filters";
 import PortalDuration from "@/components/PortalDuration";
 import {
+  FilterPickerDropdown,
   SearchFilterIcon,
   SearchWidget,
   TimeRangeSelector,
 } from "@/components/SearchWidgets";
+import UserStatusIndicator from "@/components/UserStatusIndicator";
 import type {
   BazelInvocationNodeFragment,
   BazelInvocationWhereInput,
 } from "@/graphql/__generated__/graphql";
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
-import { InvocationResultTag } from "../InvocationResultTag";
-import {
-  applyInvocationResultTagFilter,
-  invocationResultTagFilters,
-} from "../InvocationResultTag/filters";
-import UserStatusIndicator from "../UserStatusIndicator";
-import styles from "./Columns.module.css";
 
 export const invocationIdColumn: TableColumnTypeWithFilter<
   BazelInvocationNodeFragment,
@@ -40,6 +41,8 @@ export const invocationIdColumn: TableColumnTypeWithFilter<
   filterDropdown: (filterProps) => (
     <SearchWidget
       placeholder="Provide a Bazel invocation ID..."
+      dataValidator={uuidValidate}
+      validationTooltip="The search string needs to be a valid UUID"
       {...filterProps}
     />
   ),
@@ -62,9 +65,9 @@ export const startedAtColumn: TableColumnTypeWithFilter<
   width: 165,
   title: "Start Time",
   render: (_, record) => (
-    <Typography.Text code ellipsis className={styles.startedAt}>
+    <CodeText>
       {dayjs(record.startedAt).format("YYYY-MM-DD hh:mm:ss A")}
-    </Typography.Text>
+    </CodeText>
   ),
   filterDropdown: (filterProps) => <TimeRangeSelector {...filterProps} />,
   filterIcon: (filtered) => (
@@ -100,7 +103,6 @@ export const durationColumn: TableColumnTypeWithFilter<
           ? record.endedAt
           : record.connectionMetadata?.connectionLastOpenAt || undefined
       }
-      includePopover
       formatConfig={{ smallestUnit: "s" }}
     />
   ),
@@ -124,6 +126,7 @@ export const statusColumn: TableColumnTypeWithFilter<
   filterIcon: (filtered) => (
     <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
   ),
+  filterDropdown: (filterProps) => <FilterPickerDropdown {...filterProps} />,
   filters: invocationResultTagFilters,
   applyFilter: applyInvocationResultTagFilter,
 };
@@ -145,7 +148,12 @@ export const buildColumn: TableColumnTypeWithFilter<
       </Link>
     ),
   filterDropdown: (filterProps) => (
-    <SearchWidget placeholder="Provide a build UUID..." {...filterProps} />
+    <SearchWidget
+      placeholder="Provide a build UUID..."
+      {...filterProps}
+      dataValidator={uuidValidate}
+      validationTooltip="The search string needs to be a valid UUID"
+    />
   ),
   filterIcon: (filtered) => (
     <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
@@ -170,6 +178,7 @@ export const userColumn: TableColumnTypeWithFilter<
       <UserStatusIndicator
         authenticatedUser={record.authenticatedUser}
         username={record.username || undefined}
+        showIcon
       />
     );
   },

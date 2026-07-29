@@ -3,17 +3,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Button, Flex, Space, Spin, Typography } from "antd";
 import React, { useEffect } from "react";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import {
   type Digest,
   type DigestFunction_Value,
   Directory,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { FileSystemAccessProfile } from "@/lib/grpc-client/buildbarn/fsac/fsac";
-import type { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
 import themeStyles from "@/theme/theme.module.css";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import type { FileSystemAccessProfileReference } from "@/types/FileSystemAccessProfileReference";
 import {
   type BloomFilterReader,
   containsPathHashes,
@@ -144,7 +144,6 @@ const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
 }) => {
   const [expanded, setExpanded] = React.useState(isTopLevel);
   const queryClient = useQueryClient();
-  const { casByteStreamClient } = useGrpcClients();
 
   const { data, isError, isPending, error } = useQuery({
     queryKey: [
@@ -189,7 +188,7 @@ const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
         }
       }
     }
-  }, [casByteStreamClient, data, digestFunction, instanceName, queryClient]);
+  }, [data, digestFunction, instanceName, queryClient]);
 
   const calcWillBePrefetched = (
     currentPathHashes: PathHashes | undefined = pathHashes,

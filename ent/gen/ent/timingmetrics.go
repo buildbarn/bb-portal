@@ -74,7 +74,7 @@ func (*TimingMetrics) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TimingMetrics fields.
-func (tm *TimingMetrics) assignValues(columns []string, values []any) error {
+func (_m *TimingMetrics) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -85,46 +85,46 @@ func (tm *TimingMetrics) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tm.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case timingmetrics.FieldCPUTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field cpu_time_in_ms", values[i])
 			} else if value.Valid {
-				tm.CPUTimeInMs = value.Int64
+				_m.CPUTimeInMs = value.Int64
 			}
 		case timingmetrics.FieldWallTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field wall_time_in_ms", values[i])
 			} else if value.Valid {
-				tm.WallTimeInMs = value.Int64
+				_m.WallTimeInMs = value.Int64
 			}
 		case timingmetrics.FieldAnalysisPhaseTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field analysis_phase_time_in_ms", values[i])
 			} else if value.Valid {
-				tm.AnalysisPhaseTimeInMs = value.Int64
+				_m.AnalysisPhaseTimeInMs = value.Int64
 			}
 		case timingmetrics.FieldExecutionPhaseTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field execution_phase_time_in_ms", values[i])
 			} else if value.Valid {
-				tm.ExecutionPhaseTimeInMs = value.Int64
+				_m.ExecutionPhaseTimeInMs = value.Int64
 			}
 		case timingmetrics.FieldActionsExecutionStartInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_execution_start_in_ms", values[i])
 			} else if value.Valid {
-				tm.ActionsExecutionStartInMs = value.Int64
+				_m.ActionsExecutionStartInMs = value.Int64
 			}
 		case timingmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_timing_metrics", value)
 			} else if value.Valid {
-				tm.metrics_timing_metrics = new(int64)
-				*tm.metrics_timing_metrics = int64(value.Int64)
+				_m.metrics_timing_metrics = new(int64)
+				*_m.metrics_timing_metrics = int64(value.Int64)
 			}
 		default:
-			tm.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -132,52 +132,52 @@ func (tm *TimingMetrics) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TimingMetrics.
 // This includes values selected through modifiers, order, etc.
-func (tm *TimingMetrics) Value(name string) (ent.Value, error) {
-	return tm.selectValues.Get(name)
+func (_m *TimingMetrics) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMetrics queries the "metrics" edge of the TimingMetrics entity.
-func (tm *TimingMetrics) QueryMetrics() *MetricsQuery {
-	return NewTimingMetricsClient(tm.config).QueryMetrics(tm)
+func (_m *TimingMetrics) QueryMetrics() *MetricsQuery {
+	return NewTimingMetricsClient(_m.config).QueryMetrics(_m)
 }
 
 // Update returns a builder for updating this TimingMetrics.
 // Note that you need to call TimingMetrics.Unwrap() before calling this method if this TimingMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (tm *TimingMetrics) Update() *TimingMetricsUpdateOne {
-	return NewTimingMetricsClient(tm.config).UpdateOne(tm)
+func (_m *TimingMetrics) Update() *TimingMetricsUpdateOne {
+	return NewTimingMetricsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TimingMetrics entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (tm *TimingMetrics) Unwrap() *TimingMetrics {
-	_tx, ok := tm.config.driver.(*txDriver)
+func (_m *TimingMetrics) Unwrap() *TimingMetrics {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TimingMetrics is not a transactional entity")
 	}
-	tm.config.driver = _tx.drv
-	return tm
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (tm *TimingMetrics) String() string {
+func (_m *TimingMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("TimingMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", tm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("cpu_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", tm.CPUTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.CPUTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("wall_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", tm.WallTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.WallTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("analysis_phase_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", tm.AnalysisPhaseTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.AnalysisPhaseTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("execution_phase_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", tm.ExecutionPhaseTimeInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.ExecutionPhaseTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("actions_execution_start_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", tm.ActionsExecutionStartInMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionsExecutionStartInMs))
 	builder.WriteByte(')')
 	return builder.String()
 }

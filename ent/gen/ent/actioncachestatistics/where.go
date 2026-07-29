@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // ID filters vertices based on their ID field.
@@ -65,13 +64,15 @@ func SaveTimeInMs(v uint64) predicate.ActionCacheStatistics {
 }
 
 // LoadTimeInMs applies equality check predicate on the "load_time_in_ms" field. It's identical to LoadTimeInMsEQ.
-func LoadTimeInMs(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldLoadTimeInMs, v))
+func LoadTimeInMs(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldLoadTimeInMs, vc), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMs applies equality check predicate on the "cache_check_semaphore_wait_time_in_ms" field. It's identical to CacheCheckSemaphoreWaitTimeInMsEQ.
-func CacheCheckSemaphoreWaitTimeInMs(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+func CacheCheckSemaphoreWaitTimeInMs(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // Hits applies equality check predicate on the "hits" field. It's identical to HitsEQ.
@@ -185,43 +186,67 @@ func SaveTimeInMsNotNil() predicate.ActionCacheStatistics {
 }
 
 // LoadTimeInMsEQ applies the EQ predicate on the "load_time_in_ms" field.
-func LoadTimeInMsEQ(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldLoadTimeInMs, v))
+func LoadTimeInMsEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsNEQ applies the NEQ predicate on the "load_time_in_ms" field.
-func LoadTimeInMsNEQ(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNEQ(FieldLoadTimeInMs, v))
+func LoadTimeInMsNEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNEQ(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsIn applies the In predicate on the "load_time_in_ms" field.
-func LoadTimeInMsIn(vs ...schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldIn(FieldLoadTimeInMs, vs...))
+func LoadTimeInMsIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.LoadTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldIn(FieldLoadTimeInMs, v...), err)
 }
 
 // LoadTimeInMsNotIn applies the NotIn predicate on the "load_time_in_ms" field.
-func LoadTimeInMsNotIn(vs ...schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNotIn(FieldLoadTimeInMs, vs...))
+func LoadTimeInMsNotIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.LoadTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNotIn(FieldLoadTimeInMs, v...), err)
 }
 
 // LoadTimeInMsGT applies the GT predicate on the "load_time_in_ms" field.
-func LoadTimeInMsGT(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGT(FieldLoadTimeInMs, v))
+func LoadTimeInMsGT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGT(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsGTE applies the GTE predicate on the "load_time_in_ms" field.
-func LoadTimeInMsGTE(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGTE(FieldLoadTimeInMs, v))
+func LoadTimeInMsGTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGTE(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsLT applies the LT predicate on the "load_time_in_ms" field.
-func LoadTimeInMsLT(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLT(FieldLoadTimeInMs, v))
+func LoadTimeInMsLT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLT(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsLTE applies the LTE predicate on the "load_time_in_ms" field.
-func LoadTimeInMsLTE(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLTE(FieldLoadTimeInMs, v))
+func LoadTimeInMsLTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLTE(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsIsNil applies the IsNil predicate on the "load_time_in_ms" field.
@@ -235,43 +260,67 @@ func LoadTimeInMsNotNil() predicate.ActionCacheStatistics {
 }
 
 // CacheCheckSemaphoreWaitTimeInMsEQ applies the EQ predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsEQ(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+func CacheCheckSemaphoreWaitTimeInMsEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsNEQ applies the NEQ predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsNEQ(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNEQ(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+func CacheCheckSemaphoreWaitTimeInMsNEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNEQ(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsIn applies the In predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsIn(vs ...schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldIn(FieldCacheCheckSemaphoreWaitTimeInMs, vs...))
+func CacheCheckSemaphoreWaitTimeInMsIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldIn(FieldCacheCheckSemaphoreWaitTimeInMs, v...), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsNotIn applies the NotIn predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsNotIn(vs ...schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNotIn(FieldCacheCheckSemaphoreWaitTimeInMs, vs...))
+func CacheCheckSemaphoreWaitTimeInMsNotIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNotIn(FieldCacheCheckSemaphoreWaitTimeInMs, v...), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsGT applies the GT predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsGT(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGT(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+func CacheCheckSemaphoreWaitTimeInMsGT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGT(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsGTE applies the GTE predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsGTE(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGTE(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+func CacheCheckSemaphoreWaitTimeInMsGTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGTE(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsLT applies the LT predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsLT(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLT(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+func CacheCheckSemaphoreWaitTimeInMsLT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLT(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsLTE applies the LTE predicate on the "cache_check_semaphore_wait_time_in_ms" field.
-func CacheCheckSemaphoreWaitTimeInMsLTE(v schema.Uint64Numeric) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLTE(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+func CacheCheckSemaphoreWaitTimeInMsLTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLTE(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // CacheCheckSemaphoreWaitTimeInMsIsNil applies the IsNil predicate on the "cache_check_semaphore_wait_time_in_ms" field.

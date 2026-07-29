@@ -30,7 +30,7 @@ export const InvocationExitCodes = [
 export const INVOCATION_IN_PROGRESS_TIMEOUT = 12 * 1000;
 
 export const getInvocationResultTagEnum = (
-  exitCodeName: string | undefined,
+  exitCodeName: string | undefined | null,
   timeSinceLastConnectionMillis: number | undefined,
 ): InvocationResult => {
   if (exitCodeName) {

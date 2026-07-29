@@ -23,59 +23,59 @@ type BuildLogChunkCreate struct {
 }
 
 // SetData sets the "data" field.
-func (blcc *BuildLogChunkCreate) SetData(b []byte) *BuildLogChunkCreate {
-	blcc.mutation.SetData(b)
-	return blcc
+func (_c *BuildLogChunkCreate) SetData(v []byte) *BuildLogChunkCreate {
+	_c.mutation.SetData(v)
+	return _c
 }
 
 // SetChunkIndex sets the "chunk_index" field.
-func (blcc *BuildLogChunkCreate) SetChunkIndex(i int) *BuildLogChunkCreate {
-	blcc.mutation.SetChunkIndex(i)
-	return blcc
+func (_c *BuildLogChunkCreate) SetChunkIndex(v int) *BuildLogChunkCreate {
+	_c.mutation.SetChunkIndex(v)
+	return _c
 }
 
 // SetFirstLineIndex sets the "first_line_index" field.
-func (blcc *BuildLogChunkCreate) SetFirstLineIndex(i int64) *BuildLogChunkCreate {
-	blcc.mutation.SetFirstLineIndex(i)
-	return blcc
+func (_c *BuildLogChunkCreate) SetFirstLineIndex(v int64) *BuildLogChunkCreate {
+	_c.mutation.SetFirstLineIndex(v)
+	return _c
 }
 
 // SetLastLineIndex sets the "last_line_index" field.
-func (blcc *BuildLogChunkCreate) SetLastLineIndex(i int64) *BuildLogChunkCreate {
-	blcc.mutation.SetLastLineIndex(i)
-	return blcc
+func (_c *BuildLogChunkCreate) SetLastLineIndex(v int64) *BuildLogChunkCreate {
+	_c.mutation.SetLastLineIndex(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (blcc *BuildLogChunkCreate) SetID(i int64) *BuildLogChunkCreate {
-	blcc.mutation.SetID(i)
-	return blcc
+func (_c *BuildLogChunkCreate) SetID(v int64) *BuildLogChunkCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (blcc *BuildLogChunkCreate) SetBazelInvocationID(id int64) *BuildLogChunkCreate {
-	blcc.mutation.SetBazelInvocationID(id)
-	return blcc
+func (_c *BuildLogChunkCreate) SetBazelInvocationID(id int64) *BuildLogChunkCreate {
+	_c.mutation.SetBazelInvocationID(id)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (blcc *BuildLogChunkCreate) SetBazelInvocation(b *BazelInvocation) *BuildLogChunkCreate {
-	return blcc.SetBazelInvocationID(b.ID)
+func (_c *BuildLogChunkCreate) SetBazelInvocation(v *BazelInvocation) *BuildLogChunkCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the BuildLogChunkMutation object of the builder.
-func (blcc *BuildLogChunkCreate) Mutation() *BuildLogChunkMutation {
-	return blcc.mutation
+func (_c *BuildLogChunkCreate) Mutation() *BuildLogChunkMutation {
+	return _c.mutation
 }
 
 // Save creates the BuildLogChunk in the database.
-func (blcc *BuildLogChunkCreate) Save(ctx context.Context) (*BuildLogChunk, error) {
-	return withHooks(ctx, blcc.sqlSave, blcc.mutation, blcc.hooks)
+func (_c *BuildLogChunkCreate) Save(ctx context.Context) (*BuildLogChunk, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (blcc *BuildLogChunkCreate) SaveX(ctx context.Context) *BuildLogChunk {
-	v, err := blcc.Save(ctx)
+func (_c *BuildLogChunkCreate) SaveX(ctx context.Context) *BuildLogChunk {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -83,44 +83,44 @@ func (blcc *BuildLogChunkCreate) SaveX(ctx context.Context) *BuildLogChunk {
 }
 
 // Exec executes the query.
-func (blcc *BuildLogChunkCreate) Exec(ctx context.Context) error {
-	_, err := blcc.Save(ctx)
+func (_c *BuildLogChunkCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (blcc *BuildLogChunkCreate) ExecX(ctx context.Context) {
-	if err := blcc.Exec(ctx); err != nil {
+func (_c *BuildLogChunkCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (blcc *BuildLogChunkCreate) check() error {
-	if _, ok := blcc.mutation.Data(); !ok {
+func (_c *BuildLogChunkCreate) check() error {
+	if _, ok := _c.mutation.Data(); !ok {
 		return &ValidationError{Name: "data", err: errors.New(`ent: missing required field "BuildLogChunk.data"`)}
 	}
-	if _, ok := blcc.mutation.ChunkIndex(); !ok {
+	if _, ok := _c.mutation.ChunkIndex(); !ok {
 		return &ValidationError{Name: "chunk_index", err: errors.New(`ent: missing required field "BuildLogChunk.chunk_index"`)}
 	}
-	if _, ok := blcc.mutation.FirstLineIndex(); !ok {
+	if _, ok := _c.mutation.FirstLineIndex(); !ok {
 		return &ValidationError{Name: "first_line_index", err: errors.New(`ent: missing required field "BuildLogChunk.first_line_index"`)}
 	}
-	if _, ok := blcc.mutation.LastLineIndex(); !ok {
+	if _, ok := _c.mutation.LastLineIndex(); !ok {
 		return &ValidationError{Name: "last_line_index", err: errors.New(`ent: missing required field "BuildLogChunk.last_line_index"`)}
 	}
-	if len(blcc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "BuildLogChunk.bazel_invocation"`)}
 	}
 	return nil
 }
 
-func (blcc *BuildLogChunkCreate) sqlSave(ctx context.Context) (*BuildLogChunk, error) {
-	if err := blcc.check(); err != nil {
+func (_c *BuildLogChunkCreate) sqlSave(ctx context.Context) (*BuildLogChunk, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := blcc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, blcc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -130,38 +130,38 @@ func (blcc *BuildLogChunkCreate) sqlSave(ctx context.Context) (*BuildLogChunk, e
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	blcc.mutation.id = &_node.ID
-	blcc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (blcc *BuildLogChunkCreate) createSpec() (*BuildLogChunk, *sqlgraph.CreateSpec) {
+func (_c *BuildLogChunkCreate) createSpec() (*BuildLogChunk, *sqlgraph.CreateSpec) {
 	var (
-		_node = &BuildLogChunk{config: blcc.config}
+		_node = &BuildLogChunk{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(buildlogchunk.Table, sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = blcc.conflict
-	if id, ok := blcc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := blcc.mutation.Data(); ok {
+	if value, ok := _c.mutation.Data(); ok {
 		_spec.SetField(buildlogchunk.FieldData, field.TypeBytes, value)
 		_node.Data = value
 	}
-	if value, ok := blcc.mutation.ChunkIndex(); ok {
+	if value, ok := _c.mutation.ChunkIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldChunkIndex, field.TypeInt, value)
 		_node.ChunkIndex = value
 	}
-	if value, ok := blcc.mutation.FirstLineIndex(); ok {
+	if value, ok := _c.mutation.FirstLineIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldFirstLineIndex, field.TypeInt64, value)
 		_node.FirstLineIndex = value
 	}
-	if value, ok := blcc.mutation.LastLineIndex(); ok {
+	if value, ok := _c.mutation.LastLineIndex(); ok {
 		_spec.SetField(buildlogchunk.FieldLastLineIndex, field.TypeInt64, value)
 		_node.LastLineIndex = value
 	}
-	if nodes := blcc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -197,10 +197,10 @@ func (blcc *BuildLogChunkCreate) createSpec() (*BuildLogChunk, *sqlgraph.CreateS
 //			SetData(v+v).
 //		}).
 //		Exec(ctx)
-func (blcc *BuildLogChunkCreate) OnConflict(opts ...sql.ConflictOption) *BuildLogChunkUpsertOne {
-	blcc.conflict = opts
+func (_c *BuildLogChunkCreate) OnConflict(opts ...sql.ConflictOption) *BuildLogChunkUpsertOne {
+	_c.conflict = opts
 	return &BuildLogChunkUpsertOne{
-		create: blcc,
+		create: _c,
 	}
 }
 
@@ -210,10 +210,10 @@ func (blcc *BuildLogChunkCreate) OnConflict(opts ...sql.ConflictOption) *BuildLo
 //	client.BuildLogChunk.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (blcc *BuildLogChunkCreate) OnConflictColumns(columns ...string) *BuildLogChunkUpsertOne {
-	blcc.conflict = append(blcc.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildLogChunkCreate) OnConflictColumns(columns ...string) *BuildLogChunkUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildLogChunkUpsertOne{
-		create: blcc,
+		create: _c,
 	}
 }
 
@@ -463,16 +463,16 @@ type BuildLogChunkCreateBulk struct {
 }
 
 // Save creates the BuildLogChunk entities in the database.
-func (blccb *BuildLogChunkCreateBulk) Save(ctx context.Context) ([]*BuildLogChunk, error) {
-	if blccb.err != nil {
-		return nil, blccb.err
+func (_c *BuildLogChunkCreateBulk) Save(ctx context.Context) ([]*BuildLogChunk, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(blccb.builders))
-	nodes := make([]*BuildLogChunk, len(blccb.builders))
-	mutators := make([]Mutator, len(blccb.builders))
-	for i := range blccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*BuildLogChunk, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := blccb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*BuildLogChunkMutation)
 				if !ok {
@@ -485,12 +485,12 @@ func (blccb *BuildLogChunkCreateBulk) Save(ctx context.Context) ([]*BuildLogChun
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, blccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = blccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, blccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -514,7 +514,7 @@ func (blccb *BuildLogChunkCreateBulk) Save(ctx context.Context) ([]*BuildLogChun
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, blccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -522,8 +522,8 @@ func (blccb *BuildLogChunkCreateBulk) Save(ctx context.Context) ([]*BuildLogChun
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (blccb *BuildLogChunkCreateBulk) SaveX(ctx context.Context) []*BuildLogChunk {
-	v, err := blccb.Save(ctx)
+func (_c *BuildLogChunkCreateBulk) SaveX(ctx context.Context) []*BuildLogChunk {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -531,14 +531,14 @@ func (blccb *BuildLogChunkCreateBulk) SaveX(ctx context.Context) []*BuildLogChun
 }
 
 // Exec executes the query.
-func (blccb *BuildLogChunkCreateBulk) Exec(ctx context.Context) error {
-	_, err := blccb.Save(ctx)
+func (_c *BuildLogChunkCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (blccb *BuildLogChunkCreateBulk) ExecX(ctx context.Context) {
-	if err := blccb.Exec(ctx); err != nil {
+func (_c *BuildLogChunkCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -558,10 +558,10 @@ func (blccb *BuildLogChunkCreateBulk) ExecX(ctx context.Context) {
 //			SetData(v+v).
 //		}).
 //		Exec(ctx)
-func (blccb *BuildLogChunkCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildLogChunkUpsertBulk {
-	blccb.conflict = opts
+func (_c *BuildLogChunkCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildLogChunkUpsertBulk {
+	_c.conflict = opts
 	return &BuildLogChunkUpsertBulk{
-		create: blccb,
+		create: _c,
 	}
 }
 
@@ -571,10 +571,10 @@ func (blccb *BuildLogChunkCreateBulk) OnConflict(opts ...sql.ConflictOption) *Bu
 //	client.BuildLogChunk.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (blccb *BuildLogChunkCreateBulk) OnConflictColumns(columns ...string) *BuildLogChunkUpsertBulk {
-	blccb.conflict = append(blccb.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildLogChunkCreateBulk) OnConflictColumns(columns ...string) *BuildLogChunkUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildLogChunkUpsertBulk{
-		create: blccb,
+		create: _c,
 	}
 }
 

@@ -3,13 +3,16 @@ import { Link } from "@tanstack/react-router";
 import { Descriptions, Space, Spin, Typography } from "antd";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { actionCacheClient } from "@/grpc/actionCacheClient";
+import { casByteStreamClient } from "@/grpc/casByteStreamClient";
+import { fileSystemAccessCacheClient } from "@/grpc/fileSystemAccessCacheClient";
+import { initialSizeClassCacheClient } from "@/grpc/initialSizeClassCacheClient";
 import type { Digest } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import {
   type BrowserPageParams,
   BrowserPageType,
 } from "@/types/BrowserPageType";
+import type { FileSystemAccessProfileReference } from "@/types/FileSystemAccessProfileReference";
 import { PATH_HASH_BASE_HASH } from "@/utils/bloomFilter";
 import { getReducedActionDigest_SHA256 } from "@/utils/digestFunctionUtils";
 import { readableFileSizeFromString } from "@/utils/filesize";
@@ -44,13 +47,6 @@ const BrowserActionGrid: React.FC<Params> = ({
   const [reducedActionDigest, setReducedActionDigest] = useState<
     Digest | undefined
   >(undefined);
-
-  const {
-    actionCacheClient,
-    casByteStreamClient,
-    initialSizeClassCacheClient,
-    fileSystemAccessCacheClient,
-  } = useGrpcClients();
 
   const { data, isError, isPending, error } = useQuery({
     queryKey: ["browserActionGrid", browserPageParams],
@@ -103,11 +99,10 @@ const BrowserActionGrid: React.FC<Params> = ({
 
   if (data.fileSystemAccessProfile) {
     if (data.action.commandDigest && data.action.platform) {
-      fileSystemAccessProfileReference =
-        FileSystemAccessProfileReference.create({
-          digest: reducedActionDigest,
-          pathHashesBaseHash: PATH_HASH_BASE_HASH,
-        });
+      fileSystemAccessProfileReference = {
+        digest: reducedActionDigest,
+        pathHashesBaseHash: PATH_HASH_BASE_HASH,
+      };
     }
   }
 
@@ -197,7 +192,6 @@ const BrowserActionGrid: React.FC<Params> = ({
             browserPageParams={browserPageParams}
             executeResponse={data.executeResponse}
             posixResourceUsage={data.posixResourceUsage}
-            consoleOutputs={data.consoleOutputs}
           />
         ) : (
           <Typography.Text>

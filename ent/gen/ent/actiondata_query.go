@@ -33,44 +33,44 @@ type ActionDataQuery struct {
 }
 
 // Where adds a new predicate for the ActionDataQuery builder.
-func (adq *ActionDataQuery) Where(ps ...predicate.ActionData) *ActionDataQuery {
-	adq.predicates = append(adq.predicates, ps...)
-	return adq
+func (_q *ActionDataQuery) Where(ps ...predicate.ActionData) *ActionDataQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (adq *ActionDataQuery) Limit(limit int) *ActionDataQuery {
-	adq.ctx.Limit = &limit
-	return adq
+func (_q *ActionDataQuery) Limit(limit int) *ActionDataQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (adq *ActionDataQuery) Offset(offset int) *ActionDataQuery {
-	adq.ctx.Offset = &offset
-	return adq
+func (_q *ActionDataQuery) Offset(offset int) *ActionDataQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (adq *ActionDataQuery) Unique(unique bool) *ActionDataQuery {
-	adq.ctx.Unique = &unique
-	return adq
+func (_q *ActionDataQuery) Unique(unique bool) *ActionDataQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (adq *ActionDataQuery) Order(o ...actiondata.OrderOption) *ActionDataQuery {
-	adq.order = append(adq.order, o...)
-	return adq
+func (_q *ActionDataQuery) Order(o ...actiondata.OrderOption) *ActionDataQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryActionSummary chains the current query on the "action_summary" edge.
-func (adq *ActionDataQuery) QueryActionSummary() *ActionSummaryQuery {
-	query := (&ActionSummaryClient{config: adq.config}).Query()
+func (_q *ActionDataQuery) QueryActionSummary() *ActionSummaryQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := adq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := adq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (adq *ActionDataQuery) QueryActionSummary() *ActionSummaryQuery {
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, actiondata.ActionSummaryTable, actiondata.ActionSummaryColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(adq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (adq *ActionDataQuery) QueryActionSummary() *ActionSummaryQuery {
 
 // First returns the first ActionData entity from the query.
 // Returns a *NotFoundError when no ActionData was found.
-func (adq *ActionDataQuery) First(ctx context.Context) (*ActionData, error) {
-	nodes, err := adq.Limit(1).All(setContextOp(ctx, adq.ctx, ent.OpQueryFirst))
+func (_q *ActionDataQuery) First(ctx context.Context) (*ActionData, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (adq *ActionDataQuery) First(ctx context.Context) (*ActionData, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (adq *ActionDataQuery) FirstX(ctx context.Context) *ActionData {
-	node, err := adq.First(ctx)
+func (_q *ActionDataQuery) FirstX(ctx context.Context) *ActionData {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (adq *ActionDataQuery) FirstX(ctx context.Context) *ActionData {
 
 // FirstID returns the first ActionData ID from the query.
 // Returns a *NotFoundError when no ActionData ID was found.
-func (adq *ActionDataQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *ActionDataQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = adq.Limit(1).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (adq *ActionDataQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (adq *ActionDataQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := adq.FirstID(ctx)
+func (_q *ActionDataQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (adq *ActionDataQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single ActionData entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one ActionData entity is found.
 // Returns a *NotFoundError when no ActionData entities are found.
-func (adq *ActionDataQuery) Only(ctx context.Context) (*ActionData, error) {
-	nodes, err := adq.Limit(2).All(setContextOp(ctx, adq.ctx, ent.OpQueryOnly))
+func (_q *ActionDataQuery) Only(ctx context.Context) (*ActionData, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (adq *ActionDataQuery) Only(ctx context.Context) (*ActionData, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (adq *ActionDataQuery) OnlyX(ctx context.Context) *ActionData {
-	node, err := adq.Only(ctx)
+func (_q *ActionDataQuery) OnlyX(ctx context.Context) *ActionData {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (adq *ActionDataQuery) OnlyX(ctx context.Context) *ActionData {
 // OnlyID is like Only, but returns the only ActionData ID in the query.
 // Returns a *NotSingularError when more than one ActionData ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (adq *ActionDataQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *ActionDataQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = adq.Limit(2).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (adq *ActionDataQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (adq *ActionDataQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := adq.OnlyID(ctx)
+func (_q *ActionDataQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (adq *ActionDataQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of ActionDataSlice.
-func (adq *ActionDataQuery) All(ctx context.Context) ([]*ActionData, error) {
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryAll)
-	if err := adq.prepareQuery(ctx); err != nil {
+func (_q *ActionDataQuery) All(ctx context.Context) ([]*ActionData, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*ActionData, *ActionDataQuery]()
-	return withInterceptors[[]*ActionData](ctx, adq, qr, adq.inters)
+	return withInterceptors[[]*ActionData](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (adq *ActionDataQuery) AllX(ctx context.Context) []*ActionData {
-	nodes, err := adq.All(ctx)
+func (_q *ActionDataQuery) AllX(ctx context.Context) []*ActionData {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (adq *ActionDataQuery) AllX(ctx context.Context) []*ActionData {
 }
 
 // IDs executes the query and returns a list of ActionData IDs.
-func (adq *ActionDataQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if adq.ctx.Unique == nil && adq.path != nil {
-		adq.Unique(true)
+func (_q *ActionDataQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryIDs)
-	if err = adq.Select(actiondata.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(actiondata.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (adq *ActionDataQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := adq.IDs(ctx)
+func (_q *ActionDataQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (adq *ActionDataQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (adq *ActionDataQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryCount)
-	if err := adq.prepareQuery(ctx); err != nil {
+func (_q *ActionDataQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, adq, querierCount[*ActionDataQuery](), adq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*ActionDataQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (adq *ActionDataQuery) CountX(ctx context.Context) int {
-	count, err := adq.Count(ctx)
+func (_q *ActionDataQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (adq *ActionDataQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (adq *ActionDataQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryExist)
-	switch _, err := adq.FirstID(ctx); {
+func (_q *ActionDataQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (adq *ActionDataQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (adq *ActionDataQuery) ExistX(ctx context.Context) bool {
-	exist, err := adq.Exist(ctx)
+func (_q *ActionDataQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (adq *ActionDataQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the ActionDataQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (adq *ActionDataQuery) Clone() *ActionDataQuery {
-	if adq == nil {
+func (_q *ActionDataQuery) Clone() *ActionDataQuery {
+	if _q == nil {
 		return nil
 	}
 	return &ActionDataQuery{
-		config:            adq.config,
-		ctx:               adq.ctx.Clone(),
-		order:             append([]actiondata.OrderOption{}, adq.order...),
-		inters:            append([]Interceptor{}, adq.inters...),
-		predicates:        append([]predicate.ActionData{}, adq.predicates...),
-		withActionSummary: adq.withActionSummary.Clone(),
+		config:            _q.config,
+		ctx:               _q.ctx.Clone(),
+		order:             append([]actiondata.OrderOption{}, _q.order...),
+		inters:            append([]Interceptor{}, _q.inters...),
+		predicates:        append([]predicate.ActionData{}, _q.predicates...),
+		withActionSummary: _q.withActionSummary.Clone(),
 		// clone intermediate query.
-		sql:  adq.sql.Clone(),
-		path: adq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithActionSummary tells the query-builder to eager-load the nodes that are connected to
 // the "action_summary" edge. The optional arguments are used to configure the query builder of the edge.
-func (adq *ActionDataQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *ActionDataQuery {
-	query := (&ActionSummaryClient{config: adq.config}).Query()
+func (_q *ActionDataQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *ActionDataQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	adq.withActionSummary = query
-	return adq
+	_q.withActionSummary = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (adq *ActionDataQuery) WithActionSummary(opts ...func(*ActionSummaryQuery))
 //		GroupBy(actiondata.FieldMnemonic).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (adq *ActionDataQuery) GroupBy(field string, fields ...string) *ActionDataGroupBy {
-	adq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ActionDataGroupBy{build: adq}
-	grbuild.flds = &adq.ctx.Fields
+func (_q *ActionDataQuery) GroupBy(field string, fields ...string) *ActionDataGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &ActionDataGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = actiondata.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (adq *ActionDataQuery) GroupBy(field string, fields ...string) *ActionDataG
 //	client.ActionData.Query().
 //		Select(actiondata.FieldMnemonic).
 //		Scan(ctx, &v)
-func (adq *ActionDataQuery) Select(fields ...string) *ActionDataSelect {
-	adq.ctx.Fields = append(adq.ctx.Fields, fields...)
-	sbuild := &ActionDataSelect{ActionDataQuery: adq}
+func (_q *ActionDataQuery) Select(fields ...string) *ActionDataSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &ActionDataSelect{ActionDataQuery: _q}
 	sbuild.label = actiondata.Label
-	sbuild.flds, sbuild.scan = &adq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a ActionDataSelect configured with the given aggregations.
-func (adq *ActionDataQuery) Aggregate(fns ...AggregateFunc) *ActionDataSelect {
-	return adq.Select().Aggregate(fns...)
+func (_q *ActionDataQuery) Aggregate(fns ...AggregateFunc) *ActionDataSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (adq *ActionDataQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range adq.inters {
+func (_q *ActionDataQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, adq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range adq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !actiondata.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if adq.path != nil {
-		prev, err := adq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		adq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (adq *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionData, error) {
+func (_q *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionData, error) {
 	var (
 		nodes       = []*ActionData{}
-		withFKs     = adq.withFKs
-		_spec       = adq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			adq.withActionSummary != nil,
+			_q.withActionSummary != nil,
 		}
 	)
-	if adq.withActionSummary != nil {
+	if _q.withActionSummary != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (adq *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		return (*ActionData).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &ActionData{config: adq.config}
+		node := &ActionData{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(adq.modifiers) > 0 {
-		_spec.Modifiers = adq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, adq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := adq.withActionSummary; query != nil {
-		if err := adq.loadActionSummary(ctx, query, nodes, nil,
+	if query := _q.withActionSummary; query != nil {
+		if err := _q.loadActionSummary(ctx, query, nodes, nil,
 			func(n *ActionData, e *ActionSummary) { n.Edges.ActionSummary = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range adq.loadTotal {
-		if err := adq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (adq *ActionDataQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*ActionData, init func(*ActionData), assign func(*ActionData, *ActionSummary)) error {
+func (_q *ActionDataQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*ActionData, init func(*ActionData), assign func(*ActionData, *ActionSummary)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*ActionData)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (adq *ActionDataQuery) loadActionSummary(ctx context.Context, query *Action
 	return nil
 }
 
-func (adq *ActionDataQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := adq.querySpec()
-	if len(adq.modifiers) > 0 {
-		_spec.Modifiers = adq.modifiers
+func (_q *ActionDataQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = adq.ctx.Fields
-	if len(adq.ctx.Fields) > 0 {
-		_spec.Unique = adq.ctx.Unique != nil && *adq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, adq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (adq *ActionDataQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *ActionDataQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
-	_spec.From = adq.sql
-	if unique := adq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if adq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := adq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, actiondata.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (adq *ActionDataQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := adq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := adq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := adq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := adq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (adq *ActionDataQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (adq *ActionDataQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(adq.driver.Dialect())
+func (_q *ActionDataQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(actiondata.Table)
-	columns := adq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = actiondata.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if adq.sql != nil {
-		selector = adq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if adq.ctx.Unique != nil && *adq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range adq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range adq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := adq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := adq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type ActionDataGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (adgb *ActionDataGroupBy) Aggregate(fns ...AggregateFunc) *ActionDataGroupBy {
-	adgb.fns = append(adgb.fns, fns...)
-	return adgb
+func (_g *ActionDataGroupBy) Aggregate(fns ...AggregateFunc) *ActionDataGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (adgb *ActionDataGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, adgb.build.ctx, ent.OpQueryGroupBy)
-	if err := adgb.build.prepareQuery(ctx); err != nil {
+func (_g *ActionDataGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionDataQuery, *ActionDataGroupBy](ctx, adgb.build, adgb, adgb.build.inters, v)
+	return scanWithInterceptors[*ActionDataQuery, *ActionDataGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (adgb *ActionDataGroupBy) sqlScan(ctx context.Context, root *ActionDataQuery, v any) error {
+func (_g *ActionDataGroupBy) sqlScan(ctx context.Context, root *ActionDataQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(adgb.fns))
-	for _, fn := range adgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*adgb.flds)+len(adgb.fns))
-		for _, f := range *adgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*adgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := adgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type ActionDataSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ads *ActionDataSelect) Aggregate(fns ...AggregateFunc) *ActionDataSelect {
-	ads.fns = append(ads.fns, fns...)
-	return ads
+func (_s *ActionDataSelect) Aggregate(fns ...AggregateFunc) *ActionDataSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ads *ActionDataSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ads.ctx, ent.OpQuerySelect)
-	if err := ads.prepareQuery(ctx); err != nil {
+func (_s *ActionDataSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionDataQuery, *ActionDataSelect](ctx, ads.ActionDataQuery, ads, ads.inters, v)
+	return scanWithInterceptors[*ActionDataQuery, *ActionDataSelect](ctx, _s.ActionDataQuery, _s, _s.inters, v)
 }
 
-func (ads *ActionDataSelect) sqlScan(ctx context.Context, root *ActionDataQuery, v any) error {
+func (_s *ActionDataSelect) sqlScan(ctx context.Context, root *ActionDataQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ads.fns))
-	for _, fn := range ads.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ads.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (ads *ActionDataSelect) sqlScan(ctx context.Context, root *ActionDataQuery,
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ads.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

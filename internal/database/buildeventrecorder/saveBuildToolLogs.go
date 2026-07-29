@@ -2,50 +2,37 @@ package buildeventrecorder
 
 import (
 	"context"
-	"log/slog"
-	"strings"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/internal/database"
+	"github.com/buildbarn/bb-portal/pkg/invocation/files"
+	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *buildEventRecorder) saveBuildToolLogs(ctx context.Context, tx *ent.Client, buildToolLogs *bes.BuildToolLogs) error {
+func getProfileFile(buildToolLogs *bes.BuildToolLogs) *files.ParsedBepFile {
+	for _, log := range buildToolLogs.GetLog() {
+		if log.Name == "command.profile.gz" || log.Name == "command.profile.json" {
+			return files.ParseBepFile(log)
+		}
+	}
+	return nil
+}
+
+func (r *buildEventRecorder) saveBuildToolLogs(ctx context.Context, tx database.Handle, buildToolLogs *bes.BuildToolLogs) error {
 	if buildToolLogs == nil {
 		return nil
 	}
-
-	for _, log := range buildToolLogs.GetLog() {
-		name := log.GetName()
-		if name == "" {
-			slog.Warn("Skipping build tool log with empty name")
-			continue
-		}
-
-		pathPrefix := log.GetPathPrefix()
-		pathPrefix = append(pathPrefix, name)
-		fullName := strings.Join(pathPrefix, "/")
-
-		file := tx.InvocationFiles.Create().
-			SetName(fullName).
-			SetBazelInvocationID(r.InvocationDbID)
-
-		if content := string(log.GetContents()); content != "" {
-			file.SetContent(content)
-		}
-		if digest := getFileDigestFromBesFile(log); digest != nil {
-			file.SetDigest(*digest)
-		}
-		if length := getFileSizeBytesFromBesFile(log); length != nil {
-			file.SetSizeBytes(*length)
-		}
-		if digestFunction := getFileDigestFunctionFromBesFile(log); digestFunction != nil {
-			file.SetDigestFunction(*digestFunction)
-		}
-
-		err := file.Exec(ctx)
-		if err != nil {
-			slog.Error("Failed to save build tool log", "name", fullName, "err", err)
-		}
+	profileFile := getProfileFile(buildToolLogs)
+	if profileFile == nil {
+		return nil
+	}
+	fileDbID, err := SaveSingleFile(ctx, tx, r.InstanceNameDbID, *profileFile)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save profile file to database")
+	}
+	err = tx.Ent().BazelInvocation.UpdateOneID(r.InvocationDbID).SetProfileID(fileDbID).Exec(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to add profile file to invocation")
 	}
 	return nil
 }

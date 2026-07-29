@@ -111,7 +111,7 @@ func (*ActionSummary) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the ActionSummary fields.
-func (as *ActionSummary) assignValues(columns []string, values []any) error {
+func (_m *ActionSummary) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -122,40 +122,40 @@ func (as *ActionSummary) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			as.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case actionsummary.FieldActionsCreated:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_created", values[i])
 			} else if value.Valid {
-				as.ActionsCreated = value.Int64
+				_m.ActionsCreated = value.Int64
 			}
 		case actionsummary.FieldActionsCreatedNotIncludingAspects:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_created_not_including_aspects", values[i])
 			} else if value.Valid {
-				as.ActionsCreatedNotIncludingAspects = value.Int64
+				_m.ActionsCreatedNotIncludingAspects = value.Int64
 			}
 		case actionsummary.FieldActionsExecuted:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_executed", values[i])
 			} else if value.Valid {
-				as.ActionsExecuted = value.Int64
+				_m.ActionsExecuted = value.Int64
 			}
 		case actionsummary.FieldRemoteCacheHits:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field remote_cache_hits", values[i])
 			} else if value.Valid {
-				as.RemoteCacheHits = value.Int64
+				_m.RemoteCacheHits = value.Int64
 			}
 		case actionsummary.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_action_summary", value)
 			} else if value.Valid {
-				as.metrics_action_summary = new(int64)
-				*as.metrics_action_summary = int64(value.Int64)
+				_m.metrics_action_summary = new(int64)
+				*_m.metrics_action_summary = int64(value.Int64)
 			}
 		default:
-			as.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -163,113 +163,113 @@ func (as *ActionSummary) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the ActionSummary.
 // This includes values selected through modifiers, order, etc.
-func (as *ActionSummary) Value(name string) (ent.Value, error) {
-	return as.selectValues.Get(name)
+func (_m *ActionSummary) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryMetrics queries the "metrics" edge of the ActionSummary entity.
-func (as *ActionSummary) QueryMetrics() *MetricsQuery {
-	return NewActionSummaryClient(as.config).QueryMetrics(as)
+func (_m *ActionSummary) QueryMetrics() *MetricsQuery {
+	return NewActionSummaryClient(_m.config).QueryMetrics(_m)
 }
 
 // QueryActionData queries the "action_data" edge of the ActionSummary entity.
-func (as *ActionSummary) QueryActionData() *ActionDataQuery {
-	return NewActionSummaryClient(as.config).QueryActionData(as)
+func (_m *ActionSummary) QueryActionData() *ActionDataQuery {
+	return NewActionSummaryClient(_m.config).QueryActionData(_m)
 }
 
 // QueryRunnerCount queries the "runner_count" edge of the ActionSummary entity.
-func (as *ActionSummary) QueryRunnerCount() *RunnerCountQuery {
-	return NewActionSummaryClient(as.config).QueryRunnerCount(as)
+func (_m *ActionSummary) QueryRunnerCount() *RunnerCountQuery {
+	return NewActionSummaryClient(_m.config).QueryRunnerCount(_m)
 }
 
 // QueryActionCacheStatistics queries the "action_cache_statistics" edge of the ActionSummary entity.
-func (as *ActionSummary) QueryActionCacheStatistics() *ActionCacheStatisticsQuery {
-	return NewActionSummaryClient(as.config).QueryActionCacheStatistics(as)
+func (_m *ActionSummary) QueryActionCacheStatistics() *ActionCacheStatisticsQuery {
+	return NewActionSummaryClient(_m.config).QueryActionCacheStatistics(_m)
 }
 
 // Update returns a builder for updating this ActionSummary.
 // Note that you need to call ActionSummary.Unwrap() before calling this method if this ActionSummary
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (as *ActionSummary) Update() *ActionSummaryUpdateOne {
-	return NewActionSummaryClient(as.config).UpdateOne(as)
+func (_m *ActionSummary) Update() *ActionSummaryUpdateOne {
+	return NewActionSummaryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the ActionSummary entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (as *ActionSummary) Unwrap() *ActionSummary {
-	_tx, ok := as.config.driver.(*txDriver)
+func (_m *ActionSummary) Unwrap() *ActionSummary {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: ActionSummary is not a transactional entity")
 	}
-	as.config.driver = _tx.drv
-	return as
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (as *ActionSummary) String() string {
+func (_m *ActionSummary) String() string {
 	var builder strings.Builder
 	builder.WriteString("ActionSummary(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", as.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("actions_created=")
-	builder.WriteString(fmt.Sprintf("%v", as.ActionsCreated))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionsCreated))
 	builder.WriteString(", ")
 	builder.WriteString("actions_created_not_including_aspects=")
-	builder.WriteString(fmt.Sprintf("%v", as.ActionsCreatedNotIncludingAspects))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionsCreatedNotIncludingAspects))
 	builder.WriteString(", ")
 	builder.WriteString("actions_executed=")
-	builder.WriteString(fmt.Sprintf("%v", as.ActionsExecuted))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionsExecuted))
 	builder.WriteString(", ")
 	builder.WriteString("remote_cache_hits=")
-	builder.WriteString(fmt.Sprintf("%v", as.RemoteCacheHits))
+	builder.WriteString(fmt.Sprintf("%v", _m.RemoteCacheHits))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedActionData returns the ActionData named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (as *ActionSummary) NamedActionData(name string) ([]*ActionData, error) {
-	if as.Edges.namedActionData == nil {
+func (_m *ActionSummary) NamedActionData(name string) ([]*ActionData, error) {
+	if _m.Edges.namedActionData == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := as.Edges.namedActionData[name]
+	nodes, ok := _m.Edges.namedActionData[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (as *ActionSummary) appendNamedActionData(name string, edges ...*ActionData) {
-	if as.Edges.namedActionData == nil {
-		as.Edges.namedActionData = make(map[string][]*ActionData)
+func (_m *ActionSummary) appendNamedActionData(name string, edges ...*ActionData) {
+	if _m.Edges.namedActionData == nil {
+		_m.Edges.namedActionData = make(map[string][]*ActionData)
 	}
 	if len(edges) == 0 {
-		as.Edges.namedActionData[name] = []*ActionData{}
+		_m.Edges.namedActionData[name] = []*ActionData{}
 	} else {
-		as.Edges.namedActionData[name] = append(as.Edges.namedActionData[name], edges...)
+		_m.Edges.namedActionData[name] = append(_m.Edges.namedActionData[name], edges...)
 	}
 }
 
 // NamedRunnerCount returns the RunnerCount named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (as *ActionSummary) NamedRunnerCount(name string) ([]*RunnerCount, error) {
-	if as.Edges.namedRunnerCount == nil {
+func (_m *ActionSummary) NamedRunnerCount(name string) ([]*RunnerCount, error) {
+	if _m.Edges.namedRunnerCount == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := as.Edges.namedRunnerCount[name]
+	nodes, ok := _m.Edges.namedRunnerCount[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (as *ActionSummary) appendNamedRunnerCount(name string, edges ...*RunnerCount) {
-	if as.Edges.namedRunnerCount == nil {
-		as.Edges.namedRunnerCount = make(map[string][]*RunnerCount)
+func (_m *ActionSummary) appendNamedRunnerCount(name string, edges ...*RunnerCount) {
+	if _m.Edges.namedRunnerCount == nil {
+		_m.Edges.namedRunnerCount = make(map[string][]*RunnerCount)
 	}
 	if len(edges) == 0 {
-		as.Edges.namedRunnerCount[name] = []*RunnerCount{}
+		_m.Edges.namedRunnerCount[name] = []*RunnerCount{}
 	} else {
-		as.Edges.namedRunnerCount[name] = append(as.Edges.namedRunnerCount[name], edges...)
+		_m.Edges.namedRunnerCount[name] = append(_m.Edges.namedRunnerCount[name], edges...)
 	}
 }
 

@@ -1,5 +1,4 @@
 import { CodeFilled } from "@ant-design/icons";
-import { Space } from "antd";
 import { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { protobufToObjectWithTypeField } from "@/utils/protobufToObject";
 import PortalCard from "../PortalCard";
@@ -17,26 +16,24 @@ const ExecuteResponseDisplay: React.FC<Props> = ({ executeResponse }) => {
     );
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-      <PortalCard titleBits={["Execute Response"]} icon={<CodeFilled />}>
-        <pre>
-          {
-            // `ts-proto` currently does not support JSON string
-            // encoding of well-known type google.protobuf.Duration
-            JSON.stringify(
-              ExecuteResponse.toJSON(executeResponse),
-              (key, val) => {
-                if (key === "auxiliaryMetadata") {
-                  return auxiliaryMetadata;
-                }
-                return val;
-              },
-              1,
-            )
-          }
-        </pre>
-      </PortalCard>
-    </Space>
+    <PortalCard titleBits={["Execute Response"]} icon={<CodeFilled />}>
+      <pre>
+        {
+          // `ts-proto` currently does not support JSON string
+          // encoding of well-known type google.protobuf.Duration
+          JSON.stringify(
+            ExecuteResponse.toJSON(executeResponse),
+            (key, val) => {
+              if (key === "auxiliaryMetadata") {
+                return auxiliaryMetadata;
+              }
+              return val;
+            },
+            1,
+          )
+        }
+      </pre>
+    </PortalCard>
   );
 };
 

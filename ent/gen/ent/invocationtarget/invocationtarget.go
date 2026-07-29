@@ -20,12 +20,6 @@ const (
 	FieldSuccess = "success"
 	// FieldTags holds the string denoting the tags field in the database.
 	FieldTags = "tags"
-	// FieldStartTimeInMs holds the string denoting the start_time_in_ms field in the database.
-	FieldStartTimeInMs = "start_time_in_ms"
-	// FieldEndTimeInMs holds the string denoting the end_time_in_ms field in the database.
-	FieldEndTimeInMs = "end_time_in_ms"
-	// FieldDurationInMs holds the string denoting the duration_in_ms field in the database.
-	FieldDurationInMs = "duration_in_ms"
 	// FieldFailureMessage holds the string denoting the failure_message field in the database.
 	FieldFailureMessage = "failure_message"
 	// FieldAbortReason holds the string denoting the abort_reason field in the database.
@@ -75,9 +69,6 @@ var Columns = []string{
 	FieldID,
 	FieldSuccess,
 	FieldTags,
-	FieldStartTimeInMs,
-	FieldEndTimeInMs,
-	FieldDurationInMs,
 	FieldFailureMessage,
 	FieldAbortReason,
 }
@@ -155,21 +146,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // BySuccess orders the results by the success field.
 func BySuccess(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSuccess, opts...).ToFunc()
-}
-
-// ByStartTimeInMs orders the results by the start_time_in_ms field.
-func ByStartTimeInMs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStartTimeInMs, opts...).ToFunc()
-}
-
-// ByEndTimeInMs orders the results by the end_time_in_ms field.
-func ByEndTimeInMs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEndTimeInMs, opts...).ToFunc()
-}
-
-// ByDurationInMs orders the results by the duration_in_ms field.
-func ByDurationInMs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDurationInMs, opts...).ToFunc()
 }
 
 // ByFailureMessage orders the results by the failure_message field.

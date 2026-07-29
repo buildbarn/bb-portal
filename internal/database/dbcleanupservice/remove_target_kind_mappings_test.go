@@ -36,8 +36,9 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveTargetKindMappings(ctx)
+		val, err := cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, val)
 
 		count, err := client.TargetKindMapping.Query().Count(ctx)
 		require.NoError(t, err)
@@ -64,8 +65,9 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveTargetKindMappings(ctx)
+		val, err := cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, val)
 
 		count, err := client.TargetKindMapping.Query().Count(ctx)
 		require.NoError(t, err)
@@ -84,8 +86,9 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveTargetKindMappings(ctx)
+		deleted, err := cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
 
 		count, err := client.TargetKindMapping.Query().Count(ctx)
 		require.NoError(t, err)
@@ -112,8 +115,9 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveTargetKindMappings(ctx)
+		deleted, err := cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 
 		count, err := client.TargetKindMapping.Query().Count(ctx)
 		require.NoError(t, err)
@@ -158,8 +162,9 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 
 		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
-		err = cleanup.RemoveTargetKindMappings(ctx)
+		deleted, err := cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
+		require.EqualValues(t, 3, deleted)
 
 		count, err := client.TargetKindMapping.Query().Count(ctx)
 		require.NoError(t, err)

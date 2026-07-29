@@ -13,24 +13,20 @@ import (
 )
 
 type Action struct {
-	ID                 int64
-	Label              string
-	Type               sql.NullString
-	Success            sql.NullBool
-	ExitCode           sql.NullInt32
-	CommandLine        pqtype.NullRawMessage
-	StartTime          sql.NullTime
-	EndTime            sql.NullTime
-	FailureCode        sql.NullString
-	FailureMessage     sql.NullString
-	StdoutHash         sql.NullString
-	StdoutSizeBytes    sql.NullInt64
-	StdoutHashFunction sql.NullString
-	StderrHash         sql.NullString
-	StderrSizeBytes    sql.NullInt64
-	StderrHashFunction sql.NullString
-	ConfigurationID    int64
-	BazelInvocationID  int64
+	ID                int64
+	Label             string
+	Type              sql.NullString
+	Success           sql.NullBool
+	ExitCode          sql.NullInt32
+	CommandLine       pqtype.NullRawMessage
+	StartTime         sql.NullTime
+	EndTime           sql.NullTime
+	FailureCode       sql.NullString
+	FailureMessage    sql.NullString
+	ConfigurationID   int64
+	StdoutFileID      sql.NullInt64
+	StderrFileID      sql.NullInt64
+	BazelInvocationID int64
 }
 
 type ActionCacheStatistic struct {
@@ -95,7 +91,6 @@ type BazelInvocation struct {
 	Username                          sql.NullString
 	Hostname                          sql.NullString
 	NumFetches                        sql.NullInt64
-	ProfileName                       sql.NullString
 	BazelVersion                      sql.NullString
 	ExitCodeName                      sql.NullString
 	ExitCodeCode                      sql.NullInt32
@@ -108,6 +103,7 @@ type BazelInvocation struct {
 	ProcessedEventBuildFinished       bool
 	ProcessedEventWorkspaceStatus     bool
 	AuthenticatedUserBazelInvocations sql.NullInt64
+	ProfileID                         sql.NullInt64
 	BuildInvocations                  sql.NullInt64
 	InstanceNameBazelInvocations      int64
 }
@@ -166,12 +162,32 @@ type ConnectionMetadatum struct {
 	BazelInvocationConnectionMetadata int64
 }
 
+type Digest struct {
+	ID               int64
+	Rev2InstanceName string
+	DigestFunction   int16
+	Hash             []byte
+	SizeBytes        int64
+}
+
 type EventMetadatum struct {
 	ID                int64
 	Handled           []byte
 	EventReceivedAt   time.Time
 	Version           int64
 	BazelInvocationID int64
+}
+
+type File struct {
+	ID         int64
+	DigestID   int64
+	FilePathID int64
+}
+
+type FilePath struct {
+	ID                int64
+	Path              string
+	BepInstanceNameID int64
 }
 
 type GarbageMetric struct {
@@ -193,16 +209,6 @@ type InstanceName struct {
 	Name string
 }
 
-type InvocationFile struct {
-	ID                             int64
-	Name                           string
-	Content                        sql.NullString
-	Digest                         sql.NullString
-	SizeBytes                      sql.NullInt64
-	DigestFunction                 sql.NullString
-	BazelInvocationInvocationFiles sql.NullInt64
-}
-
 type InvocationTag struct {
 	ID                int64
 	Key               string
@@ -214,9 +220,6 @@ type InvocationTarget struct {
 	ID                               int64
 	Success                          bool
 	Tags                             pqtype.NullRawMessage
-	StartTimeInMs                    sql.NullInt64
-	EndTimeInMs                      sql.NullInt64
-	DurationInMs                     sql.NullInt64
 	FailureMessage                   sql.NullString
 	AbortReason                      string
 	BazelInvocationInvocationTargets int64
@@ -274,10 +277,11 @@ type PgConstraint struct {
 }
 
 type PgIndex struct {
-	Indexrelid interface{}
-	Indrelid   interface{}
-	Indisvalid bool
-	Indkey     interface{}
+	Indexrelid  interface{}
+	Indrelid    interface{}
+	Indisvalid  bool
+	Indisunique bool
+	Indkey      interface{}
 }
 
 type PgNamespace struct {
@@ -327,7 +331,6 @@ type Target struct {
 
 type TargetKindMapping struct {
 	ID                int64
-	StartTimeInMs     sql.NullInt64
 	BazelInvocationID int64
 	TargetID          int64
 }
@@ -338,6 +341,12 @@ type TargetMetric struct {
 	TargetsConfigured                    sql.NullInt64
 	TargetsConfiguredNotIncludingAspects sql.NullInt64
 	MetricsTargetMetrics                 sql.NullInt64
+}
+
+type TestActionOutput struct {
+	ID           int64
+	TestResultID int64
+	FileID       int64
 }
 
 type TestResult struct {

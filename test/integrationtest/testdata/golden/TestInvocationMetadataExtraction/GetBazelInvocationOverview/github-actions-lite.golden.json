@@ -1,0 +1,32 @@
+{
+  "getBazelInvocation": {
+    "bazelVersion": "9.0.0",
+    "configurations": [],
+    "connectionMetadata": null,
+    "endedAt": "2026-03-03T08:05:01.66Z",
+    "exitCodeName": "SUCCESS",
+    "hostname": "",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "instanceName": {
+      "id": "SW5zdGFuY2VOYW1lOjE=",
+      "name": ""
+    },
+    "invocationID": "63500331-1b71-4d7a-9125-df9b3dfe4e0d",
+    "numFetches": 0,
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "build_event_json_file",
+          "value": "github-actions.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    },
+    "startedAt": "2026-03-03T07:52:14.102Z"
+  }
+}

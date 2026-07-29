@@ -60,6 +60,13 @@ local build_matrix = {
       cross_compile: false,
     },
     {
+      runs_on: "macos-26",
+      bazel_os: "darwin",
+      bazel_arch: "arm64",
+      platform_name: "macos_arm64",
+      cross_compile: false,
+    },
+    {
       runs_on: "ubuntu-24.04-arm",
       bazel_os: "linux",
       bazel_arch: "arm64",
@@ -85,6 +92,7 @@ local build_steps = [
   // Native Tests
   bazel_step("linux_amd64", "matrix.host.platform_name == 'linux_amd64'"),
   bazel_step("linux_arm64", "matrix.host.platform_name == 'linux_arm64'"),
+  bazel_step("macos_arm64", "matrix.host.platform_name == 'macos_arm64'"),
   // Cross Builds
   cross_build_step,
 ];

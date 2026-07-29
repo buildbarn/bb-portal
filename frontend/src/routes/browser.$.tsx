@@ -1,8 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import z from "zod";
+import { z } from "zod";
 import { BrowserPage } from "@/components/pages/Browser";
 import { generatePageTitle } from "@/utils/generatePageTitle";
-import { parseBrowserPageSlug } from "@/utils/parseBrowserPageSlug";
 
 const BrowserSearchSchema = z.object({
   fileSystemAccessProfile: z
@@ -23,7 +22,14 @@ export type BrowserSearchParams = z.infer<typeof BrowserSearchSchema>;
 export const Route = createFileRoute("/browser/$")({
   component: RouteComponent,
   validateSearch: (search) => BrowserSearchSchema.parse(search),
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
+    // Asynchronous import of parseBrowserPageSlug as it depends on the
+    // REv2 grpc client. This prevents the client from being loaded for
+    // every route as we only need it when actually loading the browser
+    // page.
+    const { parseBrowserPageSlug } = await import(
+      "@/utils/parseBrowserPageSlug"
+    );
     const browserPageParams = parseBrowserPageSlug(
       (params._splat || "").split("/"),
     );

@@ -24,166 +24,166 @@ type MemoryMetricsUpdate struct {
 }
 
 // Where appends a list predicates to the MemoryMetricsUpdate builder.
-func (mmu *MemoryMetricsUpdate) Where(ps ...predicate.MemoryMetrics) *MemoryMetricsUpdate {
-	mmu.mutation.Where(ps...)
-	return mmu
+func (_u *MemoryMetricsUpdate) Where(ps ...predicate.MemoryMetrics) *MemoryMetricsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
-func (mmu *MemoryMetricsUpdate) SetPeakPostGcHeapSize(i int64) *MemoryMetricsUpdate {
-	mmu.mutation.ResetPeakPostGcHeapSize()
-	mmu.mutation.SetPeakPostGcHeapSize(i)
-	return mmu
+func (_u *MemoryMetricsUpdate) SetPeakPostGcHeapSize(v int64) *MemoryMetricsUpdate {
+	_u.mutation.ResetPeakPostGcHeapSize()
+	_u.mutation.SetPeakPostGcHeapSize(v)
+	return _u
 }
 
 // SetNillablePeakPostGcHeapSize sets the "peak_post_gc_heap_size" field if the given value is not nil.
-func (mmu *MemoryMetricsUpdate) SetNillablePeakPostGcHeapSize(i *int64) *MemoryMetricsUpdate {
-	if i != nil {
-		mmu.SetPeakPostGcHeapSize(*i)
+func (_u *MemoryMetricsUpdate) SetNillablePeakPostGcHeapSize(v *int64) *MemoryMetricsUpdate {
+	if v != nil {
+		_u.SetPeakPostGcHeapSize(*v)
 	}
-	return mmu
+	return _u
 }
 
-// AddPeakPostGcHeapSize adds i to the "peak_post_gc_heap_size" field.
-func (mmu *MemoryMetricsUpdate) AddPeakPostGcHeapSize(i int64) *MemoryMetricsUpdate {
-	mmu.mutation.AddPeakPostGcHeapSize(i)
-	return mmu
+// AddPeakPostGcHeapSize adds value to the "peak_post_gc_heap_size" field.
+func (_u *MemoryMetricsUpdate) AddPeakPostGcHeapSize(v int64) *MemoryMetricsUpdate {
+	_u.mutation.AddPeakPostGcHeapSize(v)
+	return _u
 }
 
 // ClearPeakPostGcHeapSize clears the value of the "peak_post_gc_heap_size" field.
-func (mmu *MemoryMetricsUpdate) ClearPeakPostGcHeapSize() *MemoryMetricsUpdate {
-	mmu.mutation.ClearPeakPostGcHeapSize()
-	return mmu
+func (_u *MemoryMetricsUpdate) ClearPeakPostGcHeapSize() *MemoryMetricsUpdate {
+	_u.mutation.ClearPeakPostGcHeapSize()
+	return _u
 }
 
 // SetUsedHeapSizePostBuild sets the "used_heap_size_post_build" field.
-func (mmu *MemoryMetricsUpdate) SetUsedHeapSizePostBuild(i int64) *MemoryMetricsUpdate {
-	mmu.mutation.ResetUsedHeapSizePostBuild()
-	mmu.mutation.SetUsedHeapSizePostBuild(i)
-	return mmu
+func (_u *MemoryMetricsUpdate) SetUsedHeapSizePostBuild(v int64) *MemoryMetricsUpdate {
+	_u.mutation.ResetUsedHeapSizePostBuild()
+	_u.mutation.SetUsedHeapSizePostBuild(v)
+	return _u
 }
 
 // SetNillableUsedHeapSizePostBuild sets the "used_heap_size_post_build" field if the given value is not nil.
-func (mmu *MemoryMetricsUpdate) SetNillableUsedHeapSizePostBuild(i *int64) *MemoryMetricsUpdate {
-	if i != nil {
-		mmu.SetUsedHeapSizePostBuild(*i)
+func (_u *MemoryMetricsUpdate) SetNillableUsedHeapSizePostBuild(v *int64) *MemoryMetricsUpdate {
+	if v != nil {
+		_u.SetUsedHeapSizePostBuild(*v)
 	}
-	return mmu
+	return _u
 }
 
-// AddUsedHeapSizePostBuild adds i to the "used_heap_size_post_build" field.
-func (mmu *MemoryMetricsUpdate) AddUsedHeapSizePostBuild(i int64) *MemoryMetricsUpdate {
-	mmu.mutation.AddUsedHeapSizePostBuild(i)
-	return mmu
+// AddUsedHeapSizePostBuild adds value to the "used_heap_size_post_build" field.
+func (_u *MemoryMetricsUpdate) AddUsedHeapSizePostBuild(v int64) *MemoryMetricsUpdate {
+	_u.mutation.AddUsedHeapSizePostBuild(v)
+	return _u
 }
 
 // ClearUsedHeapSizePostBuild clears the value of the "used_heap_size_post_build" field.
-func (mmu *MemoryMetricsUpdate) ClearUsedHeapSizePostBuild() *MemoryMetricsUpdate {
-	mmu.mutation.ClearUsedHeapSizePostBuild()
-	return mmu
+func (_u *MemoryMetricsUpdate) ClearUsedHeapSizePostBuild() *MemoryMetricsUpdate {
+	_u.mutation.ClearUsedHeapSizePostBuild()
+	return _u
 }
 
 // SetPeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field.
-func (mmu *MemoryMetricsUpdate) SetPeakPostGcTenuredSpaceHeapSize(i int64) *MemoryMetricsUpdate {
-	mmu.mutation.ResetPeakPostGcTenuredSpaceHeapSize()
-	mmu.mutation.SetPeakPostGcTenuredSpaceHeapSize(i)
-	return mmu
+func (_u *MemoryMetricsUpdate) SetPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpdate {
+	_u.mutation.ResetPeakPostGcTenuredSpaceHeapSize()
+	_u.mutation.SetPeakPostGcTenuredSpaceHeapSize(v)
+	return _u
 }
 
 // SetNillablePeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field if the given value is not nil.
-func (mmu *MemoryMetricsUpdate) SetNillablePeakPostGcTenuredSpaceHeapSize(i *int64) *MemoryMetricsUpdate {
-	if i != nil {
-		mmu.SetPeakPostGcTenuredSpaceHeapSize(*i)
+func (_u *MemoryMetricsUpdate) SetNillablePeakPostGcTenuredSpaceHeapSize(v *int64) *MemoryMetricsUpdate {
+	if v != nil {
+		_u.SetPeakPostGcTenuredSpaceHeapSize(*v)
 	}
-	return mmu
+	return _u
 }
 
-// AddPeakPostGcTenuredSpaceHeapSize adds i to the "peak_post_gc_tenured_space_heap_size" field.
-func (mmu *MemoryMetricsUpdate) AddPeakPostGcTenuredSpaceHeapSize(i int64) *MemoryMetricsUpdate {
-	mmu.mutation.AddPeakPostGcTenuredSpaceHeapSize(i)
-	return mmu
+// AddPeakPostGcTenuredSpaceHeapSize adds value to the "peak_post_gc_tenured_space_heap_size" field.
+func (_u *MemoryMetricsUpdate) AddPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpdate {
+	_u.mutation.AddPeakPostGcTenuredSpaceHeapSize(v)
+	return _u
 }
 
 // ClearPeakPostGcTenuredSpaceHeapSize clears the value of the "peak_post_gc_tenured_space_heap_size" field.
-func (mmu *MemoryMetricsUpdate) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpdate {
-	mmu.mutation.ClearPeakPostGcTenuredSpaceHeapSize()
-	return mmu
+func (_u *MemoryMetricsUpdate) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpdate {
+	_u.mutation.ClearPeakPostGcTenuredSpaceHeapSize()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmu *MemoryMetricsUpdate) SetMetricsID(id int64) *MemoryMetricsUpdate {
-	mmu.mutation.SetMetricsID(id)
-	return mmu
+func (_u *MemoryMetricsUpdate) SetMetricsID(id int64) *MemoryMetricsUpdate {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmu *MemoryMetricsUpdate) SetNillableMetricsID(id *int64) *MemoryMetricsUpdate {
+func (_u *MemoryMetricsUpdate) SetNillableMetricsID(id *int64) *MemoryMetricsUpdate {
 	if id != nil {
-		mmu = mmu.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return mmu
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (mmu *MemoryMetricsUpdate) SetMetrics(m *Metrics) *MemoryMetricsUpdate {
-	return mmu.SetMetricsID(m.ID)
+func (_u *MemoryMetricsUpdate) SetMetrics(v *Metrics) *MemoryMetricsUpdate {
+	return _u.SetMetricsID(v.ID)
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
-func (mmu *MemoryMetricsUpdate) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdate {
-	mmu.mutation.AddGarbageMetricIDs(ids...)
-	return mmu
+func (_u *MemoryMetricsUpdate) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdate {
+	_u.mutation.AddGarbageMetricIDs(ids...)
+	return _u
 }
 
 // AddGarbageMetrics adds the "garbage_metrics" edges to the GarbageMetrics entity.
-func (mmu *MemoryMetricsUpdate) AddGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdate {
-	ids := make([]int64, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *MemoryMetricsUpdate) AddGarbageMetrics(v ...*GarbageMetrics) *MemoryMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return mmu.AddGarbageMetricIDs(ids...)
+	return _u.AddGarbageMetricIDs(ids...)
 }
 
 // Mutation returns the MemoryMetricsMutation object of the builder.
-func (mmu *MemoryMetricsUpdate) Mutation() *MemoryMetricsMutation {
-	return mmu.mutation
+func (_u *MemoryMetricsUpdate) Mutation() *MemoryMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (mmu *MemoryMetricsUpdate) ClearMetrics() *MemoryMetricsUpdate {
-	mmu.mutation.ClearMetrics()
-	return mmu
+func (_u *MemoryMetricsUpdate) ClearMetrics() *MemoryMetricsUpdate {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // ClearGarbageMetrics clears all "garbage_metrics" edges to the GarbageMetrics entity.
-func (mmu *MemoryMetricsUpdate) ClearGarbageMetrics() *MemoryMetricsUpdate {
-	mmu.mutation.ClearGarbageMetrics()
-	return mmu
+func (_u *MemoryMetricsUpdate) ClearGarbageMetrics() *MemoryMetricsUpdate {
+	_u.mutation.ClearGarbageMetrics()
+	return _u
 }
 
 // RemoveGarbageMetricIDs removes the "garbage_metrics" edge to GarbageMetrics entities by IDs.
-func (mmu *MemoryMetricsUpdate) RemoveGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdate {
-	mmu.mutation.RemoveGarbageMetricIDs(ids...)
-	return mmu
+func (_u *MemoryMetricsUpdate) RemoveGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdate {
+	_u.mutation.RemoveGarbageMetricIDs(ids...)
+	return _u
 }
 
 // RemoveGarbageMetrics removes "garbage_metrics" edges to GarbageMetrics entities.
-func (mmu *MemoryMetricsUpdate) RemoveGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdate {
-	ids := make([]int64, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *MemoryMetricsUpdate) RemoveGarbageMetrics(v ...*GarbageMetrics) *MemoryMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return mmu.RemoveGarbageMetricIDs(ids...)
+	return _u.RemoveGarbageMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (mmu *MemoryMetricsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, mmu.sqlSave, mmu.mutation, mmu.hooks)
+func (_u *MemoryMetricsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mmu *MemoryMetricsUpdate) SaveX(ctx context.Context) int {
-	affected, err := mmu.Save(ctx)
+func (_u *MemoryMetricsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -191,55 +191,55 @@ func (mmu *MemoryMetricsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (mmu *MemoryMetricsUpdate) Exec(ctx context.Context) error {
-	_, err := mmu.Save(ctx)
+func (_u *MemoryMetricsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mmu *MemoryMetricsUpdate) ExecX(ctx context.Context) {
-	if err := mmu.Exec(ctx); err != nil {
+func (_u *MemoryMetricsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *MemoryMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
-	if ps := mmu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := mmu.mutation.PeakPostGcHeapSize(); ok {
+	if value, ok := _u.mutation.PeakPostGcHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64, value)
 	}
-	if value, ok := mmu.mutation.AddedPeakPostGcHeapSize(); ok {
+	if value, ok := _u.mutation.AddedPeakPostGcHeapSize(); ok {
 		_spec.AddField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64, value)
 	}
-	if mmu.mutation.PeakPostGcHeapSizeCleared() {
+	if _u.mutation.PeakPostGcHeapSizeCleared() {
 		_spec.ClearField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64)
 	}
-	if value, ok := mmu.mutation.UsedHeapSizePostBuild(); ok {
+	if value, ok := _u.mutation.UsedHeapSizePostBuild(); ok {
 		_spec.SetField(memorymetrics.FieldUsedHeapSizePostBuild, field.TypeInt64, value)
 	}
-	if value, ok := mmu.mutation.AddedUsedHeapSizePostBuild(); ok {
+	if value, ok := _u.mutation.AddedUsedHeapSizePostBuild(); ok {
 		_spec.AddField(memorymetrics.FieldUsedHeapSizePostBuild, field.TypeInt64, value)
 	}
-	if mmu.mutation.UsedHeapSizePostBuildCleared() {
+	if _u.mutation.UsedHeapSizePostBuildCleared() {
 		_spec.ClearField(memorymetrics.FieldUsedHeapSizePostBuild, field.TypeInt64)
 	}
-	if value, ok := mmu.mutation.PeakPostGcTenuredSpaceHeapSize(); ok {
+	if value, ok := _u.mutation.PeakPostGcTenuredSpaceHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, field.TypeInt64, value)
 	}
-	if value, ok := mmu.mutation.AddedPeakPostGcTenuredSpaceHeapSize(); ok {
+	if value, ok := _u.mutation.AddedPeakPostGcTenuredSpaceHeapSize(); ok {
 		_spec.AddField(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, field.TypeInt64, value)
 	}
-	if mmu.mutation.PeakPostGcTenuredSpaceHeapSizeCleared() {
+	if _u.mutation.PeakPostGcTenuredSpaceHeapSizeCleared() {
 		_spec.ClearField(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, field.TypeInt64)
 	}
-	if mmu.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -252,7 +252,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mmu.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -268,7 +268,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if mmu.mutation.GarbageMetricsCleared() {
+	if _u.mutation.GarbageMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -281,7 +281,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mmu.mutation.RemovedGarbageMetricsIDs(); len(nodes) > 0 && !mmu.mutation.GarbageMetricsCleared() {
+	if nodes := _u.mutation.RemovedGarbageMetricsIDs(); len(nodes) > 0 && !_u.mutation.GarbageMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -297,7 +297,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mmu.mutation.GarbageMetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.GarbageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -313,7 +313,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, mmu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{memorymetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -321,8 +321,8 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	mmu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // MemoryMetricsUpdateOne is the builder for updating a single MemoryMetrics entity.
@@ -334,173 +334,173 @@ type MemoryMetricsUpdateOne struct {
 }
 
 // SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
-func (mmuo *MemoryMetricsUpdateOne) SetPeakPostGcHeapSize(i int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.ResetPeakPostGcHeapSize()
-	mmuo.mutation.SetPeakPostGcHeapSize(i)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) SetPeakPostGcHeapSize(v int64) *MemoryMetricsUpdateOne {
+	_u.mutation.ResetPeakPostGcHeapSize()
+	_u.mutation.SetPeakPostGcHeapSize(v)
+	return _u
 }
 
 // SetNillablePeakPostGcHeapSize sets the "peak_post_gc_heap_size" field if the given value is not nil.
-func (mmuo *MemoryMetricsUpdateOne) SetNillablePeakPostGcHeapSize(i *int64) *MemoryMetricsUpdateOne {
-	if i != nil {
-		mmuo.SetPeakPostGcHeapSize(*i)
+func (_u *MemoryMetricsUpdateOne) SetNillablePeakPostGcHeapSize(v *int64) *MemoryMetricsUpdateOne {
+	if v != nil {
+		_u.SetPeakPostGcHeapSize(*v)
 	}
-	return mmuo
+	return _u
 }
 
-// AddPeakPostGcHeapSize adds i to the "peak_post_gc_heap_size" field.
-func (mmuo *MemoryMetricsUpdateOne) AddPeakPostGcHeapSize(i int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.AddPeakPostGcHeapSize(i)
-	return mmuo
+// AddPeakPostGcHeapSize adds value to the "peak_post_gc_heap_size" field.
+func (_u *MemoryMetricsUpdateOne) AddPeakPostGcHeapSize(v int64) *MemoryMetricsUpdateOne {
+	_u.mutation.AddPeakPostGcHeapSize(v)
+	return _u
 }
 
 // ClearPeakPostGcHeapSize clears the value of the "peak_post_gc_heap_size" field.
-func (mmuo *MemoryMetricsUpdateOne) ClearPeakPostGcHeapSize() *MemoryMetricsUpdateOne {
-	mmuo.mutation.ClearPeakPostGcHeapSize()
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) ClearPeakPostGcHeapSize() *MemoryMetricsUpdateOne {
+	_u.mutation.ClearPeakPostGcHeapSize()
+	return _u
 }
 
 // SetUsedHeapSizePostBuild sets the "used_heap_size_post_build" field.
-func (mmuo *MemoryMetricsUpdateOne) SetUsedHeapSizePostBuild(i int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.ResetUsedHeapSizePostBuild()
-	mmuo.mutation.SetUsedHeapSizePostBuild(i)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) SetUsedHeapSizePostBuild(v int64) *MemoryMetricsUpdateOne {
+	_u.mutation.ResetUsedHeapSizePostBuild()
+	_u.mutation.SetUsedHeapSizePostBuild(v)
+	return _u
 }
 
 // SetNillableUsedHeapSizePostBuild sets the "used_heap_size_post_build" field if the given value is not nil.
-func (mmuo *MemoryMetricsUpdateOne) SetNillableUsedHeapSizePostBuild(i *int64) *MemoryMetricsUpdateOne {
-	if i != nil {
-		mmuo.SetUsedHeapSizePostBuild(*i)
+func (_u *MemoryMetricsUpdateOne) SetNillableUsedHeapSizePostBuild(v *int64) *MemoryMetricsUpdateOne {
+	if v != nil {
+		_u.SetUsedHeapSizePostBuild(*v)
 	}
-	return mmuo
+	return _u
 }
 
-// AddUsedHeapSizePostBuild adds i to the "used_heap_size_post_build" field.
-func (mmuo *MemoryMetricsUpdateOne) AddUsedHeapSizePostBuild(i int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.AddUsedHeapSizePostBuild(i)
-	return mmuo
+// AddUsedHeapSizePostBuild adds value to the "used_heap_size_post_build" field.
+func (_u *MemoryMetricsUpdateOne) AddUsedHeapSizePostBuild(v int64) *MemoryMetricsUpdateOne {
+	_u.mutation.AddUsedHeapSizePostBuild(v)
+	return _u
 }
 
 // ClearUsedHeapSizePostBuild clears the value of the "used_heap_size_post_build" field.
-func (mmuo *MemoryMetricsUpdateOne) ClearUsedHeapSizePostBuild() *MemoryMetricsUpdateOne {
-	mmuo.mutation.ClearUsedHeapSizePostBuild()
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) ClearUsedHeapSizePostBuild() *MemoryMetricsUpdateOne {
+	_u.mutation.ClearUsedHeapSizePostBuild()
+	return _u
 }
 
 // SetPeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field.
-func (mmuo *MemoryMetricsUpdateOne) SetPeakPostGcTenuredSpaceHeapSize(i int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.ResetPeakPostGcTenuredSpaceHeapSize()
-	mmuo.mutation.SetPeakPostGcTenuredSpaceHeapSize(i)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) SetPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpdateOne {
+	_u.mutation.ResetPeakPostGcTenuredSpaceHeapSize()
+	_u.mutation.SetPeakPostGcTenuredSpaceHeapSize(v)
+	return _u
 }
 
 // SetNillablePeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field if the given value is not nil.
-func (mmuo *MemoryMetricsUpdateOne) SetNillablePeakPostGcTenuredSpaceHeapSize(i *int64) *MemoryMetricsUpdateOne {
-	if i != nil {
-		mmuo.SetPeakPostGcTenuredSpaceHeapSize(*i)
+func (_u *MemoryMetricsUpdateOne) SetNillablePeakPostGcTenuredSpaceHeapSize(v *int64) *MemoryMetricsUpdateOne {
+	if v != nil {
+		_u.SetPeakPostGcTenuredSpaceHeapSize(*v)
 	}
-	return mmuo
+	return _u
 }
 
-// AddPeakPostGcTenuredSpaceHeapSize adds i to the "peak_post_gc_tenured_space_heap_size" field.
-func (mmuo *MemoryMetricsUpdateOne) AddPeakPostGcTenuredSpaceHeapSize(i int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.AddPeakPostGcTenuredSpaceHeapSize(i)
-	return mmuo
+// AddPeakPostGcTenuredSpaceHeapSize adds value to the "peak_post_gc_tenured_space_heap_size" field.
+func (_u *MemoryMetricsUpdateOne) AddPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpdateOne {
+	_u.mutation.AddPeakPostGcTenuredSpaceHeapSize(v)
+	return _u
 }
 
 // ClearPeakPostGcTenuredSpaceHeapSize clears the value of the "peak_post_gc_tenured_space_heap_size" field.
-func (mmuo *MemoryMetricsUpdateOne) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpdateOne {
-	mmuo.mutation.ClearPeakPostGcTenuredSpaceHeapSize()
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpdateOne {
+	_u.mutation.ClearPeakPostGcTenuredSpaceHeapSize()
+	return _u
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmuo *MemoryMetricsUpdateOne) SetMetricsID(id int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.SetMetricsID(id)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) SetMetricsID(id int64) *MemoryMetricsUpdateOne {
+	_u.mutation.SetMetricsID(id)
+	return _u
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmuo *MemoryMetricsUpdateOne) SetNillableMetricsID(id *int64) *MemoryMetricsUpdateOne {
+func (_u *MemoryMetricsUpdateOne) SetNillableMetricsID(id *int64) *MemoryMetricsUpdateOne {
 	if id != nil {
-		mmuo = mmuo.SetMetricsID(*id)
+		_u = _u.SetMetricsID(*id)
 	}
-	return mmuo
+	return _u
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (mmuo *MemoryMetricsUpdateOne) SetMetrics(m *Metrics) *MemoryMetricsUpdateOne {
-	return mmuo.SetMetricsID(m.ID)
+func (_u *MemoryMetricsUpdateOne) SetMetrics(v *Metrics) *MemoryMetricsUpdateOne {
+	return _u.SetMetricsID(v.ID)
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
-func (mmuo *MemoryMetricsUpdateOne) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.AddGarbageMetricIDs(ids...)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) AddGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdateOne {
+	_u.mutation.AddGarbageMetricIDs(ids...)
+	return _u
 }
 
 // AddGarbageMetrics adds the "garbage_metrics" edges to the GarbageMetrics entity.
-func (mmuo *MemoryMetricsUpdateOne) AddGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdateOne {
-	ids := make([]int64, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *MemoryMetricsUpdateOne) AddGarbageMetrics(v ...*GarbageMetrics) *MemoryMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return mmuo.AddGarbageMetricIDs(ids...)
+	return _u.AddGarbageMetricIDs(ids...)
 }
 
 // Mutation returns the MemoryMetricsMutation object of the builder.
-func (mmuo *MemoryMetricsUpdateOne) Mutation() *MemoryMetricsMutation {
-	return mmuo.mutation
+func (_u *MemoryMetricsUpdateOne) Mutation() *MemoryMetricsMutation {
+	return _u.mutation
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (mmuo *MemoryMetricsUpdateOne) ClearMetrics() *MemoryMetricsUpdateOne {
-	mmuo.mutation.ClearMetrics()
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) ClearMetrics() *MemoryMetricsUpdateOne {
+	_u.mutation.ClearMetrics()
+	return _u
 }
 
 // ClearGarbageMetrics clears all "garbage_metrics" edges to the GarbageMetrics entity.
-func (mmuo *MemoryMetricsUpdateOne) ClearGarbageMetrics() *MemoryMetricsUpdateOne {
-	mmuo.mutation.ClearGarbageMetrics()
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) ClearGarbageMetrics() *MemoryMetricsUpdateOne {
+	_u.mutation.ClearGarbageMetrics()
+	return _u
 }
 
 // RemoveGarbageMetricIDs removes the "garbage_metrics" edge to GarbageMetrics entities by IDs.
-func (mmuo *MemoryMetricsUpdateOne) RemoveGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdateOne {
-	mmuo.mutation.RemoveGarbageMetricIDs(ids...)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) RemoveGarbageMetricIDs(ids ...int64) *MemoryMetricsUpdateOne {
+	_u.mutation.RemoveGarbageMetricIDs(ids...)
+	return _u
 }
 
 // RemoveGarbageMetrics removes "garbage_metrics" edges to GarbageMetrics entities.
-func (mmuo *MemoryMetricsUpdateOne) RemoveGarbageMetrics(g ...*GarbageMetrics) *MemoryMetricsUpdateOne {
-	ids := make([]int64, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *MemoryMetricsUpdateOne) RemoveGarbageMetrics(v ...*GarbageMetrics) *MemoryMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return mmuo.RemoveGarbageMetricIDs(ids...)
+	return _u.RemoveGarbageMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the MemoryMetricsUpdate builder.
-func (mmuo *MemoryMetricsUpdateOne) Where(ps ...predicate.MemoryMetrics) *MemoryMetricsUpdateOne {
-	mmuo.mutation.Where(ps...)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) Where(ps ...predicate.MemoryMetrics) *MemoryMetricsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (mmuo *MemoryMetricsUpdateOne) Select(field string, fields ...string) *MemoryMetricsUpdateOne {
-	mmuo.fields = append([]string{field}, fields...)
-	return mmuo
+func (_u *MemoryMetricsUpdateOne) Select(field string, fields ...string) *MemoryMetricsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated MemoryMetrics entity.
-func (mmuo *MemoryMetricsUpdateOne) Save(ctx context.Context) (*MemoryMetrics, error) {
-	return withHooks(ctx, mmuo.sqlSave, mmuo.mutation, mmuo.hooks)
+func (_u *MemoryMetricsUpdateOne) Save(ctx context.Context) (*MemoryMetrics, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mmuo *MemoryMetricsUpdateOne) SaveX(ctx context.Context) *MemoryMetrics {
-	node, err := mmuo.Save(ctx)
+func (_u *MemoryMetricsUpdateOne) SaveX(ctx context.Context) *MemoryMetrics {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -508,26 +508,26 @@ func (mmuo *MemoryMetricsUpdateOne) SaveX(ctx context.Context) *MemoryMetrics {
 }
 
 // Exec executes the query on the entity.
-func (mmuo *MemoryMetricsUpdateOne) Exec(ctx context.Context) error {
-	_, err := mmuo.Save(ctx)
+func (_u *MemoryMetricsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mmuo *MemoryMetricsUpdateOne) ExecX(ctx context.Context) {
-	if err := mmuo.Exec(ctx); err != nil {
+func (_u *MemoryMetricsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryMetrics, err error) {
+func (_u *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt64))
-	id, ok := mmuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "MemoryMetrics.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := mmuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, memorymetrics.FieldID)
 		for _, f := range fields {
@@ -539,41 +539,41 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 			}
 		}
 	}
-	if ps := mmuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := mmuo.mutation.PeakPostGcHeapSize(); ok {
+	if value, ok := _u.mutation.PeakPostGcHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64, value)
 	}
-	if value, ok := mmuo.mutation.AddedPeakPostGcHeapSize(); ok {
+	if value, ok := _u.mutation.AddedPeakPostGcHeapSize(); ok {
 		_spec.AddField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64, value)
 	}
-	if mmuo.mutation.PeakPostGcHeapSizeCleared() {
+	if _u.mutation.PeakPostGcHeapSizeCleared() {
 		_spec.ClearField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64)
 	}
-	if value, ok := mmuo.mutation.UsedHeapSizePostBuild(); ok {
+	if value, ok := _u.mutation.UsedHeapSizePostBuild(); ok {
 		_spec.SetField(memorymetrics.FieldUsedHeapSizePostBuild, field.TypeInt64, value)
 	}
-	if value, ok := mmuo.mutation.AddedUsedHeapSizePostBuild(); ok {
+	if value, ok := _u.mutation.AddedUsedHeapSizePostBuild(); ok {
 		_spec.AddField(memorymetrics.FieldUsedHeapSizePostBuild, field.TypeInt64, value)
 	}
-	if mmuo.mutation.UsedHeapSizePostBuildCleared() {
+	if _u.mutation.UsedHeapSizePostBuildCleared() {
 		_spec.ClearField(memorymetrics.FieldUsedHeapSizePostBuild, field.TypeInt64)
 	}
-	if value, ok := mmuo.mutation.PeakPostGcTenuredSpaceHeapSize(); ok {
+	if value, ok := _u.mutation.PeakPostGcTenuredSpaceHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, field.TypeInt64, value)
 	}
-	if value, ok := mmuo.mutation.AddedPeakPostGcTenuredSpaceHeapSize(); ok {
+	if value, ok := _u.mutation.AddedPeakPostGcTenuredSpaceHeapSize(); ok {
 		_spec.AddField(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, field.TypeInt64, value)
 	}
-	if mmuo.mutation.PeakPostGcTenuredSpaceHeapSizeCleared() {
+	if _u.mutation.PeakPostGcTenuredSpaceHeapSizeCleared() {
 		_spec.ClearField(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, field.TypeInt64)
 	}
-	if mmuo.mutation.MetricsCleared() {
+	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -586,7 +586,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mmuo.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -602,7 +602,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if mmuo.mutation.GarbageMetricsCleared() {
+	if _u.mutation.GarbageMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -615,7 +615,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mmuo.mutation.RemovedGarbageMetricsIDs(); len(nodes) > 0 && !mmuo.mutation.GarbageMetricsCleared() {
+	if nodes := _u.mutation.RemovedGarbageMetricsIDs(); len(nodes) > 0 && !_u.mutation.GarbageMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -631,7 +631,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := mmuo.mutation.GarbageMetricsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.GarbageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -647,10 +647,10 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &MemoryMetrics{config: mmuo.config}
+	_node = &MemoryMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, mmuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{memorymetrics.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -658,6 +658,6 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 		}
 		return nil, err
 	}
-	mmuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

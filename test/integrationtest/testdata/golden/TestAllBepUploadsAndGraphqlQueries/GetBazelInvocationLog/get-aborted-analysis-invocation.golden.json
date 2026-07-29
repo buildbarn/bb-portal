@@ -1,0 +1,24 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjY=",
+    "invocationID": "bb2b45d9-d695-4194-8fdc-01ba50477a92",
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "analyze",
+          "value": "0"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "noanalyze.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    }
+  }
+}

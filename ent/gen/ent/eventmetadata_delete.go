@@ -20,56 +20,56 @@ type EventMetadataDelete struct {
 }
 
 // Where appends a list predicates to the EventMetadataDelete builder.
-func (emd *EventMetadataDelete) Where(ps ...predicate.EventMetadata) *EventMetadataDelete {
-	emd.mutation.Where(ps...)
-	return emd
+func (_d *EventMetadataDelete) Where(ps ...predicate.EventMetadata) *EventMetadataDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (emd *EventMetadataDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, emd.sqlExec, emd.mutation, emd.hooks)
+func (_d *EventMetadataDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (emd *EventMetadataDelete) ExecX(ctx context.Context) int {
-	n, err := emd.Exec(ctx)
+func (_d *EventMetadataDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (emd *EventMetadataDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *EventMetadataDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(eventmetadata.Table, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
-	if ps := emd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, emd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	emd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // EventMetadataDeleteOne is the builder for deleting a single EventMetadata entity.
 type EventMetadataDeleteOne struct {
-	emd *EventMetadataDelete
+	_d *EventMetadataDelete
 }
 
 // Where appends a list predicates to the EventMetadataDelete builder.
-func (emdo *EventMetadataDeleteOne) Where(ps ...predicate.EventMetadata) *EventMetadataDeleteOne {
-	emdo.emd.mutation.Where(ps...)
-	return emdo
+func (_d *EventMetadataDeleteOne) Where(ps ...predicate.EventMetadata) *EventMetadataDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (emdo *EventMetadataDeleteOne) Exec(ctx context.Context) error {
-	n, err := emdo.emd.Exec(ctx)
+func (_d *EventMetadataDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (emdo *EventMetadataDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (emdo *EventMetadataDeleteOne) ExecX(ctx context.Context) {
-	if err := emdo.Exec(ctx); err != nil {
+func (_d *EventMetadataDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -35,44 +35,44 @@ type AuthenticatedUserQuery struct {
 }
 
 // Where adds a new predicate for the AuthenticatedUserQuery builder.
-func (auq *AuthenticatedUserQuery) Where(ps ...predicate.AuthenticatedUser) *AuthenticatedUserQuery {
-	auq.predicates = append(auq.predicates, ps...)
-	return auq
+func (_q *AuthenticatedUserQuery) Where(ps ...predicate.AuthenticatedUser) *AuthenticatedUserQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (auq *AuthenticatedUserQuery) Limit(limit int) *AuthenticatedUserQuery {
-	auq.ctx.Limit = &limit
-	return auq
+func (_q *AuthenticatedUserQuery) Limit(limit int) *AuthenticatedUserQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (auq *AuthenticatedUserQuery) Offset(offset int) *AuthenticatedUserQuery {
-	auq.ctx.Offset = &offset
-	return auq
+func (_q *AuthenticatedUserQuery) Offset(offset int) *AuthenticatedUserQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (auq *AuthenticatedUserQuery) Unique(unique bool) *AuthenticatedUserQuery {
-	auq.ctx.Unique = &unique
-	return auq
+func (_q *AuthenticatedUserQuery) Unique(unique bool) *AuthenticatedUserQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (auq *AuthenticatedUserQuery) Order(o ...authenticateduser.OrderOption) *AuthenticatedUserQuery {
-	auq.order = append(auq.order, o...)
-	return auq
+func (_q *AuthenticatedUserQuery) Order(o ...authenticateduser.OrderOption) *AuthenticatedUserQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocations chains the current query on the "bazel_invocations" edge.
-func (auq *AuthenticatedUserQuery) QueryBazelInvocations() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: auq.config}).Query()
+func (_q *AuthenticatedUserQuery) QueryBazelInvocations() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := auq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := auq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -81,7 +81,7 @@ func (auq *AuthenticatedUserQuery) QueryBazelInvocations() *BazelInvocationQuery
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, authenticateduser.BazelInvocationsTable, authenticateduser.BazelInvocationsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(auq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -89,8 +89,8 @@ func (auq *AuthenticatedUserQuery) QueryBazelInvocations() *BazelInvocationQuery
 
 // First returns the first AuthenticatedUser entity from the query.
 // Returns a *NotFoundError when no AuthenticatedUser was found.
-func (auq *AuthenticatedUserQuery) First(ctx context.Context) (*AuthenticatedUser, error) {
-	nodes, err := auq.Limit(1).All(setContextOp(ctx, auq.ctx, ent.OpQueryFirst))
+func (_q *AuthenticatedUserQuery) First(ctx context.Context) (*AuthenticatedUser, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -101,8 +101,8 @@ func (auq *AuthenticatedUserQuery) First(ctx context.Context) (*AuthenticatedUse
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) FirstX(ctx context.Context) *AuthenticatedUser {
-	node, err := auq.First(ctx)
+func (_q *AuthenticatedUserQuery) FirstX(ctx context.Context) *AuthenticatedUser {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -111,9 +111,9 @@ func (auq *AuthenticatedUserQuery) FirstX(ctx context.Context) *AuthenticatedUse
 
 // FirstID returns the first AuthenticatedUser ID from the query.
 // Returns a *NotFoundError when no AuthenticatedUser ID was found.
-func (auq *AuthenticatedUserQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *AuthenticatedUserQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = auq.Limit(1).IDs(setContextOp(ctx, auq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -124,8 +124,8 @@ func (auq *AuthenticatedUserQuery) FirstID(ctx context.Context) (id int64, err e
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := auq.FirstID(ctx)
+func (_q *AuthenticatedUserQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -135,8 +135,8 @@ func (auq *AuthenticatedUserQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single AuthenticatedUser entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AuthenticatedUser entity is found.
 // Returns a *NotFoundError when no AuthenticatedUser entities are found.
-func (auq *AuthenticatedUserQuery) Only(ctx context.Context) (*AuthenticatedUser, error) {
-	nodes, err := auq.Limit(2).All(setContextOp(ctx, auq.ctx, ent.OpQueryOnly))
+func (_q *AuthenticatedUserQuery) Only(ctx context.Context) (*AuthenticatedUser, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +151,8 @@ func (auq *AuthenticatedUserQuery) Only(ctx context.Context) (*AuthenticatedUser
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) OnlyX(ctx context.Context) *AuthenticatedUser {
-	node, err := auq.Only(ctx)
+func (_q *AuthenticatedUserQuery) OnlyX(ctx context.Context) *AuthenticatedUser {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -162,9 +162,9 @@ func (auq *AuthenticatedUserQuery) OnlyX(ctx context.Context) *AuthenticatedUser
 // OnlyID is like Only, but returns the only AuthenticatedUser ID in the query.
 // Returns a *NotSingularError when more than one AuthenticatedUser ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (auq *AuthenticatedUserQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *AuthenticatedUserQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = auq.Limit(2).IDs(setContextOp(ctx, auq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -179,8 +179,8 @@ func (auq *AuthenticatedUserQuery) OnlyID(ctx context.Context) (id int64, err er
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := auq.OnlyID(ctx)
+func (_q *AuthenticatedUserQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -188,18 +188,18 @@ func (auq *AuthenticatedUserQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of AuthenticatedUsers.
-func (auq *AuthenticatedUserQuery) All(ctx context.Context) ([]*AuthenticatedUser, error) {
-	ctx = setContextOp(ctx, auq.ctx, ent.OpQueryAll)
-	if err := auq.prepareQuery(ctx); err != nil {
+func (_q *AuthenticatedUserQuery) All(ctx context.Context) ([]*AuthenticatedUser, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AuthenticatedUser, *AuthenticatedUserQuery]()
-	return withInterceptors[[]*AuthenticatedUser](ctx, auq, qr, auq.inters)
+	return withInterceptors[[]*AuthenticatedUser](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) AllX(ctx context.Context) []*AuthenticatedUser {
-	nodes, err := auq.All(ctx)
+func (_q *AuthenticatedUserQuery) AllX(ctx context.Context) []*AuthenticatedUser {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -207,20 +207,20 @@ func (auq *AuthenticatedUserQuery) AllX(ctx context.Context) []*AuthenticatedUse
 }
 
 // IDs executes the query and returns a list of AuthenticatedUser IDs.
-func (auq *AuthenticatedUserQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if auq.ctx.Unique == nil && auq.path != nil {
-		auq.Unique(true)
+func (_q *AuthenticatedUserQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, auq.ctx, ent.OpQueryIDs)
-	if err = auq.Select(authenticateduser.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(authenticateduser.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := auq.IDs(ctx)
+func (_q *AuthenticatedUserQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,17 +228,17 @@ func (auq *AuthenticatedUserQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (auq *AuthenticatedUserQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, auq.ctx, ent.OpQueryCount)
-	if err := auq.prepareQuery(ctx); err != nil {
+func (_q *AuthenticatedUserQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, auq, querierCount[*AuthenticatedUserQuery](), auq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AuthenticatedUserQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) CountX(ctx context.Context) int {
-	count, err := auq.Count(ctx)
+func (_q *AuthenticatedUserQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -246,9 +246,9 @@ func (auq *AuthenticatedUserQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (auq *AuthenticatedUserQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, auq.ctx, ent.OpQueryExist)
-	switch _, err := auq.FirstID(ctx); {
+func (_q *AuthenticatedUserQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -259,8 +259,8 @@ func (auq *AuthenticatedUserQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (auq *AuthenticatedUserQuery) ExistX(ctx context.Context) bool {
-	exist, err := auq.Exist(ctx)
+func (_q *AuthenticatedUserQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -269,32 +269,32 @@ func (auq *AuthenticatedUserQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AuthenticatedUserQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (auq *AuthenticatedUserQuery) Clone() *AuthenticatedUserQuery {
-	if auq == nil {
+func (_q *AuthenticatedUserQuery) Clone() *AuthenticatedUserQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AuthenticatedUserQuery{
-		config:               auq.config,
-		ctx:                  auq.ctx.Clone(),
-		order:                append([]authenticateduser.OrderOption{}, auq.order...),
-		inters:               append([]Interceptor{}, auq.inters...),
-		predicates:           append([]predicate.AuthenticatedUser{}, auq.predicates...),
-		withBazelInvocations: auq.withBazelInvocations.Clone(),
+		config:               _q.config,
+		ctx:                  _q.ctx.Clone(),
+		order:                append([]authenticateduser.OrderOption{}, _q.order...),
+		inters:               append([]Interceptor{}, _q.inters...),
+		predicates:           append([]predicate.AuthenticatedUser{}, _q.predicates...),
+		withBazelInvocations: _q.withBazelInvocations.Clone(),
 		// clone intermediate query.
-		sql:  auq.sql.Clone(),
-		path: auq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocations tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocations" edge. The optional arguments are used to configure the query builder of the edge.
-func (auq *AuthenticatedUserQuery) WithBazelInvocations(opts ...func(*BazelInvocationQuery)) *AuthenticatedUserQuery {
-	query := (&BazelInvocationClient{config: auq.config}).Query()
+func (_q *AuthenticatedUserQuery) WithBazelInvocations(opts ...func(*BazelInvocationQuery)) *AuthenticatedUserQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	auq.withBazelInvocations = query
-	return auq
+	_q.withBazelInvocations = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -311,10 +311,10 @@ func (auq *AuthenticatedUserQuery) WithBazelInvocations(opts ...func(*BazelInvoc
 //		GroupBy(authenticateduser.FieldUserUUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (auq *AuthenticatedUserQuery) GroupBy(field string, fields ...string) *AuthenticatedUserGroupBy {
-	auq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AuthenticatedUserGroupBy{build: auq}
-	grbuild.flds = &auq.ctx.Fields
+func (_q *AuthenticatedUserQuery) GroupBy(field string, fields ...string) *AuthenticatedUserGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AuthenticatedUserGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = authenticateduser.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -332,82 +332,82 @@ func (auq *AuthenticatedUserQuery) GroupBy(field string, fields ...string) *Auth
 //	client.AuthenticatedUser.Query().
 //		Select(authenticateduser.FieldUserUUID).
 //		Scan(ctx, &v)
-func (auq *AuthenticatedUserQuery) Select(fields ...string) *AuthenticatedUserSelect {
-	auq.ctx.Fields = append(auq.ctx.Fields, fields...)
-	sbuild := &AuthenticatedUserSelect{AuthenticatedUserQuery: auq}
+func (_q *AuthenticatedUserQuery) Select(fields ...string) *AuthenticatedUserSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AuthenticatedUserSelect{AuthenticatedUserQuery: _q}
 	sbuild.label = authenticateduser.Label
-	sbuild.flds, sbuild.scan = &auq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AuthenticatedUserSelect configured with the given aggregations.
-func (auq *AuthenticatedUserQuery) Aggregate(fns ...AggregateFunc) *AuthenticatedUserSelect {
-	return auq.Select().Aggregate(fns...)
+func (_q *AuthenticatedUserQuery) Aggregate(fns ...AggregateFunc) *AuthenticatedUserSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (auq *AuthenticatedUserQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range auq.inters {
+func (_q *AuthenticatedUserQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, auq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range auq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !authenticateduser.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if auq.path != nil {
-		prev, err := auq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		auq.sql = prev
+		_q.sql = prev
 	}
 	if authenticateduser.Policy == nil {
 		return errors.New("ent: uninitialized authenticateduser.Policy (forgotten import ent/runtime?)")
 	}
-	if err := authenticateduser.Policy.EvalQuery(ctx, auq); err != nil {
+	if err := authenticateduser.Policy.EvalQuery(ctx, _q); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (auq *AuthenticatedUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AuthenticatedUser, error) {
+func (_q *AuthenticatedUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AuthenticatedUser, error) {
 	var (
 		nodes       = []*AuthenticatedUser{}
-		_spec       = auq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			auq.withBazelInvocations != nil,
+			_q.withBazelInvocations != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AuthenticatedUser).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AuthenticatedUser{config: auq.config}
+		node := &AuthenticatedUser{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(auq.modifiers) > 0 {
-		_spec.Modifiers = auq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, auq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := auq.withBazelInvocations; query != nil {
-		if err := auq.loadBazelInvocations(ctx, query, nodes,
+	if query := _q.withBazelInvocations; query != nil {
+		if err := _q.loadBazelInvocations(ctx, query, nodes,
 			func(n *AuthenticatedUser) { n.Edges.BazelInvocations = []*BazelInvocation{} },
 			func(n *AuthenticatedUser, e *BazelInvocation) {
 				n.Edges.BazelInvocations = append(n.Edges.BazelInvocations, e)
@@ -415,22 +415,22 @@ func (auq *AuthenticatedUserQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 			return nil, err
 		}
 	}
-	for name, query := range auq.withNamedBazelInvocations {
-		if err := auq.loadBazelInvocations(ctx, query, nodes,
+	for name, query := range _q.withNamedBazelInvocations {
+		if err := _q.loadBazelInvocations(ctx, query, nodes,
 			func(n *AuthenticatedUser) { n.appendNamedBazelInvocations(name) },
 			func(n *AuthenticatedUser, e *BazelInvocation) { n.appendNamedBazelInvocations(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range auq.loadTotal {
-		if err := auq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (auq *AuthenticatedUserQuery) loadBazelInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*AuthenticatedUser, init func(*AuthenticatedUser), assign func(*AuthenticatedUser, *BazelInvocation)) error {
+func (_q *AuthenticatedUserQuery) loadBazelInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*AuthenticatedUser, init func(*AuthenticatedUser), assign func(*AuthenticatedUser, *BazelInvocation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*AuthenticatedUser)
 	for i := range nodes {
@@ -462,27 +462,27 @@ func (auq *AuthenticatedUserQuery) loadBazelInvocations(ctx context.Context, que
 	return nil
 }
 
-func (auq *AuthenticatedUserQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := auq.querySpec()
-	if len(auq.modifiers) > 0 {
-		_spec.Modifiers = auq.modifiers
+func (_q *AuthenticatedUserQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = auq.ctx.Fields
-	if len(auq.ctx.Fields) > 0 {
-		_spec.Unique = auq.ctx.Unique != nil && *auq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, auq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (auq *AuthenticatedUserQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AuthenticatedUserQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
-	_spec.From = auq.sql
-	if unique := auq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if auq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := auq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, authenticateduser.FieldID)
 		for i := range fields {
@@ -491,20 +491,20 @@ func (auq *AuthenticatedUserQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := auq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := auq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := auq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := auq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -514,33 +514,33 @@ func (auq *AuthenticatedUserQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (auq *AuthenticatedUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(auq.driver.Dialect())
+func (_q *AuthenticatedUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(authenticateduser.Table)
-	columns := auq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = authenticateduser.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if auq.sql != nil {
-		selector = auq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if auq.ctx.Unique != nil && *auq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range auq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range auq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := auq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := auq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -548,16 +548,16 @@ func (auq *AuthenticatedUserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // WithNamedBazelInvocations tells the query-builder to eager-load the nodes that are connected to the "bazel_invocations"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (auq *AuthenticatedUserQuery) WithNamedBazelInvocations(name string, opts ...func(*BazelInvocationQuery)) *AuthenticatedUserQuery {
-	query := (&BazelInvocationClient{config: auq.config}).Query()
+func (_q *AuthenticatedUserQuery) WithNamedBazelInvocations(name string, opts ...func(*BazelInvocationQuery)) *AuthenticatedUserQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if auq.withNamedBazelInvocations == nil {
-		auq.withNamedBazelInvocations = make(map[string]*BazelInvocationQuery)
+	if _q.withNamedBazelInvocations == nil {
+		_q.withNamedBazelInvocations = make(map[string]*BazelInvocationQuery)
 	}
-	auq.withNamedBazelInvocations[name] = query
-	return auq
+	_q.withNamedBazelInvocations[name] = query
+	return _q
 }
 
 // AuthenticatedUserGroupBy is the group-by builder for AuthenticatedUser entities.
@@ -567,41 +567,41 @@ type AuthenticatedUserGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (augb *AuthenticatedUserGroupBy) Aggregate(fns ...AggregateFunc) *AuthenticatedUserGroupBy {
-	augb.fns = append(augb.fns, fns...)
-	return augb
+func (_g *AuthenticatedUserGroupBy) Aggregate(fns ...AggregateFunc) *AuthenticatedUserGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (augb *AuthenticatedUserGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, augb.build.ctx, ent.OpQueryGroupBy)
-	if err := augb.build.prepareQuery(ctx); err != nil {
+func (_g *AuthenticatedUserGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AuthenticatedUserQuery, *AuthenticatedUserGroupBy](ctx, augb.build, augb, augb.build.inters, v)
+	return scanWithInterceptors[*AuthenticatedUserQuery, *AuthenticatedUserGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (augb *AuthenticatedUserGroupBy) sqlScan(ctx context.Context, root *AuthenticatedUserQuery, v any) error {
+func (_g *AuthenticatedUserGroupBy) sqlScan(ctx context.Context, root *AuthenticatedUserQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(augb.fns))
-	for _, fn := range augb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*augb.flds)+len(augb.fns))
-		for _, f := range *augb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*augb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := augb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -615,27 +615,27 @@ type AuthenticatedUserSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (aus *AuthenticatedUserSelect) Aggregate(fns ...AggregateFunc) *AuthenticatedUserSelect {
-	aus.fns = append(aus.fns, fns...)
-	return aus
+func (_s *AuthenticatedUserSelect) Aggregate(fns ...AggregateFunc) *AuthenticatedUserSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (aus *AuthenticatedUserSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aus.ctx, ent.OpQuerySelect)
-	if err := aus.prepareQuery(ctx); err != nil {
+func (_s *AuthenticatedUserSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AuthenticatedUserQuery, *AuthenticatedUserSelect](ctx, aus.AuthenticatedUserQuery, aus, aus.inters, v)
+	return scanWithInterceptors[*AuthenticatedUserQuery, *AuthenticatedUserSelect](ctx, _s.AuthenticatedUserQuery, _s, _s.inters, v)
 }
 
-func (aus *AuthenticatedUserSelect) sqlScan(ctx context.Context, root *AuthenticatedUserQuery, v any) error {
+func (_s *AuthenticatedUserSelect) sqlScan(ctx context.Context, root *AuthenticatedUserQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(aus.fns))
-	for _, fn := range aus.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*aus.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -643,7 +643,7 @@ func (aus *AuthenticatedUserSelect) sqlScan(ctx context.Context, root *Authentic
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := aus.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

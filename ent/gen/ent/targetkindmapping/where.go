@@ -63,11 +63,6 @@ func TargetID(v int64) predicate.TargetKindMapping {
 	return predicate.TargetKindMapping(sql.FieldEQ(FieldTargetID, v))
 }
 
-// StartTimeInMs applies equality check predicate on the "start_time_in_ms" field. It's identical to StartTimeInMsEQ.
-func StartTimeInMs(v int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldEQ(FieldStartTimeInMs, v))
-}
-
 // BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
 func BazelInvocationIDEQ(v int64) predicate.TargetKindMapping {
 	return predicate.TargetKindMapping(sql.FieldEQ(FieldBazelInvocationID, v))
@@ -106,56 +101,6 @@ func TargetIDIn(vs ...int64) predicate.TargetKindMapping {
 // TargetIDNotIn applies the NotIn predicate on the "target_id" field.
 func TargetIDNotIn(vs ...int64) predicate.TargetKindMapping {
 	return predicate.TargetKindMapping(sql.FieldNotIn(FieldTargetID, vs...))
-}
-
-// StartTimeInMsEQ applies the EQ predicate on the "start_time_in_ms" field.
-func StartTimeInMsEQ(v int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldEQ(FieldStartTimeInMs, v))
-}
-
-// StartTimeInMsNEQ applies the NEQ predicate on the "start_time_in_ms" field.
-func StartTimeInMsNEQ(v int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldNEQ(FieldStartTimeInMs, v))
-}
-
-// StartTimeInMsIn applies the In predicate on the "start_time_in_ms" field.
-func StartTimeInMsIn(vs ...int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldIn(FieldStartTimeInMs, vs...))
-}
-
-// StartTimeInMsNotIn applies the NotIn predicate on the "start_time_in_ms" field.
-func StartTimeInMsNotIn(vs ...int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldNotIn(FieldStartTimeInMs, vs...))
-}
-
-// StartTimeInMsGT applies the GT predicate on the "start_time_in_ms" field.
-func StartTimeInMsGT(v int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldGT(FieldStartTimeInMs, v))
-}
-
-// StartTimeInMsGTE applies the GTE predicate on the "start_time_in_ms" field.
-func StartTimeInMsGTE(v int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldGTE(FieldStartTimeInMs, v))
-}
-
-// StartTimeInMsLT applies the LT predicate on the "start_time_in_ms" field.
-func StartTimeInMsLT(v int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldLT(FieldStartTimeInMs, v))
-}
-
-// StartTimeInMsLTE applies the LTE predicate on the "start_time_in_ms" field.
-func StartTimeInMsLTE(v int64) predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldLTE(FieldStartTimeInMs, v))
-}
-
-// StartTimeInMsIsNil applies the IsNil predicate on the "start_time_in_ms" field.
-func StartTimeInMsIsNil() predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldIsNull(FieldStartTimeInMs))
-}
-
-// StartTimeInMsNotNil applies the NotNil predicate on the "start_time_in_ms" field.
-func StartTimeInMsNotNil() predicate.TargetKindMapping {
-	return predicate.TargetKindMapping(sql.FieldNotNull(FieldStartTimeInMs))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

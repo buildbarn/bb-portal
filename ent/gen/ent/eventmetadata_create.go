@@ -24,53 +24,53 @@ type EventMetadataCreate struct {
 }
 
 // SetHandled sets the "handled" field.
-func (emc *EventMetadataCreate) SetHandled(b []byte) *EventMetadataCreate {
-	emc.mutation.SetHandled(b)
-	return emc
+func (_c *EventMetadataCreate) SetHandled(v []byte) *EventMetadataCreate {
+	_c.mutation.SetHandled(v)
+	return _c
 }
 
 // SetEventReceivedAt sets the "event_received_at" field.
-func (emc *EventMetadataCreate) SetEventReceivedAt(t time.Time) *EventMetadataCreate {
-	emc.mutation.SetEventReceivedAt(t)
-	return emc
+func (_c *EventMetadataCreate) SetEventReceivedAt(v time.Time) *EventMetadataCreate {
+	_c.mutation.SetEventReceivedAt(v)
+	return _c
 }
 
 // SetVersion sets the "version" field.
-func (emc *EventMetadataCreate) SetVersion(i int64) *EventMetadataCreate {
-	emc.mutation.SetVersion(i)
-	return emc
+func (_c *EventMetadataCreate) SetVersion(v int64) *EventMetadataCreate {
+	_c.mutation.SetVersion(v)
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (emc *EventMetadataCreate) SetBazelInvocationID(i int64) *EventMetadataCreate {
-	emc.mutation.SetBazelInvocationID(i)
-	return emc
+func (_c *EventMetadataCreate) SetBazelInvocationID(v int64) *EventMetadataCreate {
+	_c.mutation.SetBazelInvocationID(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (emc *EventMetadataCreate) SetID(i int64) *EventMetadataCreate {
-	emc.mutation.SetID(i)
-	return emc
+func (_c *EventMetadataCreate) SetID(v int64) *EventMetadataCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (emc *EventMetadataCreate) SetBazelInvocation(b *BazelInvocation) *EventMetadataCreate {
-	return emc.SetBazelInvocationID(b.ID)
+func (_c *EventMetadataCreate) SetBazelInvocation(v *BazelInvocation) *EventMetadataCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // Mutation returns the EventMetadataMutation object of the builder.
-func (emc *EventMetadataCreate) Mutation() *EventMetadataMutation {
-	return emc.mutation
+func (_c *EventMetadataCreate) Mutation() *EventMetadataMutation {
+	return _c.mutation
 }
 
 // Save creates the EventMetadata in the database.
-func (emc *EventMetadataCreate) Save(ctx context.Context) (*EventMetadata, error) {
-	return withHooks(ctx, emc.sqlSave, emc.mutation, emc.hooks)
+func (_c *EventMetadataCreate) Save(ctx context.Context) (*EventMetadata, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (emc *EventMetadataCreate) SaveX(ctx context.Context) *EventMetadata {
-	v, err := emc.Save(ctx)
+func (_c *EventMetadataCreate) SaveX(ctx context.Context) *EventMetadata {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -78,44 +78,44 @@ func (emc *EventMetadataCreate) SaveX(ctx context.Context) *EventMetadata {
 }
 
 // Exec executes the query.
-func (emc *EventMetadataCreate) Exec(ctx context.Context) error {
-	_, err := emc.Save(ctx)
+func (_c *EventMetadataCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (emc *EventMetadataCreate) ExecX(ctx context.Context) {
-	if err := emc.Exec(ctx); err != nil {
+func (_c *EventMetadataCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (emc *EventMetadataCreate) check() error {
-	if _, ok := emc.mutation.Handled(); !ok {
+func (_c *EventMetadataCreate) check() error {
+	if _, ok := _c.mutation.Handled(); !ok {
 		return &ValidationError{Name: "handled", err: errors.New(`ent: missing required field "EventMetadata.handled"`)}
 	}
-	if _, ok := emc.mutation.EventReceivedAt(); !ok {
+	if _, ok := _c.mutation.EventReceivedAt(); !ok {
 		return &ValidationError{Name: "event_received_at", err: errors.New(`ent: missing required field "EventMetadata.event_received_at"`)}
 	}
-	if _, ok := emc.mutation.Version(); !ok {
+	if _, ok := _c.mutation.Version(); !ok {
 		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "EventMetadata.version"`)}
 	}
-	if _, ok := emc.mutation.BazelInvocationID(); !ok {
+	if _, ok := _c.mutation.BazelInvocationID(); !ok {
 		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "EventMetadata.bazel_invocation_id"`)}
 	}
-	if len(emc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "EventMetadata.bazel_invocation"`)}
 	}
 	return nil
 }
 
-func (emc *EventMetadataCreate) sqlSave(ctx context.Context) (*EventMetadata, error) {
-	if err := emc.check(); err != nil {
+func (_c *EventMetadataCreate) sqlSave(ctx context.Context) (*EventMetadata, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := emc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, emc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -125,34 +125,34 @@ func (emc *EventMetadataCreate) sqlSave(ctx context.Context) (*EventMetadata, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	emc.mutation.id = &_node.ID
-	emc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSpec) {
+func (_c *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSpec) {
 	var (
-		_node = &EventMetadata{config: emc.config}
+		_node = &EventMetadata{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(eventmetadata.Table, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = emc.conflict
-	if id, ok := emc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := emc.mutation.Handled(); ok {
+	if value, ok := _c.mutation.Handled(); ok {
 		_spec.SetField(eventmetadata.FieldHandled, field.TypeBytes, value)
 		_node.Handled = value
 	}
-	if value, ok := emc.mutation.EventReceivedAt(); ok {
+	if value, ok := _c.mutation.EventReceivedAt(); ok {
 		_spec.SetField(eventmetadata.FieldEventReceivedAt, field.TypeTime, value)
 		_node.EventReceivedAt = value
 	}
-	if value, ok := emc.mutation.Version(); ok {
+	if value, ok := _c.mutation.Version(); ok {
 		_spec.SetField(eventmetadata.FieldVersion, field.TypeInt64, value)
 		_node.Version = value
 	}
-	if nodes := emc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -188,10 +188,10 @@ func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSp
 //			SetHandled(v+v).
 //		}).
 //		Exec(ctx)
-func (emc *EventMetadataCreate) OnConflict(opts ...sql.ConflictOption) *EventMetadataUpsertOne {
-	emc.conflict = opts
+func (_c *EventMetadataCreate) OnConflict(opts ...sql.ConflictOption) *EventMetadataUpsertOne {
+	_c.conflict = opts
 	return &EventMetadataUpsertOne{
-		create: emc,
+		create: _c,
 	}
 }
 
@@ -201,10 +201,10 @@ func (emc *EventMetadataCreate) OnConflict(opts ...sql.ConflictOption) *EventMet
 //	client.EventMetadata.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (emc *EventMetadataCreate) OnConflictColumns(columns ...string) *EventMetadataUpsertOne {
-	emc.conflict = append(emc.conflict, sql.ConflictColumns(columns...))
+func (_c *EventMetadataCreate) OnConflictColumns(columns ...string) *EventMetadataUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &EventMetadataUpsertOne{
-		create: emc,
+		create: _c,
 	}
 }
 
@@ -405,16 +405,16 @@ type EventMetadataCreateBulk struct {
 }
 
 // Save creates the EventMetadata entities in the database.
-func (emcb *EventMetadataCreateBulk) Save(ctx context.Context) ([]*EventMetadata, error) {
-	if emcb.err != nil {
-		return nil, emcb.err
+func (_c *EventMetadataCreateBulk) Save(ctx context.Context) ([]*EventMetadata, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(emcb.builders))
-	nodes := make([]*EventMetadata, len(emcb.builders))
-	mutators := make([]Mutator, len(emcb.builders))
-	for i := range emcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*EventMetadata, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := emcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EventMetadataMutation)
 				if !ok {
@@ -427,12 +427,12 @@ func (emcb *EventMetadataCreateBulk) Save(ctx context.Context) ([]*EventMetadata
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, emcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = emcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, emcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -456,7 +456,7 @@ func (emcb *EventMetadataCreateBulk) Save(ctx context.Context) ([]*EventMetadata
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, emcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -464,8 +464,8 @@ func (emcb *EventMetadataCreateBulk) Save(ctx context.Context) ([]*EventMetadata
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (emcb *EventMetadataCreateBulk) SaveX(ctx context.Context) []*EventMetadata {
-	v, err := emcb.Save(ctx)
+func (_c *EventMetadataCreateBulk) SaveX(ctx context.Context) []*EventMetadata {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -473,14 +473,14 @@ func (emcb *EventMetadataCreateBulk) SaveX(ctx context.Context) []*EventMetadata
 }
 
 // Exec executes the query.
-func (emcb *EventMetadataCreateBulk) Exec(ctx context.Context) error {
-	_, err := emcb.Save(ctx)
+func (_c *EventMetadataCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (emcb *EventMetadataCreateBulk) ExecX(ctx context.Context) {
-	if err := emcb.Exec(ctx); err != nil {
+func (_c *EventMetadataCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -500,10 +500,10 @@ func (emcb *EventMetadataCreateBulk) ExecX(ctx context.Context) {
 //			SetHandled(v+v).
 //		}).
 //		Exec(ctx)
-func (emcb *EventMetadataCreateBulk) OnConflict(opts ...sql.ConflictOption) *EventMetadataUpsertBulk {
-	emcb.conflict = opts
+func (_c *EventMetadataCreateBulk) OnConflict(opts ...sql.ConflictOption) *EventMetadataUpsertBulk {
+	_c.conflict = opts
 	return &EventMetadataUpsertBulk{
-		create: emcb,
+		create: _c,
 	}
 }
 
@@ -513,10 +513,10 @@ func (emcb *EventMetadataCreateBulk) OnConflict(opts ...sql.ConflictOption) *Eve
 //	client.EventMetadata.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (emcb *EventMetadataCreateBulk) OnConflictColumns(columns ...string) *EventMetadataUpsertBulk {
-	emcb.conflict = append(emcb.conflict, sql.ConflictColumns(columns...))
+func (_c *EventMetadataCreateBulk) OnConflictColumns(columns ...string) *EventMetadataUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &EventMetadataUpsertBulk{
-		create: emcb,
+		create: _c,
 	}
 }
 

@@ -1,12 +1,5 @@
-import {
-  ExclamationCircleOutlined,
-  FileSearchOutlined,
-} from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Tooltip } from "antd";
-import DownloadButton from "@/components/DownloadButton";
-import PortalCard from "@/components/PortalCard";
-import LogViewer from "../LogViewer";
+import { LogViewerCard } from "../LogViewer";
 
 interface Props {
   invocationId: string;
@@ -34,30 +27,14 @@ const BuildLogsDisplay: React.FC<Props> = ({ invocationId, rawCommand }) => {
   const logDownloadUrl = `/api/v1/invocations/${invocationId}/log`;
 
   return (
-    <PortalCard
-      type="inner"
-      icon={<FileSearchOutlined />}
-      titleBits={["Raw Build Logs", rawCommand]}
-      extraBits={[
-        <Tooltip
-          key="tooltip"
-          title="Bazel emits logs in ANSI format a screen at a time.  They are presented here concatenated for your convenience."
-        >
-          <ExclamationCircleOutlined />
-        </Tooltip>,
-        logDownloadUrl && (
-          <DownloadButton
-            key="downloadButton"
-            enabled={true}
-            buttonLabel="Download Log"
-            fileName="log.txt"
-            url={logDownloadUrl}
-          />
-        ),
-      ]}
-    >
-      <LogViewer loading={isLoading} error={error} log={data} />
-    </PortalCard>
+    <LogViewerCard
+      loading={isLoading}
+      error={error}
+      log={data}
+      logDownloadUrl={logDownloadUrl}
+      title={`Raw Build Logs for ${rawCommand}`}
+      fileName="log.txt"
+    />
   );
 };
 

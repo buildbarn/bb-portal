@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"strings"
-	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -68,7 +67,7 @@ func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 		return util.StatusWrap(err, "Failed to get target info mapping")
 	}
 
-	if err := createInvocationTargetsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, batch, targetInfoMap); err != nil {
+	if err := createInvocationTargetsBulk(ctx, r.InvocationDbID, tx, batch, targetInfoMap); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert invocation targets")
 	}
 
@@ -87,16 +86,13 @@ func (r *buildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 	return nil
 }
 
-func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocationDbID int64, tx database.Handle, batch []BuildEventWithInfo, targetInfoMap map[invocationTargetKey]completedTargetInfo) error {
+func createInvocationTargetsBulk(ctx context.Context, invocationDbID int64, tx database.Handle, batch []BuildEventWithInfo, targetInfoMap map[invocationTargetKey]int) error {
 	params := sqlc.CreateInvocationTargetsBulkParams{
 		BazelInvocationID: int64(invocationDbID),
 		TargetIds:         make([]int64, len(batch)),
 		ConfigurationIds:  make([]string, len(batch)),
 		Successes:         make([]bool, len(batch)),
 		TagsList:          make([]string, len(batch)),
-		StartTimes:        make([]int64, len(batch)),
-		EndTimes:          make([]int64, len(batch)),
-		Durations:         make([]int64, len(batch)),
 		FailureMessages:   make([]string, len(batch)),
 		AbortReasons:      make([]string, len(batch)),
 	}
@@ -109,20 +105,10 @@ func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocatio
 			label:  targetCompletedID.Label,
 			aspect: stripParams(targetCompletedID.Aspect),
 		}
-		targetInfo := targetInfoMap[key]
+		targetID := targetInfoMap[key]
 
-		params.TargetIds[i] = int64(targetInfo.targetID)
-
+		params.TargetIds[i] = int64(targetID)
 		params.ConfigurationIds[i] = targetCompletedID.GetConfiguration().GetId()
-
-		// TODO: This logic is really bothersome, maybe we should just
-		// remove it completely and/or fetch it from the profile or
-		// something.
-		if isRealTime && !targetInfo.startTime.IsZero() {
-			params.StartTimes[i] = targetInfo.startTime.UnixMilli()
-			params.EndTimes[i] = x.AddedAt.UnixMilli()
-			params.Durations[i] = x.AddedAt.Sub(targetInfo.startTime).Milliseconds()
-		}
 
 		params.Successes[i] = false
 		if targetCompleted != nil {
@@ -155,7 +141,7 @@ func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocatio
 	return nil
 }
 
-func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo, targetInfoMap map[invocationTargetKey]completedTargetInfo) error {
+func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo, targetInfoMap map[invocationTargetKey]int) error {
 	params := sqlc.CreateTestSummariesBulkParams{
 		BazelInvocationID: int64(r.InvocationDbID),
 		InstanceNameID:    int64(r.InstanceNameDbID),
@@ -179,8 +165,8 @@ func (r *buildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx 
 					label:  targetCompletedID.Label,
 					aspect: stripParams(targetCompletedID.Aspect),
 				}
-				if targetInfo, ok := targetInfoMap[key]; ok {
-					testTargetIDs = append(testTargetIDs, int64(targetInfo.targetID))
+				if targetID, ok := targetInfoMap[key]; ok {
+					testTargetIDs = append(testTargetIDs, int64(targetID))
 				}
 
 				if targetCompletedID.Aspect != "" {
@@ -221,14 +207,9 @@ type invocationTargetKey struct {
 	label  string
 }
 
-type completedTargetInfo struct {
-	targetID  int
-	startTime time.Time
-}
-
-// resolveTargetInfo fetches TargetID and StartTimeInMs from the database
-// by joining TargetKindMapping with Target.
-func (r *buildEventRecorder) resolveTargetInfo(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) (map[invocationTargetKey]completedTargetInfo, error) {
+// resolveTargetInfo fetches TargetID from the database by joining
+// TargetKindMapping with Target.
+func (r *buildEventRecorder) resolveTargetInfo(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) (map[invocationTargetKey]int, error) {
 	// Deduplicate keys, this logic should not be required as each
 	// completed event should refer back to a single configured event.
 	keys := make([]invocationTargetKey, 0, len(batch))
@@ -262,19 +243,11 @@ func (r *buildEventRecorder) resolveTargetInfo(ctx context.Context, tx database.
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to query target info")
 	}
-	result := make(map[invocationTargetKey]completedTargetInfo, len(keys))
+	result := make(map[invocationTargetKey]int, len(keys))
 
 	for _, row := range mappedRows {
-		var startTime int64
-		if row.StartTimeInMs.Valid {
-			startTime = row.StartTimeInMs.Int64
-		}
 		key := invocationTargetKey{label: row.Label, aspect: row.Aspect}
-		value := completedTargetInfo{
-			targetID:  int(row.TargetID),
-			startTime: time.Unix(startTime/1000, (startTime%1000)*1_000_000),
-		}
-		result[key] = value
+		result[key] = int(row.TargetID)
 	}
 
 	for _, k := range keys {

@@ -25,133 +25,133 @@ type ConfigurationCreate struct {
 }
 
 // SetConfigurationID sets the "configuration_id" field.
-func (cc *ConfigurationCreate) SetConfigurationID(s string) *ConfigurationCreate {
-	cc.mutation.SetConfigurationID(s)
-	return cc
+func (_c *ConfigurationCreate) SetConfigurationID(v string) *ConfigurationCreate {
+	_c.mutation.SetConfigurationID(v)
+	return _c
 }
 
 // SetMnemonic sets the "mnemonic" field.
-func (cc *ConfigurationCreate) SetMnemonic(s string) *ConfigurationCreate {
-	cc.mutation.SetMnemonic(s)
-	return cc
+func (_c *ConfigurationCreate) SetMnemonic(v string) *ConfigurationCreate {
+	_c.mutation.SetMnemonic(v)
+	return _c
 }
 
 // SetNillableMnemonic sets the "mnemonic" field if the given value is not nil.
-func (cc *ConfigurationCreate) SetNillableMnemonic(s *string) *ConfigurationCreate {
-	if s != nil {
-		cc.SetMnemonic(*s)
+func (_c *ConfigurationCreate) SetNillableMnemonic(v *string) *ConfigurationCreate {
+	if v != nil {
+		_c.SetMnemonic(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetPlatformName sets the "platform_name" field.
-func (cc *ConfigurationCreate) SetPlatformName(s string) *ConfigurationCreate {
-	cc.mutation.SetPlatformName(s)
-	return cc
+func (_c *ConfigurationCreate) SetPlatformName(v string) *ConfigurationCreate {
+	_c.mutation.SetPlatformName(v)
+	return _c
 }
 
 // SetNillablePlatformName sets the "platform_name" field if the given value is not nil.
-func (cc *ConfigurationCreate) SetNillablePlatformName(s *string) *ConfigurationCreate {
-	if s != nil {
-		cc.SetPlatformName(*s)
+func (_c *ConfigurationCreate) SetNillablePlatformName(v *string) *ConfigurationCreate {
+	if v != nil {
+		_c.SetPlatformName(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetCPU sets the "cpu" field.
-func (cc *ConfigurationCreate) SetCPU(s string) *ConfigurationCreate {
-	cc.mutation.SetCPU(s)
-	return cc
+func (_c *ConfigurationCreate) SetCPU(v string) *ConfigurationCreate {
+	_c.mutation.SetCPU(v)
+	return _c
 }
 
 // SetNillableCPU sets the "cpu" field if the given value is not nil.
-func (cc *ConfigurationCreate) SetNillableCPU(s *string) *ConfigurationCreate {
-	if s != nil {
-		cc.SetCPU(*s)
+func (_c *ConfigurationCreate) SetNillableCPU(v *string) *ConfigurationCreate {
+	if v != nil {
+		_c.SetCPU(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetMakeVariables sets the "make_variables" field.
-func (cc *ConfigurationCreate) SetMakeVariables(m map[string]string) *ConfigurationCreate {
-	cc.mutation.SetMakeVariables(m)
-	return cc
+func (_c *ConfigurationCreate) SetMakeVariables(v map[string]string) *ConfigurationCreate {
+	_c.mutation.SetMakeVariables(v)
+	return _c
 }
 
 // SetIsTool sets the "is_tool" field.
-func (cc *ConfigurationCreate) SetIsTool(b bool) *ConfigurationCreate {
-	cc.mutation.SetIsTool(b)
-	return cc
+func (_c *ConfigurationCreate) SetIsTool(v bool) *ConfigurationCreate {
+	_c.mutation.SetIsTool(v)
+	return _c
 }
 
 // SetNillableIsTool sets the "is_tool" field if the given value is not nil.
-func (cc *ConfigurationCreate) SetNillableIsTool(b *bool) *ConfigurationCreate {
-	if b != nil {
-		cc.SetIsTool(*b)
+func (_c *ConfigurationCreate) SetNillableIsTool(v *bool) *ConfigurationCreate {
+	if v != nil {
+		_c.SetIsTool(*v)
 	}
-	return cc
+	return _c
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (cc *ConfigurationCreate) SetBazelInvocationID(i int64) *ConfigurationCreate {
-	cc.mutation.SetBazelInvocationID(i)
-	return cc
+func (_c *ConfigurationCreate) SetBazelInvocationID(v int64) *ConfigurationCreate {
+	_c.mutation.SetBazelInvocationID(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (cc *ConfigurationCreate) SetID(i int64) *ConfigurationCreate {
-	cc.mutation.SetID(i)
-	return cc
+func (_c *ConfigurationCreate) SetID(v int64) *ConfigurationCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (cc *ConfigurationCreate) SetBazelInvocation(b *BazelInvocation) *ConfigurationCreate {
-	return cc.SetBazelInvocationID(b.ID)
+func (_c *ConfigurationCreate) SetBazelInvocation(v *BazelInvocation) *ConfigurationCreate {
+	return _c.SetBazelInvocationID(v.ID)
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (cc *ConfigurationCreate) AddInvocationTargetIDs(ids ...int64) *ConfigurationCreate {
-	cc.mutation.AddInvocationTargetIDs(ids...)
-	return cc
+func (_c *ConfigurationCreate) AddInvocationTargetIDs(ids ...int64) *ConfigurationCreate {
+	_c.mutation.AddInvocationTargetIDs(ids...)
+	return _c
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
-func (cc *ConfigurationCreate) AddInvocationTargets(i ...*InvocationTarget) *ConfigurationCreate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_c *ConfigurationCreate) AddInvocationTargets(v ...*InvocationTarget) *ConfigurationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cc.AddInvocationTargetIDs(ids...)
+	return _c.AddInvocationTargetIDs(ids...)
 }
 
 // AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (cc *ConfigurationCreate) AddActionIDs(ids ...int64) *ConfigurationCreate {
-	cc.mutation.AddActionIDs(ids...)
-	return cc
+func (_c *ConfigurationCreate) AddActionIDs(ids ...int64) *ConfigurationCreate {
+	_c.mutation.AddActionIDs(ids...)
+	return _c
 }
 
 // AddActions adds the "actions" edges to the Action entity.
-func (cc *ConfigurationCreate) AddActions(a ...*Action) *ConfigurationCreate {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *ConfigurationCreate) AddActions(v ...*Action) *ConfigurationCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cc.AddActionIDs(ids...)
+	return _c.AddActionIDs(ids...)
 }
 
 // Mutation returns the ConfigurationMutation object of the builder.
-func (cc *ConfigurationCreate) Mutation() *ConfigurationMutation {
-	return cc.mutation
+func (_c *ConfigurationCreate) Mutation() *ConfigurationMutation {
+	return _c.mutation
 }
 
 // Save creates the Configuration in the database.
-func (cc *ConfigurationCreate) Save(ctx context.Context) (*Configuration, error) {
-	return withHooks(ctx, cc.sqlSave, cc.mutation, cc.hooks)
+func (_c *ConfigurationCreate) Save(ctx context.Context) (*Configuration, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (cc *ConfigurationCreate) SaveX(ctx context.Context) *Configuration {
-	v, err := cc.Save(ctx)
+func (_c *ConfigurationCreate) SaveX(ctx context.Context) *Configuration {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -159,38 +159,38 @@ func (cc *ConfigurationCreate) SaveX(ctx context.Context) *Configuration {
 }
 
 // Exec executes the query.
-func (cc *ConfigurationCreate) Exec(ctx context.Context) error {
-	_, err := cc.Save(ctx)
+func (_c *ConfigurationCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cc *ConfigurationCreate) ExecX(ctx context.Context) {
-	if err := cc.Exec(ctx); err != nil {
+func (_c *ConfigurationCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cc *ConfigurationCreate) check() error {
-	if _, ok := cc.mutation.ConfigurationID(); !ok {
+func (_c *ConfigurationCreate) check() error {
+	if _, ok := _c.mutation.ConfigurationID(); !ok {
 		return &ValidationError{Name: "configuration_id", err: errors.New(`ent: missing required field "Configuration.configuration_id"`)}
 	}
-	if _, ok := cc.mutation.BazelInvocationID(); !ok {
+	if _, ok := _c.mutation.BazelInvocationID(); !ok {
 		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "Configuration.bazel_invocation_id"`)}
 	}
-	if len(cc.mutation.BazelInvocationIDs()) == 0 {
+	if len(_c.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "Configuration.bazel_invocation"`)}
 	}
 	return nil
 }
 
-func (cc *ConfigurationCreate) sqlSave(ctx context.Context) (*Configuration, error) {
-	if err := cc.check(); err != nil {
+func (_c *ConfigurationCreate) sqlSave(ctx context.Context) (*Configuration, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := cc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, cc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -200,46 +200,46 @@ func (cc *ConfigurationCreate) sqlSave(ctx context.Context) (*Configuration, err
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	cc.mutation.id = &_node.ID
-	cc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (cc *ConfigurationCreate) createSpec() (*Configuration, *sqlgraph.CreateSpec) {
+func (_c *ConfigurationCreate) createSpec() (*Configuration, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Configuration{config: cc.config}
+		_node = &Configuration{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(configuration.Table, sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = cc.conflict
-	if id, ok := cc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := cc.mutation.ConfigurationID(); ok {
+	if value, ok := _c.mutation.ConfigurationID(); ok {
 		_spec.SetField(configuration.FieldConfigurationID, field.TypeString, value)
 		_node.ConfigurationID = value
 	}
-	if value, ok := cc.mutation.Mnemonic(); ok {
+	if value, ok := _c.mutation.Mnemonic(); ok {
 		_spec.SetField(configuration.FieldMnemonic, field.TypeString, value)
 		_node.Mnemonic = value
 	}
-	if value, ok := cc.mutation.PlatformName(); ok {
+	if value, ok := _c.mutation.PlatformName(); ok {
 		_spec.SetField(configuration.FieldPlatformName, field.TypeString, value)
 		_node.PlatformName = value
 	}
-	if value, ok := cc.mutation.CPU(); ok {
+	if value, ok := _c.mutation.CPU(); ok {
 		_spec.SetField(configuration.FieldCPU, field.TypeString, value)
 		_node.CPU = value
 	}
-	if value, ok := cc.mutation.MakeVariables(); ok {
+	if value, ok := _c.mutation.MakeVariables(); ok {
 		_spec.SetField(configuration.FieldMakeVariables, field.TypeJSON, value)
 		_node.MakeVariables = value
 	}
-	if value, ok := cc.mutation.IsTool(); ok {
+	if value, ok := _c.mutation.IsTool(); ok {
 		_spec.SetField(configuration.FieldIsTool, field.TypeBool, value)
 		_node.IsTool = value
 	}
-	if nodes := cc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -256,7 +256,7 @@ func (cc *ConfigurationCreate) createSpec() (*Configuration, *sqlgraph.CreateSpe
 		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := cc.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -272,7 +272,7 @@ func (cc *ConfigurationCreate) createSpec() (*Configuration, *sqlgraph.CreateSpe
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := cc.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -307,10 +307,10 @@ func (cc *ConfigurationCreate) createSpec() (*Configuration, *sqlgraph.CreateSpe
 //			SetConfigurationID(v+v).
 //		}).
 //		Exec(ctx)
-func (cc *ConfigurationCreate) OnConflict(opts ...sql.ConflictOption) *ConfigurationUpsertOne {
-	cc.conflict = opts
+func (_c *ConfigurationCreate) OnConflict(opts ...sql.ConflictOption) *ConfigurationUpsertOne {
+	_c.conflict = opts
 	return &ConfigurationUpsertOne{
-		create: cc,
+		create: _c,
 	}
 }
 
@@ -320,10 +320,10 @@ func (cc *ConfigurationCreate) OnConflict(opts ...sql.ConflictOption) *Configura
 //	client.Configuration.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (cc *ConfigurationCreate) OnConflictColumns(columns ...string) *ConfigurationUpsertOne {
-	cc.conflict = append(cc.conflict, sql.ConflictColumns(columns...))
+func (_c *ConfigurationCreate) OnConflictColumns(columns ...string) *ConfigurationUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ConfigurationUpsertOne{
-		create: cc,
+		create: _c,
 	}
 }
 
@@ -631,16 +631,16 @@ type ConfigurationCreateBulk struct {
 }
 
 // Save creates the Configuration entities in the database.
-func (ccb *ConfigurationCreateBulk) Save(ctx context.Context) ([]*Configuration, error) {
-	if ccb.err != nil {
-		return nil, ccb.err
+func (_c *ConfigurationCreateBulk) Save(ctx context.Context) ([]*Configuration, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ccb.builders))
-	nodes := make([]*Configuration, len(ccb.builders))
-	mutators := make([]Mutator, len(ccb.builders))
-	for i := range ccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Configuration, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ccb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ConfigurationMutation)
 				if !ok {
@@ -653,12 +653,12 @@ func (ccb *ConfigurationCreateBulk) Save(ctx context.Context) ([]*Configuration,
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -682,7 +682,7 @@ func (ccb *ConfigurationCreateBulk) Save(ctx context.Context) ([]*Configuration,
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -690,8 +690,8 @@ func (ccb *ConfigurationCreateBulk) Save(ctx context.Context) ([]*Configuration,
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ccb *ConfigurationCreateBulk) SaveX(ctx context.Context) []*Configuration {
-	v, err := ccb.Save(ctx)
+func (_c *ConfigurationCreateBulk) SaveX(ctx context.Context) []*Configuration {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -699,14 +699,14 @@ func (ccb *ConfigurationCreateBulk) SaveX(ctx context.Context) []*Configuration 
 }
 
 // Exec executes the query.
-func (ccb *ConfigurationCreateBulk) Exec(ctx context.Context) error {
-	_, err := ccb.Save(ctx)
+func (_c *ConfigurationCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ccb *ConfigurationCreateBulk) ExecX(ctx context.Context) {
-	if err := ccb.Exec(ctx); err != nil {
+func (_c *ConfigurationCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -726,10 +726,10 @@ func (ccb *ConfigurationCreateBulk) ExecX(ctx context.Context) {
 //			SetConfigurationID(v+v).
 //		}).
 //		Exec(ctx)
-func (ccb *ConfigurationCreateBulk) OnConflict(opts ...sql.ConflictOption) *ConfigurationUpsertBulk {
-	ccb.conflict = opts
+func (_c *ConfigurationCreateBulk) OnConflict(opts ...sql.ConflictOption) *ConfigurationUpsertBulk {
+	_c.conflict = opts
 	return &ConfigurationUpsertBulk{
-		create: ccb,
+		create: _c,
 	}
 }
 
@@ -739,10 +739,10 @@ func (ccb *ConfigurationCreateBulk) OnConflict(opts ...sql.ConflictOption) *Conf
 //	client.Configuration.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ccb *ConfigurationCreateBulk) OnConflictColumns(columns ...string) *ConfigurationUpsertBulk {
-	ccb.conflict = append(ccb.conflict, sql.ConflictColumns(columns...))
+func (_c *ConfigurationCreateBulk) OnConflictColumns(columns ...string) *ConfigurationUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ConfigurationUpsertBulk{
-		create: ccb,
+		create: _c,
 	}
 }
 

@@ -1,0 +1,36 @@
+{
+  "getBazelInvocation": {
+    "bazelVersion": "8.1.1",
+    "configurations": [],
+    "connectionMetadata": null,
+    "endedAt": "2026-02-04T08:41:31.302Z",
+    "exitCodeName": "SUCCESS",
+    "hostname": "3280a8b94607",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjY=",
+    "instanceName": {
+      "id": "SW5zdGFuY2VOYW1lOjE=",
+      "name": ""
+    },
+    "invocationID": "bb2b45d9-d695-4194-8fdc-01ba50477a92",
+    "numFetches": 1,
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "analyze",
+          "value": "0"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "noanalyze.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    },
+    "startedAt": "2026-02-04T08:41:30.06Z"
+  }
+}

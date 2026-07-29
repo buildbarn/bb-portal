@@ -23,47 +23,47 @@ type BuildTagCreate struct {
 }
 
 // SetBuildID sets the "build_id" field.
-func (btc *BuildTagCreate) SetBuildID(i int64) *BuildTagCreate {
-	btc.mutation.SetBuildID(i)
-	return btc
+func (_c *BuildTagCreate) SetBuildID(v int64) *BuildTagCreate {
+	_c.mutation.SetBuildID(v)
+	return _c
 }
 
 // SetKey sets the "key" field.
-func (btc *BuildTagCreate) SetKey(s string) *BuildTagCreate {
-	btc.mutation.SetKey(s)
-	return btc
+func (_c *BuildTagCreate) SetKey(v string) *BuildTagCreate {
+	_c.mutation.SetKey(v)
+	return _c
 }
 
 // SetValue sets the "value" field.
-func (btc *BuildTagCreate) SetValue(s string) *BuildTagCreate {
-	btc.mutation.SetValue(s)
-	return btc
+func (_c *BuildTagCreate) SetValue(v string) *BuildTagCreate {
+	_c.mutation.SetValue(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (btc *BuildTagCreate) SetID(i int64) *BuildTagCreate {
-	btc.mutation.SetID(i)
-	return btc
+func (_c *BuildTagCreate) SetID(v int64) *BuildTagCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBuild sets the "build" edge to the Build entity.
-func (btc *BuildTagCreate) SetBuild(b *Build) *BuildTagCreate {
-	return btc.SetBuildID(b.ID)
+func (_c *BuildTagCreate) SetBuild(v *Build) *BuildTagCreate {
+	return _c.SetBuildID(v.ID)
 }
 
 // Mutation returns the BuildTagMutation object of the builder.
-func (btc *BuildTagCreate) Mutation() *BuildTagMutation {
-	return btc.mutation
+func (_c *BuildTagCreate) Mutation() *BuildTagMutation {
+	return _c.mutation
 }
 
 // Save creates the BuildTag in the database.
-func (btc *BuildTagCreate) Save(ctx context.Context) (*BuildTag, error) {
-	return withHooks(ctx, btc.sqlSave, btc.mutation, btc.hooks)
+func (_c *BuildTagCreate) Save(ctx context.Context) (*BuildTag, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (btc *BuildTagCreate) SaveX(ctx context.Context) *BuildTag {
-	v, err := btc.Save(ctx)
+func (_c *BuildTagCreate) SaveX(ctx context.Context) *BuildTag {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -71,41 +71,41 @@ func (btc *BuildTagCreate) SaveX(ctx context.Context) *BuildTag {
 }
 
 // Exec executes the query.
-func (btc *BuildTagCreate) Exec(ctx context.Context) error {
-	_, err := btc.Save(ctx)
+func (_c *BuildTagCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (btc *BuildTagCreate) ExecX(ctx context.Context) {
-	if err := btc.Exec(ctx); err != nil {
+func (_c *BuildTagCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (btc *BuildTagCreate) check() error {
-	if _, ok := btc.mutation.BuildID(); !ok {
+func (_c *BuildTagCreate) check() error {
+	if _, ok := _c.mutation.BuildID(); !ok {
 		return &ValidationError{Name: "build_id", err: errors.New(`ent: missing required field "BuildTag.build_id"`)}
 	}
-	if _, ok := btc.mutation.Key(); !ok {
+	if _, ok := _c.mutation.Key(); !ok {
 		return &ValidationError{Name: "key", err: errors.New(`ent: missing required field "BuildTag.key"`)}
 	}
-	if _, ok := btc.mutation.Value(); !ok {
+	if _, ok := _c.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "BuildTag.value"`)}
 	}
-	if len(btc.mutation.BuildIDs()) == 0 {
+	if len(_c.mutation.BuildIDs()) == 0 {
 		return &ValidationError{Name: "build", err: errors.New(`ent: missing required edge "BuildTag.build"`)}
 	}
 	return nil
 }
 
-func (btc *BuildTagCreate) sqlSave(ctx context.Context) (*BuildTag, error) {
-	if err := btc.check(); err != nil {
+func (_c *BuildTagCreate) sqlSave(ctx context.Context) (*BuildTag, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := btc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, btc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -115,30 +115,30 @@ func (btc *BuildTagCreate) sqlSave(ctx context.Context) (*BuildTag, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	btc.mutation.id = &_node.ID
-	btc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (btc *BuildTagCreate) createSpec() (*BuildTag, *sqlgraph.CreateSpec) {
+func (_c *BuildTagCreate) createSpec() (*BuildTag, *sqlgraph.CreateSpec) {
 	var (
-		_node = &BuildTag{config: btc.config}
+		_node = &BuildTag{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(buildtag.Table, sqlgraph.NewFieldSpec(buildtag.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = btc.conflict
-	if id, ok := btc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := btc.mutation.Key(); ok {
+	if value, ok := _c.mutation.Key(); ok {
 		_spec.SetField(buildtag.FieldKey, field.TypeString, value)
 		_node.Key = value
 	}
-	if value, ok := btc.mutation.Value(); ok {
+	if value, ok := _c.mutation.Value(); ok {
 		_spec.SetField(buildtag.FieldValue, field.TypeString, value)
 		_node.Value = value
 	}
-	if nodes := btc.mutation.BuildIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BuildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -174,10 +174,10 @@ func (btc *BuildTagCreate) createSpec() (*BuildTag, *sqlgraph.CreateSpec) {
 //			SetBuildID(v+v).
 //		}).
 //		Exec(ctx)
-func (btc *BuildTagCreate) OnConflict(opts ...sql.ConflictOption) *BuildTagUpsertOne {
-	btc.conflict = opts
+func (_c *BuildTagCreate) OnConflict(opts ...sql.ConflictOption) *BuildTagUpsertOne {
+	_c.conflict = opts
 	return &BuildTagUpsertOne{
-		create: btc,
+		create: _c,
 	}
 }
 
@@ -187,10 +187,10 @@ func (btc *BuildTagCreate) OnConflict(opts ...sql.ConflictOption) *BuildTagUpser
 //	client.BuildTag.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (btc *BuildTagCreate) OnConflictColumns(columns ...string) *BuildTagUpsertOne {
-	btc.conflict = append(btc.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildTagCreate) OnConflictColumns(columns ...string) *BuildTagUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildTagUpsertOne{
-		create: btc,
+		create: _c,
 	}
 }
 
@@ -306,16 +306,16 @@ type BuildTagCreateBulk struct {
 }
 
 // Save creates the BuildTag entities in the database.
-func (btcb *BuildTagCreateBulk) Save(ctx context.Context) ([]*BuildTag, error) {
-	if btcb.err != nil {
-		return nil, btcb.err
+func (_c *BuildTagCreateBulk) Save(ctx context.Context) ([]*BuildTag, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(btcb.builders))
-	nodes := make([]*BuildTag, len(btcb.builders))
-	mutators := make([]Mutator, len(btcb.builders))
-	for i := range btcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*BuildTag, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := btcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*BuildTagMutation)
 				if !ok {
@@ -328,12 +328,12 @@ func (btcb *BuildTagCreateBulk) Save(ctx context.Context) ([]*BuildTag, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, btcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = btcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, btcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -357,7 +357,7 @@ func (btcb *BuildTagCreateBulk) Save(ctx context.Context) ([]*BuildTag, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, btcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -365,8 +365,8 @@ func (btcb *BuildTagCreateBulk) Save(ctx context.Context) ([]*BuildTag, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (btcb *BuildTagCreateBulk) SaveX(ctx context.Context) []*BuildTag {
-	v, err := btcb.Save(ctx)
+func (_c *BuildTagCreateBulk) SaveX(ctx context.Context) []*BuildTag {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -374,14 +374,14 @@ func (btcb *BuildTagCreateBulk) SaveX(ctx context.Context) []*BuildTag {
 }
 
 // Exec executes the query.
-func (btcb *BuildTagCreateBulk) Exec(ctx context.Context) error {
-	_, err := btcb.Save(ctx)
+func (_c *BuildTagCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (btcb *BuildTagCreateBulk) ExecX(ctx context.Context) {
-	if err := btcb.Exec(ctx); err != nil {
+func (_c *BuildTagCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -401,10 +401,10 @@ func (btcb *BuildTagCreateBulk) ExecX(ctx context.Context) {
 //			SetBuildID(v+v).
 //		}).
 //		Exec(ctx)
-func (btcb *BuildTagCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildTagUpsertBulk {
-	btcb.conflict = opts
+func (_c *BuildTagCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildTagUpsertBulk {
+	_c.conflict = opts
 	return &BuildTagUpsertBulk{
-		create: btcb,
+		create: _c,
 	}
 }
 
@@ -414,10 +414,10 @@ func (btcb *BuildTagCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildTag
 //	client.BuildTag.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (btcb *BuildTagCreateBulk) OnConflictColumns(columns ...string) *BuildTagUpsertBulk {
-	btcb.conflict = append(btcb.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildTagCreateBulk) OnConflictColumns(columns ...string) *BuildTagUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildTagUpsertBulk{
-		create: btcb,
+		create: _c,
 	}
 }
 

@@ -1,78 +1,16 @@
-import { WarningOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import { Button, Descriptions, Flex, Space, Tooltip, Typography } from "antd";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
-import type { BazelInvocationInfoFragment } from "@/graphql/__generated__/graphql";
-import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
-import { fetchCasObject } from "@/utils/fetchCasObject";
-import LogViewer from "../LogViewer";
-
-export type ActionDetailsData = NonNullable<
-  BazelInvocationInfoFragment["actions"]
->[number];
-
-const fetchLog = async (
-  casByteStreamClient: ByteStreamClient,
-  instanceName: string,
-  digestFunction: string | undefined | null,
-  digest: string | undefined | null,
-  sizeBytes: number | undefined | null,
-): Promise<string | undefined> => {
-  if (!digest || !sizeBytes || !digestFunction) {
-    return undefined;
-  }
-
-  const data = await fetchCasObject(
-    casByteStreamClient,
-    instanceName,
-    digestFunction_ValueFromJSON(digestFunction.toUpperCase()),
-    {
-      hash: digest,
-      sizeBytes: sizeBytes.toString(),
-    },
-  );
-  return new TextDecoder().decode(data);
-};
+import { Descriptions, Flex, Space } from "antd";
+import { getFragmentData } from "@/graphql/__generated__";
+import type { BazelInvocationActionsFragment } from "@/graphql/__generated__/graphql";
+import { FILE_DETAILS_FRAGMENT } from "@/types/GraphqlFileFragment";
+import { CasGqlFileViewer } from "../LogViewer/casGqlFileViewer";
 
 interface Props {
-  instanceName: string;
-  action: ActionDetailsData;
+  action: BazelInvocationActionsFragment;
 }
 
-export const ActionDetails: React.FC<Props> = ({ instanceName, action }) => {
-  const { casByteStreamClient } = useGrpcClients();
-
-  const { data } = useQuery({
-    queryKey: ["actionLogs", action.id],
-    queryFn: async () => {
-      const stdoutPromise = fetchLog(
-        casByteStreamClient,
-        instanceName,
-        action.stdoutHashFunction,
-        action.stdoutHash,
-        action.stdoutSizeBytes,
-      );
-      const stderrPromise = fetchLog(
-        casByteStreamClient,
-        instanceName,
-        action.stderrHashFunction,
-        action.stderrHash,
-        action.stderrSizeBytes,
-      );
-      const [stdout, stderr] = await Promise.all([
-        stdoutPromise,
-        stderrPromise,
-      ]);
-
-      // Regex to match historical_execute_response URLs
-      const re =
-        /https?:\/\/[-a-zA-Z0-9.]{1,256}(:[0-9]+)?[-a-zA-Z0-9()@:%_+.~#?&/=]*\/blobs\/[a-zA-Z0-9]{0,20}\/historical_execute_response\/[0-9a-f]{64}-[0-9]*\//;
-      const historicalUrl = stdout?.match(re)?.[0] || stderr?.match(re)?.[0];
-
-      return { stdout, stderr, historicalUrl };
-    },
-  });
+export const ActionDetails: React.FC<Props> = ({ action }) => {
+  const stdoutFile = getFragmentData(FILE_DETAILS_FRAGMENT, action.stdout);
+  const stderrFile = getFragmentData(FILE_DETAILS_FRAGMENT, action.stderr);
 
   return (
     <Space direction="vertical" size="middle" style={{ width: "100%" }}>
@@ -151,37 +89,19 @@ export const ActionDetails: React.FC<Props> = ({ instanceName, action }) => {
             </Descriptions.Item>
           )}
       </Descriptions>
-      {data?.stdout && (
-        <Space size="small" direction="vertical" style={{ width: "100%" }}>
-          <Typography.Title level={4}>Standard output:</Typography.Title>
-          <LogViewer log={data.stdout} />
-        </Space>
+      {stdoutFile && (
+        <CasGqlFileViewer
+          file={stdoutFile}
+          title="Standard output"
+          fileName="standard_output.txt"
+        />
       )}
-      {data?.stderr && (
-        <Space size="small" direction="vertical" style={{ width: "100%" }}>
-          <Typography.Title level={4}>Standard error:</Typography.Title>
-          <LogViewer log={data.stderr} />
-        </Space>
-      )}
-      {data?.historicalUrl && (
-        <Space
-          size="small"
-          direction="vertical"
-          style={{ width: "100%" }}
-          align="end"
-        >
-          <Tooltip title="This URL was extracted from the action's stdout or stderr, so there are no guarantees that it is correct. It points to a historical execute response stored in the CAS.">
-            <Button
-              type="primary"
-              href={data.historicalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View Historical Execute Response
-              <WarningOutlined />
-            </Button>
-          </Tooltip>
-        </Space>
+      {stderrFile && (
+        <CasGqlFileViewer
+          file={stderrFile}
+          title="Standard error"
+          fileName="standard_error.txt"
+        />
       )}
     </Space>
   );

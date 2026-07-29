@@ -12,6 +12,17 @@ type Action func(*sql.Selector)
 // ActionCacheStatistics is the predicate function for actioncachestatistics builders.
 type ActionCacheStatistics func(*sql.Selector)
 
+// ActionCacheStatisticsOrErr calls the predicate only if the error is not nit.
+func ActionCacheStatisticsOrErr(p ActionCacheStatistics, err error) ActionCacheStatistics {
+	return func(s *sql.Selector) {
+		if err != nil {
+			s.AddError(err)
+			return
+		}
+		p(s)
+	}
+}
+
 // ActionData is the predicate function for actiondata builders.
 type ActionData func(*sql.Selector)
 
@@ -45,8 +56,17 @@ type Configuration func(*sql.Selector)
 // ConnectionMetadata is the predicate function for connectionmetadata builders.
 type ConnectionMetadata func(*sql.Selector)
 
+// Digest is the predicate function for digest builders.
+type Digest func(*sql.Selector)
+
 // EventMetadata is the predicate function for eventmetadata builders.
 type EventMetadata func(*sql.Selector)
+
+// File is the predicate function for file builders.
+type File func(*sql.Selector)
+
+// FilePath is the predicate function for filepath builders.
+type FilePath func(*sql.Selector)
 
 // GarbageMetrics is the predicate function for garbagemetrics builders.
 type GarbageMetrics func(*sql.Selector)
@@ -56,9 +76,6 @@ type IncompleteBuildLog func(*sql.Selector)
 
 // InstanceName is the predicate function for instancename builders.
 type InstanceName func(*sql.Selector)
-
-// InvocationFiles is the predicate function for invocationfiles builders.
-type InvocationFiles func(*sql.Selector)
 
 // InvocationTag is the predicate function for invocationtag builders.
 type InvocationTag func(*sql.Selector)
@@ -87,6 +104,17 @@ type SourceControl func(*sql.Selector)
 // SystemNetworkStats is the predicate function for systemnetworkstats builders.
 type SystemNetworkStats func(*sql.Selector)
 
+// SystemNetworkStatsOrErr calls the predicate only if the error is not nit.
+func SystemNetworkStatsOrErr(p SystemNetworkStats, err error) SystemNetworkStats {
+	return func(s *sql.Selector) {
+		if err != nil {
+			s.AddError(err)
+			return
+		}
+		p(s)
+	}
+}
+
 // Target is the predicate function for target builders.
 type Target func(*sql.Selector)
 
@@ -95,6 +123,9 @@ type TargetKindMapping func(*sql.Selector)
 
 // TargetMetrics is the predicate function for targetmetrics builders.
 type TargetMetrics func(*sql.Selector)
+
+// TestActionOutput is the predicate function for testactionoutput builders.
+type TestActionOutput func(*sql.Selector)
 
 // TestResult is the predicate function for testresult builders.
 type TestResult func(*sql.Selector)

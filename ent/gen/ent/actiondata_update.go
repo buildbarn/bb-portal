@@ -23,231 +23,231 @@ type ActionDataUpdate struct {
 }
 
 // Where appends a list predicates to the ActionDataUpdate builder.
-func (adu *ActionDataUpdate) Where(ps ...predicate.ActionData) *ActionDataUpdate {
-	adu.mutation.Where(ps...)
-	return adu
+func (_u *ActionDataUpdate) Where(ps ...predicate.ActionData) *ActionDataUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetMnemonic sets the "mnemonic" field.
-func (adu *ActionDataUpdate) SetMnemonic(s string) *ActionDataUpdate {
-	adu.mutation.SetMnemonic(s)
-	return adu
+func (_u *ActionDataUpdate) SetMnemonic(v string) *ActionDataUpdate {
+	_u.mutation.SetMnemonic(v)
+	return _u
 }
 
 // SetNillableMnemonic sets the "mnemonic" field if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableMnemonic(s *string) *ActionDataUpdate {
-	if s != nil {
-		adu.SetMnemonic(*s)
+func (_u *ActionDataUpdate) SetNillableMnemonic(v *string) *ActionDataUpdate {
+	if v != nil {
+		_u.SetMnemonic(*v)
 	}
-	return adu
+	return _u
 }
 
 // ClearMnemonic clears the value of the "mnemonic" field.
-func (adu *ActionDataUpdate) ClearMnemonic() *ActionDataUpdate {
-	adu.mutation.ClearMnemonic()
-	return adu
+func (_u *ActionDataUpdate) ClearMnemonic() *ActionDataUpdate {
+	_u.mutation.ClearMnemonic()
+	return _u
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (adu *ActionDataUpdate) SetActionsExecuted(i int64) *ActionDataUpdate {
-	adu.mutation.ResetActionsExecuted()
-	adu.mutation.SetActionsExecuted(i)
-	return adu
+func (_u *ActionDataUpdate) SetActionsExecuted(v int64) *ActionDataUpdate {
+	_u.mutation.ResetActionsExecuted()
+	_u.mutation.SetActionsExecuted(v)
+	return _u
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableActionsExecuted(i *int64) *ActionDataUpdate {
-	if i != nil {
-		adu.SetActionsExecuted(*i)
+func (_u *ActionDataUpdate) SetNillableActionsExecuted(v *int64) *ActionDataUpdate {
+	if v != nil {
+		_u.SetActionsExecuted(*v)
 	}
-	return adu
+	return _u
 }
 
-// AddActionsExecuted adds i to the "actions_executed" field.
-func (adu *ActionDataUpdate) AddActionsExecuted(i int64) *ActionDataUpdate {
-	adu.mutation.AddActionsExecuted(i)
-	return adu
+// AddActionsExecuted adds value to the "actions_executed" field.
+func (_u *ActionDataUpdate) AddActionsExecuted(v int64) *ActionDataUpdate {
+	_u.mutation.AddActionsExecuted(v)
+	return _u
 }
 
 // ClearActionsExecuted clears the value of the "actions_executed" field.
-func (adu *ActionDataUpdate) ClearActionsExecuted() *ActionDataUpdate {
-	adu.mutation.ClearActionsExecuted()
-	return adu
+func (_u *ActionDataUpdate) ClearActionsExecuted() *ActionDataUpdate {
+	_u.mutation.ClearActionsExecuted()
+	return _u
 }
 
 // SetActionsCreated sets the "actions_created" field.
-func (adu *ActionDataUpdate) SetActionsCreated(i int64) *ActionDataUpdate {
-	adu.mutation.ResetActionsCreated()
-	adu.mutation.SetActionsCreated(i)
-	return adu
+func (_u *ActionDataUpdate) SetActionsCreated(v int64) *ActionDataUpdate {
+	_u.mutation.ResetActionsCreated()
+	_u.mutation.SetActionsCreated(v)
+	return _u
 }
 
 // SetNillableActionsCreated sets the "actions_created" field if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableActionsCreated(i *int64) *ActionDataUpdate {
-	if i != nil {
-		adu.SetActionsCreated(*i)
+func (_u *ActionDataUpdate) SetNillableActionsCreated(v *int64) *ActionDataUpdate {
+	if v != nil {
+		_u.SetActionsCreated(*v)
 	}
-	return adu
+	return _u
 }
 
-// AddActionsCreated adds i to the "actions_created" field.
-func (adu *ActionDataUpdate) AddActionsCreated(i int64) *ActionDataUpdate {
-	adu.mutation.AddActionsCreated(i)
-	return adu
+// AddActionsCreated adds value to the "actions_created" field.
+func (_u *ActionDataUpdate) AddActionsCreated(v int64) *ActionDataUpdate {
+	_u.mutation.AddActionsCreated(v)
+	return _u
 }
 
 // ClearActionsCreated clears the value of the "actions_created" field.
-func (adu *ActionDataUpdate) ClearActionsCreated() *ActionDataUpdate {
-	adu.mutation.ClearActionsCreated()
-	return adu
+func (_u *ActionDataUpdate) ClearActionsCreated() *ActionDataUpdate {
+	_u.mutation.ClearActionsCreated()
+	return _u
 }
 
 // SetFirstStartedMs sets the "first_started_ms" field.
-func (adu *ActionDataUpdate) SetFirstStartedMs(i int64) *ActionDataUpdate {
-	adu.mutation.ResetFirstStartedMs()
-	adu.mutation.SetFirstStartedMs(i)
-	return adu
+func (_u *ActionDataUpdate) SetFirstStartedMs(v int64) *ActionDataUpdate {
+	_u.mutation.ResetFirstStartedMs()
+	_u.mutation.SetFirstStartedMs(v)
+	return _u
 }
 
 // SetNillableFirstStartedMs sets the "first_started_ms" field if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableFirstStartedMs(i *int64) *ActionDataUpdate {
-	if i != nil {
-		adu.SetFirstStartedMs(*i)
+func (_u *ActionDataUpdate) SetNillableFirstStartedMs(v *int64) *ActionDataUpdate {
+	if v != nil {
+		_u.SetFirstStartedMs(*v)
 	}
-	return adu
+	return _u
 }
 
-// AddFirstStartedMs adds i to the "first_started_ms" field.
-func (adu *ActionDataUpdate) AddFirstStartedMs(i int64) *ActionDataUpdate {
-	adu.mutation.AddFirstStartedMs(i)
-	return adu
+// AddFirstStartedMs adds value to the "first_started_ms" field.
+func (_u *ActionDataUpdate) AddFirstStartedMs(v int64) *ActionDataUpdate {
+	_u.mutation.AddFirstStartedMs(v)
+	return _u
 }
 
 // ClearFirstStartedMs clears the value of the "first_started_ms" field.
-func (adu *ActionDataUpdate) ClearFirstStartedMs() *ActionDataUpdate {
-	adu.mutation.ClearFirstStartedMs()
-	return adu
+func (_u *ActionDataUpdate) ClearFirstStartedMs() *ActionDataUpdate {
+	_u.mutation.ClearFirstStartedMs()
+	return _u
 }
 
 // SetLastEndedMs sets the "last_ended_ms" field.
-func (adu *ActionDataUpdate) SetLastEndedMs(i int64) *ActionDataUpdate {
-	adu.mutation.ResetLastEndedMs()
-	adu.mutation.SetLastEndedMs(i)
-	return adu
+func (_u *ActionDataUpdate) SetLastEndedMs(v int64) *ActionDataUpdate {
+	_u.mutation.ResetLastEndedMs()
+	_u.mutation.SetLastEndedMs(v)
+	return _u
 }
 
 // SetNillableLastEndedMs sets the "last_ended_ms" field if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableLastEndedMs(i *int64) *ActionDataUpdate {
-	if i != nil {
-		adu.SetLastEndedMs(*i)
+func (_u *ActionDataUpdate) SetNillableLastEndedMs(v *int64) *ActionDataUpdate {
+	if v != nil {
+		_u.SetLastEndedMs(*v)
 	}
-	return adu
+	return _u
 }
 
-// AddLastEndedMs adds i to the "last_ended_ms" field.
-func (adu *ActionDataUpdate) AddLastEndedMs(i int64) *ActionDataUpdate {
-	adu.mutation.AddLastEndedMs(i)
-	return adu
+// AddLastEndedMs adds value to the "last_ended_ms" field.
+func (_u *ActionDataUpdate) AddLastEndedMs(v int64) *ActionDataUpdate {
+	_u.mutation.AddLastEndedMs(v)
+	return _u
 }
 
 // ClearLastEndedMs clears the value of the "last_ended_ms" field.
-func (adu *ActionDataUpdate) ClearLastEndedMs() *ActionDataUpdate {
-	adu.mutation.ClearLastEndedMs()
-	return adu
+func (_u *ActionDataUpdate) ClearLastEndedMs() *ActionDataUpdate {
+	_u.mutation.ClearLastEndedMs()
+	return _u
 }
 
 // SetSystemTime sets the "system_time" field.
-func (adu *ActionDataUpdate) SetSystemTime(i int64) *ActionDataUpdate {
-	adu.mutation.ResetSystemTime()
-	adu.mutation.SetSystemTime(i)
-	return adu
+func (_u *ActionDataUpdate) SetSystemTime(v int64) *ActionDataUpdate {
+	_u.mutation.ResetSystemTime()
+	_u.mutation.SetSystemTime(v)
+	return _u
 }
 
 // SetNillableSystemTime sets the "system_time" field if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableSystemTime(i *int64) *ActionDataUpdate {
-	if i != nil {
-		adu.SetSystemTime(*i)
+func (_u *ActionDataUpdate) SetNillableSystemTime(v *int64) *ActionDataUpdate {
+	if v != nil {
+		_u.SetSystemTime(*v)
 	}
-	return adu
+	return _u
 }
 
-// AddSystemTime adds i to the "system_time" field.
-func (adu *ActionDataUpdate) AddSystemTime(i int64) *ActionDataUpdate {
-	adu.mutation.AddSystemTime(i)
-	return adu
+// AddSystemTime adds value to the "system_time" field.
+func (_u *ActionDataUpdate) AddSystemTime(v int64) *ActionDataUpdate {
+	_u.mutation.AddSystemTime(v)
+	return _u
 }
 
 // ClearSystemTime clears the value of the "system_time" field.
-func (adu *ActionDataUpdate) ClearSystemTime() *ActionDataUpdate {
-	adu.mutation.ClearSystemTime()
-	return adu
+func (_u *ActionDataUpdate) ClearSystemTime() *ActionDataUpdate {
+	_u.mutation.ClearSystemTime()
+	return _u
 }
 
 // SetUserTime sets the "user_time" field.
-func (adu *ActionDataUpdate) SetUserTime(i int64) *ActionDataUpdate {
-	adu.mutation.ResetUserTime()
-	adu.mutation.SetUserTime(i)
-	return adu
+func (_u *ActionDataUpdate) SetUserTime(v int64) *ActionDataUpdate {
+	_u.mutation.ResetUserTime()
+	_u.mutation.SetUserTime(v)
+	return _u
 }
 
 // SetNillableUserTime sets the "user_time" field if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableUserTime(i *int64) *ActionDataUpdate {
-	if i != nil {
-		adu.SetUserTime(*i)
+func (_u *ActionDataUpdate) SetNillableUserTime(v *int64) *ActionDataUpdate {
+	if v != nil {
+		_u.SetUserTime(*v)
 	}
-	return adu
+	return _u
 }
 
-// AddUserTime adds i to the "user_time" field.
-func (adu *ActionDataUpdate) AddUserTime(i int64) *ActionDataUpdate {
-	adu.mutation.AddUserTime(i)
-	return adu
+// AddUserTime adds value to the "user_time" field.
+func (_u *ActionDataUpdate) AddUserTime(v int64) *ActionDataUpdate {
+	_u.mutation.AddUserTime(v)
+	return _u
 }
 
 // ClearUserTime clears the value of the "user_time" field.
-func (adu *ActionDataUpdate) ClearUserTime() *ActionDataUpdate {
-	adu.mutation.ClearUserTime()
-	return adu
+func (_u *ActionDataUpdate) ClearUserTime() *ActionDataUpdate {
+	_u.mutation.ClearUserTime()
+	return _u
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (adu *ActionDataUpdate) SetActionSummaryID(id int64) *ActionDataUpdate {
-	adu.mutation.SetActionSummaryID(id)
-	return adu
+func (_u *ActionDataUpdate) SetActionSummaryID(id int64) *ActionDataUpdate {
+	_u.mutation.SetActionSummaryID(id)
+	return _u
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableActionSummaryID(id *int64) *ActionDataUpdate {
+func (_u *ActionDataUpdate) SetNillableActionSummaryID(id *int64) *ActionDataUpdate {
 	if id != nil {
-		adu = adu.SetActionSummaryID(*id)
+		_u = _u.SetActionSummaryID(*id)
 	}
-	return adu
+	return _u
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (adu *ActionDataUpdate) SetActionSummary(a *ActionSummary) *ActionDataUpdate {
-	return adu.SetActionSummaryID(a.ID)
+func (_u *ActionDataUpdate) SetActionSummary(v *ActionSummary) *ActionDataUpdate {
+	return _u.SetActionSummaryID(v.ID)
 }
 
 // Mutation returns the ActionDataMutation object of the builder.
-func (adu *ActionDataUpdate) Mutation() *ActionDataMutation {
-	return adu.mutation
+func (_u *ActionDataUpdate) Mutation() *ActionDataMutation {
+	return _u.mutation
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
-func (adu *ActionDataUpdate) ClearActionSummary() *ActionDataUpdate {
-	adu.mutation.ClearActionSummary()
-	return adu
+func (_u *ActionDataUpdate) ClearActionSummary() *ActionDataUpdate {
+	_u.mutation.ClearActionSummary()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (adu *ActionDataUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, adu.sqlSave, adu.mutation, adu.hooks)
+func (_u *ActionDataUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (adu *ActionDataUpdate) SaveX(ctx context.Context) int {
-	affected, err := adu.Save(ctx)
+func (_u *ActionDataUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -255,88 +255,88 @@ func (adu *ActionDataUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (adu *ActionDataUpdate) Exec(ctx context.Context) error {
-	_, err := adu.Save(ctx)
+func (_u *ActionDataUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (adu *ActionDataUpdate) ExecX(ctx context.Context) {
-	if err := adu.Exec(ctx); err != nil {
+func (_u *ActionDataUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *ActionDataUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
-	if ps := adu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := adu.mutation.Mnemonic(); ok {
+	if value, ok := _u.mutation.Mnemonic(); ok {
 		_spec.SetField(actiondata.FieldMnemonic, field.TypeString, value)
 	}
-	if adu.mutation.MnemonicCleared() {
+	if _u.mutation.MnemonicCleared() {
 		_spec.ClearField(actiondata.FieldMnemonic, field.TypeString)
 	}
-	if value, ok := adu.mutation.ActionsExecuted(); ok {
+	if value, ok := _u.mutation.ActionsExecuted(); ok {
 		_spec.SetField(actiondata.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if value, ok := adu.mutation.AddedActionsExecuted(); ok {
+	if value, ok := _u.mutation.AddedActionsExecuted(); ok {
 		_spec.AddField(actiondata.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if adu.mutation.ActionsExecutedCleared() {
+	if _u.mutation.ActionsExecutedCleared() {
 		_spec.ClearField(actiondata.FieldActionsExecuted, field.TypeInt64)
 	}
-	if value, ok := adu.mutation.ActionsCreated(); ok {
+	if value, ok := _u.mutation.ActionsCreated(); ok {
 		_spec.SetField(actiondata.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if value, ok := adu.mutation.AddedActionsCreated(); ok {
+	if value, ok := _u.mutation.AddedActionsCreated(); ok {
 		_spec.AddField(actiondata.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if adu.mutation.ActionsCreatedCleared() {
+	if _u.mutation.ActionsCreatedCleared() {
 		_spec.ClearField(actiondata.FieldActionsCreated, field.TypeInt64)
 	}
-	if value, ok := adu.mutation.FirstStartedMs(); ok {
+	if value, ok := _u.mutation.FirstStartedMs(); ok {
 		_spec.SetField(actiondata.FieldFirstStartedMs, field.TypeInt64, value)
 	}
-	if value, ok := adu.mutation.AddedFirstStartedMs(); ok {
+	if value, ok := _u.mutation.AddedFirstStartedMs(); ok {
 		_spec.AddField(actiondata.FieldFirstStartedMs, field.TypeInt64, value)
 	}
-	if adu.mutation.FirstStartedMsCleared() {
+	if _u.mutation.FirstStartedMsCleared() {
 		_spec.ClearField(actiondata.FieldFirstStartedMs, field.TypeInt64)
 	}
-	if value, ok := adu.mutation.LastEndedMs(); ok {
+	if value, ok := _u.mutation.LastEndedMs(); ok {
 		_spec.SetField(actiondata.FieldLastEndedMs, field.TypeInt64, value)
 	}
-	if value, ok := adu.mutation.AddedLastEndedMs(); ok {
+	if value, ok := _u.mutation.AddedLastEndedMs(); ok {
 		_spec.AddField(actiondata.FieldLastEndedMs, field.TypeInt64, value)
 	}
-	if adu.mutation.LastEndedMsCleared() {
+	if _u.mutation.LastEndedMsCleared() {
 		_spec.ClearField(actiondata.FieldLastEndedMs, field.TypeInt64)
 	}
-	if value, ok := adu.mutation.SystemTime(); ok {
+	if value, ok := _u.mutation.SystemTime(); ok {
 		_spec.SetField(actiondata.FieldSystemTime, field.TypeInt64, value)
 	}
-	if value, ok := adu.mutation.AddedSystemTime(); ok {
+	if value, ok := _u.mutation.AddedSystemTime(); ok {
 		_spec.AddField(actiondata.FieldSystemTime, field.TypeInt64, value)
 	}
-	if adu.mutation.SystemTimeCleared() {
+	if _u.mutation.SystemTimeCleared() {
 		_spec.ClearField(actiondata.FieldSystemTime, field.TypeInt64)
 	}
-	if value, ok := adu.mutation.UserTime(); ok {
+	if value, ok := _u.mutation.UserTime(); ok {
 		_spec.SetField(actiondata.FieldUserTime, field.TypeInt64, value)
 	}
-	if value, ok := adu.mutation.AddedUserTime(); ok {
+	if value, ok := _u.mutation.AddedUserTime(); ok {
 		_spec.AddField(actiondata.FieldUserTime, field.TypeInt64, value)
 	}
-	if adu.mutation.UserTimeCleared() {
+	if _u.mutation.UserTimeCleared() {
 		_spec.ClearField(actiondata.FieldUserTime, field.TypeInt64)
 	}
-	if adu.mutation.ActionSummaryCleared() {
+	if _u.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -349,7 +349,7 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := adu.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -365,7 +365,7 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, adu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actiondata.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -373,8 +373,8 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	adu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ActionDataUpdateOne is the builder for updating a single ActionData entity.
@@ -386,238 +386,238 @@ type ActionDataUpdateOne struct {
 }
 
 // SetMnemonic sets the "mnemonic" field.
-func (aduo *ActionDataUpdateOne) SetMnemonic(s string) *ActionDataUpdateOne {
-	aduo.mutation.SetMnemonic(s)
-	return aduo
+func (_u *ActionDataUpdateOne) SetMnemonic(v string) *ActionDataUpdateOne {
+	_u.mutation.SetMnemonic(v)
+	return _u
 }
 
 // SetNillableMnemonic sets the "mnemonic" field if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableMnemonic(s *string) *ActionDataUpdateOne {
-	if s != nil {
-		aduo.SetMnemonic(*s)
+func (_u *ActionDataUpdateOne) SetNillableMnemonic(v *string) *ActionDataUpdateOne {
+	if v != nil {
+		_u.SetMnemonic(*v)
 	}
-	return aduo
+	return _u
 }
 
 // ClearMnemonic clears the value of the "mnemonic" field.
-func (aduo *ActionDataUpdateOne) ClearMnemonic() *ActionDataUpdateOne {
-	aduo.mutation.ClearMnemonic()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearMnemonic() *ActionDataUpdateOne {
+	_u.mutation.ClearMnemonic()
+	return _u
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (aduo *ActionDataUpdateOne) SetActionsExecuted(i int64) *ActionDataUpdateOne {
-	aduo.mutation.ResetActionsExecuted()
-	aduo.mutation.SetActionsExecuted(i)
-	return aduo
+func (_u *ActionDataUpdateOne) SetActionsExecuted(v int64) *ActionDataUpdateOne {
+	_u.mutation.ResetActionsExecuted()
+	_u.mutation.SetActionsExecuted(v)
+	return _u
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableActionsExecuted(i *int64) *ActionDataUpdateOne {
-	if i != nil {
-		aduo.SetActionsExecuted(*i)
+func (_u *ActionDataUpdateOne) SetNillableActionsExecuted(v *int64) *ActionDataUpdateOne {
+	if v != nil {
+		_u.SetActionsExecuted(*v)
 	}
-	return aduo
+	return _u
 }
 
-// AddActionsExecuted adds i to the "actions_executed" field.
-func (aduo *ActionDataUpdateOne) AddActionsExecuted(i int64) *ActionDataUpdateOne {
-	aduo.mutation.AddActionsExecuted(i)
-	return aduo
+// AddActionsExecuted adds value to the "actions_executed" field.
+func (_u *ActionDataUpdateOne) AddActionsExecuted(v int64) *ActionDataUpdateOne {
+	_u.mutation.AddActionsExecuted(v)
+	return _u
 }
 
 // ClearActionsExecuted clears the value of the "actions_executed" field.
-func (aduo *ActionDataUpdateOne) ClearActionsExecuted() *ActionDataUpdateOne {
-	aduo.mutation.ClearActionsExecuted()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearActionsExecuted() *ActionDataUpdateOne {
+	_u.mutation.ClearActionsExecuted()
+	return _u
 }
 
 // SetActionsCreated sets the "actions_created" field.
-func (aduo *ActionDataUpdateOne) SetActionsCreated(i int64) *ActionDataUpdateOne {
-	aduo.mutation.ResetActionsCreated()
-	aduo.mutation.SetActionsCreated(i)
-	return aduo
+func (_u *ActionDataUpdateOne) SetActionsCreated(v int64) *ActionDataUpdateOne {
+	_u.mutation.ResetActionsCreated()
+	_u.mutation.SetActionsCreated(v)
+	return _u
 }
 
 // SetNillableActionsCreated sets the "actions_created" field if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableActionsCreated(i *int64) *ActionDataUpdateOne {
-	if i != nil {
-		aduo.SetActionsCreated(*i)
+func (_u *ActionDataUpdateOne) SetNillableActionsCreated(v *int64) *ActionDataUpdateOne {
+	if v != nil {
+		_u.SetActionsCreated(*v)
 	}
-	return aduo
+	return _u
 }
 
-// AddActionsCreated adds i to the "actions_created" field.
-func (aduo *ActionDataUpdateOne) AddActionsCreated(i int64) *ActionDataUpdateOne {
-	aduo.mutation.AddActionsCreated(i)
-	return aduo
+// AddActionsCreated adds value to the "actions_created" field.
+func (_u *ActionDataUpdateOne) AddActionsCreated(v int64) *ActionDataUpdateOne {
+	_u.mutation.AddActionsCreated(v)
+	return _u
 }
 
 // ClearActionsCreated clears the value of the "actions_created" field.
-func (aduo *ActionDataUpdateOne) ClearActionsCreated() *ActionDataUpdateOne {
-	aduo.mutation.ClearActionsCreated()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearActionsCreated() *ActionDataUpdateOne {
+	_u.mutation.ClearActionsCreated()
+	return _u
 }
 
 // SetFirstStartedMs sets the "first_started_ms" field.
-func (aduo *ActionDataUpdateOne) SetFirstStartedMs(i int64) *ActionDataUpdateOne {
-	aduo.mutation.ResetFirstStartedMs()
-	aduo.mutation.SetFirstStartedMs(i)
-	return aduo
+func (_u *ActionDataUpdateOne) SetFirstStartedMs(v int64) *ActionDataUpdateOne {
+	_u.mutation.ResetFirstStartedMs()
+	_u.mutation.SetFirstStartedMs(v)
+	return _u
 }
 
 // SetNillableFirstStartedMs sets the "first_started_ms" field if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableFirstStartedMs(i *int64) *ActionDataUpdateOne {
-	if i != nil {
-		aduo.SetFirstStartedMs(*i)
+func (_u *ActionDataUpdateOne) SetNillableFirstStartedMs(v *int64) *ActionDataUpdateOne {
+	if v != nil {
+		_u.SetFirstStartedMs(*v)
 	}
-	return aduo
+	return _u
 }
 
-// AddFirstStartedMs adds i to the "first_started_ms" field.
-func (aduo *ActionDataUpdateOne) AddFirstStartedMs(i int64) *ActionDataUpdateOne {
-	aduo.mutation.AddFirstStartedMs(i)
-	return aduo
+// AddFirstStartedMs adds value to the "first_started_ms" field.
+func (_u *ActionDataUpdateOne) AddFirstStartedMs(v int64) *ActionDataUpdateOne {
+	_u.mutation.AddFirstStartedMs(v)
+	return _u
 }
 
 // ClearFirstStartedMs clears the value of the "first_started_ms" field.
-func (aduo *ActionDataUpdateOne) ClearFirstStartedMs() *ActionDataUpdateOne {
-	aduo.mutation.ClearFirstStartedMs()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearFirstStartedMs() *ActionDataUpdateOne {
+	_u.mutation.ClearFirstStartedMs()
+	return _u
 }
 
 // SetLastEndedMs sets the "last_ended_ms" field.
-func (aduo *ActionDataUpdateOne) SetLastEndedMs(i int64) *ActionDataUpdateOne {
-	aduo.mutation.ResetLastEndedMs()
-	aduo.mutation.SetLastEndedMs(i)
-	return aduo
+func (_u *ActionDataUpdateOne) SetLastEndedMs(v int64) *ActionDataUpdateOne {
+	_u.mutation.ResetLastEndedMs()
+	_u.mutation.SetLastEndedMs(v)
+	return _u
 }
 
 // SetNillableLastEndedMs sets the "last_ended_ms" field if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableLastEndedMs(i *int64) *ActionDataUpdateOne {
-	if i != nil {
-		aduo.SetLastEndedMs(*i)
+func (_u *ActionDataUpdateOne) SetNillableLastEndedMs(v *int64) *ActionDataUpdateOne {
+	if v != nil {
+		_u.SetLastEndedMs(*v)
 	}
-	return aduo
+	return _u
 }
 
-// AddLastEndedMs adds i to the "last_ended_ms" field.
-func (aduo *ActionDataUpdateOne) AddLastEndedMs(i int64) *ActionDataUpdateOne {
-	aduo.mutation.AddLastEndedMs(i)
-	return aduo
+// AddLastEndedMs adds value to the "last_ended_ms" field.
+func (_u *ActionDataUpdateOne) AddLastEndedMs(v int64) *ActionDataUpdateOne {
+	_u.mutation.AddLastEndedMs(v)
+	return _u
 }
 
 // ClearLastEndedMs clears the value of the "last_ended_ms" field.
-func (aduo *ActionDataUpdateOne) ClearLastEndedMs() *ActionDataUpdateOne {
-	aduo.mutation.ClearLastEndedMs()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearLastEndedMs() *ActionDataUpdateOne {
+	_u.mutation.ClearLastEndedMs()
+	return _u
 }
 
 // SetSystemTime sets the "system_time" field.
-func (aduo *ActionDataUpdateOne) SetSystemTime(i int64) *ActionDataUpdateOne {
-	aduo.mutation.ResetSystemTime()
-	aduo.mutation.SetSystemTime(i)
-	return aduo
+func (_u *ActionDataUpdateOne) SetSystemTime(v int64) *ActionDataUpdateOne {
+	_u.mutation.ResetSystemTime()
+	_u.mutation.SetSystemTime(v)
+	return _u
 }
 
 // SetNillableSystemTime sets the "system_time" field if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableSystemTime(i *int64) *ActionDataUpdateOne {
-	if i != nil {
-		aduo.SetSystemTime(*i)
+func (_u *ActionDataUpdateOne) SetNillableSystemTime(v *int64) *ActionDataUpdateOne {
+	if v != nil {
+		_u.SetSystemTime(*v)
 	}
-	return aduo
+	return _u
 }
 
-// AddSystemTime adds i to the "system_time" field.
-func (aduo *ActionDataUpdateOne) AddSystemTime(i int64) *ActionDataUpdateOne {
-	aduo.mutation.AddSystemTime(i)
-	return aduo
+// AddSystemTime adds value to the "system_time" field.
+func (_u *ActionDataUpdateOne) AddSystemTime(v int64) *ActionDataUpdateOne {
+	_u.mutation.AddSystemTime(v)
+	return _u
 }
 
 // ClearSystemTime clears the value of the "system_time" field.
-func (aduo *ActionDataUpdateOne) ClearSystemTime() *ActionDataUpdateOne {
-	aduo.mutation.ClearSystemTime()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearSystemTime() *ActionDataUpdateOne {
+	_u.mutation.ClearSystemTime()
+	return _u
 }
 
 // SetUserTime sets the "user_time" field.
-func (aduo *ActionDataUpdateOne) SetUserTime(i int64) *ActionDataUpdateOne {
-	aduo.mutation.ResetUserTime()
-	aduo.mutation.SetUserTime(i)
-	return aduo
+func (_u *ActionDataUpdateOne) SetUserTime(v int64) *ActionDataUpdateOne {
+	_u.mutation.ResetUserTime()
+	_u.mutation.SetUserTime(v)
+	return _u
 }
 
 // SetNillableUserTime sets the "user_time" field if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableUserTime(i *int64) *ActionDataUpdateOne {
-	if i != nil {
-		aduo.SetUserTime(*i)
+func (_u *ActionDataUpdateOne) SetNillableUserTime(v *int64) *ActionDataUpdateOne {
+	if v != nil {
+		_u.SetUserTime(*v)
 	}
-	return aduo
+	return _u
 }
 
-// AddUserTime adds i to the "user_time" field.
-func (aduo *ActionDataUpdateOne) AddUserTime(i int64) *ActionDataUpdateOne {
-	aduo.mutation.AddUserTime(i)
-	return aduo
+// AddUserTime adds value to the "user_time" field.
+func (_u *ActionDataUpdateOne) AddUserTime(v int64) *ActionDataUpdateOne {
+	_u.mutation.AddUserTime(v)
+	return _u
 }
 
 // ClearUserTime clears the value of the "user_time" field.
-func (aduo *ActionDataUpdateOne) ClearUserTime() *ActionDataUpdateOne {
-	aduo.mutation.ClearUserTime()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearUserTime() *ActionDataUpdateOne {
+	_u.mutation.ClearUserTime()
+	return _u
 }
 
 // SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (aduo *ActionDataUpdateOne) SetActionSummaryID(id int64) *ActionDataUpdateOne {
-	aduo.mutation.SetActionSummaryID(id)
-	return aduo
+func (_u *ActionDataUpdateOne) SetActionSummaryID(id int64) *ActionDataUpdateOne {
+	_u.mutation.SetActionSummaryID(id)
+	return _u
 }
 
 // SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableActionSummaryID(id *int64) *ActionDataUpdateOne {
+func (_u *ActionDataUpdateOne) SetNillableActionSummaryID(id *int64) *ActionDataUpdateOne {
 	if id != nil {
-		aduo = aduo.SetActionSummaryID(*id)
+		_u = _u.SetActionSummaryID(*id)
 	}
-	return aduo
+	return _u
 }
 
 // SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
-func (aduo *ActionDataUpdateOne) SetActionSummary(a *ActionSummary) *ActionDataUpdateOne {
-	return aduo.SetActionSummaryID(a.ID)
+func (_u *ActionDataUpdateOne) SetActionSummary(v *ActionSummary) *ActionDataUpdateOne {
+	return _u.SetActionSummaryID(v.ID)
 }
 
 // Mutation returns the ActionDataMutation object of the builder.
-func (aduo *ActionDataUpdateOne) Mutation() *ActionDataMutation {
-	return aduo.mutation
+func (_u *ActionDataUpdateOne) Mutation() *ActionDataMutation {
+	return _u.mutation
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
-func (aduo *ActionDataUpdateOne) ClearActionSummary() *ActionDataUpdateOne {
-	aduo.mutation.ClearActionSummary()
-	return aduo
+func (_u *ActionDataUpdateOne) ClearActionSummary() *ActionDataUpdateOne {
+	_u.mutation.ClearActionSummary()
+	return _u
 }
 
 // Where appends a list predicates to the ActionDataUpdate builder.
-func (aduo *ActionDataUpdateOne) Where(ps ...predicate.ActionData) *ActionDataUpdateOne {
-	aduo.mutation.Where(ps...)
-	return aduo
+func (_u *ActionDataUpdateOne) Where(ps ...predicate.ActionData) *ActionDataUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (aduo *ActionDataUpdateOne) Select(field string, fields ...string) *ActionDataUpdateOne {
-	aduo.fields = append([]string{field}, fields...)
-	return aduo
+func (_u *ActionDataUpdateOne) Select(field string, fields ...string) *ActionDataUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated ActionData entity.
-func (aduo *ActionDataUpdateOne) Save(ctx context.Context) (*ActionData, error) {
-	return withHooks(ctx, aduo.sqlSave, aduo.mutation, aduo.hooks)
+func (_u *ActionDataUpdateOne) Save(ctx context.Context) (*ActionData, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aduo *ActionDataUpdateOne) SaveX(ctx context.Context) *ActionData {
-	node, err := aduo.Save(ctx)
+func (_u *ActionDataUpdateOne) SaveX(ctx context.Context) *ActionData {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -625,26 +625,26 @@ func (aduo *ActionDataUpdateOne) SaveX(ctx context.Context) *ActionData {
 }
 
 // Exec executes the query on the entity.
-func (aduo *ActionDataUpdateOne) Exec(ctx context.Context) error {
-	_, err := aduo.Save(ctx)
+func (_u *ActionDataUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aduo *ActionDataUpdateOne) ExecX(ctx context.Context) {
-	if err := aduo.Exec(ctx); err != nil {
+func (_u *ActionDataUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData, err error) {
+func (_u *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actiondata.Table, actiondata.Columns, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt64))
-	id, ok := aduo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ActionData.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := aduo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, actiondata.FieldID)
 		for _, f := range fields {
@@ -656,74 +656,74 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 			}
 		}
 	}
-	if ps := aduo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aduo.mutation.Mnemonic(); ok {
+	if value, ok := _u.mutation.Mnemonic(); ok {
 		_spec.SetField(actiondata.FieldMnemonic, field.TypeString, value)
 	}
-	if aduo.mutation.MnemonicCleared() {
+	if _u.mutation.MnemonicCleared() {
 		_spec.ClearField(actiondata.FieldMnemonic, field.TypeString)
 	}
-	if value, ok := aduo.mutation.ActionsExecuted(); ok {
+	if value, ok := _u.mutation.ActionsExecuted(); ok {
 		_spec.SetField(actiondata.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if value, ok := aduo.mutation.AddedActionsExecuted(); ok {
+	if value, ok := _u.mutation.AddedActionsExecuted(); ok {
 		_spec.AddField(actiondata.FieldActionsExecuted, field.TypeInt64, value)
 	}
-	if aduo.mutation.ActionsExecutedCleared() {
+	if _u.mutation.ActionsExecutedCleared() {
 		_spec.ClearField(actiondata.FieldActionsExecuted, field.TypeInt64)
 	}
-	if value, ok := aduo.mutation.ActionsCreated(); ok {
+	if value, ok := _u.mutation.ActionsCreated(); ok {
 		_spec.SetField(actiondata.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if value, ok := aduo.mutation.AddedActionsCreated(); ok {
+	if value, ok := _u.mutation.AddedActionsCreated(); ok {
 		_spec.AddField(actiondata.FieldActionsCreated, field.TypeInt64, value)
 	}
-	if aduo.mutation.ActionsCreatedCleared() {
+	if _u.mutation.ActionsCreatedCleared() {
 		_spec.ClearField(actiondata.FieldActionsCreated, field.TypeInt64)
 	}
-	if value, ok := aduo.mutation.FirstStartedMs(); ok {
+	if value, ok := _u.mutation.FirstStartedMs(); ok {
 		_spec.SetField(actiondata.FieldFirstStartedMs, field.TypeInt64, value)
 	}
-	if value, ok := aduo.mutation.AddedFirstStartedMs(); ok {
+	if value, ok := _u.mutation.AddedFirstStartedMs(); ok {
 		_spec.AddField(actiondata.FieldFirstStartedMs, field.TypeInt64, value)
 	}
-	if aduo.mutation.FirstStartedMsCleared() {
+	if _u.mutation.FirstStartedMsCleared() {
 		_spec.ClearField(actiondata.FieldFirstStartedMs, field.TypeInt64)
 	}
-	if value, ok := aduo.mutation.LastEndedMs(); ok {
+	if value, ok := _u.mutation.LastEndedMs(); ok {
 		_spec.SetField(actiondata.FieldLastEndedMs, field.TypeInt64, value)
 	}
-	if value, ok := aduo.mutation.AddedLastEndedMs(); ok {
+	if value, ok := _u.mutation.AddedLastEndedMs(); ok {
 		_spec.AddField(actiondata.FieldLastEndedMs, field.TypeInt64, value)
 	}
-	if aduo.mutation.LastEndedMsCleared() {
+	if _u.mutation.LastEndedMsCleared() {
 		_spec.ClearField(actiondata.FieldLastEndedMs, field.TypeInt64)
 	}
-	if value, ok := aduo.mutation.SystemTime(); ok {
+	if value, ok := _u.mutation.SystemTime(); ok {
 		_spec.SetField(actiondata.FieldSystemTime, field.TypeInt64, value)
 	}
-	if value, ok := aduo.mutation.AddedSystemTime(); ok {
+	if value, ok := _u.mutation.AddedSystemTime(); ok {
 		_spec.AddField(actiondata.FieldSystemTime, field.TypeInt64, value)
 	}
-	if aduo.mutation.SystemTimeCleared() {
+	if _u.mutation.SystemTimeCleared() {
 		_spec.ClearField(actiondata.FieldSystemTime, field.TypeInt64)
 	}
-	if value, ok := aduo.mutation.UserTime(); ok {
+	if value, ok := _u.mutation.UserTime(); ok {
 		_spec.SetField(actiondata.FieldUserTime, field.TypeInt64, value)
 	}
-	if value, ok := aduo.mutation.AddedUserTime(); ok {
+	if value, ok := _u.mutation.AddedUserTime(); ok {
 		_spec.AddField(actiondata.FieldUserTime, field.TypeInt64, value)
 	}
-	if aduo.mutation.UserTimeCleared() {
+	if _u.mutation.UserTimeCleared() {
 		_spec.ClearField(actiondata.FieldUserTime, field.TypeInt64)
 	}
-	if aduo.mutation.ActionSummaryCleared() {
+	if _u.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -736,7 +736,7 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aduo.mutation.ActionSummaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -752,10 +752,10 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &ActionData{config: aduo.config}
+	_node = &ActionData{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, aduo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actiondata.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -763,6 +763,6 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 		}
 		return nil, err
 	}
-	aduo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

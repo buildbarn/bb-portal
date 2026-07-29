@@ -21,8 +21,6 @@ func (TargetKindMapping) Fields() []ent.Field {
 		field.Int64("bazel_invocation_id").Immutable(),
 		// Foreign key to target
 		field.Int64("target_id").Immutable(),
-		// First time we saw this InvocationTarget.
-		field.Int64("start_time_in_ms").Optional(),
 	}
 }
 
@@ -50,7 +48,6 @@ func (TargetKindMapping) Edges() []ent.Edge {
 // Indexes of the TargetKindMapping.
 func (TargetKindMapping) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Edges("bazel_invocation"),
 		index.Edges("target"),
 		index.Edges("bazel_invocation", "target").
 			Unique(),

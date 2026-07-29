@@ -69,7 +69,7 @@ func (*IncompleteBuildLog) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the IncompleteBuildLog fields.
-func (ibl *IncompleteBuildLog) assignValues(columns []string, values []any) error {
+func (_m *IncompleteBuildLog) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -80,27 +80,27 @@ func (ibl *IncompleteBuildLog) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ibl.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case incompletebuildlog.FieldSnippetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field snippet_id", values[i])
 			} else if value.Valid {
-				ibl.SnippetID = int32(value.Int64)
+				_m.SnippetID = int32(value.Int64)
 			}
 		case incompletebuildlog.FieldLogSnippet:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field log_snippet", values[i])
 			} else if value != nil {
-				ibl.LogSnippet = *value
+				_m.LogSnippet = *value
 			}
 		case incompletebuildlog.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				ibl.BazelInvocationID = value.Int64
+				_m.BazelInvocationID = value.Int64
 			}
 		default:
-			ibl.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -108,46 +108,46 @@ func (ibl *IncompleteBuildLog) assignValues(columns []string, values []any) erro
 
 // Value returns the ent.Value that was dynamically selected and assigned to the IncompleteBuildLog.
 // This includes values selected through modifiers, order, etc.
-func (ibl *IncompleteBuildLog) Value(name string) (ent.Value, error) {
-	return ibl.selectValues.Get(name)
+func (_m *IncompleteBuildLog) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the IncompleteBuildLog entity.
-func (ibl *IncompleteBuildLog) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewIncompleteBuildLogClient(ibl.config).QueryBazelInvocation(ibl)
+func (_m *IncompleteBuildLog) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewIncompleteBuildLogClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // Update returns a builder for updating this IncompleteBuildLog.
 // Note that you need to call IncompleteBuildLog.Unwrap() before calling this method if this IncompleteBuildLog
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ibl *IncompleteBuildLog) Update() *IncompleteBuildLogUpdateOne {
-	return NewIncompleteBuildLogClient(ibl.config).UpdateOne(ibl)
+func (_m *IncompleteBuildLog) Update() *IncompleteBuildLogUpdateOne {
+	return NewIncompleteBuildLogClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the IncompleteBuildLog entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ibl *IncompleteBuildLog) Unwrap() *IncompleteBuildLog {
-	_tx, ok := ibl.config.driver.(*txDriver)
+func (_m *IncompleteBuildLog) Unwrap() *IncompleteBuildLog {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: IncompleteBuildLog is not a transactional entity")
 	}
-	ibl.config.driver = _tx.drv
-	return ibl
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ibl *IncompleteBuildLog) String() string {
+func (_m *IncompleteBuildLog) String() string {
 	var builder strings.Builder
 	builder.WriteString("IncompleteBuildLog(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ibl.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("snippet_id=")
-	builder.WriteString(fmt.Sprintf("%v", ibl.SnippetID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SnippetID))
 	builder.WriteString(", ")
 	builder.WriteString("log_snippet=")
-	builder.WriteString(fmt.Sprintf("%v", ibl.LogSnippet))
+	builder.WriteString(fmt.Sprintf("%v", _m.LogSnippet))
 	builder.WriteString(", ")
 	builder.WriteString("bazel_invocation_id=")
-	builder.WriteString(fmt.Sprintf("%v", ibl.BazelInvocationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

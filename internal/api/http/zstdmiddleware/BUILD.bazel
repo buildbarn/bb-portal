@@ -1,0 +1,12 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "zstdmiddleware",
+    srcs = ["zstdmiddleware.go"],
+    importpath = "github.com/buildbarn/bb-portal/internal/api/http/zstdmiddleware",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/api/common",
+        "@com_github_buildbarn_bb_storage//pkg/zstd",
+    ],
+)

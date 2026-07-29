@@ -17,13 +17,26 @@ const { useToken } = theme;
 interface HeaderProps {
   headerBits: React.ReactNode[];
   className?: string;
+  limitTitleWidth?: boolean;
 }
 
 const Header = forwardRef<HTMLDivElement, HeaderProps>(
-  ({ headerBits, className }, ref) => {
+  ({ headerBits, className, limitTitleWidth }, ref) => {
     const actualClassName = [styles.header, className].join(" ");
     return (
-      <Space ref={ref} size="middle" className={actualClassName}>
+      <Space
+        ref={ref}
+        size="middle"
+        style={limitTitleWidth ? { display: "flex" } : {}}
+        className={actualClassName}
+        styles={
+          limitTitleWidth
+            ? {
+                item: { minWidth: `1px` },
+              }
+            : undefined
+        }
+      >
         {headerBits.map(
           (headerBit, index) =>
             headerBit && (
@@ -87,6 +100,7 @@ interface Props extends Omit<CardProps, "title" | "extra"> {
   titleBits: React.ReactNode[];
   extraBits?: React.ReactNode[];
   className?: string;
+  reservedTitleWidth?: number;
 }
 
 export const PortalCard: React.FC<Props> = ({
@@ -94,6 +108,7 @@ export const PortalCard: React.FC<Props> = ({
   titleBits,
   extraBits,
   className,
+  reservedTitleWidth, // If set, the extrabits will be displayed until the title gets this small, even if the title is overflowing
   ...cardProps
 }) => {
   const { token } = useToken();
@@ -109,29 +124,36 @@ export const PortalCard: React.FC<Props> = ({
       if (cardRef.current && titleRef.current && extraRef.current) {
         return (
           cardRef.current.clientWidth <
-          titleRef.current.clientWidth +
+          (reservedTitleWidth || titleRef.current.clientWidth) +
             extraRef.current.clientWidth +
             minimumSpaceBetweenTitleAndExtra
         );
       }
       return true;
     };
-    const handleResize = () => {
+    const recalcShouldExtraMenuBeDisplayed = () => {
       setIsExtraMenuDisplayed(getShouldExtraMenuBeDisplayed());
       if (!isExtraMenuDisplayed) {
         setIsExtraMenuOpened(false);
       }
     };
-    handleResize();
-    window.addEventListener("resize", handleResize);
+    recalcShouldExtraMenuBeDisplayed();
+    window.addEventListener("resize", recalcShouldExtraMenuBeDisplayed);
+    window.addEventListener("focus", recalcShouldExtraMenuBeDisplayed);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", recalcShouldExtraMenuBeDisplayed);
+      window.removeEventListener("focus", recalcShouldExtraMenuBeDisplayed);
     };
-  }, [isExtraMenuDisplayed, minimumSpaceBetweenTitleAndExtra]);
+  }, [
+    isExtraMenuDisplayed,
+    minimumSpaceBetweenTitleAndExtra,
+    reservedTitleWidth,
+  ]);
   const title = (
     <Header
       ref={titleRef}
       headerBits={[icon, ...titleBits]}
+      limitTitleWidth={!!reservedTitleWidth}
       className={styles.title}
     />
   );

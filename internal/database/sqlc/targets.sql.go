@@ -86,30 +86,37 @@ func (q *Queries) CreateTargets(ctx context.Context, arg CreateTargetsParams) ([
 
 const deleteUnusedTargetsFromPages = `-- name: DeleteUnusedTargetsFromPages :execrows
 DELETE FROM targets
-WHERE
-    ctid >= format('(%s,0)', $1::bigint)::tid
-    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND (
-        NOT EXISTS (
-            SELECT 1 FROM "invocation_targets" 
-            WHERE "target_invocation_targets" = "targets"."id"
+WHERE ctid IN (
+    SELECT ctid
+    FROM targets
+    WHERE
+        ctid >= format('(%s,0)', $1::bigint)::tid
+        AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+        AND (
+            NOT EXISTS (
+                SELECT 1 FROM "invocation_targets" 
+                WHERE "target_invocation_targets" = "targets"."id"
+            )
         )
-    )
-    AND (
-        NOT EXISTS (
-            SELECT 1 FROM "target_kind_mappings" 
-            WHERE "target_id" = "targets"."id"
+        AND (
+            NOT EXISTS (
+                SELECT 1 FROM "target_kind_mappings" 
+                WHERE "target_id" = "targets"."id"
+            )
         )
-    )
+    FOR UPDATE SKIP LOCKED
+    LIMIT $3::bigint
+)
 `
 
 type DeleteUnusedTargetsFromPagesParams struct {
-	FromPage int64
-	Pages    int64
+	FromPage   int64
+	Pages      int64
+	BatchLimit int64
 }
 
 func (q *Queries) DeleteUnusedTargetsFromPages(ctx context.Context, arg DeleteUnusedTargetsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteUnusedTargetsFromPages, arg.FromPage, arg.Pages)
+	result, err := q.db.ExecContext(ctx, deleteUnusedTargetsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}

@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
-	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
 // SystemNetworkStats is the model entity for the SystemNetworkStats schema.
@@ -19,21 +18,21 @@ type SystemNetworkStats struct {
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
 	// BytesSent holds the value of the "bytes_sent" field.
-	BytesSent schema.Uint64Numeric `json:"bytes_sent,omitempty"`
+	BytesSent uint64 `json:"bytes_sent,omitempty"`
 	// BytesRecv holds the value of the "bytes_recv" field.
-	BytesRecv schema.Uint64Numeric `json:"bytes_recv,omitempty"`
+	BytesRecv uint64 `json:"bytes_recv,omitempty"`
 	// PacketsSent holds the value of the "packets_sent" field.
-	PacketsSent schema.Uint64Numeric `json:"packets_sent,omitempty"`
+	PacketsSent uint64 `json:"packets_sent,omitempty"`
 	// PacketsRecv holds the value of the "packets_recv" field.
-	PacketsRecv schema.Uint64Numeric `json:"packets_recv,omitempty"`
+	PacketsRecv uint64 `json:"packets_recv,omitempty"`
 	// PeakBytesSentPerSec holds the value of the "peak_bytes_sent_per_sec" field.
-	PeakBytesSentPerSec schema.Uint64Numeric `json:"peak_bytes_sent_per_sec,omitempty"`
+	PeakBytesSentPerSec uint64 `json:"peak_bytes_sent_per_sec,omitempty"`
 	// PeakBytesRecvPerSec holds the value of the "peak_bytes_recv_per_sec" field.
-	PeakBytesRecvPerSec schema.Uint64Numeric `json:"peak_bytes_recv_per_sec,omitempty"`
+	PeakBytesRecvPerSec uint64 `json:"peak_bytes_recv_per_sec,omitempty"`
 	// PeakPacketsSentPerSec holds the value of the "peak_packets_sent_per_sec" field.
-	PeakPacketsSentPerSec schema.Uint64Numeric `json:"peak_packets_sent_per_sec,omitempty"`
+	PeakPacketsSentPerSec uint64 `json:"peak_packets_sent_per_sec,omitempty"`
 	// PeakPacketsRecvPerSec holds the value of the "peak_packets_recv_per_sec" field.
-	PeakPacketsRecvPerSec schema.Uint64Numeric `json:"peak_packets_recv_per_sec,omitempty"`
+	PeakPacketsRecvPerSec uint64 `json:"peak_packets_recv_per_sec,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SystemNetworkStatsQuery when eager-loading is set.
 	Edges                                SystemNetworkStatsEdges `json:"edges"`
@@ -68,10 +67,24 @@ func (*SystemNetworkStats) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case systemnetworkstats.FieldBytesSent, systemnetworkstats.FieldBytesRecv, systemnetworkstats.FieldPacketsSent, systemnetworkstats.FieldPacketsRecv, systemnetworkstats.FieldPeakBytesSentPerSec, systemnetworkstats.FieldPeakBytesRecvPerSec, systemnetworkstats.FieldPeakPacketsSentPerSec, systemnetworkstats.FieldPeakPacketsRecvPerSec:
-			values[i] = new(schema.Uint64Numeric)
 		case systemnetworkstats.FieldID:
 			values[i] = new(sql.NullInt64)
+		case systemnetworkstats.FieldBytesSent:
+			values[i] = systemnetworkstats.ValueScanner.BytesSent.ScanValue()
+		case systemnetworkstats.FieldBytesRecv:
+			values[i] = systemnetworkstats.ValueScanner.BytesRecv.ScanValue()
+		case systemnetworkstats.FieldPacketsSent:
+			values[i] = systemnetworkstats.ValueScanner.PacketsSent.ScanValue()
+		case systemnetworkstats.FieldPacketsRecv:
+			values[i] = systemnetworkstats.ValueScanner.PacketsRecv.ScanValue()
+		case systemnetworkstats.FieldPeakBytesSentPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakBytesSentPerSec.ScanValue()
+		case systemnetworkstats.FieldPeakBytesRecvPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakBytesRecvPerSec.ScanValue()
+		case systemnetworkstats.FieldPeakPacketsSentPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakPacketsSentPerSec.ScanValue()
+		case systemnetworkstats.FieldPeakPacketsRecvPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakPacketsRecvPerSec.ScanValue()
 		case systemnetworkstats.ForeignKeys[0]: // network_metrics_system_network_stats
 			values[i] = new(sql.NullInt64)
 		default:
@@ -83,7 +96,7 @@ func (*SystemNetworkStats) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SystemNetworkStats fields.
-func (sns *SystemNetworkStats) assignValues(columns []string, values []any) error {
+func (_m *SystemNetworkStats) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -94,64 +107,64 @@ func (sns *SystemNetworkStats) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			sns.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case systemnetworkstats.FieldBytesSent:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field bytes_sent", values[i])
-			} else if value != nil {
-				sns.BytesSent = *value
+			if value, err := systemnetworkstats.ValueScanner.BytesSent.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.BytesSent = value
 			}
 		case systemnetworkstats.FieldBytesRecv:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field bytes_recv", values[i])
-			} else if value != nil {
-				sns.BytesRecv = *value
+			if value, err := systemnetworkstats.ValueScanner.BytesRecv.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.BytesRecv = value
 			}
 		case systemnetworkstats.FieldPacketsSent:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field packets_sent", values[i])
-			} else if value != nil {
-				sns.PacketsSent = *value
+			if value, err := systemnetworkstats.ValueScanner.PacketsSent.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PacketsSent = value
 			}
 		case systemnetworkstats.FieldPacketsRecv:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field packets_recv", values[i])
-			} else if value != nil {
-				sns.PacketsRecv = *value
+			if value, err := systemnetworkstats.ValueScanner.PacketsRecv.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PacketsRecv = value
 			}
 		case systemnetworkstats.FieldPeakBytesSentPerSec:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_bytes_sent_per_sec", values[i])
-			} else if value != nil {
-				sns.PeakBytesSentPerSec = *value
+			if value, err := systemnetworkstats.ValueScanner.PeakBytesSentPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakBytesSentPerSec = value
 			}
 		case systemnetworkstats.FieldPeakBytesRecvPerSec:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_bytes_recv_per_sec", values[i])
-			} else if value != nil {
-				sns.PeakBytesRecvPerSec = *value
+			if value, err := systemnetworkstats.ValueScanner.PeakBytesRecvPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakBytesRecvPerSec = value
 			}
 		case systemnetworkstats.FieldPeakPacketsSentPerSec:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_packets_sent_per_sec", values[i])
-			} else if value != nil {
-				sns.PeakPacketsSentPerSec = *value
+			if value, err := systemnetworkstats.ValueScanner.PeakPacketsSentPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakPacketsSentPerSec = value
 			}
 		case systemnetworkstats.FieldPeakPacketsRecvPerSec:
-			if value, ok := values[i].(*schema.Uint64Numeric); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_packets_recv_per_sec", values[i])
-			} else if value != nil {
-				sns.PeakPacketsRecvPerSec = *value
+			if value, err := systemnetworkstats.ValueScanner.PeakPacketsRecvPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakPacketsRecvPerSec = value
 			}
 		case systemnetworkstats.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field network_metrics_system_network_stats", value)
 			} else if value.Valid {
-				sns.network_metrics_system_network_stats = new(int64)
-				*sns.network_metrics_system_network_stats = int64(value.Int64)
+				_m.network_metrics_system_network_stats = new(int64)
+				*_m.network_metrics_system_network_stats = int64(value.Int64)
 			}
 		default:
-			sns.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -159,61 +172,61 @@ func (sns *SystemNetworkStats) assignValues(columns []string, values []any) erro
 
 // Value returns the ent.Value that was dynamically selected and assigned to the SystemNetworkStats.
 // This includes values selected through modifiers, order, etc.
-func (sns *SystemNetworkStats) Value(name string) (ent.Value, error) {
-	return sns.selectValues.Get(name)
+func (_m *SystemNetworkStats) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryNetworkMetrics queries the "network_metrics" edge of the SystemNetworkStats entity.
-func (sns *SystemNetworkStats) QueryNetworkMetrics() *NetworkMetricsQuery {
-	return NewSystemNetworkStatsClient(sns.config).QueryNetworkMetrics(sns)
+func (_m *SystemNetworkStats) QueryNetworkMetrics() *NetworkMetricsQuery {
+	return NewSystemNetworkStatsClient(_m.config).QueryNetworkMetrics(_m)
 }
 
 // Update returns a builder for updating this SystemNetworkStats.
 // Note that you need to call SystemNetworkStats.Unwrap() before calling this method if this SystemNetworkStats
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sns *SystemNetworkStats) Update() *SystemNetworkStatsUpdateOne {
-	return NewSystemNetworkStatsClient(sns.config).UpdateOne(sns)
+func (_m *SystemNetworkStats) Update() *SystemNetworkStatsUpdateOne {
+	return NewSystemNetworkStatsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SystemNetworkStats entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sns *SystemNetworkStats) Unwrap() *SystemNetworkStats {
-	_tx, ok := sns.config.driver.(*txDriver)
+func (_m *SystemNetworkStats) Unwrap() *SystemNetworkStats {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SystemNetworkStats is not a transactional entity")
 	}
-	sns.config.driver = _tx.drv
-	return sns
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sns *SystemNetworkStats) String() string {
+func (_m *SystemNetworkStats) String() string {
 	var builder strings.Builder
 	builder.WriteString("SystemNetworkStats(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sns.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("bytes_sent=")
-	builder.WriteString(fmt.Sprintf("%v", sns.BytesSent))
+	builder.WriteString(fmt.Sprintf("%v", _m.BytesSent))
 	builder.WriteString(", ")
 	builder.WriteString("bytes_recv=")
-	builder.WriteString(fmt.Sprintf("%v", sns.BytesRecv))
+	builder.WriteString(fmt.Sprintf("%v", _m.BytesRecv))
 	builder.WriteString(", ")
 	builder.WriteString("packets_sent=")
-	builder.WriteString(fmt.Sprintf("%v", sns.PacketsSent))
+	builder.WriteString(fmt.Sprintf("%v", _m.PacketsSent))
 	builder.WriteString(", ")
 	builder.WriteString("packets_recv=")
-	builder.WriteString(fmt.Sprintf("%v", sns.PacketsRecv))
+	builder.WriteString(fmt.Sprintf("%v", _m.PacketsRecv))
 	builder.WriteString(", ")
 	builder.WriteString("peak_bytes_sent_per_sec=")
-	builder.WriteString(fmt.Sprintf("%v", sns.PeakBytesSentPerSec))
+	builder.WriteString(fmt.Sprintf("%v", _m.PeakBytesSentPerSec))
 	builder.WriteString(", ")
 	builder.WriteString("peak_bytes_recv_per_sec=")
-	builder.WriteString(fmt.Sprintf("%v", sns.PeakBytesRecvPerSec))
+	builder.WriteString(fmt.Sprintf("%v", _m.PeakBytesRecvPerSec))
 	builder.WriteString(", ")
 	builder.WriteString("peak_packets_sent_per_sec=")
-	builder.WriteString(fmt.Sprintf("%v", sns.PeakPacketsSentPerSec))
+	builder.WriteString(fmt.Sprintf("%v", _m.PeakPacketsSentPerSec))
 	builder.WriteString(", ")
 	builder.WriteString("peak_packets_recv_per_sec=")
-	builder.WriteString(fmt.Sprintf("%v", sns.PeakPacketsRecvPerSec))
+	builder.WriteString(fmt.Sprintf("%v", _m.PeakPacketsRecvPerSec))
 	builder.WriteByte(')')
 	return builder.String()
 }

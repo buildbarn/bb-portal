@@ -1,0 +1,60 @@
+{
+  "getBazelInvocation": {
+    "bazelVersion": "7.1.0",
+    "configurations": [
+      {
+        "cpu": "darwin_arm64",
+        "id": "Q29uZmlndXJhdGlvbjo3",
+        "mnemonic": "darwin_arm64-fastbuild"
+      },
+      {
+        "cpu": "darwin_arm64",
+        "id": "Q29uZmlndXJhdGlvbjo4",
+        "mnemonic": "darwin_arm64-fastbuild"
+      }
+    ],
+    "connectionMetadata": null,
+    "endedAt": "2024-05-13T23:43:26.247Z",
+    "exitCodeName": "TESTS_FAILED",
+    "hostname": "Namelesss-MacBook-Pro.local",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
+    "instanceName": {
+      "id": "SW5zdGFuY2VOYW1lOjE=",
+      "name": ""
+    },
+    "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
+    "numFetches": 0,
+    "originalCommandLine": {
+      "command": "test",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "build_metadata",
+          "value": "BUILD_STEP_LABEL=nextjs_test"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "./pkg/summary/testdata/nextjs_test_fail.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//next.js/..."
+      ],
+      "startupOptions": [
+        {
+          "option": "",
+          "value": ""
+        },
+        {
+          "option": "",
+          "value": ""
+        },
+        {
+          "option": "",
+          "value": ""
+        }
+      ]
+    },
+    "startedAt": "2024-05-13T23:43:23.045Z"
+  }
+}

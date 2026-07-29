@@ -1,0 +1,120 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 9,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjQ=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjIy",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjIz",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjI0",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjI1",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjI2",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjI3",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 2,
+              "id": "TWlzc0RldGFpOjI4",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            }
+          ],
+          "misses": 2,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 1549056
+        },
+        "actionData": [
+          {
+            "actionsExecuted": 1,
+            "id": "QWN0aW9uRGF0YToxMQ==",
+            "mnemonic": "TestRunner",
+            "systemTime": 397,
+            "userTime": 842
+          },
+          {
+            "actionsExecuted": 1,
+            "id": "QWN0aW9uRGF0YToxMg==",
+            "mnemonic": "BazelWorkspaceStatusAction",
+            "systemTime": 0,
+            "userTime": 0
+          }
+        ],
+        "actionsExecuted": 2,
+        "id": "QWN0aW9uU3VtbWFyeTo0",
+        "runnerCount": [
+          {
+            "actionsExecuted": 2,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTI=",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTM=",
+            "name": "internal"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6MTQ=",
+            "name": "darwin-sandbox"
+          }
+        ]
+      },
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjQ=",
+        "outputArtifactsFromActionCacheCount": 11,
+        "outputArtifactsFromActionCacheSizeInBytes": 690376,
+        "outputArtifactsSeenCount": 15,
+        "outputArtifactsSeenSizeInBytes": 692189,
+        "sourceArtifactsReadCount": 0,
+        "sourceArtifactsReadSizeInBytes": 0,
+        "topLevelArtifactsCount": 12392,
+        "topLevelArtifactsSizeInBytes": 1157054839
+      },
+      "id": "TWV0cmljczo0",
+      "memoryMetrics": {
+        "garbageMetrics": [],
+        "id": "TWVtb3J5TWV0cmljczo0",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": null,
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 1101,
+        "cpuTimeInMs": 3287,
+        "executionPhaseTimeInMs": 2849,
+        "id": "VGltaW5nTWV0cmljczo0",
+        "wallTimeInMs": 3149
+      }
+    }
+  }
+}

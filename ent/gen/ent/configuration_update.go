@@ -24,188 +24,188 @@ type ConfigurationUpdate struct {
 }
 
 // Where appends a list predicates to the ConfigurationUpdate builder.
-func (cu *ConfigurationUpdate) Where(ps ...predicate.Configuration) *ConfigurationUpdate {
-	cu.mutation.Where(ps...)
-	return cu
+func (_u *ConfigurationUpdate) Where(ps ...predicate.Configuration) *ConfigurationUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetMnemonic sets the "mnemonic" field.
-func (cu *ConfigurationUpdate) SetMnemonic(s string) *ConfigurationUpdate {
-	cu.mutation.SetMnemonic(s)
-	return cu
+func (_u *ConfigurationUpdate) SetMnemonic(v string) *ConfigurationUpdate {
+	_u.mutation.SetMnemonic(v)
+	return _u
 }
 
 // SetNillableMnemonic sets the "mnemonic" field if the given value is not nil.
-func (cu *ConfigurationUpdate) SetNillableMnemonic(s *string) *ConfigurationUpdate {
-	if s != nil {
-		cu.SetMnemonic(*s)
+func (_u *ConfigurationUpdate) SetNillableMnemonic(v *string) *ConfigurationUpdate {
+	if v != nil {
+		_u.SetMnemonic(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearMnemonic clears the value of the "mnemonic" field.
-func (cu *ConfigurationUpdate) ClearMnemonic() *ConfigurationUpdate {
-	cu.mutation.ClearMnemonic()
-	return cu
+func (_u *ConfigurationUpdate) ClearMnemonic() *ConfigurationUpdate {
+	_u.mutation.ClearMnemonic()
+	return _u
 }
 
 // SetPlatformName sets the "platform_name" field.
-func (cu *ConfigurationUpdate) SetPlatformName(s string) *ConfigurationUpdate {
-	cu.mutation.SetPlatformName(s)
-	return cu
+func (_u *ConfigurationUpdate) SetPlatformName(v string) *ConfigurationUpdate {
+	_u.mutation.SetPlatformName(v)
+	return _u
 }
 
 // SetNillablePlatformName sets the "platform_name" field if the given value is not nil.
-func (cu *ConfigurationUpdate) SetNillablePlatformName(s *string) *ConfigurationUpdate {
-	if s != nil {
-		cu.SetPlatformName(*s)
+func (_u *ConfigurationUpdate) SetNillablePlatformName(v *string) *ConfigurationUpdate {
+	if v != nil {
+		_u.SetPlatformName(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearPlatformName clears the value of the "platform_name" field.
-func (cu *ConfigurationUpdate) ClearPlatformName() *ConfigurationUpdate {
-	cu.mutation.ClearPlatformName()
-	return cu
+func (_u *ConfigurationUpdate) ClearPlatformName() *ConfigurationUpdate {
+	_u.mutation.ClearPlatformName()
+	return _u
 }
 
 // SetCPU sets the "cpu" field.
-func (cu *ConfigurationUpdate) SetCPU(s string) *ConfigurationUpdate {
-	cu.mutation.SetCPU(s)
-	return cu
+func (_u *ConfigurationUpdate) SetCPU(v string) *ConfigurationUpdate {
+	_u.mutation.SetCPU(v)
+	return _u
 }
 
 // SetNillableCPU sets the "cpu" field if the given value is not nil.
-func (cu *ConfigurationUpdate) SetNillableCPU(s *string) *ConfigurationUpdate {
-	if s != nil {
-		cu.SetCPU(*s)
+func (_u *ConfigurationUpdate) SetNillableCPU(v *string) *ConfigurationUpdate {
+	if v != nil {
+		_u.SetCPU(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearCPU clears the value of the "cpu" field.
-func (cu *ConfigurationUpdate) ClearCPU() *ConfigurationUpdate {
-	cu.mutation.ClearCPU()
-	return cu
+func (_u *ConfigurationUpdate) ClearCPU() *ConfigurationUpdate {
+	_u.mutation.ClearCPU()
+	return _u
 }
 
 // SetMakeVariables sets the "make_variables" field.
-func (cu *ConfigurationUpdate) SetMakeVariables(m map[string]string) *ConfigurationUpdate {
-	cu.mutation.SetMakeVariables(m)
-	return cu
+func (_u *ConfigurationUpdate) SetMakeVariables(v map[string]string) *ConfigurationUpdate {
+	_u.mutation.SetMakeVariables(v)
+	return _u
 }
 
 // ClearMakeVariables clears the value of the "make_variables" field.
-func (cu *ConfigurationUpdate) ClearMakeVariables() *ConfigurationUpdate {
-	cu.mutation.ClearMakeVariables()
-	return cu
+func (_u *ConfigurationUpdate) ClearMakeVariables() *ConfigurationUpdate {
+	_u.mutation.ClearMakeVariables()
+	return _u
 }
 
 // SetIsTool sets the "is_tool" field.
-func (cu *ConfigurationUpdate) SetIsTool(b bool) *ConfigurationUpdate {
-	cu.mutation.SetIsTool(b)
-	return cu
+func (_u *ConfigurationUpdate) SetIsTool(v bool) *ConfigurationUpdate {
+	_u.mutation.SetIsTool(v)
+	return _u
 }
 
 // SetNillableIsTool sets the "is_tool" field if the given value is not nil.
-func (cu *ConfigurationUpdate) SetNillableIsTool(b *bool) *ConfigurationUpdate {
-	if b != nil {
-		cu.SetIsTool(*b)
+func (_u *ConfigurationUpdate) SetNillableIsTool(v *bool) *ConfigurationUpdate {
+	if v != nil {
+		_u.SetIsTool(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearIsTool clears the value of the "is_tool" field.
-func (cu *ConfigurationUpdate) ClearIsTool() *ConfigurationUpdate {
-	cu.mutation.ClearIsTool()
-	return cu
+func (_u *ConfigurationUpdate) ClearIsTool() *ConfigurationUpdate {
+	_u.mutation.ClearIsTool()
+	return _u
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (cu *ConfigurationUpdate) AddInvocationTargetIDs(ids ...int64) *ConfigurationUpdate {
-	cu.mutation.AddInvocationTargetIDs(ids...)
-	return cu
+func (_u *ConfigurationUpdate) AddInvocationTargetIDs(ids ...int64) *ConfigurationUpdate {
+	_u.mutation.AddInvocationTargetIDs(ids...)
+	return _u
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
-func (cu *ConfigurationUpdate) AddInvocationTargets(i ...*InvocationTarget) *ConfigurationUpdate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *ConfigurationUpdate) AddInvocationTargets(v ...*InvocationTarget) *ConfigurationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.AddInvocationTargetIDs(ids...)
+	return _u.AddInvocationTargetIDs(ids...)
 }
 
 // AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (cu *ConfigurationUpdate) AddActionIDs(ids ...int64) *ConfigurationUpdate {
-	cu.mutation.AddActionIDs(ids...)
-	return cu
+func (_u *ConfigurationUpdate) AddActionIDs(ids ...int64) *ConfigurationUpdate {
+	_u.mutation.AddActionIDs(ids...)
+	return _u
 }
 
 // AddActions adds the "actions" edges to the Action entity.
-func (cu *ConfigurationUpdate) AddActions(a ...*Action) *ConfigurationUpdate {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ConfigurationUpdate) AddActions(v ...*Action) *ConfigurationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.AddActionIDs(ids...)
+	return _u.AddActionIDs(ids...)
 }
 
 // Mutation returns the ConfigurationMutation object of the builder.
-func (cu *ConfigurationUpdate) Mutation() *ConfigurationMutation {
-	return cu.mutation
+func (_u *ConfigurationUpdate) Mutation() *ConfigurationMutation {
+	return _u.mutation
 }
 
 // ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
-func (cu *ConfigurationUpdate) ClearInvocationTargets() *ConfigurationUpdate {
-	cu.mutation.ClearInvocationTargets()
-	return cu
+func (_u *ConfigurationUpdate) ClearInvocationTargets() *ConfigurationUpdate {
+	_u.mutation.ClearInvocationTargets()
+	return _u
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
-func (cu *ConfigurationUpdate) RemoveInvocationTargetIDs(ids ...int64) *ConfigurationUpdate {
-	cu.mutation.RemoveInvocationTargetIDs(ids...)
-	return cu
+func (_u *ConfigurationUpdate) RemoveInvocationTargetIDs(ids ...int64) *ConfigurationUpdate {
+	_u.mutation.RemoveInvocationTargetIDs(ids...)
+	return _u
 }
 
 // RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
-func (cu *ConfigurationUpdate) RemoveInvocationTargets(i ...*InvocationTarget) *ConfigurationUpdate {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *ConfigurationUpdate) RemoveInvocationTargets(v ...*InvocationTarget) *ConfigurationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.RemoveInvocationTargetIDs(ids...)
+	return _u.RemoveInvocationTargetIDs(ids...)
 }
 
 // ClearActions clears all "actions" edges to the Action entity.
-func (cu *ConfigurationUpdate) ClearActions() *ConfigurationUpdate {
-	cu.mutation.ClearActions()
-	return cu
+func (_u *ConfigurationUpdate) ClearActions() *ConfigurationUpdate {
+	_u.mutation.ClearActions()
+	return _u
 }
 
 // RemoveActionIDs removes the "actions" edge to Action entities by IDs.
-func (cu *ConfigurationUpdate) RemoveActionIDs(ids ...int64) *ConfigurationUpdate {
-	cu.mutation.RemoveActionIDs(ids...)
-	return cu
+func (_u *ConfigurationUpdate) RemoveActionIDs(ids ...int64) *ConfigurationUpdate {
+	_u.mutation.RemoveActionIDs(ids...)
+	return _u
 }
 
 // RemoveActions removes "actions" edges to Action entities.
-func (cu *ConfigurationUpdate) RemoveActions(a ...*Action) *ConfigurationUpdate {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ConfigurationUpdate) RemoveActions(v ...*Action) *ConfigurationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.RemoveActionIDs(ids...)
+	return _u.RemoveActionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (cu *ConfigurationUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, cu.sqlSave, cu.mutation, cu.hooks)
+func (_u *ConfigurationUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cu *ConfigurationUpdate) SaveX(ctx context.Context) int {
-	affected, err := cu.Save(ctx)
+func (_u *ConfigurationUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -213,69 +213,69 @@ func (cu *ConfigurationUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (cu *ConfigurationUpdate) Exec(ctx context.Context) error {
-	_, err := cu.Save(ctx)
+func (_u *ConfigurationUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cu *ConfigurationUpdate) ExecX(ctx context.Context) {
-	if err := cu.Exec(ctx); err != nil {
+func (_u *ConfigurationUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cu *ConfigurationUpdate) check() error {
-	if cu.mutation.BazelInvocationCleared() && len(cu.mutation.BazelInvocationIDs()) > 0 {
+func (_u *ConfigurationUpdate) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Configuration.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := cu.check(); err != nil {
-		return n, err
+func (_u *ConfigurationUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(configuration.Table, configuration.Columns, sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64))
-	if ps := cu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cu.mutation.Mnemonic(); ok {
+	if value, ok := _u.mutation.Mnemonic(); ok {
 		_spec.SetField(configuration.FieldMnemonic, field.TypeString, value)
 	}
-	if cu.mutation.MnemonicCleared() {
+	if _u.mutation.MnemonicCleared() {
 		_spec.ClearField(configuration.FieldMnemonic, field.TypeString)
 	}
-	if value, ok := cu.mutation.PlatformName(); ok {
+	if value, ok := _u.mutation.PlatformName(); ok {
 		_spec.SetField(configuration.FieldPlatformName, field.TypeString, value)
 	}
-	if cu.mutation.PlatformNameCleared() {
+	if _u.mutation.PlatformNameCleared() {
 		_spec.ClearField(configuration.FieldPlatformName, field.TypeString)
 	}
-	if value, ok := cu.mutation.CPU(); ok {
+	if value, ok := _u.mutation.CPU(); ok {
 		_spec.SetField(configuration.FieldCPU, field.TypeString, value)
 	}
-	if cu.mutation.CPUCleared() {
+	if _u.mutation.CPUCleared() {
 		_spec.ClearField(configuration.FieldCPU, field.TypeString)
 	}
-	if value, ok := cu.mutation.MakeVariables(); ok {
+	if value, ok := _u.mutation.MakeVariables(); ok {
 		_spec.SetField(configuration.FieldMakeVariables, field.TypeJSON, value)
 	}
-	if cu.mutation.MakeVariablesCleared() {
+	if _u.mutation.MakeVariablesCleared() {
 		_spec.ClearField(configuration.FieldMakeVariables, field.TypeJSON)
 	}
-	if value, ok := cu.mutation.IsTool(); ok {
+	if value, ok := _u.mutation.IsTool(); ok {
 		_spec.SetField(configuration.FieldIsTool, field.TypeBool, value)
 	}
-	if cu.mutation.IsToolCleared() {
+	if _u.mutation.IsToolCleared() {
 		_spec.ClearField(configuration.FieldIsTool, field.TypeBool)
 	}
-	if cu.mutation.InvocationTargetsCleared() {
+	if _u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -288,7 +288,7 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !cu.mutation.InvocationTargetsCleared() {
+	if nodes := _u.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !_u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -304,7 +304,7 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -320,7 +320,7 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if cu.mutation.ActionsCleared() {
+	if _u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -333,7 +333,7 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.RemovedActionsIDs(); len(nodes) > 0 && !cu.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -349,7 +349,7 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -365,7 +365,7 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{configuration.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -373,8 +373,8 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	cu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ConfigurationUpdateOne is the builder for updating a single Configuration entity.
@@ -386,195 +386,195 @@ type ConfigurationUpdateOne struct {
 }
 
 // SetMnemonic sets the "mnemonic" field.
-func (cuo *ConfigurationUpdateOne) SetMnemonic(s string) *ConfigurationUpdateOne {
-	cuo.mutation.SetMnemonic(s)
-	return cuo
+func (_u *ConfigurationUpdateOne) SetMnemonic(v string) *ConfigurationUpdateOne {
+	_u.mutation.SetMnemonic(v)
+	return _u
 }
 
 // SetNillableMnemonic sets the "mnemonic" field if the given value is not nil.
-func (cuo *ConfigurationUpdateOne) SetNillableMnemonic(s *string) *ConfigurationUpdateOne {
-	if s != nil {
-		cuo.SetMnemonic(*s)
+func (_u *ConfigurationUpdateOne) SetNillableMnemonic(v *string) *ConfigurationUpdateOne {
+	if v != nil {
+		_u.SetMnemonic(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearMnemonic clears the value of the "mnemonic" field.
-func (cuo *ConfigurationUpdateOne) ClearMnemonic() *ConfigurationUpdateOne {
-	cuo.mutation.ClearMnemonic()
-	return cuo
+func (_u *ConfigurationUpdateOne) ClearMnemonic() *ConfigurationUpdateOne {
+	_u.mutation.ClearMnemonic()
+	return _u
 }
 
 // SetPlatformName sets the "platform_name" field.
-func (cuo *ConfigurationUpdateOne) SetPlatformName(s string) *ConfigurationUpdateOne {
-	cuo.mutation.SetPlatformName(s)
-	return cuo
+func (_u *ConfigurationUpdateOne) SetPlatformName(v string) *ConfigurationUpdateOne {
+	_u.mutation.SetPlatformName(v)
+	return _u
 }
 
 // SetNillablePlatformName sets the "platform_name" field if the given value is not nil.
-func (cuo *ConfigurationUpdateOne) SetNillablePlatformName(s *string) *ConfigurationUpdateOne {
-	if s != nil {
-		cuo.SetPlatformName(*s)
+func (_u *ConfigurationUpdateOne) SetNillablePlatformName(v *string) *ConfigurationUpdateOne {
+	if v != nil {
+		_u.SetPlatformName(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearPlatformName clears the value of the "platform_name" field.
-func (cuo *ConfigurationUpdateOne) ClearPlatformName() *ConfigurationUpdateOne {
-	cuo.mutation.ClearPlatformName()
-	return cuo
+func (_u *ConfigurationUpdateOne) ClearPlatformName() *ConfigurationUpdateOne {
+	_u.mutation.ClearPlatformName()
+	return _u
 }
 
 // SetCPU sets the "cpu" field.
-func (cuo *ConfigurationUpdateOne) SetCPU(s string) *ConfigurationUpdateOne {
-	cuo.mutation.SetCPU(s)
-	return cuo
+func (_u *ConfigurationUpdateOne) SetCPU(v string) *ConfigurationUpdateOne {
+	_u.mutation.SetCPU(v)
+	return _u
 }
 
 // SetNillableCPU sets the "cpu" field if the given value is not nil.
-func (cuo *ConfigurationUpdateOne) SetNillableCPU(s *string) *ConfigurationUpdateOne {
-	if s != nil {
-		cuo.SetCPU(*s)
+func (_u *ConfigurationUpdateOne) SetNillableCPU(v *string) *ConfigurationUpdateOne {
+	if v != nil {
+		_u.SetCPU(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearCPU clears the value of the "cpu" field.
-func (cuo *ConfigurationUpdateOne) ClearCPU() *ConfigurationUpdateOne {
-	cuo.mutation.ClearCPU()
-	return cuo
+func (_u *ConfigurationUpdateOne) ClearCPU() *ConfigurationUpdateOne {
+	_u.mutation.ClearCPU()
+	return _u
 }
 
 // SetMakeVariables sets the "make_variables" field.
-func (cuo *ConfigurationUpdateOne) SetMakeVariables(m map[string]string) *ConfigurationUpdateOne {
-	cuo.mutation.SetMakeVariables(m)
-	return cuo
+func (_u *ConfigurationUpdateOne) SetMakeVariables(v map[string]string) *ConfigurationUpdateOne {
+	_u.mutation.SetMakeVariables(v)
+	return _u
 }
 
 // ClearMakeVariables clears the value of the "make_variables" field.
-func (cuo *ConfigurationUpdateOne) ClearMakeVariables() *ConfigurationUpdateOne {
-	cuo.mutation.ClearMakeVariables()
-	return cuo
+func (_u *ConfigurationUpdateOne) ClearMakeVariables() *ConfigurationUpdateOne {
+	_u.mutation.ClearMakeVariables()
+	return _u
 }
 
 // SetIsTool sets the "is_tool" field.
-func (cuo *ConfigurationUpdateOne) SetIsTool(b bool) *ConfigurationUpdateOne {
-	cuo.mutation.SetIsTool(b)
-	return cuo
+func (_u *ConfigurationUpdateOne) SetIsTool(v bool) *ConfigurationUpdateOne {
+	_u.mutation.SetIsTool(v)
+	return _u
 }
 
 // SetNillableIsTool sets the "is_tool" field if the given value is not nil.
-func (cuo *ConfigurationUpdateOne) SetNillableIsTool(b *bool) *ConfigurationUpdateOne {
-	if b != nil {
-		cuo.SetIsTool(*b)
+func (_u *ConfigurationUpdateOne) SetNillableIsTool(v *bool) *ConfigurationUpdateOne {
+	if v != nil {
+		_u.SetIsTool(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearIsTool clears the value of the "is_tool" field.
-func (cuo *ConfigurationUpdateOne) ClearIsTool() *ConfigurationUpdateOne {
-	cuo.mutation.ClearIsTool()
-	return cuo
+func (_u *ConfigurationUpdateOne) ClearIsTool() *ConfigurationUpdateOne {
+	_u.mutation.ClearIsTool()
+	return _u
 }
 
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
-func (cuo *ConfigurationUpdateOne) AddInvocationTargetIDs(ids ...int64) *ConfigurationUpdateOne {
-	cuo.mutation.AddInvocationTargetIDs(ids...)
-	return cuo
+func (_u *ConfigurationUpdateOne) AddInvocationTargetIDs(ids ...int64) *ConfigurationUpdateOne {
+	_u.mutation.AddInvocationTargetIDs(ids...)
+	return _u
 }
 
 // AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
-func (cuo *ConfigurationUpdateOne) AddInvocationTargets(i ...*InvocationTarget) *ConfigurationUpdateOne {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *ConfigurationUpdateOne) AddInvocationTargets(v ...*InvocationTarget) *ConfigurationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.AddInvocationTargetIDs(ids...)
+	return _u.AddInvocationTargetIDs(ids...)
 }
 
 // AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (cuo *ConfigurationUpdateOne) AddActionIDs(ids ...int64) *ConfigurationUpdateOne {
-	cuo.mutation.AddActionIDs(ids...)
-	return cuo
+func (_u *ConfigurationUpdateOne) AddActionIDs(ids ...int64) *ConfigurationUpdateOne {
+	_u.mutation.AddActionIDs(ids...)
+	return _u
 }
 
 // AddActions adds the "actions" edges to the Action entity.
-func (cuo *ConfigurationUpdateOne) AddActions(a ...*Action) *ConfigurationUpdateOne {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ConfigurationUpdateOne) AddActions(v ...*Action) *ConfigurationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.AddActionIDs(ids...)
+	return _u.AddActionIDs(ids...)
 }
 
 // Mutation returns the ConfigurationMutation object of the builder.
-func (cuo *ConfigurationUpdateOne) Mutation() *ConfigurationMutation {
-	return cuo.mutation
+func (_u *ConfigurationUpdateOne) Mutation() *ConfigurationMutation {
+	return _u.mutation
 }
 
 // ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
-func (cuo *ConfigurationUpdateOne) ClearInvocationTargets() *ConfigurationUpdateOne {
-	cuo.mutation.ClearInvocationTargets()
-	return cuo
+func (_u *ConfigurationUpdateOne) ClearInvocationTargets() *ConfigurationUpdateOne {
+	_u.mutation.ClearInvocationTargets()
+	return _u
 }
 
 // RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
-func (cuo *ConfigurationUpdateOne) RemoveInvocationTargetIDs(ids ...int64) *ConfigurationUpdateOne {
-	cuo.mutation.RemoveInvocationTargetIDs(ids...)
-	return cuo
+func (_u *ConfigurationUpdateOne) RemoveInvocationTargetIDs(ids ...int64) *ConfigurationUpdateOne {
+	_u.mutation.RemoveInvocationTargetIDs(ids...)
+	return _u
 }
 
 // RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
-func (cuo *ConfigurationUpdateOne) RemoveInvocationTargets(i ...*InvocationTarget) *ConfigurationUpdateOne {
-	ids := make([]int64, len(i))
-	for j := range i {
-		ids[j] = i[j].ID
+func (_u *ConfigurationUpdateOne) RemoveInvocationTargets(v ...*InvocationTarget) *ConfigurationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.RemoveInvocationTargetIDs(ids...)
+	return _u.RemoveInvocationTargetIDs(ids...)
 }
 
 // ClearActions clears all "actions" edges to the Action entity.
-func (cuo *ConfigurationUpdateOne) ClearActions() *ConfigurationUpdateOne {
-	cuo.mutation.ClearActions()
-	return cuo
+func (_u *ConfigurationUpdateOne) ClearActions() *ConfigurationUpdateOne {
+	_u.mutation.ClearActions()
+	return _u
 }
 
 // RemoveActionIDs removes the "actions" edge to Action entities by IDs.
-func (cuo *ConfigurationUpdateOne) RemoveActionIDs(ids ...int64) *ConfigurationUpdateOne {
-	cuo.mutation.RemoveActionIDs(ids...)
-	return cuo
+func (_u *ConfigurationUpdateOne) RemoveActionIDs(ids ...int64) *ConfigurationUpdateOne {
+	_u.mutation.RemoveActionIDs(ids...)
+	return _u
 }
 
 // RemoveActions removes "actions" edges to Action entities.
-func (cuo *ConfigurationUpdateOne) RemoveActions(a ...*Action) *ConfigurationUpdateOne {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *ConfigurationUpdateOne) RemoveActions(v ...*Action) *ConfigurationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.RemoveActionIDs(ids...)
+	return _u.RemoveActionIDs(ids...)
 }
 
 // Where appends a list predicates to the ConfigurationUpdate builder.
-func (cuo *ConfigurationUpdateOne) Where(ps ...predicate.Configuration) *ConfigurationUpdateOne {
-	cuo.mutation.Where(ps...)
-	return cuo
+func (_u *ConfigurationUpdateOne) Where(ps ...predicate.Configuration) *ConfigurationUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (cuo *ConfigurationUpdateOne) Select(field string, fields ...string) *ConfigurationUpdateOne {
-	cuo.fields = append([]string{field}, fields...)
-	return cuo
+func (_u *ConfigurationUpdateOne) Select(field string, fields ...string) *ConfigurationUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Configuration entity.
-func (cuo *ConfigurationUpdateOne) Save(ctx context.Context) (*Configuration, error) {
-	return withHooks(ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
+func (_u *ConfigurationUpdateOne) Save(ctx context.Context) (*Configuration, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cuo *ConfigurationUpdateOne) SaveX(ctx context.Context) *Configuration {
-	node, err := cuo.Save(ctx)
+func (_u *ConfigurationUpdateOne) SaveX(ctx context.Context) *Configuration {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -582,37 +582,37 @@ func (cuo *ConfigurationUpdateOne) SaveX(ctx context.Context) *Configuration {
 }
 
 // Exec executes the query on the entity.
-func (cuo *ConfigurationUpdateOne) Exec(ctx context.Context) error {
-	_, err := cuo.Save(ctx)
+func (_u *ConfigurationUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cuo *ConfigurationUpdateOne) ExecX(ctx context.Context) {
-	if err := cuo.Exec(ctx); err != nil {
+func (_u *ConfigurationUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (cuo *ConfigurationUpdateOne) check() error {
-	if cuo.mutation.BazelInvocationCleared() && len(cuo.mutation.BazelInvocationIDs()) > 0 {
+func (_u *ConfigurationUpdateOne) check() error {
+	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Configuration.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configuration, err error) {
-	if err := cuo.check(); err != nil {
+func (_u *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configuration, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(configuration.Table, configuration.Columns, sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64))
-	id, ok := cuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Configuration.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := cuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, configuration.FieldID)
 		for _, f := range fields {
@@ -624,44 +624,44 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 			}
 		}
 	}
-	if ps := cuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cuo.mutation.Mnemonic(); ok {
+	if value, ok := _u.mutation.Mnemonic(); ok {
 		_spec.SetField(configuration.FieldMnemonic, field.TypeString, value)
 	}
-	if cuo.mutation.MnemonicCleared() {
+	if _u.mutation.MnemonicCleared() {
 		_spec.ClearField(configuration.FieldMnemonic, field.TypeString)
 	}
-	if value, ok := cuo.mutation.PlatformName(); ok {
+	if value, ok := _u.mutation.PlatformName(); ok {
 		_spec.SetField(configuration.FieldPlatformName, field.TypeString, value)
 	}
-	if cuo.mutation.PlatformNameCleared() {
+	if _u.mutation.PlatformNameCleared() {
 		_spec.ClearField(configuration.FieldPlatformName, field.TypeString)
 	}
-	if value, ok := cuo.mutation.CPU(); ok {
+	if value, ok := _u.mutation.CPU(); ok {
 		_spec.SetField(configuration.FieldCPU, field.TypeString, value)
 	}
-	if cuo.mutation.CPUCleared() {
+	if _u.mutation.CPUCleared() {
 		_spec.ClearField(configuration.FieldCPU, field.TypeString)
 	}
-	if value, ok := cuo.mutation.MakeVariables(); ok {
+	if value, ok := _u.mutation.MakeVariables(); ok {
 		_spec.SetField(configuration.FieldMakeVariables, field.TypeJSON, value)
 	}
-	if cuo.mutation.MakeVariablesCleared() {
+	if _u.mutation.MakeVariablesCleared() {
 		_spec.ClearField(configuration.FieldMakeVariables, field.TypeJSON)
 	}
-	if value, ok := cuo.mutation.IsTool(); ok {
+	if value, ok := _u.mutation.IsTool(); ok {
 		_spec.SetField(configuration.FieldIsTool, field.TypeBool, value)
 	}
-	if cuo.mutation.IsToolCleared() {
+	if _u.mutation.IsToolCleared() {
 		_spec.ClearField(configuration.FieldIsTool, field.TypeBool)
 	}
-	if cuo.mutation.InvocationTargetsCleared() {
+	if _u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -674,7 +674,7 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !cuo.mutation.InvocationTargetsCleared() {
+	if nodes := _u.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !_u.mutation.InvocationTargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -690,7 +690,7 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -706,7 +706,7 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if cuo.mutation.ActionsCleared() {
+	if _u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -719,7 +719,7 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.RemovedActionsIDs(); len(nodes) > 0 && !cuo.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -735,7 +735,7 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -751,10 +751,10 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Configuration{config: cuo.config}
+	_node = &Configuration{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, cuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{configuration.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -762,6 +762,6 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 		}
 		return nil, err
 	}
-	cuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

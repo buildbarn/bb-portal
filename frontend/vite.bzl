@@ -5,7 +5,10 @@ def _vite_build_rule_impl(ctx):
 
     args = ctx.actions.args()
     args.add("build")
-    num_up = 3 + len(ctx.attr.chdir.split("/"))
+
+    # Run inside this directory, relative to the exec dir.
+    chdir = ("%s/%s" % (ctx.label.workspace_root, ctx.label.package)).strip("/")
+    num_up = 3 + len(chdir.split("/"))
     args.add_all("--outDir", [out_dir], format_each = ("../" * num_up) + "%s", expand_directories = False)
     ctx.actions.run(
         executable = ctx.executable.vite_binary,
@@ -14,7 +17,7 @@ def _vite_build_rule_impl(ctx):
         outputs = [out_dir],
         env = {
             "BAZEL_BINDIR": "/".join(ctx.executable.vite_binary.path.split("/")[0:3]),
-            "JS_BINARY__CHDIR": ctx.attr.chdir,
+            "JS_BINARY__CHDIR": chdir,
             "JS_BINARY__SILENT_ON_SUCCESS": "1",
         } | ctx.attr.env,
     )
@@ -26,7 +29,6 @@ vite_build_rule = rule(
         "srcs": attr.label_list(mandatory = True, allow_files = True, cfg = "exec"),
         "vite_binary": attr.label(mandatory = True, executable = True, cfg = "exec"),
         "env": attr.string_dict(),
-        "chdir": attr.string(default = ""),
     },
     toolchains = [
         # Even if not used, make sure the analysis selects an execution platform

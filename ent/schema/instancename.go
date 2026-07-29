@@ -24,6 +24,7 @@ func (InstanceName) Edges() []ent.Edge {
 		edge.To("bazel_invocations", BazelInvocation.Type),
 		edge.To("builds", Build.Type),
 		edge.To("targets", Target.Type),
+		edge.To("file_paths", FilePath.Type),
 	}
 }
 

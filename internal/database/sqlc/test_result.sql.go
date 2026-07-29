@@ -12,7 +12,63 @@ import (
 	"github.com/lib/pq"
 )
 
-const createTestResultsBulk = `-- name: CreateTestResultsBulk :execrows
+const createTestActionOutputAssociation = `-- name: CreateTestActionOutputAssociation :execrows
+INSERT INTO test_action_outputs (
+    test_result_id,
+    file_id
+)
+SELECT
+    input.test_result_id,
+    f.id
+FROM (
+    SELECT
+        unnest($1::bigint[]) AS test_result_id,
+        unnest($2::text[]) AS file_path,
+        unnest($3::text[]) AS rev2_instance_name,
+        unnest($4::smallint[]) AS digest_function,
+        unnest($5::bytea[]) AS hash,
+        unnest($6::bigint[]) AS size_bytes
+) AS input
+JOIN file_paths fp
+    ON fp.bep_instance_name_id = $7::bigint
+    AND fp.path = input.file_path
+JOIN digests d
+    ON d.rev2_instance_name = input.rev2_instance_name
+    AND d.digest_function = input.digest_function
+    AND d.hash = input.hash
+    AND d.size_bytes = input.size_bytes
+JOIN files f
+    ON f.file_path_id = fp.id
+    AND f.digest_id = d.id
+`
+
+type CreateTestActionOutputAssociationParams struct {
+	TestResultID      []int64
+	FilePaths         []string
+	Rev2InstanceNames []string
+	DigestFunctions   []int16
+	Hashes            [][]byte
+	SizeBytes         []int64
+	BepInstanceNameID int64
+}
+
+func (q *Queries) CreateTestActionOutputAssociation(ctx context.Context, arg CreateTestActionOutputAssociationParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, createTestActionOutputAssociation,
+		pq.Array(arg.TestResultID),
+		pq.Array(arg.FilePaths),
+		pq.Array(arg.Rev2InstanceNames),
+		pq.Array(arg.DigestFunctions),
+		pq.Array(arg.Hashes),
+		pq.Array(arg.SizeBytes),
+		arg.BepInstanceNameID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const createTestResultsBulk = `-- name: CreateTestResultsBulk :many
 INSERT INTO test_results (
     test_summary_test_results,
     run,
@@ -65,7 +121,9 @@ FROM (
         input.cached_remotely,
         input.exit_code,
         input.hostname,
-        input.timing_breakdown
+        input.timing_breakdown,
+        -- Add a row number to track the order of inputs
+        ROW_NUMBER() OVER () AS input_order
     FROM (
         SELECT
             $1::bigint as instance_name_id,
@@ -102,6 +160,8 @@ JOIN invocation_targets it
     AND it.bazel_invocation_invocation_targets = $18
 JOIN test_summaries ts
     ON ts.invocation_target_test_summary = it.id
+ORDER BY resolved_inputs.input_order
+RETURNING id
 `
 
 type CreateTestResultsBulkParams struct {
@@ -126,8 +186,9 @@ type CreateTestResultsBulkParams struct {
 }
 
 // STAGE 2: Join the rest using the specific Target IDs we found
-func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResultsBulkParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, createTestResultsBulk,
+// Order the results by the input order
+func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResultsBulkParams) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, createTestResultsBulk,
 		arg.InstanceNameID,
 		pq.Array(arg.Labels),
 		pq.Array(arg.ConfigIds),
@@ -148,7 +209,22 @@ func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResul
 		arg.BazelInvocationID,
 	)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	return result.RowsAffected()
+	defer rows.Close()
+	var items []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

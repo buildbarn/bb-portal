@@ -48,8 +48,9 @@ func TestDbCleanupService_RemoveOrphanedTestTargets(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 2, count, "Both TestTargets should exist before cleanup")
 
-	err = cleanupService.RemoveOrphanedTestTargets(ctx)
+	deleted, err := cleanupService.RemoveOrphanedTestTargets(ctx)
 	require.NoError(t, err)
+	require.EqualValues(t, 1, deleted)
 
 	remainingCount, err := db.Ent().TestTarget.Query().Count(ctx)
 	require.NoError(t, err)

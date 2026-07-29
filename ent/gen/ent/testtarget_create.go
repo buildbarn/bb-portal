@@ -23,35 +23,35 @@ type TestTargetCreate struct {
 }
 
 // SetTargetID sets the "target_id" field.
-func (ttc *TestTargetCreate) SetTargetID(i int64) *TestTargetCreate {
-	ttc.mutation.SetTargetID(i)
-	return ttc
+func (_c *TestTargetCreate) SetTargetID(v int64) *TestTargetCreate {
+	_c.mutation.SetTargetID(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ttc *TestTargetCreate) SetID(i int64) *TestTargetCreate {
-	ttc.mutation.SetID(i)
-	return ttc
+func (_c *TestTargetCreate) SetID(v int64) *TestTargetCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetTarget sets the "target" edge to the Target entity.
-func (ttc *TestTargetCreate) SetTarget(t *Target) *TestTargetCreate {
-	return ttc.SetTargetID(t.ID)
+func (_c *TestTargetCreate) SetTarget(v *Target) *TestTargetCreate {
+	return _c.SetTargetID(v.ID)
 }
 
 // Mutation returns the TestTargetMutation object of the builder.
-func (ttc *TestTargetCreate) Mutation() *TestTargetMutation {
-	return ttc.mutation
+func (_c *TestTargetCreate) Mutation() *TestTargetMutation {
+	return _c.mutation
 }
 
 // Save creates the TestTarget in the database.
-func (ttc *TestTargetCreate) Save(ctx context.Context) (*TestTarget, error) {
-	return withHooks(ctx, ttc.sqlSave, ttc.mutation, ttc.hooks)
+func (_c *TestTargetCreate) Save(ctx context.Context) (*TestTarget, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ttc *TestTargetCreate) SaveX(ctx context.Context) *TestTarget {
-	v, err := ttc.Save(ctx)
+func (_c *TestTargetCreate) SaveX(ctx context.Context) *TestTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -59,35 +59,35 @@ func (ttc *TestTargetCreate) SaveX(ctx context.Context) *TestTarget {
 }
 
 // Exec executes the query.
-func (ttc *TestTargetCreate) Exec(ctx context.Context) error {
-	_, err := ttc.Save(ctx)
+func (_c *TestTargetCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ttc *TestTargetCreate) ExecX(ctx context.Context) {
-	if err := ttc.Exec(ctx); err != nil {
+func (_c *TestTargetCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ttc *TestTargetCreate) check() error {
-	if _, ok := ttc.mutation.TargetID(); !ok {
+func (_c *TestTargetCreate) check() error {
+	if _, ok := _c.mutation.TargetID(); !ok {
 		return &ValidationError{Name: "target_id", err: errors.New(`ent: missing required field "TestTarget.target_id"`)}
 	}
-	if len(ttc.mutation.TargetIDs()) == 0 {
+	if len(_c.mutation.TargetIDs()) == 0 {
 		return &ValidationError{Name: "target", err: errors.New(`ent: missing required edge "TestTarget.target"`)}
 	}
 	return nil
 }
 
-func (ttc *TestTargetCreate) sqlSave(ctx context.Context) (*TestTarget, error) {
-	if err := ttc.check(); err != nil {
+func (_c *TestTargetCreate) sqlSave(ctx context.Context) (*TestTarget, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ttc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ttc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -97,22 +97,22 @@ func (ttc *TestTargetCreate) sqlSave(ctx context.Context) (*TestTarget, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	ttc.mutation.id = &_node.ID
-	ttc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ttc *TestTargetCreate) createSpec() (*TestTarget, *sqlgraph.CreateSpec) {
+func (_c *TestTargetCreate) createSpec() (*TestTarget, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TestTarget{config: ttc.config}
+		_node = &TestTarget{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(testtarget.Table, sqlgraph.NewFieldSpec(testtarget.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ttc.conflict
-	if id, ok := ttc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if nodes := ttc.mutation.TargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -148,10 +148,10 @@ func (ttc *TestTargetCreate) createSpec() (*TestTarget, *sqlgraph.CreateSpec) {
 //			SetTargetID(v+v).
 //		}).
 //		Exec(ctx)
-func (ttc *TestTargetCreate) OnConflict(opts ...sql.ConflictOption) *TestTargetUpsertOne {
-	ttc.conflict = opts
+func (_c *TestTargetCreate) OnConflict(opts ...sql.ConflictOption) *TestTargetUpsertOne {
+	_c.conflict = opts
 	return &TestTargetUpsertOne{
-		create: ttc,
+		create: _c,
 	}
 }
 
@@ -161,10 +161,10 @@ func (ttc *TestTargetCreate) OnConflict(opts ...sql.ConflictOption) *TestTargetU
 //	client.TestTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ttc *TestTargetCreate) OnConflictColumns(columns ...string) *TestTargetUpsertOne {
-	ttc.conflict = append(ttc.conflict, sql.ConflictColumns(columns...))
+func (_c *TestTargetCreate) OnConflictColumns(columns ...string) *TestTargetUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TestTargetUpsertOne{
-		create: ttc,
+		create: _c,
 	}
 }
 
@@ -274,16 +274,16 @@ type TestTargetCreateBulk struct {
 }
 
 // Save creates the TestTarget entities in the database.
-func (ttcb *TestTargetCreateBulk) Save(ctx context.Context) ([]*TestTarget, error) {
-	if ttcb.err != nil {
-		return nil, ttcb.err
+func (_c *TestTargetCreateBulk) Save(ctx context.Context) ([]*TestTarget, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ttcb.builders))
-	nodes := make([]*TestTarget, len(ttcb.builders))
-	mutators := make([]Mutator, len(ttcb.builders))
-	for i := range ttcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TestTarget, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ttcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TestTargetMutation)
 				if !ok {
@@ -296,12 +296,12 @@ func (ttcb *TestTargetCreateBulk) Save(ctx context.Context) ([]*TestTarget, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ttcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ttcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ttcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -325,7 +325,7 @@ func (ttcb *TestTargetCreateBulk) Save(ctx context.Context) ([]*TestTarget, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ttcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -333,8 +333,8 @@ func (ttcb *TestTargetCreateBulk) Save(ctx context.Context) ([]*TestTarget, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ttcb *TestTargetCreateBulk) SaveX(ctx context.Context) []*TestTarget {
-	v, err := ttcb.Save(ctx)
+func (_c *TestTargetCreateBulk) SaveX(ctx context.Context) []*TestTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -342,14 +342,14 @@ func (ttcb *TestTargetCreateBulk) SaveX(ctx context.Context) []*TestTarget {
 }
 
 // Exec executes the query.
-func (ttcb *TestTargetCreateBulk) Exec(ctx context.Context) error {
-	_, err := ttcb.Save(ctx)
+func (_c *TestTargetCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ttcb *TestTargetCreateBulk) ExecX(ctx context.Context) {
-	if err := ttcb.Exec(ctx); err != nil {
+func (_c *TestTargetCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -369,10 +369,10 @@ func (ttcb *TestTargetCreateBulk) ExecX(ctx context.Context) {
 //			SetTargetID(v+v).
 //		}).
 //		Exec(ctx)
-func (ttcb *TestTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestTargetUpsertBulk {
-	ttcb.conflict = opts
+func (_c *TestTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestTargetUpsertBulk {
+	_c.conflict = opts
 	return &TestTargetUpsertBulk{
-		create: ttcb,
+		create: _c,
 	}
 }
 
@@ -382,10 +382,10 @@ func (ttcb *TestTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestTa
 //	client.TestTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ttcb *TestTargetCreateBulk) OnConflictColumns(columns ...string) *TestTargetUpsertBulk {
-	ttcb.conflict = append(ttcb.conflict, sql.ConflictColumns(columns...))
+func (_c *TestTargetCreateBulk) OnConflictColumns(columns ...string) *TestTargetUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TestTargetUpsertBulk{
-		create: ttcb,
+		create: _c,
 	}
 }
 

@@ -6,13 +6,11 @@ import (
 	"math"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/klauspost/compress/zstd"
 	grpc_codes "google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -87,20 +85,11 @@ func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var writer io.Writer = w
-	if strings.Contains(r.Header.Get("Accept-Encoding"), "zstd") {
-		if encoder, err := zstd.NewWriter(w); err == nil {
-			w.Header().Set("Content-Encoding", "zstd")
-			defer encoder.Close()
-			writer = encoder
-		}
-	}
-
 	// Set the header of the return result, we don't need to set the
 	// status code as that is implied to be 200 if we start writing a
 	// response.
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	if _, err := io.Copy(writer, lines); err != nil {
+	if _, err := io.Copy(w, lines); err != nil {
 		// At this point returning an error code is too late but we will
 		// mark the error in the otel metrics.
 		span.RecordError(err)

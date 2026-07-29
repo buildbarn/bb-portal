@@ -4,7 +4,7 @@ import type React from "react";
 import PortalAlert from "@/components/PortalAlert";
 import WorkersInfo from "@/components/WorkersInfo";
 import WorkersTable from "@/components/WorkersTable";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
+import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import type {
   BuildQueueStateClient,
   DeepPartial,
@@ -58,8 +58,6 @@ const WorkersGrid: React.FC<WorkerSearchParams> = ({
   sizeClassQueueName,
   cursor,
 }) => {
-  const { buildQueueStateClient } = useGrpcClients();
-
   const { data, isError, isLoading, error } = useQuery<ListWorkersResponse>({
     queryKey: ["listWorkers", workerStatusFilter, sizeClassQueueName, cursor],
     queryFn: () =>

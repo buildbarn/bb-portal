@@ -33,44 +33,44 @@ type TimingMetricsQuery struct {
 }
 
 // Where adds a new predicate for the TimingMetricsQuery builder.
-func (tmq *TimingMetricsQuery) Where(ps ...predicate.TimingMetrics) *TimingMetricsQuery {
-	tmq.predicates = append(tmq.predicates, ps...)
-	return tmq
+func (_q *TimingMetricsQuery) Where(ps ...predicate.TimingMetrics) *TimingMetricsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (tmq *TimingMetricsQuery) Limit(limit int) *TimingMetricsQuery {
-	tmq.ctx.Limit = &limit
-	return tmq
+func (_q *TimingMetricsQuery) Limit(limit int) *TimingMetricsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (tmq *TimingMetricsQuery) Offset(offset int) *TimingMetricsQuery {
-	tmq.ctx.Offset = &offset
-	return tmq
+func (_q *TimingMetricsQuery) Offset(offset int) *TimingMetricsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (tmq *TimingMetricsQuery) Unique(unique bool) *TimingMetricsQuery {
-	tmq.ctx.Unique = &unique
-	return tmq
+func (_q *TimingMetricsQuery) Unique(unique bool) *TimingMetricsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (tmq *TimingMetricsQuery) Order(o ...timingmetrics.OrderOption) *TimingMetricsQuery {
-	tmq.order = append(tmq.order, o...)
-	return tmq
+func (_q *TimingMetricsQuery) Order(o ...timingmetrics.OrderOption) *TimingMetricsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryMetrics chains the current query on the "metrics" edge.
-func (tmq *TimingMetricsQuery) QueryMetrics() *MetricsQuery {
-	query := (&MetricsClient{config: tmq.config}).Query()
+func (_q *TimingMetricsQuery) QueryMetrics() *MetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tmq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tmq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (tmq *TimingMetricsQuery) QueryMetrics() *MetricsQuery {
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, timingmetrics.MetricsTable, timingmetrics.MetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tmq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -87,8 +87,8 @@ func (tmq *TimingMetricsQuery) QueryMetrics() *MetricsQuery {
 
 // First returns the first TimingMetrics entity from the query.
 // Returns a *NotFoundError when no TimingMetrics was found.
-func (tmq *TimingMetricsQuery) First(ctx context.Context) (*TimingMetrics, error) {
-	nodes, err := tmq.Limit(1).All(setContextOp(ctx, tmq.ctx, ent.OpQueryFirst))
+func (_q *TimingMetricsQuery) First(ctx context.Context) (*TimingMetrics, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +99,8 @@ func (tmq *TimingMetricsQuery) First(ctx context.Context) (*TimingMetrics, error
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) FirstX(ctx context.Context) *TimingMetrics {
-	node, err := tmq.First(ctx)
+func (_q *TimingMetricsQuery) FirstX(ctx context.Context) *TimingMetrics {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -109,9 +109,9 @@ func (tmq *TimingMetricsQuery) FirstX(ctx context.Context) *TimingMetrics {
 
 // FirstID returns the first TimingMetrics ID from the query.
 // Returns a *NotFoundError when no TimingMetrics ID was found.
-func (tmq *TimingMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *TimingMetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tmq.Limit(1).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -122,8 +122,8 @@ func (tmq *TimingMetricsQuery) FirstID(ctx context.Context) (id int64, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := tmq.FirstID(ctx)
+func (_q *TimingMetricsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,8 +133,8 @@ func (tmq *TimingMetricsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single TimingMetrics entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one TimingMetrics entity is found.
 // Returns a *NotFoundError when no TimingMetrics entities are found.
-func (tmq *TimingMetricsQuery) Only(ctx context.Context) (*TimingMetrics, error) {
-	nodes, err := tmq.Limit(2).All(setContextOp(ctx, tmq.ctx, ent.OpQueryOnly))
+func (_q *TimingMetricsQuery) Only(ctx context.Context) (*TimingMetrics, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -149,8 +149,8 @@ func (tmq *TimingMetricsQuery) Only(ctx context.Context) (*TimingMetrics, error)
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) OnlyX(ctx context.Context) *TimingMetrics {
-	node, err := tmq.Only(ctx)
+func (_q *TimingMetricsQuery) OnlyX(ctx context.Context) *TimingMetrics {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,9 +160,9 @@ func (tmq *TimingMetricsQuery) OnlyX(ctx context.Context) *TimingMetrics {
 // OnlyID is like Only, but returns the only TimingMetrics ID in the query.
 // Returns a *NotSingularError when more than one TimingMetrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tmq *TimingMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *TimingMetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tmq.Limit(2).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -177,8 +177,8 @@ func (tmq *TimingMetricsQuery) OnlyID(ctx context.Context) (id int64, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := tmq.OnlyID(ctx)
+func (_q *TimingMetricsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -186,18 +186,18 @@ func (tmq *TimingMetricsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of TimingMetricsSlice.
-func (tmq *TimingMetricsQuery) All(ctx context.Context) ([]*TimingMetrics, error) {
-	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryAll)
-	if err := tmq.prepareQuery(ctx); err != nil {
+func (_q *TimingMetricsQuery) All(ctx context.Context) ([]*TimingMetrics, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*TimingMetrics, *TimingMetricsQuery]()
-	return withInterceptors[[]*TimingMetrics](ctx, tmq, qr, tmq.inters)
+	return withInterceptors[[]*TimingMetrics](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) AllX(ctx context.Context) []*TimingMetrics {
-	nodes, err := tmq.All(ctx)
+func (_q *TimingMetricsQuery) AllX(ctx context.Context) []*TimingMetrics {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -205,20 +205,20 @@ func (tmq *TimingMetricsQuery) AllX(ctx context.Context) []*TimingMetrics {
 }
 
 // IDs executes the query and returns a list of TimingMetrics IDs.
-func (tmq *TimingMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if tmq.ctx.Unique == nil && tmq.path != nil {
-		tmq.Unique(true)
+func (_q *TimingMetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryIDs)
-	if err = tmq.Select(timingmetrics.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(timingmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := tmq.IDs(ctx)
+func (_q *TimingMetricsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,17 +226,17 @@ func (tmq *TimingMetricsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (tmq *TimingMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryCount)
-	if err := tmq.prepareQuery(ctx); err != nil {
+func (_q *TimingMetricsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, tmq, querierCount[*TimingMetricsQuery](), tmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TimingMetricsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) CountX(ctx context.Context) int {
-	count, err := tmq.Count(ctx)
+func (_q *TimingMetricsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -244,9 +244,9 @@ func (tmq *TimingMetricsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (tmq *TimingMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryExist)
-	switch _, err := tmq.FirstID(ctx); {
+func (_q *TimingMetricsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -257,8 +257,8 @@ func (tmq *TimingMetricsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (tmq *TimingMetricsQuery) ExistX(ctx context.Context) bool {
-	exist, err := tmq.Exist(ctx)
+func (_q *TimingMetricsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,32 +267,32 @@ func (tmq *TimingMetricsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the TimingMetricsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (tmq *TimingMetricsQuery) Clone() *TimingMetricsQuery {
-	if tmq == nil {
+func (_q *TimingMetricsQuery) Clone() *TimingMetricsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &TimingMetricsQuery{
-		config:      tmq.config,
-		ctx:         tmq.ctx.Clone(),
-		order:       append([]timingmetrics.OrderOption{}, tmq.order...),
-		inters:      append([]Interceptor{}, tmq.inters...),
-		predicates:  append([]predicate.TimingMetrics{}, tmq.predicates...),
-		withMetrics: tmq.withMetrics.Clone(),
+		config:      _q.config,
+		ctx:         _q.ctx.Clone(),
+		order:       append([]timingmetrics.OrderOption{}, _q.order...),
+		inters:      append([]Interceptor{}, _q.inters...),
+		predicates:  append([]predicate.TimingMetrics{}, _q.predicates...),
+		withMetrics: _q.withMetrics.Clone(),
 		// clone intermediate query.
-		sql:  tmq.sql.Clone(),
-		path: tmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (tmq *TimingMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *TimingMetricsQuery {
-	query := (&MetricsClient{config: tmq.config}).Query()
+func (_q *TimingMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *TimingMetricsQuery {
+	query := (&MetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tmq.withMetrics = query
-	return tmq
+	_q.withMetrics = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -309,10 +309,10 @@ func (tmq *TimingMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *TimingM
 //		GroupBy(timingmetrics.FieldCPUTimeInMs).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (tmq *TimingMetricsQuery) GroupBy(field string, fields ...string) *TimingMetricsGroupBy {
-	tmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TimingMetricsGroupBy{build: tmq}
-	grbuild.flds = &tmq.ctx.Fields
+func (_q *TimingMetricsQuery) GroupBy(field string, fields ...string) *TimingMetricsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &TimingMetricsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = timingmetrics.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -330,55 +330,55 @@ func (tmq *TimingMetricsQuery) GroupBy(field string, fields ...string) *TimingMe
 //	client.TimingMetrics.Query().
 //		Select(timingmetrics.FieldCPUTimeInMs).
 //		Scan(ctx, &v)
-func (tmq *TimingMetricsQuery) Select(fields ...string) *TimingMetricsSelect {
-	tmq.ctx.Fields = append(tmq.ctx.Fields, fields...)
-	sbuild := &TimingMetricsSelect{TimingMetricsQuery: tmq}
+func (_q *TimingMetricsQuery) Select(fields ...string) *TimingMetricsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &TimingMetricsSelect{TimingMetricsQuery: _q}
 	sbuild.label = timingmetrics.Label
-	sbuild.flds, sbuild.scan = &tmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a TimingMetricsSelect configured with the given aggregations.
-func (tmq *TimingMetricsQuery) Aggregate(fns ...AggregateFunc) *TimingMetricsSelect {
-	return tmq.Select().Aggregate(fns...)
+func (_q *TimingMetricsQuery) Aggregate(fns ...AggregateFunc) *TimingMetricsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (tmq *TimingMetricsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range tmq.inters {
+func (_q *TimingMetricsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, tmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range tmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !timingmetrics.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if tmq.path != nil {
-		prev, err := tmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		tmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (tmq *TimingMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TimingMetrics, error) {
+func (_q *TimingMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TimingMetrics, error) {
 	var (
 		nodes       = []*TimingMetrics{}
-		withFKs     = tmq.withFKs
-		_spec       = tmq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			tmq.withMetrics != nil,
+			_q.withMetrics != nil,
 		}
 	)
-	if tmq.withMetrics != nil {
+	if _q.withMetrics != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -388,38 +388,38 @@ func (tmq *TimingMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		return (*TimingMetrics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &TimingMetrics{config: tmq.config}
+		node := &TimingMetrics{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(tmq.modifiers) > 0 {
-		_spec.Modifiers = tmq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, tmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := tmq.withMetrics; query != nil {
-		if err := tmq.loadMetrics(ctx, query, nodes, nil,
+	if query := _q.withMetrics; query != nil {
+		if err := _q.loadMetrics(ctx, query, nodes, nil,
 			func(n *TimingMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range tmq.loadTotal {
-		if err := tmq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (tmq *TimingMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*TimingMetrics, init func(*TimingMetrics), assign func(*TimingMetrics, *Metrics)) error {
+func (_q *TimingMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*TimingMetrics, init func(*TimingMetrics), assign func(*TimingMetrics, *Metrics)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*TimingMetrics)
 	for i := range nodes {
@@ -452,27 +452,27 @@ func (tmq *TimingMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	return nil
 }
 
-func (tmq *TimingMetricsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := tmq.querySpec()
-	if len(tmq.modifiers) > 0 {
-		_spec.Modifiers = tmq.modifiers
+func (_q *TimingMetricsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = tmq.ctx.Fields
-	if len(tmq.ctx.Fields) > 0 {
-		_spec.Unique = tmq.ctx.Unique != nil && *tmq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, tmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (tmq *TimingMetricsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *TimingMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt64))
-	_spec.From = tmq.sql
-	if unique := tmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if tmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := tmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, timingmetrics.FieldID)
 		for i := range fields {
@@ -481,20 +481,20 @@ func (tmq *TimingMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := tmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := tmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := tmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := tmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -504,33 +504,33 @@ func (tmq *TimingMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (tmq *TimingMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(tmq.driver.Dialect())
+func (_q *TimingMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(timingmetrics.Table)
-	columns := tmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = timingmetrics.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if tmq.sql != nil {
-		selector = tmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if tmq.ctx.Unique != nil && *tmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range tmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range tmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := tmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := tmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -543,41 +543,41 @@ type TimingMetricsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (tmgb *TimingMetricsGroupBy) Aggregate(fns ...AggregateFunc) *TimingMetricsGroupBy {
-	tmgb.fns = append(tmgb.fns, fns...)
-	return tmgb
+func (_g *TimingMetricsGroupBy) Aggregate(fns ...AggregateFunc) *TimingMetricsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tmgb *TimingMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := tmgb.build.prepareQuery(ctx); err != nil {
+func (_g *TimingMetricsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TimingMetricsQuery, *TimingMetricsGroupBy](ctx, tmgb.build, tmgb, tmgb.build.inters, v)
+	return scanWithInterceptors[*TimingMetricsQuery, *TimingMetricsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (tmgb *TimingMetricsGroupBy) sqlScan(ctx context.Context, root *TimingMetricsQuery, v any) error {
+func (_g *TimingMetricsGroupBy) sqlScan(ctx context.Context, root *TimingMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(tmgb.fns))
-	for _, fn := range tmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*tmgb.flds)+len(tmgb.fns))
-		for _, f := range *tmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*tmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -591,27 +591,27 @@ type TimingMetricsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (tms *TimingMetricsSelect) Aggregate(fns ...AggregateFunc) *TimingMetricsSelect {
-	tms.fns = append(tms.fns, fns...)
-	return tms
+func (_s *TimingMetricsSelect) Aggregate(fns ...AggregateFunc) *TimingMetricsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tms *TimingMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tms.ctx, ent.OpQuerySelect)
-	if err := tms.prepareQuery(ctx); err != nil {
+func (_s *TimingMetricsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TimingMetricsQuery, *TimingMetricsSelect](ctx, tms.TimingMetricsQuery, tms, tms.inters, v)
+	return scanWithInterceptors[*TimingMetricsQuery, *TimingMetricsSelect](ctx, _s.TimingMetricsQuery, _s, _s.inters, v)
 }
 
-func (tms *TimingMetricsSelect) sqlScan(ctx context.Context, root *TimingMetricsQuery, v any) error {
+func (_s *TimingMetricsSelect) sqlScan(ctx context.Context, root *TimingMetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(tms.fns))
-	for _, fn := range tms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*tms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -619,7 +619,7 @@ func (tms *TimingMetricsSelect) sqlScan(ctx context.Context, root *TimingMetrics
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

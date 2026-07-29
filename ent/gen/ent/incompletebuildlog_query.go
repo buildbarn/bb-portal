@@ -32,44 +32,44 @@ type IncompleteBuildLogQuery struct {
 }
 
 // Where adds a new predicate for the IncompleteBuildLogQuery builder.
-func (iblq *IncompleteBuildLogQuery) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogQuery {
-	iblq.predicates = append(iblq.predicates, ps...)
-	return iblq
+func (_q *IncompleteBuildLogQuery) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (iblq *IncompleteBuildLogQuery) Limit(limit int) *IncompleteBuildLogQuery {
-	iblq.ctx.Limit = &limit
-	return iblq
+func (_q *IncompleteBuildLogQuery) Limit(limit int) *IncompleteBuildLogQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (iblq *IncompleteBuildLogQuery) Offset(offset int) *IncompleteBuildLogQuery {
-	iblq.ctx.Offset = &offset
-	return iblq
+func (_q *IncompleteBuildLogQuery) Offset(offset int) *IncompleteBuildLogQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (iblq *IncompleteBuildLogQuery) Unique(unique bool) *IncompleteBuildLogQuery {
-	iblq.ctx.Unique = &unique
-	return iblq
+func (_q *IncompleteBuildLogQuery) Unique(unique bool) *IncompleteBuildLogQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (iblq *IncompleteBuildLogQuery) Order(o ...incompletebuildlog.OrderOption) *IncompleteBuildLogQuery {
-	iblq.order = append(iblq.order, o...)
-	return iblq
+func (_q *IncompleteBuildLogQuery) Order(o ...incompletebuildlog.OrderOption) *IncompleteBuildLogQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (iblq *IncompleteBuildLogQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: iblq.config}).Query()
+func (_q *IncompleteBuildLogQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := iblq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := iblq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -78,7 +78,7 @@ func (iblq *IncompleteBuildLogQuery) QueryBazelInvocation() *BazelInvocationQuer
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, incompletebuildlog.BazelInvocationTable, incompletebuildlog.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(iblq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -86,8 +86,8 @@ func (iblq *IncompleteBuildLogQuery) QueryBazelInvocation() *BazelInvocationQuer
 
 // First returns the first IncompleteBuildLog entity from the query.
 // Returns a *NotFoundError when no IncompleteBuildLog was found.
-func (iblq *IncompleteBuildLogQuery) First(ctx context.Context) (*IncompleteBuildLog, error) {
-	nodes, err := iblq.Limit(1).All(setContextOp(ctx, iblq.ctx, ent.OpQueryFirst))
+func (_q *IncompleteBuildLogQuery) First(ctx context.Context) (*IncompleteBuildLog, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +98,8 @@ func (iblq *IncompleteBuildLogQuery) First(ctx context.Context) (*IncompleteBuil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) FirstX(ctx context.Context) *IncompleteBuildLog {
-	node, err := iblq.First(ctx)
+func (_q *IncompleteBuildLogQuery) FirstX(ctx context.Context) *IncompleteBuildLog {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -108,9 +108,9 @@ func (iblq *IncompleteBuildLogQuery) FirstX(ctx context.Context) *IncompleteBuil
 
 // FirstID returns the first IncompleteBuildLog ID from the query.
 // Returns a *NotFoundError when no IncompleteBuildLog ID was found.
-func (iblq *IncompleteBuildLogQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *IncompleteBuildLogQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = iblq.Limit(1).IDs(setContextOp(ctx, iblq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -121,8 +121,8 @@ func (iblq *IncompleteBuildLogQuery) FirstID(ctx context.Context) (id int64, err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := iblq.FirstID(ctx)
+func (_q *IncompleteBuildLogQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,8 +132,8 @@ func (iblq *IncompleteBuildLogQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single IncompleteBuildLog entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one IncompleteBuildLog entity is found.
 // Returns a *NotFoundError when no IncompleteBuildLog entities are found.
-func (iblq *IncompleteBuildLogQuery) Only(ctx context.Context) (*IncompleteBuildLog, error) {
-	nodes, err := iblq.Limit(2).All(setContextOp(ctx, iblq.ctx, ent.OpQueryOnly))
+func (_q *IncompleteBuildLogQuery) Only(ctx context.Context) (*IncompleteBuildLog, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -148,8 +148,8 @@ func (iblq *IncompleteBuildLogQuery) Only(ctx context.Context) (*IncompleteBuild
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) OnlyX(ctx context.Context) *IncompleteBuildLog {
-	node, err := iblq.Only(ctx)
+func (_q *IncompleteBuildLogQuery) OnlyX(ctx context.Context) *IncompleteBuildLog {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -159,9 +159,9 @@ func (iblq *IncompleteBuildLogQuery) OnlyX(ctx context.Context) *IncompleteBuild
 // OnlyID is like Only, but returns the only IncompleteBuildLog ID in the query.
 // Returns a *NotSingularError when more than one IncompleteBuildLog ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (iblq *IncompleteBuildLogQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *IncompleteBuildLogQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = iblq.Limit(2).IDs(setContextOp(ctx, iblq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -176,8 +176,8 @@ func (iblq *IncompleteBuildLogQuery) OnlyID(ctx context.Context) (id int64, err 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := iblq.OnlyID(ctx)
+func (_q *IncompleteBuildLogQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -185,18 +185,18 @@ func (iblq *IncompleteBuildLogQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of IncompleteBuildLogs.
-func (iblq *IncompleteBuildLogQuery) All(ctx context.Context) ([]*IncompleteBuildLog, error) {
-	ctx = setContextOp(ctx, iblq.ctx, ent.OpQueryAll)
-	if err := iblq.prepareQuery(ctx); err != nil {
+func (_q *IncompleteBuildLogQuery) All(ctx context.Context) ([]*IncompleteBuildLog, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*IncompleteBuildLog, *IncompleteBuildLogQuery]()
-	return withInterceptors[[]*IncompleteBuildLog](ctx, iblq, qr, iblq.inters)
+	return withInterceptors[[]*IncompleteBuildLog](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) AllX(ctx context.Context) []*IncompleteBuildLog {
-	nodes, err := iblq.All(ctx)
+func (_q *IncompleteBuildLogQuery) AllX(ctx context.Context) []*IncompleteBuildLog {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -204,20 +204,20 @@ func (iblq *IncompleteBuildLogQuery) AllX(ctx context.Context) []*IncompleteBuil
 }
 
 // IDs executes the query and returns a list of IncompleteBuildLog IDs.
-func (iblq *IncompleteBuildLogQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if iblq.ctx.Unique == nil && iblq.path != nil {
-		iblq.Unique(true)
+func (_q *IncompleteBuildLogQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, iblq.ctx, ent.OpQueryIDs)
-	if err = iblq.Select(incompletebuildlog.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(incompletebuildlog.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := iblq.IDs(ctx)
+func (_q *IncompleteBuildLogQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -225,17 +225,17 @@ func (iblq *IncompleteBuildLogQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (iblq *IncompleteBuildLogQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, iblq.ctx, ent.OpQueryCount)
-	if err := iblq.prepareQuery(ctx); err != nil {
+func (_q *IncompleteBuildLogQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, iblq, querierCount[*IncompleteBuildLogQuery](), iblq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*IncompleteBuildLogQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) CountX(ctx context.Context) int {
-	count, err := iblq.Count(ctx)
+func (_q *IncompleteBuildLogQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -243,9 +243,9 @@ func (iblq *IncompleteBuildLogQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (iblq *IncompleteBuildLogQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, iblq.ctx, ent.OpQueryExist)
-	switch _, err := iblq.FirstID(ctx); {
+func (_q *IncompleteBuildLogQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -256,8 +256,8 @@ func (iblq *IncompleteBuildLogQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (iblq *IncompleteBuildLogQuery) ExistX(ctx context.Context) bool {
-	exist, err := iblq.Exist(ctx)
+func (_q *IncompleteBuildLogQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -266,32 +266,32 @@ func (iblq *IncompleteBuildLogQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the IncompleteBuildLogQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (iblq *IncompleteBuildLogQuery) Clone() *IncompleteBuildLogQuery {
-	if iblq == nil {
+func (_q *IncompleteBuildLogQuery) Clone() *IncompleteBuildLogQuery {
+	if _q == nil {
 		return nil
 	}
 	return &IncompleteBuildLogQuery{
-		config:              iblq.config,
-		ctx:                 iblq.ctx.Clone(),
-		order:               append([]incompletebuildlog.OrderOption{}, iblq.order...),
-		inters:              append([]Interceptor{}, iblq.inters...),
-		predicates:          append([]predicate.IncompleteBuildLog{}, iblq.predicates...),
-		withBazelInvocation: iblq.withBazelInvocation.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]incompletebuildlog.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.IncompleteBuildLog{}, _q.predicates...),
+		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  iblq.sql.Clone(),
-		path: iblq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (iblq *IncompleteBuildLogQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *IncompleteBuildLogQuery {
-	query := (&BazelInvocationClient{config: iblq.config}).Query()
+func (_q *IncompleteBuildLogQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *IncompleteBuildLogQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	iblq.withBazelInvocation = query
-	return iblq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -308,10 +308,10 @@ func (iblq *IncompleteBuildLogQuery) WithBazelInvocation(opts ...func(*BazelInvo
 //		GroupBy(incompletebuildlog.FieldSnippetID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (iblq *IncompleteBuildLogQuery) GroupBy(field string, fields ...string) *IncompleteBuildLogGroupBy {
-	iblq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &IncompleteBuildLogGroupBy{build: iblq}
-	grbuild.flds = &iblq.ctx.Fields
+func (_q *IncompleteBuildLogQuery) GroupBy(field string, fields ...string) *IncompleteBuildLogGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &IncompleteBuildLogGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = incompletebuildlog.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -329,89 +329,89 @@ func (iblq *IncompleteBuildLogQuery) GroupBy(field string, fields ...string) *In
 //	client.IncompleteBuildLog.Query().
 //		Select(incompletebuildlog.FieldSnippetID).
 //		Scan(ctx, &v)
-func (iblq *IncompleteBuildLogQuery) Select(fields ...string) *IncompleteBuildLogSelect {
-	iblq.ctx.Fields = append(iblq.ctx.Fields, fields...)
-	sbuild := &IncompleteBuildLogSelect{IncompleteBuildLogQuery: iblq}
+func (_q *IncompleteBuildLogQuery) Select(fields ...string) *IncompleteBuildLogSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &IncompleteBuildLogSelect{IncompleteBuildLogQuery: _q}
 	sbuild.label = incompletebuildlog.Label
-	sbuild.flds, sbuild.scan = &iblq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a IncompleteBuildLogSelect configured with the given aggregations.
-func (iblq *IncompleteBuildLogQuery) Aggregate(fns ...AggregateFunc) *IncompleteBuildLogSelect {
-	return iblq.Select().Aggregate(fns...)
+func (_q *IncompleteBuildLogQuery) Aggregate(fns ...AggregateFunc) *IncompleteBuildLogSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (iblq *IncompleteBuildLogQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range iblq.inters {
+func (_q *IncompleteBuildLogQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, iblq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range iblq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !incompletebuildlog.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if iblq.path != nil {
-		prev, err := iblq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		iblq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (iblq *IncompleteBuildLogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*IncompleteBuildLog, error) {
+func (_q *IncompleteBuildLogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*IncompleteBuildLog, error) {
 	var (
 		nodes       = []*IncompleteBuildLog{}
-		_spec       = iblq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			iblq.withBazelInvocation != nil,
+			_q.withBazelInvocation != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*IncompleteBuildLog).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &IncompleteBuildLog{config: iblq.config}
+		node := &IncompleteBuildLog{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(iblq.modifiers) > 0 {
-		_spec.Modifiers = iblq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, iblq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := iblq.withBazelInvocation; query != nil {
-		if err := iblq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *IncompleteBuildLog, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range iblq.loadTotal {
-		if err := iblq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (iblq *IncompleteBuildLogQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*IncompleteBuildLog, init func(*IncompleteBuildLog), assign func(*IncompleteBuildLog, *BazelInvocation)) error {
+func (_q *IncompleteBuildLogQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*IncompleteBuildLog, init func(*IncompleteBuildLog), assign func(*IncompleteBuildLog, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*IncompleteBuildLog)
 	for i := range nodes {
@@ -441,27 +441,27 @@ func (iblq *IncompleteBuildLogQuery) loadBazelInvocation(ctx context.Context, qu
 	return nil
 }
 
-func (iblq *IncompleteBuildLogQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := iblq.querySpec()
-	if len(iblq.modifiers) > 0 {
-		_spec.Modifiers = iblq.modifiers
+func (_q *IncompleteBuildLogQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = iblq.ctx.Fields
-	if len(iblq.ctx.Fields) > 0 {
-		_spec.Unique = iblq.ctx.Unique != nil && *iblq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, iblq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (iblq *IncompleteBuildLogQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *IncompleteBuildLogQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
-	_spec.From = iblq.sql
-	if unique := iblq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if iblq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := iblq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, incompletebuildlog.FieldID)
 		for i := range fields {
@@ -469,24 +469,24 @@ func (iblq *IncompleteBuildLogQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if iblq.withBazelInvocation != nil {
+		if _q.withBazelInvocation != nil {
 			_spec.Node.AddColumnOnce(incompletebuildlog.FieldBazelInvocationID)
 		}
 	}
-	if ps := iblq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := iblq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := iblq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := iblq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -496,33 +496,33 @@ func (iblq *IncompleteBuildLogQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (iblq *IncompleteBuildLogQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(iblq.driver.Dialect())
+func (_q *IncompleteBuildLogQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(incompletebuildlog.Table)
-	columns := iblq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = incompletebuildlog.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if iblq.sql != nil {
-		selector = iblq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if iblq.ctx.Unique != nil && *iblq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range iblq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range iblq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := iblq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := iblq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -535,41 +535,41 @@ type IncompleteBuildLogGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (iblgb *IncompleteBuildLogGroupBy) Aggregate(fns ...AggregateFunc) *IncompleteBuildLogGroupBy {
-	iblgb.fns = append(iblgb.fns, fns...)
-	return iblgb
+func (_g *IncompleteBuildLogGroupBy) Aggregate(fns ...AggregateFunc) *IncompleteBuildLogGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (iblgb *IncompleteBuildLogGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, iblgb.build.ctx, ent.OpQueryGroupBy)
-	if err := iblgb.build.prepareQuery(ctx); err != nil {
+func (_g *IncompleteBuildLogGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*IncompleteBuildLogQuery, *IncompleteBuildLogGroupBy](ctx, iblgb.build, iblgb, iblgb.build.inters, v)
+	return scanWithInterceptors[*IncompleteBuildLogQuery, *IncompleteBuildLogGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (iblgb *IncompleteBuildLogGroupBy) sqlScan(ctx context.Context, root *IncompleteBuildLogQuery, v any) error {
+func (_g *IncompleteBuildLogGroupBy) sqlScan(ctx context.Context, root *IncompleteBuildLogQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(iblgb.fns))
-	for _, fn := range iblgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*iblgb.flds)+len(iblgb.fns))
-		for _, f := range *iblgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*iblgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := iblgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -583,27 +583,27 @@ type IncompleteBuildLogSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ibls *IncompleteBuildLogSelect) Aggregate(fns ...AggregateFunc) *IncompleteBuildLogSelect {
-	ibls.fns = append(ibls.fns, fns...)
-	return ibls
+func (_s *IncompleteBuildLogSelect) Aggregate(fns ...AggregateFunc) *IncompleteBuildLogSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ibls *IncompleteBuildLogSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ibls.ctx, ent.OpQuerySelect)
-	if err := ibls.prepareQuery(ctx); err != nil {
+func (_s *IncompleteBuildLogSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*IncompleteBuildLogQuery, *IncompleteBuildLogSelect](ctx, ibls.IncompleteBuildLogQuery, ibls, ibls.inters, v)
+	return scanWithInterceptors[*IncompleteBuildLogQuery, *IncompleteBuildLogSelect](ctx, _s.IncompleteBuildLogQuery, _s, _s.inters, v)
 }
 
-func (ibls *IncompleteBuildLogSelect) sqlScan(ctx context.Context, root *IncompleteBuildLogQuery, v any) error {
+func (_s *IncompleteBuildLogSelect) sqlScan(ctx context.Context, root *IncompleteBuildLogQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ibls.fns))
-	for _, fn := range ibls.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ibls.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -611,7 +611,7 @@ func (ibls *IncompleteBuildLogSelect) sqlScan(ctx context.Context, root *Incompl
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ibls.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

@@ -6,17 +6,6 @@ interface Props {
   runnerMetrics: RunnerCount[];
 }
 
-function colorSwitchOnExecStrat(exec: string) {
-  switch (exec) {
-    case "Remote":
-      return "#49AA19";
-    case "Local":
-      return "#DC4446";
-    default:
-      return "#777777";
-  }
-}
-
 const ActionRunnerMetrics: React.FC<Props> = ({ runnerMetrics }) => {
   const chartItems: SummaryChartItem[] = [];
   const totalCount: number =
@@ -28,7 +17,6 @@ const ActionRunnerMetrics: React.FC<Props> = ({ runnerMetrics }) => {
       value: item.name ?? "",
       count: item.actionsExecuted ?? 0,
       percent: nullPercent(item.actionsExecuted, totalCount, 0),
-      fill: colorSwitchOnExecStrat(item.execKind ?? ""),
     };
     if (chartItem.value !== "total") {
       chartItems.push(chartItem);

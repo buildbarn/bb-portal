@@ -107,7 +107,7 @@ func (*Configuration) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Configuration fields.
-func (c *Configuration) assignValues(columns []string, values []any) error {
+func (_m *Configuration) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -118,36 +118,36 @@ func (c *Configuration) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			c.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case configuration.FieldConfigurationID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field configuration_id", values[i])
 			} else if value.Valid {
-				c.ConfigurationID = value.String
+				_m.ConfigurationID = value.String
 			}
 		case configuration.FieldMnemonic:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mnemonic", values[i])
 			} else if value.Valid {
-				c.Mnemonic = value.String
+				_m.Mnemonic = value.String
 			}
 		case configuration.FieldPlatformName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field platform_name", values[i])
 			} else if value.Valid {
-				c.PlatformName = value.String
+				_m.PlatformName = value.String
 			}
 		case configuration.FieldCPU:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field cpu", values[i])
 			} else if value.Valid {
-				c.CPU = value.String
+				_m.CPU = value.String
 			}
 		case configuration.FieldMakeVariables:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field make_variables", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &c.MakeVariables); err != nil {
+				if err := json.Unmarshal(*value, &_m.MakeVariables); err != nil {
 					return fmt.Errorf("unmarshal field make_variables: %w", err)
 				}
 			}
@@ -155,16 +155,16 @@ func (c *Configuration) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_tool", values[i])
 			} else if value.Valid {
-				c.IsTool = value.Bool
+				_m.IsTool = value.Bool
 			}
 		case configuration.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				c.BazelInvocationID = value.Int64
+				_m.BazelInvocationID = value.Int64
 			}
 		default:
-			c.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -172,117 +172,117 @@ func (c *Configuration) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Configuration.
 // This includes values selected through modifiers, order, etc.
-func (c *Configuration) Value(name string) (ent.Value, error) {
-	return c.selectValues.Get(name)
+func (_m *Configuration) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBazelInvocation queries the "bazel_invocation" edge of the Configuration entity.
-func (c *Configuration) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewConfigurationClient(c.config).QueryBazelInvocation(c)
+func (_m *Configuration) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewConfigurationClient(_m.config).QueryBazelInvocation(_m)
 }
 
 // QueryInvocationTargets queries the "invocation_targets" edge of the Configuration entity.
-func (c *Configuration) QueryInvocationTargets() *InvocationTargetQuery {
-	return NewConfigurationClient(c.config).QueryInvocationTargets(c)
+func (_m *Configuration) QueryInvocationTargets() *InvocationTargetQuery {
+	return NewConfigurationClient(_m.config).QueryInvocationTargets(_m)
 }
 
 // QueryActions queries the "actions" edge of the Configuration entity.
-func (c *Configuration) QueryActions() *ActionQuery {
-	return NewConfigurationClient(c.config).QueryActions(c)
+func (_m *Configuration) QueryActions() *ActionQuery {
+	return NewConfigurationClient(_m.config).QueryActions(_m)
 }
 
 // Update returns a builder for updating this Configuration.
 // Note that you need to call Configuration.Unwrap() before calling this method if this Configuration
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (c *Configuration) Update() *ConfigurationUpdateOne {
-	return NewConfigurationClient(c.config).UpdateOne(c)
+func (_m *Configuration) Update() *ConfigurationUpdateOne {
+	return NewConfigurationClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Configuration entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (c *Configuration) Unwrap() *Configuration {
-	_tx, ok := c.config.driver.(*txDriver)
+func (_m *Configuration) Unwrap() *Configuration {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Configuration is not a transactional entity")
 	}
-	c.config.driver = _tx.drv
-	return c
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (c *Configuration) String() string {
+func (_m *Configuration) String() string {
 	var builder strings.Builder
 	builder.WriteString("Configuration(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("configuration_id=")
-	builder.WriteString(c.ConfigurationID)
+	builder.WriteString(_m.ConfigurationID)
 	builder.WriteString(", ")
 	builder.WriteString("mnemonic=")
-	builder.WriteString(c.Mnemonic)
+	builder.WriteString(_m.Mnemonic)
 	builder.WriteString(", ")
 	builder.WriteString("platform_name=")
-	builder.WriteString(c.PlatformName)
+	builder.WriteString(_m.PlatformName)
 	builder.WriteString(", ")
 	builder.WriteString("cpu=")
-	builder.WriteString(c.CPU)
+	builder.WriteString(_m.CPU)
 	builder.WriteString(", ")
 	builder.WriteString("make_variables=")
-	builder.WriteString(fmt.Sprintf("%v", c.MakeVariables))
+	builder.WriteString(fmt.Sprintf("%v", _m.MakeVariables))
 	builder.WriteString(", ")
 	builder.WriteString("is_tool=")
-	builder.WriteString(fmt.Sprintf("%v", c.IsTool))
+	builder.WriteString(fmt.Sprintf("%v", _m.IsTool))
 	builder.WriteString(", ")
 	builder.WriteString("bazel_invocation_id=")
-	builder.WriteString(fmt.Sprintf("%v", c.BazelInvocationID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedInvocationTargets returns the InvocationTargets named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (c *Configuration) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
-	if c.Edges.namedInvocationTargets == nil {
+func (_m *Configuration) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
+	if _m.Edges.namedInvocationTargets == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := c.Edges.namedInvocationTargets[name]
+	nodes, ok := _m.Edges.namedInvocationTargets[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (c *Configuration) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
-	if c.Edges.namedInvocationTargets == nil {
-		c.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
+func (_m *Configuration) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
+	if _m.Edges.namedInvocationTargets == nil {
+		_m.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
 	}
 	if len(edges) == 0 {
-		c.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
+		_m.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
 	} else {
-		c.Edges.namedInvocationTargets[name] = append(c.Edges.namedInvocationTargets[name], edges...)
+		_m.Edges.namedInvocationTargets[name] = append(_m.Edges.namedInvocationTargets[name], edges...)
 	}
 }
 
 // NamedActions returns the Actions named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (c *Configuration) NamedActions(name string) ([]*Action, error) {
-	if c.Edges.namedActions == nil {
+func (_m *Configuration) NamedActions(name string) ([]*Action, error) {
+	if _m.Edges.namedActions == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := c.Edges.namedActions[name]
+	nodes, ok := _m.Edges.namedActions[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (c *Configuration) appendNamedActions(name string, edges ...*Action) {
-	if c.Edges.namedActions == nil {
-		c.Edges.namedActions = make(map[string][]*Action)
+func (_m *Configuration) appendNamedActions(name string, edges ...*Action) {
+	if _m.Edges.namedActions == nil {
+		_m.Edges.namedActions = make(map[string][]*Action)
 	}
 	if len(edges) == 0 {
-		c.Edges.namedActions[name] = []*Action{}
+		_m.Edges.namedActions[name] = []*Action{}
 	} else {
-		c.Edges.namedActions[name] = append(c.Edges.namedActions[name], edges...)
+		_m.Edges.namedActions[name] = append(_m.Edges.namedActions[name], edges...)
 	}
 }
 

@@ -25,11 +25,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
@@ -42,6 +44,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testactionoutput"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
@@ -103,7 +106,7 @@ var (
 )
 
 // checkColumn checks if the column exists in the given table.
-func checkColumn(table, column string) error {
+func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			action.Table:                action.ValidColumn,
@@ -119,11 +122,13 @@ func checkColumn(table, column string) error {
 			buildtag.Table:              buildtag.ValidColumn,
 			configuration.Table:         configuration.ValidColumn,
 			connectionmetadata.Table:    connectionmetadata.ValidColumn,
+			digest.Table:                digest.ValidColumn,
 			eventmetadata.Table:         eventmetadata.ValidColumn,
+			file.Table:                  file.ValidColumn,
+			filepath.Table:              filepath.ValidColumn,
 			garbagemetrics.Table:        garbagemetrics.ValidColumn,
 			incompletebuildlog.Table:    incompletebuildlog.ValidColumn,
 			instancename.Table:          instancename.ValidColumn,
-			invocationfiles.Table:       invocationfiles.ValidColumn,
 			invocationtag.Table:         invocationtag.ValidColumn,
 			invocationtarget.Table:      invocationtarget.ValidColumn,
 			memorymetrics.Table:         memorymetrics.ValidColumn,
@@ -136,13 +141,14 @@ func checkColumn(table, column string) error {
 			target.Table:                target.ValidColumn,
 			targetkindmapping.Table:     targetkindmapping.ValidColumn,
 			targetmetrics.Table:         targetmetrics.ValidColumn,
+			testactionoutput.Table:      testactionoutput.ValidColumn,
 			testresult.Table:            testresult.ValidColumn,
 			testsummary.Table:           testsummary.ValidColumn,
 			testtarget.Table:            testtarget.ValidColumn,
 			timingmetrics.Table:         timingmetrics.ValidColumn,
 		})
 	})
-	return columnCheck(table, column)
+	return columnCheck(t, c)
 }
 
 // Asc applies the given fields in ASC order.

@@ -20,56 +20,56 @@ type SystemNetworkStatsDelete struct {
 }
 
 // Where appends a list predicates to the SystemNetworkStatsDelete builder.
-func (snsd *SystemNetworkStatsDelete) Where(ps ...predicate.SystemNetworkStats) *SystemNetworkStatsDelete {
-	snsd.mutation.Where(ps...)
-	return snsd
+func (_d *SystemNetworkStatsDelete) Where(ps ...predicate.SystemNetworkStats) *SystemNetworkStatsDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (snsd *SystemNetworkStatsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, snsd.sqlExec, snsd.mutation, snsd.hooks)
+func (_d *SystemNetworkStatsDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snsd *SystemNetworkStatsDelete) ExecX(ctx context.Context) int {
-	n, err := snsd.Exec(ctx)
+func (_d *SystemNetworkStatsDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (snsd *SystemNetworkStatsDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *SystemNetworkStatsDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(systemnetworkstats.Table, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt64))
-	if ps := snsd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, snsd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	snsd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // SystemNetworkStatsDeleteOne is the builder for deleting a single SystemNetworkStats entity.
 type SystemNetworkStatsDeleteOne struct {
-	snsd *SystemNetworkStatsDelete
+	_d *SystemNetworkStatsDelete
 }
 
 // Where appends a list predicates to the SystemNetworkStatsDelete builder.
-func (snsdo *SystemNetworkStatsDeleteOne) Where(ps ...predicate.SystemNetworkStats) *SystemNetworkStatsDeleteOne {
-	snsdo.snsd.mutation.Where(ps...)
-	return snsdo
+func (_d *SystemNetworkStatsDeleteOne) Where(ps ...predicate.SystemNetworkStats) *SystemNetworkStatsDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (snsdo *SystemNetworkStatsDeleteOne) Exec(ctx context.Context) error {
-	n, err := snsdo.snsd.Exec(ctx)
+func (_d *SystemNetworkStatsDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (snsdo *SystemNetworkStatsDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snsdo *SystemNetworkStatsDeleteOne) ExecX(ctx context.Context) {
-	if err := snsdo.Exec(ctx); err != nil {
+func (_d *SystemNetworkStatsDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

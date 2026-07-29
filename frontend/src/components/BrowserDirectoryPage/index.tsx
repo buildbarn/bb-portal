@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Spin } from "antd";
-import { useGrpcClients } from "@/context/GrpcClientsContext";
-import type { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
+import { fileSystemAccessCacheClient } from "@/grpc/fileSystemAccessCacheClient";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
+import type { FileSystemAccessProfileReference } from "@/types/FileSystemAccessProfileReference";
 import BrowserDirectory from "../BrowserDirectory";
 import PortalAlert from "../PortalAlert";
 
@@ -17,8 +17,6 @@ const BrowserDirectoryPage: React.FC<Params> = ({
   browserPageParams,
   fileSystemAccessProfileReference,
 }) => {
-  const { fileSystemAccessCacheClient } = useGrpcClients();
-
   const { data, isError, error, isLoading } = useQuery({
     queryKey: [
       "fileSystemAccessProfile",

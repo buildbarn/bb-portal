@@ -1,6 +1,6 @@
 scalar UUID
 scalar Duration
-scalar Uint64
+scalar UnsignedLong
 scalar Map
 scalar Time
 scalar Any

@@ -48,44 +48,44 @@ type MetricsQuery struct {
 }
 
 // Where adds a new predicate for the MetricsQuery builder.
-func (mq *MetricsQuery) Where(ps ...predicate.Metrics) *MetricsQuery {
-	mq.predicates = append(mq.predicates, ps...)
-	return mq
+func (_q *MetricsQuery) Where(ps ...predicate.Metrics) *MetricsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (mq *MetricsQuery) Limit(limit int) *MetricsQuery {
-	mq.ctx.Limit = &limit
-	return mq
+func (_q *MetricsQuery) Limit(limit int) *MetricsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (mq *MetricsQuery) Offset(offset int) *MetricsQuery {
-	mq.ctx.Offset = &offset
-	return mq
+func (_q *MetricsQuery) Offset(offset int) *MetricsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (mq *MetricsQuery) Unique(unique bool) *MetricsQuery {
-	mq.ctx.Unique = &unique
-	return mq
+func (_q *MetricsQuery) Unique(unique bool) *MetricsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (mq *MetricsQuery) Order(o ...metrics.OrderOption) *MetricsQuery {
-	mq.order = append(mq.order, o...)
-	return mq
+func (_q *MetricsQuery) Order(o ...metrics.OrderOption) *MetricsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (mq *MetricsQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryBazelInvocation() *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -94,20 +94,20 @@ func (mq *MetricsQuery) QueryBazelInvocation() *BazelInvocationQuery {
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, metrics.BazelInvocationTable, metrics.BazelInvocationColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryActionSummary chains the current query on the "action_summary" edge.
-func (mq *MetricsQuery) QueryActionSummary() *ActionSummaryQuery {
-	query := (&ActionSummaryClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryActionSummary() *ActionSummaryQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -116,20 +116,20 @@ func (mq *MetricsQuery) QueryActionSummary() *ActionSummaryQuery {
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.ActionSummaryTable, metrics.ActionSummaryColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryMemoryMetrics chains the current query on the "memory_metrics" edge.
-func (mq *MetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
-	query := (&MemoryMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
+	query := (&MemoryMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -138,20 +138,20 @@ func (mq *MetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
 			sqlgraph.To(memorymetrics.Table, memorymetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.MemoryMetricsTable, metrics.MemoryMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTargetMetrics chains the current query on the "target_metrics" edge.
-func (mq *MetricsQuery) QueryTargetMetrics() *TargetMetricsQuery {
-	query := (&TargetMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryTargetMetrics() *TargetMetricsQuery {
+	query := (&TargetMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -160,20 +160,20 @@ func (mq *MetricsQuery) QueryTargetMetrics() *TargetMetricsQuery {
 			sqlgraph.To(targetmetrics.Table, targetmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.TargetMetricsTable, metrics.TargetMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryTimingMetrics chains the current query on the "timing_metrics" edge.
-func (mq *MetricsQuery) QueryTimingMetrics() *TimingMetricsQuery {
-	query := (&TimingMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryTimingMetrics() *TimingMetricsQuery {
+	query := (&TimingMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -182,20 +182,20 @@ func (mq *MetricsQuery) QueryTimingMetrics() *TimingMetricsQuery {
 			sqlgraph.To(timingmetrics.Table, timingmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.TimingMetricsTable, metrics.TimingMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryArtifactMetrics chains the current query on the "artifact_metrics" edge.
-func (mq *MetricsQuery) QueryArtifactMetrics() *ArtifactMetricsQuery {
-	query := (&ArtifactMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryArtifactMetrics() *ArtifactMetricsQuery {
+	query := (&ArtifactMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -204,20 +204,20 @@ func (mq *MetricsQuery) QueryArtifactMetrics() *ArtifactMetricsQuery {
 			sqlgraph.To(artifactmetrics.Table, artifactmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.ArtifactMetricsTable, metrics.ArtifactMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryNetworkMetrics chains the current query on the "network_metrics" edge.
-func (mq *MetricsQuery) QueryNetworkMetrics() *NetworkMetricsQuery {
-	query := (&NetworkMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryNetworkMetrics() *NetworkMetricsQuery {
+	query := (&NetworkMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -226,20 +226,20 @@ func (mq *MetricsQuery) QueryNetworkMetrics() *NetworkMetricsQuery {
 			sqlgraph.To(networkmetrics.Table, networkmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.NetworkMetricsTable, metrics.NetworkMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryBuildGraphMetrics chains the current query on the "build_graph_metrics" edge.
-func (mq *MetricsQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
-	query := (&BuildGraphMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
+	query := (&BuildGraphMetricsClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := mq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -248,7 +248,7 @@ func (mq *MetricsQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
 			sqlgraph.To(buildgraphmetrics.Table, buildgraphmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.BuildGraphMetricsTable, metrics.BuildGraphMetricsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -256,8 +256,8 @@ func (mq *MetricsQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
 
 // First returns the first Metrics entity from the query.
 // Returns a *NotFoundError when no Metrics was found.
-func (mq *MetricsQuery) First(ctx context.Context) (*Metrics, error) {
-	nodes, err := mq.Limit(1).All(setContextOp(ctx, mq.ctx, ent.OpQueryFirst))
+func (_q *MetricsQuery) First(ctx context.Context) (*Metrics, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -268,8 +268,8 @@ func (mq *MetricsQuery) First(ctx context.Context) (*Metrics, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (mq *MetricsQuery) FirstX(ctx context.Context) *Metrics {
-	node, err := mq.First(ctx)
+func (_q *MetricsQuery) FirstX(ctx context.Context) *Metrics {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -278,9 +278,9 @@ func (mq *MetricsQuery) FirstX(ctx context.Context) *Metrics {
 
 // FirstID returns the first Metrics ID from the query.
 // Returns a *NotFoundError when no Metrics ID was found.
-func (mq *MetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *MetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = mq.Limit(1).IDs(setContextOp(ctx, mq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -291,8 +291,8 @@ func (mq *MetricsQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (mq *MetricsQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := mq.FirstID(ctx)
+func (_q *MetricsQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -302,8 +302,8 @@ func (mq *MetricsQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single Metrics entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Metrics entity is found.
 // Returns a *NotFoundError when no Metrics entities are found.
-func (mq *MetricsQuery) Only(ctx context.Context) (*Metrics, error) {
-	nodes, err := mq.Limit(2).All(setContextOp(ctx, mq.ctx, ent.OpQueryOnly))
+func (_q *MetricsQuery) Only(ctx context.Context) (*Metrics, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -318,8 +318,8 @@ func (mq *MetricsQuery) Only(ctx context.Context) (*Metrics, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (mq *MetricsQuery) OnlyX(ctx context.Context) *Metrics {
-	node, err := mq.Only(ctx)
+func (_q *MetricsQuery) OnlyX(ctx context.Context) *Metrics {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -329,9 +329,9 @@ func (mq *MetricsQuery) OnlyX(ctx context.Context) *Metrics {
 // OnlyID is like Only, but returns the only Metrics ID in the query.
 // Returns a *NotSingularError when more than one Metrics ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (mq *MetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *MetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = mq.Limit(2).IDs(setContextOp(ctx, mq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -346,8 +346,8 @@ func (mq *MetricsQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (mq *MetricsQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := mq.OnlyID(ctx)
+func (_q *MetricsQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -355,18 +355,18 @@ func (mq *MetricsQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of MetricsSlice.
-func (mq *MetricsQuery) All(ctx context.Context) ([]*Metrics, error) {
-	ctx = setContextOp(ctx, mq.ctx, ent.OpQueryAll)
-	if err := mq.prepareQuery(ctx); err != nil {
+func (_q *MetricsQuery) All(ctx context.Context) ([]*Metrics, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Metrics, *MetricsQuery]()
-	return withInterceptors[[]*Metrics](ctx, mq, qr, mq.inters)
+	return withInterceptors[[]*Metrics](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (mq *MetricsQuery) AllX(ctx context.Context) []*Metrics {
-	nodes, err := mq.All(ctx)
+func (_q *MetricsQuery) AllX(ctx context.Context) []*Metrics {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -374,20 +374,20 @@ func (mq *MetricsQuery) AllX(ctx context.Context) []*Metrics {
 }
 
 // IDs executes the query and returns a list of Metrics IDs.
-func (mq *MetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if mq.ctx.Unique == nil && mq.path != nil {
-		mq.Unique(true)
+func (_q *MetricsQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, mq.ctx, ent.OpQueryIDs)
-	if err = mq.Select(metrics.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(metrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (mq *MetricsQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := mq.IDs(ctx)
+func (_q *MetricsQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -395,17 +395,17 @@ func (mq *MetricsQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (mq *MetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, mq.ctx, ent.OpQueryCount)
-	if err := mq.prepareQuery(ctx); err != nil {
+func (_q *MetricsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, mq, querierCount[*MetricsQuery](), mq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*MetricsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (mq *MetricsQuery) CountX(ctx context.Context) int {
-	count, err := mq.Count(ctx)
+func (_q *MetricsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -413,9 +413,9 @@ func (mq *MetricsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (mq *MetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, mq.ctx, ent.OpQueryExist)
-	switch _, err := mq.FirstID(ctx); {
+func (_q *MetricsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -426,8 +426,8 @@ func (mq *MetricsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (mq *MetricsQuery) ExistX(ctx context.Context) bool {
-	exist, err := mq.Exist(ctx)
+func (_q *MetricsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -436,124 +436,124 @@ func (mq *MetricsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the MetricsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (mq *MetricsQuery) Clone() *MetricsQuery {
-	if mq == nil {
+func (_q *MetricsQuery) Clone() *MetricsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &MetricsQuery{
-		config:                mq.config,
-		ctx:                   mq.ctx.Clone(),
-		order:                 append([]metrics.OrderOption{}, mq.order...),
-		inters:                append([]Interceptor{}, mq.inters...),
-		predicates:            append([]predicate.Metrics{}, mq.predicates...),
-		withBazelInvocation:   mq.withBazelInvocation.Clone(),
-		withActionSummary:     mq.withActionSummary.Clone(),
-		withMemoryMetrics:     mq.withMemoryMetrics.Clone(),
-		withTargetMetrics:     mq.withTargetMetrics.Clone(),
-		withTimingMetrics:     mq.withTimingMetrics.Clone(),
-		withArtifactMetrics:   mq.withArtifactMetrics.Clone(),
-		withNetworkMetrics:    mq.withNetworkMetrics.Clone(),
-		withBuildGraphMetrics: mq.withBuildGraphMetrics.Clone(),
+		config:                _q.config,
+		ctx:                   _q.ctx.Clone(),
+		order:                 append([]metrics.OrderOption{}, _q.order...),
+		inters:                append([]Interceptor{}, _q.inters...),
+		predicates:            append([]predicate.Metrics{}, _q.predicates...),
+		withBazelInvocation:   _q.withBazelInvocation.Clone(),
+		withActionSummary:     _q.withActionSummary.Clone(),
+		withMemoryMetrics:     _q.withMemoryMetrics.Clone(),
+		withTargetMetrics:     _q.withTargetMetrics.Clone(),
+		withTimingMetrics:     _q.withTimingMetrics.Clone(),
+		withArtifactMetrics:   _q.withArtifactMetrics.Clone(),
+		withNetworkMetrics:    _q.withNetworkMetrics.Clone(),
+		withBuildGraphMetrics: _q.withBuildGraphMetrics.Clone(),
 		// clone intermediate query.
-		sql:  mq.sql.Clone(),
-		path: mq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *MetricsQuery {
-	query := (&BazelInvocationClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *MetricsQuery {
+	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withBazelInvocation = query
-	return mq
+	_q.withBazelInvocation = query
+	return _q
 }
 
 // WithActionSummary tells the query-builder to eager-load the nodes that are connected to
 // the "action_summary" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *MetricsQuery {
-	query := (&ActionSummaryClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithActionSummary(opts ...func(*ActionSummaryQuery)) *MetricsQuery {
+	query := (&ActionSummaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withActionSummary = query
-	return mq
+	_q.withActionSummary = query
+	return _q
 }
 
 // WithMemoryMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "memory_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithMemoryMetrics(opts ...func(*MemoryMetricsQuery)) *MetricsQuery {
-	query := (&MemoryMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithMemoryMetrics(opts ...func(*MemoryMetricsQuery)) *MetricsQuery {
+	query := (&MemoryMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withMemoryMetrics = query
-	return mq
+	_q.withMemoryMetrics = query
+	return _q
 }
 
 // WithTargetMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "target_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithTargetMetrics(opts ...func(*TargetMetricsQuery)) *MetricsQuery {
-	query := (&TargetMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithTargetMetrics(opts ...func(*TargetMetricsQuery)) *MetricsQuery {
+	query := (&TargetMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withTargetMetrics = query
-	return mq
+	_q.withTargetMetrics = query
+	return _q
 }
 
 // WithTimingMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "timing_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithTimingMetrics(opts ...func(*TimingMetricsQuery)) *MetricsQuery {
-	query := (&TimingMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithTimingMetrics(opts ...func(*TimingMetricsQuery)) *MetricsQuery {
+	query := (&TimingMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withTimingMetrics = query
-	return mq
+	_q.withTimingMetrics = query
+	return _q
 }
 
 // WithArtifactMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "artifact_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithArtifactMetrics(opts ...func(*ArtifactMetricsQuery)) *MetricsQuery {
-	query := (&ArtifactMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithArtifactMetrics(opts ...func(*ArtifactMetricsQuery)) *MetricsQuery {
+	query := (&ArtifactMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withArtifactMetrics = query
-	return mq
+	_q.withArtifactMetrics = query
+	return _q
 }
 
 // WithNetworkMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "network_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNetworkMetrics(opts ...func(*NetworkMetricsQuery)) *MetricsQuery {
-	query := (&NetworkMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithNetworkMetrics(opts ...func(*NetworkMetricsQuery)) *MetricsQuery {
+	query := (&NetworkMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withNetworkMetrics = query
-	return mq
+	_q.withNetworkMetrics = query
+	return _q
 }
 
 // WithBuildGraphMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "build_graph_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithBuildGraphMetrics(opts ...func(*BuildGraphMetricsQuery)) *MetricsQuery {
-	query := (&BuildGraphMetricsClient{config: mq.config}).Query()
+func (_q *MetricsQuery) WithBuildGraphMetrics(opts ...func(*BuildGraphMetricsQuery)) *MetricsQuery {
+	query := (&BuildGraphMetricsClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	mq.withBuildGraphMetrics = query
-	return mq
+	_q.withBuildGraphMetrics = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
-func (mq *MetricsQuery) GroupBy(field string, fields ...string) *MetricsGroupBy {
-	mq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &MetricsGroupBy{build: mq}
-	grbuild.flds = &mq.ctx.Fields
+func (_q *MetricsQuery) GroupBy(field string, fields ...string) *MetricsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &MetricsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = metrics.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -561,62 +561,62 @@ func (mq *MetricsQuery) GroupBy(field string, fields ...string) *MetricsGroupBy 
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
-func (mq *MetricsQuery) Select(fields ...string) *MetricsSelect {
-	mq.ctx.Fields = append(mq.ctx.Fields, fields...)
-	sbuild := &MetricsSelect{MetricsQuery: mq}
+func (_q *MetricsQuery) Select(fields ...string) *MetricsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &MetricsSelect{MetricsQuery: _q}
 	sbuild.label = metrics.Label
-	sbuild.flds, sbuild.scan = &mq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a MetricsSelect configured with the given aggregations.
-func (mq *MetricsQuery) Aggregate(fns ...AggregateFunc) *MetricsSelect {
-	return mq.Select().Aggregate(fns...)
+func (_q *MetricsQuery) Aggregate(fns ...AggregateFunc) *MetricsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (mq *MetricsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range mq.inters {
+func (_q *MetricsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, mq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range mq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !metrics.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if mq.path != nil {
-		prev, err := mq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		mq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metrics, error) {
+func (_q *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metrics, error) {
 	var (
 		nodes       = []*Metrics{}
-		withFKs     = mq.withFKs
-		_spec       = mq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [8]bool{
-			mq.withBazelInvocation != nil,
-			mq.withActionSummary != nil,
-			mq.withMemoryMetrics != nil,
-			mq.withTargetMetrics != nil,
-			mq.withTimingMetrics != nil,
-			mq.withArtifactMetrics != nil,
-			mq.withNetworkMetrics != nil,
-			mq.withBuildGraphMetrics != nil,
+			_q.withBazelInvocation != nil,
+			_q.withActionSummary != nil,
+			_q.withMemoryMetrics != nil,
+			_q.withTargetMetrics != nil,
+			_q.withTimingMetrics != nil,
+			_q.withArtifactMetrics != nil,
+			_q.withNetworkMetrics != nil,
+			_q.withBuildGraphMetrics != nil,
 		}
 	)
-	if mq.withBazelInvocation != nil {
+	if _q.withBazelInvocation != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -626,80 +626,80 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 		return (*Metrics).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Metrics{config: mq.config}
+		node := &Metrics{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
-	if len(mq.modifiers) > 0 {
-		_spec.Modifiers = mq.modifiers
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, mq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := mq.withBazelInvocation; query != nil {
-		if err := mq.loadBazelInvocation(ctx, query, nodes, nil,
+	if query := _q.withBazelInvocation; query != nil {
+		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
 			func(n *Metrics, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mq.withActionSummary; query != nil {
-		if err := mq.loadActionSummary(ctx, query, nodes, nil,
+	if query := _q.withActionSummary; query != nil {
+		if err := _q.loadActionSummary(ctx, query, nodes, nil,
 			func(n *Metrics, e *ActionSummary) { n.Edges.ActionSummary = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mq.withMemoryMetrics; query != nil {
-		if err := mq.loadMemoryMetrics(ctx, query, nodes, nil,
+	if query := _q.withMemoryMetrics; query != nil {
+		if err := _q.loadMemoryMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *MemoryMetrics) { n.Edges.MemoryMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mq.withTargetMetrics; query != nil {
-		if err := mq.loadTargetMetrics(ctx, query, nodes, nil,
+	if query := _q.withTargetMetrics; query != nil {
+		if err := _q.loadTargetMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *TargetMetrics) { n.Edges.TargetMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mq.withTimingMetrics; query != nil {
-		if err := mq.loadTimingMetrics(ctx, query, nodes, nil,
+	if query := _q.withTimingMetrics; query != nil {
+		if err := _q.loadTimingMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *TimingMetrics) { n.Edges.TimingMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mq.withArtifactMetrics; query != nil {
-		if err := mq.loadArtifactMetrics(ctx, query, nodes, nil,
+	if query := _q.withArtifactMetrics; query != nil {
+		if err := _q.loadArtifactMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *ArtifactMetrics) { n.Edges.ArtifactMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mq.withNetworkMetrics; query != nil {
-		if err := mq.loadNetworkMetrics(ctx, query, nodes, nil,
+	if query := _q.withNetworkMetrics; query != nil {
+		if err := _q.loadNetworkMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *NetworkMetrics) { n.Edges.NetworkMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := mq.withBuildGraphMetrics; query != nil {
-		if err := mq.loadBuildGraphMetrics(ctx, query, nodes, nil,
+	if query := _q.withBuildGraphMetrics; query != nil {
+		if err := _q.loadBuildGraphMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *BuildGraphMetrics) { n.Edges.BuildGraphMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
-	for i := range mq.loadTotal {
-		if err := mq.loadTotal[i](ctx, nodes); err != nil {
+	for i := range _q.loadTotal {
+		if err := _q.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (mq *MetricsQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BazelInvocation)) error {
+func (_q *MetricsQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*Metrics)
 	for i := range nodes {
@@ -731,7 +731,7 @@ func (mq *MetricsQuery) loadBazelInvocation(ctx context.Context, query *BazelInv
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *ActionSummary)) error {
+func (_q *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *ActionSummary)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
@@ -759,7 +759,7 @@ func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSumm
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *MemoryMetrics)) error {
+func (_q *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *MemoryMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
@@ -787,7 +787,7 @@ func (mq *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetr
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TargetMetrics)) error {
+func (_q *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TargetMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
@@ -815,7 +815,7 @@ func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetr
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TimingMetrics)) error {
+func (_q *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TimingMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
@@ -843,7 +843,7 @@ func (mq *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetr
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *ArtifactMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *ArtifactMetrics)) error {
+func (_q *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *ArtifactMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *ArtifactMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
@@ -871,7 +871,7 @@ func (mq *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *Artifact
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *NetworkMetrics)) error {
+func (_q *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *NetworkMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
@@ -899,7 +899,7 @@ func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMe
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildGraphMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BuildGraphMetrics)) error {
+func (_q *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildGraphMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BuildGraphMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Metrics)
 	for i := range nodes {
@@ -928,27 +928,27 @@ func (mq *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildG
 	return nil
 }
 
-func (mq *MetricsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := mq.querySpec()
-	if len(mq.modifiers) > 0 {
-		_spec.Modifiers = mq.modifiers
+func (_q *MetricsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	if len(_q.modifiers) > 0 {
+		_spec.Modifiers = _q.modifiers
 	}
-	_spec.Node.Columns = mq.ctx.Fields
-	if len(mq.ctx.Fields) > 0 {
-		_spec.Unique = mq.ctx.Unique != nil && *mq.ctx.Unique
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, mq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (mq *MetricsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *MetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(metrics.Table, metrics.Columns, sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64))
-	_spec.From = mq.sql
-	if unique := mq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if mq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := mq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, metrics.FieldID)
 		for i := range fields {
@@ -957,20 +957,20 @@ func (mq *MetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := mq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := mq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := mq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := mq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -980,33 +980,33 @@ func (mq *MetricsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (mq *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(mq.driver.Dialect())
+func (_q *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(metrics.Table)
-	columns := mq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = metrics.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if mq.sql != nil {
-		selector = mq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if mq.ctx.Unique != nil && *mq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range mq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range mq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := mq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := mq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -1019,41 +1019,41 @@ type MetricsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (mgb *MetricsGroupBy) Aggregate(fns ...AggregateFunc) *MetricsGroupBy {
-	mgb.fns = append(mgb.fns, fns...)
-	return mgb
+func (_g *MetricsGroupBy) Aggregate(fns ...AggregateFunc) *MetricsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (mgb *MetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, mgb.build.ctx, ent.OpQueryGroupBy)
-	if err := mgb.build.prepareQuery(ctx); err != nil {
+func (_g *MetricsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*MetricsQuery, *MetricsGroupBy](ctx, mgb.build, mgb, mgb.build.inters, v)
+	return scanWithInterceptors[*MetricsQuery, *MetricsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (mgb *MetricsGroupBy) sqlScan(ctx context.Context, root *MetricsQuery, v any) error {
+func (_g *MetricsGroupBy) sqlScan(ctx context.Context, root *MetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(mgb.fns))
-	for _, fn := range mgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*mgb.flds)+len(mgb.fns))
-		for _, f := range *mgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*mgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := mgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -1067,27 +1067,27 @@ type MetricsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ms *MetricsSelect) Aggregate(fns ...AggregateFunc) *MetricsSelect {
-	ms.fns = append(ms.fns, fns...)
-	return ms
+func (_s *MetricsSelect) Aggregate(fns ...AggregateFunc) *MetricsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ms *MetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ms.ctx, ent.OpQuerySelect)
-	if err := ms.prepareQuery(ctx); err != nil {
+func (_s *MetricsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*MetricsQuery, *MetricsSelect](ctx, ms.MetricsQuery, ms, ms.inters, v)
+	return scanWithInterceptors[*MetricsQuery, *MetricsSelect](ctx, _s.MetricsQuery, _s, _s.inters, v)
 }
 
-func (ms *MetricsSelect) sqlScan(ctx context.Context, root *MetricsQuery, v any) error {
+func (_s *MetricsSelect) sqlScan(ctx context.Context, root *MetricsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ms.fns))
-	for _, fn := range ms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -1095,7 +1095,7 @@ func (ms *MetricsSelect) sqlScan(ctx context.Context, root *MetricsQuery, v any)
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

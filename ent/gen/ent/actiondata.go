@@ -80,7 +80,7 @@ func (*ActionData) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the ActionData fields.
-func (ad *ActionData) assignValues(columns []string, values []any) error {
+func (_m *ActionData) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -91,58 +91,58 @@ func (ad *ActionData) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ad.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case actiondata.FieldMnemonic:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mnemonic", values[i])
 			} else if value.Valid {
-				ad.Mnemonic = value.String
+				_m.Mnemonic = value.String
 			}
 		case actiondata.FieldActionsExecuted:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_executed", values[i])
 			} else if value.Valid {
-				ad.ActionsExecuted = value.Int64
+				_m.ActionsExecuted = value.Int64
 			}
 		case actiondata.FieldActionsCreated:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field actions_created", values[i])
 			} else if value.Valid {
-				ad.ActionsCreated = value.Int64
+				_m.ActionsCreated = value.Int64
 			}
 		case actiondata.FieldFirstStartedMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field first_started_ms", values[i])
 			} else if value.Valid {
-				ad.FirstStartedMs = value.Int64
+				_m.FirstStartedMs = value.Int64
 			}
 		case actiondata.FieldLastEndedMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field last_ended_ms", values[i])
 			} else if value.Valid {
-				ad.LastEndedMs = value.Int64
+				_m.LastEndedMs = value.Int64
 			}
 		case actiondata.FieldSystemTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field system_time", values[i])
 			} else if value.Valid {
-				ad.SystemTime = value.Int64
+				_m.SystemTime = value.Int64
 			}
 		case actiondata.FieldUserTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_time", values[i])
 			} else if value.Valid {
-				ad.UserTime = value.Int64
+				_m.UserTime = value.Int64
 			}
 		case actiondata.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_data", value)
 			} else if value.Valid {
-				ad.action_summary_action_data = new(int64)
-				*ad.action_summary_action_data = int64(value.Int64)
+				_m.action_summary_action_data = new(int64)
+				*_m.action_summary_action_data = int64(value.Int64)
 			}
 		default:
-			ad.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -150,58 +150,58 @@ func (ad *ActionData) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the ActionData.
 // This includes values selected through modifiers, order, etc.
-func (ad *ActionData) Value(name string) (ent.Value, error) {
-	return ad.selectValues.Get(name)
+func (_m *ActionData) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryActionSummary queries the "action_summary" edge of the ActionData entity.
-func (ad *ActionData) QueryActionSummary() *ActionSummaryQuery {
-	return NewActionDataClient(ad.config).QueryActionSummary(ad)
+func (_m *ActionData) QueryActionSummary() *ActionSummaryQuery {
+	return NewActionDataClient(_m.config).QueryActionSummary(_m)
 }
 
 // Update returns a builder for updating this ActionData.
 // Note that you need to call ActionData.Unwrap() before calling this method if this ActionData
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ad *ActionData) Update() *ActionDataUpdateOne {
-	return NewActionDataClient(ad.config).UpdateOne(ad)
+func (_m *ActionData) Update() *ActionDataUpdateOne {
+	return NewActionDataClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the ActionData entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ad *ActionData) Unwrap() *ActionData {
-	_tx, ok := ad.config.driver.(*txDriver)
+func (_m *ActionData) Unwrap() *ActionData {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: ActionData is not a transactional entity")
 	}
-	ad.config.driver = _tx.drv
-	return ad
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ad *ActionData) String() string {
+func (_m *ActionData) String() string {
 	var builder strings.Builder
 	builder.WriteString("ActionData(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ad.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("mnemonic=")
-	builder.WriteString(ad.Mnemonic)
+	builder.WriteString(_m.Mnemonic)
 	builder.WriteString(", ")
 	builder.WriteString("actions_executed=")
-	builder.WriteString(fmt.Sprintf("%v", ad.ActionsExecuted))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionsExecuted))
 	builder.WriteString(", ")
 	builder.WriteString("actions_created=")
-	builder.WriteString(fmt.Sprintf("%v", ad.ActionsCreated))
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionsCreated))
 	builder.WriteString(", ")
 	builder.WriteString("first_started_ms=")
-	builder.WriteString(fmt.Sprintf("%v", ad.FirstStartedMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.FirstStartedMs))
 	builder.WriteString(", ")
 	builder.WriteString("last_ended_ms=")
-	builder.WriteString(fmt.Sprintf("%v", ad.LastEndedMs))
+	builder.WriteString(fmt.Sprintf("%v", _m.LastEndedMs))
 	builder.WriteString(", ")
 	builder.WriteString("system_time=")
-	builder.WriteString(fmt.Sprintf("%v", ad.SystemTime))
+	builder.WriteString(fmt.Sprintf("%v", _m.SystemTime))
 	builder.WriteString(", ")
 	builder.WriteString("user_time=")
-	builder.WriteString(fmt.Sprintf("%v", ad.UserTime))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserTime))
 	builder.WriteByte(')')
 	return builder.String()
 }

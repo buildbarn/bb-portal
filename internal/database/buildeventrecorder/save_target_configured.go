@@ -72,7 +72,7 @@ func (r *buildEventRecorder) saveTargetConfiguredBatch(ctx context.Context, batc
 		return util.StatusWrap(err, "Failed to get or create targets")
 	}
 
-	if err := createTargetKindMappingsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, filteredBatch, targetIds); err != nil {
+	if err := createTargetKindMappingsBulk(ctx, r.InvocationDbID, tx, filteredBatch, targetIds); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert event metadata")
 	}
 
@@ -87,20 +87,16 @@ func (r *buildEventRecorder) saveTargetConfiguredBatch(ctx context.Context, batc
 	return nil
 }
 
-func createTargetKindMappingsBulk(ctx context.Context, isRealTime bool, invocationDbID int64, tx database.Handle, batch []BuildEventWithInfo, targetIds map[targetKey]int) error {
+func createTargetKindMappingsBulk(ctx context.Context, invocationDbID int64, tx database.Handle, batch []BuildEventWithInfo, targetIds map[targetKey]int) error {
 	params := sqlc.CreateTargetKindMappingsBulkParams{
 		BazelInvocationID: int64(invocationDbID),
 		TargetIds:         make([]int64, len(batch)),
-		StartTimes:        make([]int64, len(batch)),
 	}
 	for i, info := range batch {
 		be := info.Event
 		configured := be.GetConfigured()
 		targetConfigured := be.GetId().GetTargetConfigured()
 		params.TargetIds[i] = int64(targetIds[targetKey{targetConfigured.Label, targetConfigured.Aspect, configured.TargetKind}])
-		if isRealTime {
-			params.StartTimes[i] = info.AddedAt.UnixMilli()
-		}
 	}
 	return tx.Sqlc().CreateTargetKindMappingsBulk(ctx, params)
 }

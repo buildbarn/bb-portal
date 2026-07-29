@@ -27,77 +27,77 @@ type BuildCreate struct {
 }
 
 // SetBuildUUID sets the "build_uuid" field.
-func (bc *BuildCreate) SetBuildUUID(u uuid.UUID) *BuildCreate {
-	bc.mutation.SetBuildUUID(u)
-	return bc
+func (_c *BuildCreate) SetBuildUUID(v uuid.UUID) *BuildCreate {
+	_c.mutation.SetBuildUUID(v)
+	return _c
 }
 
 // SetTimestamp sets the "timestamp" field.
-func (bc *BuildCreate) SetTimestamp(t time.Time) *BuildCreate {
-	bc.mutation.SetTimestamp(t)
-	return bc
+func (_c *BuildCreate) SetTimestamp(v time.Time) *BuildCreate {
+	_c.mutation.SetTimestamp(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (bc *BuildCreate) SetID(i int64) *BuildCreate {
-	bc.mutation.SetID(i)
-	return bc
+func (_c *BuildCreate) SetID(v int64) *BuildCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
-func (bc *BuildCreate) SetInstanceNameID(id int64) *BuildCreate {
-	bc.mutation.SetInstanceNameID(id)
-	return bc
+func (_c *BuildCreate) SetInstanceNameID(id int64) *BuildCreate {
+	_c.mutation.SetInstanceNameID(id)
+	return _c
 }
 
 // SetInstanceName sets the "instance_name" edge to the InstanceName entity.
-func (bc *BuildCreate) SetInstanceName(i *InstanceName) *BuildCreate {
-	return bc.SetInstanceNameID(i.ID)
+func (_c *BuildCreate) SetInstanceName(v *InstanceName) *BuildCreate {
+	return _c.SetInstanceNameID(v.ID)
 }
 
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by IDs.
-func (bc *BuildCreate) AddInvocationIDs(ids ...int64) *BuildCreate {
-	bc.mutation.AddInvocationIDs(ids...)
-	return bc
+func (_c *BuildCreate) AddInvocationIDs(ids ...int64) *BuildCreate {
+	_c.mutation.AddInvocationIDs(ids...)
+	return _c
 }
 
 // AddInvocations adds the "invocations" edges to the BazelInvocation entity.
-func (bc *BuildCreate) AddInvocations(b ...*BazelInvocation) *BuildCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_c *BuildCreate) AddInvocations(v ...*BazelInvocation) *BuildCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bc.AddInvocationIDs(ids...)
+	return _c.AddInvocationIDs(ids...)
 }
 
 // AddTagIDs adds the "tags" edge to the BuildTag entity by IDs.
-func (bc *BuildCreate) AddTagIDs(ids ...int64) *BuildCreate {
-	bc.mutation.AddTagIDs(ids...)
-	return bc
+func (_c *BuildCreate) AddTagIDs(ids ...int64) *BuildCreate {
+	_c.mutation.AddTagIDs(ids...)
+	return _c
 }
 
 // AddTags adds the "tags" edges to the BuildTag entity.
-func (bc *BuildCreate) AddTags(b ...*BuildTag) *BuildCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+func (_c *BuildCreate) AddTags(v ...*BuildTag) *BuildCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return bc.AddTagIDs(ids...)
+	return _c.AddTagIDs(ids...)
 }
 
 // Mutation returns the BuildMutation object of the builder.
-func (bc *BuildCreate) Mutation() *BuildMutation {
-	return bc.mutation
+func (_c *BuildCreate) Mutation() *BuildMutation {
+	return _c.mutation
 }
 
 // Save creates the Build in the database.
-func (bc *BuildCreate) Save(ctx context.Context) (*Build, error) {
-	return withHooks(ctx, bc.sqlSave, bc.mutation, bc.hooks)
+func (_c *BuildCreate) Save(ctx context.Context) (*Build, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (bc *BuildCreate) SaveX(ctx context.Context) *Build {
-	v, err := bc.Save(ctx)
+func (_c *BuildCreate) SaveX(ctx context.Context) *Build {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -105,38 +105,38 @@ func (bc *BuildCreate) SaveX(ctx context.Context) *Build {
 }
 
 // Exec executes the query.
-func (bc *BuildCreate) Exec(ctx context.Context) error {
-	_, err := bc.Save(ctx)
+func (_c *BuildCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bc *BuildCreate) ExecX(ctx context.Context) {
-	if err := bc.Exec(ctx); err != nil {
+func (_c *BuildCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (bc *BuildCreate) check() error {
-	if _, ok := bc.mutation.BuildUUID(); !ok {
+func (_c *BuildCreate) check() error {
+	if _, ok := _c.mutation.BuildUUID(); !ok {
 		return &ValidationError{Name: "build_uuid", err: errors.New(`ent: missing required field "Build.build_uuid"`)}
 	}
-	if _, ok := bc.mutation.Timestamp(); !ok {
+	if _, ok := _c.mutation.Timestamp(); !ok {
 		return &ValidationError{Name: "timestamp", err: errors.New(`ent: missing required field "Build.timestamp"`)}
 	}
-	if len(bc.mutation.InstanceNameIDs()) == 0 {
+	if len(_c.mutation.InstanceNameIDs()) == 0 {
 		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required edge "Build.instance_name"`)}
 	}
 	return nil
 }
 
-func (bc *BuildCreate) sqlSave(ctx context.Context) (*Build, error) {
-	if err := bc.check(); err != nil {
+func (_c *BuildCreate) sqlSave(ctx context.Context) (*Build, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := bc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, bc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -146,30 +146,30 @@ func (bc *BuildCreate) sqlSave(ctx context.Context) (*Build, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	bc.mutation.id = &_node.ID
-	bc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
+func (_c *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Build{config: bc.config}
+		_node = &Build{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(build.Table, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = bc.conflict
-	if id, ok := bc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := bc.mutation.BuildUUID(); ok {
+	if value, ok := _c.mutation.BuildUUID(); ok {
 		_spec.SetField(build.FieldBuildUUID, field.TypeUUID, value)
 		_node.BuildUUID = value
 	}
-	if value, ok := bc.mutation.Timestamp(); ok {
+	if value, ok := _c.mutation.Timestamp(); ok {
 		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
 		_node.Timestamp = value
 	}
-	if nodes := bc.mutation.InstanceNameIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -186,7 +186,7 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 		_node.instance_name_builds = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bc.mutation.InvocationsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.InvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -202,7 +202,7 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bc.mutation.TagsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.TagsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -237,10 +237,10 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 //			SetBuildUUID(v+v).
 //		}).
 //		Exec(ctx)
-func (bc *BuildCreate) OnConflict(opts ...sql.ConflictOption) *BuildUpsertOne {
-	bc.conflict = opts
+func (_c *BuildCreate) OnConflict(opts ...sql.ConflictOption) *BuildUpsertOne {
+	_c.conflict = opts
 	return &BuildUpsertOne{
-		create: bc,
+		create: _c,
 	}
 }
 
@@ -250,10 +250,10 @@ func (bc *BuildCreate) OnConflict(opts ...sql.ConflictOption) *BuildUpsertOne {
 //	client.Build.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (bc *BuildCreate) OnConflictColumns(columns ...string) *BuildUpsertOne {
-	bc.conflict = append(bc.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildCreate) OnConflictColumns(columns ...string) *BuildUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildUpsertOne{
-		create: bc,
+		create: _c,
 	}
 }
 
@@ -389,16 +389,16 @@ type BuildCreateBulk struct {
 }
 
 // Save creates the Build entities in the database.
-func (bcb *BuildCreateBulk) Save(ctx context.Context) ([]*Build, error) {
-	if bcb.err != nil {
-		return nil, bcb.err
+func (_c *BuildCreateBulk) Save(ctx context.Context) ([]*Build, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(bcb.builders))
-	nodes := make([]*Build, len(bcb.builders))
-	mutators := make([]Mutator, len(bcb.builders))
-	for i := range bcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Build, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := bcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*BuildMutation)
 				if !ok {
@@ -411,12 +411,12 @@ func (bcb *BuildCreateBulk) Save(ctx context.Context) ([]*Build, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, bcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = bcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, bcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -440,7 +440,7 @@ func (bcb *BuildCreateBulk) Save(ctx context.Context) ([]*Build, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, bcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -448,8 +448,8 @@ func (bcb *BuildCreateBulk) Save(ctx context.Context) ([]*Build, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (bcb *BuildCreateBulk) SaveX(ctx context.Context) []*Build {
-	v, err := bcb.Save(ctx)
+func (_c *BuildCreateBulk) SaveX(ctx context.Context) []*Build {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -457,14 +457,14 @@ func (bcb *BuildCreateBulk) SaveX(ctx context.Context) []*Build {
 }
 
 // Exec executes the query.
-func (bcb *BuildCreateBulk) Exec(ctx context.Context) error {
-	_, err := bcb.Save(ctx)
+func (_c *BuildCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (bcb *BuildCreateBulk) ExecX(ctx context.Context) {
-	if err := bcb.Exec(ctx); err != nil {
+func (_c *BuildCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -484,10 +484,10 @@ func (bcb *BuildCreateBulk) ExecX(ctx context.Context) {
 //			SetBuildUUID(v+v).
 //		}).
 //		Exec(ctx)
-func (bcb *BuildCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildUpsertBulk {
-	bcb.conflict = opts
+func (_c *BuildCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildUpsertBulk {
+	_c.conflict = opts
 	return &BuildUpsertBulk{
-		create: bcb,
+		create: _c,
 	}
 }
 
@@ -497,10 +497,10 @@ func (bcb *BuildCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildUpsertB
 //	client.Build.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (bcb *BuildCreateBulk) OnConflictColumns(columns ...string) *BuildUpsertBulk {
-	bcb.conflict = append(bcb.conflict, sql.ConflictColumns(columns...))
+func (_c *BuildCreateBulk) OnConflictColumns(columns ...string) *BuildUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &BuildUpsertBulk{
-		create: bcb,
+		create: _c,
 	}
 }
 

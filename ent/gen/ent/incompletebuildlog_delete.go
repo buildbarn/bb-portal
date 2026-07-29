@@ -20,56 +20,56 @@ type IncompleteBuildLogDelete struct {
 }
 
 // Where appends a list predicates to the IncompleteBuildLogDelete builder.
-func (ibld *IncompleteBuildLogDelete) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogDelete {
-	ibld.mutation.Where(ps...)
-	return ibld
+func (_d *IncompleteBuildLogDelete) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ibld *IncompleteBuildLogDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, ibld.sqlExec, ibld.mutation, ibld.hooks)
+func (_d *IncompleteBuildLogDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ibld *IncompleteBuildLogDelete) ExecX(ctx context.Context) int {
-	n, err := ibld.Exec(ctx)
+func (_d *IncompleteBuildLogDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (ibld *IncompleteBuildLogDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *IncompleteBuildLogDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(incompletebuildlog.Table, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt64))
-	if ps := ibld.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, ibld.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	ibld.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // IncompleteBuildLogDeleteOne is the builder for deleting a single IncompleteBuildLog entity.
 type IncompleteBuildLogDeleteOne struct {
-	ibld *IncompleteBuildLogDelete
+	_d *IncompleteBuildLogDelete
 }
 
 // Where appends a list predicates to the IncompleteBuildLogDelete builder.
-func (ibldo *IncompleteBuildLogDeleteOne) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogDeleteOne {
-	ibldo.ibld.mutation.Where(ps...)
-	return ibldo
+func (_d *IncompleteBuildLogDeleteOne) Where(ps ...predicate.IncompleteBuildLog) *IncompleteBuildLogDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (ibldo *IncompleteBuildLogDeleteOne) Exec(ctx context.Context) error {
-	n, err := ibldo.ibld.Exec(ctx)
+func (_d *IncompleteBuildLogDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (ibldo *IncompleteBuildLogDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ibldo *IncompleteBuildLogDeleteOne) ExecX(ctx context.Context) {
-	if err := ibldo.Exec(ctx); err != nil {
+func (_d *IncompleteBuildLogDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

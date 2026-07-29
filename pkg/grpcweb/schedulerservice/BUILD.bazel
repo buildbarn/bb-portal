@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "schedulerservice",
+    srcs = ["scheduler_service.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/grpcweb/schedulerservice",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/grpcweb",
+        "//pkg/grpcweb/buildqueuestateproxy",
+        "//pkg/proto/configuration/bb_portal",
+        "@com_github_buildbarn_bb_remote_execution//pkg/proto/buildqueuestate",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/auth/configuration",
+        "@com_github_buildbarn_bb_storage//pkg/grpc",
+        "@com_github_buildbarn_bb_storage//pkg/program",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_gorilla_mux//:mux",
+        "@com_github_improbable_eng_grpc_web//go/grpcweb",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)

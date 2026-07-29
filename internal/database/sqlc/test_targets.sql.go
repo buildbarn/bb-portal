@@ -25,24 +25,31 @@ func (q *Queries) CreateTestTargetsBulk(ctx context.Context, targetIds []int64) 
 
 const deleteOrphanedTestTargetsFromPages = `-- name: DeleteOrphanedTestTargetsFromPages :execrows
 DELETE FROM test_targets
-WHERE
-    ctid >= format('(%s,0)', $1::bigint)::tid
-    AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-    AND NOT EXISTS (
-        SELECT 1 
-        FROM invocation_targets it
-        JOIN test_summaries ts ON ts.invocation_target_test_summary = it.id
-        WHERE it.target_invocation_targets = test_targets.target_id
-    )
+WHERE ctid IN (
+    SELECT ctid
+    FROM test_targets
+    WHERE
+        ctid >= format('(%s,0)', $1::bigint)::tid
+        AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM invocation_targets it
+            JOIN test_summaries ts ON ts.invocation_target_test_summary = it.id
+            WHERE it.target_invocation_targets = test_targets.target_id
+        )
+    FOR UPDATE SKIP LOCKED
+    LIMIT $3::bigint
+)
 `
 
 type DeleteOrphanedTestTargetsFromPagesParams struct {
-	FromPage int64
-	Pages    int64
+	FromPage   int64
+	Pages      int64
+	BatchLimit int64
 }
 
 func (q *Queries) DeleteOrphanedTestTargetsFromPages(ctx context.Context, arg DeleteOrphanedTestTargetsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteOrphanedTestTargetsFromPages, arg.FromPage, arg.Pages)
+	result, err := q.db.ExecContext(ctx, deleteOrphanedTestTargetsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}

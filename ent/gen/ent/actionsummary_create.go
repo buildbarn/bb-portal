@@ -26,148 +26,148 @@ type ActionSummaryCreate struct {
 }
 
 // SetActionsCreated sets the "actions_created" field.
-func (asc *ActionSummaryCreate) SetActionsCreated(i int64) *ActionSummaryCreate {
-	asc.mutation.SetActionsCreated(i)
-	return asc
+func (_c *ActionSummaryCreate) SetActionsCreated(v int64) *ActionSummaryCreate {
+	_c.mutation.SetActionsCreated(v)
+	return _c
 }
 
 // SetNillableActionsCreated sets the "actions_created" field if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableActionsCreated(i *int64) *ActionSummaryCreate {
-	if i != nil {
-		asc.SetActionsCreated(*i)
+func (_c *ActionSummaryCreate) SetNillableActionsCreated(v *int64) *ActionSummaryCreate {
+	if v != nil {
+		_c.SetActionsCreated(*v)
 	}
-	return asc
+	return _c
 }
 
 // SetActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field.
-func (asc *ActionSummaryCreate) SetActionsCreatedNotIncludingAspects(i int64) *ActionSummaryCreate {
-	asc.mutation.SetActionsCreatedNotIncludingAspects(i)
-	return asc
+func (_c *ActionSummaryCreate) SetActionsCreatedNotIncludingAspects(v int64) *ActionSummaryCreate {
+	_c.mutation.SetActionsCreatedNotIncludingAspects(v)
+	return _c
 }
 
 // SetNillableActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableActionsCreatedNotIncludingAspects(i *int64) *ActionSummaryCreate {
-	if i != nil {
-		asc.SetActionsCreatedNotIncludingAspects(*i)
+func (_c *ActionSummaryCreate) SetNillableActionsCreatedNotIncludingAspects(v *int64) *ActionSummaryCreate {
+	if v != nil {
+		_c.SetActionsCreatedNotIncludingAspects(*v)
 	}
-	return asc
+	return _c
 }
 
 // SetActionsExecuted sets the "actions_executed" field.
-func (asc *ActionSummaryCreate) SetActionsExecuted(i int64) *ActionSummaryCreate {
-	asc.mutation.SetActionsExecuted(i)
-	return asc
+func (_c *ActionSummaryCreate) SetActionsExecuted(v int64) *ActionSummaryCreate {
+	_c.mutation.SetActionsExecuted(v)
+	return _c
 }
 
 // SetNillableActionsExecuted sets the "actions_executed" field if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableActionsExecuted(i *int64) *ActionSummaryCreate {
-	if i != nil {
-		asc.SetActionsExecuted(*i)
+func (_c *ActionSummaryCreate) SetNillableActionsExecuted(v *int64) *ActionSummaryCreate {
+	if v != nil {
+		_c.SetActionsExecuted(*v)
 	}
-	return asc
+	return _c
 }
 
 // SetRemoteCacheHits sets the "remote_cache_hits" field.
-func (asc *ActionSummaryCreate) SetRemoteCacheHits(i int64) *ActionSummaryCreate {
-	asc.mutation.SetRemoteCacheHits(i)
-	return asc
+func (_c *ActionSummaryCreate) SetRemoteCacheHits(v int64) *ActionSummaryCreate {
+	_c.mutation.SetRemoteCacheHits(v)
+	return _c
 }
 
 // SetNillableRemoteCacheHits sets the "remote_cache_hits" field if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableRemoteCacheHits(i *int64) *ActionSummaryCreate {
-	if i != nil {
-		asc.SetRemoteCacheHits(*i)
+func (_c *ActionSummaryCreate) SetNillableRemoteCacheHits(v *int64) *ActionSummaryCreate {
+	if v != nil {
+		_c.SetRemoteCacheHits(*v)
 	}
-	return asc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (asc *ActionSummaryCreate) SetID(i int64) *ActionSummaryCreate {
-	asc.mutation.SetID(i)
-	return asc
+func (_c *ActionSummaryCreate) SetID(v int64) *ActionSummaryCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asc *ActionSummaryCreate) SetMetricsID(id int64) *ActionSummaryCreate {
-	asc.mutation.SetMetricsID(id)
-	return asc
+func (_c *ActionSummaryCreate) SetMetricsID(id int64) *ActionSummaryCreate {
+	_c.mutation.SetMetricsID(id)
+	return _c
 }
 
 // SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableMetricsID(id *int64) *ActionSummaryCreate {
+func (_c *ActionSummaryCreate) SetNillableMetricsID(id *int64) *ActionSummaryCreate {
 	if id != nil {
-		asc = asc.SetMetricsID(*id)
+		_c = _c.SetMetricsID(*id)
 	}
-	return asc
+	return _c
 }
 
 // SetMetrics sets the "metrics" edge to the Metrics entity.
-func (asc *ActionSummaryCreate) SetMetrics(m *Metrics) *ActionSummaryCreate {
-	return asc.SetMetricsID(m.ID)
+func (_c *ActionSummaryCreate) SetMetrics(v *Metrics) *ActionSummaryCreate {
+	return _c.SetMetricsID(v.ID)
 }
 
 // AddActionDatumIDs adds the "action_data" edge to the ActionData entity by IDs.
-func (asc *ActionSummaryCreate) AddActionDatumIDs(ids ...int64) *ActionSummaryCreate {
-	asc.mutation.AddActionDatumIDs(ids...)
-	return asc
+func (_c *ActionSummaryCreate) AddActionDatumIDs(ids ...int64) *ActionSummaryCreate {
+	_c.mutation.AddActionDatumIDs(ids...)
+	return _c
 }
 
 // AddActionData adds the "action_data" edges to the ActionData entity.
-func (asc *ActionSummaryCreate) AddActionData(a ...*ActionData) *ActionSummaryCreate {
-	ids := make([]int64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *ActionSummaryCreate) AddActionData(v ...*ActionData) *ActionSummaryCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asc.AddActionDatumIDs(ids...)
+	return _c.AddActionDatumIDs(ids...)
 }
 
 // AddRunnerCountIDs adds the "runner_count" edge to the RunnerCount entity by IDs.
-func (asc *ActionSummaryCreate) AddRunnerCountIDs(ids ...int64) *ActionSummaryCreate {
-	asc.mutation.AddRunnerCountIDs(ids...)
-	return asc
+func (_c *ActionSummaryCreate) AddRunnerCountIDs(ids ...int64) *ActionSummaryCreate {
+	_c.mutation.AddRunnerCountIDs(ids...)
+	return _c
 }
 
 // AddRunnerCount adds the "runner_count" edges to the RunnerCount entity.
-func (asc *ActionSummaryCreate) AddRunnerCount(r ...*RunnerCount) *ActionSummaryCreate {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_c *ActionSummaryCreate) AddRunnerCount(v ...*RunnerCount) *ActionSummaryCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return asc.AddRunnerCountIDs(ids...)
+	return _c.AddRunnerCountIDs(ids...)
 }
 
 // SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (asc *ActionSummaryCreate) SetActionCacheStatisticsID(id int64) *ActionSummaryCreate {
-	asc.mutation.SetActionCacheStatisticsID(id)
-	return asc
+func (_c *ActionSummaryCreate) SetActionCacheStatisticsID(id int64) *ActionSummaryCreate {
+	_c.mutation.SetActionCacheStatisticsID(id)
+	return _c
 }
 
 // SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryCreate {
+func (_c *ActionSummaryCreate) SetNillableActionCacheStatisticsID(id *int64) *ActionSummaryCreate {
 	if id != nil {
-		asc = asc.SetActionCacheStatisticsID(*id)
+		_c = _c.SetActionCacheStatisticsID(*id)
 	}
-	return asc
+	return _c
 }
 
 // SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (asc *ActionSummaryCreate) SetActionCacheStatistics(a *ActionCacheStatistics) *ActionSummaryCreate {
-	return asc.SetActionCacheStatisticsID(a.ID)
+func (_c *ActionSummaryCreate) SetActionCacheStatistics(v *ActionCacheStatistics) *ActionSummaryCreate {
+	return _c.SetActionCacheStatisticsID(v.ID)
 }
 
 // Mutation returns the ActionSummaryMutation object of the builder.
-func (asc *ActionSummaryCreate) Mutation() *ActionSummaryMutation {
-	return asc.mutation
+func (_c *ActionSummaryCreate) Mutation() *ActionSummaryMutation {
+	return _c.mutation
 }
 
 // Save creates the ActionSummary in the database.
-func (asc *ActionSummaryCreate) Save(ctx context.Context) (*ActionSummary, error) {
-	return withHooks(ctx, asc.sqlSave, asc.mutation, asc.hooks)
+func (_c *ActionSummaryCreate) Save(ctx context.Context) (*ActionSummary, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (asc *ActionSummaryCreate) SaveX(ctx context.Context) *ActionSummary {
-	v, err := asc.Save(ctx)
+func (_c *ActionSummaryCreate) SaveX(ctx context.Context) *ActionSummary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -175,29 +175,29 @@ func (asc *ActionSummaryCreate) SaveX(ctx context.Context) *ActionSummary {
 }
 
 // Exec executes the query.
-func (asc *ActionSummaryCreate) Exec(ctx context.Context) error {
-	_, err := asc.Save(ctx)
+func (_c *ActionSummaryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (asc *ActionSummaryCreate) ExecX(ctx context.Context) {
-	if err := asc.Exec(ctx); err != nil {
+func (_c *ActionSummaryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (asc *ActionSummaryCreate) check() error {
+func (_c *ActionSummaryCreate) check() error {
 	return nil
 }
 
-func (asc *ActionSummaryCreate) sqlSave(ctx context.Context) (*ActionSummary, error) {
-	if err := asc.check(); err != nil {
+func (_c *ActionSummaryCreate) sqlSave(ctx context.Context) (*ActionSummary, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := asc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, asc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -207,38 +207,38 @@ func (asc *ActionSummaryCreate) sqlSave(ctx context.Context) (*ActionSummary, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	asc.mutation.id = &_node.ID
-	asc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSpec) {
+func (_c *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSpec) {
 	var (
-		_node = &ActionSummary{config: asc.config}
+		_node = &ActionSummary{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(actionsummary.Table, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = asc.conflict
-	if id, ok := asc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := asc.mutation.ActionsCreated(); ok {
+	if value, ok := _c.mutation.ActionsCreated(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreated, field.TypeInt64, value)
 		_node.ActionsCreated = value
 	}
-	if value, ok := asc.mutation.ActionsCreatedNotIncludingAspects(); ok {
+	if value, ok := _c.mutation.ActionsCreatedNotIncludingAspects(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreatedNotIncludingAspects, field.TypeInt64, value)
 		_node.ActionsCreatedNotIncludingAspects = value
 	}
-	if value, ok := asc.mutation.ActionsExecuted(); ok {
+	if value, ok := _c.mutation.ActionsExecuted(); ok {
 		_spec.SetField(actionsummary.FieldActionsExecuted, field.TypeInt64, value)
 		_node.ActionsExecuted = value
 	}
-	if value, ok := asc.mutation.RemoteCacheHits(); ok {
+	if value, ok := _c.mutation.RemoteCacheHits(); ok {
 		_spec.SetField(actionsummary.FieldRemoteCacheHits, field.TypeInt64, value)
 		_node.RemoteCacheHits = value
 	}
-	if nodes := asc.mutation.MetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -255,7 +255,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 		_node.metrics_action_summary = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := asc.mutation.ActionDataIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionDataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -271,7 +271,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := asc.mutation.RunnerCountIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RunnerCountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -287,7 +287,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := asc.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -322,10 +322,10 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 //			SetActionsCreated(v+v).
 //		}).
 //		Exec(ctx)
-func (asc *ActionSummaryCreate) OnConflict(opts ...sql.ConflictOption) *ActionSummaryUpsertOne {
-	asc.conflict = opts
+func (_c *ActionSummaryCreate) OnConflict(opts ...sql.ConflictOption) *ActionSummaryUpsertOne {
+	_c.conflict = opts
 	return &ActionSummaryUpsertOne{
-		create: asc,
+		create: _c,
 	}
 }
 
@@ -335,10 +335,10 @@ func (asc *ActionSummaryCreate) OnConflict(opts ...sql.ConflictOption) *ActionSu
 //	client.ActionSummary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (asc *ActionSummaryCreate) OnConflictColumns(columns ...string) *ActionSummaryUpsertOne {
-	asc.conflict = append(asc.conflict, sql.ConflictColumns(columns...))
+func (_c *ActionSummaryCreate) OnConflictColumns(columns ...string) *ActionSummaryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ActionSummaryUpsertOne{
-		create: asc,
+		create: _c,
 	}
 }
 
@@ -653,16 +653,16 @@ type ActionSummaryCreateBulk struct {
 }
 
 // Save creates the ActionSummary entities in the database.
-func (ascb *ActionSummaryCreateBulk) Save(ctx context.Context) ([]*ActionSummary, error) {
-	if ascb.err != nil {
-		return nil, ascb.err
+func (_c *ActionSummaryCreateBulk) Save(ctx context.Context) ([]*ActionSummary, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ascb.builders))
-	nodes := make([]*ActionSummary, len(ascb.builders))
-	mutators := make([]Mutator, len(ascb.builders))
-	for i := range ascb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*ActionSummary, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ascb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ActionSummaryMutation)
 				if !ok {
@@ -675,12 +675,12 @@ func (ascb *ActionSummaryCreateBulk) Save(ctx context.Context) ([]*ActionSummary
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ascb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ascb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ascb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -704,7 +704,7 @@ func (ascb *ActionSummaryCreateBulk) Save(ctx context.Context) ([]*ActionSummary
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ascb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -712,8 +712,8 @@ func (ascb *ActionSummaryCreateBulk) Save(ctx context.Context) ([]*ActionSummary
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ascb *ActionSummaryCreateBulk) SaveX(ctx context.Context) []*ActionSummary {
-	v, err := ascb.Save(ctx)
+func (_c *ActionSummaryCreateBulk) SaveX(ctx context.Context) []*ActionSummary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -721,14 +721,14 @@ func (ascb *ActionSummaryCreateBulk) SaveX(ctx context.Context) []*ActionSummary
 }
 
 // Exec executes the query.
-func (ascb *ActionSummaryCreateBulk) Exec(ctx context.Context) error {
-	_, err := ascb.Save(ctx)
+func (_c *ActionSummaryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ascb *ActionSummaryCreateBulk) ExecX(ctx context.Context) {
-	if err := ascb.Exec(ctx); err != nil {
+func (_c *ActionSummaryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -748,10 +748,10 @@ func (ascb *ActionSummaryCreateBulk) ExecX(ctx context.Context) {
 //			SetActionsCreated(v+v).
 //		}).
 //		Exec(ctx)
-func (ascb *ActionSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionSummaryUpsertBulk {
-	ascb.conflict = opts
+func (_c *ActionSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionSummaryUpsertBulk {
+	_c.conflict = opts
 	return &ActionSummaryUpsertBulk{
-		create: ascb,
+		create: _c,
 	}
 }
 
@@ -761,10 +761,10 @@ func (ascb *ActionSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *Act
 //	client.ActionSummary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ascb *ActionSummaryCreateBulk) OnConflictColumns(columns ...string) *ActionSummaryUpsertBulk {
-	ascb.conflict = append(ascb.conflict, sql.ConflictColumns(columns...))
+func (_c *ActionSummaryCreateBulk) OnConflictColumns(columns ...string) *ActionSummaryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ActionSummaryUpsertBulk{
-		create: ascb,
+		create: _c,
 	}
 }
 

@@ -29,8 +29,8 @@ const (
 	FieldHostname = "hostname"
 	// FieldNumFetches holds the string denoting the num_fetches field in the database.
 	FieldNumFetches = "num_fetches"
-	// FieldProfileName holds the string denoting the profile_name field in the database.
-	FieldProfileName = "profile_name"
+	// FieldProfileID holds the string denoting the profile_id field in the database.
+	FieldProfileID = "profile_id"
 	// FieldBazelVersion holds the string denoting the bazel_version field in the database.
 	FieldBazelVersion = "bazel_version"
 	// FieldExitCodeName holds the string denoting the exit_code_name field in the database.
@@ -75,8 +75,8 @@ const (
 	EdgeIncompleteBuildLogs = "incomplete_build_logs"
 	// EdgeBuildLogChunks holds the string denoting the build_log_chunks edge name in mutations.
 	EdgeBuildLogChunks = "build_log_chunks"
-	// EdgeInvocationFiles holds the string denoting the invocation_files edge name in mutations.
-	EdgeInvocationFiles = "invocation_files"
+	// EdgeProfile holds the string denoting the profile edge name in mutations.
+	EdgeProfile = "profile"
 	// EdgeInvocationTargets holds the string denoting the invocation_targets edge name in mutations.
 	EdgeInvocationTargets = "invocation_targets"
 	// EdgeTargetKindMappings holds the string denoting the target_kind_mappings edge name in mutations.
@@ -162,13 +162,13 @@ const (
 	BuildLogChunksInverseTable = "build_log_chunks"
 	// BuildLogChunksColumn is the table column denoting the build_log_chunks relation/edge.
 	BuildLogChunksColumn = "bazel_invocation_build_log_chunks"
-	// InvocationFilesTable is the table that holds the invocation_files relation/edge.
-	InvocationFilesTable = "invocation_files"
-	// InvocationFilesInverseTable is the table name for the InvocationFiles entity.
-	// It exists in this package in order to avoid circular dependency with the "invocationfiles" package.
-	InvocationFilesInverseTable = "invocation_files"
-	// InvocationFilesColumn is the table column denoting the invocation_files relation/edge.
-	InvocationFilesColumn = "bazel_invocation_invocation_files"
+	// ProfileTable is the table that holds the profile relation/edge.
+	ProfileTable = "bazel_invocations"
+	// ProfileInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	ProfileInverseTable = "files"
+	// ProfileColumn is the table column denoting the profile relation/edge.
+	ProfileColumn = "profile_id"
 	// InvocationTargetsTable is the table that holds the invocation_targets relation/edge.
 	InvocationTargetsTable = "invocation_targets"
 	// InvocationTargetsInverseTable is the table name for the InvocationTarget entity.
@@ -203,7 +203,7 @@ var Columns = []string{
 	FieldUsername,
 	FieldHostname,
 	FieldNumFetches,
-	FieldProfileName,
+	FieldProfileID,
 	FieldBazelVersion,
 	FieldExitCodeName,
 	FieldExitCodeCode,
@@ -308,9 +308,9 @@ func ByNumFetches(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNumFetches, opts...).ToFunc()
 }
 
-// ByProfileName orders the results by the profile_name field.
-func ByProfileName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProfileName, opts...).ToFunc()
+// ByProfileID orders the results by the profile_id field.
+func ByProfileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProfileID, opts...).ToFunc()
 }
 
 // ByBazelVersion orders the results by the bazel_version field.
@@ -460,17 +460,10 @@ func ByBuildLogChunks(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByInvocationFilesCount orders the results by invocation_files count.
-func ByInvocationFilesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByProfileField orders the results by profile field.
+func ByProfileField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newInvocationFilesStep(), opts...)
-	}
-}
-
-// ByInvocationFiles orders the results by invocation_files terms.
-func ByInvocationFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newInvocationFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newProfileStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -592,11 +585,11 @@ func newBuildLogChunksStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, BuildLogChunksTable, BuildLogChunksColumn),
 	)
 }
-func newInvocationFilesStep() *sqlgraph.Step {
+func newProfileStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(InvocationFilesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, InvocationFilesTable, InvocationFilesColumn),
+		sqlgraph.To(ProfileInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, ProfileTable, ProfileColumn),
 	)
 }
 func newInvocationTargetsStep() *sqlgraph.Step {

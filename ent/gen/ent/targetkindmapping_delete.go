@@ -20,56 +20,56 @@ type TargetKindMappingDelete struct {
 }
 
 // Where appends a list predicates to the TargetKindMappingDelete builder.
-func (tkmd *TargetKindMappingDelete) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingDelete {
-	tkmd.mutation.Where(ps...)
-	return tkmd
+func (_d *TargetKindMappingDelete) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (tkmd *TargetKindMappingDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, tkmd.sqlExec, tkmd.mutation, tkmd.hooks)
+func (_d *TargetKindMappingDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tkmd *TargetKindMappingDelete) ExecX(ctx context.Context) int {
-	n, err := tkmd.Exec(ctx)
+func (_d *TargetKindMappingDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (tkmd *TargetKindMappingDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *TargetKindMappingDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(targetkindmapping.Table, sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt64))
-	if ps := tkmd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, tkmd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	tkmd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // TargetKindMappingDeleteOne is the builder for deleting a single TargetKindMapping entity.
 type TargetKindMappingDeleteOne struct {
-	tkmd *TargetKindMappingDelete
+	_d *TargetKindMappingDelete
 }
 
 // Where appends a list predicates to the TargetKindMappingDelete builder.
-func (tkmdo *TargetKindMappingDeleteOne) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingDeleteOne {
-	tkmdo.tkmd.mutation.Where(ps...)
-	return tkmdo
+func (_d *TargetKindMappingDeleteOne) Where(ps ...predicate.TargetKindMapping) *TargetKindMappingDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (tkmdo *TargetKindMappingDeleteOne) Exec(ctx context.Context) error {
-	n, err := tkmdo.tkmd.Exec(ctx)
+func (_d *TargetKindMappingDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (tkmdo *TargetKindMappingDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tkmdo *TargetKindMappingDeleteOne) ExecX(ctx context.Context) {
-	if err := tkmdo.Exec(ctx); err != nil {
+func (_d *TargetKindMappingDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

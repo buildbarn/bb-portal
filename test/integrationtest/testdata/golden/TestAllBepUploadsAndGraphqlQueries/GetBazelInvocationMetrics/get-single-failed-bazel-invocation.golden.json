@@ -1,0 +1,127 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 8,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjI=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjg=",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjk=",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjEw",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 2,
+              "id": "TWlzc0RldGFpOjEx",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjEy",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjEz",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 1,
+              "id": "TWlzc0RldGFpOjE0",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            }
+          ],
+          "misses": 3,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 1548758
+        },
+        "actionData": [
+          {
+            "actionsExecuted": 1,
+            "id": "QWN0aW9uRGF0YTo0",
+            "mnemonic": "BazelWorkspaceStatusAction",
+            "systemTime": 0,
+            "userTime": 0
+          },
+          {
+            "actionsExecuted": 1,
+            "id": "QWN0aW9uRGF0YTo1",
+            "mnemonic": "CopyFile",
+            "systemTime": 1,
+            "userTime": 1
+          },
+          {
+            "actionsExecuted": 1,
+            "id": "QWN0aW9uRGF0YTo2",
+            "mnemonic": "TsProject",
+            "systemTime": 0,
+            "userTime": 0
+          }
+        ],
+        "actionsExecuted": 3,
+        "id": "QWN0aW9uU3VtbWFyeToy",
+        "runnerCount": [
+          {
+            "actionsExecuted": 3,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6NQ==",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 2,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6Ng==",
+            "name": "internal"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "Local",
+            "id": "UnVubmVyQ291bnQ6Nw==",
+            "name": "local"
+          }
+        ]
+      },
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjI=",
+        "outputArtifactsFromActionCacheCount": 16,
+        "outputArtifactsFromActionCacheSizeInBytes": 3733,
+        "outputArtifactsSeenCount": 19,
+        "outputArtifactsSeenSizeInBytes": 6359,
+        "sourceArtifactsReadCount": 1,
+        "sourceArtifactsReadSizeInBytes": 2491,
+        "topLevelArtifactsCount": 0,
+        "topLevelArtifactsSizeInBytes": 0
+      },
+      "id": "TWV0cmljczoy",
+      "memoryMetrics": {
+        "garbageMetrics": [],
+        "id": "TWVtb3J5TWV0cmljczoy",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": null,
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 55,
+        "cpuTimeInMs": 2792,
+        "executionPhaseTimeInMs": 702,
+        "id": "VGltaW5nTWV0cmljczoy",
+        "wallTimeInMs": 960
+      }
+    }
+  }
+}

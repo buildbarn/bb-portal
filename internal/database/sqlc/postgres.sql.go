@@ -68,3 +68,63 @@ func (q *Queries) SelectPages(ctx context.Context, tableName string) (int32, err
 	err := row.Scan(&relpages)
 	return relpages, err
 }
+
+const selectRedundantIndexes = `-- name: SelectRedundantIndexes :many
+WITH index_info AS (
+    SELECT
+        c.relname AS table_name,
+        i.indexrelid,
+        ic.relname AS index_name,
+        i.indrelid,
+        i.indisunique,
+        string_to_array(i.indkey::text, ' ') AS index_cols
+    FROM pg_index i
+    JOIN pg_class ic ON i.indexrelid = ic.oid
+    JOIN pg_class c ON i.indrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE n.nspname = 'public'
+)
+SELECT
+    i1.table_name,
+    i1.index_name AS redundant_index,
+    i2.index_name AS covering_index
+FROM index_info i1
+JOIN index_info i2 
+    ON i1.indrelid = i2.indrelid 
+    AND i1.indexrelid != i2.indexrelid
+WHERE 
+    i1.indisunique = false
+    AND i2.index_cols[1:array_length(i1.index_cols, 1)] = i1.index_cols
+ORDER BY 
+    i1.table_name, 
+    i1.index_name
+`
+
+type SelectRedundantIndexesRow struct {
+	TableName      string
+	RedundantIndex string
+	CoveringIndex  string
+}
+
+func (q *Queries) SelectRedundantIndexes(ctx context.Context) ([]SelectRedundantIndexesRow, error) {
+	rows, err := q.db.QueryContext(ctx, selectRedundantIndexes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectRedundantIndexesRow
+	for rows.Next() {
+		var i SelectRedundantIndexesRow
+		if err := rows.Scan(&i.TableName, &i.RedundantIndex, &i.CoveringIndex); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

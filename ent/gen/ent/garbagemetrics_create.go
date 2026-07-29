@@ -23,71 +23,71 @@ type GarbageMetricsCreate struct {
 }
 
 // SetType sets the "type" field.
-func (gmc *GarbageMetricsCreate) SetType(s string) *GarbageMetricsCreate {
-	gmc.mutation.SetType(s)
-	return gmc
+func (_c *GarbageMetricsCreate) SetType(v string) *GarbageMetricsCreate {
+	_c.mutation.SetType(v)
+	return _c
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (gmc *GarbageMetricsCreate) SetNillableType(s *string) *GarbageMetricsCreate {
-	if s != nil {
-		gmc.SetType(*s)
+func (_c *GarbageMetricsCreate) SetNillableType(v *string) *GarbageMetricsCreate {
+	if v != nil {
+		_c.SetType(*v)
 	}
-	return gmc
+	return _c
 }
 
 // SetGarbageCollected sets the "garbage_collected" field.
-func (gmc *GarbageMetricsCreate) SetGarbageCollected(i int64) *GarbageMetricsCreate {
-	gmc.mutation.SetGarbageCollected(i)
-	return gmc
+func (_c *GarbageMetricsCreate) SetGarbageCollected(v int64) *GarbageMetricsCreate {
+	_c.mutation.SetGarbageCollected(v)
+	return _c
 }
 
 // SetNillableGarbageCollected sets the "garbage_collected" field if the given value is not nil.
-func (gmc *GarbageMetricsCreate) SetNillableGarbageCollected(i *int64) *GarbageMetricsCreate {
-	if i != nil {
-		gmc.SetGarbageCollected(*i)
+func (_c *GarbageMetricsCreate) SetNillableGarbageCollected(v *int64) *GarbageMetricsCreate {
+	if v != nil {
+		_c.SetGarbageCollected(*v)
 	}
-	return gmc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (gmc *GarbageMetricsCreate) SetID(i int64) *GarbageMetricsCreate {
-	gmc.mutation.SetID(i)
-	return gmc
+func (_c *GarbageMetricsCreate) SetID(v int64) *GarbageMetricsCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (gmc *GarbageMetricsCreate) SetMemoryMetricsID(id int64) *GarbageMetricsCreate {
-	gmc.mutation.SetMemoryMetricsID(id)
-	return gmc
+func (_c *GarbageMetricsCreate) SetMemoryMetricsID(id int64) *GarbageMetricsCreate {
+	_c.mutation.SetMemoryMetricsID(id)
+	return _c
 }
 
 // SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (gmc *GarbageMetricsCreate) SetNillableMemoryMetricsID(id *int64) *GarbageMetricsCreate {
+func (_c *GarbageMetricsCreate) SetNillableMemoryMetricsID(id *int64) *GarbageMetricsCreate {
 	if id != nil {
-		gmc = gmc.SetMemoryMetricsID(*id)
+		_c = _c.SetMemoryMetricsID(*id)
 	}
-	return gmc
+	return _c
 }
 
 // SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
-func (gmc *GarbageMetricsCreate) SetMemoryMetrics(m *MemoryMetrics) *GarbageMetricsCreate {
-	return gmc.SetMemoryMetricsID(m.ID)
+func (_c *GarbageMetricsCreate) SetMemoryMetrics(v *MemoryMetrics) *GarbageMetricsCreate {
+	return _c.SetMemoryMetricsID(v.ID)
 }
 
 // Mutation returns the GarbageMetricsMutation object of the builder.
-func (gmc *GarbageMetricsCreate) Mutation() *GarbageMetricsMutation {
-	return gmc.mutation
+func (_c *GarbageMetricsCreate) Mutation() *GarbageMetricsMutation {
+	return _c.mutation
 }
 
 // Save creates the GarbageMetrics in the database.
-func (gmc *GarbageMetricsCreate) Save(ctx context.Context) (*GarbageMetrics, error) {
-	return withHooks(ctx, gmc.sqlSave, gmc.mutation, gmc.hooks)
+func (_c *GarbageMetricsCreate) Save(ctx context.Context) (*GarbageMetrics, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (gmc *GarbageMetricsCreate) SaveX(ctx context.Context) *GarbageMetrics {
-	v, err := gmc.Save(ctx)
+func (_c *GarbageMetricsCreate) SaveX(ctx context.Context) *GarbageMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -95,29 +95,29 @@ func (gmc *GarbageMetricsCreate) SaveX(ctx context.Context) *GarbageMetrics {
 }
 
 // Exec executes the query.
-func (gmc *GarbageMetricsCreate) Exec(ctx context.Context) error {
-	_, err := gmc.Save(ctx)
+func (_c *GarbageMetricsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gmc *GarbageMetricsCreate) ExecX(ctx context.Context) {
-	if err := gmc.Exec(ctx); err != nil {
+func (_c *GarbageMetricsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (gmc *GarbageMetricsCreate) check() error {
+func (_c *GarbageMetricsCreate) check() error {
 	return nil
 }
 
-func (gmc *GarbageMetricsCreate) sqlSave(ctx context.Context) (*GarbageMetrics, error) {
-	if err := gmc.check(); err != nil {
+func (_c *GarbageMetricsCreate) sqlSave(ctx context.Context) (*GarbageMetrics, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := gmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, gmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -127,30 +127,30 @@ func (gmc *GarbageMetricsCreate) sqlSave(ctx context.Context) (*GarbageMetrics, 
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	gmc.mutation.id = &_node.ID
-	gmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (gmc *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.CreateSpec) {
+func (_c *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.CreateSpec) {
 	var (
-		_node = &GarbageMetrics{config: gmc.config}
+		_node = &GarbageMetrics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(garbagemetrics.Table, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = gmc.conflict
-	if id, ok := gmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := gmc.mutation.GetType(); ok {
+	if value, ok := _c.mutation.GetType(); ok {
 		_spec.SetField(garbagemetrics.FieldType, field.TypeString, value)
 		_node.Type = value
 	}
-	if value, ok := gmc.mutation.GarbageCollected(); ok {
+	if value, ok := _c.mutation.GarbageCollected(); ok {
 		_spec.SetField(garbagemetrics.FieldGarbageCollected, field.TypeInt64, value)
 		_node.GarbageCollected = value
 	}
-	if nodes := gmc.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -186,10 +186,10 @@ func (gmc *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.Create
 //			SetType(v+v).
 //		}).
 //		Exec(ctx)
-func (gmc *GarbageMetricsCreate) OnConflict(opts ...sql.ConflictOption) *GarbageMetricsUpsertOne {
-	gmc.conflict = opts
+func (_c *GarbageMetricsCreate) OnConflict(opts ...sql.ConflictOption) *GarbageMetricsUpsertOne {
+	_c.conflict = opts
 	return &GarbageMetricsUpsertOne{
-		create: gmc,
+		create: _c,
 	}
 }
 
@@ -199,10 +199,10 @@ func (gmc *GarbageMetricsCreate) OnConflict(opts ...sql.ConflictOption) *Garbage
 //	client.GarbageMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (gmc *GarbageMetricsCreate) OnConflictColumns(columns ...string) *GarbageMetricsUpsertOne {
-	gmc.conflict = append(gmc.conflict, sql.ConflictColumns(columns...))
+func (_c *GarbageMetricsCreate) OnConflictColumns(columns ...string) *GarbageMetricsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &GarbageMetricsUpsertOne{
-		create: gmc,
+		create: _c,
 	}
 }
 
@@ -400,16 +400,16 @@ type GarbageMetricsCreateBulk struct {
 }
 
 // Save creates the GarbageMetrics entities in the database.
-func (gmcb *GarbageMetricsCreateBulk) Save(ctx context.Context) ([]*GarbageMetrics, error) {
-	if gmcb.err != nil {
-		return nil, gmcb.err
+func (_c *GarbageMetricsCreateBulk) Save(ctx context.Context) ([]*GarbageMetrics, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(gmcb.builders))
-	nodes := make([]*GarbageMetrics, len(gmcb.builders))
-	mutators := make([]Mutator, len(gmcb.builders))
-	for i := range gmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*GarbageMetrics, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := gmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*GarbageMetricsMutation)
 				if !ok {
@@ -422,12 +422,12 @@ func (gmcb *GarbageMetricsCreateBulk) Save(ctx context.Context) ([]*GarbageMetri
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, gmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = gmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, gmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -451,7 +451,7 @@ func (gmcb *GarbageMetricsCreateBulk) Save(ctx context.Context) ([]*GarbageMetri
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, gmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -459,8 +459,8 @@ func (gmcb *GarbageMetricsCreateBulk) Save(ctx context.Context) ([]*GarbageMetri
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gmcb *GarbageMetricsCreateBulk) SaveX(ctx context.Context) []*GarbageMetrics {
-	v, err := gmcb.Save(ctx)
+func (_c *GarbageMetricsCreateBulk) SaveX(ctx context.Context) []*GarbageMetrics {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -468,14 +468,14 @@ func (gmcb *GarbageMetricsCreateBulk) SaveX(ctx context.Context) []*GarbageMetri
 }
 
 // Exec executes the query.
-func (gmcb *GarbageMetricsCreateBulk) Exec(ctx context.Context) error {
-	_, err := gmcb.Save(ctx)
+func (_c *GarbageMetricsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gmcb *GarbageMetricsCreateBulk) ExecX(ctx context.Context) {
-	if err := gmcb.Exec(ctx); err != nil {
+func (_c *GarbageMetricsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -495,10 +495,10 @@ func (gmcb *GarbageMetricsCreateBulk) ExecX(ctx context.Context) {
 //			SetType(v+v).
 //		}).
 //		Exec(ctx)
-func (gmcb *GarbageMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *GarbageMetricsUpsertBulk {
-	gmcb.conflict = opts
+func (_c *GarbageMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *GarbageMetricsUpsertBulk {
+	_c.conflict = opts
 	return &GarbageMetricsUpsertBulk{
-		create: gmcb,
+		create: _c,
 	}
 }
 
@@ -508,10 +508,10 @@ func (gmcb *GarbageMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *Ga
 //	client.GarbageMetrics.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (gmcb *GarbageMetricsCreateBulk) OnConflictColumns(columns ...string) *GarbageMetricsUpsertBulk {
-	gmcb.conflict = append(gmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *GarbageMetricsCreateBulk) OnConflictColumns(columns ...string) *GarbageMetricsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &GarbageMetricsUpsertBulk{
-		create: gmcb,
+		create: _c,
 	}
 }
 

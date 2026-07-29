@@ -60,7 +60,6 @@ func (Target) Edges() []ent.Edge {
 func (Target) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Edges("instance_name"),
-		index.Fields("label", "aspect"),
 		index.Fields("label", "aspect").
 			Edges("instance_name"),
 		index.Fields("label", "aspect", "target_kind").
