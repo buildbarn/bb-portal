@@ -10,7 +10,7 @@ import (
 )
 
 var postgresUint64SchemaType = map[string]string{
-	dialect.Postgres: "numeric",
+	dialect.Postgres: "NUMERIC(20,0)",
 }
 
 // uint64ValueScanner keeps Ent fields as native uint64 values while storing

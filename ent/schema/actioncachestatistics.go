@@ -22,12 +22,18 @@ func (ActionCacheStatistics) Fields() []ent.Field {
 		// the number of entries in the cache.
 		field.Uint64("size_in_bytes").
 			Annotations(entgql.Type("UnsignedLong")).
-			Optional(),
+			ValueScanner(uint64ValueScanner).
+			Optional().
+			Immutable().
+			SchemaType(postgresUint64SchemaType),
 
 		// Time it took to save the action cache to disk.
 		field.Uint64("save_time_in_ms").
 			Annotations(entgql.Type("UnsignedLong")).
-			Optional(),
+			ValueScanner(uint64ValueScanner).
+			Optional().
+			Immutable().
+			SchemaType(postgresUint64SchemaType),
 
 		// Time it took to load the action cache from disk. Reported as 0 if the
 		// action cache has not been loaded in this invocation.

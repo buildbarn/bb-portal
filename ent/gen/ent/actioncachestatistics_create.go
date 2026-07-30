@@ -218,11 +218,19 @@ func (_c *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *sq
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.SizeInBytes(); ok {
-		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
+		vv, err := actioncachestatistics.ValueScanner.SizeInBytes.Value(value)
+		if err != nil {
+			return nil, nil, err
+		}
+		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, vv)
 		_node.SizeInBytes = value
 	}
 	if value, ok := _c.mutation.SaveTimeInMs(); ok {
-		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
+		vv, err := actioncachestatistics.ValueScanner.SaveTimeInMs.Value(value)
+		if err != nil {
+			return nil, nil, err
+		}
+		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, vv)
 		_node.SaveTimeInMs = value
 	}
 	if value, ok := _c.mutation.LoadTimeInMs(); ok {
@@ -334,54 +342,6 @@ type (
 	}
 )
 
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsert) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsert {
-	u.Set(actioncachestatistics.FieldSizeInBytes, v)
-	return u
-}
-
-// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsert) UpdateSizeInBytes() *ActionCacheStatisticsUpsert {
-	u.SetExcluded(actioncachestatistics.FieldSizeInBytes)
-	return u
-}
-
-// AddSizeInBytes adds v to the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsert) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsert {
-	u.Add(actioncachestatistics.FieldSizeInBytes, v)
-	return u
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsert) ClearSizeInBytes() *ActionCacheStatisticsUpsert {
-	u.SetNull(actioncachestatistics.FieldSizeInBytes)
-	return u
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
-	u.Set(actioncachestatistics.FieldSaveTimeInMs, v)
-	return u
-}
-
-// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsert) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsert {
-	u.SetExcluded(actioncachestatistics.FieldSaveTimeInMs)
-	return u
-}
-
-// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
-	u.Add(actioncachestatistics.FieldSaveTimeInMs, v)
-	return u
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) ClearSaveTimeInMs() *ActionCacheStatisticsUpsert {
-	u.SetNull(actioncachestatistics.FieldSaveTimeInMs)
-	return u
-}
-
 // SetHits sets the "hits" field.
 func (u *ActionCacheStatisticsUpsert) SetHits(v int32) *ActionCacheStatisticsUpsert {
 	u.Set(actioncachestatistics.FieldHits, v)
@@ -447,6 +407,12 @@ func (u *ActionCacheStatisticsUpsertOne) UpdateNewValues() *ActionCacheStatistic
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(actioncachestatistics.FieldID)
 		}
+		if _, exists := u.create.mutation.SizeInBytes(); exists {
+			s.SetIgnore(actioncachestatistics.FieldSizeInBytes)
+		}
+		if _, exists := u.create.mutation.SaveTimeInMs(); exists {
+			s.SetIgnore(actioncachestatistics.FieldSaveTimeInMs)
+		}
 		if _, exists := u.create.mutation.LoadTimeInMs(); exists {
 			s.SetIgnore(actioncachestatistics.FieldLoadTimeInMs)
 		}
@@ -482,62 +448,6 @@ func (u *ActionCacheStatisticsUpsertOne) Update(set func(*ActionCacheStatisticsU
 		set(&ActionCacheStatisticsUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertOne) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSizeInBytes(v)
-	})
-}
-
-// AddSizeInBytes adds v to the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertOne) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSizeInBytes(v)
-	})
-}
-
-// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertOne) UpdateSizeInBytes() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSizeInBytes()
-	})
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertOne) ClearSizeInBytes() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSizeInBytes()
-	})
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSaveTimeInMs(v)
-	})
-}
-
-// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSaveTimeInMs(v)
-	})
-}
-
-// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertOne) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSaveTimeInMs()
-	})
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) ClearSaveTimeInMs() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSaveTimeInMs()
-	})
 }
 
 // SetHits sets the "hits" field.
@@ -780,6 +690,12 @@ func (u *ActionCacheStatisticsUpsertBulk) UpdateNewValues() *ActionCacheStatisti
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(actioncachestatistics.FieldID)
 			}
+			if _, exists := b.mutation.SizeInBytes(); exists {
+				s.SetIgnore(actioncachestatistics.FieldSizeInBytes)
+			}
+			if _, exists := b.mutation.SaveTimeInMs(); exists {
+				s.SetIgnore(actioncachestatistics.FieldSaveTimeInMs)
+			}
 			if _, exists := b.mutation.LoadTimeInMs(); exists {
 				s.SetIgnore(actioncachestatistics.FieldLoadTimeInMs)
 			}
@@ -816,62 +732,6 @@ func (u *ActionCacheStatisticsUpsertBulk) Update(set func(*ActionCacheStatistics
 		set(&ActionCacheStatisticsUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertBulk) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSizeInBytes(v)
-	})
-}
-
-// AddSizeInBytes adds v to the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertBulk) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSizeInBytes(v)
-	})
-}
-
-// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertBulk) UpdateSizeInBytes() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSizeInBytes()
-	})
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertBulk) ClearSizeInBytes() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSizeInBytes()
-	})
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSaveTimeInMs(v)
-	})
-}
-
-// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSaveTimeInMs(v)
-	})
-}
-
-// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertBulk) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSaveTimeInMs()
-	})
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) ClearSaveTimeInMs() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSaveTimeInMs()
-	})
 }
 
 // SetHits sets the "hits" field.

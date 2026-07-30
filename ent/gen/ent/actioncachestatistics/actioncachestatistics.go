@@ -82,6 +82,8 @@ func ValidColumn(column string) bool {
 var (
 	// ValueScanner of all ActionCacheStatistics fields.
 	ValueScanner struct {
+		SizeInBytes                     field.TypeValueScanner[uint64]
+		SaveTimeInMs                    field.TypeValueScanner[uint64]
 		LoadTimeInMs                    field.TypeValueScanner[uint64]
 		CacheCheckSemaphoreWaitTimeInMs field.TypeValueScanner[uint64]
 	}

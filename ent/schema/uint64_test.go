@@ -1,6 +1,16 @@
 package schema
 
-import "testing"
+import (
+	"testing"
+
+	"entgo.io/ent/dialect"
+)
+
+func TestPostgresUint64SchemaType(t *testing.T) {
+	if got, want := postgresUint64SchemaType[dialect.Postgres], "NUMERIC(20,0)"; got != want {
+		t.Fatalf("PostgreSQL uint64 schema type = %q, want %q", got, want)
+	}
+}
 
 func TestUint64ValueScanner(t *testing.T) {
 	maxUint64 := ^uint64(0)

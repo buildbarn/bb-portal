@@ -76,8 +76,12 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
+		case actioncachestatistics.FieldID, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
 			values[i] = new(sql.NullInt64)
+		case actioncachestatistics.FieldSizeInBytes:
+			values[i] = actioncachestatistics.ValueScanner.SizeInBytes.ScanValue()
+		case actioncachestatistics.FieldSaveTimeInMs:
+			values[i] = actioncachestatistics.ValueScanner.SaveTimeInMs.ScanValue()
 		case actioncachestatistics.FieldLoadTimeInMs:
 			values[i] = actioncachestatistics.ValueScanner.LoadTimeInMs.ScanValue()
 		case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
@@ -106,16 +110,16 @@ func (_m *ActionCacheStatistics) assignValues(columns []string, values []any) er
 			}
 			_m.ID = int64(value.Int64)
 		case actioncachestatistics.FieldSizeInBytes:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field size_in_bytes", values[i])
-			} else if value.Valid {
-				_m.SizeInBytes = uint64(value.Int64)
+			if value, err := actioncachestatistics.ValueScanner.SizeInBytes.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.SizeInBytes = value
 			}
 		case actioncachestatistics.FieldSaveTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field save_time_in_ms", values[i])
-			} else if value.Valid {
-				_m.SaveTimeInMs = uint64(value.Int64)
+			if value, err := actioncachestatistics.ValueScanner.SaveTimeInMs.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.SaveTimeInMs = value
 			}
 		case actioncachestatistics.FieldLoadTimeInMs:
 			if value, err := actioncachestatistics.ValueScanner.LoadTimeInMs.FromValue(values[i]); err != nil {

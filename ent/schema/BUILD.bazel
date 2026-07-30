@@ -64,4 +64,5 @@ go_test(
     name = "schema_test",
     srcs = ["uint64_test.go"],
     embed = [":schema"],
+    deps = ["@io_entgo_ent//dialect"],
 )

@@ -29,60 +29,6 @@ func (_u *ActionCacheStatisticsUpdate) Where(ps ...predicate.ActionCacheStatisti
 	return _u
 }
 
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (_u *ActionCacheStatisticsUpdate) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpdate {
-	_u.mutation.ResetSizeInBytes()
-	_u.mutation.SetSizeInBytes(v)
-	return _u
-}
-
-// SetNillableSizeInBytes sets the "size_in_bytes" field if the given value is not nil.
-func (_u *ActionCacheStatisticsUpdate) SetNillableSizeInBytes(v *uint64) *ActionCacheStatisticsUpdate {
-	if v != nil {
-		_u.SetSizeInBytes(*v)
-	}
-	return _u
-}
-
-// AddSizeInBytes adds value to the "size_in_bytes" field.
-func (_u *ActionCacheStatisticsUpdate) AddSizeInBytes(v int64) *ActionCacheStatisticsUpdate {
-	_u.mutation.AddSizeInBytes(v)
-	return _u
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (_u *ActionCacheStatisticsUpdate) ClearSizeInBytes() *ActionCacheStatisticsUpdate {
-	_u.mutation.ClearSizeInBytes()
-	return _u
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (_u *ActionCacheStatisticsUpdate) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpdate {
-	_u.mutation.ResetSaveTimeInMs()
-	_u.mutation.SetSaveTimeInMs(v)
-	return _u
-}
-
-// SetNillableSaveTimeInMs sets the "save_time_in_ms" field if the given value is not nil.
-func (_u *ActionCacheStatisticsUpdate) SetNillableSaveTimeInMs(v *uint64) *ActionCacheStatisticsUpdate {
-	if v != nil {
-		_u.SetSaveTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddSaveTimeInMs adds value to the "save_time_in_ms" field.
-func (_u *ActionCacheStatisticsUpdate) AddSaveTimeInMs(v int64) *ActionCacheStatisticsUpdate {
-	_u.mutation.AddSaveTimeInMs(v)
-	return _u
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (_u *ActionCacheStatisticsUpdate) ClearSaveTimeInMs() *ActionCacheStatisticsUpdate {
-	_u.mutation.ClearSaveTimeInMs()
-	return _u
-}
-
 // SetHits sets the "hits" field.
 func (_u *ActionCacheStatisticsUpdate) SetHits(v int32) *ActionCacheStatisticsUpdate {
 	_u.mutation.ResetHits()
@@ -239,20 +185,8 @@ func (_u *ActionCacheStatisticsUpdate) sqlSave(ctx context.Context) (_node int, 
 			}
 		}
 	}
-	if value, ok := _u.mutation.SizeInBytes(); ok {
-		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedSizeInBytes(); ok {
-		_spec.AddField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
-	}
 	if _u.mutation.SizeInBytesCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.SaveTimeInMs(); ok {
-		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedSaveTimeInMs(); ok {
-		_spec.AddField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
 	}
 	if _u.mutation.SaveTimeInMsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64)
@@ -373,60 +307,6 @@ type ActionCacheStatisticsUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ActionCacheStatisticsMutation
-}
-
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (_u *ActionCacheStatisticsUpdateOne) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpdateOne {
-	_u.mutation.ResetSizeInBytes()
-	_u.mutation.SetSizeInBytes(v)
-	return _u
-}
-
-// SetNillableSizeInBytes sets the "size_in_bytes" field if the given value is not nil.
-func (_u *ActionCacheStatisticsUpdateOne) SetNillableSizeInBytes(v *uint64) *ActionCacheStatisticsUpdateOne {
-	if v != nil {
-		_u.SetSizeInBytes(*v)
-	}
-	return _u
-}
-
-// AddSizeInBytes adds value to the "size_in_bytes" field.
-func (_u *ActionCacheStatisticsUpdateOne) AddSizeInBytes(v int64) *ActionCacheStatisticsUpdateOne {
-	_u.mutation.AddSizeInBytes(v)
-	return _u
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (_u *ActionCacheStatisticsUpdateOne) ClearSizeInBytes() *ActionCacheStatisticsUpdateOne {
-	_u.mutation.ClearSizeInBytes()
-	return _u
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (_u *ActionCacheStatisticsUpdateOne) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpdateOne {
-	_u.mutation.ResetSaveTimeInMs()
-	_u.mutation.SetSaveTimeInMs(v)
-	return _u
-}
-
-// SetNillableSaveTimeInMs sets the "save_time_in_ms" field if the given value is not nil.
-func (_u *ActionCacheStatisticsUpdateOne) SetNillableSaveTimeInMs(v *uint64) *ActionCacheStatisticsUpdateOne {
-	if v != nil {
-		_u.SetSaveTimeInMs(*v)
-	}
-	return _u
-}
-
-// AddSaveTimeInMs adds value to the "save_time_in_ms" field.
-func (_u *ActionCacheStatisticsUpdateOne) AddSaveTimeInMs(v int64) *ActionCacheStatisticsUpdateOne {
-	_u.mutation.AddSaveTimeInMs(v)
-	return _u
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (_u *ActionCacheStatisticsUpdateOne) ClearSaveTimeInMs() *ActionCacheStatisticsUpdateOne {
-	_u.mutation.ClearSaveTimeInMs()
-	return _u
 }
 
 // SetHits sets the "hits" field.
@@ -615,20 +495,8 @@ func (_u *ActionCacheStatisticsUpdateOne) sqlSave(ctx context.Context) (_node *A
 			}
 		}
 	}
-	if value, ok := _u.mutation.SizeInBytes(); ok {
-		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedSizeInBytes(); ok {
-		_spec.AddField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
-	}
 	if _u.mutation.SizeInBytesCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.SaveTimeInMs(); ok {
-		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedSaveTimeInMs(); ok {
-		_spec.AddField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
 	}
 	if _u.mutation.SaveTimeInMsCleared() {
 		_spec.ClearField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64)

@@ -31,9 +31,10 @@ type Action struct {
 
 type ActionCacheStatistic struct {
 	ID                                 int64
-	SizeInBytes                        sql.NullInt64
-	SaveTimeInMs                       sql.NullInt64
-	LoadTimeInMs                       sql.NullInt64
+	SizeInBytes                        sql.NullString
+	SaveTimeInMs                       sql.NullString
+	LoadTimeInMs                       sql.NullString
+	CacheCheckSemaphoreWaitTimeInMs    sql.NullString
 	Hits                               sql.NullInt32
 	Misses                             sql.NullInt32
 	ActionSummaryActionCacheStatistics sql.NullInt64
@@ -310,14 +311,14 @@ type SourceControl struct {
 
 type SystemNetworkStat struct {
 	ID                               int64
-	BytesSent                        sql.NullInt64
-	BytesRecv                        sql.NullInt64
-	PacketsSent                      sql.NullInt64
-	PacketsRecv                      sql.NullInt64
-	PeakBytesSentPerSec              sql.NullInt64
-	PeakBytesRecvPerSec              sql.NullInt64
-	PeakPacketsSentPerSec            sql.NullInt64
-	PeakPacketsRecvPerSec            sql.NullInt64
+	BytesSent                        sql.NullString
+	BytesRecv                        sql.NullString
+	PacketsSent                      sql.NullString
+	PacketsRecv                      sql.NullString
+	PeakBytesSentPerSec              sql.NullString
+	PeakBytesRecvPerSec              sql.NullString
+	PeakPacketsSentPerSec            sql.NullString
+	PeakPacketsRecvPerSec            sql.NullString
 	NetworkMetricsSystemNetworkStats sql.NullInt64
 }
 

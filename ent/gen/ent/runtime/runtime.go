@@ -29,6 +29,12 @@ import (
 func init() {
 	actioncachestatisticsFields := authschema.ActionCacheStatistics{}.Fields()
 	_ = actioncachestatisticsFields
+	// actioncachestatisticsDescSizeInBytes is the schema descriptor for size_in_bytes field.
+	actioncachestatisticsDescSizeInBytes := actioncachestatisticsFields[0].Descriptor()
+	actioncachestatistics.ValueScanner.SizeInBytes = actioncachestatisticsDescSizeInBytes.ValueScanner.(field.TypeValueScanner[uint64])
+	// actioncachestatisticsDescSaveTimeInMs is the schema descriptor for save_time_in_ms field.
+	actioncachestatisticsDescSaveTimeInMs := actioncachestatisticsFields[1].Descriptor()
+	actioncachestatistics.ValueScanner.SaveTimeInMs = actioncachestatisticsDescSaveTimeInMs.ValueScanner.(field.TypeValueScanner[uint64])
 	// actioncachestatisticsDescLoadTimeInMs is the schema descriptor for load_time_in_ms field.
 	actioncachestatisticsDescLoadTimeInMs := actioncachestatisticsFields[2].Descriptor()
 	actioncachestatistics.ValueScanner.LoadTimeInMs = actioncachestatisticsDescLoadTimeInMs.ValueScanner.(field.TypeValueScanner[uint64])
