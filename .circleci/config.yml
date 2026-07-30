@@ -1,0 +1,16 @@
+version: 2.1
+
+# Placeholder config — full build-and-push pipeline is defined in
+# rbe/bb-portal-fork-image-pipeline (TECH-23509) and will replace this on merge.
+
+jobs:
+  placeholder:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - run: echo "CircleCI project connected. Awaiting full pipeline via PR."
+
+workflows:
+  placeholder:
+    jobs:
+      - placeholder
