@@ -14,17 +14,14 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  Any: { input: any; output: any; }
   /**
    * Define a Relay Cursor type:
    * https://relay.dev/graphql/connections.htm#sec-Cursor
    */
   Cursor: { input: any; output: any; }
-  Duration: { input: any; output: any; }
   Map: { input: any; output: any; }
   Time: { input: any; output: any; }
   UUID: { input: any; output: any; }
-  Upload: { input: any; output: any; }
 };
 
 export type Action = Node & {
