@@ -5,6 +5,7 @@ go_test(
     srcs = [
         "integration_test.go",
         "types_test.go",
+        "unsigned_long_test.go",
         "util_test.go",
     ],
     data = glob(["testdata/**"]) + ["//frontend:generated_graphql_files"],

@@ -1,0 +1,91 @@
+load(
+    "@rules_itest//:itest.bzl",
+    "itest_service",
+    "itest_service_group",
+    "itest_task",
+    "named_port",
+    "port",
+    "port_alias",
+)
+
+exports_files([
+    "portal.jsonnet.tpl",
+    "unsigned_long_values.bep.ndjson",
+])
+
+itest_service(
+    name = "postgres_service",
+    args = [
+        "--postgres-port",
+        named_port(":postgres_service", "database"),
+        "--health-port",
+        named_port(":postgres_service", "health"),
+    ],
+    exe = "//test/manual/unsigned_long/postgres",
+    expected_start_duration = "3s",
+    http_health_check_address = "http://127.0.0.1:%s/healthz" % named_port(":postgres_service", "health"),
+    hygienic = False,
+    named_ports = [
+        "database",
+        "health",
+    ],
+    shutdown_timeout = "20s",
+    tags = ["manual"],
+)
+
+itest_task(
+    name = "generate_config_task",
+    args = [
+        "--template",
+        "$(rlocationpath :portal.jsonnet.tpl)",
+        "--output",
+        "$${TMPDIR}/bb_portal_unsigned_long.jsonnet",
+        "--postgres-port",
+        named_port(":postgres_service", "database"),
+        "--http-port",
+        port(":portal_service"),
+    ],
+    data = [":portal.jsonnet.tpl"],
+    exe = "//test/manual/unsigned_long/config",
+    hygienic = False,
+    tags = ["manual"],
+    deps = [":postgres_service"],
+)
+
+itest_service(
+    name = "portal_service",
+    args = ["$${TMPDIR}/bb_portal_unsigned_long.jsonnet"],
+    autoassign_port = True,
+    exe = "//cmd/bb_portal",
+    expected_start_duration = "3s",
+    http_health_check_address = "http://127.0.0.1:%s/" % port(":portal_service"),
+    hygienic = False,
+    shutdown_timeout = "20s",
+    tags = ["manual"],
+    deps = [":generate_config_task"],
+)
+
+itest_task(
+    name = "seed_task",
+    args = [
+        "--portal-url",
+        "http://127.0.0.1:%s" % port(":portal_service"),
+        "--bep-file",
+        "$(rlocationpath :unsigned_long_values.bep.ndjson)",
+    ],
+    data = [":unsigned_long_values.bep.ndjson"],
+    exe = "//test/manual/unsigned_long/seed",
+    hygienic = False,
+    tags = ["manual"],
+    deps = [":portal_service"],
+)
+
+itest_service_group(
+    name = "unsigned_long",
+    hygienic = False,
+    port_aliases = {
+        "http": port_alias(":portal_service"),
+    },
+    services = [":seed_task"],
+    tags = ["manual"],
+)

@@ -24,7 +24,7 @@ export type Scalars = {
   Map: { input: any; output: any; }
   Time: { input: any; output: any; }
   UUID: { input: any; output: any; }
-  UnsignedLong: { input: number; output: number; }
+  UnsignedLong: { input: string; output: bigint; }
   Upload: { input: any; output: any; }
 };
 
@@ -3360,7 +3360,7 @@ export type BazelInvocationMetricsFragment = { __typename?: 'Metrics', id: strin
       & { ' $fragmentRefs'?: { 'BazelInvocationMetricsSystemNetworkStatsFragment': BazelInvocationMetricsSystemNetworkStatsFragment } }
     ) | null } | null } & { ' $fragmentName'?: 'BazelInvocationMetricsFragment' };
 
-export type BazelInvocationMetricsActionSummaryFragment = { __typename?: 'ActionSummary', id: string, actionsExecuted?: number | null, actionCacheStatistics?: { __typename?: 'ActionCacheStatistics', id: string, loadTimeInMs?: number | null, saveTimeInMs?: number | null, hits?: number | null, misses?: number | null, sizeInBytes?: number | null, missDetails?: Array<{ __typename?: 'MissDetail', id: string, count?: number | null, reason: string }> | null } | null, runnerCount?: Array<{ __typename?: 'RunnerCount', id: string, actionsExecuted?: number | null, name?: string | null, execKind?: string | null }> | null, actionData?: Array<{ __typename?: 'ActionData', id: string, mnemonic?: string | null, userTime?: number | null, systemTime?: number | null, actionsExecuted?: number | null }> | null } & { ' $fragmentName'?: 'BazelInvocationMetricsActionSummaryFragment' };
+export type BazelInvocationMetricsActionSummaryFragment = { __typename?: 'ActionSummary', id: string, actionsExecuted?: number | null, actionCacheStatistics?: { __typename?: 'ActionCacheStatistics', id: string, loadTimeInMs?: bigint | null, saveTimeInMs?: bigint | null, hits?: number | null, misses?: number | null, sizeInBytes?: bigint | null, missDetails?: Array<{ __typename?: 'MissDetail', id: string, count?: number | null, reason: string }> | null } | null, runnerCount?: Array<{ __typename?: 'RunnerCount', id: string, actionsExecuted?: number | null, name?: string | null, execKind?: string | null }> | null, actionData?: Array<{ __typename?: 'ActionData', id: string, mnemonic?: string | null, userTime?: number | null, systemTime?: number | null, actionsExecuted?: number | null }> | null } & { ' $fragmentName'?: 'BazelInvocationMetricsActionSummaryFragment' };
 
 export type BazelInvocationMetricsArtifactMetricsFragment = { __typename?: 'ArtifactMetrics', id: string, sourceArtifactsReadCount?: number | null, sourceArtifactsReadSizeInBytes?: number | null, outputArtifactsSeenCount?: number | null, outputArtifactsSeenSizeInBytes?: number | null, outputArtifactsFromActionCacheCount?: number | null, outputArtifactsFromActionCacheSizeInBytes?: number | null, topLevelArtifactsCount?: number | null, topLevelArtifactsSizeInBytes?: number | null } & { ' $fragmentName'?: 'BazelInvocationMetricsArtifactMetricsFragment' };
 
@@ -3373,7 +3373,7 @@ export type BazelInvocationMetricsGarbageMetricsFragment = { __typename?: 'Garba
 
 export type BazelInvocationMetricsTimingMetricsFragment = { __typename?: 'TimingMetrics', id: string, cpuTimeInMs?: number | null, wallTimeInMs?: number | null, analysisPhaseTimeInMs?: number | null, executionPhaseTimeInMs?: number | null, actionsExecutionStartInMs?: number | null } & { ' $fragmentName'?: 'BazelInvocationMetricsTimingMetricsFragment' };
 
-export type BazelInvocationMetricsSystemNetworkStatsFragment = { __typename?: 'SystemNetworkStats', id: string, bytesSent?: number | null, bytesRecv?: number | null, packetsSent?: number | null, packetsRecv?: number | null, peakBytesSentPerSec?: number | null, peakBytesRecvPerSec?: number | null, peakPacketsSentPerSec?: number | null, peakPacketsRecvPerSec?: number | null } & { ' $fragmentName'?: 'BazelInvocationMetricsSystemNetworkStatsFragment' };
+export type BazelInvocationMetricsSystemNetworkStatsFragment = { __typename?: 'SystemNetworkStats', id: string, bytesSent?: bigint | null, bytesRecv?: bigint | null, packetsSent?: bigint | null, packetsRecv?: bigint | null, peakBytesSentPerSec?: bigint | null, peakBytesRecvPerSec?: bigint | null, peakPacketsSentPerSec?: bigint | null, peakPacketsRecvPerSec?: bigint | null } & { ' $fragmentName'?: 'BazelInvocationMetricsSystemNetworkStatsFragment' };
 
 export type GetBazelInvocationSourceControlQueryVariables = Exact<{
   invocationID: Scalars['UUID']['input'];

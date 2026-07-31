@@ -72,19 +72,19 @@ const ActionCacheOverview: React.FC<Props> = ({ acStatistics }) => {
       />
       <Statistic
         title="Size"
-        value={readableFileSize(acStatistics?.sizeInBytes ?? 0)}
+        value={readableFileSize(acStatistics?.sizeInBytes ?? 0n)}
       />
       <Statistic
         title="Save Time"
         value={readableDurationFromMilliseconds(
-          acStatistics?.saveTimeInMs ?? 0,
+          acStatistics?.saveTimeInMs ?? 0n,
           { smallestUnit: "ms" },
         )}
       />
       <Statistic
         title="Load Time"
         value={readableDurationFromMilliseconds(
-          acStatistics?.loadTimeInMs ?? 0,
+          acStatistics?.loadTimeInMs ?? 0n,
           { smallestUnit: "ms" },
         )}
       />

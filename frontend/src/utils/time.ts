@@ -84,13 +84,13 @@ export const readableDurationFromSeconds = (
 };
 
 export const readableDurationFromMilliseconds = (
-  totalMilliseconds: number | undefined | null,
+  totalMilliseconds: number | bigint | undefined | null,
   formatConfig: ReadableFormatConfig = {},
 ): string => {
   return readableDuration(
     totalMilliseconds === undefined || totalMilliseconds === null
       ? null
-      : dayjs.duration(totalMilliseconds, "milliseconds"),
+      : dayjs.duration(Number(totalMilliseconds), "milliseconds"),
     formatConfig,
   );
 };

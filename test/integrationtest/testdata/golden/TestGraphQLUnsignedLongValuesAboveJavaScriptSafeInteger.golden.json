@@ -1,0 +1,26 @@
+{
+  "getBazelInvocation": {
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 9223372036854775808,
+          "loadTimeInMs": 9223372036854775807,
+          "saveTimeInMs": 9007199254740995,
+          "sizeInBytes": 9007199254740993
+        }
+      },
+      "networkMetrics": {
+        "systemNetworkStats": {
+          "bytesRecv": 9007199254740999,
+          "bytesSent": 9007199254740997,
+          "packetsRecv": 9223372036854775807,
+          "packetsSent": 9223372036854775805,
+          "peakBytesRecvPerSec": 9223372036854775810,
+          "peakBytesSentPerSec": 9223372036854775808,
+          "peakPacketsRecvPerSec": 18446744073709551615,
+          "peakPacketsSentPerSec": 18446744073709551613
+        }
+      }
+    }
+  }
+}

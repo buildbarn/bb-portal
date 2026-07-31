@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_binary(
+    name = "config",
+    embed = [":config_lib"],
+    visibility = ["//test/manual/unsigned_long:__pkg__"],
+)
+
+go_library(
+    name = "config_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/buildbarn/bb-portal/test/manual/unsigned_long/config",
+    visibility = ["//visibility:private"],
+    deps = ["@rules_go//go/runfiles"],
+)
