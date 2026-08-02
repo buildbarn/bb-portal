@@ -5,12 +5,13 @@ import { nullPercent } from "../Utilities/nullPercent";
 
 interface Props {
   actionData?: Maybe<ActionData[]>;
+  countField: "actionsCreated" | "actionsExecuted";
 }
 
-const ActionTypeMetrics: React.FC<Props> = ({ actionData }) => {
+const ActionTypeMetrics: React.FC<Props> = ({ actionData, countField }) => {
   const actions: SummaryChartItem[] = [];
-  const totalActionsExecuted = actionData?.reduce(
-    (accumulator, item) => accumulator + (item.actionsExecuted ?? 0),
+  const totalActions = actionData?.reduce(
+    (accumulator, item) => accumulator + (item[countField] ?? 0),
     0,
   );
 
@@ -19,8 +20,8 @@ const ActionTypeMetrics: React.FC<Props> = ({ actionData }) => {
       const chartItem: SummaryChartItem = {
         key: index,
         value: item.mnemonic ?? "",
-        percent: nullPercent(item.actionsExecuted, totalActionsExecuted, 0),
-        count: item.actionsExecuted ?? 0,
+        percent: nullPercent(item[countField], totalActions, 0),
+        count: item[countField] ?? 0,
       };
       actions.push(chartItem);
     });

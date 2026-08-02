@@ -2,10 +2,11 @@ import {
   ClusterOutlined,
   DashboardOutlined,
   NodeCollapseOutlined,
+  NumberOutlined,
   PieChartOutlined,
   ToolOutlined,
 } from "@ant-design/icons";
-import { Flex } from "antd";
+import { Flex, Space, Statistic } from "antd";
 import type { BazelInvocationMetricsActionSummaryFragment } from "@/graphql/__generated__/graphql";
 import ActionCacheMissMetrics from "../ActionCacheMissMetrics";
 import ActionCacheOverview from "../ActionCacheOverview";
@@ -25,6 +26,27 @@ const ActionStatisticsDisplay: React.FC<Props> = ({ actionSummary }) => {
       titleBits={["Action Metrics"]}
     >
       <Flex vertical={false} gap="small" wrap={true}>
+        <PortalCard
+          type="inner"
+          icon={<NumberOutlined />}
+          titleBits={["Action Overview"]}
+        >
+          <Space size="large">
+            <Statistic
+              title="Created"
+              value={actionSummary.actionsCreated ?? 0}
+            />
+            <Statistic
+              title="Created Without Aspects"
+              value={actionSummary.actionsCreatedNotIncludingAspects ?? 0}
+            />
+            <Statistic
+              title="Executed"
+              value={actionSummary.actionsExecuted ?? 0}
+            />
+          </Space>
+        </PortalCard>
+
         <PortalCard
           type="inner"
           icon={<DashboardOutlined />}
@@ -57,9 +79,23 @@ const ActionStatisticsDisplay: React.FC<Props> = ({ actionSummary }) => {
         <PortalCard
           type="inner"
           icon={<NodeCollapseOutlined />}
-          titleBits={["Action Types"]}
+          titleBits={["Action Types Created"]}
         >
-          <ActionTypeMetrics actionData={actionSummary.actionData} />
+          <ActionTypeMetrics
+            actionData={actionSummary.actionData}
+            countField="actionsCreated"
+          />
+        </PortalCard>
+
+        <PortalCard
+          type="inner"
+          icon={<NodeCollapseOutlined />}
+          titleBits={["Action Types Executed"]}
+        >
+          <ActionTypeMetrics
+            actionData={actionSummary.actionData}
+            countField="actionsExecuted"
+          />
         </PortalCard>
       </Flex>
     </PortalCard>
