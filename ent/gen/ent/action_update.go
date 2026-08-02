@@ -208,6 +208,86 @@ func (_u *ActionUpdate) ClearFailureMessage() *ActionUpdate {
 	return _u
 }
 
+// SetPrimaryOutput sets the "primary_output" field.
+func (_u *ActionUpdate) SetPrimaryOutput(v string) *ActionUpdate {
+	_u.mutation.SetPrimaryOutput(v)
+	return _u
+}
+
+// SetNillablePrimaryOutput sets the "primary_output" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillablePrimaryOutput(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetPrimaryOutput(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutput clears the value of the "primary_output" field.
+func (_u *ActionUpdate) ClearPrimaryOutput() *ActionUpdate {
+	_u.mutation.ClearPrimaryOutput()
+	return _u
+}
+
+// SetPrimaryOutputURI sets the "primary_output_uri" field.
+func (_u *ActionUpdate) SetPrimaryOutputURI(v string) *ActionUpdate {
+	_u.mutation.SetPrimaryOutputURI(v)
+	return _u
+}
+
+// SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillablePrimaryOutputURI(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetPrimaryOutputURI(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
+func (_u *ActionUpdate) ClearPrimaryOutputURI() *ActionUpdate {
+	_u.mutation.ClearPrimaryOutputURI()
+	return _u
+}
+
+// SetStdoutURI sets the "stdout_uri" field.
+func (_u *ActionUpdate) SetStdoutURI(v string) *ActionUpdate {
+	_u.mutation.SetStdoutURI(v)
+	return _u
+}
+
+// SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableStdoutURI(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStdoutURI(*v)
+	}
+	return _u
+}
+
+// ClearStdoutURI clears the value of the "stdout_uri" field.
+func (_u *ActionUpdate) ClearStdoutURI() *ActionUpdate {
+	_u.mutation.ClearStdoutURI()
+	return _u
+}
+
+// SetStderrURI sets the "stderr_uri" field.
+func (_u *ActionUpdate) SetStderrURI(v string) *ActionUpdate {
+	_u.mutation.SetStderrURI(v)
+	return _u
+}
+
+// SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableStderrURI(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStderrURI(*v)
+	}
+	return _u
+}
+
+// ClearStderrURI clears the value of the "stderr_uri" field.
+func (_u *ActionUpdate) ClearStderrURI() *ActionUpdate {
+	_u.mutation.ClearStderrURI()
+	return _u
+}
+
 // Mutation returns the ActionMutation object of the builder.
 func (_u *ActionUpdate) Mutation() *ActionMutation {
 	return _u.mutation
@@ -244,9 +324,6 @@ func (_u *ActionUpdate) ExecX(ctx context.Context) {
 func (_u *ActionUpdate) check() error {
 	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
-	}
-	if _u.mutation.ConfigurationCleared() && len(_u.mutation.ConfigurationIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Action.configuration"`)
 	}
 	return nil
 }
@@ -321,6 +398,30 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.PrimaryOutput(); ok {
+		_spec.SetField(action.FieldPrimaryOutput, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputCleared() {
+		_spec.ClearField(action.FieldPrimaryOutput, field.TypeString)
+	}
+	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
+		_spec.SetField(action.FieldPrimaryOutputURI, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputURICleared() {
+		_spec.ClearField(action.FieldPrimaryOutputURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StdoutURI(); ok {
+		_spec.SetField(action.FieldStdoutURI, field.TypeString, value)
+	}
+	if _u.mutation.StdoutURICleared() {
+		_spec.ClearField(action.FieldStdoutURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StderrURI(); ok {
+		_spec.SetField(action.FieldStderrURI, field.TypeString, value)
+	}
+	if _u.mutation.StderrURICleared() {
+		_spec.ClearField(action.FieldStderrURI, field.TypeString)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -521,6 +622,86 @@ func (_u *ActionUpdateOne) ClearFailureMessage() *ActionUpdateOne {
 	return _u
 }
 
+// SetPrimaryOutput sets the "primary_output" field.
+func (_u *ActionUpdateOne) SetPrimaryOutput(v string) *ActionUpdateOne {
+	_u.mutation.SetPrimaryOutput(v)
+	return _u
+}
+
+// SetNillablePrimaryOutput sets the "primary_output" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillablePrimaryOutput(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetPrimaryOutput(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutput clears the value of the "primary_output" field.
+func (_u *ActionUpdateOne) ClearPrimaryOutput() *ActionUpdateOne {
+	_u.mutation.ClearPrimaryOutput()
+	return _u
+}
+
+// SetPrimaryOutputURI sets the "primary_output_uri" field.
+func (_u *ActionUpdateOne) SetPrimaryOutputURI(v string) *ActionUpdateOne {
+	_u.mutation.SetPrimaryOutputURI(v)
+	return _u
+}
+
+// SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillablePrimaryOutputURI(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetPrimaryOutputURI(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
+func (_u *ActionUpdateOne) ClearPrimaryOutputURI() *ActionUpdateOne {
+	_u.mutation.ClearPrimaryOutputURI()
+	return _u
+}
+
+// SetStdoutURI sets the "stdout_uri" field.
+func (_u *ActionUpdateOne) SetStdoutURI(v string) *ActionUpdateOne {
+	_u.mutation.SetStdoutURI(v)
+	return _u
+}
+
+// SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableStdoutURI(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStdoutURI(*v)
+	}
+	return _u
+}
+
+// ClearStdoutURI clears the value of the "stdout_uri" field.
+func (_u *ActionUpdateOne) ClearStdoutURI() *ActionUpdateOne {
+	_u.mutation.ClearStdoutURI()
+	return _u
+}
+
+// SetStderrURI sets the "stderr_uri" field.
+func (_u *ActionUpdateOne) SetStderrURI(v string) *ActionUpdateOne {
+	_u.mutation.SetStderrURI(v)
+	return _u
+}
+
+// SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableStderrURI(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStderrURI(*v)
+	}
+	return _u
+}
+
+// ClearStderrURI clears the value of the "stderr_uri" field.
+func (_u *ActionUpdateOne) ClearStderrURI() *ActionUpdateOne {
+	_u.mutation.ClearStderrURI()
+	return _u
+}
+
 // Mutation returns the ActionMutation object of the builder.
 func (_u *ActionUpdateOne) Mutation() *ActionMutation {
 	return _u.mutation
@@ -570,9 +751,6 @@ func (_u *ActionUpdateOne) ExecX(ctx context.Context) {
 func (_u *ActionUpdateOne) check() error {
 	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
-	}
-	if _u.mutation.ConfigurationCleared() && len(_u.mutation.ConfigurationIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Action.configuration"`)
 	}
 	return nil
 }
@@ -664,6 +842,30 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 	}
 	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.PrimaryOutput(); ok {
+		_spec.SetField(action.FieldPrimaryOutput, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputCleared() {
+		_spec.ClearField(action.FieldPrimaryOutput, field.TypeString)
+	}
+	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
+		_spec.SetField(action.FieldPrimaryOutputURI, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputURICleared() {
+		_spec.ClearField(action.FieldPrimaryOutputURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StdoutURI(); ok {
+		_spec.SetField(action.FieldStdoutURI, field.TypeString, value)
+	}
+	if _u.mutation.StdoutURICleared() {
+		_spec.ClearField(action.FieldStdoutURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StderrURI(); ok {
+		_spec.SetField(action.FieldStderrURI, field.TypeString, value)
+	}
+	if _u.mutation.StderrURICleared() {
+		_spec.ClearField(action.FieldStderrURI, field.TypeString)
 	}
 	_node = &Action{config: _u.config}
 	_spec.Assign = _node.assignValues

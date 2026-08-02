@@ -11,10 +11,12 @@ type Action implements Node {
   endTime: Time
   failureCode: String
   failureMessage: String
+  primaryOutput: String
+  primaryOutputURI: String
+  stdoutURI: String
+  stderrURI: String
   bazelInvocation: BazelInvocation!
-  configuration: Configuration!
-  stdout: File
-  stderr: File
+  configuration: Configuration
 }
 type ActionCacheStatistics implements Node {
   id: ID!
@@ -120,6 +122,23 @@ input ActionCacheStatisticsWhereInput {
   """
   hasMissDetails: Boolean
   hasMissDetailsWith: [MissDetailWhereInput!]
+}
+"""
+A connection to a list of items.
+"""
+type ActionConnection {
+  """
+  A list of edges.
+  """
+  edges: [ActionEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
 }
 type ActionData implements Node {
   id: ID!
@@ -252,6 +271,19 @@ input ActionDataWhereInput {
   """
   hasActionSummary: Boolean
   hasActionSummaryWith: [ActionSummaryWhereInput!]
+}
+"""
+An edge in a connection.
+"""
+type ActionEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Action
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
 }
 type ActionSummary implements Node {
   id: ID!
@@ -492,6 +524,78 @@ input ActionWhereInput {
   failureMessageEqualFold: String
   failureMessageContainsFold: String
   """
+  primary_output field predicates
+  """
+  primaryOutput: String
+  primaryOutputNEQ: String
+  primaryOutputIn: [String!]
+  primaryOutputNotIn: [String!]
+  primaryOutputGT: String
+  primaryOutputGTE: String
+  primaryOutputLT: String
+  primaryOutputLTE: String
+  primaryOutputContains: String
+  primaryOutputHasPrefix: String
+  primaryOutputHasSuffix: String
+  primaryOutputIsNil: Boolean
+  primaryOutputNotNil: Boolean
+  primaryOutputEqualFold: String
+  primaryOutputContainsFold: String
+  """
+  primary_output_uri field predicates
+  """
+  primaryOutputURI: String
+  primaryOutputURINEQ: String
+  primaryOutputURIIn: [String!]
+  primaryOutputURINotIn: [String!]
+  primaryOutputURIGT: String
+  primaryOutputURIGTE: String
+  primaryOutputURILT: String
+  primaryOutputURILTE: String
+  primaryOutputURIContains: String
+  primaryOutputURIHasPrefix: String
+  primaryOutputURIHasSuffix: String
+  primaryOutputURIIsNil: Boolean
+  primaryOutputURINotNil: Boolean
+  primaryOutputURIEqualFold: String
+  primaryOutputURIContainsFold: String
+  """
+  stdout_uri field predicates
+  """
+  stdoutURI: String
+  stdoutURINEQ: String
+  stdoutURIIn: [String!]
+  stdoutURINotIn: [String!]
+  stdoutURIGT: String
+  stdoutURIGTE: String
+  stdoutURILT: String
+  stdoutURILTE: String
+  stdoutURIContains: String
+  stdoutURIHasPrefix: String
+  stdoutURIHasSuffix: String
+  stdoutURIIsNil: Boolean
+  stdoutURINotNil: Boolean
+  stdoutURIEqualFold: String
+  stdoutURIContainsFold: String
+  """
+  stderr_uri field predicates
+  """
+  stderrURI: String
+  stderrURINEQ: String
+  stderrURIIn: [String!]
+  stderrURINotIn: [String!]
+  stderrURIGT: String
+  stderrURIGTE: String
+  stderrURILT: String
+  stderrURILTE: String
+  stderrURIContains: String
+  stderrURIHasPrefix: String
+  stderrURIHasSuffix: String
+  stderrURIIsNil: Boolean
+  stderrURINotNil: Boolean
+  stderrURIEqualFold: String
+  stderrURIContainsFold: String
+  """
   bazel_invocation edge predicates
   """
   hasBazelInvocation: Boolean
@@ -501,16 +605,6 @@ input ActionWhereInput {
   """
   hasConfiguration: Boolean
   hasConfigurationWith: [ConfigurationWhereInput!]
-  """
-  stdout edge predicates
-  """
-  hasStdout: Boolean
-  hasStdoutWith: [FileWhereInput!]
-  """
-  stderr edge predicates
-  """
-  hasStderr: Boolean
-  hasStderrWith: [FileWhereInput!]
 }
 type ArtifactMetrics implements Node {
   id: ID!
@@ -822,7 +916,32 @@ type BazelInvocation implements Node {
   ): InvocationTagConnection!
   connectionMetadata: ConnectionMetadata
   configurations: [Configuration!]
-  actions: [Action!]
+  actions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Filtering options for Actions returned from the connection.
+    """
+    where: ActionWhereInput
+  ): ActionConnection!
   metrics: Metrics
   profile: File
   invocationTargets(
@@ -1805,8 +1924,6 @@ type File implements Node {
   digestID: ID!
   digest: Digest!
   filePath: FilePath!
-  actionStdout: [Action!]
-  actionStderr: [Action!]
   invocationProfile: [BazelInvocation!]
   testActionOutput: [TestResult!]
 }
@@ -1898,16 +2015,6 @@ input FileWhereInput {
   """
   hasFilePath: Boolean
   hasFilePathWith: [FilePathWhereInput!]
-  """
-  action_stdout edge predicates
-  """
-  hasActionStdout: Boolean
-  hasActionStdoutWith: [ActionWhereInput!]
-  """
-  action_stderr edge predicates
-  """
-  hasActionStderr: Boolean
-  hasActionStderrWith: [ActionWhereInput!]
   """
   invocation_profile edge predicates
   """
@@ -2593,6 +2700,32 @@ type Query {
     """
     ids: [ID!]!
   ): [Node]!
+  findActions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Filtering options for Actions returned from the connection.
+    """
+    where: ActionWhereInput
+  ): ActionConnection!
   findBazelInvocations(
     """
     Returns the elements in the list that come after the specified cursor.

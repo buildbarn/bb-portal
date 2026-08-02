@@ -87,13 +87,6 @@ WHERE ctid IN (
         AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
         AND (
             NOT EXISTS (
-                SELECT 1 FROM "actions"
-                WHERE "stdout_file_id" = "files"."id"
-                  OR "stderr_file_id" = "files"."id"
-            )
-        )
-        AND (
-            NOT EXISTS (
                 SELECT 1 FROM "bazel_invocations"
                 WHERE "profile_id" = "files"."id"
             )

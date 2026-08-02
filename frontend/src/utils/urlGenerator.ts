@@ -77,6 +77,55 @@ export function generateFileUrlFromGraphqlFile(
   );
 }
 
+/**
+ * Generates a bb-browser-compatible file URL from a BEP bytestream URI.
+ * The URI authority is the uploader endpoint and is intentionally omitted;
+ * bb-portal resolves the digest through its configured CAS service.
+ */
+export function generateFileUrlFromBepURI(
+  uri: string | null | undefined,
+  fileName: string,
+): string | undefined {
+  if (!uri) {
+    return undefined;
+  }
+
+  let parsedURI: URL;
+  try {
+    parsedURI = new URL(uri);
+  } catch {
+    return undefined;
+  }
+  if (parsedURI.protocol.toLowerCase() !== "bytestream:") {
+    return undefined;
+  }
+
+  const pathSegments = parsedURI.pathname.split("/").filter(Boolean);
+  const blobsIndex = pathSegments.lastIndexOf("blobs");
+  if (blobsIndex < 0) {
+    return undefined;
+  }
+
+  const digestSegments = pathSegments.slice(blobsIndex + 1);
+  if (digestSegments.length !== 2 && digestSegments.length !== 3) {
+    return undefined;
+  }
+  const [digestFunction, hash, sizeBytes] =
+    digestSegments.length === 2
+      ? ["sha256", digestSegments[0], digestSegments[1]]
+      : digestSegments;
+  if (!digestFunction || !hash || !sizeBytes || !/^\d+$/.test(sizeBytes)) {
+    return undefined;
+  }
+
+  return generateFileUrl(
+    pathSegments.slice(0, blobsIndex).join("/"),
+    digestFunctionValueFromString(digestFunction),
+    { hash, sizeBytes },
+    fileName,
+  );
+}
+
 export function generateCommandShellScriptUrl(
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,

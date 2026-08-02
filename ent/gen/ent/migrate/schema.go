@@ -20,9 +20,11 @@ var (
 		{Name: "end_time", Type: field.TypeTime, Nullable: true},
 		{Name: "failure_code", Type: field.TypeString, Nullable: true},
 		{Name: "failure_message", Type: field.TypeString, Nullable: true},
-		{Name: "configuration_id", Type: field.TypeInt64},
-		{Name: "stdout_file_id", Type: field.TypeInt64, Nullable: true},
-		{Name: "stderr_file_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "primary_output", Type: field.TypeString, Nullable: true},
+		{Name: "primary_output_uri", Type: field.TypeString, Nullable: true},
+		{Name: "stdout_uri", Type: field.TypeString, Nullable: true},
+		{Name: "stderr_uri", Type: field.TypeString, Nullable: true},
+		{Name: "configuration_id", Type: field.TypeInt64, Nullable: true},
 		{Name: "bazel_invocation_id", Type: field.TypeInt64},
 	}
 	// ActionsTable holds the schema information for the "actions" table.
@@ -33,25 +35,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "actions_configurations_configuration",
-				Columns:    []*schema.Column{ActionsColumns[10]},
+				Columns:    []*schema.Column{ActionsColumns[14]},
 				RefColumns: []*schema.Column{ConfigurationsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "actions_files_stdout",
-				Columns:    []*schema.Column{ActionsColumns[11]},
-				RefColumns: []*schema.Column{FilesColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "actions_files_stderr",
-				Columns:    []*schema.Column{ActionsColumns[12]},
-				RefColumns: []*schema.Column{FilesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "actions_bazel_invocations_actions",
-				Columns:    []*schema.Column{ActionsColumns[13]},
+				Columns:    []*schema.Column{ActionsColumns[15]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -65,22 +55,17 @@ var (
 			{
 				Name:    "action_bazel_invocation_id",
 				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[13]},
+				Columns: []*schema.Column{ActionsColumns[15]},
+			},
+			{
+				Name:    "action_type_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionsColumns[2], ActionsColumns[15]},
 			},
 			{
 				Name:    "action_configuration_id",
 				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[10]},
-			},
-			{
-				Name:    "action_stdout_file_id",
-				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[11]},
-			},
-			{
-				Name:    "action_stderr_file_id",
-				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[12]},
+				Columns: []*schema.Column{ActionsColumns[14]},
 			},
 		},
 	}
@@ -1238,9 +1223,7 @@ var (
 
 func init() {
 	ActionsTable.ForeignKeys[0].RefTable = ConfigurationsTable
-	ActionsTable.ForeignKeys[1].RefTable = FilesTable
-	ActionsTable.ForeignKeys[2].RefTable = FilesTable
-	ActionsTable.ForeignKeys[3].RefTable = BazelInvocationsTable
+	ActionsTable.ForeignKeys[1].RefTable = BazelInvocationsTable
 	ActionCacheStatisticsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	ActionDataTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	ActionSummariesTable.ForeignKeys[0].RefTable = MetricsTable

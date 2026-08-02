@@ -19,7 +19,17 @@ export const readableFileSize = (sizeBytes: number, precision = 3): string => {
   }
 
   const tib = gib / 1024;
-  return `${Number(tib.toPrecision(precision))} TiB`;
+  if (tib < 1024) {
+    return `${Number(tib.toPrecision(precision))} TiB`;
+  }
+
+  const pib = tib / 1024;
+  if (pib < 1024) {
+    return `${Number(pib.toPrecision(precision))} PiB`;
+  }
+
+  const eib = pib / 1024;
+  return `${Number(eib.toPrecision(precision))} EiB`;
 };
 
 export const readableFileSizeFromString = (

@@ -47,12 +47,6 @@ func (File) Edges() []ent.Edge {
 			Required().
 			Immutable(),
 
-		edge.From("action_stdout", Action.Type).
-			Ref("stdout"),
-
-		edge.From("action_stderr", Action.Type).
-			Ref("stderr"),
-
 		edge.From("invocation_profile", BazelInvocation.Type).
 			Ref("profile"),
 

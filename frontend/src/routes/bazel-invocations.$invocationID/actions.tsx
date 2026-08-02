@@ -1,24 +1,56 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, linkOptions } from "@tanstack/react-router";
+import z from "zod";
 import { ActionsTab } from "@/components/ActionsTab";
 import { apolloClient } from "@/components/ApolloWrapper";
+import { DEFAULT_PAGE_SIZE } from "@/components/PageCursorTable";
+import {
+  type TablePaginationVars,
+  TablePaginationVarsSchema,
+} from "@/components/PageCursorTable/types";
 import { InvocationDataNotFoundAlert } from "@/components/pages/InvocationDataNotFoundAlert";
-import { getFragmentData, gql } from "@/graphql/__generated__";
+import { gql } from "@/graphql/__generated__";
+import type { ActionWhereInput } from "@/graphql/__generated__/graphql";
+import { ActionWhereInputSchema } from "@/graphql/__generated__/zod";
 import { NotFoundError } from "@/main";
 import { generatePageTitle } from "@/utils/generatePageTitle";
+import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
 
-const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
-  query GetBazelInvocationActions($invocationID: UUID!) {
+export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
+  query GetBazelInvocationActions(
+    $invocationID: UUID!
+    $after: Cursor
+    $first: Int
+    $before: Cursor
+    $last: Int
+    $where: ActionWhereInput
+  ) {
     getBazelInvocation(invocationID: $invocationID) {
       id
-      actions {
-        ...BazelInvocationActions
+      actions(
+        after: $after
+        first: $first
+        before: $before
+        last: $last
+        where: $where
+      ) {
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            ...BazelInvocationAction
+          }
+        }
       }
     }
   }
 `);
 
-const BAZEL_INVOCATION_ACTIONS_FRAGMENT = gql(/* GraphQL */ `
-  fragment BazelInvocationActions on Action {
+export const BAZEL_INVOCATION_ACTION_FRAGMENT = gql(/* GraphQL */ `
+  fragment BazelInvocationAction on Action {
     id
     label
     type
@@ -29,6 +61,10 @@ const BAZEL_INVOCATION_ACTIONS_FRAGMENT = gql(/* GraphQL */ `
     endTime
     failureCode
     failureMessage
+    primaryOutput
+    primaryOutputURI
+    stdoutURI
+    stderrURI
     configuration {
       id
       configurationID
@@ -37,48 +73,56 @@ const BAZEL_INVOCATION_ACTIONS_FRAGMENT = gql(/* GraphQL */ `
       cpu
       makeVariables
     }
-    stdout {
-      ...FileDetails
-    }
-    stderr {
-      ...FileDetails
-    }
   }
 `);
+
+const ActionSearchSchema = z.object({
+  actionTable: TablePaginationVarsSchema.extend({
+    where: z.array(ActionWhereInputSchema().partial()).optional(),
+  }).optional(),
+});
 
 export const Route = createFileRoute(
   "/bazel-invocations/$invocationID/actions",
 )({
   component: RouteComponent,
-  loader: async ({ params }) => {
+  validateSearch: (search) => ActionSearchSchema.parse(search),
+  loaderDeps: ({ search: { actionTable } }) => ({ actionTable }),
+  loader: async ({ params, deps }) => {
+    const pageSize = deps.actionTable?.pageSize ?? DEFAULT_PAGE_SIZE;
+    const pagination = deps.actionTable?.pagination ?? { first: pageSize };
+    const where: ActionWhereInput[] = deps.actionTable?.where ?? [];
+
     const { data, error } = await apolloClient.query({
       errorPolicy: "all",
       query: GET_BAZEL_INVOCATION_ACTIONS,
-      variables: { invocationID: params.invocationID },
-      fetchPolicy: "network-only",
+      variables: {
+        invocationID: params.invocationID,
+        where: where.length > 0 ? { and: where } : undefined,
+        ...pagination,
+      },
+      fetchPolicy: "cache-first",
     });
 
     if (!data?.getBazelInvocation) {
-      throw new NotFoundError("invocation", error?.message);
+      throw new NotFoundError("actions", error?.message);
     }
 
-    if (!data.getBazelInvocation.actions) {
-      return { actions: undefined };
-    }
-
-    const actions = getFragmentData(
-      BAZEL_INVOCATION_ACTIONS_FRAGMENT,
-      data.getBazelInvocation?.actions,
-    );
-
-    return { actions };
+    return {
+      actions: parseGraphqlEdgeListWithFragment(
+        BAZEL_INVOCATION_ACTION_FRAGMENT,
+        data.getBazelInvocation.actions,
+      ),
+      pageSize,
+      pageInfo: data.getBazelInvocation.actions.pageInfo,
+    };
   },
   head: (_ctx) => ({
     meta: [
       {
         title: generatePageTitle([
           "Invocation",
-          "Failed actions",
+          "Actions",
           _ctx.params.invocationID,
         ]),
       },
@@ -86,13 +130,50 @@ export const Route = createFileRoute(
   }),
 });
 
-function RouteComponent() {
-  const { actions } = Route.useLoaderData();
+const getPaginationUpdateLink = (newPagination: TablePaginationVars) =>
+  linkOptions({
+    from: Route.id,
+    to: ".",
+    search: (prev): typeof prev => ({
+      ...prev,
+      actionTable: {
+        ...prev.actionTable,
+        ...newPagination,
+      },
+    }),
+  });
 
-  if (actions === undefined || actions.length === 0) {
+function RouteComponent() {
+  const { actions, pageSize, pageInfo } = Route.useLoaderData();
+  const { actionTable } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  if (actions.length === 0 && !actionTable?.where?.length) {
     return <InvocationDataNotFoundAlert type="actions" />;
   }
 
-  // TODO (isakstenstrom): Maybe we should fetch the logs here instead?
-  return <ActionsTab actions={actions} />;
+  const onFilterChange = (where: ActionWhereInput[]) => {
+    navigate({
+      from: Route.id,
+      to: ".",
+      search: (prev): typeof prev => ({
+        ...prev,
+        actionTable: {
+          ...prev.actionTable,
+          where,
+          pagination: undefined,
+        },
+      }),
+    });
+  };
+
+  return (
+    <ActionsTab
+      actions={actions}
+      getPaginationUpdateLink={getPaginationUpdateLink}
+      onFilterChange={onFilterChange}
+      pageInfo={pageInfo}
+      pageSize={pageSize}
+    />
+  );
 }

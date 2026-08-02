@@ -1,39 +1,49 @@
-import { Collapse } from "antd";
 import { useMemo } from "react";
-import type { BazelInvocationActionsFragment } from "@/graphql/__generated__/graphql";
-import themeStyles from "@/theme/theme.module.css";
-import PortalDuration from "../PortalDuration";
+import type {
+  ActionWhereInput,
+  BazelInvocationActionFragment,
+} from "@/graphql/__generated__/graphql";
+import { PageCursorTable } from "../PageCursorTable";
+import type {
+  GetPaginationUpdateLinkType,
+  PageInfo,
+} from "../PageCursorTable/types";
+import { tableFiltersToGraphqlWhere } from "../PageCursorTable/utils";
 import { ActionDetails } from "./action";
-
-const getCollapseItems = (actions: BazelInvocationActionsFragment[]) => {
-  return actions?.map((action) => {
-    return {
-      key: action.id,
-      label: action.label,
-      extra: action.startTime && action.endTime && (
-        <PortalDuration
-          from={action.startTime || undefined}
-          to={action.endTime || undefined}
-          formatConfig={{ smallestUnit: "ms" }}
-        />
-      ),
-      children: <ActionDetails action={action} />,
-    };
-  });
-};
+import { getColumns } from "./columns";
 
 interface Props {
-  actions: BazelInvocationActionsFragment[];
+  actions: BazelInvocationActionFragment[];
+  pageSize: number;
+  onFilterChange: (where: ActionWhereInput[]) => void;
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
+  pageInfo: PageInfo;
 }
 
-export const ActionsTab: React.FC<Props> = ({ actions }) => {
-  const items = useMemo(() => getCollapseItems(actions), [actions]);
+export const ActionsTab: React.FC<Props> = ({
+  actions,
+  pageSize,
+  onFilterChange,
+  getPaginationUpdateLink,
+  pageInfo,
+}) => {
+  const columns = useMemo(() => getColumns(), []);
+
   return (
-    <Collapse
-      items={items}
-      bordered={true}
-      defaultActiveKey={actions && actions.length === 1 ? [actions[0].id] : []}
-      className={themeStyles.collapse}
+    <PageCursorTable
+      size="small"
+      columns={columns}
+      dataSource={actions}
+      rowKey="id"
+      expandable={{
+        expandedRowRender: (action) => <ActionDetails action={action} />,
+      }}
+      onChange={(_pagination, filters) => {
+        onFilterChange(tableFiltersToGraphqlWhere(columns, filters));
+      }}
+      getPaginationUpdateLink={getPaginationUpdateLink}
+      pageInfo={pageInfo}
+      pageSize={pageSize}
     />
   );
 };

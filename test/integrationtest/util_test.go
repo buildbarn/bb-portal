@@ -32,8 +32,14 @@ func TestMain(m *testing.M) {
 		fmt.Fprintf(os.Stderr, "Could not start embedded DB: %v\n", err)
 		os.Exit(1)
 	}
-	defer dbProvider.Cleanup()
-	os.Exit(m.Run())
+	exitCode := m.Run()
+	if err := dbProvider.Cleanup(); err != nil {
+		fmt.Fprintf(os.Stderr, "Could not clean up embedded DB: %v\n", err)
+		if exitCode == 0 {
+			exitCode = 1
+		}
+	}
+	os.Exit(exitCode)
 }
 
 func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *bepuploader.BepUploader {

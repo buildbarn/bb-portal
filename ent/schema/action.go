@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
@@ -27,7 +28,7 @@ func (Action) Fields() []ent.Field {
 		field.Int64("configuration_id").
 			Comment("The id of the configuration").
 			Immutable().
-			Unique().
+			Optional().
 			Annotations(
 				entgql.Skip(),
 			),
@@ -46,15 +47,17 @@ func (Action) Fields() []ent.Field {
 		field.String("failure_code").Optional(),
 		field.String("failure_message").Optional(),
 
-		field.Int64("stdout_file_id").
-			Optional().
-			Immutable().
-			Annotations(entgql.Skip()),
+		// The path from BuildEventId.ActionCompletedId. This is available for
+		// successful actions even when the primary output's File message only
+		// contains a URI.
+		field.String("primary_output").Optional(),
 
-		field.Int64("stderr_file_id").
-			Optional().
-			Immutable().
-			Annotations(entgql.Skip()),
+		// Keep remote references as URIs instead of duplicating CAS metadata in
+		// the files and digests tables. file:// URIs are intentionally ignored,
+		// because they only make sense on the Bazel client that ran the build.
+		field.String("primary_output_uri").Optional(),
+		field.String("stdout_uri").Optional(),
+		field.String("stderr_uri").Optional(),
 	}
 }
 
@@ -73,17 +76,6 @@ func (Action) Edges() []ent.Edge {
 		edge.To("configuration", Configuration.Type).
 			Field("configuration_id").
 			Unique().
-			Required().
-			Immutable(),
-
-		edge.To("stdout", File.Type).
-			Field("stdout_file_id").
-			Unique().
-			Immutable(),
-
-		edge.To("stderr", File.Type).
-			Field("stderr_file_id").
-			Unique().
 			Immutable(),
 	}
 }
@@ -93,9 +85,16 @@ func (Action) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("label"),
 		index.Edges("bazel_invocation"),
+		index.Fields("type").Edges("bazel_invocation"),
 		index.Edges("configuration"),
-		index.Edges("stdout"),
-		index.Edges("stderr"),
+	}
+}
+
+// Annotations for Action.
+func (Action) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entgql.RelayConnection(),
+		entgql.QueryField("findActions"),
 	}
 }
 

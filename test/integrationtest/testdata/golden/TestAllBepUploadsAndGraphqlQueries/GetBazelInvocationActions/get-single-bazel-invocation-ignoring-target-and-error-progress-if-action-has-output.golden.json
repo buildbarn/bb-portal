@@ -1,6 +1,14 @@
 {
   "getBazelInvocation": {
-    "actions": [],
+    "actions": {
+      "edges": [],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    },
     "id": "QmF6ZWxJbnZvY2F0aW9uOjU="
   }
 }

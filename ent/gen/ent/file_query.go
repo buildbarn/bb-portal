@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
@@ -32,15 +31,11 @@ type FileQuery struct {
 	predicates                     []predicate.File
 	withDigest                     *DigestQuery
 	withFilePath                   *FilePathQuery
-	withActionStdout               *ActionQuery
-	withActionStderr               *ActionQuery
 	withInvocationProfile          *BazelInvocationQuery
 	withTestActionOutput           *TestResultQuery
 	withTestActionOutputTable      *TestActionOutputQuery
 	modifiers                      []func(*sql.Selector)
 	loadTotal                      []func(context.Context, []*File) error
-	withNamedActionStdout          map[string]*ActionQuery
-	withNamedActionStderr          map[string]*ActionQuery
 	withNamedInvocationProfile     map[string]*BazelInvocationQuery
 	withNamedTestActionOutput      map[string]*TestResultQuery
 	withNamedTestActionOutputTable map[string]*TestActionOutputQuery
@@ -117,50 +112,6 @@ func (_q *FileQuery) QueryFilePath() *FilePathQuery {
 			sqlgraph.From(file.Table, file.FieldID, selector),
 			sqlgraph.To(filepath.Table, filepath.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, file.FilePathTable, file.FilePathColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryActionStdout chains the current query on the "action_stdout" edge.
-func (_q *FileQuery) QueryActionStdout() *ActionQuery {
-	query := (&ActionClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(file.Table, file.FieldID, selector),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionStdoutTable, file.ActionStdoutColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryActionStderr chains the current query on the "action_stderr" edge.
-func (_q *FileQuery) QueryActionStderr() *ActionQuery {
-	query := (&ActionClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(file.Table, file.FieldID, selector),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionStderrTable, file.ActionStderrColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -428,8 +379,6 @@ func (_q *FileQuery) Clone() *FileQuery {
 		predicates:                append([]predicate.File{}, _q.predicates...),
 		withDigest:                _q.withDigest.Clone(),
 		withFilePath:              _q.withFilePath.Clone(),
-		withActionStdout:          _q.withActionStdout.Clone(),
-		withActionStderr:          _q.withActionStderr.Clone(),
 		withInvocationProfile:     _q.withInvocationProfile.Clone(),
 		withTestActionOutput:      _q.withTestActionOutput.Clone(),
 		withTestActionOutputTable: _q.withTestActionOutputTable.Clone(),
@@ -458,28 +407,6 @@ func (_q *FileQuery) WithFilePath(opts ...func(*FilePathQuery)) *FileQuery {
 		opt(query)
 	}
 	_q.withFilePath = query
-	return _q
-}
-
-// WithActionStdout tells the query-builder to eager-load the nodes that are connected to
-// the "action_stdout" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithActionStdout(opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withActionStdout = query
-	return _q
-}
-
-// WithActionStderr tells the query-builder to eager-load the nodes that are connected to
-// the "action_stderr" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithActionStderr(opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withActionStderr = query
 	return _q
 }
 
@@ -600,11 +527,9 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 	var (
 		nodes       = []*File{}
 		_spec       = _q.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [5]bool{
 			_q.withDigest != nil,
 			_q.withFilePath != nil,
-			_q.withActionStdout != nil,
-			_q.withActionStderr != nil,
 			_q.withInvocationProfile != nil,
 			_q.withTestActionOutput != nil,
 			_q.withTestActionOutputTable != nil,
@@ -643,20 +568,6 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 			return nil, err
 		}
 	}
-	if query := _q.withActionStdout; query != nil {
-		if err := _q.loadActionStdout(ctx, query, nodes,
-			func(n *File) { n.Edges.ActionStdout = []*Action{} },
-			func(n *File, e *Action) { n.Edges.ActionStdout = append(n.Edges.ActionStdout, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withActionStderr; query != nil {
-		if err := _q.loadActionStderr(ctx, query, nodes,
-			func(n *File) { n.Edges.ActionStderr = []*Action{} },
-			func(n *File, e *Action) { n.Edges.ActionStderr = append(n.Edges.ActionStderr, e) }); err != nil {
-			return nil, err
-		}
-	}
 	if query := _q.withInvocationProfile; query != nil {
 		if err := _q.loadInvocationProfile(ctx, query, nodes,
 			func(n *File) { n.Edges.InvocationProfile = []*BazelInvocation{} },
@@ -677,20 +588,6 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 			func(n *File, e *TestActionOutput) {
 				n.Edges.TestActionOutputTable = append(n.Edges.TestActionOutputTable, e)
 			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range _q.withNamedActionStdout {
-		if err := _q.loadActionStdout(ctx, query, nodes,
-			func(n *File) { n.appendNamedActionStdout(name) },
-			func(n *File, e *Action) { n.appendNamedActionStdout(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range _q.withNamedActionStderr {
-		if err := _q.loadActionStderr(ctx, query, nodes,
-			func(n *File) { n.appendNamedActionStderr(name) },
-			func(n *File, e *Action) { n.appendNamedActionStderr(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -778,66 +675,6 @@ func (_q *FileQuery) loadFilePath(ctx context.Context, query *FilePathQuery, nod
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
-	}
-	return nil
-}
-func (_q *FileQuery) loadActionStdout(ctx context.Context, query *ActionQuery, nodes []*File, init func(*File), assign func(*File, *Action)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*File)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(action.FieldStdoutFileID)
-	}
-	query.Where(predicate.Action(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(file.ActionStdoutColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.StdoutFileID
-		node, ok := nodeids[fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "stdout_file_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (_q *FileQuery) loadActionStderr(ctx context.Context, query *ActionQuery, nodes []*File, init func(*File), assign func(*File, *Action)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*File)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(action.FieldStderrFileID)
-	}
-	query.Where(predicate.Action(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(file.ActionStderrColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.StderrFileID
-		node, ok := nodeids[fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "stderr_file_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
 	}
 	return nil
 }
@@ -1052,34 +889,6 @@ func (_q *FileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedActionStdout tells the query-builder to eager-load the nodes that are connected to the "action_stdout"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithNamedActionStdout(name string, opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if _q.withNamedActionStdout == nil {
-		_q.withNamedActionStdout = make(map[string]*ActionQuery)
-	}
-	_q.withNamedActionStdout[name] = query
-	return _q
-}
-
-// WithNamedActionStderr tells the query-builder to eager-load the nodes that are connected to the "action_stderr"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithNamedActionStderr(name string, opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if _q.withNamedActionStderr == nil {
-		_q.withNamedActionStderr = make(map[string]*ActionQuery)
-	}
-	_q.withNamedActionStderr[name] = query
-	return _q
 }
 
 // WithNamedInvocationProfile tells the query-builder to eager-load the nodes that are connected to the "invocation_profile"

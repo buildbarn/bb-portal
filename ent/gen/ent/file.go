@@ -34,10 +34,6 @@ type FileEdges struct {
 	Digest *Digest `json:"digest,omitempty"`
 	// FilePath holds the value of the file_path edge.
 	FilePath *FilePath `json:"file_path,omitempty"`
-	// ActionStdout holds the value of the action_stdout edge.
-	ActionStdout []*Action `json:"action_stdout,omitempty"`
-	// ActionStderr holds the value of the action_stderr edge.
-	ActionStderr []*Action `json:"action_stderr,omitempty"`
 	// InvocationProfile holds the value of the invocation_profile edge.
 	InvocationProfile []*BazelInvocation `json:"invocation_profile,omitempty"`
 	// TestActionOutput holds the value of the test_action_output edge.
@@ -46,12 +42,10 @@ type FileEdges struct {
 	TestActionOutputTable []*TestActionOutput `json:"test_action_output_table,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [7]bool
+	loadedTypes [5]bool
 	// totalCount holds the count of the edges above.
-	totalCount [6]map[string]int
+	totalCount [4]map[string]int
 
-	namedActionStdout          map[string][]*Action
-	namedActionStderr          map[string][]*Action
 	namedInvocationProfile     map[string][]*BazelInvocation
 	namedTestActionOutput      map[string][]*TestResult
 	namedTestActionOutputTable map[string][]*TestActionOutput
@@ -79,28 +73,10 @@ func (e FileEdges) FilePathOrErr() (*FilePath, error) {
 	return nil, &NotLoadedError{edge: "file_path"}
 }
 
-// ActionStdoutOrErr returns the ActionStdout value or an error if the edge
-// was not loaded in eager-loading.
-func (e FileEdges) ActionStdoutOrErr() ([]*Action, error) {
-	if e.loadedTypes[2] {
-		return e.ActionStdout, nil
-	}
-	return nil, &NotLoadedError{edge: "action_stdout"}
-}
-
-// ActionStderrOrErr returns the ActionStderr value or an error if the edge
-// was not loaded in eager-loading.
-func (e FileEdges) ActionStderrOrErr() ([]*Action, error) {
-	if e.loadedTypes[3] {
-		return e.ActionStderr, nil
-	}
-	return nil, &NotLoadedError{edge: "action_stderr"}
-}
-
 // InvocationProfileOrErr returns the InvocationProfile value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileEdges) InvocationProfileOrErr() ([]*BazelInvocation, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[2] {
 		return e.InvocationProfile, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_profile"}
@@ -109,7 +85,7 @@ func (e FileEdges) InvocationProfileOrErr() ([]*BazelInvocation, error) {
 // TestActionOutputOrErr returns the TestActionOutput value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileEdges) TestActionOutputOrErr() ([]*TestResult, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[3] {
 		return e.TestActionOutput, nil
 	}
 	return nil, &NotLoadedError{edge: "test_action_output"}
@@ -118,7 +94,7 @@ func (e FileEdges) TestActionOutputOrErr() ([]*TestResult, error) {
 // TestActionOutputTableOrErr returns the TestActionOutputTable value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileEdges) TestActionOutputTableOrErr() ([]*TestActionOutput, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[4] {
 		return e.TestActionOutputTable, nil
 	}
 	return nil, &NotLoadedError{edge: "test_action_output_table"}
@@ -187,16 +163,6 @@ func (_m *File) QueryFilePath() *FilePathQuery {
 	return NewFileClient(_m.config).QueryFilePath(_m)
 }
 
-// QueryActionStdout queries the "action_stdout" edge of the File entity.
-func (_m *File) QueryActionStdout() *ActionQuery {
-	return NewFileClient(_m.config).QueryActionStdout(_m)
-}
-
-// QueryActionStderr queries the "action_stderr" edge of the File entity.
-func (_m *File) QueryActionStderr() *ActionQuery {
-	return NewFileClient(_m.config).QueryActionStderr(_m)
-}
-
 // QueryInvocationProfile queries the "invocation_profile" edge of the File entity.
 func (_m *File) QueryInvocationProfile() *BazelInvocationQuery {
 	return NewFileClient(_m.config).QueryInvocationProfile(_m)
@@ -242,54 +208,6 @@ func (_m *File) String() string {
 	builder.WriteString(fmt.Sprintf("%v", _m.FilePathID))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedActionStdout returns the ActionStdout named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (_m *File) NamedActionStdout(name string) ([]*Action, error) {
-	if _m.Edges.namedActionStdout == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := _m.Edges.namedActionStdout[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (_m *File) appendNamedActionStdout(name string, edges ...*Action) {
-	if _m.Edges.namedActionStdout == nil {
-		_m.Edges.namedActionStdout = make(map[string][]*Action)
-	}
-	if len(edges) == 0 {
-		_m.Edges.namedActionStdout[name] = []*Action{}
-	} else {
-		_m.Edges.namedActionStdout[name] = append(_m.Edges.namedActionStdout[name], edges...)
-	}
-}
-
-// NamedActionStderr returns the ActionStderr named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (_m *File) NamedActionStderr(name string) ([]*Action, error) {
-	if _m.Edges.namedActionStderr == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := _m.Edges.namedActionStderr[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (_m *File) appendNamedActionStderr(name string, edges ...*Action) {
-	if _m.Edges.namedActionStderr == nil {
-		_m.Edges.namedActionStderr = make(map[string][]*Action)
-	}
-	if len(edges) == 0 {
-		_m.Edges.namedActionStderr[name] = []*Action{}
-	} else {
-		_m.Edges.namedActionStderr[name] = append(_m.Edges.namedActionStderr[name], edges...)
-	}
 }
 
 // NamedInvocationProfile returns the InvocationProfile named value or an error if the edge was not

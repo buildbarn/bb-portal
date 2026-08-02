@@ -3,6 +3,7 @@
 package action
 
 import (
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -34,18 +35,18 @@ const (
 	FieldFailureCode = "failure_code"
 	// FieldFailureMessage holds the string denoting the failure_message field in the database.
 	FieldFailureMessage = "failure_message"
-	// FieldStdoutFileID holds the string denoting the stdout_file_id field in the database.
-	FieldStdoutFileID = "stdout_file_id"
-	// FieldStderrFileID holds the string denoting the stderr_file_id field in the database.
-	FieldStderrFileID = "stderr_file_id"
+	// FieldPrimaryOutput holds the string denoting the primary_output field in the database.
+	FieldPrimaryOutput = "primary_output"
+	// FieldPrimaryOutputURI holds the string denoting the primary_output_uri field in the database.
+	FieldPrimaryOutputURI = "primary_output_uri"
+	// FieldStdoutURI holds the string denoting the stdout_uri field in the database.
+	FieldStdoutURI = "stdout_uri"
+	// FieldStderrURI holds the string denoting the stderr_uri field in the database.
+	FieldStderrURI = "stderr_uri"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeConfiguration holds the string denoting the configuration edge name in mutations.
 	EdgeConfiguration = "configuration"
-	// EdgeStdout holds the string denoting the stdout edge name in mutations.
-	EdgeStdout = "stdout"
-	// EdgeStderr holds the string denoting the stderr edge name in mutations.
-	EdgeStderr = "stderr"
 	// Table holds the table name of the action in the database.
 	Table = "actions"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -62,20 +63,6 @@ const (
 	ConfigurationInverseTable = "configurations"
 	// ConfigurationColumn is the table column denoting the configuration relation/edge.
 	ConfigurationColumn = "configuration_id"
-	// StdoutTable is the table that holds the stdout relation/edge.
-	StdoutTable = "actions"
-	// StdoutInverseTable is the table name for the File entity.
-	// It exists in this package in order to avoid circular dependency with the "file" package.
-	StdoutInverseTable = "files"
-	// StdoutColumn is the table column denoting the stdout relation/edge.
-	StdoutColumn = "stdout_file_id"
-	// StderrTable is the table that holds the stderr relation/edge.
-	StderrTable = "actions"
-	// StderrInverseTable is the table name for the File entity.
-	// It exists in this package in order to avoid circular dependency with the "file" package.
-	StderrInverseTable = "files"
-	// StderrColumn is the table column denoting the stderr relation/edge.
-	StderrColumn = "stderr_file_id"
 )
 
 // Columns holds all SQL columns for action fields.
@@ -92,8 +79,10 @@ var Columns = []string{
 	FieldEndTime,
 	FieldFailureCode,
 	FieldFailureMessage,
-	FieldStdoutFileID,
-	FieldStderrFileID,
+	FieldPrimaryOutput,
+	FieldPrimaryOutputURI,
+	FieldStdoutURI,
+	FieldStderrURI,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -105,6 +94,16 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+var (
+	Hooks  [1]ent.Hook
+	Policy ent.Policy
+)
 
 // OrderOption defines the ordering options for the Action queries.
 type OrderOption func(*sql.Selector)
@@ -164,14 +163,24 @@ func ByFailureMessage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFailureMessage, opts...).ToFunc()
 }
 
-// ByStdoutFileID orders the results by the stdout_file_id field.
-func ByStdoutFileID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStdoutFileID, opts...).ToFunc()
+// ByPrimaryOutput orders the results by the primary_output field.
+func ByPrimaryOutput(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPrimaryOutput, opts...).ToFunc()
 }
 
-// ByStderrFileID orders the results by the stderr_file_id field.
-func ByStderrFileID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStderrFileID, opts...).ToFunc()
+// ByPrimaryOutputURI orders the results by the primary_output_uri field.
+func ByPrimaryOutputURI(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPrimaryOutputURI, opts...).ToFunc()
+}
+
+// ByStdoutURI orders the results by the stdout_uri field.
+func ByStdoutURI(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStdoutURI, opts...).ToFunc()
+}
+
+// ByStderrURI orders the results by the stderr_uri field.
+func ByStderrURI(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStderrURI, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.
@@ -187,20 +196,6 @@ func ByConfigurationField(field string, opts ...sql.OrderTermOption) OrderOption
 		sqlgraph.OrderByNeighborTerms(s, newConfigurationStep(), sql.OrderByField(field, opts...))
 	}
 }
-
-// ByStdoutField orders the results by stdout field.
-func ByStdoutField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newStdoutStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// ByStderrField orders the results by stderr field.
-func ByStderrField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newStderrStep(), sql.OrderByField(field, opts...))
-	}
-}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -213,19 +208,5 @@ func newConfigurationStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ConfigurationInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
-	)
-}
-func newStdoutStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(StdoutInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, StdoutTable, StdoutColumn),
-	)
-}
-func newStderrStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(StderrInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, StderrTable, StderrColumn),
 	)
 }
