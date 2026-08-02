@@ -1,10 +1,17 @@
-load("@rules_go//go:def.bzl", "go_binary")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_binary(
     name = "postgres",
-    srcs = ["main.go"],
     data = ["//internal/database/embedded:extraced_embedded_postgres"],
+    embed = [":postgres_lib"],
     importpath = "github.com/buildbarn/bb-portal/test/itest/postgres",
     visibility = ["//test/itest:__pkg__"],
+)
+
+go_library(
+    name = "postgres_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/buildbarn/bb-portal/test/itest/postgres",
+    visibility = ["//visibility:private"],
     deps = ["@rules_go//go/runfiles"],
 )
