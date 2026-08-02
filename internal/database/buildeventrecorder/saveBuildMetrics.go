@@ -44,6 +44,7 @@ func (r *buildEventRecorder) saveActionCacheStatistics(ctx context.Context, tx *
 	actionCacheStasticsDb, err := tx.ActionCacheStatistics.Create().
 		SetSizeInBytes(actionCacheStastics.SizeInBytes).
 		SetSaveTimeInMs(actionCacheStastics.SaveTimeInMs).
+		SetLoadTimeInMs(int64(actionCacheStastics.LoadTimeInMs)).
 		SetHits(actionCacheStastics.Hits).
 		SetMisses(actionCacheStastics.Misses).
 		SetActionSummaryID(actionSummaryDbID).
@@ -88,6 +89,7 @@ func (r *buildEventRecorder) saveActionDatas(ctx context.Context, tx *ent.Client
 		actionData := actionDatas[i]
 		ad := create.
 			SetActionsExecuted(actionData.ActionsExecuted).
+			SetActionsCreated(actionData.ActionsCreated).
 			SetMnemonic(actionData.Mnemonic).
 			SetFirstStartedMs(actionData.FirstStartedMs).
 			SetLastEndedMs(actionData.LastEndedMs).
@@ -184,6 +186,7 @@ func (r *buildEventRecorder) saveBuildGraphMetrics(ctx context.Context, tx *ent.
 		SetActionLookupValueCount(buildGraphMetrics.ActionLookupValueCount).
 		SetActionLookupValueCountNotIncludingAspects(buildGraphMetrics.ActionLookupValueCountNotIncludingAspects).
 		SetActionCount(buildGraphMetrics.ActionCount).
+		SetActionCountNotIncludingAspects(buildGraphMetrics.ActionCountNotIncludingAspects).
 		SetInputFileConfiguredTargetCount(buildGraphMetrics.InputFileConfiguredTargetCount).
 		SetOutputFileConfiguredTargetCount(buildGraphMetrics.OutputFileConfiguredTargetCount).
 		SetOtherConfiguredTargetCount(buildGraphMetrics.OtherConfiguredTargetCount).
@@ -300,10 +303,10 @@ func (r *buildEventRecorder) saveTimingMetrics(ctx context.Context, tx *ent.Clie
 		return nil
 	}
 
-	// TODO: update when SetActionsExecutionStartInMs is added to and populated in the proto
 	err := tx.TimingMetrics.Create().
 		SetMetricsID(metricsDbID).
 		SetAnalysisPhaseTimeInMs(timingMetrics.AnalysisPhaseTimeInMs).
+		SetActionsExecutionStartInMs(timingMetrics.ActionsExecutionStartInMs).
 		SetCPUTimeInMs(timingMetrics.CpuTimeInMs).
 		SetExecutionPhaseTimeInMs(timingMetrics.ExecutionPhaseTimeInMs).
 		SetWallTimeInMs(timingMetrics.WallTimeInMs).
