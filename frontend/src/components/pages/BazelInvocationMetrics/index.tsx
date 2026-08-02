@@ -119,6 +119,11 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
             cardStyle={CARD_STYLE}
           />
         )}
+      </Flex>
+      {actionSummary && (
+        <ActionStatisticsDisplay actionSummary={actionSummary} />
+      )}
+      <Flex vertical={false} gap="small" wrap={true}>
         {(packageMetrics || cumulativeMetrics) && (
           <BazelServerMetricsDisplay
             packageMetrics={packageMetrics}
@@ -126,13 +131,13 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
             cardStyle={CARD_STYLE}
           />
         )}
+        {garbageMetrics && (
+          <GarbageCollectionMetrics
+            garbageMetrics={garbageMetrics}
+            cardStyle={CARD_STYLE}
+          />
+        )}
       </Flex>
-      {actionSummary && (
-        <ActionStatisticsDisplay actionSummary={actionSummary} />
-      )}
-      {garbageMetrics && (
-        <GarbageCollectionMetrics garbageMetrics={garbageMetrics} />
-      )}
       {packageMetrics && packageLoadMetrics.length > 0 && (
         <PackageLoadMetricsDisplay packageMetrics={packageMetrics} />
       )}
