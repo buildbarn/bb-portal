@@ -59,6 +59,24 @@ bazel run //cmd/bb_portal --//pkg/frontend:embed_frontend=False -- $PWD/config/p
 ```
 to avoid having the rebuild the frontend every time you start the backend.
 
+### Hermetic Local Stack
+
+For an isolated PostgreSQL, backend, and embedded production frontend, run:
+
+```
+bazel run //test/itest:bb_portal
+```
+
+Then send an invocation to its fixed local BES endpoint from another terminal:
+
+```
+bazel build --config=bb_portal_itest //test/itest/postgres_healthcheck
+```
+
+The UI is available at <http://127.0.0.1:18081>. See
+[`test/itest/README.md`](test/itest/README.md) for the ports and complete
+workflow.
+
 
 ## Using the Application
 
