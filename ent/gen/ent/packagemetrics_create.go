@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 )
 
@@ -59,6 +60,21 @@ func (_c *PackageMetricsCreate) SetNillableMetricsID(id *int64) *PackageMetricsC
 // SetMetrics sets the "metrics" edge to the Metrics entity.
 func (_c *PackageMetricsCreate) SetMetrics(v *Metrics) *PackageMetricsCreate {
 	return _c.SetMetricsID(v.ID)
+}
+
+// AddPackageLoadMetricIDs adds the "package_load_metrics" edge to the PackageLoadMetrics entity by IDs.
+func (_c *PackageMetricsCreate) AddPackageLoadMetricIDs(ids ...int64) *PackageMetricsCreate {
+	_c.mutation.AddPackageLoadMetricIDs(ids...)
+	return _c
+}
+
+// AddPackageLoadMetrics adds the "package_load_metrics" edges to the PackageLoadMetrics entity.
+func (_c *PackageMetricsCreate) AddPackageLoadMetrics(v ...*PackageLoadMetrics) *PackageMetricsCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddPackageLoadMetricIDs(ids...)
 }
 
 // Mutation returns the PackageMetricsMutation object of the builder.
@@ -147,6 +163,22 @@ func (_c *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.CreateS
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.metrics_package_metrics = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.PackageLoadMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   packagemetrics.PackageLoadMetricsTable,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

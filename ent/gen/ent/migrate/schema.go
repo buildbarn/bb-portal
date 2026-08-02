@@ -330,6 +330,36 @@ var (
 			},
 		},
 	}
+	// BuildGraphAspectCountsColumns holds the columns for the "build_graph_aspect_counts" table.
+	BuildGraphAspectCountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "key", Type: field.TypeString, Nullable: true},
+		{Name: "aspect_name", Type: field.TypeString, Nullable: true},
+		{Name: "count", Type: field.TypeUint64, Nullable: true},
+		{Name: "action_count", Type: field.TypeUint64, Nullable: true},
+		{Name: "build_graph_metrics_aspect_counts", Type: field.TypeInt64, Nullable: true},
+	}
+	// BuildGraphAspectCountsTable holds the schema information for the "build_graph_aspect_counts" table.
+	BuildGraphAspectCountsTable = &schema.Table{
+		Name:       "build_graph_aspect_counts",
+		Columns:    BuildGraphAspectCountsColumns,
+		PrimaryKey: []*schema.Column{BuildGraphAspectCountsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_graph_aspect_counts_build_graph_metrics_aspect_counts",
+				Columns:    []*schema.Column{BuildGraphAspectCountsColumns[5]},
+				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildgraphaspectcount_build_graph_metrics_aspect_counts",
+				Unique:  false,
+				Columns: []*schema.Column{BuildGraphAspectCountsColumns[5]},
+			},
+		},
+	}
 	// BuildGraphEvaluationStatsColumns holds the columns for the "build_graph_evaluation_stats" table.
 	BuildGraphEvaluationStatsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -384,6 +414,36 @@ var (
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[10]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// BuildGraphRuleClassCountsColumns holds the columns for the "build_graph_rule_class_counts" table.
+	BuildGraphRuleClassCountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "key", Type: field.TypeString, Nullable: true},
+		{Name: "rule_class", Type: field.TypeString, Nullable: true},
+		{Name: "count", Type: field.TypeUint64, Nullable: true},
+		{Name: "action_count", Type: field.TypeUint64, Nullable: true},
+		{Name: "build_graph_metrics_rule_class_counts", Type: field.TypeInt64, Nullable: true},
+	}
+	// BuildGraphRuleClassCountsTable holds the schema information for the "build_graph_rule_class_counts" table.
+	BuildGraphRuleClassCountsTable = &schema.Table{
+		Name:       "build_graph_rule_class_counts",
+		Columns:    BuildGraphRuleClassCountsColumns,
+		PrimaryKey: []*schema.Column{BuildGraphRuleClassCountsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_graph_rule_class_counts_build_graph_metrics_rule_class_counts",
+				Columns:    []*schema.Column{BuildGraphRuleClassCountsColumns[5]},
+				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildgraphruleclasscount_build_graph_metrics_rule_class_counts",
+				Unique:  false,
+				Columns: []*schema.Column{BuildGraphRuleClassCountsColumns[5]},
 			},
 		},
 	}
@@ -558,6 +618,56 @@ var (
 				Name:    "digest_rev2_instance_name_digest_function_hash_size_bytes",
 				Unique:  true,
 				Columns: []*schema.Column{DigestsColumns[1], DigestsColumns[2], DigestsColumns[3], DigestsColumns[4]},
+			},
+		},
+	}
+	// DynamicExecutionMetricsColumns holds the columns for the "dynamic_execution_metrics" table.
+	DynamicExecutionMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "metrics_dynamic_execution_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
+	}
+	// DynamicExecutionMetricsTable holds the schema information for the "dynamic_execution_metrics" table.
+	DynamicExecutionMetricsTable = &schema.Table{
+		Name:       "dynamic_execution_metrics",
+		Columns:    DynamicExecutionMetricsColumns,
+		PrimaryKey: []*schema.Column{DynamicExecutionMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "dynamic_execution_metrics_metrics_dynamic_execution_metrics",
+				Columns:    []*schema.Column{DynamicExecutionMetricsColumns[1]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// DynamicExecutionRaceStatisticsColumns holds the columns for the "dynamic_execution_race_statistics" table.
+	DynamicExecutionRaceStatisticsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "mnemonic", Type: field.TypeString, Nullable: true},
+		{Name: "local_runner", Type: field.TypeString, Nullable: true},
+		{Name: "remote_runner", Type: field.TypeString, Nullable: true},
+		{Name: "local_wins", Type: field.TypeInt32, Nullable: true},
+		{Name: "remote_wins", Type: field.TypeInt32, Nullable: true},
+		{Name: "dynamic_execution_metrics_race_statistics", Type: field.TypeInt64, Nullable: true},
+	}
+	// DynamicExecutionRaceStatisticsTable holds the schema information for the "dynamic_execution_race_statistics" table.
+	DynamicExecutionRaceStatisticsTable = &schema.Table{
+		Name:       "dynamic_execution_race_statistics",
+		Columns:    DynamicExecutionRaceStatisticsColumns,
+		PrimaryKey: []*schema.Column{DynamicExecutionRaceStatisticsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "dynamic_execution_race_statistics_dynamic_execution_metrics_race_statistics",
+				Columns:    []*schema.Column{DynamicExecutionRaceStatisticsColumns[6]},
+				RefColumns: []*schema.Column{DynamicExecutionMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "dynamicexecutionracestatistic_dynamic_execution_metrics_race_statistics",
+				Unique:  false,
+				Columns: []*schema.Column{DynamicExecutionRaceStatisticsColumns[6]},
 			},
 		},
 	}
@@ -899,6 +1009,39 @@ var (
 				Columns:    []*schema.Column{NetworkMetricsColumns[1]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// PackageLoadMetricsColumns holds the columns for the "package_load_metrics" table.
+	PackageLoadMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "load_duration_in_ns", Type: field.TypeInt64, Nullable: true},
+		{Name: "num_targets", Type: field.TypeUint64, Nullable: true},
+		{Name: "computation_steps", Type: field.TypeUint64, Nullable: true},
+		{Name: "num_transitive_loads", Type: field.TypeUint64, Nullable: true},
+		{Name: "package_overhead", Type: field.TypeUint64, Nullable: true},
+		{Name: "glob_filesystem_operation_cost", Type: field.TypeUint64, Nullable: true},
+		{Name: "package_metrics_package_load_metrics", Type: field.TypeInt64, Nullable: true},
+	}
+	// PackageLoadMetricsTable holds the schema information for the "package_load_metrics" table.
+	PackageLoadMetricsTable = &schema.Table{
+		Name:       "package_load_metrics",
+		Columns:    PackageLoadMetricsColumns,
+		PrimaryKey: []*schema.Column{PackageLoadMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "package_load_metrics_package_metrics_package_load_metrics",
+				Columns:    []*schema.Column{PackageLoadMetricsColumns[8]},
+				RefColumns: []*schema.Column{PackageMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "packageloadmetrics_package_metrics_package_load_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{PackageLoadMetricsColumns[8]},
 			},
 		},
 	}
@@ -1424,14 +1567,18 @@ var (
 		AuthenticatedUsersTable,
 		BazelInvocationsTable,
 		BuildsTable,
+		BuildGraphAspectCountsTable,
 		BuildGraphEvaluationStatsTable,
 		BuildGraphMetricsTable,
+		BuildGraphRuleClassCountsTable,
 		BuildLogChunksTable,
 		BuildTagsTable,
 		ConfigurationsTable,
 		ConnectionMetadataTable,
 		CumulativeMetricsTable,
 		DigestsTable,
+		DynamicExecutionMetricsTable,
+		DynamicExecutionRaceStatisticsTable,
 		EventMetadataTable,
 		FilesTable,
 		FilePathsTable,
@@ -1444,6 +1591,7 @@ var (
 		MetricsTable,
 		MissDetailsTable,
 		NetworkMetricsTable,
+		PackageLoadMetricsTable,
 		PackageMetricsTable,
 		RunnerCountsTable,
 		SourceControlsTable,
@@ -1478,13 +1626,17 @@ func init() {
 	BazelInvocationsTable.ForeignKeys[2].RefTable = BuildsTable
 	BazelInvocationsTable.ForeignKeys[3].RefTable = InstanceNamesTable
 	BuildsTable.ForeignKeys[0].RefTable = InstanceNamesTable
+	BuildGraphAspectCountsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	BuildGraphEvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	BuildGraphMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	BuildGraphRuleClassCountsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	BuildTagsTable.ForeignKeys[0].RefTable = BuildsTable
 	ConfigurationsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	DynamicExecutionMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	DynamicExecutionRaceStatisticsTable.ForeignKeys[0].RefTable = DynamicExecutionMetricsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	FilesTable.ForeignKeys[0].RefTable = DigestsTable
 	FilesTable.ForeignKeys[1].RefTable = FilePathsTable
@@ -1499,6 +1651,7 @@ func init() {
 	MetricsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	MissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable
 	NetworkMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	PackageLoadMetricsTable.ForeignKeys[0].RefTable = PackageMetricsTable
 	PackageMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	SourceControlsTable.ForeignKeys[0].RefTable = BazelInvocationsTable

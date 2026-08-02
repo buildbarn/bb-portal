@@ -169,6 +169,7 @@
         "topLevelArtifactsSizeInBytes": 0
       },
       "buildGraphMetrics": {
+        "aspectCounts": [],
         "evaluationStats": [
           {
             "count": 3761,
@@ -771,12 +772,17 @@
             "skyfunctionName": "TARGET_PATTERN_PHASE"
           }
         ],
-        "id": "QnVpbGRHcmFwaE1ldHJpY3M6Nw=="
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6Nw==",
+        "ruleClassCounts": []
       },
       "cumulativeMetrics": {
         "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6Nw==",
         "numAnalyses": 9,
         "numBuilds": 8
+      },
+      "dynamicExecutionMetrics": {
+        "id": "RHluYW1pY0V4ZWN1dGlvbk1ldHJpY3M6Mg==",
+        "raceStatistics": []
       },
       "id": "TWV0cmljczo3",
       "memoryMetrics": {
@@ -818,6 +824,7 @@
       },
       "packageMetrics": {
         "id": "UGFja2FnZU1ldHJpY3M6Nw==",
+        "packageLoadMetrics": [],
         "packagesLoaded": 1324
       },
       "timingMetrics": {

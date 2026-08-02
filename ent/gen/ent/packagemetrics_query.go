@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -19,14 +21,16 @@ import (
 // PackageMetricsQuery is the builder for querying PackageMetrics entities.
 type PackageMetricsQuery struct {
 	config
-	ctx         *QueryContext
-	order       []packagemetrics.OrderOption
-	inters      []Interceptor
-	predicates  []predicate.PackageMetrics
-	withMetrics *MetricsQuery
-	withFKs     bool
-	modifiers   []func(*sql.Selector)
-	loadTotal   []func(context.Context, []*PackageMetrics) error
+	ctx                         *QueryContext
+	order                       []packagemetrics.OrderOption
+	inters                      []Interceptor
+	predicates                  []predicate.PackageMetrics
+	withMetrics                 *MetricsQuery
+	withPackageLoadMetrics      *PackageLoadMetricsQuery
+	withFKs                     bool
+	modifiers                   []func(*sql.Selector)
+	loadTotal                   []func(context.Context, []*PackageMetrics) error
+	withNamedPackageLoadMetrics map[string]*PackageLoadMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,6 +82,28 @@ func (_q *PackageMetricsQuery) QueryMetrics() *MetricsQuery {
 			sqlgraph.From(packagemetrics.Table, packagemetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, packagemetrics.MetricsTable, packagemetrics.MetricsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPackageLoadMetrics chains the current query on the "package_load_metrics" edge.
+func (_q *PackageMetricsQuery) QueryPackageLoadMetrics() *PackageLoadMetricsQuery {
+	query := (&PackageLoadMetricsClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(packagemetrics.Table, packagemetrics.FieldID, selector),
+			sqlgraph.To(packageloadmetrics.Table, packageloadmetrics.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, packagemetrics.PackageLoadMetricsTable, packagemetrics.PackageLoadMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -272,12 +298,13 @@ func (_q *PackageMetricsQuery) Clone() *PackageMetricsQuery {
 		return nil
 	}
 	return &PackageMetricsQuery{
-		config:      _q.config,
-		ctx:         _q.ctx.Clone(),
-		order:       append([]packagemetrics.OrderOption{}, _q.order...),
-		inters:      append([]Interceptor{}, _q.inters...),
-		predicates:  append([]predicate.PackageMetrics{}, _q.predicates...),
-		withMetrics: _q.withMetrics.Clone(),
+		config:                 _q.config,
+		ctx:                    _q.ctx.Clone(),
+		order:                  append([]packagemetrics.OrderOption{}, _q.order...),
+		inters:                 append([]Interceptor{}, _q.inters...),
+		predicates:             append([]predicate.PackageMetrics{}, _q.predicates...),
+		withMetrics:            _q.withMetrics.Clone(),
+		withPackageLoadMetrics: _q.withPackageLoadMetrics.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -292,6 +319,17 @@ func (_q *PackageMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *Package
 		opt(query)
 	}
 	_q.withMetrics = query
+	return _q
+}
+
+// WithPackageLoadMetrics tells the query-builder to eager-load the nodes that are connected to
+// the "package_load_metrics" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *PackageMetricsQuery) WithPackageLoadMetrics(opts ...func(*PackageLoadMetricsQuery)) *PackageMetricsQuery {
+	query := (&PackageLoadMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withPackageLoadMetrics = query
 	return _q
 }
 
@@ -374,8 +412,9 @@ func (_q *PackageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		nodes       = []*PackageMetrics{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withMetrics != nil,
+			_q.withPackageLoadMetrics != nil,
 		}
 	)
 	if _q.withMetrics != nil {
@@ -408,6 +447,22 @@ func (_q *PackageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 	if query := _q.withMetrics; query != nil {
 		if err := _q.loadMetrics(ctx, query, nodes, nil,
 			func(n *PackageMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withPackageLoadMetrics; query != nil {
+		if err := _q.loadPackageLoadMetrics(ctx, query, nodes,
+			func(n *PackageMetrics) { n.Edges.PackageLoadMetrics = []*PackageLoadMetrics{} },
+			func(n *PackageMetrics, e *PackageLoadMetrics) {
+				n.Edges.PackageLoadMetrics = append(n.Edges.PackageLoadMetrics, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedPackageLoadMetrics {
+		if err := _q.loadPackageLoadMetrics(ctx, query, nodes,
+			func(n *PackageMetrics) { n.appendNamedPackageLoadMetrics(name) },
+			func(n *PackageMetrics, e *PackageLoadMetrics) { n.appendNamedPackageLoadMetrics(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -448,6 +503,37 @@ func (_q *PackageMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (_q *PackageMetricsQuery) loadPackageLoadMetrics(ctx context.Context, query *PackageLoadMetricsQuery, nodes []*PackageMetrics, init func(*PackageMetrics), assign func(*PackageMetrics, *PackageLoadMetrics)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*PackageMetrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.PackageLoadMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(packagemetrics.PackageLoadMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.package_metrics_package_load_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "package_metrics_package_load_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "package_metrics_package_load_metrics" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -534,6 +620,20 @@ func (_q *PackageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedPackageLoadMetrics tells the query-builder to eager-load the nodes that are connected to the "package_load_metrics"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *PackageMetricsQuery) WithNamedPackageLoadMetrics(name string, opts ...func(*PackageLoadMetricsQuery)) *PackageMetricsQuery {
+	query := (&PackageLoadMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedPackageLoadMetrics == nil {
+		_q.withNamedPackageLoadMetrics = make(map[string]*PackageLoadMetricsQuery)
+	}
+	_q.withNamedPackageLoadMetrics[name] = query
+	return _q
 }
 
 // PackageMetricsGroupBy is the group-by builder for PackageMetrics entities.

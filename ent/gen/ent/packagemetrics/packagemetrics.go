@@ -16,6 +16,8 @@ const (
 	FieldPackagesLoaded = "packages_loaded"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
+	// EdgePackageLoadMetrics holds the string denoting the package_load_metrics edge name in mutations.
+	EdgePackageLoadMetrics = "package_load_metrics"
 	// Table holds the table name of the packagemetrics in the database.
 	Table = "package_metrics"
 	// MetricsTable is the table that holds the metrics relation/edge.
@@ -25,6 +27,13 @@ const (
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
 	MetricsColumn = "metrics_package_metrics"
+	// PackageLoadMetricsTable is the table that holds the package_load_metrics relation/edge.
+	PackageLoadMetricsTable = "package_load_metrics"
+	// PackageLoadMetricsInverseTable is the table name for the PackageLoadMetrics entity.
+	// It exists in this package in order to avoid circular dependency with the "packageloadmetrics" package.
+	PackageLoadMetricsInverseTable = "package_load_metrics"
+	// PackageLoadMetricsColumn is the table column denoting the package_load_metrics relation/edge.
+	PackageLoadMetricsColumn = "package_metrics_package_load_metrics"
 )
 
 // Columns holds all SQL columns for packagemetrics fields.
@@ -73,10 +82,31 @@ func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByPackageLoadMetricsCount orders the results by package_load_metrics count.
+func ByPackageLoadMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPackageLoadMetricsStep(), opts...)
+	}
+}
+
+// ByPackageLoadMetrics orders the results by package_load_metrics terms.
+func ByPackageLoadMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPackageLoadMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
+	)
+}
+func newPackageLoadMetricsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PackageLoadMetricsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PackageLoadMetricsTable, PackageLoadMetricsColumn),
 	)
 }

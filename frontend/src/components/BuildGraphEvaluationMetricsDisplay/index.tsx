@@ -1,5 +1,5 @@
 import { ApartmentOutlined } from "@ant-design/icons";
-import { Table, type TableColumnsType } from "antd";
+import { Space, Table, type TableColumnsType, Typography } from "antd";
 import type { BazelInvocationMetricsBuildGraphEvaluationMetricsFragment } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 
@@ -18,6 +18,14 @@ interface EvaluationRow {
 }
 
 type CountField = Exclude<keyof EvaluationRow, "key" | "skyfunctionName">;
+
+type RuleClassRow = NonNullable<
+  BazelInvocationMetricsBuildGraphEvaluationMetricsFragment["ruleClassCounts"]
+>[number];
+
+type AspectRow = NonNullable<
+  BazelInvocationMetricsBuildGraphEvaluationMetricsFragment["aspectCounts"]
+>[number];
 
 const OPERATION_FIELDS: Record<string, CountField> = {
   DIRTIED: "dirtied",
@@ -50,6 +58,49 @@ const columns: TableColumnsType<EvaluationRow> = [
   countColumn("Evaluated", "evaluated"),
 ];
 
+const numericCountColumn = <
+  T extends { count?: number | null; actionCount?: number | null },
+>(
+  title: string,
+  dataIndex: "count" | "actionCount",
+): TableColumnsType<T>[number] => ({
+  title,
+  dataIndex,
+  align: "right",
+  render: (value: number | null | undefined) => value ?? 0,
+  sorter: (a, b) => Number(a[dataIndex] ?? 0) - Number(b[dataIndex] ?? 0),
+});
+
+const ruleClassColumns: TableColumnsType<RuleClassRow> = [
+  {
+    title: "Key",
+    dataIndex: "key",
+    sorter: (a, b) => (a.key ?? "").localeCompare(b.key ?? ""),
+  },
+  {
+    title: "Rule Class",
+    dataIndex: "ruleClass",
+    sorter: (a, b) => (a.ruleClass ?? "").localeCompare(b.ruleClass ?? ""),
+  },
+  numericCountColumn<RuleClassRow>("Configured Targets", "count"),
+  numericCountColumn<RuleClassRow>("Actions", "actionCount"),
+];
+
+const aspectColumns: TableColumnsType<AspectRow> = [
+  {
+    title: "Key",
+    dataIndex: "key",
+    sorter: (a, b) => (a.key ?? "").localeCompare(b.key ?? ""),
+  },
+  {
+    title: "Aspect",
+    dataIndex: "aspectName",
+    sorter: (a, b) => (a.aspectName ?? "").localeCompare(b.aspectName ?? ""),
+  },
+  numericCountColumn<AspectRow>("Configured Targets", "count"),
+  numericCountColumn<AspectRow>("Actions", "actionCount"),
+];
+
 export const BuildGraphEvaluationMetricsDisplay: React.FC<Props> = ({
   buildGraphMetrics,
 }) => {
@@ -77,18 +128,54 @@ export const BuildGraphEvaluationMetricsDisplay: React.FC<Props> = ({
     (a, b) => b.evaluated - a.evaluated,
   );
 
+  const ruleClassCounts = buildGraphMetrics.ruleClassCounts ?? [];
+  const aspectCounts = buildGraphMetrics.aspectCounts ?? [];
+
   return (
     <PortalCard
       type="inner"
       icon={<ApartmentOutlined />}
-      titleBits={["Skyframe Evaluation Metrics"]}
+      titleBits={["Build Graph Metrics"]}
     >
-      <Table
-        columns={columns}
-        dataSource={rows}
-        pagination={{ defaultPageSize: 20, hideOnSinglePage: true }}
-        size="small"
-      />
+      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        {rows.length > 0 && (
+          <div>
+            <Typography.Title level={5}>Skyframe Evaluation</Typography.Title>
+            <Table
+              columns={columns}
+              dataSource={rows}
+              pagination={{ defaultPageSize: 20, hideOnSinglePage: true }}
+              size="small"
+            />
+          </div>
+        )}
+        {ruleClassCounts.length > 0 && (
+          <div>
+            <Typography.Title level={5}>Rule Classes</Typography.Title>
+            <Table
+              columns={ruleClassColumns}
+              dataSource={ruleClassCounts}
+              pagination={{ defaultPageSize: 20, hideOnSinglePage: true }}
+              rowKey="id"
+              scroll={{ x: true }}
+              size="small"
+            />
+          </div>
+        )}
+        {aspectCounts.length > 0 && (
+          <div>
+            <Typography.Title level={5}>Aspects</Typography.Title>
+            <Table
+              columns={aspectColumns}
+              dataSource={aspectCounts}
+              pagination={{ defaultPageSize: 20, hideOnSinglePage: true }}
+              rowKey="id"
+              scroll={{ x: true }}
+              size="small"
+            />
+          </div>
+        )}
+      </Space>
     </PortalCard>
   );
 };

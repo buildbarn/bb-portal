@@ -303,6 +303,30 @@ func (f BuildMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation)
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildMutation", m)
 }
 
+// The BuildGraphAspectCountQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type BuildGraphAspectCountQueryRuleFunc func(context.Context, *ent.BuildGraphAspectCountQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f BuildGraphAspectCountQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.BuildGraphAspectCountQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.BuildGraphAspectCountQuery", q)
+}
+
+// The BuildGraphAspectCountMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type BuildGraphAspectCountMutationRuleFunc func(context.Context, *ent.BuildGraphAspectCountMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f BuildGraphAspectCountMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.BuildGraphAspectCountMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildGraphAspectCountMutation", m)
+}
+
 // The BuildGraphEvaluationStatQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type BuildGraphEvaluationStatQueryRuleFunc func(context.Context, *ent.BuildGraphEvaluationStatQuery) error
@@ -349,6 +373,30 @@ func (f BuildGraphMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m e
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildGraphMetricsMutation", m)
+}
+
+// The BuildGraphRuleClassCountQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type BuildGraphRuleClassCountQueryRuleFunc func(context.Context, *ent.BuildGraphRuleClassCountQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f BuildGraphRuleClassCountQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.BuildGraphRuleClassCountQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.BuildGraphRuleClassCountQuery", q)
+}
+
+// The BuildGraphRuleClassCountMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type BuildGraphRuleClassCountMutationRuleFunc func(context.Context, *ent.BuildGraphRuleClassCountMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f BuildGraphRuleClassCountMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.BuildGraphRuleClassCountMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildGraphRuleClassCountMutation", m)
 }
 
 // The BuildLogChunkQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -493,6 +541,54 @@ func (f DigestMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.DigestMutation", m)
+}
+
+// The DynamicExecutionMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type DynamicExecutionMetricsQueryRuleFunc func(context.Context, *ent.DynamicExecutionMetricsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f DynamicExecutionMetricsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.DynamicExecutionMetricsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.DynamicExecutionMetricsQuery", q)
+}
+
+// The DynamicExecutionMetricsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type DynamicExecutionMetricsMutationRuleFunc func(context.Context, *ent.DynamicExecutionMetricsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f DynamicExecutionMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.DynamicExecutionMetricsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.DynamicExecutionMetricsMutation", m)
+}
+
+// The DynamicExecutionRaceStatisticQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type DynamicExecutionRaceStatisticQueryRuleFunc func(context.Context, *ent.DynamicExecutionRaceStatisticQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f DynamicExecutionRaceStatisticQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.DynamicExecutionRaceStatisticQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.DynamicExecutionRaceStatisticQuery", q)
+}
+
+// The DynamicExecutionRaceStatisticMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type DynamicExecutionRaceStatisticMutationRuleFunc func(context.Context, *ent.DynamicExecutionRaceStatisticMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f DynamicExecutionRaceStatisticMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.DynamicExecutionRaceStatisticMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.DynamicExecutionRaceStatisticMutation", m)
 }
 
 // The EventMetadataQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -781,6 +877,30 @@ func (f NetworkMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.NetworkMetricsMutation", m)
+}
+
+// The PackageLoadMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type PackageLoadMetricsQueryRuleFunc func(context.Context, *ent.PackageLoadMetricsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f PackageLoadMetricsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.PackageLoadMetricsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PackageLoadMetricsQuery", q)
+}
+
+// The PackageLoadMetricsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type PackageLoadMetricsMutationRuleFunc func(context.Context, *ent.PackageLoadMetricsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f PackageLoadMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.PackageLoadMetricsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PackageLoadMetricsMutation", m)
 }
 
 // The PackageMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -1242,9 +1362,13 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.BuildQuery:
 		return q.Filter(), nil
+	case *ent.BuildGraphAspectCountQuery:
+		return q.Filter(), nil
 	case *ent.BuildGraphEvaluationStatQuery:
 		return q.Filter(), nil
 	case *ent.BuildGraphMetricsQuery:
+		return q.Filter(), nil
+	case *ent.BuildGraphRuleClassCountQuery:
 		return q.Filter(), nil
 	case *ent.BuildLogChunkQuery:
 		return q.Filter(), nil
@@ -1257,6 +1381,10 @@ func queryFilter(q ent.Query) (Filter, error) {
 	case *ent.CumulativeMetricsQuery:
 		return q.Filter(), nil
 	case *ent.DigestQuery:
+		return q.Filter(), nil
+	case *ent.DynamicExecutionMetricsQuery:
+		return q.Filter(), nil
+	case *ent.DynamicExecutionRaceStatisticQuery:
 		return q.Filter(), nil
 	case *ent.EventMetadataQuery:
 		return q.Filter(), nil
@@ -1281,6 +1409,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 	case *ent.MissDetailQuery:
 		return q.Filter(), nil
 	case *ent.NetworkMetricsQuery:
+		return q.Filter(), nil
+	case *ent.PackageLoadMetricsQuery:
 		return q.Filter(), nil
 	case *ent.PackageMetricsQuery:
 		return q.Filter(), nil
@@ -1339,9 +1469,13 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.BuildMutation:
 		return m.Filter(), nil
+	case *ent.BuildGraphAspectCountMutation:
+		return m.Filter(), nil
 	case *ent.BuildGraphEvaluationStatMutation:
 		return m.Filter(), nil
 	case *ent.BuildGraphMetricsMutation:
+		return m.Filter(), nil
+	case *ent.BuildGraphRuleClassCountMutation:
 		return m.Filter(), nil
 	case *ent.BuildLogChunkMutation:
 		return m.Filter(), nil
@@ -1354,6 +1488,10 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.CumulativeMetricsMutation:
 		return m.Filter(), nil
 	case *ent.DigestMutation:
+		return m.Filter(), nil
+	case *ent.DynamicExecutionMetricsMutation:
+		return m.Filter(), nil
+	case *ent.DynamicExecutionRaceStatisticMutation:
 		return m.Filter(), nil
 	case *ent.EventMetadataMutation:
 		return m.Filter(), nil
@@ -1378,6 +1516,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.MissDetailMutation:
 		return m.Filter(), nil
 	case *ent.NetworkMetricsMutation:
+		return m.Filter(), nil
+	case *ent.PackageLoadMetricsMutation:
 		return m.Filter(), nil
 	case *ent.PackageMetricsMutation:
 		return m.Filter(), nil

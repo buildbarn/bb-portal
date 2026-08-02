@@ -116,6 +116,15 @@ type Build struct {
 	InstanceNameBuilds int64
 }
 
+type BuildGraphAspectCount struct {
+	ID                            int64
+	Key                           sql.NullString
+	AspectName                    sql.NullString
+	Count                         sql.NullInt64
+	ActionCount                   sql.NullInt64
+	BuildGraphMetricsAspectCounts sql.NullInt64
+}
+
 type BuildGraphEvaluationStat struct {
 	ID                               int64
 	Operation                        sql.NullString
@@ -136,6 +145,15 @@ type BuildGraphMetric struct {
 	OutputArtifactCount                       sql.NullInt32
 	PostInvocationSkyframeNodeCount           sql.NullInt32
 	MetricsBuildGraphMetrics                  sql.NullInt64
+}
+
+type BuildGraphRuleClassCount struct {
+	ID                               int64
+	Key                              sql.NullString
+	RuleClass                        sql.NullString
+	Count                            sql.NullInt64
+	ActionCount                      sql.NullInt64
+	BuildGraphMetricsRuleClassCounts sql.NullInt64
 }
 
 type BuildLogChunk struct {
@@ -184,6 +202,21 @@ type Digest struct {
 	DigestFunction   int16
 	Hash             []byte
 	SizeBytes        int64
+}
+
+type DynamicExecutionMetric struct {
+	ID                             int64
+	MetricsDynamicExecutionMetrics sql.NullInt64
+}
+
+type DynamicExecutionRaceStatistic struct {
+	ID                                    int64
+	Mnemonic                              sql.NullString
+	LocalRunner                           sql.NullString
+	RemoteRunner                          sql.NullString
+	LocalWins                             sql.NullInt32
+	RemoteWins                            sql.NullInt32
+	DynamicExecutionMetricsRaceStatistics sql.NullInt64
 }
 
 type EventMetadatum struct {
@@ -266,6 +299,18 @@ type MissDetail struct {
 type NetworkMetric struct {
 	ID                    int64
 	MetricsNetworkMetrics sql.NullInt64
+}
+
+type PackageLoadMetric struct {
+	ID                               int64
+	Name                             sql.NullString
+	LoadDurationInNs                 sql.NullInt64
+	NumTargets                       sql.NullInt64
+	ComputationSteps                 sql.NullInt64
+	NumTransitiveLoads               sql.NullInt64
+	PackageOverhead                  sql.NullInt64
+	GlobFilesystemOperationCost      sql.NullInt64
+	PackageMetricsPackageLoadMetrics sql.NullInt64
 }
 
 type PackageMetric struct {

@@ -37,6 +37,7 @@
         "topLevelArtifactsSizeInBytes": 0
       },
       "buildGraphMetrics": {
+        "aspectCounts": [],
         "evaluationStats": [
           {
             "count": 309,
@@ -483,12 +484,17 @@
             "skyfunctionName": "SINGLE_EXTENSION_USAGES"
           }
         ],
-        "id": "QnVpbGRHcmFwaE1ldHJpY3M6Ng=="
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6Ng==",
+        "ruleClassCounts": []
       },
       "cumulativeMetrics": {
         "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6Ng==",
         "numAnalyses": 8,
         "numBuilds": 8
+      },
+      "dynamicExecutionMetrics": {
+        "id": "RHluYW1pY0V4ZWN1dGlvbk1ldHJpY3M6MQ==",
+        "raceStatistics": []
       },
       "id": "TWV0cmljczo2",
       "memoryMetrics": {
@@ -525,6 +531,7 @@
       },
       "packageMetrics": {
         "id": "UGFja2FnZU1ldHJpY3M6Ng==",
+        "packageLoadMetrics": [],
         "packagesLoaded": 0
       },
       "timingMetrics": {

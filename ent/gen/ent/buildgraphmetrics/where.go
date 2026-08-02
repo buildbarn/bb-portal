@@ -594,6 +594,52 @@ func HasEvaluationStatsWith(preds ...predicate.BuildGraphEvaluationStat) predica
 	})
 }
 
+// HasRuleClassCounts applies the HasEdge predicate on the "rule_class_counts" edge.
+func HasRuleClassCounts() predicate.BuildGraphMetrics {
+	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, RuleClassCountsTable, RuleClassCountsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRuleClassCountsWith applies the HasEdge predicate on the "rule_class_counts" edge with a given conditions (other predicates).
+func HasRuleClassCountsWith(preds ...predicate.BuildGraphRuleClassCount) predicate.BuildGraphMetrics {
+	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
+		step := newRuleClassCountsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAspectCounts applies the HasEdge predicate on the "aspect_counts" edge.
+func HasAspectCounts() predicate.BuildGraphMetrics {
+	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AspectCountsTable, AspectCountsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAspectCountsWith applies the HasEdge predicate on the "aspect_counts" edge with a given conditions (other predicates).
+func HasAspectCountsWith(preds ...predicate.BuildGraphAspectCount) predicate.BuildGraphMetrics {
+	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
+		step := newAspectCountsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.BuildGraphMetrics) predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(sql.AndPredicates(predicates...))

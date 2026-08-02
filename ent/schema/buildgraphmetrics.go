@@ -84,6 +84,18 @@ func (BuildGraphMetrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+
+		// Configured targets and actions grouped by rule class.
+		edge.To("rule_class_counts", BuildGraphRuleClassCount.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Configured targets and actions grouped by aspect.
+		edge.To("aspect_counts", BuildGraphAspectCount.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

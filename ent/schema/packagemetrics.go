@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -25,6 +26,12 @@ func (PackageMetrics) Edges() []ent.Edge {
 		edge.From("metrics", Metrics.Type).
 			Ref("package_metrics").
 			Unique(),
+
+		// Per-package loading metrics published by Bazel when requested.
+		edge.To("package_load_metrics", PackageLoadMetrics.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

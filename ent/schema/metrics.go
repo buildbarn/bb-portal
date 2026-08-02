@@ -99,6 +99,13 @@ func (Metrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+
+		// Results of local and remote dynamic execution races.
+		edge.To("dynamic_execution_metrics", DynamicExecutionMetrics.Type).
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

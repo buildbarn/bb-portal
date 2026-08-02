@@ -131,6 +131,29 @@ func HasMetricsWith(preds ...predicate.Metrics) predicate.PackageMetrics {
 	})
 }
 
+// HasPackageLoadMetrics applies the HasEdge predicate on the "package_load_metrics" edge.
+func HasPackageLoadMetrics() predicate.PackageMetrics {
+	return predicate.PackageMetrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PackageLoadMetricsTable, PackageLoadMetricsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPackageLoadMetricsWith applies the HasEdge predicate on the "package_load_metrics" edge with a given conditions (other predicates).
+func HasPackageLoadMetricsWith(preds ...predicate.PackageLoadMetrics) predicate.PackageMetrics {
+	return predicate.PackageMetrics(func(s *sql.Selector) {
+		step := newPackageLoadMetricsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.PackageMetrics) predicate.PackageMetrics {
 	return predicate.PackageMetrics(sql.AndPredicates(predicates...))

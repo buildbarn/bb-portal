@@ -10,8 +10,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphaspectcount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -306,6 +308,36 @@ func (_u *BuildGraphMetricsUpdate) AddEvaluationStats(v ...*BuildGraphEvaluation
 	return _u.AddEvaluationStatIDs(ids...)
 }
 
+// AddRuleClassCountIDs adds the "rule_class_counts" edge to the BuildGraphRuleClassCount entity by IDs.
+func (_u *BuildGraphMetricsUpdate) AddRuleClassCountIDs(ids ...int64) *BuildGraphMetricsUpdate {
+	_u.mutation.AddRuleClassCountIDs(ids...)
+	return _u
+}
+
+// AddRuleClassCounts adds the "rule_class_counts" edges to the BuildGraphRuleClassCount entity.
+func (_u *BuildGraphMetricsUpdate) AddRuleClassCounts(v ...*BuildGraphRuleClassCount) *BuildGraphMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRuleClassCountIDs(ids...)
+}
+
+// AddAspectCountIDs adds the "aspect_counts" edge to the BuildGraphAspectCount entity by IDs.
+func (_u *BuildGraphMetricsUpdate) AddAspectCountIDs(ids ...int64) *BuildGraphMetricsUpdate {
+	_u.mutation.AddAspectCountIDs(ids...)
+	return _u
+}
+
+// AddAspectCounts adds the "aspect_counts" edges to the BuildGraphAspectCount entity.
+func (_u *BuildGraphMetricsUpdate) AddAspectCounts(v ...*BuildGraphAspectCount) *BuildGraphMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddAspectCountIDs(ids...)
+}
+
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
 func (_u *BuildGraphMetricsUpdate) Mutation() *BuildGraphMetricsMutation {
 	return _u.mutation
@@ -336,6 +368,48 @@ func (_u *BuildGraphMetricsUpdate) RemoveEvaluationStats(v ...*BuildGraphEvaluat
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveEvaluationStatIDs(ids...)
+}
+
+// ClearRuleClassCounts clears all "rule_class_counts" edges to the BuildGraphRuleClassCount entity.
+func (_u *BuildGraphMetricsUpdate) ClearRuleClassCounts() *BuildGraphMetricsUpdate {
+	_u.mutation.ClearRuleClassCounts()
+	return _u
+}
+
+// RemoveRuleClassCountIDs removes the "rule_class_counts" edge to BuildGraphRuleClassCount entities by IDs.
+func (_u *BuildGraphMetricsUpdate) RemoveRuleClassCountIDs(ids ...int64) *BuildGraphMetricsUpdate {
+	_u.mutation.RemoveRuleClassCountIDs(ids...)
+	return _u
+}
+
+// RemoveRuleClassCounts removes "rule_class_counts" edges to BuildGraphRuleClassCount entities.
+func (_u *BuildGraphMetricsUpdate) RemoveRuleClassCounts(v ...*BuildGraphRuleClassCount) *BuildGraphMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRuleClassCountIDs(ids...)
+}
+
+// ClearAspectCounts clears all "aspect_counts" edges to the BuildGraphAspectCount entity.
+func (_u *BuildGraphMetricsUpdate) ClearAspectCounts() *BuildGraphMetricsUpdate {
+	_u.mutation.ClearAspectCounts()
+	return _u
+}
+
+// RemoveAspectCountIDs removes the "aspect_counts" edge to BuildGraphAspectCount entities by IDs.
+func (_u *BuildGraphMetricsUpdate) RemoveAspectCountIDs(ids ...int64) *BuildGraphMetricsUpdate {
+	_u.mutation.RemoveAspectCountIDs(ids...)
+	return _u
+}
+
+// RemoveAspectCounts removes "aspect_counts" edges to BuildGraphAspectCount entities.
+func (_u *BuildGraphMetricsUpdate) RemoveAspectCounts(v ...*BuildGraphAspectCount) *BuildGraphMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveAspectCountIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -522,6 +596,96 @@ func (_u *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (_node int, err 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.RuleClassCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.RuleClassCountsTable,
+			Columns: []string{buildgraphmetrics.RuleClassCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRuleClassCountsIDs(); len(nodes) > 0 && !_u.mutation.RuleClassCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.RuleClassCountsTable,
+			Columns: []string{buildgraphmetrics.RuleClassCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RuleClassCountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.RuleClassCountsTable,
+			Columns: []string{buildgraphmetrics.RuleClassCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.AspectCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.AspectCountsTable,
+			Columns: []string{buildgraphmetrics.AspectCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedAspectCountsIDs(); len(nodes) > 0 && !_u.mutation.AspectCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.AspectCountsTable,
+			Columns: []string{buildgraphmetrics.AspectCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AspectCountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.AspectCountsTable,
+			Columns: []string{buildgraphmetrics.AspectCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -826,6 +990,36 @@ func (_u *BuildGraphMetricsUpdateOne) AddEvaluationStats(v ...*BuildGraphEvaluat
 	return _u.AddEvaluationStatIDs(ids...)
 }
 
+// AddRuleClassCountIDs adds the "rule_class_counts" edge to the BuildGraphRuleClassCount entity by IDs.
+func (_u *BuildGraphMetricsUpdateOne) AddRuleClassCountIDs(ids ...int64) *BuildGraphMetricsUpdateOne {
+	_u.mutation.AddRuleClassCountIDs(ids...)
+	return _u
+}
+
+// AddRuleClassCounts adds the "rule_class_counts" edges to the BuildGraphRuleClassCount entity.
+func (_u *BuildGraphMetricsUpdateOne) AddRuleClassCounts(v ...*BuildGraphRuleClassCount) *BuildGraphMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRuleClassCountIDs(ids...)
+}
+
+// AddAspectCountIDs adds the "aspect_counts" edge to the BuildGraphAspectCount entity by IDs.
+func (_u *BuildGraphMetricsUpdateOne) AddAspectCountIDs(ids ...int64) *BuildGraphMetricsUpdateOne {
+	_u.mutation.AddAspectCountIDs(ids...)
+	return _u
+}
+
+// AddAspectCounts adds the "aspect_counts" edges to the BuildGraphAspectCount entity.
+func (_u *BuildGraphMetricsUpdateOne) AddAspectCounts(v ...*BuildGraphAspectCount) *BuildGraphMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddAspectCountIDs(ids...)
+}
+
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
 func (_u *BuildGraphMetricsUpdateOne) Mutation() *BuildGraphMetricsMutation {
 	return _u.mutation
@@ -856,6 +1050,48 @@ func (_u *BuildGraphMetricsUpdateOne) RemoveEvaluationStats(v ...*BuildGraphEval
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveEvaluationStatIDs(ids...)
+}
+
+// ClearRuleClassCounts clears all "rule_class_counts" edges to the BuildGraphRuleClassCount entity.
+func (_u *BuildGraphMetricsUpdateOne) ClearRuleClassCounts() *BuildGraphMetricsUpdateOne {
+	_u.mutation.ClearRuleClassCounts()
+	return _u
+}
+
+// RemoveRuleClassCountIDs removes the "rule_class_counts" edge to BuildGraphRuleClassCount entities by IDs.
+func (_u *BuildGraphMetricsUpdateOne) RemoveRuleClassCountIDs(ids ...int64) *BuildGraphMetricsUpdateOne {
+	_u.mutation.RemoveRuleClassCountIDs(ids...)
+	return _u
+}
+
+// RemoveRuleClassCounts removes "rule_class_counts" edges to BuildGraphRuleClassCount entities.
+func (_u *BuildGraphMetricsUpdateOne) RemoveRuleClassCounts(v ...*BuildGraphRuleClassCount) *BuildGraphMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRuleClassCountIDs(ids...)
+}
+
+// ClearAspectCounts clears all "aspect_counts" edges to the BuildGraphAspectCount entity.
+func (_u *BuildGraphMetricsUpdateOne) ClearAspectCounts() *BuildGraphMetricsUpdateOne {
+	_u.mutation.ClearAspectCounts()
+	return _u
+}
+
+// RemoveAspectCountIDs removes the "aspect_counts" edge to BuildGraphAspectCount entities by IDs.
+func (_u *BuildGraphMetricsUpdateOne) RemoveAspectCountIDs(ids ...int64) *BuildGraphMetricsUpdateOne {
+	_u.mutation.RemoveAspectCountIDs(ids...)
+	return _u
+}
+
+// RemoveAspectCounts removes "aspect_counts" edges to BuildGraphAspectCount entities.
+func (_u *BuildGraphMetricsUpdateOne) RemoveAspectCounts(v ...*BuildGraphAspectCount) *BuildGraphMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveAspectCountIDs(ids...)
 }
 
 // Where appends a list predicates to the BuildGraphMetricsUpdate builder.
@@ -1072,6 +1308,96 @@ func (_u *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Build
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.RuleClassCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.RuleClassCountsTable,
+			Columns: []string{buildgraphmetrics.RuleClassCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRuleClassCountsIDs(); len(nodes) > 0 && !_u.mutation.RuleClassCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.RuleClassCountsTable,
+			Columns: []string{buildgraphmetrics.RuleClassCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RuleClassCountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.RuleClassCountsTable,
+			Columns: []string{buildgraphmetrics.RuleClassCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.AspectCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.AspectCountsTable,
+			Columns: []string{buildgraphmetrics.AspectCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedAspectCountsIDs(); len(nodes) > 0 && !_u.mutation.AspectCountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.AspectCountsTable,
+			Columns: []string{buildgraphmetrics.AspectCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AspectCountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.AspectCountsTable,
+			Columns: []string{buildgraphmetrics.AspectCountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

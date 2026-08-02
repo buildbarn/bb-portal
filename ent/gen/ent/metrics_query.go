@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
@@ -31,26 +32,27 @@ import (
 // MetricsQuery is the builder for querying Metrics entities.
 type MetricsQuery struct {
 	config
-	ctx                    *QueryContext
-	order                  []metrics.OrderOption
-	inters                 []Interceptor
-	predicates             []predicate.Metrics
-	withBazelInvocation    *BazelInvocationQuery
-	withActionSummary      *ActionSummaryQuery
-	withMemoryMetrics      *MemoryMetricsQuery
-	withTargetMetrics      *TargetMetricsQuery
-	withTimingMetrics      *TimingMetricsQuery
-	withArtifactMetrics    *ArtifactMetricsQuery
-	withNetworkMetrics     *NetworkMetricsQuery
-	withBuildGraphMetrics  *BuildGraphMetricsQuery
-	withPackageMetrics     *PackageMetricsQuery
-	withCumulativeMetrics  *CumulativeMetricsQuery
-	withWorkerMetrics      *WorkerMetricsQuery
-	withWorkerPoolMetrics  *WorkerPoolMetricsQuery
-	withFKs                bool
-	modifiers              []func(*sql.Selector)
-	loadTotal              []func(context.Context, []*Metrics) error
-	withNamedWorkerMetrics map[string]*WorkerMetricsQuery
+	ctx                         *QueryContext
+	order                       []metrics.OrderOption
+	inters                      []Interceptor
+	predicates                  []predicate.Metrics
+	withBazelInvocation         *BazelInvocationQuery
+	withActionSummary           *ActionSummaryQuery
+	withMemoryMetrics           *MemoryMetricsQuery
+	withTargetMetrics           *TargetMetricsQuery
+	withTimingMetrics           *TimingMetricsQuery
+	withArtifactMetrics         *ArtifactMetricsQuery
+	withNetworkMetrics          *NetworkMetricsQuery
+	withBuildGraphMetrics       *BuildGraphMetricsQuery
+	withPackageMetrics          *PackageMetricsQuery
+	withCumulativeMetrics       *CumulativeMetricsQuery
+	withWorkerMetrics           *WorkerMetricsQuery
+	withWorkerPoolMetrics       *WorkerPoolMetricsQuery
+	withDynamicExecutionMetrics *DynamicExecutionMetricsQuery
+	withFKs                     bool
+	modifiers                   []func(*sql.Selector)
+	loadTotal                   []func(context.Context, []*Metrics) error
+	withNamedWorkerMetrics      map[string]*WorkerMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -351,6 +353,28 @@ func (_q *MetricsQuery) QueryWorkerPoolMetrics() *WorkerPoolMetricsQuery {
 	return query
 }
 
+// QueryDynamicExecutionMetrics chains the current query on the "dynamic_execution_metrics" edge.
+func (_q *MetricsQuery) QueryDynamicExecutionMetrics() *DynamicExecutionMetricsQuery {
+	query := (&DynamicExecutionMetricsClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
+			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.DynamicExecutionMetricsTable, metrics.DynamicExecutionMetricsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first Metrics entity from the query.
 // Returns a *NotFoundError when no Metrics was found.
 func (_q *MetricsQuery) First(ctx context.Context) (*Metrics, error) {
@@ -538,23 +562,24 @@ func (_q *MetricsQuery) Clone() *MetricsQuery {
 		return nil
 	}
 	return &MetricsQuery{
-		config:                _q.config,
-		ctx:                   _q.ctx.Clone(),
-		order:                 append([]metrics.OrderOption{}, _q.order...),
-		inters:                append([]Interceptor{}, _q.inters...),
-		predicates:            append([]predicate.Metrics{}, _q.predicates...),
-		withBazelInvocation:   _q.withBazelInvocation.Clone(),
-		withActionSummary:     _q.withActionSummary.Clone(),
-		withMemoryMetrics:     _q.withMemoryMetrics.Clone(),
-		withTargetMetrics:     _q.withTargetMetrics.Clone(),
-		withTimingMetrics:     _q.withTimingMetrics.Clone(),
-		withArtifactMetrics:   _q.withArtifactMetrics.Clone(),
-		withNetworkMetrics:    _q.withNetworkMetrics.Clone(),
-		withBuildGraphMetrics: _q.withBuildGraphMetrics.Clone(),
-		withPackageMetrics:    _q.withPackageMetrics.Clone(),
-		withCumulativeMetrics: _q.withCumulativeMetrics.Clone(),
-		withWorkerMetrics:     _q.withWorkerMetrics.Clone(),
-		withWorkerPoolMetrics: _q.withWorkerPoolMetrics.Clone(),
+		config:                      _q.config,
+		ctx:                         _q.ctx.Clone(),
+		order:                       append([]metrics.OrderOption{}, _q.order...),
+		inters:                      append([]Interceptor{}, _q.inters...),
+		predicates:                  append([]predicate.Metrics{}, _q.predicates...),
+		withBazelInvocation:         _q.withBazelInvocation.Clone(),
+		withActionSummary:           _q.withActionSummary.Clone(),
+		withMemoryMetrics:           _q.withMemoryMetrics.Clone(),
+		withTargetMetrics:           _q.withTargetMetrics.Clone(),
+		withTimingMetrics:           _q.withTimingMetrics.Clone(),
+		withArtifactMetrics:         _q.withArtifactMetrics.Clone(),
+		withNetworkMetrics:          _q.withNetworkMetrics.Clone(),
+		withBuildGraphMetrics:       _q.withBuildGraphMetrics.Clone(),
+		withPackageMetrics:          _q.withPackageMetrics.Clone(),
+		withCumulativeMetrics:       _q.withCumulativeMetrics.Clone(),
+		withWorkerMetrics:           _q.withWorkerMetrics.Clone(),
+		withWorkerPoolMetrics:       _q.withWorkerPoolMetrics.Clone(),
+		withDynamicExecutionMetrics: _q.withDynamicExecutionMetrics.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -693,6 +718,17 @@ func (_q *MetricsQuery) WithWorkerPoolMetrics(opts ...func(*WorkerPoolMetricsQue
 	return _q
 }
 
+// WithDynamicExecutionMetrics tells the query-builder to eager-load the nodes that are connected to
+// the "dynamic_execution_metrics" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MetricsQuery) WithDynamicExecutionMetrics(opts ...func(*DynamicExecutionMetricsQuery)) *MetricsQuery {
+	query := (&DynamicExecutionMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withDynamicExecutionMetrics = query
+	return _q
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 func (_q *MetricsQuery) GroupBy(field string, fields ...string) *MetricsGroupBy {
@@ -750,7 +786,7 @@ func (_q *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 		nodes       = []*Metrics{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [12]bool{
+		loadedTypes = [13]bool{
 			_q.withBazelInvocation != nil,
 			_q.withActionSummary != nil,
 			_q.withMemoryMetrics != nil,
@@ -763,6 +799,7 @@ func (_q *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 			_q.withCumulativeMetrics != nil,
 			_q.withWorkerMetrics != nil,
 			_q.withWorkerPoolMetrics != nil,
+			_q.withDynamicExecutionMetrics != nil,
 		}
 	)
 	if _q.withBazelInvocation != nil {
@@ -862,6 +899,12 @@ func (_q *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 	if query := _q.withWorkerPoolMetrics; query != nil {
 		if err := _q.loadWorkerPoolMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *WorkerPoolMetrics) { n.Edges.WorkerPoolMetrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withDynamicExecutionMetrics; query != nil {
+		if err := _q.loadDynamicExecutionMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *DynamicExecutionMetrics) { n.Edges.DynamicExecutionMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -1218,6 +1261,34 @@ func (_q *MetricsQuery) loadWorkerPoolMetrics(ctx context.Context, query *Worker
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "metrics_worker_pool_metrics" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *MetricsQuery) loadDynamicExecutionMetrics(ctx context.Context, query *DynamicExecutionMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *DynamicExecutionMetrics)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.DynamicExecutionMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.DynamicExecutionMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.metrics_dynamic_execution_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_dynamic_execution_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_dynamic_execution_metrics" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

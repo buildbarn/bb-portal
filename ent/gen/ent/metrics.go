@@ -13,6 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
@@ -60,11 +61,13 @@ type MetricsEdges struct {
 	WorkerMetrics []*WorkerMetrics `json:"worker_metrics,omitempty"`
 	// WorkerPoolMetrics holds the value of the worker_pool_metrics edge.
 	WorkerPoolMetrics *WorkerPoolMetrics `json:"worker_pool_metrics,omitempty"`
+	// DynamicExecutionMetrics holds the value of the dynamic_execution_metrics edge.
+	DynamicExecutionMetrics *DynamicExecutionMetrics `json:"dynamic_execution_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [12]bool
+	loadedTypes [13]bool
 	// totalCount holds the count of the edges above.
-	totalCount [12]map[string]int
+	totalCount [13]map[string]int
 
 	namedWorkerMetrics map[string][]*WorkerMetrics
 }
@@ -199,6 +202,17 @@ func (e MetricsEdges) WorkerPoolMetricsOrErr() (*WorkerPoolMetrics, error) {
 	return nil, &NotLoadedError{edge: "worker_pool_metrics"}
 }
 
+// DynamicExecutionMetricsOrErr returns the DynamicExecutionMetrics value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) DynamicExecutionMetricsOrErr() (*DynamicExecutionMetrics, error) {
+	if e.DynamicExecutionMetrics != nil {
+		return e.DynamicExecutionMetrics, nil
+	} else if e.loadedTypes[12] {
+		return nil, &NotFoundError{label: dynamicexecutionmetrics.Label}
+	}
+	return nil, &NotLoadedError{edge: "dynamic_execution_metrics"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Metrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -307,6 +321,11 @@ func (_m *Metrics) QueryWorkerMetrics() *WorkerMetricsQuery {
 // QueryWorkerPoolMetrics queries the "worker_pool_metrics" edge of the Metrics entity.
 func (_m *Metrics) QueryWorkerPoolMetrics() *WorkerPoolMetricsQuery {
 	return NewMetricsClient(_m.config).QueryWorkerPoolMetrics(_m)
+}
+
+// QueryDynamicExecutionMetrics queries the "dynamic_execution_metrics" edge of the Metrics entity.
+func (_m *Metrics) QueryDynamicExecutionMetrics() *DynamicExecutionMetricsQuery {
+	return NewMetricsClient(_m.config).QueryDynamicExecutionMetrics(_m)
 }
 
 // Update returns a builder for updating this Metrics.

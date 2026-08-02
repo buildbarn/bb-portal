@@ -30,11 +30,15 @@ type PackageMetrics struct {
 type PackageMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
 	Metrics *Metrics `json:"metrics,omitempty"`
+	// PackageLoadMetrics holds the value of the package_load_metrics edge.
+	PackageLoadMetrics []*PackageLoadMetrics `json:"package_load_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
+
+	namedPackageLoadMetrics map[string][]*PackageLoadMetrics
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
@@ -46,6 +50,15 @@ func (e PackageMetricsEdges) MetricsOrErr() (*Metrics, error) {
 		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
+}
+
+// PackageLoadMetricsOrErr returns the PackageLoadMetrics value or an error if the edge
+// was not loaded in eager-loading.
+func (e PackageMetricsEdges) PackageLoadMetricsOrErr() ([]*PackageLoadMetrics, error) {
+	if e.loadedTypes[1] {
+		return e.PackageLoadMetrics, nil
+	}
+	return nil, &NotLoadedError{edge: "package_load_metrics"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -109,6 +122,11 @@ func (_m *PackageMetrics) QueryMetrics() *MetricsQuery {
 	return NewPackageMetricsClient(_m.config).QueryMetrics(_m)
 }
 
+// QueryPackageLoadMetrics queries the "package_load_metrics" edge of the PackageMetrics entity.
+func (_m *PackageMetrics) QueryPackageLoadMetrics() *PackageLoadMetricsQuery {
+	return NewPackageMetricsClient(_m.config).QueryPackageLoadMetrics(_m)
+}
+
 // Update returns a builder for updating this PackageMetrics.
 // Note that you need to call PackageMetrics.Unwrap() before calling this method if this PackageMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -136,6 +154,30 @@ func (_m *PackageMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", _m.PackagesLoaded))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedPackageLoadMetrics returns the PackageLoadMetrics named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *PackageMetrics) NamedPackageLoadMetrics(name string) ([]*PackageLoadMetrics, error) {
+	if _m.Edges.namedPackageLoadMetrics == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedPackageLoadMetrics[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *PackageMetrics) appendNamedPackageLoadMetrics(name string, edges ...*PackageLoadMetrics) {
+	if _m.Edges.namedPackageLoadMetrics == nil {
+		_m.Edges.namedPackageLoadMetrics = make(map[string][]*PackageLoadMetrics)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedPackageLoadMetrics[name] = []*PackageLoadMetrics{}
+	} else {
+		_m.Edges.namedPackageLoadMetrics[name] = append(_m.Edges.namedPackageLoadMetrics[name], edges...)
+	}
 }
 
 // PackageMetricsSlice is a parsable slice of PackageMetrics.

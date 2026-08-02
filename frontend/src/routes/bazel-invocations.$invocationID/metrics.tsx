@@ -37,6 +37,9 @@ const BAZEL_INVOCATION_METRICS_FRAGMENT = gql(/* GraphQL */ `
     buildGraphMetrics {
       ...BazelInvocationMetricsBuildGraphEvaluationMetrics
     }
+    dynamicExecutionMetrics {
+      ...BazelInvocationMetricsDynamicExecutionMetrics
+    }
     workerMetrics {
       ...BazelInvocationMetricsWorkerMetrics
     }
@@ -123,6 +126,16 @@ export const BAZEL_INVOCATION_METRICS_PACKAGE_METRICS_FRAGMENT =
   fragment BazelInvocationMetricsPackageMetrics on PackageMetrics {
     id
     packagesLoaded
+    packageLoadMetrics {
+      id
+      name
+      loadDurationInNs
+      numTargets
+      computationSteps
+      numTransitiveLoads
+      packageOverhead
+      globFilesystemOperationCost
+    }
   }
 `);
 
@@ -144,6 +157,35 @@ export const BAZEL_INVOCATION_METRICS_BUILD_GRAPH_EVALUATION_METRICS_FRAGMENT =
       operation
       skyfunctionName
       count
+    }
+    ruleClassCounts {
+      id
+      key
+      ruleClass
+      count
+      actionCount
+    }
+    aspectCounts {
+      id
+      key
+      aspectName
+      count
+      actionCount
+    }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_DYNAMIC_EXECUTION_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsDynamicExecutionMetrics on DynamicExecutionMetrics {
+    id
+    raceStatistics {
+      id
+      mnemonic
+      localRunner
+      remoteRunner
+      localWins
+      remoteWins
     }
   }
 `);

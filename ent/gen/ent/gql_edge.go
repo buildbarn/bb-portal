@@ -312,6 +312,14 @@ func (_m *Build) Tags(
 	return _m.QueryTags().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (_m *BuildGraphAspectCount) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
+	result, err := _m.Edges.BuildGraphMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryBuildGraphMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *BuildGraphEvaluationStat) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
 	result, err := _m.Edges.BuildGraphMetricsOrErr()
 	if IsNotLoaded(err) {
@@ -338,6 +346,38 @@ func (_m *BuildGraphMetrics) EvaluationStats(ctx context.Context) (result []*Bui
 		result, err = _m.QueryEvaluationStats().All(ctx)
 	}
 	return result, err
+}
+
+func (_m *BuildGraphMetrics) RuleClassCounts(ctx context.Context) (result []*BuildGraphRuleClassCount, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedRuleClassCounts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.RuleClassCountsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryRuleClassCounts().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *BuildGraphMetrics) AspectCounts(ctx context.Context) (result []*BuildGraphAspectCount, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedAspectCounts(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.AspectCountsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryAspectCounts().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *BuildGraphRuleClassCount) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
+	result, err := _m.Edges.BuildGraphMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryBuildGraphMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *BuildTag) Build(ctx context.Context) (*Build, error) {
@@ -406,6 +446,34 @@ func (_m *Digest) Files(ctx context.Context) (result []*File, err error) {
 		result, err = _m.QueryFiles().All(ctx)
 	}
 	return result, err
+}
+
+func (_m *DynamicExecutionMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *DynamicExecutionMetrics) RaceStatistics(ctx context.Context) (result []*DynamicExecutionRaceStatistic, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedRaceStatistics(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.RaceStatisticsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryRaceStatistics().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *DynamicExecutionRaceStatistic) DynamicExecutionMetrics(ctx context.Context) (*DynamicExecutionMetrics, error) {
+	result, err := _m.Edges.DynamicExecutionMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDynamicExecutionMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *File) Digest(ctx context.Context) (*Digest, error) {
@@ -712,6 +780,14 @@ func (_m *Metrics) WorkerPoolMetrics(ctx context.Context) (*WorkerPoolMetrics, e
 	return result, MaskNotFound(err)
 }
 
+func (_m *Metrics) DynamicExecutionMetrics(ctx context.Context) (*DynamicExecutionMetrics, error) {
+	result, err := _m.Edges.DynamicExecutionMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryDynamicExecutionMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *MissDetail) ActionCacheStatistics(ctx context.Context) (*ActionCacheStatistics, error) {
 	result, err := _m.Edges.ActionCacheStatisticsOrErr()
 	if IsNotLoaded(err) {
@@ -736,12 +812,32 @@ func (_m *NetworkMetrics) SystemNetworkStats(ctx context.Context) (*SystemNetwor
 	return result, MaskNotFound(err)
 }
 
+func (_m *PackageLoadMetrics) PackageMetrics(ctx context.Context) (*PackageMetrics, error) {
+	result, err := _m.Edges.PackageMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryPackageMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *PackageMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (_m *PackageMetrics) PackageLoadMetrics(ctx context.Context) (result []*PackageLoadMetrics, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedPackageLoadMetrics(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.PackageLoadMetricsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryPackageLoadMetrics().All(ctx)
+	}
+	return result, err
 }
 
 func (_m *RunnerCount) ActionSummary(ctx context.Context) (*ActionSummary, error) {

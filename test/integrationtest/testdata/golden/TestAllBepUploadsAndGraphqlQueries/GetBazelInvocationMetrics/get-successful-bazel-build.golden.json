@@ -113,14 +113,17 @@
         "topLevelArtifactsSizeInBytes": 5731462997
       },
       "buildGraphMetrics": {
+        "aspectCounts": [],
         "evaluationStats": [],
-        "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ=="
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ==",
+        "ruleClassCounts": []
       },
       "cumulativeMetrics": {
         "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6MQ==",
         "numAnalyses": 11,
         "numBuilds": 11
       },
+      "dynamicExecutionMetrics": null,
       "id": "TWV0cmljczox",
       "memoryMetrics": {
         "garbageMetrics": [],
@@ -132,6 +135,7 @@
       "networkMetrics": null,
       "packageMetrics": {
         "id": "UGFja2FnZU1ldHJpY3M6MQ==",
+        "packageLoadMetrics": [],
         "packagesLoaded": 0
       },
       "timingMetrics": {

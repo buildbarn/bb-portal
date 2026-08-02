@@ -105,6 +105,18 @@ func (f BuildFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildMutation", m)
 }
 
+// The BuildGraphAspectCountFunc type is an adapter to allow the use of ordinary
+// function as BuildGraphAspectCount mutator.
+type BuildGraphAspectCountFunc func(context.Context, *ent.BuildGraphAspectCountMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BuildGraphAspectCountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BuildGraphAspectCountMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildGraphAspectCountMutation", m)
+}
+
 // The BuildGraphEvaluationStatFunc type is an adapter to allow the use of ordinary
 // function as BuildGraphEvaluationStat mutator.
 type BuildGraphEvaluationStatFunc func(context.Context, *ent.BuildGraphEvaluationStatMutation) (ent.Value, error)
@@ -127,6 +139,18 @@ func (f BuildGraphMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildGraphMetricsMutation", m)
+}
+
+// The BuildGraphRuleClassCountFunc type is an adapter to allow the use of ordinary
+// function as BuildGraphRuleClassCount mutator.
+type BuildGraphRuleClassCountFunc func(context.Context, *ent.BuildGraphRuleClassCountMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BuildGraphRuleClassCountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BuildGraphRuleClassCountMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildGraphRuleClassCountMutation", m)
 }
 
 // The BuildLogChunkFunc type is an adapter to allow the use of ordinary
@@ -199,6 +223,30 @@ func (f DigestFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DigestMutation", m)
+}
+
+// The DynamicExecutionMetricsFunc type is an adapter to allow the use of ordinary
+// function as DynamicExecutionMetrics mutator.
+type DynamicExecutionMetricsFunc func(context.Context, *ent.DynamicExecutionMetricsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DynamicExecutionMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DynamicExecutionMetricsMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DynamicExecutionMetricsMutation", m)
+}
+
+// The DynamicExecutionRaceStatisticFunc type is an adapter to allow the use of ordinary
+// function as DynamicExecutionRaceStatistic mutator.
+type DynamicExecutionRaceStatisticFunc func(context.Context, *ent.DynamicExecutionRaceStatisticMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DynamicExecutionRaceStatisticFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DynamicExecutionRaceStatisticMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DynamicExecutionRaceStatisticMutation", m)
 }
 
 // The EventMetadataFunc type is an adapter to allow the use of ordinary
@@ -343,6 +391,18 @@ func (f NetworkMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NetworkMetricsMutation", m)
+}
+
+// The PackageLoadMetricsFunc type is an adapter to allow the use of ordinary
+// function as PackageLoadMetrics mutator.
+type PackageLoadMetricsFunc func(context.Context, *ent.PackageLoadMetricsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PackageLoadMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PackageLoadMetricsMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PackageLoadMetricsMutation", m)
 }
 
 // The PackageMetricsFunc type is an adapter to allow the use of ordinary

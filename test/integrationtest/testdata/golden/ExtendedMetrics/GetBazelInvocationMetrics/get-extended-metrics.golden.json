@@ -20,6 +20,15 @@
       },
       "artifactMetrics": null,
       "buildGraphMetrics": {
+        "aspectCounts": [
+          {
+            "actionCount": 0,
+            "aspectName": "@@package_metadata+//:aspect.bzl%package_metadata_aspect",
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEFzcGVjdENvdW50OjE=",
+            "key": "@@package_metadata+//:aspect.bzl%package_metadata_aspect"
+          }
+        ],
         "evaluationStats": [
           {
             "count": 3,
@@ -52,18 +61,62 @@
             "skyfunctionName": "ACTION_EXECUTION"
           }
         ],
-        "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ=="
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ==",
+        "ruleClassCounts": [
+          {
+            "actionCount": 4,
+            "count": 3,
+            "id": "QnVpbGRHcmFwaFJ1bGVDbGFzc0NvdW50OjE=",
+            "key": "@@rules_cc+//cc:defs.bzl%cc_library",
+            "ruleClass": "cc_library"
+          }
+        ]
       },
       "cumulativeMetrics": {
         "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6MQ==",
         "numAnalyses": 2,
         "numBuilds": 1
       },
+      "dynamicExecutionMetrics": {
+        "id": "RHluYW1pY0V4ZWN1dGlvbk1ldHJpY3M6MQ==",
+        "raceStatistics": [
+          {
+            "id": "RHluYW1pY0V4ZWN1dGlvblJhY2VTdGF0aXN0aWM6MQ==",
+            "localRunner": "darwin-sandbox",
+            "localWins": 1,
+            "mnemonic": "Genrule",
+            "remoteRunner": "remote",
+            "remoteWins": 0
+          }
+        ]
+      },
       "id": "TWV0cmljczox",
       "memoryMetrics": null,
       "networkMetrics": null,
       "packageMetrics": {
         "id": "UGFja2FnZU1ldHJpY3M6MQ==",
+        "packageLoadMetrics": [
+          {
+            "computationSteps": 34,
+            "globFilesystemOperationCost": 7,
+            "id": "UGFja2FnZUxvYWRNZXRyaWNzOjE=",
+            "loadDurationInNs": 808000,
+            "name": "//app",
+            "numTargets": 12,
+            "numTransitiveLoads": 5,
+            "packageOverhead": 6
+          },
+          {
+            "computationSteps": 0,
+            "globFilesystemOperationCost": 0,
+            "id": "UGFja2FnZUxvYWRNZXRyaWNzOjI=",
+            "loadDurationInNs": 0,
+            "name": "//legacy",
+            "numTargets": 0,
+            "numTransitiveLoads": 0,
+            "packageOverhead": 0
+          }
+        ],
         "packagesLoaded": 7
       },
       "timingMetrics": {

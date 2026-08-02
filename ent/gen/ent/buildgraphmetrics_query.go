@@ -12,8 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphaspectcount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -27,10 +29,14 @@ type BuildGraphMetricsQuery struct {
 	predicates               []predicate.BuildGraphMetrics
 	withMetrics              *MetricsQuery
 	withEvaluationStats      *BuildGraphEvaluationStatQuery
+	withRuleClassCounts      *BuildGraphRuleClassCountQuery
+	withAspectCounts         *BuildGraphAspectCountQuery
 	withFKs                  bool
 	modifiers                []func(*sql.Selector)
 	loadTotal                []func(context.Context, []*BuildGraphMetrics) error
 	withNamedEvaluationStats map[string]*BuildGraphEvaluationStatQuery
+	withNamedRuleClassCounts map[string]*BuildGraphRuleClassCountQuery
+	withNamedAspectCounts    map[string]*BuildGraphAspectCountQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -104,6 +110,50 @@ func (_q *BuildGraphMetricsQuery) QueryEvaluationStats() *BuildGraphEvaluationSt
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(buildgraphevaluationstat.Table, buildgraphevaluationstat.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.EvaluationStatsTable, buildgraphmetrics.EvaluationStatsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRuleClassCounts chains the current query on the "rule_class_counts" edge.
+func (_q *BuildGraphMetricsQuery) QueryRuleClassCounts() *BuildGraphRuleClassCountQuery {
+	query := (&BuildGraphRuleClassCountClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
+			sqlgraph.To(buildgraphruleclasscount.Table, buildgraphruleclasscount.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.RuleClassCountsTable, buildgraphmetrics.RuleClassCountsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAspectCounts chains the current query on the "aspect_counts" edge.
+func (_q *BuildGraphMetricsQuery) QueryAspectCounts() *BuildGraphAspectCountQuery {
+	query := (&BuildGraphAspectCountClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
+			sqlgraph.To(buildgraphaspectcount.Table, buildgraphaspectcount.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.AspectCountsTable, buildgraphmetrics.AspectCountsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -305,6 +355,8 @@ func (_q *BuildGraphMetricsQuery) Clone() *BuildGraphMetricsQuery {
 		predicates:          append([]predicate.BuildGraphMetrics{}, _q.predicates...),
 		withMetrics:         _q.withMetrics.Clone(),
 		withEvaluationStats: _q.withEvaluationStats.Clone(),
+		withRuleClassCounts: _q.withRuleClassCounts.Clone(),
+		withAspectCounts:    _q.withAspectCounts.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -330,6 +382,28 @@ func (_q *BuildGraphMetricsQuery) WithEvaluationStats(opts ...func(*BuildGraphEv
 		opt(query)
 	}
 	_q.withEvaluationStats = query
+	return _q
+}
+
+// WithRuleClassCounts tells the query-builder to eager-load the nodes that are connected to
+// the "rule_class_counts" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *BuildGraphMetricsQuery) WithRuleClassCounts(opts ...func(*BuildGraphRuleClassCountQuery)) *BuildGraphMetricsQuery {
+	query := (&BuildGraphRuleClassCountClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withRuleClassCounts = query
+	return _q
+}
+
+// WithAspectCounts tells the query-builder to eager-load the nodes that are connected to
+// the "aspect_counts" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *BuildGraphMetricsQuery) WithAspectCounts(opts ...func(*BuildGraphAspectCountQuery)) *BuildGraphMetricsQuery {
+	query := (&BuildGraphAspectCountClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withAspectCounts = query
 	return _q
 }
 
@@ -412,9 +486,11 @@ func (_q *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook
 		nodes       = []*BuildGraphMetrics{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [4]bool{
 			_q.withMetrics != nil,
 			_q.withEvaluationStats != nil,
+			_q.withRuleClassCounts != nil,
+			_q.withAspectCounts != nil,
 		}
 	)
 	if _q.withMetrics != nil {
@@ -459,10 +535,42 @@ func (_q *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook
 			return nil, err
 		}
 	}
+	if query := _q.withRuleClassCounts; query != nil {
+		if err := _q.loadRuleClassCounts(ctx, query, nodes,
+			func(n *BuildGraphMetrics) { n.Edges.RuleClassCounts = []*BuildGraphRuleClassCount{} },
+			func(n *BuildGraphMetrics, e *BuildGraphRuleClassCount) {
+				n.Edges.RuleClassCounts = append(n.Edges.RuleClassCounts, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withAspectCounts; query != nil {
+		if err := _q.loadAspectCounts(ctx, query, nodes,
+			func(n *BuildGraphMetrics) { n.Edges.AspectCounts = []*BuildGraphAspectCount{} },
+			func(n *BuildGraphMetrics, e *BuildGraphAspectCount) {
+				n.Edges.AspectCounts = append(n.Edges.AspectCounts, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range _q.withNamedEvaluationStats {
 		if err := _q.loadEvaluationStats(ctx, query, nodes,
 			func(n *BuildGraphMetrics) { n.appendNamedEvaluationStats(name) },
 			func(n *BuildGraphMetrics, e *BuildGraphEvaluationStat) { n.appendNamedEvaluationStats(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedRuleClassCounts {
+		if err := _q.loadRuleClassCounts(ctx, query, nodes,
+			func(n *BuildGraphMetrics) { n.appendNamedRuleClassCounts(name) },
+			func(n *BuildGraphMetrics, e *BuildGraphRuleClassCount) { n.appendNamedRuleClassCounts(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedAspectCounts {
+		if err := _q.loadAspectCounts(ctx, query, nodes,
+			func(n *BuildGraphMetrics) { n.appendNamedAspectCounts(name) },
+			func(n *BuildGraphMetrics, e *BuildGraphAspectCount) { n.appendNamedAspectCounts(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -532,6 +640,68 @@ func (_q *BuildGraphMetricsQuery) loadEvaluationStats(ctx context.Context, query
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_evaluation_stats" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *BuildGraphMetricsQuery) loadRuleClassCounts(ctx context.Context, query *BuildGraphRuleClassCountQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *BuildGraphRuleClassCount)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*BuildGraphMetrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.BuildGraphRuleClassCount(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(buildgraphmetrics.RuleClassCountsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.build_graph_metrics_rule_class_counts
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "build_graph_metrics_rule_class_counts" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_rule_class_counts" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *BuildGraphMetricsQuery) loadAspectCounts(ctx context.Context, query *BuildGraphAspectCountQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *BuildGraphAspectCount)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*BuildGraphMetrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.BuildGraphAspectCount(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(buildgraphmetrics.AspectCountsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.build_graph_metrics_aspect_counts
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "build_graph_metrics_aspect_counts" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_aspect_counts" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -633,6 +803,34 @@ func (_q *BuildGraphMetricsQuery) WithNamedEvaluationStats(name string, opts ...
 		_q.withNamedEvaluationStats = make(map[string]*BuildGraphEvaluationStatQuery)
 	}
 	_q.withNamedEvaluationStats[name] = query
+	return _q
+}
+
+// WithNamedRuleClassCounts tells the query-builder to eager-load the nodes that are connected to the "rule_class_counts"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *BuildGraphMetricsQuery) WithNamedRuleClassCounts(name string, opts ...func(*BuildGraphRuleClassCountQuery)) *BuildGraphMetricsQuery {
+	query := (&BuildGraphRuleClassCountClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedRuleClassCounts == nil {
+		_q.withNamedRuleClassCounts = make(map[string]*BuildGraphRuleClassCountQuery)
+	}
+	_q.withNamedRuleClassCounts[name] = query
+	return _q
+}
+
+// WithNamedAspectCounts tells the query-builder to eager-load the nodes that are connected to the "aspect_counts"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *BuildGraphMetricsQuery) WithNamedAspectCounts(name string, opts ...func(*BuildGraphAspectCountQuery)) *BuildGraphMetricsQuery {
+	query := (&BuildGraphAspectCountClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedAspectCounts == nil {
+		_q.withNamedAspectCounts = make(map[string]*BuildGraphAspectCountQuery)
+	}
+	_q.withNamedAspectCounts[name] = query
 	return _q
 }
 

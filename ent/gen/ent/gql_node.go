@@ -21,13 +21,17 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphaspectcount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionracestatistic"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -38,6 +42,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -102,6 +107,11 @@ var buildImplementors = []string{"Build", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*Build) IsNode() {}
 
+var buildgraphaspectcountImplementors = []string{"BuildGraphAspectCount", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*BuildGraphAspectCount) IsNode() {}
+
 var buildgraphevaluationstatImplementors = []string{"BuildGraphEvaluationStat", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
@@ -111,6 +121,11 @@ var buildgraphmetricsImplementors = []string{"BuildGraphMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*BuildGraphMetrics) IsNode() {}
+
+var buildgraphruleclasscountImplementors = []string{"BuildGraphRuleClassCount", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*BuildGraphRuleClassCount) IsNode() {}
 
 var buildtagImplementors = []string{"BuildTag", "Node"}
 
@@ -136,6 +151,16 @@ var digestImplementors = []string{"Digest", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*Digest) IsNode() {}
+
+var dynamicexecutionmetricsImplementors = []string{"DynamicExecutionMetrics", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*DynamicExecutionMetrics) IsNode() {}
+
+var dynamicexecutionracestatisticImplementors = []string{"DynamicExecutionRaceStatistic", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*DynamicExecutionRaceStatistic) IsNode() {}
 
 var fileImplementors = []string{"File", "Node"}
 
@@ -186,6 +211,11 @@ var networkmetricsImplementors = []string{"NetworkMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*NetworkMetrics) IsNode() {}
+
+var packageloadmetricsImplementors = []string{"PackageLoadMetrics", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*PackageLoadMetrics) IsNode() {}
 
 var packagemetricsImplementors = []string{"PackageMetrics", "Node"}
 
@@ -392,6 +422,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			}
 		}
 		return query.Only(ctx)
+	case buildgraphaspectcount.Table:
+		query := c.BuildGraphAspectCount.Query().
+			Where(buildgraphaspectcount.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, buildgraphaspectcountImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case buildgraphevaluationstat.Table:
 		query := c.BuildGraphEvaluationStat.Query().
 			Where(buildgraphevaluationstat.ID(id))
@@ -406,6 +445,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(buildgraphmetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, buildgraphmetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case buildgraphruleclasscount.Table:
+		query := c.BuildGraphRuleClassCount.Query().
+			Where(buildgraphruleclasscount.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, buildgraphruleclasscountImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -451,6 +499,24 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(digest.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, digestImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case dynamicexecutionmetrics.Table:
+		query := c.DynamicExecutionMetrics.Query().
+			Where(dynamicexecutionmetrics.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, dynamicexecutionmetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case dynamicexecutionracestatistic.Table:
+		query := c.DynamicExecutionRaceStatistic.Query().
+			Where(dynamicexecutionracestatistic.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, dynamicexecutionracestatisticImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -541,6 +607,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(networkmetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, networkmetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case packageloadmetrics.Table:
+		query := c.PackageLoadMetrics.Query().
+			Where(packageloadmetrics.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, packageloadmetricsImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -881,6 +956,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 				*noder = node
 			}
 		}
+	case buildgraphaspectcount.Table:
+		query := c.BuildGraphAspectCount.Query().
+			Where(buildgraphaspectcount.IDIn(ids...))
+		query, err := query.CollectFields(ctx, buildgraphaspectcountImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case buildgraphevaluationstat.Table:
 		query := c.BuildGraphEvaluationStat.Query().
 			Where(buildgraphevaluationstat.IDIn(ids...))
@@ -901,6 +992,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.BuildGraphMetrics.Query().
 			Where(buildgraphmetrics.IDIn(ids...))
 		query, err := query.CollectFields(ctx, buildgraphmetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case buildgraphruleclasscount.Table:
+		query := c.BuildGraphRuleClassCount.Query().
+			Where(buildgraphruleclasscount.IDIn(ids...))
+		query, err := query.CollectFields(ctx, buildgraphruleclasscountImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -981,6 +1088,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.Digest.Query().
 			Where(digest.IDIn(ids...))
 		query, err := query.CollectFields(ctx, digestImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case dynamicexecutionmetrics.Table:
+		query := c.DynamicExecutionMetrics.Query().
+			Where(dynamicexecutionmetrics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, dynamicexecutionmetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case dynamicexecutionracestatistic.Table:
+		query := c.DynamicExecutionRaceStatistic.Query().
+			Where(dynamicexecutionracestatistic.IDIn(ids...))
+		query, err := query.CollectFields(ctx, dynamicexecutionracestatisticImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1141,6 +1280,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.NetworkMetrics.Query().
 			Where(networkmetrics.IDIn(ids...))
 		query, err := query.CollectFields(ctx, networkmetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case packageloadmetrics.Table:
+		query := c.PackageLoadMetrics.Query().
+			Where(packageloadmetrics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, packageloadmetricsImplementors...)
 		if err != nil {
 			return nil, err
 		}

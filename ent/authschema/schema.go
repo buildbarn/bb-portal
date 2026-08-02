@@ -31,6 +31,12 @@ type (
 	BuildGraphEvaluationStat struct {
 		schema.BuildGraphEvaluationStat
 	}
+	// BuildGraphAspectCount reexport with auth policy added
+	BuildGraphAspectCount struct{ schema.BuildGraphAspectCount }
+	// BuildGraphRuleClassCount reexport with auth policy added
+	BuildGraphRuleClassCount struct {
+		schema.BuildGraphRuleClassCount
+	}
 	// Configuration reexport with auth policy added
 	Configuration struct{ schema.Configuration }
 	// CumulativeMetrics reexport with auth policy added
@@ -39,6 +45,12 @@ type (
 	ConnectionMetadata struct{ schema.ConnectionMetadata }
 	// Digest reexport with auth policy added
 	Digest struct{ schema.Digest }
+	// DynamicExecutionMetrics reexport with auth policy added
+	DynamicExecutionMetrics struct{ schema.DynamicExecutionMetrics }
+	// DynamicExecutionRaceStatistic reexport with auth policy added
+	DynamicExecutionRaceStatistic struct {
+		schema.DynamicExecutionRaceStatistic
+	}
 	// EventMetadata reexport with auth policy added
 	EventMetadata struct{ schema.EventMetadata }
 	// File reexport with auth policy added
@@ -65,6 +77,8 @@ type (
 	NetworkMetrics struct{ schema.NetworkMetrics }
 	// PackageMetrics reexport with auth policy added
 	PackageMetrics struct{ schema.PackageMetrics }
+	// PackageLoadMetrics reexport with auth policy added
+	PackageLoadMetrics struct{ schema.PackageLoadMetrics }
 	// RunnerCount reexport with auth policy added
 	RunnerCount struct{ schema.RunnerCount }
 	// SourceControl reexport with auth policy added

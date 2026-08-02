@@ -30,11 +30,17 @@ type BazelInvocation func(*sql.Selector)
 // Build is the predicate function for build builders.
 type Build func(*sql.Selector)
 
+// BuildGraphAspectCount is the predicate function for buildgraphaspectcount builders.
+type BuildGraphAspectCount func(*sql.Selector)
+
 // BuildGraphEvaluationStat is the predicate function for buildgraphevaluationstat builders.
 type BuildGraphEvaluationStat func(*sql.Selector)
 
 // BuildGraphMetrics is the predicate function for buildgraphmetrics builders.
 type BuildGraphMetrics func(*sql.Selector)
+
+// BuildGraphRuleClassCount is the predicate function for buildgraphruleclasscount builders.
+type BuildGraphRuleClassCount func(*sql.Selector)
 
 // BuildLogChunk is the predicate function for buildlogchunk builders.
 type BuildLogChunk func(*sql.Selector)
@@ -53,6 +59,12 @@ type CumulativeMetrics func(*sql.Selector)
 
 // Digest is the predicate function for digest builders.
 type Digest func(*sql.Selector)
+
+// DynamicExecutionMetrics is the predicate function for dynamicexecutionmetrics builders.
+type DynamicExecutionMetrics func(*sql.Selector)
+
+// DynamicExecutionRaceStatistic is the predicate function for dynamicexecutionracestatistic builders.
+type DynamicExecutionRaceStatistic func(*sql.Selector)
 
 // EventMetadata is the predicate function for eventmetadata builders.
 type EventMetadata func(*sql.Selector)
@@ -89,6 +101,9 @@ type MissDetail func(*sql.Selector)
 
 // NetworkMetrics is the predicate function for networkmetrics builders.
 type NetworkMetrics func(*sql.Selector)
+
+// PackageLoadMetrics is the predicate function for packageloadmetrics builders.
+type PackageLoadMetrics func(*sql.Selector)
 
 // PackageMetrics is the predicate function for packagemetrics builders.
 type PackageMetrics func(*sql.Selector)

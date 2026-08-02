@@ -30,10 +30,14 @@ type Tx struct {
 	BazelInvocation *BazelInvocationClient
 	// Build is the client for interacting with the Build builders.
 	Build *BuildClient
+	// BuildGraphAspectCount is the client for interacting with the BuildGraphAspectCount builders.
+	BuildGraphAspectCount *BuildGraphAspectCountClient
 	// BuildGraphEvaluationStat is the client for interacting with the BuildGraphEvaluationStat builders.
 	BuildGraphEvaluationStat *BuildGraphEvaluationStatClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
 	BuildGraphMetrics *BuildGraphMetricsClient
+	// BuildGraphRuleClassCount is the client for interacting with the BuildGraphRuleClassCount builders.
+	BuildGraphRuleClassCount *BuildGraphRuleClassCountClient
 	// BuildLogChunk is the client for interacting with the BuildLogChunk builders.
 	BuildLogChunk *BuildLogChunkClient
 	// BuildTag is the client for interacting with the BuildTag builders.
@@ -46,6 +50,10 @@ type Tx struct {
 	CumulativeMetrics *CumulativeMetricsClient
 	// Digest is the client for interacting with the Digest builders.
 	Digest *DigestClient
+	// DynamicExecutionMetrics is the client for interacting with the DynamicExecutionMetrics builders.
+	DynamicExecutionMetrics *DynamicExecutionMetricsClient
+	// DynamicExecutionRaceStatistic is the client for interacting with the DynamicExecutionRaceStatistic builders.
+	DynamicExecutionRaceStatistic *DynamicExecutionRaceStatisticClient
 	// EventMetadata is the client for interacting with the EventMetadata builders.
 	EventMetadata *EventMetadataClient
 	// File is the client for interacting with the File builders.
@@ -70,6 +78,8 @@ type Tx struct {
 	MissDetail *MissDetailClient
 	// NetworkMetrics is the client for interacting with the NetworkMetrics builders.
 	NetworkMetrics *NetworkMetricsClient
+	// PackageLoadMetrics is the client for interacting with the PackageLoadMetrics builders.
+	PackageLoadMetrics *PackageLoadMetricsClient
 	// PackageMetrics is the client for interacting with the PackageMetrics builders.
 	PackageMetrics *PackageMetricsClient
 	// RunnerCount is the client for interacting with the RunnerCount builders.
@@ -243,14 +253,18 @@ func (tx *Tx) init() {
 	tx.AuthenticatedUser = NewAuthenticatedUserClient(tx.config)
 	tx.BazelInvocation = NewBazelInvocationClient(tx.config)
 	tx.Build = NewBuildClient(tx.config)
+	tx.BuildGraphAspectCount = NewBuildGraphAspectCountClient(tx.config)
 	tx.BuildGraphEvaluationStat = NewBuildGraphEvaluationStatClient(tx.config)
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
+	tx.BuildGraphRuleClassCount = NewBuildGraphRuleClassCountClient(tx.config)
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
 	tx.BuildTag = NewBuildTagClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
 	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)
 	tx.Digest = NewDigestClient(tx.config)
+	tx.DynamicExecutionMetrics = NewDynamicExecutionMetricsClient(tx.config)
+	tx.DynamicExecutionRaceStatistic = NewDynamicExecutionRaceStatisticClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
 	tx.File = NewFileClient(tx.config)
 	tx.FilePath = NewFilePathClient(tx.config)
@@ -263,6 +277,7 @@ func (tx *Tx) init() {
 	tx.Metrics = NewMetricsClient(tx.config)
 	tx.MissDetail = NewMissDetailClient(tx.config)
 	tx.NetworkMetrics = NewNetworkMetricsClient(tx.config)
+	tx.PackageLoadMetrics = NewPackageLoadMetricsClient(tx.config)
 	tx.PackageMetrics = NewPackageMetricsClient(tx.config)
 	tx.RunnerCount = NewRunnerCountClient(tx.config)
 	tx.SourceControl = NewSourceControlClient(tx.config)

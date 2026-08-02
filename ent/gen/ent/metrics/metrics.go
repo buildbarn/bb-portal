@@ -36,6 +36,8 @@ const (
 	EdgeWorkerMetrics = "worker_metrics"
 	// EdgeWorkerPoolMetrics holds the string denoting the worker_pool_metrics edge name in mutations.
 	EdgeWorkerPoolMetrics = "worker_pool_metrics"
+	// EdgeDynamicExecutionMetrics holds the string denoting the dynamic_execution_metrics edge name in mutations.
+	EdgeDynamicExecutionMetrics = "dynamic_execution_metrics"
 	// Table holds the table name of the metrics in the database.
 	Table = "metrics"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -122,6 +124,13 @@ const (
 	WorkerPoolMetricsInverseTable = "worker_pool_metrics"
 	// WorkerPoolMetricsColumn is the table column denoting the worker_pool_metrics relation/edge.
 	WorkerPoolMetricsColumn = "metrics_worker_pool_metrics"
+	// DynamicExecutionMetricsTable is the table that holds the dynamic_execution_metrics relation/edge.
+	DynamicExecutionMetricsTable = "dynamic_execution_metrics"
+	// DynamicExecutionMetricsInverseTable is the table name for the DynamicExecutionMetrics entity.
+	// It exists in this package in order to avoid circular dependency with the "dynamicexecutionmetrics" package.
+	DynamicExecutionMetricsInverseTable = "dynamic_execution_metrics"
+	// DynamicExecutionMetricsColumn is the table column denoting the dynamic_execution_metrics relation/edge.
+	DynamicExecutionMetricsColumn = "metrics_dynamic_execution_metrics"
 )
 
 // Columns holds all SQL columns for metrics fields.
@@ -248,6 +257,13 @@ func ByWorkerPoolMetricsField(field string, opts ...sql.OrderTermOption) OrderOp
 		sqlgraph.OrderByNeighborTerms(s, newWorkerPoolMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByDynamicExecutionMetricsField orders the results by dynamic_execution_metrics field.
+func ByDynamicExecutionMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDynamicExecutionMetricsStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -330,5 +346,12 @@ func newWorkerPoolMetricsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(WorkerPoolMetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, false, WorkerPoolMetricsTable, WorkerPoolMetricsColumn),
+	)
+}
+func newDynamicExecutionMetricsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DynamicExecutionMetricsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
 	)
 }

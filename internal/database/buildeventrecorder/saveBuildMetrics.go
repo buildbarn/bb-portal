@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
+	besmetrics "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics"
 	bescore "github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-storage/pkg/util"
@@ -200,6 +201,66 @@ func (r *buildEventRecorder) saveBuildGraphMetrics(ctx context.Context, tx *ent.
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save build graph evaluation stats")
 	}
+	err = r.saveBuildGraphRuleClassCounts(ctx, tx, buildGraphMetrics.RuleClass, buildGraphMetricsDb.ID)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save build graph rule class counts")
+	}
+	err = r.saveBuildGraphAspectCounts(ctx, tx, buildGraphMetrics.Aspect, buildGraphMetricsDb.ID)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save build graph aspect counts")
+	}
+	return nil
+}
+
+func (r *buildEventRecorder) saveBuildGraphRuleClassCounts(ctx context.Context, tx *ent.Client, ruleClassCounts []*bes.BuildMetrics_BuildGraphMetrics_RuleClassCount, buildGraphMetricsDbID int64) error {
+	nonNilRuleClassCounts := make([]*bes.BuildMetrics_BuildGraphMetrics_RuleClassCount, 0, len(ruleClassCounts))
+	for _, ruleClassCount := range ruleClassCounts {
+		if ruleClassCount != nil {
+			nonNilRuleClassCounts = append(nonNilRuleClassCounts, ruleClassCount)
+		}
+	}
+	if len(nonNilRuleClassCounts) == 0 {
+		return nil
+	}
+
+	err := tx.BuildGraphRuleClassCount.MapCreateBulk(nonNilRuleClassCounts, func(create *ent.BuildGraphRuleClassCountCreate, i int) {
+		ruleClassCount := nonNilRuleClassCounts[i]
+		create.
+			SetKey(ruleClassCount.Key).
+			SetRuleClass(ruleClassCount.RuleClass).
+			SetCount(ruleClassCount.Count).
+			SetActionCount(ruleClassCount.ActionCount).
+			SetBuildGraphMetricsID(buildGraphMetricsDbID)
+	}).Exec(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save build graph rule class counts to database")
+	}
+	return nil
+}
+
+func (r *buildEventRecorder) saveBuildGraphAspectCounts(ctx context.Context, tx *ent.Client, aspectCounts []*bes.BuildMetrics_BuildGraphMetrics_AspectCount, buildGraphMetricsDbID int64) error {
+	nonNilAspectCounts := make([]*bes.BuildMetrics_BuildGraphMetrics_AspectCount, 0, len(aspectCounts))
+	for _, aspectCount := range aspectCounts {
+		if aspectCount != nil {
+			nonNilAspectCounts = append(nonNilAspectCounts, aspectCount)
+		}
+	}
+	if len(nonNilAspectCounts) == 0 {
+		return nil
+	}
+
+	err := tx.BuildGraphAspectCount.MapCreateBulk(nonNilAspectCounts, func(create *ent.BuildGraphAspectCountCreate, i int) {
+		aspectCount := nonNilAspectCounts[i]
+		create.
+			SetKey(aspectCount.Key).
+			SetAspectName(aspectCount.AspectName).
+			SetCount(aspectCount.Count).
+			SetActionCount(aspectCount.ActionCount).
+			SetBuildGraphMetricsID(buildGraphMetricsDbID)
+	}).Exec(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save build graph aspect counts to database")
+	}
 	return nil
 }
 
@@ -354,12 +415,88 @@ func (r *buildEventRecorder) savePackageMetrics(ctx context.Context, tx *ent.Cli
 		return nil
 	}
 
-	err := tx.PackageMetrics.Create().
+	packageMetricsDb, err := tx.PackageMetrics.Create().
 		SetPackagesLoaded(packageMetrics.PackagesLoaded).
 		SetMetricsID(metricsDbID).
-		Exec(ctx)
+		Save(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save package metrics to database")
+	}
+
+	err = r.savePackageLoadMetrics(ctx, tx, packageMetrics.PackageLoadMetrics, packageMetricsDb.ID)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save package load metrics")
+	}
+	return nil
+}
+
+func (r *buildEventRecorder) savePackageLoadMetrics(ctx context.Context, tx *ent.Client, packageLoadMetrics []*besmetrics.PackageLoadMetrics, packageMetricsDbID int64) error {
+	nonNilPackageLoadMetrics := make([]*besmetrics.PackageLoadMetrics, 0, len(packageLoadMetrics))
+	for _, packageLoadMetric := range packageLoadMetrics {
+		if packageLoadMetric != nil {
+			nonNilPackageLoadMetrics = append(nonNilPackageLoadMetrics, packageLoadMetric)
+		}
+	}
+	if len(nonNilPackageLoadMetrics) == 0 {
+		return nil
+	}
+
+	err := tx.PackageLoadMetrics.MapCreateBulk(nonNilPackageLoadMetrics, func(create *ent.PackageLoadMetricsCreate, i int) {
+		packageLoadMetric := nonNilPackageLoadMetrics[i]
+		loadDurationInNs := int64(0)
+		if packageLoadMetric.LoadDuration != nil {
+			loadDurationInNs = packageLoadMetric.LoadDuration.AsDuration().Nanoseconds()
+		}
+		create.
+			SetName(packageLoadMetric.GetName()).
+			SetLoadDurationInNs(loadDurationInNs).
+			SetNumTargets(packageLoadMetric.GetNumTargets()).
+			SetComputationSteps(packageLoadMetric.GetComputationSteps()).
+			SetNumTransitiveLoads(packageLoadMetric.GetNumTransitiveLoads()).
+			SetPackageOverhead(packageLoadMetric.GetPackageOverhead()).
+			SetGlobFilesystemOperationCost(packageLoadMetric.GetGlobFilesystemOperationCost()).
+			SetPackageMetricsID(packageMetricsDbID)
+	}).Exec(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save package load metrics to database")
+	}
+	return nil
+}
+
+func (r *buildEventRecorder) saveDynamicExecutionMetrics(ctx context.Context, tx *ent.Client, dynamicExecutionMetrics *bes.BuildMetrics_DynamicExecutionMetrics, metricsDbID int64) error {
+	if dynamicExecutionMetrics == nil {
+		return nil
+	}
+
+	dynamicExecutionMetricsDb, err := tx.DynamicExecutionMetrics.Create().
+		SetMetricsID(metricsDbID).
+		Save(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save dynamic execution metrics to database")
+	}
+
+	nonNilRaceStatistics := make([]*bes.BuildMetrics_DynamicExecutionMetrics_RaceStatistics, 0, len(dynamicExecutionMetrics.RaceStatistics))
+	for _, raceStatistic := range dynamicExecutionMetrics.RaceStatistics {
+		if raceStatistic != nil {
+			nonNilRaceStatistics = append(nonNilRaceStatistics, raceStatistic)
+		}
+	}
+	if len(nonNilRaceStatistics) == 0 {
+		return nil
+	}
+
+	err = tx.DynamicExecutionRaceStatistic.MapCreateBulk(nonNilRaceStatistics, func(create *ent.DynamicExecutionRaceStatisticCreate, i int) {
+		raceStatistic := nonNilRaceStatistics[i]
+		create.
+			SetMnemonic(raceStatistic.Mnemonic).
+			SetLocalRunner(raceStatistic.LocalRunner).
+			SetRemoteRunner(raceStatistic.RemoteRunner).
+			SetLocalWins(raceStatistic.LocalWins).
+			SetRemoteWins(raceStatistic.RemoteWins).
+			SetDynamicExecutionMetricsID(dynamicExecutionMetricsDb.ID)
+	}).Exec(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save dynamic execution race statistics to database")
 	}
 	return nil
 }
@@ -555,6 +692,10 @@ func (r *buildEventRecorder) saveBuildMetrics(ctx context.Context, tx *ent.Clien
 	err = r.saveBuildGraphMetrics(ctx, tx, metrics.BuildGraphMetrics, metricsDb.ID)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save build graph metrics")
+	}
+	err = r.saveDynamicExecutionMetrics(ctx, tx, metrics.DynamicExecutionMetrics, metricsDb.ID)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save dynamic execution metrics")
 	}
 	err = r.saveMemoryMetrics(ctx, tx, metrics.MemoryMetrics, metricsDb.ID)
 	if err != nil {

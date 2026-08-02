@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -74,6 +75,21 @@ func (_u *PackageMetricsUpdate) SetMetrics(v *Metrics) *PackageMetricsUpdate {
 	return _u.SetMetricsID(v.ID)
 }
 
+// AddPackageLoadMetricIDs adds the "package_load_metrics" edge to the PackageLoadMetrics entity by IDs.
+func (_u *PackageMetricsUpdate) AddPackageLoadMetricIDs(ids ...int64) *PackageMetricsUpdate {
+	_u.mutation.AddPackageLoadMetricIDs(ids...)
+	return _u
+}
+
+// AddPackageLoadMetrics adds the "package_load_metrics" edges to the PackageLoadMetrics entity.
+func (_u *PackageMetricsUpdate) AddPackageLoadMetrics(v ...*PackageLoadMetrics) *PackageMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPackageLoadMetricIDs(ids...)
+}
+
 // Mutation returns the PackageMetricsMutation object of the builder.
 func (_u *PackageMetricsUpdate) Mutation() *PackageMetricsMutation {
 	return _u.mutation
@@ -83,6 +99,27 @@ func (_u *PackageMetricsUpdate) Mutation() *PackageMetricsMutation {
 func (_u *PackageMetricsUpdate) ClearMetrics() *PackageMetricsUpdate {
 	_u.mutation.ClearMetrics()
 	return _u
+}
+
+// ClearPackageLoadMetrics clears all "package_load_metrics" edges to the PackageLoadMetrics entity.
+func (_u *PackageMetricsUpdate) ClearPackageLoadMetrics() *PackageMetricsUpdate {
+	_u.mutation.ClearPackageLoadMetrics()
+	return _u
+}
+
+// RemovePackageLoadMetricIDs removes the "package_load_metrics" edge to PackageLoadMetrics entities by IDs.
+func (_u *PackageMetricsUpdate) RemovePackageLoadMetricIDs(ids ...int64) *PackageMetricsUpdate {
+	_u.mutation.RemovePackageLoadMetricIDs(ids...)
+	return _u
+}
+
+// RemovePackageLoadMetrics removes "package_load_metrics" edges to PackageLoadMetrics entities.
+func (_u *PackageMetricsUpdate) RemovePackageLoadMetrics(v ...*PackageLoadMetrics) *PackageMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePackageLoadMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -159,6 +196,51 @@ func (_u *PackageMetricsUpdate) sqlSave(ctx context.Context) (_node int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.PackageLoadMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   packagemetrics.PackageLoadMetricsTable,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPackageLoadMetricsIDs(); len(nodes) > 0 && !_u.mutation.PackageLoadMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   packagemetrics.PackageLoadMetricsTable,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PackageLoadMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   packagemetrics.PackageLoadMetricsTable,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{packagemetrics.Label}
@@ -225,6 +307,21 @@ func (_u *PackageMetricsUpdateOne) SetMetrics(v *Metrics) *PackageMetricsUpdateO
 	return _u.SetMetricsID(v.ID)
 }
 
+// AddPackageLoadMetricIDs adds the "package_load_metrics" edge to the PackageLoadMetrics entity by IDs.
+func (_u *PackageMetricsUpdateOne) AddPackageLoadMetricIDs(ids ...int64) *PackageMetricsUpdateOne {
+	_u.mutation.AddPackageLoadMetricIDs(ids...)
+	return _u
+}
+
+// AddPackageLoadMetrics adds the "package_load_metrics" edges to the PackageLoadMetrics entity.
+func (_u *PackageMetricsUpdateOne) AddPackageLoadMetrics(v ...*PackageLoadMetrics) *PackageMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPackageLoadMetricIDs(ids...)
+}
+
 // Mutation returns the PackageMetricsMutation object of the builder.
 func (_u *PackageMetricsUpdateOne) Mutation() *PackageMetricsMutation {
 	return _u.mutation
@@ -234,6 +331,27 @@ func (_u *PackageMetricsUpdateOne) Mutation() *PackageMetricsMutation {
 func (_u *PackageMetricsUpdateOne) ClearMetrics() *PackageMetricsUpdateOne {
 	_u.mutation.ClearMetrics()
 	return _u
+}
+
+// ClearPackageLoadMetrics clears all "package_load_metrics" edges to the PackageLoadMetrics entity.
+func (_u *PackageMetricsUpdateOne) ClearPackageLoadMetrics() *PackageMetricsUpdateOne {
+	_u.mutation.ClearPackageLoadMetrics()
+	return _u
+}
+
+// RemovePackageLoadMetricIDs removes the "package_load_metrics" edge to PackageLoadMetrics entities by IDs.
+func (_u *PackageMetricsUpdateOne) RemovePackageLoadMetricIDs(ids ...int64) *PackageMetricsUpdateOne {
+	_u.mutation.RemovePackageLoadMetricIDs(ids...)
+	return _u
+}
+
+// RemovePackageLoadMetrics removes "package_load_metrics" edges to PackageLoadMetrics entities.
+func (_u *PackageMetricsUpdateOne) RemovePackageLoadMetrics(v ...*PackageLoadMetrics) *PackageMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePackageLoadMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the PackageMetricsUpdate builder.
@@ -333,6 +451,51 @@ func (_u *PackageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *PackageM
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PackageLoadMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   packagemetrics.PackageLoadMetricsTable,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPackageLoadMetricsIDs(); len(nodes) > 0 && !_u.mutation.PackageLoadMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   packagemetrics.PackageLoadMetricsTable,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PackageLoadMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   packagemetrics.PackageLoadMetricsTable,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

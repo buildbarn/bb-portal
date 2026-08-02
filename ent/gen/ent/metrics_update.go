@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
@@ -263,6 +264,25 @@ func (_u *MetricsUpdate) SetWorkerPoolMetrics(v *WorkerPoolMetrics) *MetricsUpda
 	return _u.SetWorkerPoolMetricsID(v.ID)
 }
 
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (_u *MetricsUpdate) SetDynamicExecutionMetricsID(id int64) *MetricsUpdate {
+	_u.mutation.SetDynamicExecutionMetricsID(id)
+	return _u
+}
+
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdate) SetNillableDynamicExecutionMetricsID(id *int64) *MetricsUpdate {
+	if id != nil {
+		_u = _u.SetDynamicExecutionMetricsID(*id)
+	}
+	return _u
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (_u *MetricsUpdate) SetDynamicExecutionMetrics(v *DynamicExecutionMetrics) *MetricsUpdate {
+	return _u.SetDynamicExecutionMetricsID(v.ID)
+}
+
 // Mutation returns the MetricsMutation object of the builder.
 func (_u *MetricsUpdate) Mutation() *MetricsMutation {
 	return _u.mutation
@@ -352,6 +372,12 @@ func (_u *MetricsUpdate) RemoveWorkerMetrics(v ...*WorkerMetrics) *MetricsUpdate
 // ClearWorkerPoolMetrics clears the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
 func (_u *MetricsUpdate) ClearWorkerPoolMetrics() *MetricsUpdate {
 	_u.mutation.ClearWorkerPoolMetrics()
+	return _u
+}
+
+// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (_u *MetricsUpdate) ClearDynamicExecutionMetrics() *MetricsUpdate {
+	_u.mutation.ClearDynamicExecutionMetrics()
 	return _u
 }
 
@@ -755,6 +781,35 @@ func (_u *MetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.DynamicExecutionMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.DynamicExecutionMetricsTable,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.DynamicExecutionMetricsTable,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{metrics.Label}
@@ -999,6 +1054,25 @@ func (_u *MetricsUpdateOne) SetWorkerPoolMetrics(v *WorkerPoolMetrics) *MetricsU
 	return _u.SetWorkerPoolMetricsID(v.ID)
 }
 
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (_u *MetricsUpdateOne) SetDynamicExecutionMetricsID(id int64) *MetricsUpdateOne {
+	_u.mutation.SetDynamicExecutionMetricsID(id)
+	return _u
+}
+
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdateOne) SetNillableDynamicExecutionMetricsID(id *int64) *MetricsUpdateOne {
+	if id != nil {
+		_u = _u.SetDynamicExecutionMetricsID(*id)
+	}
+	return _u
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (_u *MetricsUpdateOne) SetDynamicExecutionMetrics(v *DynamicExecutionMetrics) *MetricsUpdateOne {
+	return _u.SetDynamicExecutionMetricsID(v.ID)
+}
+
 // Mutation returns the MetricsMutation object of the builder.
 func (_u *MetricsUpdateOne) Mutation() *MetricsMutation {
 	return _u.mutation
@@ -1088,6 +1162,12 @@ func (_u *MetricsUpdateOne) RemoveWorkerMetrics(v ...*WorkerMetrics) *MetricsUpd
 // ClearWorkerPoolMetrics clears the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
 func (_u *MetricsUpdateOne) ClearWorkerPoolMetrics() *MetricsUpdateOne {
 	_u.mutation.ClearWorkerPoolMetrics()
+	return _u
+}
+
+// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (_u *MetricsUpdateOne) ClearDynamicExecutionMetrics() *MetricsUpdateOne {
+	_u.mutation.ClearDynamicExecutionMetrics()
 	return _u
 }
 
@@ -1514,6 +1594,35 @@ func (_u *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.DynamicExecutionMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.DynamicExecutionMetricsTable,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.DynamicExecutionMetricsTable,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
