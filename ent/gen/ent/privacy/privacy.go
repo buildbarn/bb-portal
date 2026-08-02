@@ -303,6 +303,30 @@ func (f BuildMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation)
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildMutation", m)
 }
 
+// The BuildGraphEvaluationStatQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type BuildGraphEvaluationStatQueryRuleFunc func(context.Context, *ent.BuildGraphEvaluationStatQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f BuildGraphEvaluationStatQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.BuildGraphEvaluationStatQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.BuildGraphEvaluationStatQuery", q)
+}
+
+// The BuildGraphEvaluationStatMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type BuildGraphEvaluationStatMutationRuleFunc func(context.Context, *ent.BuildGraphEvaluationStatMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f BuildGraphEvaluationStatMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.BuildGraphEvaluationStatMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildGraphEvaluationStatMutation", m)
+}
+
 // The BuildGraphMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type BuildGraphMetricsQueryRuleFunc func(context.Context, *ent.BuildGraphMetricsQuery) error
@@ -421,6 +445,30 @@ func (f ConnectionMetadataMutationRuleFunc) EvalMutation(ctx context.Context, m 
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ConnectionMetadataMutation", m)
+}
+
+// The CumulativeMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type CumulativeMetricsQueryRuleFunc func(context.Context, *ent.CumulativeMetricsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f CumulativeMetricsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CumulativeMetricsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CumulativeMetricsQuery", q)
+}
+
+// The CumulativeMetricsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type CumulativeMetricsMutationRuleFunc func(context.Context, *ent.CumulativeMetricsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f CumulativeMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CumulativeMetricsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CumulativeMetricsMutation", m)
 }
 
 // The DigestQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -735,6 +783,30 @@ func (f NetworkMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.NetworkMetricsMutation", m)
 }
 
+// The PackageMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type PackageMetricsQueryRuleFunc func(context.Context, *ent.PackageMetricsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f PackageMetricsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.PackageMetricsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PackageMetricsQuery", q)
+}
+
+// The PackageMetricsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type PackageMetricsMutationRuleFunc func(context.Context, *ent.PackageMetricsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f PackageMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.PackageMetricsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PackageMetricsMutation", m)
+}
+
 // The RunnerCountQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type RunnerCountQueryRuleFunc func(context.Context, *ent.RunnerCountQuery) error
@@ -999,6 +1071,126 @@ func (f TimingMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.M
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TimingMetricsMutation", m)
 }
 
+// The WorkerIDQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type WorkerIDQueryRuleFunc func(context.Context, *ent.WorkerIDQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f WorkerIDQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.WorkerIDQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.WorkerIDQuery", q)
+}
+
+// The WorkerIDMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type WorkerIDMutationRuleFunc func(context.Context, *ent.WorkerIDMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f WorkerIDMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.WorkerIDMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.WorkerIDMutation", m)
+}
+
+// The WorkerMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type WorkerMetricsQueryRuleFunc func(context.Context, *ent.WorkerMetricsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f WorkerMetricsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.WorkerMetricsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.WorkerMetricsQuery", q)
+}
+
+// The WorkerMetricsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type WorkerMetricsMutationRuleFunc func(context.Context, *ent.WorkerMetricsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f WorkerMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.WorkerMetricsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.WorkerMetricsMutation", m)
+}
+
+// The WorkerPoolMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type WorkerPoolMetricsQueryRuleFunc func(context.Context, *ent.WorkerPoolMetricsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f WorkerPoolMetricsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.WorkerPoolMetricsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.WorkerPoolMetricsQuery", q)
+}
+
+// The WorkerPoolMetricsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type WorkerPoolMetricsMutationRuleFunc func(context.Context, *ent.WorkerPoolMetricsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f WorkerPoolMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.WorkerPoolMetricsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.WorkerPoolMetricsMutation", m)
+}
+
+// The WorkerPoolStatsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type WorkerPoolStatsQueryRuleFunc func(context.Context, *ent.WorkerPoolStatsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f WorkerPoolStatsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.WorkerPoolStatsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.WorkerPoolStatsQuery", q)
+}
+
+// The WorkerPoolStatsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type WorkerPoolStatsMutationRuleFunc func(context.Context, *ent.WorkerPoolStatsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f WorkerPoolStatsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.WorkerPoolStatsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.WorkerPoolStatsMutation", m)
+}
+
+// The WorkerStatsQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type WorkerStatsQueryRuleFunc func(context.Context, *ent.WorkerStatsQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f WorkerStatsQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.WorkerStatsQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.WorkerStatsQuery", q)
+}
+
+// The WorkerStatsMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type WorkerStatsMutationRuleFunc func(context.Context, *ent.WorkerStatsMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f WorkerStatsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.WorkerStatsMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.WorkerStatsMutation", m)
+}
+
 type (
 	// Filter is the interface that wraps the Where function
 	// for filtering nodes in queries and mutations.
@@ -1050,6 +1242,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.BuildQuery:
 		return q.Filter(), nil
+	case *ent.BuildGraphEvaluationStatQuery:
+		return q.Filter(), nil
 	case *ent.BuildGraphMetricsQuery:
 		return q.Filter(), nil
 	case *ent.BuildLogChunkQuery:
@@ -1059,6 +1253,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 	case *ent.ConfigurationQuery:
 		return q.Filter(), nil
 	case *ent.ConnectionMetadataQuery:
+		return q.Filter(), nil
+	case *ent.CumulativeMetricsQuery:
 		return q.Filter(), nil
 	case *ent.DigestQuery:
 		return q.Filter(), nil
@@ -1086,6 +1282,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.NetworkMetricsQuery:
 		return q.Filter(), nil
+	case *ent.PackageMetricsQuery:
+		return q.Filter(), nil
 	case *ent.RunnerCountQuery:
 		return q.Filter(), nil
 	case *ent.SourceControlQuery:
@@ -1107,6 +1305,16 @@ func queryFilter(q ent.Query) (Filter, error) {
 	case *ent.TestTargetQuery:
 		return q.Filter(), nil
 	case *ent.TimingMetricsQuery:
+		return q.Filter(), nil
+	case *ent.WorkerIDQuery:
+		return q.Filter(), nil
+	case *ent.WorkerMetricsQuery:
+		return q.Filter(), nil
+	case *ent.WorkerPoolMetricsQuery:
+		return q.Filter(), nil
+	case *ent.WorkerPoolStatsQuery:
+		return q.Filter(), nil
+	case *ent.WorkerStatsQuery:
 		return q.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected query type %T for query filter", q)
@@ -1131,6 +1339,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.BuildMutation:
 		return m.Filter(), nil
+	case *ent.BuildGraphEvaluationStatMutation:
+		return m.Filter(), nil
 	case *ent.BuildGraphMetricsMutation:
 		return m.Filter(), nil
 	case *ent.BuildLogChunkMutation:
@@ -1140,6 +1350,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.ConfigurationMutation:
 		return m.Filter(), nil
 	case *ent.ConnectionMetadataMutation:
+		return m.Filter(), nil
+	case *ent.CumulativeMetricsMutation:
 		return m.Filter(), nil
 	case *ent.DigestMutation:
 		return m.Filter(), nil
@@ -1167,6 +1379,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.NetworkMetricsMutation:
 		return m.Filter(), nil
+	case *ent.PackageMetricsMutation:
+		return m.Filter(), nil
 	case *ent.RunnerCountMutation:
 		return m.Filter(), nil
 	case *ent.SourceControlMutation:
@@ -1188,6 +1402,16 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.TestTargetMutation:
 		return m.Filter(), nil
 	case *ent.TimingMetricsMutation:
+		return m.Filter(), nil
+	case *ent.WorkerIDMutation:
+		return m.Filter(), nil
+	case *ent.WorkerMetricsMutation:
+		return m.Filter(), nil
+	case *ent.WorkerPoolMetricsMutation:
+		return m.Filter(), nil
+	case *ent.WorkerPoolStatsMutation:
+		return m.Filter(), nil
+	case *ent.WorkerStatsMutation:
 		return m.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected mutation type %T for mutation filter", m)

@@ -36,6 +36,9 @@ func (TimingMetrics) Fields() []ent.Field {
 		// The elapsed wall time in milliseconds until the first action execution.
 		// started (excluding workspace status actions).
 		field.Int64("actions_execution_start_in_ms").Optional(),
+
+		// The elapsed wall time in milliseconds that the critical path took.
+		field.Int64("critical_path_time_in_ms").Optional(),
 	}
 }
 

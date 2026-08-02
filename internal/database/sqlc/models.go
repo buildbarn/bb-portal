@@ -34,6 +34,7 @@ type ActionCacheStatistic struct {
 	SizeInBytes                        sql.NullInt64
 	SaveTimeInMs                       sql.NullInt64
 	LoadTimeInMs                       sql.NullInt64
+	CacheCheckSemaphoreWaitTimeInMs    sql.NullInt64
 	Hits                               sql.NullInt32
 	Misses                             sql.NullInt32
 	ActionSummaryActionCacheStatistics sql.NullInt64
@@ -115,6 +116,14 @@ type Build struct {
 	InstanceNameBuilds int64
 }
 
+type BuildGraphEvaluationStat struct {
+	ID                               int64
+	Operation                        sql.NullString
+	SkyfunctionName                  sql.NullString
+	Count                            sql.NullInt64
+	BuildGraphMetricsEvaluationStats sql.NullInt64
+}
+
 type BuildGraphMetric struct {
 	ID                                        int64
 	ActionLookupValueCount                    sql.NullInt32
@@ -160,6 +169,13 @@ type ConnectionMetadatum struct {
 	ID                                int64
 	ConnectionLastOpenAt              time.Time
 	BazelInvocationConnectionMetadata int64
+}
+
+type CumulativeMetric struct {
+	ID                       int64
+	NumAnalyses              sql.NullInt32
+	NumBuilds                sql.NullInt32
+	MetricsCumulativeMetrics sql.NullInt64
 }
 
 type Digest struct {
@@ -250,6 +266,12 @@ type MissDetail struct {
 type NetworkMetric struct {
 	ID                    int64
 	MetricsNetworkMetrics sql.NullInt64
+}
+
+type PackageMetric struct {
+	ID                    int64
+	PackagesLoaded        sql.NullInt64
+	MetricsPackageMetrics sql.NullInt64
 }
 
 type PgAttribute struct {
@@ -394,5 +416,56 @@ type TimingMetric struct {
 	AnalysisPhaseTimeInMs     sql.NullInt64
 	ExecutionPhaseTimeInMs    sql.NullInt64
 	ActionsExecutionStartInMs sql.NullInt64
+	CriticalPathTimeInMs      sql.NullInt64
 	MetricsTimingMetrics      sql.NullInt64
+}
+
+type WorkerID struct {
+	ID                     int64
+	WorkerID               int64
+	WorkerMetricsWorkerIds sql.NullInt64
+}
+
+type WorkerMetric struct {
+	ID                   int64
+	ProcessID            sql.NullInt64
+	Mnemonic             sql.NullString
+	IsMultiplex          sql.NullBool
+	IsSandbox            sql.NullBool
+	IsMeasurable         sql.NullBool
+	WorkerKeyHash        sql.NullInt64
+	WorkerStatus         sql.NullString
+	Code                 sql.NullString
+	ActionsExecuted      sql.NullInt64
+	PriorActionsExecuted sql.NullInt64
+	MetricsWorkerMetrics sql.NullInt64
+}
+
+type WorkerPoolMetric struct {
+	ID                       int64
+	MetricsWorkerPoolMetrics sql.NullInt64
+}
+
+type WorkerPoolStat struct {
+	ID                                 int64
+	Hash                               sql.NullInt32
+	Mnemonic                           sql.NullString
+	CreatedCount                       sql.NullInt64
+	DestroyedCount                     sql.NullInt64
+	EvictedCount                       sql.NullInt64
+	UserExecExceptionDestroyedCount    sql.NullInt64
+	IoExceptionDestroyedCount          sql.NullInt64
+	InterruptedExceptionDestroyedCount sql.NullInt64
+	UnknownDestroyedCount              sql.NullInt64
+	AliveCount                         sql.NullInt64
+	WorkerPoolMetricsWorkerPoolStats   sql.NullInt64
+}
+
+type WorkerStat struct {
+	ID                       int64
+	CollectTimeInMs          sql.NullInt64
+	WorkerMemoryInKb         sql.NullInt32
+	PriorWorkerMemoryInKb    sql.NullInt32
+	LastActionStartTimeInMs  sql.NullInt64
+	WorkerMetricsWorkerStats sql.NullInt64
 }

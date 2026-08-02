@@ -15,10 +15,12 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
@@ -30,6 +32,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -40,6 +43,11 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerid"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workermetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolstats"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerstats"
 	"github.com/google/uuid"
 )
 
@@ -692,6 +700,18 @@ type ActionCacheStatisticsWhereInput struct {
 	LoadTimeInMsIsNil  bool    `json:"loadTimeInMsIsNil,omitempty"`
 	LoadTimeInMsNotNil bool    `json:"loadTimeInMsNotNil,omitempty"`
 
+	// "cache_check_semaphore_wait_time_in_ms" field predicates.
+	CacheCheckSemaphoreWaitTimeInMs       *uint64  `json:"cacheCheckSemaphoreWaitTimeInMs,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNEQ    *uint64  `json:"cacheCheckSemaphoreWaitTimeInMsNEQ,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsIn     []uint64 `json:"cacheCheckSemaphoreWaitTimeInMsIn,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNotIn  []uint64 `json:"cacheCheckSemaphoreWaitTimeInMsNotIn,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsGT     *uint64  `json:"cacheCheckSemaphoreWaitTimeInMsGT,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsGTE    *uint64  `json:"cacheCheckSemaphoreWaitTimeInMsGTE,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsLT     *uint64  `json:"cacheCheckSemaphoreWaitTimeInMsLT,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsLTE    *uint64  `json:"cacheCheckSemaphoreWaitTimeInMsLTE,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsIsNil  bool     `json:"cacheCheckSemaphoreWaitTimeInMsIsNil,omitempty"`
+	CacheCheckSemaphoreWaitTimeInMsNotNil bool     `json:"cacheCheckSemaphoreWaitTimeInMsNotNil,omitempty"`
+
 	// "hits" field predicates.
 	Hits       *int32  `json:"hits,omitempty"`
 	HitsNEQ    *int32  `json:"hitsNEQ,omitempty"`
@@ -909,6 +929,36 @@ func (i *ActionCacheStatisticsWhereInput) P() (predicate.ActionCacheStatistics, 
 	}
 	if i.LoadTimeInMsNotNil {
 		predicates = append(predicates, actioncachestatistics.LoadTimeInMsNotNil())
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMs != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsEQ(*i.CacheCheckSemaphoreWaitTimeInMs))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsNEQ != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNEQ(*i.CacheCheckSemaphoreWaitTimeInMsNEQ))
+	}
+	if len(i.CacheCheckSemaphoreWaitTimeInMsIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsIn(i.CacheCheckSemaphoreWaitTimeInMsIn...))
+	}
+	if len(i.CacheCheckSemaphoreWaitTimeInMsNotIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNotIn(i.CacheCheckSemaphoreWaitTimeInMsNotIn...))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsGT != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsGT(*i.CacheCheckSemaphoreWaitTimeInMsGT))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsGTE != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsGTE(*i.CacheCheckSemaphoreWaitTimeInMsGTE))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsLT != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsLT(*i.CacheCheckSemaphoreWaitTimeInMsLT))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsLTE != nil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsLTE(*i.CacheCheckSemaphoreWaitTimeInMsLTE))
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsIsNil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsIsNil())
+	}
+	if i.CacheCheckSemaphoreWaitTimeInMsNotNil {
+		predicates = append(predicates, actioncachestatistics.CacheCheckSemaphoreWaitTimeInMsNotNil())
 	}
 	if i.Hits != nil {
 		predicates = append(predicates, actioncachestatistics.HitsEQ(*i.Hits))
@@ -3719,6 +3769,318 @@ func (i *BuildWhereInput) P() (predicate.Build, error) {
 	}
 }
 
+// BuildGraphEvaluationStatWhereInput represents a where input for filtering BuildGraphEvaluationStat queries.
+type BuildGraphEvaluationStatWhereInput struct {
+	Predicates []predicate.BuildGraphEvaluationStat  `json:"-"`
+	Not        *BuildGraphEvaluationStatWhereInput   `json:"not,omitempty"`
+	Or         []*BuildGraphEvaluationStatWhereInput `json:"or,omitempty"`
+	And        []*BuildGraphEvaluationStatWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "operation" field predicates.
+	Operation             *string  `json:"operation,omitempty"`
+	OperationNEQ          *string  `json:"operationNEQ,omitempty"`
+	OperationIn           []string `json:"operationIn,omitempty"`
+	OperationNotIn        []string `json:"operationNotIn,omitempty"`
+	OperationGT           *string  `json:"operationGT,omitempty"`
+	OperationGTE          *string  `json:"operationGTE,omitempty"`
+	OperationLT           *string  `json:"operationLT,omitempty"`
+	OperationLTE          *string  `json:"operationLTE,omitempty"`
+	OperationContains     *string  `json:"operationContains,omitempty"`
+	OperationHasPrefix    *string  `json:"operationHasPrefix,omitempty"`
+	OperationHasSuffix    *string  `json:"operationHasSuffix,omitempty"`
+	OperationIsNil        bool     `json:"operationIsNil,omitempty"`
+	OperationNotNil       bool     `json:"operationNotNil,omitempty"`
+	OperationEqualFold    *string  `json:"operationEqualFold,omitempty"`
+	OperationContainsFold *string  `json:"operationContainsFold,omitempty"`
+
+	// "skyfunction_name" field predicates.
+	SkyfunctionName             *string  `json:"skyfunctionName,omitempty"`
+	SkyfunctionNameNEQ          *string  `json:"skyfunctionNameNEQ,omitempty"`
+	SkyfunctionNameIn           []string `json:"skyfunctionNameIn,omitempty"`
+	SkyfunctionNameNotIn        []string `json:"skyfunctionNameNotIn,omitempty"`
+	SkyfunctionNameGT           *string  `json:"skyfunctionNameGT,omitempty"`
+	SkyfunctionNameGTE          *string  `json:"skyfunctionNameGTE,omitempty"`
+	SkyfunctionNameLT           *string  `json:"skyfunctionNameLT,omitempty"`
+	SkyfunctionNameLTE          *string  `json:"skyfunctionNameLTE,omitempty"`
+	SkyfunctionNameContains     *string  `json:"skyfunctionNameContains,omitempty"`
+	SkyfunctionNameHasPrefix    *string  `json:"skyfunctionNameHasPrefix,omitempty"`
+	SkyfunctionNameHasSuffix    *string  `json:"skyfunctionNameHasSuffix,omitempty"`
+	SkyfunctionNameIsNil        bool     `json:"skyfunctionNameIsNil,omitempty"`
+	SkyfunctionNameNotNil       bool     `json:"skyfunctionNameNotNil,omitempty"`
+	SkyfunctionNameEqualFold    *string  `json:"skyfunctionNameEqualFold,omitempty"`
+	SkyfunctionNameContainsFold *string  `json:"skyfunctionNameContainsFold,omitempty"`
+
+	// "count" field predicates.
+	Count       *int64  `json:"count,omitempty"`
+	CountNEQ    *int64  `json:"countNEQ,omitempty"`
+	CountIn     []int64 `json:"countIn,omitempty"`
+	CountNotIn  []int64 `json:"countNotIn,omitempty"`
+	CountGT     *int64  `json:"countGT,omitempty"`
+	CountGTE    *int64  `json:"countGTE,omitempty"`
+	CountLT     *int64  `json:"countLT,omitempty"`
+	CountLTE    *int64  `json:"countLTE,omitempty"`
+	CountIsNil  bool    `json:"countIsNil,omitempty"`
+	CountNotNil bool    `json:"countNotNil,omitempty"`
+
+	// "build_graph_metrics" edge predicates.
+	HasBuildGraphMetrics     *bool                          `json:"hasBuildGraphMetrics,omitempty"`
+	HasBuildGraphMetricsWith []*BuildGraphMetricsWhereInput `json:"hasBuildGraphMetricsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *BuildGraphEvaluationStatWhereInput) AddPredicates(predicates ...predicate.BuildGraphEvaluationStat) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the BuildGraphEvaluationStatWhereInput filter on the BuildGraphEvaluationStatQuery builder.
+func (i *BuildGraphEvaluationStatWhereInput) Filter(q *BuildGraphEvaluationStatQuery) (*BuildGraphEvaluationStatQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyBuildGraphEvaluationStatWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyBuildGraphEvaluationStatWhereInput is returned in case the BuildGraphEvaluationStatWhereInput is empty.
+var ErrEmptyBuildGraphEvaluationStatWhereInput = errors.New("ent: empty predicate BuildGraphEvaluationStatWhereInput")
+
+// P returns a predicate for filtering buildgraphevaluationstats.
+// An error is returned if the input is empty or invalid.
+func (i *BuildGraphEvaluationStatWhereInput) P() (predicate.BuildGraphEvaluationStat, error) {
+	var predicates []predicate.BuildGraphEvaluationStat
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, buildgraphevaluationstat.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.BuildGraphEvaluationStat, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, buildgraphevaluationstat.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.BuildGraphEvaluationStat, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, buildgraphevaluationstat.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, buildgraphevaluationstat.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, buildgraphevaluationstat.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.IDLTE(*i.IDLTE))
+	}
+	if i.Operation != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationEQ(*i.Operation))
+	}
+	if i.OperationNEQ != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationNEQ(*i.OperationNEQ))
+	}
+	if len(i.OperationIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.OperationIn(i.OperationIn...))
+	}
+	if len(i.OperationNotIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.OperationNotIn(i.OperationNotIn...))
+	}
+	if i.OperationGT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationGT(*i.OperationGT))
+	}
+	if i.OperationGTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationGTE(*i.OperationGTE))
+	}
+	if i.OperationLT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationLT(*i.OperationLT))
+	}
+	if i.OperationLTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationLTE(*i.OperationLTE))
+	}
+	if i.OperationContains != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationContains(*i.OperationContains))
+	}
+	if i.OperationHasPrefix != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationHasPrefix(*i.OperationHasPrefix))
+	}
+	if i.OperationHasSuffix != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationHasSuffix(*i.OperationHasSuffix))
+	}
+	if i.OperationIsNil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationIsNil())
+	}
+	if i.OperationNotNil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationNotNil())
+	}
+	if i.OperationEqualFold != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationEqualFold(*i.OperationEqualFold))
+	}
+	if i.OperationContainsFold != nil {
+		predicates = append(predicates, buildgraphevaluationstat.OperationContainsFold(*i.OperationContainsFold))
+	}
+	if i.SkyfunctionName != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameEQ(*i.SkyfunctionName))
+	}
+	if i.SkyfunctionNameNEQ != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameNEQ(*i.SkyfunctionNameNEQ))
+	}
+	if len(i.SkyfunctionNameIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameIn(i.SkyfunctionNameIn...))
+	}
+	if len(i.SkyfunctionNameNotIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameNotIn(i.SkyfunctionNameNotIn...))
+	}
+	if i.SkyfunctionNameGT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameGT(*i.SkyfunctionNameGT))
+	}
+	if i.SkyfunctionNameGTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameGTE(*i.SkyfunctionNameGTE))
+	}
+	if i.SkyfunctionNameLT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameLT(*i.SkyfunctionNameLT))
+	}
+	if i.SkyfunctionNameLTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameLTE(*i.SkyfunctionNameLTE))
+	}
+	if i.SkyfunctionNameContains != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameContains(*i.SkyfunctionNameContains))
+	}
+	if i.SkyfunctionNameHasPrefix != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameHasPrefix(*i.SkyfunctionNameHasPrefix))
+	}
+	if i.SkyfunctionNameHasSuffix != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameHasSuffix(*i.SkyfunctionNameHasSuffix))
+	}
+	if i.SkyfunctionNameIsNil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameIsNil())
+	}
+	if i.SkyfunctionNameNotNil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameNotNil())
+	}
+	if i.SkyfunctionNameEqualFold != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameEqualFold(*i.SkyfunctionNameEqualFold))
+	}
+	if i.SkyfunctionNameContainsFold != nil {
+		predicates = append(predicates, buildgraphevaluationstat.SkyfunctionNameContainsFold(*i.SkyfunctionNameContainsFold))
+	}
+	if i.Count != nil {
+		predicates = append(predicates, buildgraphevaluationstat.CountEQ(*i.Count))
+	}
+	if i.CountNEQ != nil {
+		predicates = append(predicates, buildgraphevaluationstat.CountNEQ(*i.CountNEQ))
+	}
+	if len(i.CountIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.CountIn(i.CountIn...))
+	}
+	if len(i.CountNotIn) > 0 {
+		predicates = append(predicates, buildgraphevaluationstat.CountNotIn(i.CountNotIn...))
+	}
+	if i.CountGT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.CountGT(*i.CountGT))
+	}
+	if i.CountGTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.CountGTE(*i.CountGTE))
+	}
+	if i.CountLT != nil {
+		predicates = append(predicates, buildgraphevaluationstat.CountLT(*i.CountLT))
+	}
+	if i.CountLTE != nil {
+		predicates = append(predicates, buildgraphevaluationstat.CountLTE(*i.CountLTE))
+	}
+	if i.CountIsNil {
+		predicates = append(predicates, buildgraphevaluationstat.CountIsNil())
+	}
+	if i.CountNotNil {
+		predicates = append(predicates, buildgraphevaluationstat.CountNotNil())
+	}
+
+	if i.HasBuildGraphMetrics != nil {
+		p := buildgraphevaluationstat.HasBuildGraphMetrics()
+		if !*i.HasBuildGraphMetrics {
+			p = buildgraphevaluationstat.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBuildGraphMetricsWith) > 0 {
+		with := make([]predicate.BuildGraphMetrics, 0, len(i.HasBuildGraphMetricsWith))
+		for _, w := range i.HasBuildGraphMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBuildGraphMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, buildgraphevaluationstat.HasBuildGraphMetricsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyBuildGraphEvaluationStatWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return buildgraphevaluationstat.And(predicates...), nil
+	}
+}
+
 // BuildGraphMetricsWhereInput represents a where input for filtering BuildGraphMetrics queries.
 type BuildGraphMetricsWhereInput struct {
 	Predicates []predicate.BuildGraphMetrics  `json:"-"`
@@ -3847,6 +4209,10 @@ type BuildGraphMetricsWhereInput struct {
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
 	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
+
+	// "evaluation_stats" edge predicates.
+	HasEvaluationStats     *bool                                 `json:"hasEvaluationStats,omitempty"`
+	HasEvaluationStatsWith []*BuildGraphEvaluationStatWhereInput `json:"hasEvaluationStatsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -4232,6 +4598,24 @@ func (i *BuildGraphMetricsWhereInput) P() (predicate.BuildGraphMetrics, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, buildgraphmetrics.HasMetricsWith(with...))
+	}
+	if i.HasEvaluationStats != nil {
+		p := buildgraphmetrics.HasEvaluationStats()
+		if !*i.HasEvaluationStats {
+			p = buildgraphmetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasEvaluationStatsWith) > 0 {
+		with := make([]predicate.BuildGraphEvaluationStat, 0, len(i.HasEvaluationStatsWith))
+		for _, w := range i.HasEvaluationStatsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasEvaluationStatsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, buildgraphmetrics.HasEvaluationStatsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -5122,6 +5506,236 @@ func (i *ConnectionMetadataWhereInput) P() (predicate.ConnectionMetadata, error)
 		return predicates[0], nil
 	default:
 		return connectionmetadata.And(predicates...), nil
+	}
+}
+
+// CumulativeMetricsWhereInput represents a where input for filtering CumulativeMetrics queries.
+type CumulativeMetricsWhereInput struct {
+	Predicates []predicate.CumulativeMetrics  `json:"-"`
+	Not        *CumulativeMetricsWhereInput   `json:"not,omitempty"`
+	Or         []*CumulativeMetricsWhereInput `json:"or,omitempty"`
+	And        []*CumulativeMetricsWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "num_analyses" field predicates.
+	NumAnalyses       *int32  `json:"numAnalyses,omitempty"`
+	NumAnalysesNEQ    *int32  `json:"numAnalysesNEQ,omitempty"`
+	NumAnalysesIn     []int32 `json:"numAnalysesIn,omitempty"`
+	NumAnalysesNotIn  []int32 `json:"numAnalysesNotIn,omitempty"`
+	NumAnalysesGT     *int32  `json:"numAnalysesGT,omitempty"`
+	NumAnalysesGTE    *int32  `json:"numAnalysesGTE,omitempty"`
+	NumAnalysesLT     *int32  `json:"numAnalysesLT,omitempty"`
+	NumAnalysesLTE    *int32  `json:"numAnalysesLTE,omitempty"`
+	NumAnalysesIsNil  bool    `json:"numAnalysesIsNil,omitempty"`
+	NumAnalysesNotNil bool    `json:"numAnalysesNotNil,omitempty"`
+
+	// "num_builds" field predicates.
+	NumBuilds       *int32  `json:"numBuilds,omitempty"`
+	NumBuildsNEQ    *int32  `json:"numBuildsNEQ,omitempty"`
+	NumBuildsIn     []int32 `json:"numBuildsIn,omitempty"`
+	NumBuildsNotIn  []int32 `json:"numBuildsNotIn,omitempty"`
+	NumBuildsGT     *int32  `json:"numBuildsGT,omitempty"`
+	NumBuildsGTE    *int32  `json:"numBuildsGTE,omitempty"`
+	NumBuildsLT     *int32  `json:"numBuildsLT,omitempty"`
+	NumBuildsLTE    *int32  `json:"numBuildsLTE,omitempty"`
+	NumBuildsIsNil  bool    `json:"numBuildsIsNil,omitempty"`
+	NumBuildsNotNil bool    `json:"numBuildsNotNil,omitempty"`
+
+	// "metrics" edge predicates.
+	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
+	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *CumulativeMetricsWhereInput) AddPredicates(predicates ...predicate.CumulativeMetrics) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the CumulativeMetricsWhereInput filter on the CumulativeMetricsQuery builder.
+func (i *CumulativeMetricsWhereInput) Filter(q *CumulativeMetricsQuery) (*CumulativeMetricsQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyCumulativeMetricsWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyCumulativeMetricsWhereInput is returned in case the CumulativeMetricsWhereInput is empty.
+var ErrEmptyCumulativeMetricsWhereInput = errors.New("ent: empty predicate CumulativeMetricsWhereInput")
+
+// P returns a predicate for filtering cumulativemetricsslice.
+// An error is returned if the input is empty or invalid.
+func (i *CumulativeMetricsWhereInput) P() (predicate.CumulativeMetrics, error) {
+	var predicates []predicate.CumulativeMetrics
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, cumulativemetrics.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.CumulativeMetrics, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, cumulativemetrics.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.CumulativeMetrics, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, cumulativemetrics.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, cumulativemetrics.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, cumulativemetrics.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, cumulativemetrics.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, cumulativemetrics.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, cumulativemetrics.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, cumulativemetrics.IDLTE(*i.IDLTE))
+	}
+	if i.NumAnalyses != nil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesEQ(*i.NumAnalyses))
+	}
+	if i.NumAnalysesNEQ != nil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesNEQ(*i.NumAnalysesNEQ))
+	}
+	if len(i.NumAnalysesIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesIn(i.NumAnalysesIn...))
+	}
+	if len(i.NumAnalysesNotIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesNotIn(i.NumAnalysesNotIn...))
+	}
+	if i.NumAnalysesGT != nil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesGT(*i.NumAnalysesGT))
+	}
+	if i.NumAnalysesGTE != nil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesGTE(*i.NumAnalysesGTE))
+	}
+	if i.NumAnalysesLT != nil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesLT(*i.NumAnalysesLT))
+	}
+	if i.NumAnalysesLTE != nil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesLTE(*i.NumAnalysesLTE))
+	}
+	if i.NumAnalysesIsNil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesIsNil())
+	}
+	if i.NumAnalysesNotNil {
+		predicates = append(predicates, cumulativemetrics.NumAnalysesNotNil())
+	}
+	if i.NumBuilds != nil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsEQ(*i.NumBuilds))
+	}
+	if i.NumBuildsNEQ != nil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsNEQ(*i.NumBuildsNEQ))
+	}
+	if len(i.NumBuildsIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.NumBuildsIn(i.NumBuildsIn...))
+	}
+	if len(i.NumBuildsNotIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.NumBuildsNotIn(i.NumBuildsNotIn...))
+	}
+	if i.NumBuildsGT != nil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsGT(*i.NumBuildsGT))
+	}
+	if i.NumBuildsGTE != nil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsGTE(*i.NumBuildsGTE))
+	}
+	if i.NumBuildsLT != nil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsLT(*i.NumBuildsLT))
+	}
+	if i.NumBuildsLTE != nil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsLTE(*i.NumBuildsLTE))
+	}
+	if i.NumBuildsIsNil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsIsNil())
+	}
+	if i.NumBuildsNotNil {
+		predicates = append(predicates, cumulativemetrics.NumBuildsNotNil())
+	}
+
+	if i.HasMetrics != nil {
+		p := cumulativemetrics.HasMetrics()
+		if !*i.HasMetrics {
+			p = cumulativemetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasMetricsWith) > 0 {
+		with := make([]predicate.Metrics, 0, len(i.HasMetricsWith))
+		for _, w := range i.HasMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, cumulativemetrics.HasMetricsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyCumulativeMetricsWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return cumulativemetrics.And(predicates...), nil
 	}
 }
 
@@ -7303,6 +7917,22 @@ type MetricsWhereInput struct {
 	// "build_graph_metrics" edge predicates.
 	HasBuildGraphMetrics     *bool                          `json:"hasBuildGraphMetrics,omitempty"`
 	HasBuildGraphMetricsWith []*BuildGraphMetricsWhereInput `json:"hasBuildGraphMetricsWith,omitempty"`
+
+	// "package_metrics" edge predicates.
+	HasPackageMetrics     *bool                       `json:"hasPackageMetrics,omitempty"`
+	HasPackageMetricsWith []*PackageMetricsWhereInput `json:"hasPackageMetricsWith,omitempty"`
+
+	// "cumulative_metrics" edge predicates.
+	HasCumulativeMetrics     *bool                          `json:"hasCumulativeMetrics,omitempty"`
+	HasCumulativeMetricsWith []*CumulativeMetricsWhereInput `json:"hasCumulativeMetricsWith,omitempty"`
+
+	// "worker_metrics" edge predicates.
+	HasWorkerMetrics     *bool                      `json:"hasWorkerMetrics,omitempty"`
+	HasWorkerMetricsWith []*WorkerMetricsWhereInput `json:"hasWorkerMetricsWith,omitempty"`
+
+	// "worker_pool_metrics" edge predicates.
+	HasWorkerPoolMetrics     *bool                          `json:"hasWorkerPoolMetrics,omitempty"`
+	HasWorkerPoolMetricsWith []*WorkerPoolMetricsWhereInput `json:"hasWorkerPoolMetricsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -7544,6 +8174,78 @@ func (i *MetricsWhereInput) P() (predicate.Metrics, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, metrics.HasBuildGraphMetricsWith(with...))
+	}
+	if i.HasPackageMetrics != nil {
+		p := metrics.HasPackageMetrics()
+		if !*i.HasPackageMetrics {
+			p = metrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasPackageMetricsWith) > 0 {
+		with := make([]predicate.PackageMetrics, 0, len(i.HasPackageMetricsWith))
+		for _, w := range i.HasPackageMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasPackageMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, metrics.HasPackageMetricsWith(with...))
+	}
+	if i.HasCumulativeMetrics != nil {
+		p := metrics.HasCumulativeMetrics()
+		if !*i.HasCumulativeMetrics {
+			p = metrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasCumulativeMetricsWith) > 0 {
+		with := make([]predicate.CumulativeMetrics, 0, len(i.HasCumulativeMetricsWith))
+		for _, w := range i.HasCumulativeMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasCumulativeMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, metrics.HasCumulativeMetricsWith(with...))
+	}
+	if i.HasWorkerMetrics != nil {
+		p := metrics.HasWorkerMetrics()
+		if !*i.HasWorkerMetrics {
+			p = metrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerMetricsWith) > 0 {
+		with := make([]predicate.WorkerMetrics, 0, len(i.HasWorkerMetricsWith))
+		for _, w := range i.HasWorkerMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, metrics.HasWorkerMetricsWith(with...))
+	}
+	if i.HasWorkerPoolMetrics != nil {
+		p := metrics.HasWorkerPoolMetrics()
+		if !*i.HasWorkerPoolMetrics {
+			p = metrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerPoolMetricsWith) > 0 {
+		with := make([]predicate.WorkerPoolMetrics, 0, len(i.HasWorkerPoolMetricsWith))
+		for _, w := range i.HasWorkerPoolMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerPoolMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, metrics.HasWorkerPoolMetricsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -7962,6 +8664,194 @@ func (i *NetworkMetricsWhereInput) P() (predicate.NetworkMetrics, error) {
 		return predicates[0], nil
 	default:
 		return networkmetrics.And(predicates...), nil
+	}
+}
+
+// PackageMetricsWhereInput represents a where input for filtering PackageMetrics queries.
+type PackageMetricsWhereInput struct {
+	Predicates []predicate.PackageMetrics  `json:"-"`
+	Not        *PackageMetricsWhereInput   `json:"not,omitempty"`
+	Or         []*PackageMetricsWhereInput `json:"or,omitempty"`
+	And        []*PackageMetricsWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "packages_loaded" field predicates.
+	PackagesLoaded       *int64  `json:"packagesLoaded,omitempty"`
+	PackagesLoadedNEQ    *int64  `json:"packagesLoadedNEQ,omitempty"`
+	PackagesLoadedIn     []int64 `json:"packagesLoadedIn,omitempty"`
+	PackagesLoadedNotIn  []int64 `json:"packagesLoadedNotIn,omitempty"`
+	PackagesLoadedGT     *int64  `json:"packagesLoadedGT,omitempty"`
+	PackagesLoadedGTE    *int64  `json:"packagesLoadedGTE,omitempty"`
+	PackagesLoadedLT     *int64  `json:"packagesLoadedLT,omitempty"`
+	PackagesLoadedLTE    *int64  `json:"packagesLoadedLTE,omitempty"`
+	PackagesLoadedIsNil  bool    `json:"packagesLoadedIsNil,omitempty"`
+	PackagesLoadedNotNil bool    `json:"packagesLoadedNotNil,omitempty"`
+
+	// "metrics" edge predicates.
+	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
+	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *PackageMetricsWhereInput) AddPredicates(predicates ...predicate.PackageMetrics) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the PackageMetricsWhereInput filter on the PackageMetricsQuery builder.
+func (i *PackageMetricsWhereInput) Filter(q *PackageMetricsQuery) (*PackageMetricsQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyPackageMetricsWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyPackageMetricsWhereInput is returned in case the PackageMetricsWhereInput is empty.
+var ErrEmptyPackageMetricsWhereInput = errors.New("ent: empty predicate PackageMetricsWhereInput")
+
+// P returns a predicate for filtering packagemetricsslice.
+// An error is returned if the input is empty or invalid.
+func (i *PackageMetricsWhereInput) P() (predicate.PackageMetrics, error) {
+	var predicates []predicate.PackageMetrics
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, packagemetrics.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.PackageMetrics, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, packagemetrics.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.PackageMetrics, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, packagemetrics.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, packagemetrics.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, packagemetrics.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, packagemetrics.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, packagemetrics.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, packagemetrics.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, packagemetrics.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, packagemetrics.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, packagemetrics.IDLTE(*i.IDLTE))
+	}
+	if i.PackagesLoaded != nil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedEQ(*i.PackagesLoaded))
+	}
+	if i.PackagesLoadedNEQ != nil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedNEQ(*i.PackagesLoadedNEQ))
+	}
+	if len(i.PackagesLoadedIn) > 0 {
+		predicates = append(predicates, packagemetrics.PackagesLoadedIn(i.PackagesLoadedIn...))
+	}
+	if len(i.PackagesLoadedNotIn) > 0 {
+		predicates = append(predicates, packagemetrics.PackagesLoadedNotIn(i.PackagesLoadedNotIn...))
+	}
+	if i.PackagesLoadedGT != nil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedGT(*i.PackagesLoadedGT))
+	}
+	if i.PackagesLoadedGTE != nil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedGTE(*i.PackagesLoadedGTE))
+	}
+	if i.PackagesLoadedLT != nil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedLT(*i.PackagesLoadedLT))
+	}
+	if i.PackagesLoadedLTE != nil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedLTE(*i.PackagesLoadedLTE))
+	}
+	if i.PackagesLoadedIsNil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedIsNil())
+	}
+	if i.PackagesLoadedNotNil {
+		predicates = append(predicates, packagemetrics.PackagesLoadedNotNil())
+	}
+
+	if i.HasMetrics != nil {
+		p := packagemetrics.HasMetrics()
+		if !*i.HasMetrics {
+			p = packagemetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasMetricsWith) > 0 {
+		with := make([]predicate.Metrics, 0, len(i.HasMetricsWith))
+		for _, w := range i.HasMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, packagemetrics.HasMetricsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyPackageMetricsWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return packagemetrics.And(predicates...), nil
 	}
 }
 
@@ -11388,6 +12278,18 @@ type TimingMetricsWhereInput struct {
 	ActionsExecutionStartInMsIsNil  bool    `json:"actionsExecutionStartInMsIsNil,omitempty"`
 	ActionsExecutionStartInMsNotNil bool    `json:"actionsExecutionStartInMsNotNil,omitempty"`
 
+	// "critical_path_time_in_ms" field predicates.
+	CriticalPathTimeInMs       *int64  `json:"criticalPathTimeInMs,omitempty"`
+	CriticalPathTimeInMsNEQ    *int64  `json:"criticalPathTimeInMsNEQ,omitempty"`
+	CriticalPathTimeInMsIn     []int64 `json:"criticalPathTimeInMsIn,omitempty"`
+	CriticalPathTimeInMsNotIn  []int64 `json:"criticalPathTimeInMsNotIn,omitempty"`
+	CriticalPathTimeInMsGT     *int64  `json:"criticalPathTimeInMsGT,omitempty"`
+	CriticalPathTimeInMsGTE    *int64  `json:"criticalPathTimeInMsGTE,omitempty"`
+	CriticalPathTimeInMsLT     *int64  `json:"criticalPathTimeInMsLT,omitempty"`
+	CriticalPathTimeInMsLTE    *int64  `json:"criticalPathTimeInMsLTE,omitempty"`
+	CriticalPathTimeInMsIsNil  bool    `json:"criticalPathTimeInMsIsNil,omitempty"`
+	CriticalPathTimeInMsNotNil bool    `json:"criticalPathTimeInMsNotNil,omitempty"`
+
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
 	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
@@ -11638,6 +12540,36 @@ func (i *TimingMetricsWhereInput) P() (predicate.TimingMetrics, error) {
 	if i.ActionsExecutionStartInMsNotNil {
 		predicates = append(predicates, timingmetrics.ActionsExecutionStartInMsNotNil())
 	}
+	if i.CriticalPathTimeInMs != nil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsEQ(*i.CriticalPathTimeInMs))
+	}
+	if i.CriticalPathTimeInMsNEQ != nil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsNEQ(*i.CriticalPathTimeInMsNEQ))
+	}
+	if len(i.CriticalPathTimeInMsIn) > 0 {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsIn(i.CriticalPathTimeInMsIn...))
+	}
+	if len(i.CriticalPathTimeInMsNotIn) > 0 {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsNotIn(i.CriticalPathTimeInMsNotIn...))
+	}
+	if i.CriticalPathTimeInMsGT != nil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsGT(*i.CriticalPathTimeInMsGT))
+	}
+	if i.CriticalPathTimeInMsGTE != nil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsGTE(*i.CriticalPathTimeInMsGTE))
+	}
+	if i.CriticalPathTimeInMsLT != nil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsLT(*i.CriticalPathTimeInMsLT))
+	}
+	if i.CriticalPathTimeInMsLTE != nil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsLTE(*i.CriticalPathTimeInMsLTE))
+	}
+	if i.CriticalPathTimeInMsIsNil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsIsNil())
+	}
+	if i.CriticalPathTimeInMsNotNil {
+		predicates = append(predicates, timingmetrics.CriticalPathTimeInMsNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := timingmetrics.HasMetrics()
@@ -11664,5 +12596,1851 @@ func (i *TimingMetricsWhereInput) P() (predicate.TimingMetrics, error) {
 		return predicates[0], nil
 	default:
 		return timingmetrics.And(predicates...), nil
+	}
+}
+
+// WorkerIDWhereInput represents a where input for filtering WorkerID queries.
+type WorkerIDWhereInput struct {
+	Predicates []predicate.WorkerID  `json:"-"`
+	Not        *WorkerIDWhereInput   `json:"not,omitempty"`
+	Or         []*WorkerIDWhereInput `json:"or,omitempty"`
+	And        []*WorkerIDWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "worker_id" field predicates.
+	WorkerID      *uint32  `json:"workerID,omitempty"`
+	WorkerIDNEQ   *uint32  `json:"workerIDNEQ,omitempty"`
+	WorkerIDIn    []uint32 `json:"workerIDIn,omitempty"`
+	WorkerIDNotIn []uint32 `json:"workerIDNotIn,omitempty"`
+	WorkerIDGT    *uint32  `json:"workerIDGT,omitempty"`
+	WorkerIDGTE   *uint32  `json:"workerIDGTE,omitempty"`
+	WorkerIDLT    *uint32  `json:"workerIDLT,omitempty"`
+	WorkerIDLTE   *uint32  `json:"workerIDLTE,omitempty"`
+
+	// "worker_metrics" edge predicates.
+	HasWorkerMetrics     *bool                      `json:"hasWorkerMetrics,omitempty"`
+	HasWorkerMetricsWith []*WorkerMetricsWhereInput `json:"hasWorkerMetricsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *WorkerIDWhereInput) AddPredicates(predicates ...predicate.WorkerID) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the WorkerIDWhereInput filter on the WorkerIDQuery builder.
+func (i *WorkerIDWhereInput) Filter(q *WorkerIDQuery) (*WorkerIDQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyWorkerIDWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyWorkerIDWhereInput is returned in case the WorkerIDWhereInput is empty.
+var ErrEmptyWorkerIDWhereInput = errors.New("ent: empty predicate WorkerIDWhereInput")
+
+// P returns a predicate for filtering workerids.
+// An error is returned if the input is empty or invalid.
+func (i *WorkerIDWhereInput) P() (predicate.WorkerID, error) {
+	var predicates []predicate.WorkerID
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, workerid.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.WorkerID, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, workerid.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.WorkerID, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, workerid.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, workerid.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, workerid.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, workerid.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, workerid.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, workerid.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, workerid.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, workerid.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, workerid.IDLTE(*i.IDLTE))
+	}
+	if i.WorkerID != nil {
+		predicates = append(predicates, workerid.WorkerIDEQ(*i.WorkerID))
+	}
+	if i.WorkerIDNEQ != nil {
+		predicates = append(predicates, workerid.WorkerIDNEQ(*i.WorkerIDNEQ))
+	}
+	if len(i.WorkerIDIn) > 0 {
+		predicates = append(predicates, workerid.WorkerIDIn(i.WorkerIDIn...))
+	}
+	if len(i.WorkerIDNotIn) > 0 {
+		predicates = append(predicates, workerid.WorkerIDNotIn(i.WorkerIDNotIn...))
+	}
+	if i.WorkerIDGT != nil {
+		predicates = append(predicates, workerid.WorkerIDGT(*i.WorkerIDGT))
+	}
+	if i.WorkerIDGTE != nil {
+		predicates = append(predicates, workerid.WorkerIDGTE(*i.WorkerIDGTE))
+	}
+	if i.WorkerIDLT != nil {
+		predicates = append(predicates, workerid.WorkerIDLT(*i.WorkerIDLT))
+	}
+	if i.WorkerIDLTE != nil {
+		predicates = append(predicates, workerid.WorkerIDLTE(*i.WorkerIDLTE))
+	}
+
+	if i.HasWorkerMetrics != nil {
+		p := workerid.HasWorkerMetrics()
+		if !*i.HasWorkerMetrics {
+			p = workerid.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerMetricsWith) > 0 {
+		with := make([]predicate.WorkerMetrics, 0, len(i.HasWorkerMetricsWith))
+		for _, w := range i.HasWorkerMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workerid.HasWorkerMetricsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyWorkerIDWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return workerid.And(predicates...), nil
+	}
+}
+
+// WorkerMetricsWhereInput represents a where input for filtering WorkerMetrics queries.
+type WorkerMetricsWhereInput struct {
+	Predicates []predicate.WorkerMetrics  `json:"-"`
+	Not        *WorkerMetricsWhereInput   `json:"not,omitempty"`
+	Or         []*WorkerMetricsWhereInput `json:"or,omitempty"`
+	And        []*WorkerMetricsWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "process_id" field predicates.
+	ProcessID       *uint32  `json:"processID,omitempty"`
+	ProcessIDNEQ    *uint32  `json:"processIDNEQ,omitempty"`
+	ProcessIDIn     []uint32 `json:"processIDIn,omitempty"`
+	ProcessIDNotIn  []uint32 `json:"processIDNotIn,omitempty"`
+	ProcessIDGT     *uint32  `json:"processIDGT,omitempty"`
+	ProcessIDGTE    *uint32  `json:"processIDGTE,omitempty"`
+	ProcessIDLT     *uint32  `json:"processIDLT,omitempty"`
+	ProcessIDLTE    *uint32  `json:"processIDLTE,omitempty"`
+	ProcessIDIsNil  bool     `json:"processIDIsNil,omitempty"`
+	ProcessIDNotNil bool     `json:"processIDNotNil,omitempty"`
+
+	// "mnemonic" field predicates.
+	Mnemonic             *string  `json:"mnemonic,omitempty"`
+	MnemonicNEQ          *string  `json:"mnemonicNEQ,omitempty"`
+	MnemonicIn           []string `json:"mnemonicIn,omitempty"`
+	MnemonicNotIn        []string `json:"mnemonicNotIn,omitempty"`
+	MnemonicGT           *string  `json:"mnemonicGT,omitempty"`
+	MnemonicGTE          *string  `json:"mnemonicGTE,omitempty"`
+	MnemonicLT           *string  `json:"mnemonicLT,omitempty"`
+	MnemonicLTE          *string  `json:"mnemonicLTE,omitempty"`
+	MnemonicContains     *string  `json:"mnemonicContains,omitempty"`
+	MnemonicHasPrefix    *string  `json:"mnemonicHasPrefix,omitempty"`
+	MnemonicHasSuffix    *string  `json:"mnemonicHasSuffix,omitempty"`
+	MnemonicIsNil        bool     `json:"mnemonicIsNil,omitempty"`
+	MnemonicNotNil       bool     `json:"mnemonicNotNil,omitempty"`
+	MnemonicEqualFold    *string  `json:"mnemonicEqualFold,omitempty"`
+	MnemonicContainsFold *string  `json:"mnemonicContainsFold,omitempty"`
+
+	// "is_multiplex" field predicates.
+	IsMultiplex       *bool `json:"isMultiplex,omitempty"`
+	IsMultiplexNEQ    *bool `json:"isMultiplexNEQ,omitempty"`
+	IsMultiplexIsNil  bool  `json:"isMultiplexIsNil,omitempty"`
+	IsMultiplexNotNil bool  `json:"isMultiplexNotNil,omitempty"`
+
+	// "is_sandbox" field predicates.
+	IsSandbox       *bool `json:"isSandbox,omitempty"`
+	IsSandboxNEQ    *bool `json:"isSandboxNEQ,omitempty"`
+	IsSandboxIsNil  bool  `json:"isSandboxIsNil,omitempty"`
+	IsSandboxNotNil bool  `json:"isSandboxNotNil,omitempty"`
+
+	// "is_measurable" field predicates.
+	IsMeasurable       *bool `json:"isMeasurable,omitempty"`
+	IsMeasurableNEQ    *bool `json:"isMeasurableNEQ,omitempty"`
+	IsMeasurableIsNil  bool  `json:"isMeasurableIsNil,omitempty"`
+	IsMeasurableNotNil bool  `json:"isMeasurableNotNil,omitempty"`
+
+	// "worker_key_hash" field predicates.
+	WorkerKeyHash       *int64  `json:"workerKeyHash,omitempty"`
+	WorkerKeyHashNEQ    *int64  `json:"workerKeyHashNEQ,omitempty"`
+	WorkerKeyHashIn     []int64 `json:"workerKeyHashIn,omitempty"`
+	WorkerKeyHashNotIn  []int64 `json:"workerKeyHashNotIn,omitempty"`
+	WorkerKeyHashGT     *int64  `json:"workerKeyHashGT,omitempty"`
+	WorkerKeyHashGTE    *int64  `json:"workerKeyHashGTE,omitempty"`
+	WorkerKeyHashLT     *int64  `json:"workerKeyHashLT,omitempty"`
+	WorkerKeyHashLTE    *int64  `json:"workerKeyHashLTE,omitempty"`
+	WorkerKeyHashIsNil  bool    `json:"workerKeyHashIsNil,omitempty"`
+	WorkerKeyHashNotNil bool    `json:"workerKeyHashNotNil,omitempty"`
+
+	// "worker_status" field predicates.
+	WorkerStatus             *string  `json:"workerStatus,omitempty"`
+	WorkerStatusNEQ          *string  `json:"workerStatusNEQ,omitempty"`
+	WorkerStatusIn           []string `json:"workerStatusIn,omitempty"`
+	WorkerStatusNotIn        []string `json:"workerStatusNotIn,omitempty"`
+	WorkerStatusGT           *string  `json:"workerStatusGT,omitempty"`
+	WorkerStatusGTE          *string  `json:"workerStatusGTE,omitempty"`
+	WorkerStatusLT           *string  `json:"workerStatusLT,omitempty"`
+	WorkerStatusLTE          *string  `json:"workerStatusLTE,omitempty"`
+	WorkerStatusContains     *string  `json:"workerStatusContains,omitempty"`
+	WorkerStatusHasPrefix    *string  `json:"workerStatusHasPrefix,omitempty"`
+	WorkerStatusHasSuffix    *string  `json:"workerStatusHasSuffix,omitempty"`
+	WorkerStatusIsNil        bool     `json:"workerStatusIsNil,omitempty"`
+	WorkerStatusNotNil       bool     `json:"workerStatusNotNil,omitempty"`
+	WorkerStatusEqualFold    *string  `json:"workerStatusEqualFold,omitempty"`
+	WorkerStatusContainsFold *string  `json:"workerStatusContainsFold,omitempty"`
+
+	// "code" field predicates.
+	Code             *string  `json:"code,omitempty"`
+	CodeNEQ          *string  `json:"codeNEQ,omitempty"`
+	CodeIn           []string `json:"codeIn,omitempty"`
+	CodeNotIn        []string `json:"codeNotIn,omitempty"`
+	CodeGT           *string  `json:"codeGT,omitempty"`
+	CodeGTE          *string  `json:"codeGTE,omitempty"`
+	CodeLT           *string  `json:"codeLT,omitempty"`
+	CodeLTE          *string  `json:"codeLTE,omitempty"`
+	CodeContains     *string  `json:"codeContains,omitempty"`
+	CodeHasPrefix    *string  `json:"codeHasPrefix,omitempty"`
+	CodeHasSuffix    *string  `json:"codeHasSuffix,omitempty"`
+	CodeIsNil        bool     `json:"codeIsNil,omitempty"`
+	CodeNotNil       bool     `json:"codeNotNil,omitempty"`
+	CodeEqualFold    *string  `json:"codeEqualFold,omitempty"`
+	CodeContainsFold *string  `json:"codeContainsFold,omitempty"`
+
+	// "actions_executed" field predicates.
+	ActionsExecuted       *int64  `json:"actionsExecuted,omitempty"`
+	ActionsExecutedNEQ    *int64  `json:"actionsExecutedNEQ,omitempty"`
+	ActionsExecutedIn     []int64 `json:"actionsExecutedIn,omitempty"`
+	ActionsExecutedNotIn  []int64 `json:"actionsExecutedNotIn,omitempty"`
+	ActionsExecutedGT     *int64  `json:"actionsExecutedGT,omitempty"`
+	ActionsExecutedGTE    *int64  `json:"actionsExecutedGTE,omitempty"`
+	ActionsExecutedLT     *int64  `json:"actionsExecutedLT,omitempty"`
+	ActionsExecutedLTE    *int64  `json:"actionsExecutedLTE,omitempty"`
+	ActionsExecutedIsNil  bool    `json:"actionsExecutedIsNil,omitempty"`
+	ActionsExecutedNotNil bool    `json:"actionsExecutedNotNil,omitempty"`
+
+	// "prior_actions_executed" field predicates.
+	PriorActionsExecuted       *int64  `json:"priorActionsExecuted,omitempty"`
+	PriorActionsExecutedNEQ    *int64  `json:"priorActionsExecutedNEQ,omitempty"`
+	PriorActionsExecutedIn     []int64 `json:"priorActionsExecutedIn,omitempty"`
+	PriorActionsExecutedNotIn  []int64 `json:"priorActionsExecutedNotIn,omitempty"`
+	PriorActionsExecutedGT     *int64  `json:"priorActionsExecutedGT,omitempty"`
+	PriorActionsExecutedGTE    *int64  `json:"priorActionsExecutedGTE,omitempty"`
+	PriorActionsExecutedLT     *int64  `json:"priorActionsExecutedLT,omitempty"`
+	PriorActionsExecutedLTE    *int64  `json:"priorActionsExecutedLTE,omitempty"`
+	PriorActionsExecutedIsNil  bool    `json:"priorActionsExecutedIsNil,omitempty"`
+	PriorActionsExecutedNotNil bool    `json:"priorActionsExecutedNotNil,omitempty"`
+
+	// "metrics" edge predicates.
+	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
+	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
+
+	// "worker_ids" edge predicates.
+	HasWorkerIds     *bool                 `json:"hasWorkerIds,omitempty"`
+	HasWorkerIdsWith []*WorkerIDWhereInput `json:"hasWorkerIdsWith,omitempty"`
+
+	// "worker_stats" edge predicates.
+	HasWorkerStats     *bool                    `json:"hasWorkerStats,omitempty"`
+	HasWorkerStatsWith []*WorkerStatsWhereInput `json:"hasWorkerStatsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *WorkerMetricsWhereInput) AddPredicates(predicates ...predicate.WorkerMetrics) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the WorkerMetricsWhereInput filter on the WorkerMetricsQuery builder.
+func (i *WorkerMetricsWhereInput) Filter(q *WorkerMetricsQuery) (*WorkerMetricsQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyWorkerMetricsWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyWorkerMetricsWhereInput is returned in case the WorkerMetricsWhereInput is empty.
+var ErrEmptyWorkerMetricsWhereInput = errors.New("ent: empty predicate WorkerMetricsWhereInput")
+
+// P returns a predicate for filtering workermetricsslice.
+// An error is returned if the input is empty or invalid.
+func (i *WorkerMetricsWhereInput) P() (predicate.WorkerMetrics, error) {
+	var predicates []predicate.WorkerMetrics
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, workermetrics.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.WorkerMetrics, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, workermetrics.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.WorkerMetrics, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, workermetrics.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, workermetrics.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, workermetrics.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, workermetrics.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, workermetrics.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, workermetrics.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, workermetrics.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, workermetrics.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, workermetrics.IDLTE(*i.IDLTE))
+	}
+	if i.ProcessID != nil {
+		predicates = append(predicates, workermetrics.ProcessIDEQ(*i.ProcessID))
+	}
+	if i.ProcessIDNEQ != nil {
+		predicates = append(predicates, workermetrics.ProcessIDNEQ(*i.ProcessIDNEQ))
+	}
+	if len(i.ProcessIDIn) > 0 {
+		predicates = append(predicates, workermetrics.ProcessIDIn(i.ProcessIDIn...))
+	}
+	if len(i.ProcessIDNotIn) > 0 {
+		predicates = append(predicates, workermetrics.ProcessIDNotIn(i.ProcessIDNotIn...))
+	}
+	if i.ProcessIDGT != nil {
+		predicates = append(predicates, workermetrics.ProcessIDGT(*i.ProcessIDGT))
+	}
+	if i.ProcessIDGTE != nil {
+		predicates = append(predicates, workermetrics.ProcessIDGTE(*i.ProcessIDGTE))
+	}
+	if i.ProcessIDLT != nil {
+		predicates = append(predicates, workermetrics.ProcessIDLT(*i.ProcessIDLT))
+	}
+	if i.ProcessIDLTE != nil {
+		predicates = append(predicates, workermetrics.ProcessIDLTE(*i.ProcessIDLTE))
+	}
+	if i.ProcessIDIsNil {
+		predicates = append(predicates, workermetrics.ProcessIDIsNil())
+	}
+	if i.ProcessIDNotNil {
+		predicates = append(predicates, workermetrics.ProcessIDNotNil())
+	}
+	if i.Mnemonic != nil {
+		predicates = append(predicates, workermetrics.MnemonicEQ(*i.Mnemonic))
+	}
+	if i.MnemonicNEQ != nil {
+		predicates = append(predicates, workermetrics.MnemonicNEQ(*i.MnemonicNEQ))
+	}
+	if len(i.MnemonicIn) > 0 {
+		predicates = append(predicates, workermetrics.MnemonicIn(i.MnemonicIn...))
+	}
+	if len(i.MnemonicNotIn) > 0 {
+		predicates = append(predicates, workermetrics.MnemonicNotIn(i.MnemonicNotIn...))
+	}
+	if i.MnemonicGT != nil {
+		predicates = append(predicates, workermetrics.MnemonicGT(*i.MnemonicGT))
+	}
+	if i.MnemonicGTE != nil {
+		predicates = append(predicates, workermetrics.MnemonicGTE(*i.MnemonicGTE))
+	}
+	if i.MnemonicLT != nil {
+		predicates = append(predicates, workermetrics.MnemonicLT(*i.MnemonicLT))
+	}
+	if i.MnemonicLTE != nil {
+		predicates = append(predicates, workermetrics.MnemonicLTE(*i.MnemonicLTE))
+	}
+	if i.MnemonicContains != nil {
+		predicates = append(predicates, workermetrics.MnemonicContains(*i.MnemonicContains))
+	}
+	if i.MnemonicHasPrefix != nil {
+		predicates = append(predicates, workermetrics.MnemonicHasPrefix(*i.MnemonicHasPrefix))
+	}
+	if i.MnemonicHasSuffix != nil {
+		predicates = append(predicates, workermetrics.MnemonicHasSuffix(*i.MnemonicHasSuffix))
+	}
+	if i.MnemonicIsNil {
+		predicates = append(predicates, workermetrics.MnemonicIsNil())
+	}
+	if i.MnemonicNotNil {
+		predicates = append(predicates, workermetrics.MnemonicNotNil())
+	}
+	if i.MnemonicEqualFold != nil {
+		predicates = append(predicates, workermetrics.MnemonicEqualFold(*i.MnemonicEqualFold))
+	}
+	if i.MnemonicContainsFold != nil {
+		predicates = append(predicates, workermetrics.MnemonicContainsFold(*i.MnemonicContainsFold))
+	}
+	if i.IsMultiplex != nil {
+		predicates = append(predicates, workermetrics.IsMultiplexEQ(*i.IsMultiplex))
+	}
+	if i.IsMultiplexNEQ != nil {
+		predicates = append(predicates, workermetrics.IsMultiplexNEQ(*i.IsMultiplexNEQ))
+	}
+	if i.IsMultiplexIsNil {
+		predicates = append(predicates, workermetrics.IsMultiplexIsNil())
+	}
+	if i.IsMultiplexNotNil {
+		predicates = append(predicates, workermetrics.IsMultiplexNotNil())
+	}
+	if i.IsSandbox != nil {
+		predicates = append(predicates, workermetrics.IsSandboxEQ(*i.IsSandbox))
+	}
+	if i.IsSandboxNEQ != nil {
+		predicates = append(predicates, workermetrics.IsSandboxNEQ(*i.IsSandboxNEQ))
+	}
+	if i.IsSandboxIsNil {
+		predicates = append(predicates, workermetrics.IsSandboxIsNil())
+	}
+	if i.IsSandboxNotNil {
+		predicates = append(predicates, workermetrics.IsSandboxNotNil())
+	}
+	if i.IsMeasurable != nil {
+		predicates = append(predicates, workermetrics.IsMeasurableEQ(*i.IsMeasurable))
+	}
+	if i.IsMeasurableNEQ != nil {
+		predicates = append(predicates, workermetrics.IsMeasurableNEQ(*i.IsMeasurableNEQ))
+	}
+	if i.IsMeasurableIsNil {
+		predicates = append(predicates, workermetrics.IsMeasurableIsNil())
+	}
+	if i.IsMeasurableNotNil {
+		predicates = append(predicates, workermetrics.IsMeasurableNotNil())
+	}
+	if i.WorkerKeyHash != nil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashEQ(*i.WorkerKeyHash))
+	}
+	if i.WorkerKeyHashNEQ != nil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashNEQ(*i.WorkerKeyHashNEQ))
+	}
+	if len(i.WorkerKeyHashIn) > 0 {
+		predicates = append(predicates, workermetrics.WorkerKeyHashIn(i.WorkerKeyHashIn...))
+	}
+	if len(i.WorkerKeyHashNotIn) > 0 {
+		predicates = append(predicates, workermetrics.WorkerKeyHashNotIn(i.WorkerKeyHashNotIn...))
+	}
+	if i.WorkerKeyHashGT != nil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashGT(*i.WorkerKeyHashGT))
+	}
+	if i.WorkerKeyHashGTE != nil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashGTE(*i.WorkerKeyHashGTE))
+	}
+	if i.WorkerKeyHashLT != nil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashLT(*i.WorkerKeyHashLT))
+	}
+	if i.WorkerKeyHashLTE != nil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashLTE(*i.WorkerKeyHashLTE))
+	}
+	if i.WorkerKeyHashIsNil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashIsNil())
+	}
+	if i.WorkerKeyHashNotNil {
+		predicates = append(predicates, workermetrics.WorkerKeyHashNotNil())
+	}
+	if i.WorkerStatus != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusEQ(*i.WorkerStatus))
+	}
+	if i.WorkerStatusNEQ != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusNEQ(*i.WorkerStatusNEQ))
+	}
+	if len(i.WorkerStatusIn) > 0 {
+		predicates = append(predicates, workermetrics.WorkerStatusIn(i.WorkerStatusIn...))
+	}
+	if len(i.WorkerStatusNotIn) > 0 {
+		predicates = append(predicates, workermetrics.WorkerStatusNotIn(i.WorkerStatusNotIn...))
+	}
+	if i.WorkerStatusGT != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusGT(*i.WorkerStatusGT))
+	}
+	if i.WorkerStatusGTE != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusGTE(*i.WorkerStatusGTE))
+	}
+	if i.WorkerStatusLT != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusLT(*i.WorkerStatusLT))
+	}
+	if i.WorkerStatusLTE != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusLTE(*i.WorkerStatusLTE))
+	}
+	if i.WorkerStatusContains != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusContains(*i.WorkerStatusContains))
+	}
+	if i.WorkerStatusHasPrefix != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusHasPrefix(*i.WorkerStatusHasPrefix))
+	}
+	if i.WorkerStatusHasSuffix != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusHasSuffix(*i.WorkerStatusHasSuffix))
+	}
+	if i.WorkerStatusIsNil {
+		predicates = append(predicates, workermetrics.WorkerStatusIsNil())
+	}
+	if i.WorkerStatusNotNil {
+		predicates = append(predicates, workermetrics.WorkerStatusNotNil())
+	}
+	if i.WorkerStatusEqualFold != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusEqualFold(*i.WorkerStatusEqualFold))
+	}
+	if i.WorkerStatusContainsFold != nil {
+		predicates = append(predicates, workermetrics.WorkerStatusContainsFold(*i.WorkerStatusContainsFold))
+	}
+	if i.Code != nil {
+		predicates = append(predicates, workermetrics.CodeEQ(*i.Code))
+	}
+	if i.CodeNEQ != nil {
+		predicates = append(predicates, workermetrics.CodeNEQ(*i.CodeNEQ))
+	}
+	if len(i.CodeIn) > 0 {
+		predicates = append(predicates, workermetrics.CodeIn(i.CodeIn...))
+	}
+	if len(i.CodeNotIn) > 0 {
+		predicates = append(predicates, workermetrics.CodeNotIn(i.CodeNotIn...))
+	}
+	if i.CodeGT != nil {
+		predicates = append(predicates, workermetrics.CodeGT(*i.CodeGT))
+	}
+	if i.CodeGTE != nil {
+		predicates = append(predicates, workermetrics.CodeGTE(*i.CodeGTE))
+	}
+	if i.CodeLT != nil {
+		predicates = append(predicates, workermetrics.CodeLT(*i.CodeLT))
+	}
+	if i.CodeLTE != nil {
+		predicates = append(predicates, workermetrics.CodeLTE(*i.CodeLTE))
+	}
+	if i.CodeContains != nil {
+		predicates = append(predicates, workermetrics.CodeContains(*i.CodeContains))
+	}
+	if i.CodeHasPrefix != nil {
+		predicates = append(predicates, workermetrics.CodeHasPrefix(*i.CodeHasPrefix))
+	}
+	if i.CodeHasSuffix != nil {
+		predicates = append(predicates, workermetrics.CodeHasSuffix(*i.CodeHasSuffix))
+	}
+	if i.CodeIsNil {
+		predicates = append(predicates, workermetrics.CodeIsNil())
+	}
+	if i.CodeNotNil {
+		predicates = append(predicates, workermetrics.CodeNotNil())
+	}
+	if i.CodeEqualFold != nil {
+		predicates = append(predicates, workermetrics.CodeEqualFold(*i.CodeEqualFold))
+	}
+	if i.CodeContainsFold != nil {
+		predicates = append(predicates, workermetrics.CodeContainsFold(*i.CodeContainsFold))
+	}
+	if i.ActionsExecuted != nil {
+		predicates = append(predicates, workermetrics.ActionsExecutedEQ(*i.ActionsExecuted))
+	}
+	if i.ActionsExecutedNEQ != nil {
+		predicates = append(predicates, workermetrics.ActionsExecutedNEQ(*i.ActionsExecutedNEQ))
+	}
+	if len(i.ActionsExecutedIn) > 0 {
+		predicates = append(predicates, workermetrics.ActionsExecutedIn(i.ActionsExecutedIn...))
+	}
+	if len(i.ActionsExecutedNotIn) > 0 {
+		predicates = append(predicates, workermetrics.ActionsExecutedNotIn(i.ActionsExecutedNotIn...))
+	}
+	if i.ActionsExecutedGT != nil {
+		predicates = append(predicates, workermetrics.ActionsExecutedGT(*i.ActionsExecutedGT))
+	}
+	if i.ActionsExecutedGTE != nil {
+		predicates = append(predicates, workermetrics.ActionsExecutedGTE(*i.ActionsExecutedGTE))
+	}
+	if i.ActionsExecutedLT != nil {
+		predicates = append(predicates, workermetrics.ActionsExecutedLT(*i.ActionsExecutedLT))
+	}
+	if i.ActionsExecutedLTE != nil {
+		predicates = append(predicates, workermetrics.ActionsExecutedLTE(*i.ActionsExecutedLTE))
+	}
+	if i.ActionsExecutedIsNil {
+		predicates = append(predicates, workermetrics.ActionsExecutedIsNil())
+	}
+	if i.ActionsExecutedNotNil {
+		predicates = append(predicates, workermetrics.ActionsExecutedNotNil())
+	}
+	if i.PriorActionsExecuted != nil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedEQ(*i.PriorActionsExecuted))
+	}
+	if i.PriorActionsExecutedNEQ != nil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedNEQ(*i.PriorActionsExecutedNEQ))
+	}
+	if len(i.PriorActionsExecutedIn) > 0 {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedIn(i.PriorActionsExecutedIn...))
+	}
+	if len(i.PriorActionsExecutedNotIn) > 0 {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedNotIn(i.PriorActionsExecutedNotIn...))
+	}
+	if i.PriorActionsExecutedGT != nil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedGT(*i.PriorActionsExecutedGT))
+	}
+	if i.PriorActionsExecutedGTE != nil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedGTE(*i.PriorActionsExecutedGTE))
+	}
+	if i.PriorActionsExecutedLT != nil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedLT(*i.PriorActionsExecutedLT))
+	}
+	if i.PriorActionsExecutedLTE != nil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedLTE(*i.PriorActionsExecutedLTE))
+	}
+	if i.PriorActionsExecutedIsNil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedIsNil())
+	}
+	if i.PriorActionsExecutedNotNil {
+		predicates = append(predicates, workermetrics.PriorActionsExecutedNotNil())
+	}
+
+	if i.HasMetrics != nil {
+		p := workermetrics.HasMetrics()
+		if !*i.HasMetrics {
+			p = workermetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasMetricsWith) > 0 {
+		with := make([]predicate.Metrics, 0, len(i.HasMetricsWith))
+		for _, w := range i.HasMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workermetrics.HasMetricsWith(with...))
+	}
+	if i.HasWorkerIds != nil {
+		p := workermetrics.HasWorkerIds()
+		if !*i.HasWorkerIds {
+			p = workermetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerIdsWith) > 0 {
+		with := make([]predicate.WorkerID, 0, len(i.HasWorkerIdsWith))
+		for _, w := range i.HasWorkerIdsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerIdsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workermetrics.HasWorkerIdsWith(with...))
+	}
+	if i.HasWorkerStats != nil {
+		p := workermetrics.HasWorkerStats()
+		if !*i.HasWorkerStats {
+			p = workermetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerStatsWith) > 0 {
+		with := make([]predicate.WorkerStats, 0, len(i.HasWorkerStatsWith))
+		for _, w := range i.HasWorkerStatsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerStatsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workermetrics.HasWorkerStatsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyWorkerMetricsWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return workermetrics.And(predicates...), nil
+	}
+}
+
+// WorkerPoolMetricsWhereInput represents a where input for filtering WorkerPoolMetrics queries.
+type WorkerPoolMetricsWhereInput struct {
+	Predicates []predicate.WorkerPoolMetrics  `json:"-"`
+	Not        *WorkerPoolMetricsWhereInput   `json:"not,omitempty"`
+	Or         []*WorkerPoolMetricsWhereInput `json:"or,omitempty"`
+	And        []*WorkerPoolMetricsWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "metrics" edge predicates.
+	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
+	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
+
+	// "worker_pool_stats" edge predicates.
+	HasWorkerPoolStats     *bool                        `json:"hasWorkerPoolStats,omitempty"`
+	HasWorkerPoolStatsWith []*WorkerPoolStatsWhereInput `json:"hasWorkerPoolStatsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *WorkerPoolMetricsWhereInput) AddPredicates(predicates ...predicate.WorkerPoolMetrics) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the WorkerPoolMetricsWhereInput filter on the WorkerPoolMetricsQuery builder.
+func (i *WorkerPoolMetricsWhereInput) Filter(q *WorkerPoolMetricsQuery) (*WorkerPoolMetricsQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyWorkerPoolMetricsWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyWorkerPoolMetricsWhereInput is returned in case the WorkerPoolMetricsWhereInput is empty.
+var ErrEmptyWorkerPoolMetricsWhereInput = errors.New("ent: empty predicate WorkerPoolMetricsWhereInput")
+
+// P returns a predicate for filtering workerpoolmetricsslice.
+// An error is returned if the input is empty or invalid.
+func (i *WorkerPoolMetricsWhereInput) P() (predicate.WorkerPoolMetrics, error) {
+	var predicates []predicate.WorkerPoolMetrics
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, workerpoolmetrics.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.WorkerPoolMetrics, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, workerpoolmetrics.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.WorkerPoolMetrics, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, workerpoolmetrics.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, workerpoolmetrics.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, workerpoolmetrics.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, workerpoolmetrics.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, workerpoolmetrics.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, workerpoolmetrics.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, workerpoolmetrics.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, workerpoolmetrics.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, workerpoolmetrics.IDLTE(*i.IDLTE))
+	}
+
+	if i.HasMetrics != nil {
+		p := workerpoolmetrics.HasMetrics()
+		if !*i.HasMetrics {
+			p = workerpoolmetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasMetricsWith) > 0 {
+		with := make([]predicate.Metrics, 0, len(i.HasMetricsWith))
+		for _, w := range i.HasMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workerpoolmetrics.HasMetricsWith(with...))
+	}
+	if i.HasWorkerPoolStats != nil {
+		p := workerpoolmetrics.HasWorkerPoolStats()
+		if !*i.HasWorkerPoolStats {
+			p = workerpoolmetrics.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerPoolStatsWith) > 0 {
+		with := make([]predicate.WorkerPoolStats, 0, len(i.HasWorkerPoolStatsWith))
+		for _, w := range i.HasWorkerPoolStatsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerPoolStatsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workerpoolmetrics.HasWorkerPoolStatsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyWorkerPoolMetricsWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return workerpoolmetrics.And(predicates...), nil
+	}
+}
+
+// WorkerPoolStatsWhereInput represents a where input for filtering WorkerPoolStats queries.
+type WorkerPoolStatsWhereInput struct {
+	Predicates []predicate.WorkerPoolStats  `json:"-"`
+	Not        *WorkerPoolStatsWhereInput   `json:"not,omitempty"`
+	Or         []*WorkerPoolStatsWhereInput `json:"or,omitempty"`
+	And        []*WorkerPoolStatsWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "hash" field predicates.
+	Hash       *int32  `json:"hash,omitempty"`
+	HashNEQ    *int32  `json:"hashNEQ,omitempty"`
+	HashIn     []int32 `json:"hashIn,omitempty"`
+	HashNotIn  []int32 `json:"hashNotIn,omitempty"`
+	HashGT     *int32  `json:"hashGT,omitempty"`
+	HashGTE    *int32  `json:"hashGTE,omitempty"`
+	HashLT     *int32  `json:"hashLT,omitempty"`
+	HashLTE    *int32  `json:"hashLTE,omitempty"`
+	HashIsNil  bool    `json:"hashIsNil,omitempty"`
+	HashNotNil bool    `json:"hashNotNil,omitempty"`
+
+	// "mnemonic" field predicates.
+	Mnemonic             *string  `json:"mnemonic,omitempty"`
+	MnemonicNEQ          *string  `json:"mnemonicNEQ,omitempty"`
+	MnemonicIn           []string `json:"mnemonicIn,omitempty"`
+	MnemonicNotIn        []string `json:"mnemonicNotIn,omitempty"`
+	MnemonicGT           *string  `json:"mnemonicGT,omitempty"`
+	MnemonicGTE          *string  `json:"mnemonicGTE,omitempty"`
+	MnemonicLT           *string  `json:"mnemonicLT,omitempty"`
+	MnemonicLTE          *string  `json:"mnemonicLTE,omitempty"`
+	MnemonicContains     *string  `json:"mnemonicContains,omitempty"`
+	MnemonicHasPrefix    *string  `json:"mnemonicHasPrefix,omitempty"`
+	MnemonicHasSuffix    *string  `json:"mnemonicHasSuffix,omitempty"`
+	MnemonicIsNil        bool     `json:"mnemonicIsNil,omitempty"`
+	MnemonicNotNil       bool     `json:"mnemonicNotNil,omitempty"`
+	MnemonicEqualFold    *string  `json:"mnemonicEqualFold,omitempty"`
+	MnemonicContainsFold *string  `json:"mnemonicContainsFold,omitempty"`
+
+	// "created_count" field predicates.
+	CreatedCount       *int64  `json:"createdCount,omitempty"`
+	CreatedCountNEQ    *int64  `json:"createdCountNEQ,omitempty"`
+	CreatedCountIn     []int64 `json:"createdCountIn,omitempty"`
+	CreatedCountNotIn  []int64 `json:"createdCountNotIn,omitempty"`
+	CreatedCountGT     *int64  `json:"createdCountGT,omitempty"`
+	CreatedCountGTE    *int64  `json:"createdCountGTE,omitempty"`
+	CreatedCountLT     *int64  `json:"createdCountLT,omitempty"`
+	CreatedCountLTE    *int64  `json:"createdCountLTE,omitempty"`
+	CreatedCountIsNil  bool    `json:"createdCountIsNil,omitempty"`
+	CreatedCountNotNil bool    `json:"createdCountNotNil,omitempty"`
+
+	// "destroyed_count" field predicates.
+	DestroyedCount       *int64  `json:"destroyedCount,omitempty"`
+	DestroyedCountNEQ    *int64  `json:"destroyedCountNEQ,omitempty"`
+	DestroyedCountIn     []int64 `json:"destroyedCountIn,omitempty"`
+	DestroyedCountNotIn  []int64 `json:"destroyedCountNotIn,omitempty"`
+	DestroyedCountGT     *int64  `json:"destroyedCountGT,omitempty"`
+	DestroyedCountGTE    *int64  `json:"destroyedCountGTE,omitempty"`
+	DestroyedCountLT     *int64  `json:"destroyedCountLT,omitempty"`
+	DestroyedCountLTE    *int64  `json:"destroyedCountLTE,omitempty"`
+	DestroyedCountIsNil  bool    `json:"destroyedCountIsNil,omitempty"`
+	DestroyedCountNotNil bool    `json:"destroyedCountNotNil,omitempty"`
+
+	// "evicted_count" field predicates.
+	EvictedCount       *int64  `json:"evictedCount,omitempty"`
+	EvictedCountNEQ    *int64  `json:"evictedCountNEQ,omitempty"`
+	EvictedCountIn     []int64 `json:"evictedCountIn,omitempty"`
+	EvictedCountNotIn  []int64 `json:"evictedCountNotIn,omitempty"`
+	EvictedCountGT     *int64  `json:"evictedCountGT,omitempty"`
+	EvictedCountGTE    *int64  `json:"evictedCountGTE,omitempty"`
+	EvictedCountLT     *int64  `json:"evictedCountLT,omitempty"`
+	EvictedCountLTE    *int64  `json:"evictedCountLTE,omitempty"`
+	EvictedCountIsNil  bool    `json:"evictedCountIsNil,omitempty"`
+	EvictedCountNotNil bool    `json:"evictedCountNotNil,omitempty"`
+
+	// "user_exec_exception_destroyed_count" field predicates.
+	UserExecExceptionDestroyedCount       *int64  `json:"userExecExceptionDestroyedCount,omitempty"`
+	UserExecExceptionDestroyedCountNEQ    *int64  `json:"userExecExceptionDestroyedCountNEQ,omitempty"`
+	UserExecExceptionDestroyedCountIn     []int64 `json:"userExecExceptionDestroyedCountIn,omitempty"`
+	UserExecExceptionDestroyedCountNotIn  []int64 `json:"userExecExceptionDestroyedCountNotIn,omitempty"`
+	UserExecExceptionDestroyedCountGT     *int64  `json:"userExecExceptionDestroyedCountGT,omitempty"`
+	UserExecExceptionDestroyedCountGTE    *int64  `json:"userExecExceptionDestroyedCountGTE,omitempty"`
+	UserExecExceptionDestroyedCountLT     *int64  `json:"userExecExceptionDestroyedCountLT,omitempty"`
+	UserExecExceptionDestroyedCountLTE    *int64  `json:"userExecExceptionDestroyedCountLTE,omitempty"`
+	UserExecExceptionDestroyedCountIsNil  bool    `json:"userExecExceptionDestroyedCountIsNil,omitempty"`
+	UserExecExceptionDestroyedCountNotNil bool    `json:"userExecExceptionDestroyedCountNotNil,omitempty"`
+
+	// "io_exception_destroyed_count" field predicates.
+	IoExceptionDestroyedCount       *int64  `json:"ioExceptionDestroyedCount,omitempty"`
+	IoExceptionDestroyedCountNEQ    *int64  `json:"ioExceptionDestroyedCountNEQ,omitempty"`
+	IoExceptionDestroyedCountIn     []int64 `json:"ioExceptionDestroyedCountIn,omitempty"`
+	IoExceptionDestroyedCountNotIn  []int64 `json:"ioExceptionDestroyedCountNotIn,omitempty"`
+	IoExceptionDestroyedCountGT     *int64  `json:"ioExceptionDestroyedCountGT,omitempty"`
+	IoExceptionDestroyedCountGTE    *int64  `json:"ioExceptionDestroyedCountGTE,omitempty"`
+	IoExceptionDestroyedCountLT     *int64  `json:"ioExceptionDestroyedCountLT,omitempty"`
+	IoExceptionDestroyedCountLTE    *int64  `json:"ioExceptionDestroyedCountLTE,omitempty"`
+	IoExceptionDestroyedCountIsNil  bool    `json:"ioExceptionDestroyedCountIsNil,omitempty"`
+	IoExceptionDestroyedCountNotNil bool    `json:"ioExceptionDestroyedCountNotNil,omitempty"`
+
+	// "interrupted_exception_destroyed_count" field predicates.
+	InterruptedExceptionDestroyedCount       *int64  `json:"interruptedExceptionDestroyedCount,omitempty"`
+	InterruptedExceptionDestroyedCountNEQ    *int64  `json:"interruptedExceptionDestroyedCountNEQ,omitempty"`
+	InterruptedExceptionDestroyedCountIn     []int64 `json:"interruptedExceptionDestroyedCountIn,omitempty"`
+	InterruptedExceptionDestroyedCountNotIn  []int64 `json:"interruptedExceptionDestroyedCountNotIn,omitempty"`
+	InterruptedExceptionDestroyedCountGT     *int64  `json:"interruptedExceptionDestroyedCountGT,omitempty"`
+	InterruptedExceptionDestroyedCountGTE    *int64  `json:"interruptedExceptionDestroyedCountGTE,omitempty"`
+	InterruptedExceptionDestroyedCountLT     *int64  `json:"interruptedExceptionDestroyedCountLT,omitempty"`
+	InterruptedExceptionDestroyedCountLTE    *int64  `json:"interruptedExceptionDestroyedCountLTE,omitempty"`
+	InterruptedExceptionDestroyedCountIsNil  bool    `json:"interruptedExceptionDestroyedCountIsNil,omitempty"`
+	InterruptedExceptionDestroyedCountNotNil bool    `json:"interruptedExceptionDestroyedCountNotNil,omitempty"`
+
+	// "unknown_destroyed_count" field predicates.
+	UnknownDestroyedCount       *int64  `json:"unknownDestroyedCount,omitempty"`
+	UnknownDestroyedCountNEQ    *int64  `json:"unknownDestroyedCountNEQ,omitempty"`
+	UnknownDestroyedCountIn     []int64 `json:"unknownDestroyedCountIn,omitempty"`
+	UnknownDestroyedCountNotIn  []int64 `json:"unknownDestroyedCountNotIn,omitempty"`
+	UnknownDestroyedCountGT     *int64  `json:"unknownDestroyedCountGT,omitempty"`
+	UnknownDestroyedCountGTE    *int64  `json:"unknownDestroyedCountGTE,omitempty"`
+	UnknownDestroyedCountLT     *int64  `json:"unknownDestroyedCountLT,omitempty"`
+	UnknownDestroyedCountLTE    *int64  `json:"unknownDestroyedCountLTE,omitempty"`
+	UnknownDestroyedCountIsNil  bool    `json:"unknownDestroyedCountIsNil,omitempty"`
+	UnknownDestroyedCountNotNil bool    `json:"unknownDestroyedCountNotNil,omitempty"`
+
+	// "alive_count" field predicates.
+	AliveCount       *int64  `json:"aliveCount,omitempty"`
+	AliveCountNEQ    *int64  `json:"aliveCountNEQ,omitempty"`
+	AliveCountIn     []int64 `json:"aliveCountIn,omitempty"`
+	AliveCountNotIn  []int64 `json:"aliveCountNotIn,omitempty"`
+	AliveCountGT     *int64  `json:"aliveCountGT,omitempty"`
+	AliveCountGTE    *int64  `json:"aliveCountGTE,omitempty"`
+	AliveCountLT     *int64  `json:"aliveCountLT,omitempty"`
+	AliveCountLTE    *int64  `json:"aliveCountLTE,omitempty"`
+	AliveCountIsNil  bool    `json:"aliveCountIsNil,omitempty"`
+	AliveCountNotNil bool    `json:"aliveCountNotNil,omitempty"`
+
+	// "worker_pool_metrics" edge predicates.
+	HasWorkerPoolMetrics     *bool                          `json:"hasWorkerPoolMetrics,omitempty"`
+	HasWorkerPoolMetricsWith []*WorkerPoolMetricsWhereInput `json:"hasWorkerPoolMetricsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *WorkerPoolStatsWhereInput) AddPredicates(predicates ...predicate.WorkerPoolStats) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the WorkerPoolStatsWhereInput filter on the WorkerPoolStatsQuery builder.
+func (i *WorkerPoolStatsWhereInput) Filter(q *WorkerPoolStatsQuery) (*WorkerPoolStatsQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyWorkerPoolStatsWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyWorkerPoolStatsWhereInput is returned in case the WorkerPoolStatsWhereInput is empty.
+var ErrEmptyWorkerPoolStatsWhereInput = errors.New("ent: empty predicate WorkerPoolStatsWhereInput")
+
+// P returns a predicate for filtering workerpoolstatsslice.
+// An error is returned if the input is empty or invalid.
+func (i *WorkerPoolStatsWhereInput) P() (predicate.WorkerPoolStats, error) {
+	var predicates []predicate.WorkerPoolStats
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, workerpoolstats.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.WorkerPoolStats, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, workerpoolstats.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.WorkerPoolStats, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, workerpoolstats.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, workerpoolstats.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, workerpoolstats.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, workerpoolstats.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, workerpoolstats.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, workerpoolstats.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, workerpoolstats.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, workerpoolstats.IDLTE(*i.IDLTE))
+	}
+	if i.Hash != nil {
+		predicates = append(predicates, workerpoolstats.HashEQ(*i.Hash))
+	}
+	if i.HashNEQ != nil {
+		predicates = append(predicates, workerpoolstats.HashNEQ(*i.HashNEQ))
+	}
+	if len(i.HashIn) > 0 {
+		predicates = append(predicates, workerpoolstats.HashIn(i.HashIn...))
+	}
+	if len(i.HashNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.HashNotIn(i.HashNotIn...))
+	}
+	if i.HashGT != nil {
+		predicates = append(predicates, workerpoolstats.HashGT(*i.HashGT))
+	}
+	if i.HashGTE != nil {
+		predicates = append(predicates, workerpoolstats.HashGTE(*i.HashGTE))
+	}
+	if i.HashLT != nil {
+		predicates = append(predicates, workerpoolstats.HashLT(*i.HashLT))
+	}
+	if i.HashLTE != nil {
+		predicates = append(predicates, workerpoolstats.HashLTE(*i.HashLTE))
+	}
+	if i.HashIsNil {
+		predicates = append(predicates, workerpoolstats.HashIsNil())
+	}
+	if i.HashNotNil {
+		predicates = append(predicates, workerpoolstats.HashNotNil())
+	}
+	if i.Mnemonic != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicEQ(*i.Mnemonic))
+	}
+	if i.MnemonicNEQ != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicNEQ(*i.MnemonicNEQ))
+	}
+	if len(i.MnemonicIn) > 0 {
+		predicates = append(predicates, workerpoolstats.MnemonicIn(i.MnemonicIn...))
+	}
+	if len(i.MnemonicNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.MnemonicNotIn(i.MnemonicNotIn...))
+	}
+	if i.MnemonicGT != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicGT(*i.MnemonicGT))
+	}
+	if i.MnemonicGTE != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicGTE(*i.MnemonicGTE))
+	}
+	if i.MnemonicLT != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicLT(*i.MnemonicLT))
+	}
+	if i.MnemonicLTE != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicLTE(*i.MnemonicLTE))
+	}
+	if i.MnemonicContains != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicContains(*i.MnemonicContains))
+	}
+	if i.MnemonicHasPrefix != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicHasPrefix(*i.MnemonicHasPrefix))
+	}
+	if i.MnemonicHasSuffix != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicHasSuffix(*i.MnemonicHasSuffix))
+	}
+	if i.MnemonicIsNil {
+		predicates = append(predicates, workerpoolstats.MnemonicIsNil())
+	}
+	if i.MnemonicNotNil {
+		predicates = append(predicates, workerpoolstats.MnemonicNotNil())
+	}
+	if i.MnemonicEqualFold != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicEqualFold(*i.MnemonicEqualFold))
+	}
+	if i.MnemonicContainsFold != nil {
+		predicates = append(predicates, workerpoolstats.MnemonicContainsFold(*i.MnemonicContainsFold))
+	}
+	if i.CreatedCount != nil {
+		predicates = append(predicates, workerpoolstats.CreatedCountEQ(*i.CreatedCount))
+	}
+	if i.CreatedCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.CreatedCountNEQ(*i.CreatedCountNEQ))
+	}
+	if len(i.CreatedCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.CreatedCountIn(i.CreatedCountIn...))
+	}
+	if len(i.CreatedCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.CreatedCountNotIn(i.CreatedCountNotIn...))
+	}
+	if i.CreatedCountGT != nil {
+		predicates = append(predicates, workerpoolstats.CreatedCountGT(*i.CreatedCountGT))
+	}
+	if i.CreatedCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.CreatedCountGTE(*i.CreatedCountGTE))
+	}
+	if i.CreatedCountLT != nil {
+		predicates = append(predicates, workerpoolstats.CreatedCountLT(*i.CreatedCountLT))
+	}
+	if i.CreatedCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.CreatedCountLTE(*i.CreatedCountLTE))
+	}
+	if i.CreatedCountIsNil {
+		predicates = append(predicates, workerpoolstats.CreatedCountIsNil())
+	}
+	if i.CreatedCountNotNil {
+		predicates = append(predicates, workerpoolstats.CreatedCountNotNil())
+	}
+	if i.DestroyedCount != nil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountEQ(*i.DestroyedCount))
+	}
+	if i.DestroyedCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountNEQ(*i.DestroyedCountNEQ))
+	}
+	if len(i.DestroyedCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.DestroyedCountIn(i.DestroyedCountIn...))
+	}
+	if len(i.DestroyedCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.DestroyedCountNotIn(i.DestroyedCountNotIn...))
+	}
+	if i.DestroyedCountGT != nil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountGT(*i.DestroyedCountGT))
+	}
+	if i.DestroyedCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountGTE(*i.DestroyedCountGTE))
+	}
+	if i.DestroyedCountLT != nil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountLT(*i.DestroyedCountLT))
+	}
+	if i.DestroyedCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountLTE(*i.DestroyedCountLTE))
+	}
+	if i.DestroyedCountIsNil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountIsNil())
+	}
+	if i.DestroyedCountNotNil {
+		predicates = append(predicates, workerpoolstats.DestroyedCountNotNil())
+	}
+	if i.EvictedCount != nil {
+		predicates = append(predicates, workerpoolstats.EvictedCountEQ(*i.EvictedCount))
+	}
+	if i.EvictedCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.EvictedCountNEQ(*i.EvictedCountNEQ))
+	}
+	if len(i.EvictedCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.EvictedCountIn(i.EvictedCountIn...))
+	}
+	if len(i.EvictedCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.EvictedCountNotIn(i.EvictedCountNotIn...))
+	}
+	if i.EvictedCountGT != nil {
+		predicates = append(predicates, workerpoolstats.EvictedCountGT(*i.EvictedCountGT))
+	}
+	if i.EvictedCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.EvictedCountGTE(*i.EvictedCountGTE))
+	}
+	if i.EvictedCountLT != nil {
+		predicates = append(predicates, workerpoolstats.EvictedCountLT(*i.EvictedCountLT))
+	}
+	if i.EvictedCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.EvictedCountLTE(*i.EvictedCountLTE))
+	}
+	if i.EvictedCountIsNil {
+		predicates = append(predicates, workerpoolstats.EvictedCountIsNil())
+	}
+	if i.EvictedCountNotNil {
+		predicates = append(predicates, workerpoolstats.EvictedCountNotNil())
+	}
+	if i.UserExecExceptionDestroyedCount != nil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountEQ(*i.UserExecExceptionDestroyedCount))
+	}
+	if i.UserExecExceptionDestroyedCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountNEQ(*i.UserExecExceptionDestroyedCountNEQ))
+	}
+	if len(i.UserExecExceptionDestroyedCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountIn(i.UserExecExceptionDestroyedCountIn...))
+	}
+	if len(i.UserExecExceptionDestroyedCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountNotIn(i.UserExecExceptionDestroyedCountNotIn...))
+	}
+	if i.UserExecExceptionDestroyedCountGT != nil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountGT(*i.UserExecExceptionDestroyedCountGT))
+	}
+	if i.UserExecExceptionDestroyedCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountGTE(*i.UserExecExceptionDestroyedCountGTE))
+	}
+	if i.UserExecExceptionDestroyedCountLT != nil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountLT(*i.UserExecExceptionDestroyedCountLT))
+	}
+	if i.UserExecExceptionDestroyedCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountLTE(*i.UserExecExceptionDestroyedCountLTE))
+	}
+	if i.UserExecExceptionDestroyedCountIsNil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountIsNil())
+	}
+	if i.UserExecExceptionDestroyedCountNotNil {
+		predicates = append(predicates, workerpoolstats.UserExecExceptionDestroyedCountNotNil())
+	}
+	if i.IoExceptionDestroyedCount != nil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountEQ(*i.IoExceptionDestroyedCount))
+	}
+	if i.IoExceptionDestroyedCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountNEQ(*i.IoExceptionDestroyedCountNEQ))
+	}
+	if len(i.IoExceptionDestroyedCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountIn(i.IoExceptionDestroyedCountIn...))
+	}
+	if len(i.IoExceptionDestroyedCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountNotIn(i.IoExceptionDestroyedCountNotIn...))
+	}
+	if i.IoExceptionDestroyedCountGT != nil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountGT(*i.IoExceptionDestroyedCountGT))
+	}
+	if i.IoExceptionDestroyedCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountGTE(*i.IoExceptionDestroyedCountGTE))
+	}
+	if i.IoExceptionDestroyedCountLT != nil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountLT(*i.IoExceptionDestroyedCountLT))
+	}
+	if i.IoExceptionDestroyedCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountLTE(*i.IoExceptionDestroyedCountLTE))
+	}
+	if i.IoExceptionDestroyedCountIsNil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountIsNil())
+	}
+	if i.IoExceptionDestroyedCountNotNil {
+		predicates = append(predicates, workerpoolstats.IoExceptionDestroyedCountNotNil())
+	}
+	if i.InterruptedExceptionDestroyedCount != nil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountEQ(*i.InterruptedExceptionDestroyedCount))
+	}
+	if i.InterruptedExceptionDestroyedCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountNEQ(*i.InterruptedExceptionDestroyedCountNEQ))
+	}
+	if len(i.InterruptedExceptionDestroyedCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountIn(i.InterruptedExceptionDestroyedCountIn...))
+	}
+	if len(i.InterruptedExceptionDestroyedCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountNotIn(i.InterruptedExceptionDestroyedCountNotIn...))
+	}
+	if i.InterruptedExceptionDestroyedCountGT != nil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountGT(*i.InterruptedExceptionDestroyedCountGT))
+	}
+	if i.InterruptedExceptionDestroyedCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountGTE(*i.InterruptedExceptionDestroyedCountGTE))
+	}
+	if i.InterruptedExceptionDestroyedCountLT != nil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountLT(*i.InterruptedExceptionDestroyedCountLT))
+	}
+	if i.InterruptedExceptionDestroyedCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountLTE(*i.InterruptedExceptionDestroyedCountLTE))
+	}
+	if i.InterruptedExceptionDestroyedCountIsNil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountIsNil())
+	}
+	if i.InterruptedExceptionDestroyedCountNotNil {
+		predicates = append(predicates, workerpoolstats.InterruptedExceptionDestroyedCountNotNil())
+	}
+	if i.UnknownDestroyedCount != nil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountEQ(*i.UnknownDestroyedCount))
+	}
+	if i.UnknownDestroyedCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountNEQ(*i.UnknownDestroyedCountNEQ))
+	}
+	if len(i.UnknownDestroyedCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountIn(i.UnknownDestroyedCountIn...))
+	}
+	if len(i.UnknownDestroyedCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountNotIn(i.UnknownDestroyedCountNotIn...))
+	}
+	if i.UnknownDestroyedCountGT != nil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountGT(*i.UnknownDestroyedCountGT))
+	}
+	if i.UnknownDestroyedCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountGTE(*i.UnknownDestroyedCountGTE))
+	}
+	if i.UnknownDestroyedCountLT != nil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountLT(*i.UnknownDestroyedCountLT))
+	}
+	if i.UnknownDestroyedCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountLTE(*i.UnknownDestroyedCountLTE))
+	}
+	if i.UnknownDestroyedCountIsNil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountIsNil())
+	}
+	if i.UnknownDestroyedCountNotNil {
+		predicates = append(predicates, workerpoolstats.UnknownDestroyedCountNotNil())
+	}
+	if i.AliveCount != nil {
+		predicates = append(predicates, workerpoolstats.AliveCountEQ(*i.AliveCount))
+	}
+	if i.AliveCountNEQ != nil {
+		predicates = append(predicates, workerpoolstats.AliveCountNEQ(*i.AliveCountNEQ))
+	}
+	if len(i.AliveCountIn) > 0 {
+		predicates = append(predicates, workerpoolstats.AliveCountIn(i.AliveCountIn...))
+	}
+	if len(i.AliveCountNotIn) > 0 {
+		predicates = append(predicates, workerpoolstats.AliveCountNotIn(i.AliveCountNotIn...))
+	}
+	if i.AliveCountGT != nil {
+		predicates = append(predicates, workerpoolstats.AliveCountGT(*i.AliveCountGT))
+	}
+	if i.AliveCountGTE != nil {
+		predicates = append(predicates, workerpoolstats.AliveCountGTE(*i.AliveCountGTE))
+	}
+	if i.AliveCountLT != nil {
+		predicates = append(predicates, workerpoolstats.AliveCountLT(*i.AliveCountLT))
+	}
+	if i.AliveCountLTE != nil {
+		predicates = append(predicates, workerpoolstats.AliveCountLTE(*i.AliveCountLTE))
+	}
+	if i.AliveCountIsNil {
+		predicates = append(predicates, workerpoolstats.AliveCountIsNil())
+	}
+	if i.AliveCountNotNil {
+		predicates = append(predicates, workerpoolstats.AliveCountNotNil())
+	}
+
+	if i.HasWorkerPoolMetrics != nil {
+		p := workerpoolstats.HasWorkerPoolMetrics()
+		if !*i.HasWorkerPoolMetrics {
+			p = workerpoolstats.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerPoolMetricsWith) > 0 {
+		with := make([]predicate.WorkerPoolMetrics, 0, len(i.HasWorkerPoolMetricsWith))
+		for _, w := range i.HasWorkerPoolMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerPoolMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workerpoolstats.HasWorkerPoolMetricsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyWorkerPoolStatsWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return workerpoolstats.And(predicates...), nil
+	}
+}
+
+// WorkerStatsWhereInput represents a where input for filtering WorkerStats queries.
+type WorkerStatsWhereInput struct {
+	Predicates []predicate.WorkerStats  `json:"-"`
+	Not        *WorkerStatsWhereInput   `json:"not,omitempty"`
+	Or         []*WorkerStatsWhereInput `json:"or,omitempty"`
+	And        []*WorkerStatsWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "collect_time_in_ms" field predicates.
+	CollectTimeInMs       *int64  `json:"collectTimeInMs,omitempty"`
+	CollectTimeInMsNEQ    *int64  `json:"collectTimeInMsNEQ,omitempty"`
+	CollectTimeInMsIn     []int64 `json:"collectTimeInMsIn,omitempty"`
+	CollectTimeInMsNotIn  []int64 `json:"collectTimeInMsNotIn,omitempty"`
+	CollectTimeInMsGT     *int64  `json:"collectTimeInMsGT,omitempty"`
+	CollectTimeInMsGTE    *int64  `json:"collectTimeInMsGTE,omitempty"`
+	CollectTimeInMsLT     *int64  `json:"collectTimeInMsLT,omitempty"`
+	CollectTimeInMsLTE    *int64  `json:"collectTimeInMsLTE,omitempty"`
+	CollectTimeInMsIsNil  bool    `json:"collectTimeInMsIsNil,omitempty"`
+	CollectTimeInMsNotNil bool    `json:"collectTimeInMsNotNil,omitempty"`
+
+	// "worker_memory_in_kb" field predicates.
+	WorkerMemoryInKB       *int32  `json:"workerMemoryInKB,omitempty"`
+	WorkerMemoryInKBNEQ    *int32  `json:"workerMemoryInKBNEQ,omitempty"`
+	WorkerMemoryInKBIn     []int32 `json:"workerMemoryInKBIn,omitempty"`
+	WorkerMemoryInKBNotIn  []int32 `json:"workerMemoryInKBNotIn,omitempty"`
+	WorkerMemoryInKBGT     *int32  `json:"workerMemoryInKBGT,omitempty"`
+	WorkerMemoryInKBGTE    *int32  `json:"workerMemoryInKBGTE,omitempty"`
+	WorkerMemoryInKBLT     *int32  `json:"workerMemoryInKBLT,omitempty"`
+	WorkerMemoryInKBLTE    *int32  `json:"workerMemoryInKBLTE,omitempty"`
+	WorkerMemoryInKBIsNil  bool    `json:"workerMemoryInKBIsNil,omitempty"`
+	WorkerMemoryInKBNotNil bool    `json:"workerMemoryInKBNotNil,omitempty"`
+
+	// "prior_worker_memory_in_kb" field predicates.
+	PriorWorkerMemoryInKB       *int32  `json:"priorWorkerMemoryInKB,omitempty"`
+	PriorWorkerMemoryInKBNEQ    *int32  `json:"priorWorkerMemoryInKBNEQ,omitempty"`
+	PriorWorkerMemoryInKBIn     []int32 `json:"priorWorkerMemoryInKBIn,omitempty"`
+	PriorWorkerMemoryInKBNotIn  []int32 `json:"priorWorkerMemoryInKBNotIn,omitempty"`
+	PriorWorkerMemoryInKBGT     *int32  `json:"priorWorkerMemoryInKBGT,omitempty"`
+	PriorWorkerMemoryInKBGTE    *int32  `json:"priorWorkerMemoryInKBGTE,omitempty"`
+	PriorWorkerMemoryInKBLT     *int32  `json:"priorWorkerMemoryInKBLT,omitempty"`
+	PriorWorkerMemoryInKBLTE    *int32  `json:"priorWorkerMemoryInKBLTE,omitempty"`
+	PriorWorkerMemoryInKBIsNil  bool    `json:"priorWorkerMemoryInKBIsNil,omitempty"`
+	PriorWorkerMemoryInKBNotNil bool    `json:"priorWorkerMemoryInKBNotNil,omitempty"`
+
+	// "last_action_start_time_in_ms" field predicates.
+	LastActionStartTimeInMs       *int64  `json:"lastActionStartTimeInMs,omitempty"`
+	LastActionStartTimeInMsNEQ    *int64  `json:"lastActionStartTimeInMsNEQ,omitempty"`
+	LastActionStartTimeInMsIn     []int64 `json:"lastActionStartTimeInMsIn,omitempty"`
+	LastActionStartTimeInMsNotIn  []int64 `json:"lastActionStartTimeInMsNotIn,omitempty"`
+	LastActionStartTimeInMsGT     *int64  `json:"lastActionStartTimeInMsGT,omitempty"`
+	LastActionStartTimeInMsGTE    *int64  `json:"lastActionStartTimeInMsGTE,omitempty"`
+	LastActionStartTimeInMsLT     *int64  `json:"lastActionStartTimeInMsLT,omitempty"`
+	LastActionStartTimeInMsLTE    *int64  `json:"lastActionStartTimeInMsLTE,omitempty"`
+	LastActionStartTimeInMsIsNil  bool    `json:"lastActionStartTimeInMsIsNil,omitempty"`
+	LastActionStartTimeInMsNotNil bool    `json:"lastActionStartTimeInMsNotNil,omitempty"`
+
+	// "worker_metrics" edge predicates.
+	HasWorkerMetrics     *bool                      `json:"hasWorkerMetrics,omitempty"`
+	HasWorkerMetricsWith []*WorkerMetricsWhereInput `json:"hasWorkerMetricsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *WorkerStatsWhereInput) AddPredicates(predicates ...predicate.WorkerStats) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the WorkerStatsWhereInput filter on the WorkerStatsQuery builder.
+func (i *WorkerStatsWhereInput) Filter(q *WorkerStatsQuery) (*WorkerStatsQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyWorkerStatsWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyWorkerStatsWhereInput is returned in case the WorkerStatsWhereInput is empty.
+var ErrEmptyWorkerStatsWhereInput = errors.New("ent: empty predicate WorkerStatsWhereInput")
+
+// P returns a predicate for filtering workerstatsslice.
+// An error is returned if the input is empty or invalid.
+func (i *WorkerStatsWhereInput) P() (predicate.WorkerStats, error) {
+	var predicates []predicate.WorkerStats
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, workerstats.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.WorkerStats, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, workerstats.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.WorkerStats, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, workerstats.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, workerstats.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, workerstats.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, workerstats.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, workerstats.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, workerstats.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, workerstats.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, workerstats.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, workerstats.IDLTE(*i.IDLTE))
+	}
+	if i.CollectTimeInMs != nil {
+		predicates = append(predicates, workerstats.CollectTimeInMsEQ(*i.CollectTimeInMs))
+	}
+	if i.CollectTimeInMsNEQ != nil {
+		predicates = append(predicates, workerstats.CollectTimeInMsNEQ(*i.CollectTimeInMsNEQ))
+	}
+	if len(i.CollectTimeInMsIn) > 0 {
+		predicates = append(predicates, workerstats.CollectTimeInMsIn(i.CollectTimeInMsIn...))
+	}
+	if len(i.CollectTimeInMsNotIn) > 0 {
+		predicates = append(predicates, workerstats.CollectTimeInMsNotIn(i.CollectTimeInMsNotIn...))
+	}
+	if i.CollectTimeInMsGT != nil {
+		predicates = append(predicates, workerstats.CollectTimeInMsGT(*i.CollectTimeInMsGT))
+	}
+	if i.CollectTimeInMsGTE != nil {
+		predicates = append(predicates, workerstats.CollectTimeInMsGTE(*i.CollectTimeInMsGTE))
+	}
+	if i.CollectTimeInMsLT != nil {
+		predicates = append(predicates, workerstats.CollectTimeInMsLT(*i.CollectTimeInMsLT))
+	}
+	if i.CollectTimeInMsLTE != nil {
+		predicates = append(predicates, workerstats.CollectTimeInMsLTE(*i.CollectTimeInMsLTE))
+	}
+	if i.CollectTimeInMsIsNil {
+		predicates = append(predicates, workerstats.CollectTimeInMsIsNil())
+	}
+	if i.CollectTimeInMsNotNil {
+		predicates = append(predicates, workerstats.CollectTimeInMsNotNil())
+	}
+	if i.WorkerMemoryInKB != nil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBEQ(*i.WorkerMemoryInKB))
+	}
+	if i.WorkerMemoryInKBNEQ != nil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBNEQ(*i.WorkerMemoryInKBNEQ))
+	}
+	if len(i.WorkerMemoryInKBIn) > 0 {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBIn(i.WorkerMemoryInKBIn...))
+	}
+	if len(i.WorkerMemoryInKBNotIn) > 0 {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBNotIn(i.WorkerMemoryInKBNotIn...))
+	}
+	if i.WorkerMemoryInKBGT != nil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBGT(*i.WorkerMemoryInKBGT))
+	}
+	if i.WorkerMemoryInKBGTE != nil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBGTE(*i.WorkerMemoryInKBGTE))
+	}
+	if i.WorkerMemoryInKBLT != nil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBLT(*i.WorkerMemoryInKBLT))
+	}
+	if i.WorkerMemoryInKBLTE != nil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBLTE(*i.WorkerMemoryInKBLTE))
+	}
+	if i.WorkerMemoryInKBIsNil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBIsNil())
+	}
+	if i.WorkerMemoryInKBNotNil {
+		predicates = append(predicates, workerstats.WorkerMemoryInKBNotNil())
+	}
+	if i.PriorWorkerMemoryInKB != nil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBEQ(*i.PriorWorkerMemoryInKB))
+	}
+	if i.PriorWorkerMemoryInKBNEQ != nil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBNEQ(*i.PriorWorkerMemoryInKBNEQ))
+	}
+	if len(i.PriorWorkerMemoryInKBIn) > 0 {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBIn(i.PriorWorkerMemoryInKBIn...))
+	}
+	if len(i.PriorWorkerMemoryInKBNotIn) > 0 {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBNotIn(i.PriorWorkerMemoryInKBNotIn...))
+	}
+	if i.PriorWorkerMemoryInKBGT != nil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBGT(*i.PriorWorkerMemoryInKBGT))
+	}
+	if i.PriorWorkerMemoryInKBGTE != nil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBGTE(*i.PriorWorkerMemoryInKBGTE))
+	}
+	if i.PriorWorkerMemoryInKBLT != nil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBLT(*i.PriorWorkerMemoryInKBLT))
+	}
+	if i.PriorWorkerMemoryInKBLTE != nil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBLTE(*i.PriorWorkerMemoryInKBLTE))
+	}
+	if i.PriorWorkerMemoryInKBIsNil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBIsNil())
+	}
+	if i.PriorWorkerMemoryInKBNotNil {
+		predicates = append(predicates, workerstats.PriorWorkerMemoryInKBNotNil())
+	}
+	if i.LastActionStartTimeInMs != nil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsEQ(*i.LastActionStartTimeInMs))
+	}
+	if i.LastActionStartTimeInMsNEQ != nil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsNEQ(*i.LastActionStartTimeInMsNEQ))
+	}
+	if len(i.LastActionStartTimeInMsIn) > 0 {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsIn(i.LastActionStartTimeInMsIn...))
+	}
+	if len(i.LastActionStartTimeInMsNotIn) > 0 {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsNotIn(i.LastActionStartTimeInMsNotIn...))
+	}
+	if i.LastActionStartTimeInMsGT != nil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsGT(*i.LastActionStartTimeInMsGT))
+	}
+	if i.LastActionStartTimeInMsGTE != nil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsGTE(*i.LastActionStartTimeInMsGTE))
+	}
+	if i.LastActionStartTimeInMsLT != nil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsLT(*i.LastActionStartTimeInMsLT))
+	}
+	if i.LastActionStartTimeInMsLTE != nil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsLTE(*i.LastActionStartTimeInMsLTE))
+	}
+	if i.LastActionStartTimeInMsIsNil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsIsNil())
+	}
+	if i.LastActionStartTimeInMsNotNil {
+		predicates = append(predicates, workerstats.LastActionStartTimeInMsNotNil())
+	}
+
+	if i.HasWorkerMetrics != nil {
+		p := workerstats.HasWorkerMetrics()
+		if !*i.HasWorkerMetrics {
+			p = workerstats.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasWorkerMetricsWith) > 0 {
+		with := make([]predicate.WorkerMetrics, 0, len(i.HasWorkerMetricsWith))
+		for _, w := range i.HasWorkerMetricsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasWorkerMetricsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, workerstats.HasWorkerMetricsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyWorkerStatsWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return workerstats.And(predicates...), nil
 	}
 }

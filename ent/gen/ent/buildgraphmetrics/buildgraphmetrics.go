@@ -32,6 +32,8 @@ const (
 	FieldPostInvocationSkyframeNodeCount = "post_invocation_skyframe_node_count"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
+	// EdgeEvaluationStats holds the string denoting the evaluation_stats edge name in mutations.
+	EdgeEvaluationStats = "evaluation_stats"
 	// Table holds the table name of the buildgraphmetrics in the database.
 	Table = "build_graph_metrics"
 	// MetricsTable is the table that holds the metrics relation/edge.
@@ -41,6 +43,13 @@ const (
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
 	MetricsColumn = "metrics_build_graph_metrics"
+	// EvaluationStatsTable is the table that holds the evaluation_stats relation/edge.
+	EvaluationStatsTable = "build_graph_evaluation_stats"
+	// EvaluationStatsInverseTable is the table name for the BuildGraphEvaluationStat entity.
+	// It exists in this package in order to avoid circular dependency with the "buildgraphevaluationstat" package.
+	EvaluationStatsInverseTable = "build_graph_evaluation_stats"
+	// EvaluationStatsColumn is the table column denoting the evaluation_stats relation/edge.
+	EvaluationStatsColumn = "build_graph_metrics_evaluation_stats"
 )
 
 // Columns holds all SQL columns for buildgraphmetrics fields.
@@ -137,10 +146,31 @@ func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByEvaluationStatsCount orders the results by evaluation_stats count.
+func ByEvaluationStatsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newEvaluationStatsStep(), opts...)
+	}
+}
+
+// ByEvaluationStats orders the results by evaluation_stats terms.
+func ByEvaluationStats(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newEvaluationStatsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
+	)
+}
+func newEvaluationStatsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(EvaluationStatsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, EvaluationStatsTable, EvaluationStatsColumn),
 	)
 }

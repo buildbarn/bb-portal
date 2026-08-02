@@ -14,12 +14,16 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workermetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolmetrics"
 )
 
 // MetricsUpdate is the builder for updating Metrics entities.
@@ -187,6 +191,78 @@ func (_u *MetricsUpdate) SetBuildGraphMetrics(v *BuildGraphMetrics) *MetricsUpda
 	return _u.SetBuildGraphMetricsID(v.ID)
 }
 
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
+func (_u *MetricsUpdate) SetPackageMetricsID(id int64) *MetricsUpdate {
+	_u.mutation.SetPackageMetricsID(id)
+	return _u
+}
+
+// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdate) SetNillablePackageMetricsID(id *int64) *MetricsUpdate {
+	if id != nil {
+		_u = _u.SetPackageMetricsID(*id)
+	}
+	return _u
+}
+
+// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
+func (_u *MetricsUpdate) SetPackageMetrics(v *PackageMetrics) *MetricsUpdate {
+	return _u.SetPackageMetricsID(v.ID)
+}
+
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
+func (_u *MetricsUpdate) SetCumulativeMetricsID(id int64) *MetricsUpdate {
+	_u.mutation.SetCumulativeMetricsID(id)
+	return _u
+}
+
+// SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdate) SetNillableCumulativeMetricsID(id *int64) *MetricsUpdate {
+	if id != nil {
+		_u = _u.SetCumulativeMetricsID(*id)
+	}
+	return _u
+}
+
+// SetCumulativeMetrics sets the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (_u *MetricsUpdate) SetCumulativeMetrics(v *CumulativeMetrics) *MetricsUpdate {
+	return _u.SetCumulativeMetricsID(v.ID)
+}
+
+// AddWorkerMetricIDs adds the "worker_metrics" edge to the WorkerMetrics entity by IDs.
+func (_u *MetricsUpdate) AddWorkerMetricIDs(ids ...int64) *MetricsUpdate {
+	_u.mutation.AddWorkerMetricIDs(ids...)
+	return _u
+}
+
+// AddWorkerMetrics adds the "worker_metrics" edges to the WorkerMetrics entity.
+func (_u *MetricsUpdate) AddWorkerMetrics(v ...*WorkerMetrics) *MetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddWorkerMetricIDs(ids...)
+}
+
+// SetWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by ID.
+func (_u *MetricsUpdate) SetWorkerPoolMetricsID(id int64) *MetricsUpdate {
+	_u.mutation.SetWorkerPoolMetricsID(id)
+	return _u
+}
+
+// SetNillableWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdate) SetNillableWorkerPoolMetricsID(id *int64) *MetricsUpdate {
+	if id != nil {
+		_u = _u.SetWorkerPoolMetricsID(*id)
+	}
+	return _u
+}
+
+// SetWorkerPoolMetrics sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
+func (_u *MetricsUpdate) SetWorkerPoolMetrics(v *WorkerPoolMetrics) *MetricsUpdate {
+	return _u.SetWorkerPoolMetricsID(v.ID)
+}
+
 // Mutation returns the MetricsMutation object of the builder.
 func (_u *MetricsUpdate) Mutation() *MetricsMutation {
 	return _u.mutation
@@ -237,6 +313,45 @@ func (_u *MetricsUpdate) ClearNetworkMetrics() *MetricsUpdate {
 // ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
 func (_u *MetricsUpdate) ClearBuildGraphMetrics() *MetricsUpdate {
 	_u.mutation.ClearBuildGraphMetrics()
+	return _u
+}
+
+// ClearPackageMetrics clears the "package_metrics" edge to the PackageMetrics entity.
+func (_u *MetricsUpdate) ClearPackageMetrics() *MetricsUpdate {
+	_u.mutation.ClearPackageMetrics()
+	return _u
+}
+
+// ClearCumulativeMetrics clears the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (_u *MetricsUpdate) ClearCumulativeMetrics() *MetricsUpdate {
+	_u.mutation.ClearCumulativeMetrics()
+	return _u
+}
+
+// ClearWorkerMetrics clears all "worker_metrics" edges to the WorkerMetrics entity.
+func (_u *MetricsUpdate) ClearWorkerMetrics() *MetricsUpdate {
+	_u.mutation.ClearWorkerMetrics()
+	return _u
+}
+
+// RemoveWorkerMetricIDs removes the "worker_metrics" edge to WorkerMetrics entities by IDs.
+func (_u *MetricsUpdate) RemoveWorkerMetricIDs(ids ...int64) *MetricsUpdate {
+	_u.mutation.RemoveWorkerMetricIDs(ids...)
+	return _u
+}
+
+// RemoveWorkerMetrics removes "worker_metrics" edges to WorkerMetrics entities.
+func (_u *MetricsUpdate) RemoveWorkerMetrics(v ...*WorkerMetrics) *MetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveWorkerMetricIDs(ids...)
+}
+
+// ClearWorkerPoolMetrics clears the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
+func (_u *MetricsUpdate) ClearWorkerPoolMetrics() *MetricsUpdate {
+	_u.mutation.ClearWorkerPoolMetrics()
 	return _u
 }
 
@@ -508,6 +623,138 @@ func (_u *MetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.PackageMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.PackageMetricsTable,
+			Columns: []string{metrics.PackageMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PackageMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.PackageMetricsTable,
+			Columns: []string{metrics.PackageMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CumulativeMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.CumulativeMetricsTable,
+			Columns: []string{metrics.CumulativeMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CumulativeMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.CumulativeMetricsTable,
+			Columns: []string{metrics.CumulativeMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.WorkerMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   metrics.WorkerMetricsTable,
+			Columns: []string{metrics.WorkerMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workermetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedWorkerMetricsIDs(); len(nodes) > 0 && !_u.mutation.WorkerMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   metrics.WorkerMetricsTable,
+			Columns: []string{metrics.WorkerMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workermetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.WorkerMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   metrics.WorkerMetricsTable,
+			Columns: []string{metrics.WorkerMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workermetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.WorkerPoolMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.WorkerPoolMetricsTable,
+			Columns: []string{metrics.WorkerPoolMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.WorkerPoolMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.WorkerPoolMetricsTable,
+			Columns: []string{metrics.WorkerPoolMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{metrics.Label}
@@ -680,6 +927,78 @@ func (_u *MetricsUpdateOne) SetBuildGraphMetrics(v *BuildGraphMetrics) *MetricsU
 	return _u.SetBuildGraphMetricsID(v.ID)
 }
 
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
+func (_u *MetricsUpdateOne) SetPackageMetricsID(id int64) *MetricsUpdateOne {
+	_u.mutation.SetPackageMetricsID(id)
+	return _u
+}
+
+// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdateOne) SetNillablePackageMetricsID(id *int64) *MetricsUpdateOne {
+	if id != nil {
+		_u = _u.SetPackageMetricsID(*id)
+	}
+	return _u
+}
+
+// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
+func (_u *MetricsUpdateOne) SetPackageMetrics(v *PackageMetrics) *MetricsUpdateOne {
+	return _u.SetPackageMetricsID(v.ID)
+}
+
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
+func (_u *MetricsUpdateOne) SetCumulativeMetricsID(id int64) *MetricsUpdateOne {
+	_u.mutation.SetCumulativeMetricsID(id)
+	return _u
+}
+
+// SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdateOne) SetNillableCumulativeMetricsID(id *int64) *MetricsUpdateOne {
+	if id != nil {
+		_u = _u.SetCumulativeMetricsID(*id)
+	}
+	return _u
+}
+
+// SetCumulativeMetrics sets the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (_u *MetricsUpdateOne) SetCumulativeMetrics(v *CumulativeMetrics) *MetricsUpdateOne {
+	return _u.SetCumulativeMetricsID(v.ID)
+}
+
+// AddWorkerMetricIDs adds the "worker_metrics" edge to the WorkerMetrics entity by IDs.
+func (_u *MetricsUpdateOne) AddWorkerMetricIDs(ids ...int64) *MetricsUpdateOne {
+	_u.mutation.AddWorkerMetricIDs(ids...)
+	return _u
+}
+
+// AddWorkerMetrics adds the "worker_metrics" edges to the WorkerMetrics entity.
+func (_u *MetricsUpdateOne) AddWorkerMetrics(v ...*WorkerMetrics) *MetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddWorkerMetricIDs(ids...)
+}
+
+// SetWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by ID.
+func (_u *MetricsUpdateOne) SetWorkerPoolMetricsID(id int64) *MetricsUpdateOne {
+	_u.mutation.SetWorkerPoolMetricsID(id)
+	return _u
+}
+
+// SetNillableWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by ID if the given value is not nil.
+func (_u *MetricsUpdateOne) SetNillableWorkerPoolMetricsID(id *int64) *MetricsUpdateOne {
+	if id != nil {
+		_u = _u.SetWorkerPoolMetricsID(*id)
+	}
+	return _u
+}
+
+// SetWorkerPoolMetrics sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
+func (_u *MetricsUpdateOne) SetWorkerPoolMetrics(v *WorkerPoolMetrics) *MetricsUpdateOne {
+	return _u.SetWorkerPoolMetricsID(v.ID)
+}
+
 // Mutation returns the MetricsMutation object of the builder.
 func (_u *MetricsUpdateOne) Mutation() *MetricsMutation {
 	return _u.mutation
@@ -730,6 +1049,45 @@ func (_u *MetricsUpdateOne) ClearNetworkMetrics() *MetricsUpdateOne {
 // ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
 func (_u *MetricsUpdateOne) ClearBuildGraphMetrics() *MetricsUpdateOne {
 	_u.mutation.ClearBuildGraphMetrics()
+	return _u
+}
+
+// ClearPackageMetrics clears the "package_metrics" edge to the PackageMetrics entity.
+func (_u *MetricsUpdateOne) ClearPackageMetrics() *MetricsUpdateOne {
+	_u.mutation.ClearPackageMetrics()
+	return _u
+}
+
+// ClearCumulativeMetrics clears the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (_u *MetricsUpdateOne) ClearCumulativeMetrics() *MetricsUpdateOne {
+	_u.mutation.ClearCumulativeMetrics()
+	return _u
+}
+
+// ClearWorkerMetrics clears all "worker_metrics" edges to the WorkerMetrics entity.
+func (_u *MetricsUpdateOne) ClearWorkerMetrics() *MetricsUpdateOne {
+	_u.mutation.ClearWorkerMetrics()
+	return _u
+}
+
+// RemoveWorkerMetricIDs removes the "worker_metrics" edge to WorkerMetrics entities by IDs.
+func (_u *MetricsUpdateOne) RemoveWorkerMetricIDs(ids ...int64) *MetricsUpdateOne {
+	_u.mutation.RemoveWorkerMetricIDs(ids...)
+	return _u
+}
+
+// RemoveWorkerMetrics removes "worker_metrics" edges to WorkerMetrics entities.
+func (_u *MetricsUpdateOne) RemoveWorkerMetrics(v ...*WorkerMetrics) *MetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveWorkerMetricIDs(ids...)
+}
+
+// ClearWorkerPoolMetrics clears the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
+func (_u *MetricsUpdateOne) ClearWorkerPoolMetrics() *MetricsUpdateOne {
+	_u.mutation.ClearWorkerPoolMetrics()
 	return _u
 }
 
@@ -1024,6 +1382,138 @@ func (_u *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PackageMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.PackageMetricsTable,
+			Columns: []string{metrics.PackageMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PackageMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.PackageMetricsTable,
+			Columns: []string{metrics.PackageMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CumulativeMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.CumulativeMetricsTable,
+			Columns: []string{metrics.CumulativeMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CumulativeMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.CumulativeMetricsTable,
+			Columns: []string{metrics.CumulativeMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.WorkerMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   metrics.WorkerMetricsTable,
+			Columns: []string{metrics.WorkerMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workermetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedWorkerMetricsIDs(); len(nodes) > 0 && !_u.mutation.WorkerMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   metrics.WorkerMetricsTable,
+			Columns: []string{metrics.WorkerMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workermetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.WorkerMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   metrics.WorkerMetricsTable,
+			Columns: []string{metrics.WorkerMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workermetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.WorkerPoolMetricsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.WorkerPoolMetricsTable,
+			Columns: []string{metrics.WorkerPoolMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.WorkerPoolMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.WorkerPoolMetricsTable,
+			Columns: []string{metrics.WorkerPoolMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

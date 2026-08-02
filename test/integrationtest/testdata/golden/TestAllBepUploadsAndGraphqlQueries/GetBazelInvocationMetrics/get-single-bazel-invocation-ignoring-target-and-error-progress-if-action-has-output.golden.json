@@ -4,6 +4,7 @@
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 0,
           "hits": 4,
           "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjU=",
           "loadTimeInMs": 0,
@@ -85,6 +86,15 @@
         "topLevelArtifactsCount": 0,
         "topLevelArtifactsSizeInBytes": 0
       },
+      "buildGraphMetrics": {
+        "evaluationStats": [],
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6NQ=="
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6NQ==",
+        "numAnalyses": 13,
+        "numBuilds": 13
+      },
       "id": "TWV0cmljczo1",
       "memoryMetrics": {
         "garbageMetrics": [],
@@ -94,13 +104,23 @@
         "usedHeapSizePostBuild": 0
       },
       "networkMetrics": null,
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6NQ==",
+        "packagesLoaded": 0
+      },
       "timingMetrics": {
         "actionsExecutionStartInMs": 0,
         "analysisPhaseTimeInMs": 0,
         "cpuTimeInMs": 2508,
+        "criticalPathTimeInMs": 0,
         "executionPhaseTimeInMs": 32,
         "id": "VGltaW5nTWV0cmljczo1",
         "wallTimeInMs": 307
+      },
+      "workerMetrics": [],
+      "workerPoolMetrics": {
+        "id": "V29ya2VyUG9vbE1ldHJpY3M6NQ==",
+        "workerPoolStats": []
       }
     }
   }

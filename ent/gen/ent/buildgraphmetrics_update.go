@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -290,6 +291,21 @@ func (_u *BuildGraphMetricsUpdate) SetMetrics(v *Metrics) *BuildGraphMetricsUpda
 	return _u.SetMetricsID(v.ID)
 }
 
+// AddEvaluationStatIDs adds the "evaluation_stats" edge to the BuildGraphEvaluationStat entity by IDs.
+func (_u *BuildGraphMetricsUpdate) AddEvaluationStatIDs(ids ...int64) *BuildGraphMetricsUpdate {
+	_u.mutation.AddEvaluationStatIDs(ids...)
+	return _u
+}
+
+// AddEvaluationStats adds the "evaluation_stats" edges to the BuildGraphEvaluationStat entity.
+func (_u *BuildGraphMetricsUpdate) AddEvaluationStats(v ...*BuildGraphEvaluationStat) *BuildGraphMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddEvaluationStatIDs(ids...)
+}
+
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
 func (_u *BuildGraphMetricsUpdate) Mutation() *BuildGraphMetricsMutation {
 	return _u.mutation
@@ -299,6 +315,27 @@ func (_u *BuildGraphMetricsUpdate) Mutation() *BuildGraphMetricsMutation {
 func (_u *BuildGraphMetricsUpdate) ClearMetrics() *BuildGraphMetricsUpdate {
 	_u.mutation.ClearMetrics()
 	return _u
+}
+
+// ClearEvaluationStats clears all "evaluation_stats" edges to the BuildGraphEvaluationStat entity.
+func (_u *BuildGraphMetricsUpdate) ClearEvaluationStats() *BuildGraphMetricsUpdate {
+	_u.mutation.ClearEvaluationStats()
+	return _u
+}
+
+// RemoveEvaluationStatIDs removes the "evaluation_stats" edge to BuildGraphEvaluationStat entities by IDs.
+func (_u *BuildGraphMetricsUpdate) RemoveEvaluationStatIDs(ids ...int64) *BuildGraphMetricsUpdate {
+	_u.mutation.RemoveEvaluationStatIDs(ids...)
+	return _u
+}
+
+// RemoveEvaluationStats removes "evaluation_stats" edges to BuildGraphEvaluationStat entities.
+func (_u *BuildGraphMetricsUpdate) RemoveEvaluationStats(v ...*BuildGraphEvaluationStat) *BuildGraphMetricsUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveEvaluationStatIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -440,6 +477,51 @@ func (_u *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (_node int, err 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.EvaluationStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.EvaluationStatsTable,
+			Columns: []string{buildgraphmetrics.EvaluationStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedEvaluationStatsIDs(); len(nodes) > 0 && !_u.mutation.EvaluationStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.EvaluationStatsTable,
+			Columns: []string{buildgraphmetrics.EvaluationStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EvaluationStatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.EvaluationStatsTable,
+			Columns: []string{buildgraphmetrics.EvaluationStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -729,6 +811,21 @@ func (_u *BuildGraphMetricsUpdateOne) SetMetrics(v *Metrics) *BuildGraphMetricsU
 	return _u.SetMetricsID(v.ID)
 }
 
+// AddEvaluationStatIDs adds the "evaluation_stats" edge to the BuildGraphEvaluationStat entity by IDs.
+func (_u *BuildGraphMetricsUpdateOne) AddEvaluationStatIDs(ids ...int64) *BuildGraphMetricsUpdateOne {
+	_u.mutation.AddEvaluationStatIDs(ids...)
+	return _u
+}
+
+// AddEvaluationStats adds the "evaluation_stats" edges to the BuildGraphEvaluationStat entity.
+func (_u *BuildGraphMetricsUpdateOne) AddEvaluationStats(v ...*BuildGraphEvaluationStat) *BuildGraphMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddEvaluationStatIDs(ids...)
+}
+
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
 func (_u *BuildGraphMetricsUpdateOne) Mutation() *BuildGraphMetricsMutation {
 	return _u.mutation
@@ -738,6 +835,27 @@ func (_u *BuildGraphMetricsUpdateOne) Mutation() *BuildGraphMetricsMutation {
 func (_u *BuildGraphMetricsUpdateOne) ClearMetrics() *BuildGraphMetricsUpdateOne {
 	_u.mutation.ClearMetrics()
 	return _u
+}
+
+// ClearEvaluationStats clears all "evaluation_stats" edges to the BuildGraphEvaluationStat entity.
+func (_u *BuildGraphMetricsUpdateOne) ClearEvaluationStats() *BuildGraphMetricsUpdateOne {
+	_u.mutation.ClearEvaluationStats()
+	return _u
+}
+
+// RemoveEvaluationStatIDs removes the "evaluation_stats" edge to BuildGraphEvaluationStat entities by IDs.
+func (_u *BuildGraphMetricsUpdateOne) RemoveEvaluationStatIDs(ids ...int64) *BuildGraphMetricsUpdateOne {
+	_u.mutation.RemoveEvaluationStatIDs(ids...)
+	return _u
+}
+
+// RemoveEvaluationStats removes "evaluation_stats" edges to BuildGraphEvaluationStat entities.
+func (_u *BuildGraphMetricsUpdateOne) RemoveEvaluationStats(v ...*BuildGraphEvaluationStat) *BuildGraphMetricsUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveEvaluationStatIDs(ids...)
 }
 
 // Where appends a list predicates to the BuildGraphMetricsUpdate builder.
@@ -909,6 +1027,51 @@ func (_u *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Build
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.EvaluationStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.EvaluationStatsTable,
+			Columns: []string{buildgraphmetrics.EvaluationStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedEvaluationStatsIDs(); len(nodes) > 0 && !_u.mutation.EvaluationStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.EvaluationStatsTable,
+			Columns: []string{buildgraphmetrics.EvaluationStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EvaluationStatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.EvaluationStatsTable,
+			Columns: []string{buildgraphmetrics.EvaluationStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

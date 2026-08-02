@@ -72,6 +72,33 @@ func (Metrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+
+		// Package loading metrics.
+		edge.To("package_metrics", PackageMetrics.Type).
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Counts accumulated over the lifetime of the Bazel server.
+		edge.To("cumulative_metrics", CumulativeMetrics.Type).
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Workers that were alive during the invocation.
+		edge.To("worker_metrics", WorkerMetrics.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Worker pool lifecycle metrics.
+		edge.To("worker_pool_metrics", WorkerPoolMetrics.Type).
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

@@ -57,6 +57,13 @@ export const TimingMetricsDisplay: React.FC<Props> = ({
             { smallestUnit: "ms" },
           )}
         />
+        <Statistic
+          title="Critical Path"
+          value={readableDurationFromMilliseconds(
+            timingMetrics.criticalPathTimeInMs ?? 0,
+            { smallestUnit: "ms" },
+          )}
+        />
       </Space>
     </PortalCard>
   );

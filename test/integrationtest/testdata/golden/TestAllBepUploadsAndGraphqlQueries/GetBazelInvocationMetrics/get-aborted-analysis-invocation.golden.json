@@ -4,6 +4,7 @@
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 0,
           "hits": 0,
           "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjY=",
           "loadTimeInMs": 0,
@@ -34,6 +35,460 @@
         "sourceArtifactsReadSizeInBytes": 0,
         "topLevelArtifactsCount": 0,
         "topLevelArtifactsSizeInBytes": 0
+      },
+      "buildGraphMetrics": {
+        "evaluationStats": [
+          {
+            "count": 309,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE=",
+            "operation": "BUILT",
+            "skyfunctionName": "DIRECTORY_LISTING"
+          },
+          {
+            "count": 7,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI=",
+            "operation": "BUILT",
+            "skyfunctionName": "ACTION_ENVIRONMENT_VARIABLE"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM=",
+            "operation": "BUILT",
+            "skyfunctionName": "SINGLE_EXTENSION_EVAL"
+          },
+          {
+            "count": 33,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ=",
+            "operation": "BUILT",
+            "skyfunctionName": "IGNORED_SUBDIRECTORIES"
+          },
+          {
+            "count": 157,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU=",
+            "operation": "BUILT",
+            "skyfunctionName": "CONTAINING_PACKAGE_LOOKUP"
+          },
+          {
+            "count": 37,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjY=",
+            "operation": "BUILT",
+            "skyfunctionName": "BZLMOD_REPO_RULE"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojc=",
+            "operation": "BUILT",
+            "skyfunctionName": "STARLARK_BUILTINS"
+          },
+          {
+            "count": 33,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojg=",
+            "operation": "BUILT",
+            "skyfunctionName": "REPO_FILE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojk=",
+            "operation": "BUILT",
+            "skyfunctionName": "BAZEL_MODULE_RESOLUTION"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjEw",
+            "operation": "BUILT",
+            "skyfunctionName": "TARGET_PATTERN"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjEx",
+            "operation": "BUILT",
+            "skyfunctionName": "SINGLE_EXTENSION"
+          },
+          {
+            "count": 78,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjEy",
+            "operation": "BUILT",
+            "skyfunctionName": "PACKAGE"
+          },
+          {
+            "count": 59,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjEz",
+            "operation": "BUILT",
+            "skyfunctionName": "REPO_SPEC"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE0",
+            "operation": "BUILT",
+            "skyfunctionName": "REPO_PACKAGE_ARGS"
+          },
+          {
+            "count": 7,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE1",
+            "operation": "BUILT",
+            "skyfunctionName": "GLOBS"
+          },
+          {
+            "count": 309,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE2",
+            "operation": "BUILT",
+            "skyfunctionName": "RECURSIVE_PKG"
+          },
+          {
+            "count": 1783,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE3",
+            "operation": "BUILT",
+            "skyfunctionName": "FILE"
+          },
+          {
+            "count": 346,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4",
+            "operation": "BUILT",
+            "skyfunctionName": "BZL_LOAD"
+          },
+          {
+            "count": 309,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5",
+            "operation": "BUILT",
+            "skyfunctionName": "DIRECTORY_LISTING_STATE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIw",
+            "operation": "BUILT",
+            "skyfunctionName": "TESTS_IN_SUITE"
+          },
+          {
+            "count": 37,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIx",
+            "operation": "BUILT",
+            "skyfunctionName": "REPOSITORY_DIRECTORY"
+          },
+          {
+            "count": 78,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIy",
+            "operation": "BUILT",
+            "skyfunctionName": "PACKAGE_ERROR_MESSAGE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIz",
+            "operation": "BUILT",
+            "skyfunctionName": "WORKSPACE_NAME"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI0",
+            "operation": "BUILT",
+            "skyfunctionName": "TEST_SUITE_EXPANSION"
+          },
+          {
+            "count": 310,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI1",
+            "operation": "BUILT",
+            "skyfunctionName": "LOCAL_REPOSITORY_LOOKUP"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI2",
+            "operation": "BUILT",
+            "skyfunctionName": "BAZEL_LOCK_FILE"
+          },
+          {
+            "count": 31,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI3",
+            "operation": "BUILT",
+            "skyfunctionName": "REPOSITORY_MAPPING"
+          },
+          {
+            "count": 381,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI4",
+            "operation": "BUILT",
+            "skyfunctionName": "PACKAGE_LOOKUP"
+          },
+          {
+            "count": 8,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI5",
+            "operation": "BUILT",
+            "skyfunctionName": "CLIENT_ENVIRONMENT_VARIABLE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjMw",
+            "operation": "BUILT",
+            "skyfunctionName": "BAZEL_DEP_GRAPH"
+          },
+          {
+            "count": 282,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjMx",
+            "operation": "BUILT",
+            "skyfunctionName": "MODULE_FILE"
+          },
+          {
+            "count": 77,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjMy",
+            "operation": "BUILT",
+            "skyfunctionName": "PROJECT_FILES_LOOKUP"
+          },
+          {
+            "count": 1783,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjMz",
+            "operation": "BUILT",
+            "skyfunctionName": "FILE_STATE"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM0",
+            "operation": "BUILT",
+            "skyfunctionName": "MODULE_EXTENSION_REPO_MAPPING_ENTRIES"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM1",
+            "operation": "BUILT",
+            "skyfunctionName": "TARGET_PATTERN_PHASE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM2",
+            "operation": "BUILT",
+            "skyfunctionName": "REGISTRY"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM3",
+            "operation": "BUILT",
+            "skyfunctionName": "SINGLE_EXTENSION_USAGES"
+          },
+          {
+            "count": 618,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM4",
+            "operation": "EVALUATED",
+            "skyfunctionName": "DIRECTORY_LISTING"
+          },
+          {
+            "count": 14,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM5",
+            "operation": "EVALUATED",
+            "skyfunctionName": "ACTION_ENVIRONMENT_VARIABLE"
+          },
+          {
+            "count": 38,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQw",
+            "operation": "EVALUATED",
+            "skyfunctionName": "SINGLE_EXTENSION_EVAL"
+          },
+          {
+            "count": 99,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQx",
+            "operation": "EVALUATED",
+            "skyfunctionName": "IGNORED_SUBDIRECTORIES"
+          },
+          {
+            "count": 229,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQy",
+            "operation": "EVALUATED",
+            "skyfunctionName": "CONTAINING_PACKAGE_LOOKUP"
+          },
+          {
+            "count": 57,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQz",
+            "operation": "EVALUATED",
+            "skyfunctionName": "BZLMOD_REPO_RULE"
+          },
+          {
+            "count": 4,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ0",
+            "operation": "EVALUATED",
+            "skyfunctionName": "STARLARK_BUILTINS"
+          },
+          {
+            "count": 66,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ1",
+            "operation": "EVALUATED",
+            "skyfunctionName": "REPO_FILE"
+          },
+          {
+            "count": 13,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ2",
+            "operation": "EVALUATED",
+            "skyfunctionName": "BAZEL_MODULE_RESOLUTION"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ3",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TARGET_PATTERN"
+          },
+          {
+            "count": 18,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ4",
+            "operation": "EVALUATED",
+            "skyfunctionName": "SINGLE_EXTENSION"
+          },
+          {
+            "count": 320,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ5",
+            "operation": "EVALUATED",
+            "skyfunctionName": "PACKAGE"
+          },
+          {
+            "count": 59,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjUw",
+            "operation": "EVALUATED",
+            "skyfunctionName": "REPO_SPEC"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjUx",
+            "operation": "EVALUATED",
+            "skyfunctionName": "REPO_PACKAGE_ARGS"
+          },
+          {
+            "count": 12,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjUy",
+            "operation": "EVALUATED",
+            "skyfunctionName": "GLOBS"
+          },
+          {
+            "count": 1060,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjUz",
+            "operation": "EVALUATED",
+            "skyfunctionName": "RECURSIVE_PKG"
+          },
+          {
+            "count": 3754,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU0",
+            "operation": "EVALUATED",
+            "skyfunctionName": "FILE"
+          },
+          {
+            "count": 1055,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU1",
+            "operation": "EVALUATED",
+            "skyfunctionName": "BZL_LOAD"
+          },
+          {
+            "count": 309,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU2",
+            "operation": "EVALUATED",
+            "skyfunctionName": "DIRECTORY_LISTING_STATE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU3",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TESTS_IN_SUITE"
+          },
+          {
+            "count": 84,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU4",
+            "operation": "EVALUATED",
+            "skyfunctionName": "REPOSITORY_DIRECTORY"
+          },
+          {
+            "count": 156,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU5",
+            "operation": "EVALUATED",
+            "skyfunctionName": "PACKAGE_ERROR_MESSAGE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjYw",
+            "operation": "EVALUATED",
+            "skyfunctionName": "WORKSPACE_NAME"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjYx",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TEST_SUITE_EXPANSION"
+          },
+          {
+            "count": 310,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjYy",
+            "operation": "EVALUATED",
+            "skyfunctionName": "LOCAL_REPOSITORY_LOOKUP"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjYz",
+            "operation": "EVALUATED",
+            "skyfunctionName": "BAZEL_LOCK_FILE"
+          },
+          {
+            "count": 40,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjY0",
+            "operation": "EVALUATED",
+            "skyfunctionName": "REPOSITORY_MAPPING"
+          },
+          {
+            "count": 1404,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjY1",
+            "operation": "EVALUATED",
+            "skyfunctionName": "PACKAGE_LOOKUP"
+          },
+          {
+            "count": 8,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjY2",
+            "operation": "EVALUATED",
+            "skyfunctionName": "CLIENT_ENVIRONMENT_VARIABLE"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjY3",
+            "operation": "EVALUATED",
+            "skyfunctionName": "BAZEL_DEP_GRAPH"
+          },
+          {
+            "count": 318,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjY4",
+            "operation": "EVALUATED",
+            "skyfunctionName": "MODULE_FILE"
+          },
+          {
+            "count": 248,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjY5",
+            "operation": "EVALUATED",
+            "skyfunctionName": "PROJECT_FILES_LOOKUP"
+          },
+          {
+            "count": 1786,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojcw",
+            "operation": "EVALUATED",
+            "skyfunctionName": "FILE_STATE"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojcx",
+            "operation": "EVALUATED",
+            "skyfunctionName": "MODULE_EXTENSION_REPO_MAPPING_ENTRIES"
+          },
+          {
+            "count": 3,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojcy",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TARGET_PATTERN_PHASE"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojcz",
+            "operation": "EVALUATED",
+            "skyfunctionName": "REGISTRY"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0Ojc0",
+            "operation": "EVALUATED",
+            "skyfunctionName": "SINGLE_EXTENSION_USAGES"
+          }
+        ],
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6Ng=="
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6Ng==",
+        "numAnalyses": 8,
+        "numBuilds": 8
       },
       "id": "TWV0cmljczo2",
       "memoryMetrics": {
@@ -68,13 +523,23 @@
           "peakPacketsSentPerSec": 19205
         }
       },
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6Ng==",
+        "packagesLoaded": 0
+      },
       "timingMetrics": {
         "actionsExecutionStartInMs": 0,
         "analysisPhaseTimeInMs": 0,
         "cpuTimeInMs": 8660,
+        "criticalPathTimeInMs": 0,
         "executionPhaseTimeInMs": 0,
         "id": "VGltaW5nTWV0cmljczo2",
         "wallTimeInMs": 1232
+      },
+      "workerMetrics": [],
+      "workerPoolMetrics": {
+        "id": "V29ya2VyUG9vbE1ldHJpY3M6Ng==",
+        "workerPoolStats": []
       }
     }
   }

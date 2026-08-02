@@ -19,11 +19,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
@@ -37,6 +39,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -49,6 +52,11 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerid"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workermetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolstats"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerstats"
 	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
 )
@@ -62,43 +70,51 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAction                = "Action"
-	TypeActionCacheStatistics = "ActionCacheStatistics"
-	TypeActionData            = "ActionData"
-	TypeActionSummary         = "ActionSummary"
-	TypeArtifactMetrics       = "ArtifactMetrics"
-	TypeAuthenticatedUser     = "AuthenticatedUser"
-	TypeBazelInvocation       = "BazelInvocation"
-	TypeBuild                 = "Build"
-	TypeBuildGraphMetrics     = "BuildGraphMetrics"
-	TypeBuildLogChunk         = "BuildLogChunk"
-	TypeBuildTag              = "BuildTag"
-	TypeConfiguration         = "Configuration"
-	TypeConnectionMetadata    = "ConnectionMetadata"
-	TypeDigest                = "Digest"
-	TypeEventMetadata         = "EventMetadata"
-	TypeFile                  = "File"
-	TypeFilePath              = "FilePath"
-	TypeGarbageMetrics        = "GarbageMetrics"
-	TypeIncompleteBuildLog    = "IncompleteBuildLog"
-	TypeInstanceName          = "InstanceName"
-	TypeInvocationTag         = "InvocationTag"
-	TypeInvocationTarget      = "InvocationTarget"
-	TypeMemoryMetrics         = "MemoryMetrics"
-	TypeMetrics               = "Metrics"
-	TypeMissDetail            = "MissDetail"
-	TypeNetworkMetrics        = "NetworkMetrics"
-	TypeRunnerCount           = "RunnerCount"
-	TypeSourceControl         = "SourceControl"
-	TypeSystemNetworkStats    = "SystemNetworkStats"
-	TypeTarget                = "Target"
-	TypeTargetKindMapping     = "TargetKindMapping"
-	TypeTargetMetrics         = "TargetMetrics"
-	TypeTestActionOutput      = "TestActionOutput"
-	TypeTestResult            = "TestResult"
-	TypeTestSummary           = "TestSummary"
-	TypeTestTarget            = "TestTarget"
-	TypeTimingMetrics         = "TimingMetrics"
+	TypeAction                   = "Action"
+	TypeActionCacheStatistics    = "ActionCacheStatistics"
+	TypeActionData               = "ActionData"
+	TypeActionSummary            = "ActionSummary"
+	TypeArtifactMetrics          = "ArtifactMetrics"
+	TypeAuthenticatedUser        = "AuthenticatedUser"
+	TypeBazelInvocation          = "BazelInvocation"
+	TypeBuild                    = "Build"
+	TypeBuildGraphEvaluationStat = "BuildGraphEvaluationStat"
+	TypeBuildGraphMetrics        = "BuildGraphMetrics"
+	TypeBuildLogChunk            = "BuildLogChunk"
+	TypeBuildTag                 = "BuildTag"
+	TypeConfiguration            = "Configuration"
+	TypeConnectionMetadata       = "ConnectionMetadata"
+	TypeCumulativeMetrics        = "CumulativeMetrics"
+	TypeDigest                   = "Digest"
+	TypeEventMetadata            = "EventMetadata"
+	TypeFile                     = "File"
+	TypeFilePath                 = "FilePath"
+	TypeGarbageMetrics           = "GarbageMetrics"
+	TypeIncompleteBuildLog       = "IncompleteBuildLog"
+	TypeInstanceName             = "InstanceName"
+	TypeInvocationTag            = "InvocationTag"
+	TypeInvocationTarget         = "InvocationTarget"
+	TypeMemoryMetrics            = "MemoryMetrics"
+	TypeMetrics                  = "Metrics"
+	TypeMissDetail               = "MissDetail"
+	TypeNetworkMetrics           = "NetworkMetrics"
+	TypePackageMetrics           = "PackageMetrics"
+	TypeRunnerCount              = "RunnerCount"
+	TypeSourceControl            = "SourceControl"
+	TypeSystemNetworkStats       = "SystemNetworkStats"
+	TypeTarget                   = "Target"
+	TypeTargetKindMapping        = "TargetKindMapping"
+	TypeTargetMetrics            = "TargetMetrics"
+	TypeTestActionOutput         = "TestActionOutput"
+	TypeTestResult               = "TestResult"
+	TypeTestSummary              = "TestSummary"
+	TypeTestTarget               = "TestTarget"
+	TypeTimingMetrics            = "TimingMetrics"
+	TypeWorkerID                 = "WorkerID"
+	TypeWorkerMetrics            = "WorkerMetrics"
+	TypeWorkerPoolMetrics        = "WorkerPoolMetrics"
+	TypeWorkerPoolStats          = "WorkerPoolStats"
+	TypeWorkerStats              = "WorkerStats"
 )
 
 // ActionMutation represents an operation that mutates the Action nodes in the graph.
@@ -1549,28 +1565,30 @@ func (m *ActionMutation) ResetEdge(name string) error {
 // ActionCacheStatisticsMutation represents an operation that mutates the ActionCacheStatistics nodes in the graph.
 type ActionCacheStatisticsMutation struct {
 	config
-	op                    Op
-	typ                   string
-	id                    *int64
-	size_in_bytes         *uint64
-	addsize_in_bytes      *int64
-	save_time_in_ms       *uint64
-	addsave_time_in_ms    *int64
-	load_time_in_ms       *int64
-	addload_time_in_ms    *int64
-	hits                  *int32
-	addhits               *int32
-	misses                *int32
-	addmisses             *int32
-	clearedFields         map[string]struct{}
-	action_summary        *int64
-	clearedaction_summary bool
-	miss_details          map[int64]struct{}
-	removedmiss_details   map[int64]struct{}
-	clearedmiss_details   bool
-	done                  bool
-	oldValue              func(context.Context) (*ActionCacheStatistics, error)
-	predicates            []predicate.ActionCacheStatistics
+	op                                       Op
+	typ                                      string
+	id                                       *int64
+	size_in_bytes                            *uint64
+	addsize_in_bytes                         *int64
+	save_time_in_ms                          *uint64
+	addsave_time_in_ms                       *int64
+	load_time_in_ms                          *int64
+	addload_time_in_ms                       *int64
+	cache_check_semaphore_wait_time_in_ms    *uint64
+	addcache_check_semaphore_wait_time_in_ms *int64
+	hits                                     *int32
+	addhits                                  *int32
+	misses                                   *int32
+	addmisses                                *int32
+	clearedFields                            map[string]struct{}
+	action_summary                           *int64
+	clearedaction_summary                    bool
+	miss_details                             map[int64]struct{}
+	removedmiss_details                      map[int64]struct{}
+	clearedmiss_details                      bool
+	done                                     bool
+	oldValue                                 func(context.Context) (*ActionCacheStatistics, error)
+	predicates                               []predicate.ActionCacheStatistics
 }
 
 var _ ent.Mutation = (*ActionCacheStatisticsMutation)(nil)
@@ -1887,6 +1905,76 @@ func (m *ActionCacheStatisticsMutation) ResetLoadTimeInMs() {
 	delete(m.clearedFields, actioncachestatistics.FieldLoadTimeInMs)
 }
 
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) SetCacheCheckSemaphoreWaitTimeInMs(u uint64) {
+	m.cache_check_semaphore_wait_time_in_ms = &u
+	m.addcache_check_semaphore_wait_time_in_ms = nil
+}
+
+// CacheCheckSemaphoreWaitTimeInMs returns the value of the "cache_check_semaphore_wait_time_in_ms" field in the mutation.
+func (m *ActionCacheStatisticsMutation) CacheCheckSemaphoreWaitTimeInMs() (r uint64, exists bool) {
+	v := m.cache_check_semaphore_wait_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCacheCheckSemaphoreWaitTimeInMs returns the old "cache_check_semaphore_wait_time_in_ms" field's value of the ActionCacheStatistics entity.
+// If the ActionCacheStatistics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionCacheStatisticsMutation) OldCacheCheckSemaphoreWaitTimeInMs(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCacheCheckSemaphoreWaitTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCacheCheckSemaphoreWaitTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCacheCheckSemaphoreWaitTimeInMs: %w", err)
+	}
+	return oldValue.CacheCheckSemaphoreWaitTimeInMs, nil
+}
+
+// AddCacheCheckSemaphoreWaitTimeInMs adds u to the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) AddCacheCheckSemaphoreWaitTimeInMs(u int64) {
+	if m.addcache_check_semaphore_wait_time_in_ms != nil {
+		*m.addcache_check_semaphore_wait_time_in_ms += u
+	} else {
+		m.addcache_check_semaphore_wait_time_in_ms = &u
+	}
+}
+
+// AddedCacheCheckSemaphoreWaitTimeInMs returns the value that was added to the "cache_check_semaphore_wait_time_in_ms" field in this mutation.
+func (m *ActionCacheStatisticsMutation) AddedCacheCheckSemaphoreWaitTimeInMs() (r int64, exists bool) {
+	v := m.addcache_check_semaphore_wait_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCacheCheckSemaphoreWaitTimeInMs clears the value of the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) ClearCacheCheckSemaphoreWaitTimeInMs() {
+	m.cache_check_semaphore_wait_time_in_ms = nil
+	m.addcache_check_semaphore_wait_time_in_ms = nil
+	m.clearedFields[actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs] = struct{}{}
+}
+
+// CacheCheckSemaphoreWaitTimeInMsCleared returns if the "cache_check_semaphore_wait_time_in_ms" field was cleared in this mutation.
+func (m *ActionCacheStatisticsMutation) CacheCheckSemaphoreWaitTimeInMsCleared() bool {
+	_, ok := m.clearedFields[actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs]
+	return ok
+}
+
+// ResetCacheCheckSemaphoreWaitTimeInMs resets all changes to the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) ResetCacheCheckSemaphoreWaitTimeInMs() {
+	m.cache_check_semaphore_wait_time_in_ms = nil
+	m.addcache_check_semaphore_wait_time_in_ms = nil
+	delete(m.clearedFields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+}
+
 // SetHits sets the "hits" field.
 func (m *ActionCacheStatisticsMutation) SetHits(i int32) {
 	m.hits = &i
@@ -2154,7 +2242,7 @@ func (m *ActionCacheStatisticsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ActionCacheStatisticsMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.size_in_bytes != nil {
 		fields = append(fields, actioncachestatistics.FieldSizeInBytes)
 	}
@@ -2163,6 +2251,9 @@ func (m *ActionCacheStatisticsMutation) Fields() []string {
 	}
 	if m.load_time_in_ms != nil {
 		fields = append(fields, actioncachestatistics.FieldLoadTimeInMs)
+	}
+	if m.cache_check_semaphore_wait_time_in_ms != nil {
+		fields = append(fields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
 	}
 	if m.hits != nil {
 		fields = append(fields, actioncachestatistics.FieldHits)
@@ -2184,6 +2275,8 @@ func (m *ActionCacheStatisticsMutation) Field(name string) (ent.Value, bool) {
 		return m.SaveTimeInMs()
 	case actioncachestatistics.FieldLoadTimeInMs:
 		return m.LoadTimeInMs()
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		return m.CacheCheckSemaphoreWaitTimeInMs()
 	case actioncachestatistics.FieldHits:
 		return m.Hits()
 	case actioncachestatistics.FieldMisses:
@@ -2203,6 +2296,8 @@ func (m *ActionCacheStatisticsMutation) OldField(ctx context.Context, name strin
 		return m.OldSaveTimeInMs(ctx)
 	case actioncachestatistics.FieldLoadTimeInMs:
 		return m.OldLoadTimeInMs(ctx)
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		return m.OldCacheCheckSemaphoreWaitTimeInMs(ctx)
 	case actioncachestatistics.FieldHits:
 		return m.OldHits(ctx)
 	case actioncachestatistics.FieldMisses:
@@ -2237,6 +2332,13 @@ func (m *ActionCacheStatisticsMutation) SetField(name string, value ent.Value) e
 		}
 		m.SetLoadTimeInMs(v)
 		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCacheCheckSemaphoreWaitTimeInMs(v)
+		return nil
 	case actioncachestatistics.FieldHits:
 		v, ok := value.(int32)
 		if !ok {
@@ -2268,6 +2370,9 @@ func (m *ActionCacheStatisticsMutation) AddedFields() []string {
 	if m.addload_time_in_ms != nil {
 		fields = append(fields, actioncachestatistics.FieldLoadTimeInMs)
 	}
+	if m.addcache_check_semaphore_wait_time_in_ms != nil {
+		fields = append(fields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+	}
 	if m.addhits != nil {
 		fields = append(fields, actioncachestatistics.FieldHits)
 	}
@@ -2288,6 +2393,8 @@ func (m *ActionCacheStatisticsMutation) AddedField(name string) (ent.Value, bool
 		return m.AddedSaveTimeInMs()
 	case actioncachestatistics.FieldLoadTimeInMs:
 		return m.AddedLoadTimeInMs()
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		return m.AddedCacheCheckSemaphoreWaitTimeInMs()
 	case actioncachestatistics.FieldHits:
 		return m.AddedHits()
 	case actioncachestatistics.FieldMisses:
@@ -2322,6 +2429,13 @@ func (m *ActionCacheStatisticsMutation) AddField(name string, value ent.Value) e
 		}
 		m.AddLoadTimeInMs(v)
 		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCacheCheckSemaphoreWaitTimeInMs(v)
+		return nil
 	case actioncachestatistics.FieldHits:
 		v, ok := value.(int32)
 		if !ok {
@@ -2353,6 +2467,9 @@ func (m *ActionCacheStatisticsMutation) ClearedFields() []string {
 	if m.FieldCleared(actioncachestatistics.FieldLoadTimeInMs) {
 		fields = append(fields, actioncachestatistics.FieldLoadTimeInMs)
 	}
+	if m.FieldCleared(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs) {
+		fields = append(fields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+	}
 	if m.FieldCleared(actioncachestatistics.FieldHits) {
 		fields = append(fields, actioncachestatistics.FieldHits)
 	}
@@ -2382,6 +2499,9 @@ func (m *ActionCacheStatisticsMutation) ClearField(name string) error {
 	case actioncachestatistics.FieldLoadTimeInMs:
 		m.ClearLoadTimeInMs()
 		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		m.ClearCacheCheckSemaphoreWaitTimeInMs()
+		return nil
 	case actioncachestatistics.FieldHits:
 		m.ClearHits()
 		return nil
@@ -2404,6 +2524,9 @@ func (m *ActionCacheStatisticsMutation) ResetField(name string) error {
 		return nil
 	case actioncachestatistics.FieldLoadTimeInMs:
 		m.ResetLoadTimeInMs()
+		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		m.ResetCacheCheckSemaphoreWaitTimeInMs()
 		return nil
 	case actioncachestatistics.FieldHits:
 		m.ResetHits()
@@ -9798,6 +9921,610 @@ func (m *BuildMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Build edge %s", name)
 }
 
+// BuildGraphEvaluationStatMutation represents an operation that mutates the BuildGraphEvaluationStat nodes in the graph.
+type BuildGraphEvaluationStatMutation struct {
+	config
+	op                         Op
+	typ                        string
+	id                         *int64
+	operation                  *string
+	skyfunction_name           *string
+	count                      *int64
+	addcount                   *int64
+	clearedFields              map[string]struct{}
+	build_graph_metrics        *int64
+	clearedbuild_graph_metrics bool
+	done                       bool
+	oldValue                   func(context.Context) (*BuildGraphEvaluationStat, error)
+	predicates                 []predicate.BuildGraphEvaluationStat
+}
+
+var _ ent.Mutation = (*BuildGraphEvaluationStatMutation)(nil)
+
+// buildgraphevaluationstatOption allows management of the mutation configuration using functional options.
+type buildgraphevaluationstatOption func(*BuildGraphEvaluationStatMutation)
+
+// newBuildGraphEvaluationStatMutation creates new mutation for the BuildGraphEvaluationStat entity.
+func newBuildGraphEvaluationStatMutation(c config, op Op, opts ...buildgraphevaluationstatOption) *BuildGraphEvaluationStatMutation {
+	m := &BuildGraphEvaluationStatMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeBuildGraphEvaluationStat,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withBuildGraphEvaluationStatID sets the ID field of the mutation.
+func withBuildGraphEvaluationStatID(id int64) buildgraphevaluationstatOption {
+	return func(m *BuildGraphEvaluationStatMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *BuildGraphEvaluationStat
+		)
+		m.oldValue = func(ctx context.Context) (*BuildGraphEvaluationStat, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().BuildGraphEvaluationStat.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withBuildGraphEvaluationStat sets the old BuildGraphEvaluationStat of the mutation.
+func withBuildGraphEvaluationStat(node *BuildGraphEvaluationStat) buildgraphevaluationstatOption {
+	return func(m *BuildGraphEvaluationStatMutation) {
+		m.oldValue = func(context.Context) (*BuildGraphEvaluationStat, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m BuildGraphEvaluationStatMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m BuildGraphEvaluationStatMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of BuildGraphEvaluationStat entities.
+func (m *BuildGraphEvaluationStatMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *BuildGraphEvaluationStatMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *BuildGraphEvaluationStatMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().BuildGraphEvaluationStat.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetOperation sets the "operation" field.
+func (m *BuildGraphEvaluationStatMutation) SetOperation(s string) {
+	m.operation = &s
+}
+
+// Operation returns the value of the "operation" field in the mutation.
+func (m *BuildGraphEvaluationStatMutation) Operation() (r string, exists bool) {
+	v := m.operation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperation returns the old "operation" field's value of the BuildGraphEvaluationStat entity.
+// If the BuildGraphEvaluationStat object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildGraphEvaluationStatMutation) OldOperation(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperation is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperation requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperation: %w", err)
+	}
+	return oldValue.Operation, nil
+}
+
+// ClearOperation clears the value of the "operation" field.
+func (m *BuildGraphEvaluationStatMutation) ClearOperation() {
+	m.operation = nil
+	m.clearedFields[buildgraphevaluationstat.FieldOperation] = struct{}{}
+}
+
+// OperationCleared returns if the "operation" field was cleared in this mutation.
+func (m *BuildGraphEvaluationStatMutation) OperationCleared() bool {
+	_, ok := m.clearedFields[buildgraphevaluationstat.FieldOperation]
+	return ok
+}
+
+// ResetOperation resets all changes to the "operation" field.
+func (m *BuildGraphEvaluationStatMutation) ResetOperation() {
+	m.operation = nil
+	delete(m.clearedFields, buildgraphevaluationstat.FieldOperation)
+}
+
+// SetSkyfunctionName sets the "skyfunction_name" field.
+func (m *BuildGraphEvaluationStatMutation) SetSkyfunctionName(s string) {
+	m.skyfunction_name = &s
+}
+
+// SkyfunctionName returns the value of the "skyfunction_name" field in the mutation.
+func (m *BuildGraphEvaluationStatMutation) SkyfunctionName() (r string, exists bool) {
+	v := m.skyfunction_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSkyfunctionName returns the old "skyfunction_name" field's value of the BuildGraphEvaluationStat entity.
+// If the BuildGraphEvaluationStat object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildGraphEvaluationStatMutation) OldSkyfunctionName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSkyfunctionName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSkyfunctionName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSkyfunctionName: %w", err)
+	}
+	return oldValue.SkyfunctionName, nil
+}
+
+// ClearSkyfunctionName clears the value of the "skyfunction_name" field.
+func (m *BuildGraphEvaluationStatMutation) ClearSkyfunctionName() {
+	m.skyfunction_name = nil
+	m.clearedFields[buildgraphevaluationstat.FieldSkyfunctionName] = struct{}{}
+}
+
+// SkyfunctionNameCleared returns if the "skyfunction_name" field was cleared in this mutation.
+func (m *BuildGraphEvaluationStatMutation) SkyfunctionNameCleared() bool {
+	_, ok := m.clearedFields[buildgraphevaluationstat.FieldSkyfunctionName]
+	return ok
+}
+
+// ResetSkyfunctionName resets all changes to the "skyfunction_name" field.
+func (m *BuildGraphEvaluationStatMutation) ResetSkyfunctionName() {
+	m.skyfunction_name = nil
+	delete(m.clearedFields, buildgraphevaluationstat.FieldSkyfunctionName)
+}
+
+// SetCount sets the "count" field.
+func (m *BuildGraphEvaluationStatMutation) SetCount(i int64) {
+	m.count = &i
+	m.addcount = nil
+}
+
+// Count returns the value of the "count" field in the mutation.
+func (m *BuildGraphEvaluationStatMutation) Count() (r int64, exists bool) {
+	v := m.count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCount returns the old "count" field's value of the BuildGraphEvaluationStat entity.
+// If the BuildGraphEvaluationStat object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildGraphEvaluationStatMutation) OldCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCount: %w", err)
+	}
+	return oldValue.Count, nil
+}
+
+// AddCount adds i to the "count" field.
+func (m *BuildGraphEvaluationStatMutation) AddCount(i int64) {
+	if m.addcount != nil {
+		*m.addcount += i
+	} else {
+		m.addcount = &i
+	}
+}
+
+// AddedCount returns the value that was added to the "count" field in this mutation.
+func (m *BuildGraphEvaluationStatMutation) AddedCount() (r int64, exists bool) {
+	v := m.addcount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCount clears the value of the "count" field.
+func (m *BuildGraphEvaluationStatMutation) ClearCount() {
+	m.count = nil
+	m.addcount = nil
+	m.clearedFields[buildgraphevaluationstat.FieldCount] = struct{}{}
+}
+
+// CountCleared returns if the "count" field was cleared in this mutation.
+func (m *BuildGraphEvaluationStatMutation) CountCleared() bool {
+	_, ok := m.clearedFields[buildgraphevaluationstat.FieldCount]
+	return ok
+}
+
+// ResetCount resets all changes to the "count" field.
+func (m *BuildGraphEvaluationStatMutation) ResetCount() {
+	m.count = nil
+	m.addcount = nil
+	delete(m.clearedFields, buildgraphevaluationstat.FieldCount)
+}
+
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by id.
+func (m *BuildGraphEvaluationStatMutation) SetBuildGraphMetricsID(id int64) {
+	m.build_graph_metrics = &id
+}
+
+// ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
+func (m *BuildGraphEvaluationStatMutation) ClearBuildGraphMetrics() {
+	m.clearedbuild_graph_metrics = true
+}
+
+// BuildGraphMetricsCleared reports if the "build_graph_metrics" edge to the BuildGraphMetrics entity was cleared.
+func (m *BuildGraphEvaluationStatMutation) BuildGraphMetricsCleared() bool {
+	return m.clearedbuild_graph_metrics
+}
+
+// BuildGraphMetricsID returns the "build_graph_metrics" edge ID in the mutation.
+func (m *BuildGraphEvaluationStatMutation) BuildGraphMetricsID() (id int64, exists bool) {
+	if m.build_graph_metrics != nil {
+		return *m.build_graph_metrics, true
+	}
+	return
+}
+
+// BuildGraphMetricsIDs returns the "build_graph_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BuildGraphMetricsID instead. It exists only for internal usage by the builders.
+func (m *BuildGraphEvaluationStatMutation) BuildGraphMetricsIDs() (ids []int64) {
+	if id := m.build_graph_metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBuildGraphMetrics resets all changes to the "build_graph_metrics" edge.
+func (m *BuildGraphEvaluationStatMutation) ResetBuildGraphMetrics() {
+	m.build_graph_metrics = nil
+	m.clearedbuild_graph_metrics = false
+}
+
+// Where appends a list predicates to the BuildGraphEvaluationStatMutation builder.
+func (m *BuildGraphEvaluationStatMutation) Where(ps ...predicate.BuildGraphEvaluationStat) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the BuildGraphEvaluationStatMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *BuildGraphEvaluationStatMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.BuildGraphEvaluationStat, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *BuildGraphEvaluationStatMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *BuildGraphEvaluationStatMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (BuildGraphEvaluationStat).
+func (m *BuildGraphEvaluationStatMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *BuildGraphEvaluationStatMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.operation != nil {
+		fields = append(fields, buildgraphevaluationstat.FieldOperation)
+	}
+	if m.skyfunction_name != nil {
+		fields = append(fields, buildgraphevaluationstat.FieldSkyfunctionName)
+	}
+	if m.count != nil {
+		fields = append(fields, buildgraphevaluationstat.FieldCount)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *BuildGraphEvaluationStatMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case buildgraphevaluationstat.FieldOperation:
+		return m.Operation()
+	case buildgraphevaluationstat.FieldSkyfunctionName:
+		return m.SkyfunctionName()
+	case buildgraphevaluationstat.FieldCount:
+		return m.Count()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *BuildGraphEvaluationStatMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case buildgraphevaluationstat.FieldOperation:
+		return m.OldOperation(ctx)
+	case buildgraphevaluationstat.FieldSkyfunctionName:
+		return m.OldSkyfunctionName(ctx)
+	case buildgraphevaluationstat.FieldCount:
+		return m.OldCount(ctx)
+	}
+	return nil, fmt.Errorf("unknown BuildGraphEvaluationStat field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BuildGraphEvaluationStatMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case buildgraphevaluationstat.FieldOperation:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperation(v)
+		return nil
+	case buildgraphevaluationstat.FieldSkyfunctionName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSkyfunctionName(v)
+		return nil
+	case buildgraphevaluationstat.FieldCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BuildGraphEvaluationStat field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *BuildGraphEvaluationStatMutation) AddedFields() []string {
+	var fields []string
+	if m.addcount != nil {
+		fields = append(fields, buildgraphevaluationstat.FieldCount)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *BuildGraphEvaluationStatMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case buildgraphevaluationstat.FieldCount:
+		return m.AddedCount()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BuildGraphEvaluationStatMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case buildgraphevaluationstat.FieldCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BuildGraphEvaluationStat numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *BuildGraphEvaluationStatMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(buildgraphevaluationstat.FieldOperation) {
+		fields = append(fields, buildgraphevaluationstat.FieldOperation)
+	}
+	if m.FieldCleared(buildgraphevaluationstat.FieldSkyfunctionName) {
+		fields = append(fields, buildgraphevaluationstat.FieldSkyfunctionName)
+	}
+	if m.FieldCleared(buildgraphevaluationstat.FieldCount) {
+		fields = append(fields, buildgraphevaluationstat.FieldCount)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *BuildGraphEvaluationStatMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *BuildGraphEvaluationStatMutation) ClearField(name string) error {
+	switch name {
+	case buildgraphevaluationstat.FieldOperation:
+		m.ClearOperation()
+		return nil
+	case buildgraphevaluationstat.FieldSkyfunctionName:
+		m.ClearSkyfunctionName()
+		return nil
+	case buildgraphevaluationstat.FieldCount:
+		m.ClearCount()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildGraphEvaluationStat nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *BuildGraphEvaluationStatMutation) ResetField(name string) error {
+	switch name {
+	case buildgraphevaluationstat.FieldOperation:
+		m.ResetOperation()
+		return nil
+	case buildgraphevaluationstat.FieldSkyfunctionName:
+		m.ResetSkyfunctionName()
+		return nil
+	case buildgraphevaluationstat.FieldCount:
+		m.ResetCount()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildGraphEvaluationStat field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *BuildGraphEvaluationStatMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.build_graph_metrics != nil {
+		edges = append(edges, buildgraphevaluationstat.EdgeBuildGraphMetrics)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *BuildGraphEvaluationStatMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case buildgraphevaluationstat.EdgeBuildGraphMetrics:
+		if id := m.build_graph_metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *BuildGraphEvaluationStatMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *BuildGraphEvaluationStatMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *BuildGraphEvaluationStatMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedbuild_graph_metrics {
+		edges = append(edges, buildgraphevaluationstat.EdgeBuildGraphMetrics)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *BuildGraphEvaluationStatMutation) EdgeCleared(name string) bool {
+	switch name {
+	case buildgraphevaluationstat.EdgeBuildGraphMetrics:
+		return m.clearedbuild_graph_metrics
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *BuildGraphEvaluationStatMutation) ClearEdge(name string) error {
+	switch name {
+	case buildgraphevaluationstat.EdgeBuildGraphMetrics:
+		m.ClearBuildGraphMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildGraphEvaluationStat unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *BuildGraphEvaluationStatMutation) ResetEdge(name string) error {
+	switch name {
+	case buildgraphevaluationstat.EdgeBuildGraphMetrics:
+		m.ResetBuildGraphMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildGraphEvaluationStat edge %s", name)
+}
+
 // BuildGraphMetricsMutation represents an operation that mutates the BuildGraphMetrics nodes in the graph.
 type BuildGraphMetricsMutation struct {
 	config
@@ -9825,6 +10552,9 @@ type BuildGraphMetricsMutation struct {
 	clearedFields                                      map[string]struct{}
 	metrics                                            *int64
 	clearedmetrics                                     bool
+	evaluation_stats                                   map[int64]struct{}
+	removedevaluation_stats                            map[int64]struct{}
+	clearedevaluation_stats                            bool
 	done                                               bool
 	oldValue                                           func(context.Context) (*BuildGraphMetrics, error)
 	predicates                                         []predicate.BuildGraphMetrics
@@ -10603,6 +11333,60 @@ func (m *BuildGraphMetricsMutation) ResetMetrics() {
 	m.clearedmetrics = false
 }
 
+// AddEvaluationStatIDs adds the "evaluation_stats" edge to the BuildGraphEvaluationStat entity by ids.
+func (m *BuildGraphMetricsMutation) AddEvaluationStatIDs(ids ...int64) {
+	if m.evaluation_stats == nil {
+		m.evaluation_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.evaluation_stats[ids[i]] = struct{}{}
+	}
+}
+
+// ClearEvaluationStats clears the "evaluation_stats" edge to the BuildGraphEvaluationStat entity.
+func (m *BuildGraphMetricsMutation) ClearEvaluationStats() {
+	m.clearedevaluation_stats = true
+}
+
+// EvaluationStatsCleared reports if the "evaluation_stats" edge to the BuildGraphEvaluationStat entity was cleared.
+func (m *BuildGraphMetricsMutation) EvaluationStatsCleared() bool {
+	return m.clearedevaluation_stats
+}
+
+// RemoveEvaluationStatIDs removes the "evaluation_stats" edge to the BuildGraphEvaluationStat entity by IDs.
+func (m *BuildGraphMetricsMutation) RemoveEvaluationStatIDs(ids ...int64) {
+	if m.removedevaluation_stats == nil {
+		m.removedevaluation_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.evaluation_stats, ids[i])
+		m.removedevaluation_stats[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedEvaluationStats returns the removed IDs of the "evaluation_stats" edge to the BuildGraphEvaluationStat entity.
+func (m *BuildGraphMetricsMutation) RemovedEvaluationStatsIDs() (ids []int64) {
+	for id := range m.removedevaluation_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// EvaluationStatsIDs returns the "evaluation_stats" edge IDs in the mutation.
+func (m *BuildGraphMetricsMutation) EvaluationStatsIDs() (ids []int64) {
+	for id := range m.evaluation_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetEvaluationStats resets all changes to the "evaluation_stats" edge.
+func (m *BuildGraphMetricsMutation) ResetEvaluationStats() {
+	m.evaluation_stats = nil
+	m.clearedevaluation_stats = false
+	m.removedevaluation_stats = nil
+}
+
 // Where appends a list predicates to the BuildGraphMetricsMutation builder.
 func (m *BuildGraphMetricsMutation) Where(ps ...predicate.BuildGraphMetrics) {
 	m.predicates = append(m.predicates, ps...)
@@ -11040,9 +11824,12 @@ func (m *BuildGraphMetricsMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BuildGraphMetricsMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.metrics != nil {
 		edges = append(edges, buildgraphmetrics.EdgeMetrics)
+	}
+	if m.evaluation_stats != nil {
+		edges = append(edges, buildgraphmetrics.EdgeEvaluationStats)
 	}
 	return edges
 }
@@ -11055,27 +11842,47 @@ func (m *BuildGraphMetricsMutation) AddedIDs(name string) []ent.Value {
 		if id := m.metrics; id != nil {
 			return []ent.Value{*id}
 		}
+	case buildgraphmetrics.EdgeEvaluationStats:
+		ids := make([]ent.Value, 0, len(m.evaluation_stats))
+		for id := range m.evaluation_stats {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BuildGraphMetricsMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removedevaluation_stats != nil {
+		edges = append(edges, buildgraphmetrics.EdgeEvaluationStats)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *BuildGraphMetricsMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case buildgraphmetrics.EdgeEvaluationStats:
+		ids := make([]ent.Value, 0, len(m.removedevaluation_stats))
+		for id := range m.removedevaluation_stats {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BuildGraphMetricsMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedmetrics {
 		edges = append(edges, buildgraphmetrics.EdgeMetrics)
+	}
+	if m.clearedevaluation_stats {
+		edges = append(edges, buildgraphmetrics.EdgeEvaluationStats)
 	}
 	return edges
 }
@@ -11086,6 +11893,8 @@ func (m *BuildGraphMetricsMutation) EdgeCleared(name string) bool {
 	switch name {
 	case buildgraphmetrics.EdgeMetrics:
 		return m.clearedmetrics
+	case buildgraphmetrics.EdgeEvaluationStats:
+		return m.clearedevaluation_stats
 	}
 	return false
 }
@@ -11107,6 +11916,9 @@ func (m *BuildGraphMetricsMutation) ResetEdge(name string) error {
 	switch name {
 	case buildgraphmetrics.EdgeMetrics:
 		m.ResetMetrics()
+		return nil
+	case buildgraphmetrics.EdgeEvaluationStats:
+		m.ResetEvaluationStats()
 		return nil
 	}
 	return fmt.Errorf("unknown BuildGraphMetrics edge %s", name)
@@ -13648,6 +14460,571 @@ func (m *ConnectionMetadataMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown ConnectionMetadata edge %s", name)
+}
+
+// CumulativeMetricsMutation represents an operation that mutates the CumulativeMetrics nodes in the graph.
+type CumulativeMetricsMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int64
+	num_analyses    *int32
+	addnum_analyses *int32
+	num_builds      *int32
+	addnum_builds   *int32
+	clearedFields   map[string]struct{}
+	metrics         *int64
+	clearedmetrics  bool
+	done            bool
+	oldValue        func(context.Context) (*CumulativeMetrics, error)
+	predicates      []predicate.CumulativeMetrics
+}
+
+var _ ent.Mutation = (*CumulativeMetricsMutation)(nil)
+
+// cumulativemetricsOption allows management of the mutation configuration using functional options.
+type cumulativemetricsOption func(*CumulativeMetricsMutation)
+
+// newCumulativeMetricsMutation creates new mutation for the CumulativeMetrics entity.
+func newCumulativeMetricsMutation(c config, op Op, opts ...cumulativemetricsOption) *CumulativeMetricsMutation {
+	m := &CumulativeMetricsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCumulativeMetrics,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCumulativeMetricsID sets the ID field of the mutation.
+func withCumulativeMetricsID(id int64) cumulativemetricsOption {
+	return func(m *CumulativeMetricsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *CumulativeMetrics
+		)
+		m.oldValue = func(ctx context.Context) (*CumulativeMetrics, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().CumulativeMetrics.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCumulativeMetrics sets the old CumulativeMetrics of the mutation.
+func withCumulativeMetrics(node *CumulativeMetrics) cumulativemetricsOption {
+	return func(m *CumulativeMetricsMutation) {
+		m.oldValue = func(context.Context) (*CumulativeMetrics, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CumulativeMetricsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CumulativeMetricsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of CumulativeMetrics entities.
+func (m *CumulativeMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CumulativeMetricsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CumulativeMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().CumulativeMetrics.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetNumAnalyses sets the "num_analyses" field.
+func (m *CumulativeMetricsMutation) SetNumAnalyses(i int32) {
+	m.num_analyses = &i
+	m.addnum_analyses = nil
+}
+
+// NumAnalyses returns the value of the "num_analyses" field in the mutation.
+func (m *CumulativeMetricsMutation) NumAnalyses() (r int32, exists bool) {
+	v := m.num_analyses
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNumAnalyses returns the old "num_analyses" field's value of the CumulativeMetrics entity.
+// If the CumulativeMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CumulativeMetricsMutation) OldNumAnalyses(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNumAnalyses is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNumAnalyses requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNumAnalyses: %w", err)
+	}
+	return oldValue.NumAnalyses, nil
+}
+
+// AddNumAnalyses adds i to the "num_analyses" field.
+func (m *CumulativeMetricsMutation) AddNumAnalyses(i int32) {
+	if m.addnum_analyses != nil {
+		*m.addnum_analyses += i
+	} else {
+		m.addnum_analyses = &i
+	}
+}
+
+// AddedNumAnalyses returns the value that was added to the "num_analyses" field in this mutation.
+func (m *CumulativeMetricsMutation) AddedNumAnalyses() (r int32, exists bool) {
+	v := m.addnum_analyses
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearNumAnalyses clears the value of the "num_analyses" field.
+func (m *CumulativeMetricsMutation) ClearNumAnalyses() {
+	m.num_analyses = nil
+	m.addnum_analyses = nil
+	m.clearedFields[cumulativemetrics.FieldNumAnalyses] = struct{}{}
+}
+
+// NumAnalysesCleared returns if the "num_analyses" field was cleared in this mutation.
+func (m *CumulativeMetricsMutation) NumAnalysesCleared() bool {
+	_, ok := m.clearedFields[cumulativemetrics.FieldNumAnalyses]
+	return ok
+}
+
+// ResetNumAnalyses resets all changes to the "num_analyses" field.
+func (m *CumulativeMetricsMutation) ResetNumAnalyses() {
+	m.num_analyses = nil
+	m.addnum_analyses = nil
+	delete(m.clearedFields, cumulativemetrics.FieldNumAnalyses)
+}
+
+// SetNumBuilds sets the "num_builds" field.
+func (m *CumulativeMetricsMutation) SetNumBuilds(i int32) {
+	m.num_builds = &i
+	m.addnum_builds = nil
+}
+
+// NumBuilds returns the value of the "num_builds" field in the mutation.
+func (m *CumulativeMetricsMutation) NumBuilds() (r int32, exists bool) {
+	v := m.num_builds
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNumBuilds returns the old "num_builds" field's value of the CumulativeMetrics entity.
+// If the CumulativeMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CumulativeMetricsMutation) OldNumBuilds(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNumBuilds is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNumBuilds requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNumBuilds: %w", err)
+	}
+	return oldValue.NumBuilds, nil
+}
+
+// AddNumBuilds adds i to the "num_builds" field.
+func (m *CumulativeMetricsMutation) AddNumBuilds(i int32) {
+	if m.addnum_builds != nil {
+		*m.addnum_builds += i
+	} else {
+		m.addnum_builds = &i
+	}
+}
+
+// AddedNumBuilds returns the value that was added to the "num_builds" field in this mutation.
+func (m *CumulativeMetricsMutation) AddedNumBuilds() (r int32, exists bool) {
+	v := m.addnum_builds
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearNumBuilds clears the value of the "num_builds" field.
+func (m *CumulativeMetricsMutation) ClearNumBuilds() {
+	m.num_builds = nil
+	m.addnum_builds = nil
+	m.clearedFields[cumulativemetrics.FieldNumBuilds] = struct{}{}
+}
+
+// NumBuildsCleared returns if the "num_builds" field was cleared in this mutation.
+func (m *CumulativeMetricsMutation) NumBuildsCleared() bool {
+	_, ok := m.clearedFields[cumulativemetrics.FieldNumBuilds]
+	return ok
+}
+
+// ResetNumBuilds resets all changes to the "num_builds" field.
+func (m *CumulativeMetricsMutation) ResetNumBuilds() {
+	m.num_builds = nil
+	m.addnum_builds = nil
+	delete(m.clearedFields, cumulativemetrics.FieldNumBuilds)
+}
+
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *CumulativeMetricsMutation) SetMetricsID(id int64) {
+	m.metrics = &id
+}
+
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
+func (m *CumulativeMetricsMutation) ClearMetrics() {
+	m.clearedmetrics = true
+}
+
+// MetricsCleared reports if the "metrics" edge to the Metrics entity was cleared.
+func (m *CumulativeMetricsMutation) MetricsCleared() bool {
+	return m.clearedmetrics
+}
+
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *CumulativeMetricsMutation) MetricsID() (id int64, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
+	}
+	return
+}
+
+// MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
+func (m *CumulativeMetricsMutation) MetricsIDs() (ids []int64) {
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetMetrics resets all changes to the "metrics" edge.
+func (m *CumulativeMetricsMutation) ResetMetrics() {
+	m.metrics = nil
+	m.clearedmetrics = false
+}
+
+// Where appends a list predicates to the CumulativeMetricsMutation builder.
+func (m *CumulativeMetricsMutation) Where(ps ...predicate.CumulativeMetrics) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CumulativeMetricsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CumulativeMetricsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.CumulativeMetrics, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CumulativeMetricsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CumulativeMetricsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (CumulativeMetrics).
+func (m *CumulativeMetricsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CumulativeMetricsMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.num_analyses != nil {
+		fields = append(fields, cumulativemetrics.FieldNumAnalyses)
+	}
+	if m.num_builds != nil {
+		fields = append(fields, cumulativemetrics.FieldNumBuilds)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CumulativeMetricsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case cumulativemetrics.FieldNumAnalyses:
+		return m.NumAnalyses()
+	case cumulativemetrics.FieldNumBuilds:
+		return m.NumBuilds()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CumulativeMetricsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case cumulativemetrics.FieldNumAnalyses:
+		return m.OldNumAnalyses(ctx)
+	case cumulativemetrics.FieldNumBuilds:
+		return m.OldNumBuilds(ctx)
+	}
+	return nil, fmt.Errorf("unknown CumulativeMetrics field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CumulativeMetricsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case cumulativemetrics.FieldNumAnalyses:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumAnalyses(v)
+		return nil
+	case cumulativemetrics.FieldNumBuilds:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNumBuilds(v)
+		return nil
+	}
+	return fmt.Errorf("unknown CumulativeMetrics field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CumulativeMetricsMutation) AddedFields() []string {
+	var fields []string
+	if m.addnum_analyses != nil {
+		fields = append(fields, cumulativemetrics.FieldNumAnalyses)
+	}
+	if m.addnum_builds != nil {
+		fields = append(fields, cumulativemetrics.FieldNumBuilds)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CumulativeMetricsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case cumulativemetrics.FieldNumAnalyses:
+		return m.AddedNumAnalyses()
+	case cumulativemetrics.FieldNumBuilds:
+		return m.AddedNumBuilds()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CumulativeMetricsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case cumulativemetrics.FieldNumAnalyses:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumAnalyses(v)
+		return nil
+	case cumulativemetrics.FieldNumBuilds:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNumBuilds(v)
+		return nil
+	}
+	return fmt.Errorf("unknown CumulativeMetrics numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CumulativeMetricsMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(cumulativemetrics.FieldNumAnalyses) {
+		fields = append(fields, cumulativemetrics.FieldNumAnalyses)
+	}
+	if m.FieldCleared(cumulativemetrics.FieldNumBuilds) {
+		fields = append(fields, cumulativemetrics.FieldNumBuilds)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CumulativeMetricsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CumulativeMetricsMutation) ClearField(name string) error {
+	switch name {
+	case cumulativemetrics.FieldNumAnalyses:
+		m.ClearNumAnalyses()
+		return nil
+	case cumulativemetrics.FieldNumBuilds:
+		m.ClearNumBuilds()
+		return nil
+	}
+	return fmt.Errorf("unknown CumulativeMetrics nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CumulativeMetricsMutation) ResetField(name string) error {
+	switch name {
+	case cumulativemetrics.FieldNumAnalyses:
+		m.ResetNumAnalyses()
+		return nil
+	case cumulativemetrics.FieldNumBuilds:
+		m.ResetNumBuilds()
+		return nil
+	}
+	return fmt.Errorf("unknown CumulativeMetrics field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CumulativeMetricsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.metrics != nil {
+		edges = append(edges, cumulativemetrics.EdgeMetrics)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CumulativeMetricsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case cumulativemetrics.EdgeMetrics:
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CumulativeMetricsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CumulativeMetricsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CumulativeMetricsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedmetrics {
+		edges = append(edges, cumulativemetrics.EdgeMetrics)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CumulativeMetricsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case cumulativemetrics.EdgeMetrics:
+		return m.clearedmetrics
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CumulativeMetricsMutation) ClearEdge(name string) error {
+	switch name {
+	case cumulativemetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown CumulativeMetrics unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CumulativeMetricsMutation) ResetEdge(name string) error {
+	switch name {
+	case cumulativemetrics.EdgeMetrics:
+		m.ResetMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown CumulativeMetrics edge %s", name)
 }
 
 // DigestMutation represents an operation that mutates the Digest nodes in the graph.
@@ -20158,6 +21535,15 @@ type MetricsMutation struct {
 	clearednetwork_metrics     bool
 	build_graph_metrics        *int64
 	clearedbuild_graph_metrics bool
+	package_metrics            *int64
+	clearedpackage_metrics     bool
+	cumulative_metrics         *int64
+	clearedcumulative_metrics  bool
+	worker_metrics             map[int64]struct{}
+	removedworker_metrics      map[int64]struct{}
+	clearedworker_metrics      bool
+	worker_pool_metrics        *int64
+	clearedworker_pool_metrics bool
 	done                       bool
 	oldValue                   func(context.Context) (*Metrics, error)
 	predicates                 []predicate.Metrics
@@ -20579,6 +21965,177 @@ func (m *MetricsMutation) ResetBuildGraphMetrics() {
 	m.clearedbuild_graph_metrics = false
 }
 
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by id.
+func (m *MetricsMutation) SetPackageMetricsID(id int64) {
+	m.package_metrics = &id
+}
+
+// ClearPackageMetrics clears the "package_metrics" edge to the PackageMetrics entity.
+func (m *MetricsMutation) ClearPackageMetrics() {
+	m.clearedpackage_metrics = true
+}
+
+// PackageMetricsCleared reports if the "package_metrics" edge to the PackageMetrics entity was cleared.
+func (m *MetricsMutation) PackageMetricsCleared() bool {
+	return m.clearedpackage_metrics
+}
+
+// PackageMetricsID returns the "package_metrics" edge ID in the mutation.
+func (m *MetricsMutation) PackageMetricsID() (id int64, exists bool) {
+	if m.package_metrics != nil {
+		return *m.package_metrics, true
+	}
+	return
+}
+
+// PackageMetricsIDs returns the "package_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// PackageMetricsID instead. It exists only for internal usage by the builders.
+func (m *MetricsMutation) PackageMetricsIDs() (ids []int64) {
+	if id := m.package_metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetPackageMetrics resets all changes to the "package_metrics" edge.
+func (m *MetricsMutation) ResetPackageMetrics() {
+	m.package_metrics = nil
+	m.clearedpackage_metrics = false
+}
+
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by id.
+func (m *MetricsMutation) SetCumulativeMetricsID(id int64) {
+	m.cumulative_metrics = &id
+}
+
+// ClearCumulativeMetrics clears the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (m *MetricsMutation) ClearCumulativeMetrics() {
+	m.clearedcumulative_metrics = true
+}
+
+// CumulativeMetricsCleared reports if the "cumulative_metrics" edge to the CumulativeMetrics entity was cleared.
+func (m *MetricsMutation) CumulativeMetricsCleared() bool {
+	return m.clearedcumulative_metrics
+}
+
+// CumulativeMetricsID returns the "cumulative_metrics" edge ID in the mutation.
+func (m *MetricsMutation) CumulativeMetricsID() (id int64, exists bool) {
+	if m.cumulative_metrics != nil {
+		return *m.cumulative_metrics, true
+	}
+	return
+}
+
+// CumulativeMetricsIDs returns the "cumulative_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CumulativeMetricsID instead. It exists only for internal usage by the builders.
+func (m *MetricsMutation) CumulativeMetricsIDs() (ids []int64) {
+	if id := m.cumulative_metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCumulativeMetrics resets all changes to the "cumulative_metrics" edge.
+func (m *MetricsMutation) ResetCumulativeMetrics() {
+	m.cumulative_metrics = nil
+	m.clearedcumulative_metrics = false
+}
+
+// AddWorkerMetricIDs adds the "worker_metrics" edge to the WorkerMetrics entity by ids.
+func (m *MetricsMutation) AddWorkerMetricIDs(ids ...int64) {
+	if m.worker_metrics == nil {
+		m.worker_metrics = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.worker_metrics[ids[i]] = struct{}{}
+	}
+}
+
+// ClearWorkerMetrics clears the "worker_metrics" edge to the WorkerMetrics entity.
+func (m *MetricsMutation) ClearWorkerMetrics() {
+	m.clearedworker_metrics = true
+}
+
+// WorkerMetricsCleared reports if the "worker_metrics" edge to the WorkerMetrics entity was cleared.
+func (m *MetricsMutation) WorkerMetricsCleared() bool {
+	return m.clearedworker_metrics
+}
+
+// RemoveWorkerMetricIDs removes the "worker_metrics" edge to the WorkerMetrics entity by IDs.
+func (m *MetricsMutation) RemoveWorkerMetricIDs(ids ...int64) {
+	if m.removedworker_metrics == nil {
+		m.removedworker_metrics = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.worker_metrics, ids[i])
+		m.removedworker_metrics[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedWorkerMetrics returns the removed IDs of the "worker_metrics" edge to the WorkerMetrics entity.
+func (m *MetricsMutation) RemovedWorkerMetricsIDs() (ids []int64) {
+	for id := range m.removedworker_metrics {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// WorkerMetricsIDs returns the "worker_metrics" edge IDs in the mutation.
+func (m *MetricsMutation) WorkerMetricsIDs() (ids []int64) {
+	for id := range m.worker_metrics {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetWorkerMetrics resets all changes to the "worker_metrics" edge.
+func (m *MetricsMutation) ResetWorkerMetrics() {
+	m.worker_metrics = nil
+	m.clearedworker_metrics = false
+	m.removedworker_metrics = nil
+}
+
+// SetWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by id.
+func (m *MetricsMutation) SetWorkerPoolMetricsID(id int64) {
+	m.worker_pool_metrics = &id
+}
+
+// ClearWorkerPoolMetrics clears the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
+func (m *MetricsMutation) ClearWorkerPoolMetrics() {
+	m.clearedworker_pool_metrics = true
+}
+
+// WorkerPoolMetricsCleared reports if the "worker_pool_metrics" edge to the WorkerPoolMetrics entity was cleared.
+func (m *MetricsMutation) WorkerPoolMetricsCleared() bool {
+	return m.clearedworker_pool_metrics
+}
+
+// WorkerPoolMetricsID returns the "worker_pool_metrics" edge ID in the mutation.
+func (m *MetricsMutation) WorkerPoolMetricsID() (id int64, exists bool) {
+	if m.worker_pool_metrics != nil {
+		return *m.worker_pool_metrics, true
+	}
+	return
+}
+
+// WorkerPoolMetricsIDs returns the "worker_pool_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// WorkerPoolMetricsID instead. It exists only for internal usage by the builders.
+func (m *MetricsMutation) WorkerPoolMetricsIDs() (ids []int64) {
+	if id := m.worker_pool_metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetWorkerPoolMetrics resets all changes to the "worker_pool_metrics" edge.
+func (m *MetricsMutation) ResetWorkerPoolMetrics() {
+	m.worker_pool_metrics = nil
+	m.clearedworker_pool_metrics = false
+}
+
 // Where appends a list predicates to the MetricsMutation builder.
 func (m *MetricsMutation) Where(ps ...predicate.Metrics) {
 	m.predicates = append(m.predicates, ps...)
@@ -20687,7 +22244,7 @@ func (m *MetricsMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *MetricsMutation) AddedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 12)
 	if m.bazel_invocation != nil {
 		edges = append(edges, metrics.EdgeBazelInvocation)
 	}
@@ -20711,6 +22268,18 @@ func (m *MetricsMutation) AddedEdges() []string {
 	}
 	if m.build_graph_metrics != nil {
 		edges = append(edges, metrics.EdgeBuildGraphMetrics)
+	}
+	if m.package_metrics != nil {
+		edges = append(edges, metrics.EdgePackageMetrics)
+	}
+	if m.cumulative_metrics != nil {
+		edges = append(edges, metrics.EdgeCumulativeMetrics)
+	}
+	if m.worker_metrics != nil {
+		edges = append(edges, metrics.EdgeWorkerMetrics)
+	}
+	if m.worker_pool_metrics != nil {
+		edges = append(edges, metrics.EdgeWorkerPoolMetrics)
 	}
 	return edges
 }
@@ -20751,25 +22320,54 @@ func (m *MetricsMutation) AddedIDs(name string) []ent.Value {
 		if id := m.build_graph_metrics; id != nil {
 			return []ent.Value{*id}
 		}
+	case metrics.EdgePackageMetrics:
+		if id := m.package_metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	case metrics.EdgeCumulativeMetrics:
+		if id := m.cumulative_metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	case metrics.EdgeWorkerMetrics:
+		ids := make([]ent.Value, 0, len(m.worker_metrics))
+		for id := range m.worker_metrics {
+			ids = append(ids, id)
+		}
+		return ids
+	case metrics.EdgeWorkerPoolMetrics:
+		if id := m.worker_pool_metrics; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MetricsMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 12)
+	if m.removedworker_metrics != nil {
+		edges = append(edges, metrics.EdgeWorkerMetrics)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *MetricsMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case metrics.EdgeWorkerMetrics:
+		ids := make([]ent.Value, 0, len(m.removedworker_metrics))
+		for id := range m.removedworker_metrics {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *MetricsMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 8)
+	edges := make([]string, 0, 12)
 	if m.clearedbazel_invocation {
 		edges = append(edges, metrics.EdgeBazelInvocation)
 	}
@@ -20794,6 +22392,18 @@ func (m *MetricsMutation) ClearedEdges() []string {
 	if m.clearedbuild_graph_metrics {
 		edges = append(edges, metrics.EdgeBuildGraphMetrics)
 	}
+	if m.clearedpackage_metrics {
+		edges = append(edges, metrics.EdgePackageMetrics)
+	}
+	if m.clearedcumulative_metrics {
+		edges = append(edges, metrics.EdgeCumulativeMetrics)
+	}
+	if m.clearedworker_metrics {
+		edges = append(edges, metrics.EdgeWorkerMetrics)
+	}
+	if m.clearedworker_pool_metrics {
+		edges = append(edges, metrics.EdgeWorkerPoolMetrics)
+	}
 	return edges
 }
 
@@ -20817,6 +22427,14 @@ func (m *MetricsMutation) EdgeCleared(name string) bool {
 		return m.clearednetwork_metrics
 	case metrics.EdgeBuildGraphMetrics:
 		return m.clearedbuild_graph_metrics
+	case metrics.EdgePackageMetrics:
+		return m.clearedpackage_metrics
+	case metrics.EdgeCumulativeMetrics:
+		return m.clearedcumulative_metrics
+	case metrics.EdgeWorkerMetrics:
+		return m.clearedworker_metrics
+	case metrics.EdgeWorkerPoolMetrics:
+		return m.clearedworker_pool_metrics
 	}
 	return false
 }
@@ -20849,6 +22467,15 @@ func (m *MetricsMutation) ClearEdge(name string) error {
 	case metrics.EdgeBuildGraphMetrics:
 		m.ClearBuildGraphMetrics()
 		return nil
+	case metrics.EdgePackageMetrics:
+		m.ClearPackageMetrics()
+		return nil
+	case metrics.EdgeCumulativeMetrics:
+		m.ClearCumulativeMetrics()
+		return nil
+	case metrics.EdgeWorkerPoolMetrics:
+		m.ClearWorkerPoolMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown Metrics unique edge %s", name)
 }
@@ -20880,6 +22507,18 @@ func (m *MetricsMutation) ResetEdge(name string) error {
 		return nil
 	case metrics.EdgeBuildGraphMetrics:
 		m.ResetBuildGraphMetrics()
+		return nil
+	case metrics.EdgePackageMetrics:
+		m.ResetPackageMetrics()
+		return nil
+	case metrics.EdgeCumulativeMetrics:
+		m.ResetCumulativeMetrics()
+		return nil
+	case metrics.EdgeWorkerMetrics:
+		m.ResetWorkerMetrics()
+		return nil
+	case metrics.EdgeWorkerPoolMetrics:
+		m.ResetWorkerPoolMetrics()
 		return nil
 	}
 	return fmt.Errorf("unknown Metrics edge %s", name)
@@ -21791,6 +23430,464 @@ func (m *NetworkMetricsMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown NetworkMetrics edge %s", name)
+}
+
+// PackageMetricsMutation represents an operation that mutates the PackageMetrics nodes in the graph.
+type PackageMetricsMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *int64
+	packages_loaded    *int64
+	addpackages_loaded *int64
+	clearedFields      map[string]struct{}
+	metrics            *int64
+	clearedmetrics     bool
+	done               bool
+	oldValue           func(context.Context) (*PackageMetrics, error)
+	predicates         []predicate.PackageMetrics
+}
+
+var _ ent.Mutation = (*PackageMetricsMutation)(nil)
+
+// packagemetricsOption allows management of the mutation configuration using functional options.
+type packagemetricsOption func(*PackageMetricsMutation)
+
+// newPackageMetricsMutation creates new mutation for the PackageMetrics entity.
+func newPackageMetricsMutation(c config, op Op, opts ...packagemetricsOption) *PackageMetricsMutation {
+	m := &PackageMetricsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePackageMetrics,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPackageMetricsID sets the ID field of the mutation.
+func withPackageMetricsID(id int64) packagemetricsOption {
+	return func(m *PackageMetricsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *PackageMetrics
+		)
+		m.oldValue = func(ctx context.Context) (*PackageMetrics, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().PackageMetrics.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPackageMetrics sets the old PackageMetrics of the mutation.
+func withPackageMetrics(node *PackageMetrics) packagemetricsOption {
+	return func(m *PackageMetricsMutation) {
+		m.oldValue = func(context.Context) (*PackageMetrics, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PackageMetricsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PackageMetricsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of PackageMetrics entities.
+func (m *PackageMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *PackageMetricsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *PackageMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().PackageMetrics.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetPackagesLoaded sets the "packages_loaded" field.
+func (m *PackageMetricsMutation) SetPackagesLoaded(i int64) {
+	m.packages_loaded = &i
+	m.addpackages_loaded = nil
+}
+
+// PackagesLoaded returns the value of the "packages_loaded" field in the mutation.
+func (m *PackageMetricsMutation) PackagesLoaded() (r int64, exists bool) {
+	v := m.packages_loaded
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPackagesLoaded returns the old "packages_loaded" field's value of the PackageMetrics entity.
+// If the PackageMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PackageMetricsMutation) OldPackagesLoaded(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPackagesLoaded is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPackagesLoaded requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPackagesLoaded: %w", err)
+	}
+	return oldValue.PackagesLoaded, nil
+}
+
+// AddPackagesLoaded adds i to the "packages_loaded" field.
+func (m *PackageMetricsMutation) AddPackagesLoaded(i int64) {
+	if m.addpackages_loaded != nil {
+		*m.addpackages_loaded += i
+	} else {
+		m.addpackages_loaded = &i
+	}
+}
+
+// AddedPackagesLoaded returns the value that was added to the "packages_loaded" field in this mutation.
+func (m *PackageMetricsMutation) AddedPackagesLoaded() (r int64, exists bool) {
+	v := m.addpackages_loaded
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearPackagesLoaded clears the value of the "packages_loaded" field.
+func (m *PackageMetricsMutation) ClearPackagesLoaded() {
+	m.packages_loaded = nil
+	m.addpackages_loaded = nil
+	m.clearedFields[packagemetrics.FieldPackagesLoaded] = struct{}{}
+}
+
+// PackagesLoadedCleared returns if the "packages_loaded" field was cleared in this mutation.
+func (m *PackageMetricsMutation) PackagesLoadedCleared() bool {
+	_, ok := m.clearedFields[packagemetrics.FieldPackagesLoaded]
+	return ok
+}
+
+// ResetPackagesLoaded resets all changes to the "packages_loaded" field.
+func (m *PackageMetricsMutation) ResetPackagesLoaded() {
+	m.packages_loaded = nil
+	m.addpackages_loaded = nil
+	delete(m.clearedFields, packagemetrics.FieldPackagesLoaded)
+}
+
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *PackageMetricsMutation) SetMetricsID(id int64) {
+	m.metrics = &id
+}
+
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
+func (m *PackageMetricsMutation) ClearMetrics() {
+	m.clearedmetrics = true
+}
+
+// MetricsCleared reports if the "metrics" edge to the Metrics entity was cleared.
+func (m *PackageMetricsMutation) MetricsCleared() bool {
+	return m.clearedmetrics
+}
+
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *PackageMetricsMutation) MetricsID() (id int64, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
+	}
+	return
+}
+
+// MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
+func (m *PackageMetricsMutation) MetricsIDs() (ids []int64) {
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetMetrics resets all changes to the "metrics" edge.
+func (m *PackageMetricsMutation) ResetMetrics() {
+	m.metrics = nil
+	m.clearedmetrics = false
+}
+
+// Where appends a list predicates to the PackageMetricsMutation builder.
+func (m *PackageMetricsMutation) Where(ps ...predicate.PackageMetrics) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the PackageMetricsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *PackageMetricsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.PackageMetrics, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *PackageMetricsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *PackageMetricsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (PackageMetrics).
+func (m *PackageMetricsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *PackageMetricsMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.packages_loaded != nil {
+		fields = append(fields, packagemetrics.FieldPackagesLoaded)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *PackageMetricsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case packagemetrics.FieldPackagesLoaded:
+		return m.PackagesLoaded()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *PackageMetricsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case packagemetrics.FieldPackagesLoaded:
+		return m.OldPackagesLoaded(ctx)
+	}
+	return nil, fmt.Errorf("unknown PackageMetrics field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PackageMetricsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case packagemetrics.FieldPackagesLoaded:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPackagesLoaded(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PackageMetrics field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *PackageMetricsMutation) AddedFields() []string {
+	var fields []string
+	if m.addpackages_loaded != nil {
+		fields = append(fields, packagemetrics.FieldPackagesLoaded)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *PackageMetricsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case packagemetrics.FieldPackagesLoaded:
+		return m.AddedPackagesLoaded()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PackageMetricsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case packagemetrics.FieldPackagesLoaded:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPackagesLoaded(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PackageMetrics numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *PackageMetricsMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(packagemetrics.FieldPackagesLoaded) {
+		fields = append(fields, packagemetrics.FieldPackagesLoaded)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *PackageMetricsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PackageMetricsMutation) ClearField(name string) error {
+	switch name {
+	case packagemetrics.FieldPackagesLoaded:
+		m.ClearPackagesLoaded()
+		return nil
+	}
+	return fmt.Errorf("unknown PackageMetrics nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *PackageMetricsMutation) ResetField(name string) error {
+	switch name {
+	case packagemetrics.FieldPackagesLoaded:
+		m.ResetPackagesLoaded()
+		return nil
+	}
+	return fmt.Errorf("unknown PackageMetrics field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *PackageMetricsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.metrics != nil {
+		edges = append(edges, packagemetrics.EdgeMetrics)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *PackageMetricsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case packagemetrics.EdgeMetrics:
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *PackageMetricsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *PackageMetricsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *PackageMetricsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedmetrics {
+		edges = append(edges, packagemetrics.EdgeMetrics)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *PackageMetricsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case packagemetrics.EdgeMetrics:
+		return m.clearedmetrics
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *PackageMetricsMutation) ClearEdge(name string) error {
+	switch name {
+	case packagemetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown PackageMetrics unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *PackageMetricsMutation) ResetEdge(name string) error {
+	switch name {
+	case packagemetrics.EdgeMetrics:
+		m.ResetMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown PackageMetrics edge %s", name)
 }
 
 // RunnerCountMutation represents an operation that mutates the RunnerCount nodes in the graph.
@@ -30144,6 +32241,8 @@ type TimingMetricsMutation struct {
 	addexecution_phase_time_in_ms    *int64
 	actions_execution_start_in_ms    *int64
 	addactions_execution_start_in_ms *int64
+	critical_path_time_in_ms         *int64
+	addcritical_path_time_in_ms      *int64
 	clearedFields                    map[string]struct{}
 	metrics                          *int64
 	clearedmetrics                   bool
@@ -30606,6 +32705,76 @@ func (m *TimingMetricsMutation) ResetActionsExecutionStartInMs() {
 	delete(m.clearedFields, timingmetrics.FieldActionsExecutionStartInMs)
 }
 
+// SetCriticalPathTimeInMs sets the "critical_path_time_in_ms" field.
+func (m *TimingMetricsMutation) SetCriticalPathTimeInMs(i int64) {
+	m.critical_path_time_in_ms = &i
+	m.addcritical_path_time_in_ms = nil
+}
+
+// CriticalPathTimeInMs returns the value of the "critical_path_time_in_ms" field in the mutation.
+func (m *TimingMetricsMutation) CriticalPathTimeInMs() (r int64, exists bool) {
+	v := m.critical_path_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCriticalPathTimeInMs returns the old "critical_path_time_in_ms" field's value of the TimingMetrics entity.
+// If the TimingMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TimingMetricsMutation) OldCriticalPathTimeInMs(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCriticalPathTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCriticalPathTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCriticalPathTimeInMs: %w", err)
+	}
+	return oldValue.CriticalPathTimeInMs, nil
+}
+
+// AddCriticalPathTimeInMs adds i to the "critical_path_time_in_ms" field.
+func (m *TimingMetricsMutation) AddCriticalPathTimeInMs(i int64) {
+	if m.addcritical_path_time_in_ms != nil {
+		*m.addcritical_path_time_in_ms += i
+	} else {
+		m.addcritical_path_time_in_ms = &i
+	}
+}
+
+// AddedCriticalPathTimeInMs returns the value that was added to the "critical_path_time_in_ms" field in this mutation.
+func (m *TimingMetricsMutation) AddedCriticalPathTimeInMs() (r int64, exists bool) {
+	v := m.addcritical_path_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCriticalPathTimeInMs clears the value of the "critical_path_time_in_ms" field.
+func (m *TimingMetricsMutation) ClearCriticalPathTimeInMs() {
+	m.critical_path_time_in_ms = nil
+	m.addcritical_path_time_in_ms = nil
+	m.clearedFields[timingmetrics.FieldCriticalPathTimeInMs] = struct{}{}
+}
+
+// CriticalPathTimeInMsCleared returns if the "critical_path_time_in_ms" field was cleared in this mutation.
+func (m *TimingMetricsMutation) CriticalPathTimeInMsCleared() bool {
+	_, ok := m.clearedFields[timingmetrics.FieldCriticalPathTimeInMs]
+	return ok
+}
+
+// ResetCriticalPathTimeInMs resets all changes to the "critical_path_time_in_ms" field.
+func (m *TimingMetricsMutation) ResetCriticalPathTimeInMs() {
+	m.critical_path_time_in_ms = nil
+	m.addcritical_path_time_in_ms = nil
+	delete(m.clearedFields, timingmetrics.FieldCriticalPathTimeInMs)
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
 func (m *TimingMetricsMutation) SetMetricsID(id int64) {
 	m.metrics = &id
@@ -30679,7 +32848,7 @@ func (m *TimingMetricsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TimingMetricsMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.cpu_time_in_ms != nil {
 		fields = append(fields, timingmetrics.FieldCPUTimeInMs)
 	}
@@ -30694,6 +32863,9 @@ func (m *TimingMetricsMutation) Fields() []string {
 	}
 	if m.actions_execution_start_in_ms != nil {
 		fields = append(fields, timingmetrics.FieldActionsExecutionStartInMs)
+	}
+	if m.critical_path_time_in_ms != nil {
+		fields = append(fields, timingmetrics.FieldCriticalPathTimeInMs)
 	}
 	return fields
 }
@@ -30713,6 +32885,8 @@ func (m *TimingMetricsMutation) Field(name string) (ent.Value, bool) {
 		return m.ExecutionPhaseTimeInMs()
 	case timingmetrics.FieldActionsExecutionStartInMs:
 		return m.ActionsExecutionStartInMs()
+	case timingmetrics.FieldCriticalPathTimeInMs:
+		return m.CriticalPathTimeInMs()
 	}
 	return nil, false
 }
@@ -30732,6 +32906,8 @@ func (m *TimingMetricsMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldExecutionPhaseTimeInMs(ctx)
 	case timingmetrics.FieldActionsExecutionStartInMs:
 		return m.OldActionsExecutionStartInMs(ctx)
+	case timingmetrics.FieldCriticalPathTimeInMs:
+		return m.OldCriticalPathTimeInMs(ctx)
 	}
 	return nil, fmt.Errorf("unknown TimingMetrics field %s", name)
 }
@@ -30776,6 +32952,13 @@ func (m *TimingMetricsMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetActionsExecutionStartInMs(v)
 		return nil
+	case timingmetrics.FieldCriticalPathTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCriticalPathTimeInMs(v)
+		return nil
 	}
 	return fmt.Errorf("unknown TimingMetrics field %s", name)
 }
@@ -30799,6 +32982,9 @@ func (m *TimingMetricsMutation) AddedFields() []string {
 	if m.addactions_execution_start_in_ms != nil {
 		fields = append(fields, timingmetrics.FieldActionsExecutionStartInMs)
 	}
+	if m.addcritical_path_time_in_ms != nil {
+		fields = append(fields, timingmetrics.FieldCriticalPathTimeInMs)
+	}
 	return fields
 }
 
@@ -30817,6 +33003,8 @@ func (m *TimingMetricsMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedExecutionPhaseTimeInMs()
 	case timingmetrics.FieldActionsExecutionStartInMs:
 		return m.AddedActionsExecutionStartInMs()
+	case timingmetrics.FieldCriticalPathTimeInMs:
+		return m.AddedCriticalPathTimeInMs()
 	}
 	return nil, false
 }
@@ -30861,6 +33049,13 @@ func (m *TimingMetricsMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddActionsExecutionStartInMs(v)
 		return nil
+	case timingmetrics.FieldCriticalPathTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCriticalPathTimeInMs(v)
+		return nil
 	}
 	return fmt.Errorf("unknown TimingMetrics numeric field %s", name)
 }
@@ -30883,6 +33078,9 @@ func (m *TimingMetricsMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(timingmetrics.FieldActionsExecutionStartInMs) {
 		fields = append(fields, timingmetrics.FieldActionsExecutionStartInMs)
+	}
+	if m.FieldCleared(timingmetrics.FieldCriticalPathTimeInMs) {
+		fields = append(fields, timingmetrics.FieldCriticalPathTimeInMs)
 	}
 	return fields
 }
@@ -30913,6 +33111,9 @@ func (m *TimingMetricsMutation) ClearField(name string) error {
 	case timingmetrics.FieldActionsExecutionStartInMs:
 		m.ClearActionsExecutionStartInMs()
 		return nil
+	case timingmetrics.FieldCriticalPathTimeInMs:
+		m.ClearCriticalPathTimeInMs()
+		return nil
 	}
 	return fmt.Errorf("unknown TimingMetrics nullable field %s", name)
 }
@@ -30935,6 +33136,9 @@ func (m *TimingMetricsMutation) ResetField(name string) error {
 		return nil
 	case timingmetrics.FieldActionsExecutionStartInMs:
 		m.ResetActionsExecutionStartInMs()
+		return nil
+	case timingmetrics.FieldCriticalPathTimeInMs:
+		m.ResetCriticalPathTimeInMs()
 		return nil
 	}
 	return fmt.Errorf("unknown TimingMetrics field %s", name)
@@ -31012,4 +33216,4412 @@ func (m *TimingMetricsMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown TimingMetrics edge %s", name)
+}
+
+// WorkerIDMutation represents an operation that mutates the WorkerID nodes in the graph.
+type WorkerIDMutation struct {
+	config
+	op                    Op
+	typ                   string
+	id                    *int64
+	worker_id             *uint32
+	addworker_id          *int32
+	clearedFields         map[string]struct{}
+	worker_metrics        *int64
+	clearedworker_metrics bool
+	done                  bool
+	oldValue              func(context.Context) (*WorkerID, error)
+	predicates            []predicate.WorkerID
+}
+
+var _ ent.Mutation = (*WorkerIDMutation)(nil)
+
+// workeridOption allows management of the mutation configuration using functional options.
+type workeridOption func(*WorkerIDMutation)
+
+// newWorkerIDMutation creates new mutation for the WorkerID entity.
+func newWorkerIDMutation(c config, op Op, opts ...workeridOption) *WorkerIDMutation {
+	m := &WorkerIDMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeWorkerID,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withWorkerIDID sets the ID field of the mutation.
+func withWorkerIDID(id int64) workeridOption {
+	return func(m *WorkerIDMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *WorkerID
+		)
+		m.oldValue = func(ctx context.Context) (*WorkerID, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().WorkerID.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withWorkerID sets the old WorkerID of the mutation.
+func withWorkerID(node *WorkerID) workeridOption {
+	return func(m *WorkerIDMutation) {
+		m.oldValue = func(context.Context) (*WorkerID, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m WorkerIDMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m WorkerIDMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of WorkerID entities.
+func (m *WorkerIDMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *WorkerIDMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *WorkerIDMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().WorkerID.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetWorkerID sets the "worker_id" field.
+func (m *WorkerIDMutation) SetWorkerID(u uint32) {
+	m.worker_id = &u
+	m.addworker_id = nil
+}
+
+// WorkerID returns the value of the "worker_id" field in the mutation.
+func (m *WorkerIDMutation) WorkerID() (r uint32, exists bool) {
+	v := m.worker_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWorkerID returns the old "worker_id" field's value of the WorkerID entity.
+// If the WorkerID object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerIDMutation) OldWorkerID(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWorkerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWorkerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWorkerID: %w", err)
+	}
+	return oldValue.WorkerID, nil
+}
+
+// AddWorkerID adds u to the "worker_id" field.
+func (m *WorkerIDMutation) AddWorkerID(u int32) {
+	if m.addworker_id != nil {
+		*m.addworker_id += u
+	} else {
+		m.addworker_id = &u
+	}
+}
+
+// AddedWorkerID returns the value that was added to the "worker_id" field in this mutation.
+func (m *WorkerIDMutation) AddedWorkerID() (r int32, exists bool) {
+	v := m.addworker_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWorkerID resets all changes to the "worker_id" field.
+func (m *WorkerIDMutation) ResetWorkerID() {
+	m.worker_id = nil
+	m.addworker_id = nil
+}
+
+// SetWorkerMetricsID sets the "worker_metrics" edge to the WorkerMetrics entity by id.
+func (m *WorkerIDMutation) SetWorkerMetricsID(id int64) {
+	m.worker_metrics = &id
+}
+
+// ClearWorkerMetrics clears the "worker_metrics" edge to the WorkerMetrics entity.
+func (m *WorkerIDMutation) ClearWorkerMetrics() {
+	m.clearedworker_metrics = true
+}
+
+// WorkerMetricsCleared reports if the "worker_metrics" edge to the WorkerMetrics entity was cleared.
+func (m *WorkerIDMutation) WorkerMetricsCleared() bool {
+	return m.clearedworker_metrics
+}
+
+// WorkerMetricsID returns the "worker_metrics" edge ID in the mutation.
+func (m *WorkerIDMutation) WorkerMetricsID() (id int64, exists bool) {
+	if m.worker_metrics != nil {
+		return *m.worker_metrics, true
+	}
+	return
+}
+
+// WorkerMetricsIDs returns the "worker_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// WorkerMetricsID instead. It exists only for internal usage by the builders.
+func (m *WorkerIDMutation) WorkerMetricsIDs() (ids []int64) {
+	if id := m.worker_metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetWorkerMetrics resets all changes to the "worker_metrics" edge.
+func (m *WorkerIDMutation) ResetWorkerMetrics() {
+	m.worker_metrics = nil
+	m.clearedworker_metrics = false
+}
+
+// Where appends a list predicates to the WorkerIDMutation builder.
+func (m *WorkerIDMutation) Where(ps ...predicate.WorkerID) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the WorkerIDMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *WorkerIDMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.WorkerID, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *WorkerIDMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *WorkerIDMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (WorkerID).
+func (m *WorkerIDMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *WorkerIDMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.worker_id != nil {
+		fields = append(fields, workerid.FieldWorkerID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *WorkerIDMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case workerid.FieldWorkerID:
+		return m.WorkerID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *WorkerIDMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case workerid.FieldWorkerID:
+		return m.OldWorkerID(ctx)
+	}
+	return nil, fmt.Errorf("unknown WorkerID field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerIDMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case workerid.FieldWorkerID:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWorkerID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerID field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *WorkerIDMutation) AddedFields() []string {
+	var fields []string
+	if m.addworker_id != nil {
+		fields = append(fields, workerid.FieldWorkerID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *WorkerIDMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case workerid.FieldWorkerID:
+		return m.AddedWorkerID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerIDMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case workerid.FieldWorkerID:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWorkerID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerID numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *WorkerIDMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *WorkerIDMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *WorkerIDMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown WorkerID nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *WorkerIDMutation) ResetField(name string) error {
+	switch name {
+	case workerid.FieldWorkerID:
+		m.ResetWorkerID()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerID field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *WorkerIDMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.worker_metrics != nil {
+		edges = append(edges, workerid.EdgeWorkerMetrics)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *WorkerIDMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case workerid.EdgeWorkerMetrics:
+		if id := m.worker_metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *WorkerIDMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *WorkerIDMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *WorkerIDMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedworker_metrics {
+		edges = append(edges, workerid.EdgeWorkerMetrics)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *WorkerIDMutation) EdgeCleared(name string) bool {
+	switch name {
+	case workerid.EdgeWorkerMetrics:
+		return m.clearedworker_metrics
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *WorkerIDMutation) ClearEdge(name string) error {
+	switch name {
+	case workerid.EdgeWorkerMetrics:
+		m.ClearWorkerMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerID unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *WorkerIDMutation) ResetEdge(name string) error {
+	switch name {
+	case workerid.EdgeWorkerMetrics:
+		m.ResetWorkerMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerID edge %s", name)
+}
+
+// WorkerMetricsMutation represents an operation that mutates the WorkerMetrics nodes in the graph.
+type WorkerMetricsMutation struct {
+	config
+	op                        Op
+	typ                       string
+	id                        *int64
+	process_id                *uint32
+	addprocess_id             *int32
+	mnemonic                  *string
+	is_multiplex              *bool
+	is_sandbox                *bool
+	is_measurable             *bool
+	worker_key_hash           *int64
+	addworker_key_hash        *int64
+	worker_status             *string
+	code                      *string
+	actions_executed          *int64
+	addactions_executed       *int64
+	prior_actions_executed    *int64
+	addprior_actions_executed *int64
+	clearedFields             map[string]struct{}
+	metrics                   *int64
+	clearedmetrics            bool
+	worker_ids                map[int64]struct{}
+	removedworker_ids         map[int64]struct{}
+	clearedworker_ids         bool
+	worker_stats              map[int64]struct{}
+	removedworker_stats       map[int64]struct{}
+	clearedworker_stats       bool
+	done                      bool
+	oldValue                  func(context.Context) (*WorkerMetrics, error)
+	predicates                []predicate.WorkerMetrics
+}
+
+var _ ent.Mutation = (*WorkerMetricsMutation)(nil)
+
+// workermetricsOption allows management of the mutation configuration using functional options.
+type workermetricsOption func(*WorkerMetricsMutation)
+
+// newWorkerMetricsMutation creates new mutation for the WorkerMetrics entity.
+func newWorkerMetricsMutation(c config, op Op, opts ...workermetricsOption) *WorkerMetricsMutation {
+	m := &WorkerMetricsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeWorkerMetrics,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withWorkerMetricsID sets the ID field of the mutation.
+func withWorkerMetricsID(id int64) workermetricsOption {
+	return func(m *WorkerMetricsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *WorkerMetrics
+		)
+		m.oldValue = func(ctx context.Context) (*WorkerMetrics, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().WorkerMetrics.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withWorkerMetrics sets the old WorkerMetrics of the mutation.
+func withWorkerMetrics(node *WorkerMetrics) workermetricsOption {
+	return func(m *WorkerMetricsMutation) {
+		m.oldValue = func(context.Context) (*WorkerMetrics, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m WorkerMetricsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m WorkerMetricsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of WorkerMetrics entities.
+func (m *WorkerMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *WorkerMetricsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *WorkerMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().WorkerMetrics.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetProcessID sets the "process_id" field.
+func (m *WorkerMetricsMutation) SetProcessID(u uint32) {
+	m.process_id = &u
+	m.addprocess_id = nil
+}
+
+// ProcessID returns the value of the "process_id" field in the mutation.
+func (m *WorkerMetricsMutation) ProcessID() (r uint32, exists bool) {
+	v := m.process_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProcessID returns the old "process_id" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldProcessID(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProcessID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProcessID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProcessID: %w", err)
+	}
+	return oldValue.ProcessID, nil
+}
+
+// AddProcessID adds u to the "process_id" field.
+func (m *WorkerMetricsMutation) AddProcessID(u int32) {
+	if m.addprocess_id != nil {
+		*m.addprocess_id += u
+	} else {
+		m.addprocess_id = &u
+	}
+}
+
+// AddedProcessID returns the value that was added to the "process_id" field in this mutation.
+func (m *WorkerMetricsMutation) AddedProcessID() (r int32, exists bool) {
+	v := m.addprocess_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearProcessID clears the value of the "process_id" field.
+func (m *WorkerMetricsMutation) ClearProcessID() {
+	m.process_id = nil
+	m.addprocess_id = nil
+	m.clearedFields[workermetrics.FieldProcessID] = struct{}{}
+}
+
+// ProcessIDCleared returns if the "process_id" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) ProcessIDCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldProcessID]
+	return ok
+}
+
+// ResetProcessID resets all changes to the "process_id" field.
+func (m *WorkerMetricsMutation) ResetProcessID() {
+	m.process_id = nil
+	m.addprocess_id = nil
+	delete(m.clearedFields, workermetrics.FieldProcessID)
+}
+
+// SetMnemonic sets the "mnemonic" field.
+func (m *WorkerMetricsMutation) SetMnemonic(s string) {
+	m.mnemonic = &s
+}
+
+// Mnemonic returns the value of the "mnemonic" field in the mutation.
+func (m *WorkerMetricsMutation) Mnemonic() (r string, exists bool) {
+	v := m.mnemonic
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMnemonic returns the old "mnemonic" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldMnemonic(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMnemonic is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMnemonic requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMnemonic: %w", err)
+	}
+	return oldValue.Mnemonic, nil
+}
+
+// ClearMnemonic clears the value of the "mnemonic" field.
+func (m *WorkerMetricsMutation) ClearMnemonic() {
+	m.mnemonic = nil
+	m.clearedFields[workermetrics.FieldMnemonic] = struct{}{}
+}
+
+// MnemonicCleared returns if the "mnemonic" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) MnemonicCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldMnemonic]
+	return ok
+}
+
+// ResetMnemonic resets all changes to the "mnemonic" field.
+func (m *WorkerMetricsMutation) ResetMnemonic() {
+	m.mnemonic = nil
+	delete(m.clearedFields, workermetrics.FieldMnemonic)
+}
+
+// SetIsMultiplex sets the "is_multiplex" field.
+func (m *WorkerMetricsMutation) SetIsMultiplex(b bool) {
+	m.is_multiplex = &b
+}
+
+// IsMultiplex returns the value of the "is_multiplex" field in the mutation.
+func (m *WorkerMetricsMutation) IsMultiplex() (r bool, exists bool) {
+	v := m.is_multiplex
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsMultiplex returns the old "is_multiplex" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldIsMultiplex(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsMultiplex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsMultiplex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsMultiplex: %w", err)
+	}
+	return oldValue.IsMultiplex, nil
+}
+
+// ClearIsMultiplex clears the value of the "is_multiplex" field.
+func (m *WorkerMetricsMutation) ClearIsMultiplex() {
+	m.is_multiplex = nil
+	m.clearedFields[workermetrics.FieldIsMultiplex] = struct{}{}
+}
+
+// IsMultiplexCleared returns if the "is_multiplex" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) IsMultiplexCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldIsMultiplex]
+	return ok
+}
+
+// ResetIsMultiplex resets all changes to the "is_multiplex" field.
+func (m *WorkerMetricsMutation) ResetIsMultiplex() {
+	m.is_multiplex = nil
+	delete(m.clearedFields, workermetrics.FieldIsMultiplex)
+}
+
+// SetIsSandbox sets the "is_sandbox" field.
+func (m *WorkerMetricsMutation) SetIsSandbox(b bool) {
+	m.is_sandbox = &b
+}
+
+// IsSandbox returns the value of the "is_sandbox" field in the mutation.
+func (m *WorkerMetricsMutation) IsSandbox() (r bool, exists bool) {
+	v := m.is_sandbox
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsSandbox returns the old "is_sandbox" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldIsSandbox(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsSandbox is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsSandbox requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsSandbox: %w", err)
+	}
+	return oldValue.IsSandbox, nil
+}
+
+// ClearIsSandbox clears the value of the "is_sandbox" field.
+func (m *WorkerMetricsMutation) ClearIsSandbox() {
+	m.is_sandbox = nil
+	m.clearedFields[workermetrics.FieldIsSandbox] = struct{}{}
+}
+
+// IsSandboxCleared returns if the "is_sandbox" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) IsSandboxCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldIsSandbox]
+	return ok
+}
+
+// ResetIsSandbox resets all changes to the "is_sandbox" field.
+func (m *WorkerMetricsMutation) ResetIsSandbox() {
+	m.is_sandbox = nil
+	delete(m.clearedFields, workermetrics.FieldIsSandbox)
+}
+
+// SetIsMeasurable sets the "is_measurable" field.
+func (m *WorkerMetricsMutation) SetIsMeasurable(b bool) {
+	m.is_measurable = &b
+}
+
+// IsMeasurable returns the value of the "is_measurable" field in the mutation.
+func (m *WorkerMetricsMutation) IsMeasurable() (r bool, exists bool) {
+	v := m.is_measurable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsMeasurable returns the old "is_measurable" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldIsMeasurable(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsMeasurable is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsMeasurable requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsMeasurable: %w", err)
+	}
+	return oldValue.IsMeasurable, nil
+}
+
+// ClearIsMeasurable clears the value of the "is_measurable" field.
+func (m *WorkerMetricsMutation) ClearIsMeasurable() {
+	m.is_measurable = nil
+	m.clearedFields[workermetrics.FieldIsMeasurable] = struct{}{}
+}
+
+// IsMeasurableCleared returns if the "is_measurable" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) IsMeasurableCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldIsMeasurable]
+	return ok
+}
+
+// ResetIsMeasurable resets all changes to the "is_measurable" field.
+func (m *WorkerMetricsMutation) ResetIsMeasurable() {
+	m.is_measurable = nil
+	delete(m.clearedFields, workermetrics.FieldIsMeasurable)
+}
+
+// SetWorkerKeyHash sets the "worker_key_hash" field.
+func (m *WorkerMetricsMutation) SetWorkerKeyHash(i int64) {
+	m.worker_key_hash = &i
+	m.addworker_key_hash = nil
+}
+
+// WorkerKeyHash returns the value of the "worker_key_hash" field in the mutation.
+func (m *WorkerMetricsMutation) WorkerKeyHash() (r int64, exists bool) {
+	v := m.worker_key_hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWorkerKeyHash returns the old "worker_key_hash" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldWorkerKeyHash(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWorkerKeyHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWorkerKeyHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWorkerKeyHash: %w", err)
+	}
+	return oldValue.WorkerKeyHash, nil
+}
+
+// AddWorkerKeyHash adds i to the "worker_key_hash" field.
+func (m *WorkerMetricsMutation) AddWorkerKeyHash(i int64) {
+	if m.addworker_key_hash != nil {
+		*m.addworker_key_hash += i
+	} else {
+		m.addworker_key_hash = &i
+	}
+}
+
+// AddedWorkerKeyHash returns the value that was added to the "worker_key_hash" field in this mutation.
+func (m *WorkerMetricsMutation) AddedWorkerKeyHash() (r int64, exists bool) {
+	v := m.addworker_key_hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearWorkerKeyHash clears the value of the "worker_key_hash" field.
+func (m *WorkerMetricsMutation) ClearWorkerKeyHash() {
+	m.worker_key_hash = nil
+	m.addworker_key_hash = nil
+	m.clearedFields[workermetrics.FieldWorkerKeyHash] = struct{}{}
+}
+
+// WorkerKeyHashCleared returns if the "worker_key_hash" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) WorkerKeyHashCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldWorkerKeyHash]
+	return ok
+}
+
+// ResetWorkerKeyHash resets all changes to the "worker_key_hash" field.
+func (m *WorkerMetricsMutation) ResetWorkerKeyHash() {
+	m.worker_key_hash = nil
+	m.addworker_key_hash = nil
+	delete(m.clearedFields, workermetrics.FieldWorkerKeyHash)
+}
+
+// SetWorkerStatus sets the "worker_status" field.
+func (m *WorkerMetricsMutation) SetWorkerStatus(s string) {
+	m.worker_status = &s
+}
+
+// WorkerStatus returns the value of the "worker_status" field in the mutation.
+func (m *WorkerMetricsMutation) WorkerStatus() (r string, exists bool) {
+	v := m.worker_status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWorkerStatus returns the old "worker_status" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldWorkerStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWorkerStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWorkerStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWorkerStatus: %w", err)
+	}
+	return oldValue.WorkerStatus, nil
+}
+
+// ClearWorkerStatus clears the value of the "worker_status" field.
+func (m *WorkerMetricsMutation) ClearWorkerStatus() {
+	m.worker_status = nil
+	m.clearedFields[workermetrics.FieldWorkerStatus] = struct{}{}
+}
+
+// WorkerStatusCleared returns if the "worker_status" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) WorkerStatusCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldWorkerStatus]
+	return ok
+}
+
+// ResetWorkerStatus resets all changes to the "worker_status" field.
+func (m *WorkerMetricsMutation) ResetWorkerStatus() {
+	m.worker_status = nil
+	delete(m.clearedFields, workermetrics.FieldWorkerStatus)
+}
+
+// SetCode sets the "code" field.
+func (m *WorkerMetricsMutation) SetCode(s string) {
+	m.code = &s
+}
+
+// Code returns the value of the "code" field in the mutation.
+func (m *WorkerMetricsMutation) Code() (r string, exists bool) {
+	v := m.code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCode returns the old "code" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
+	}
+	return oldValue.Code, nil
+}
+
+// ClearCode clears the value of the "code" field.
+func (m *WorkerMetricsMutation) ClearCode() {
+	m.code = nil
+	m.clearedFields[workermetrics.FieldCode] = struct{}{}
+}
+
+// CodeCleared returns if the "code" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) CodeCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldCode]
+	return ok
+}
+
+// ResetCode resets all changes to the "code" field.
+func (m *WorkerMetricsMutation) ResetCode() {
+	m.code = nil
+	delete(m.clearedFields, workermetrics.FieldCode)
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (m *WorkerMetricsMutation) SetActionsExecuted(i int64) {
+	m.actions_executed = &i
+	m.addactions_executed = nil
+}
+
+// ActionsExecuted returns the value of the "actions_executed" field in the mutation.
+func (m *WorkerMetricsMutation) ActionsExecuted() (r int64, exists bool) {
+	v := m.actions_executed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActionsExecuted returns the old "actions_executed" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldActionsExecuted(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldActionsExecuted is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldActionsExecuted requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActionsExecuted: %w", err)
+	}
+	return oldValue.ActionsExecuted, nil
+}
+
+// AddActionsExecuted adds i to the "actions_executed" field.
+func (m *WorkerMetricsMutation) AddActionsExecuted(i int64) {
+	if m.addactions_executed != nil {
+		*m.addactions_executed += i
+	} else {
+		m.addactions_executed = &i
+	}
+}
+
+// AddedActionsExecuted returns the value that was added to the "actions_executed" field in this mutation.
+func (m *WorkerMetricsMutation) AddedActionsExecuted() (r int64, exists bool) {
+	v := m.addactions_executed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (m *WorkerMetricsMutation) ClearActionsExecuted() {
+	m.actions_executed = nil
+	m.addactions_executed = nil
+	m.clearedFields[workermetrics.FieldActionsExecuted] = struct{}{}
+}
+
+// ActionsExecutedCleared returns if the "actions_executed" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) ActionsExecutedCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldActionsExecuted]
+	return ok
+}
+
+// ResetActionsExecuted resets all changes to the "actions_executed" field.
+func (m *WorkerMetricsMutation) ResetActionsExecuted() {
+	m.actions_executed = nil
+	m.addactions_executed = nil
+	delete(m.clearedFields, workermetrics.FieldActionsExecuted)
+}
+
+// SetPriorActionsExecuted sets the "prior_actions_executed" field.
+func (m *WorkerMetricsMutation) SetPriorActionsExecuted(i int64) {
+	m.prior_actions_executed = &i
+	m.addprior_actions_executed = nil
+}
+
+// PriorActionsExecuted returns the value of the "prior_actions_executed" field in the mutation.
+func (m *WorkerMetricsMutation) PriorActionsExecuted() (r int64, exists bool) {
+	v := m.prior_actions_executed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPriorActionsExecuted returns the old "prior_actions_executed" field's value of the WorkerMetrics entity.
+// If the WorkerMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerMetricsMutation) OldPriorActionsExecuted(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPriorActionsExecuted is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPriorActionsExecuted requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPriorActionsExecuted: %w", err)
+	}
+	return oldValue.PriorActionsExecuted, nil
+}
+
+// AddPriorActionsExecuted adds i to the "prior_actions_executed" field.
+func (m *WorkerMetricsMutation) AddPriorActionsExecuted(i int64) {
+	if m.addprior_actions_executed != nil {
+		*m.addprior_actions_executed += i
+	} else {
+		m.addprior_actions_executed = &i
+	}
+}
+
+// AddedPriorActionsExecuted returns the value that was added to the "prior_actions_executed" field in this mutation.
+func (m *WorkerMetricsMutation) AddedPriorActionsExecuted() (r int64, exists bool) {
+	v := m.addprior_actions_executed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearPriorActionsExecuted clears the value of the "prior_actions_executed" field.
+func (m *WorkerMetricsMutation) ClearPriorActionsExecuted() {
+	m.prior_actions_executed = nil
+	m.addprior_actions_executed = nil
+	m.clearedFields[workermetrics.FieldPriorActionsExecuted] = struct{}{}
+}
+
+// PriorActionsExecutedCleared returns if the "prior_actions_executed" field was cleared in this mutation.
+func (m *WorkerMetricsMutation) PriorActionsExecutedCleared() bool {
+	_, ok := m.clearedFields[workermetrics.FieldPriorActionsExecuted]
+	return ok
+}
+
+// ResetPriorActionsExecuted resets all changes to the "prior_actions_executed" field.
+func (m *WorkerMetricsMutation) ResetPriorActionsExecuted() {
+	m.prior_actions_executed = nil
+	m.addprior_actions_executed = nil
+	delete(m.clearedFields, workermetrics.FieldPriorActionsExecuted)
+}
+
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *WorkerMetricsMutation) SetMetricsID(id int64) {
+	m.metrics = &id
+}
+
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
+func (m *WorkerMetricsMutation) ClearMetrics() {
+	m.clearedmetrics = true
+}
+
+// MetricsCleared reports if the "metrics" edge to the Metrics entity was cleared.
+func (m *WorkerMetricsMutation) MetricsCleared() bool {
+	return m.clearedmetrics
+}
+
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *WorkerMetricsMutation) MetricsID() (id int64, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
+	}
+	return
+}
+
+// MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
+func (m *WorkerMetricsMutation) MetricsIDs() (ids []int64) {
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetMetrics resets all changes to the "metrics" edge.
+func (m *WorkerMetricsMutation) ResetMetrics() {
+	m.metrics = nil
+	m.clearedmetrics = false
+}
+
+// AddWorkerIDIDs adds the "worker_ids" edge to the WorkerID entity by ids.
+func (m *WorkerMetricsMutation) AddWorkerIDIDs(ids ...int64) {
+	if m.worker_ids == nil {
+		m.worker_ids = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.worker_ids[ids[i]] = struct{}{}
+	}
+}
+
+// ClearWorkerIds clears the "worker_ids" edge to the WorkerID entity.
+func (m *WorkerMetricsMutation) ClearWorkerIds() {
+	m.clearedworker_ids = true
+}
+
+// WorkerIdsCleared reports if the "worker_ids" edge to the WorkerID entity was cleared.
+func (m *WorkerMetricsMutation) WorkerIdsCleared() bool {
+	return m.clearedworker_ids
+}
+
+// RemoveWorkerIDIDs removes the "worker_ids" edge to the WorkerID entity by IDs.
+func (m *WorkerMetricsMutation) RemoveWorkerIDIDs(ids ...int64) {
+	if m.removedworker_ids == nil {
+		m.removedworker_ids = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.worker_ids, ids[i])
+		m.removedworker_ids[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedWorkerIds returns the removed IDs of the "worker_ids" edge to the WorkerID entity.
+func (m *WorkerMetricsMutation) RemovedWorkerIdsIDs() (ids []int64) {
+	for id := range m.removedworker_ids {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// WorkerIdsIDs returns the "worker_ids" edge IDs in the mutation.
+func (m *WorkerMetricsMutation) WorkerIdsIDs() (ids []int64) {
+	for id := range m.worker_ids {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetWorkerIds resets all changes to the "worker_ids" edge.
+func (m *WorkerMetricsMutation) ResetWorkerIds() {
+	m.worker_ids = nil
+	m.clearedworker_ids = false
+	m.removedworker_ids = nil
+}
+
+// AddWorkerStatIDs adds the "worker_stats" edge to the WorkerStats entity by ids.
+func (m *WorkerMetricsMutation) AddWorkerStatIDs(ids ...int64) {
+	if m.worker_stats == nil {
+		m.worker_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.worker_stats[ids[i]] = struct{}{}
+	}
+}
+
+// ClearWorkerStats clears the "worker_stats" edge to the WorkerStats entity.
+func (m *WorkerMetricsMutation) ClearWorkerStats() {
+	m.clearedworker_stats = true
+}
+
+// WorkerStatsCleared reports if the "worker_stats" edge to the WorkerStats entity was cleared.
+func (m *WorkerMetricsMutation) WorkerStatsCleared() bool {
+	return m.clearedworker_stats
+}
+
+// RemoveWorkerStatIDs removes the "worker_stats" edge to the WorkerStats entity by IDs.
+func (m *WorkerMetricsMutation) RemoveWorkerStatIDs(ids ...int64) {
+	if m.removedworker_stats == nil {
+		m.removedworker_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.worker_stats, ids[i])
+		m.removedworker_stats[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedWorkerStats returns the removed IDs of the "worker_stats" edge to the WorkerStats entity.
+func (m *WorkerMetricsMutation) RemovedWorkerStatsIDs() (ids []int64) {
+	for id := range m.removedworker_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// WorkerStatsIDs returns the "worker_stats" edge IDs in the mutation.
+func (m *WorkerMetricsMutation) WorkerStatsIDs() (ids []int64) {
+	for id := range m.worker_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetWorkerStats resets all changes to the "worker_stats" edge.
+func (m *WorkerMetricsMutation) ResetWorkerStats() {
+	m.worker_stats = nil
+	m.clearedworker_stats = false
+	m.removedworker_stats = nil
+}
+
+// Where appends a list predicates to the WorkerMetricsMutation builder.
+func (m *WorkerMetricsMutation) Where(ps ...predicate.WorkerMetrics) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the WorkerMetricsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *WorkerMetricsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.WorkerMetrics, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *WorkerMetricsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *WorkerMetricsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (WorkerMetrics).
+func (m *WorkerMetricsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *WorkerMetricsMutation) Fields() []string {
+	fields := make([]string, 0, 10)
+	if m.process_id != nil {
+		fields = append(fields, workermetrics.FieldProcessID)
+	}
+	if m.mnemonic != nil {
+		fields = append(fields, workermetrics.FieldMnemonic)
+	}
+	if m.is_multiplex != nil {
+		fields = append(fields, workermetrics.FieldIsMultiplex)
+	}
+	if m.is_sandbox != nil {
+		fields = append(fields, workermetrics.FieldIsSandbox)
+	}
+	if m.is_measurable != nil {
+		fields = append(fields, workermetrics.FieldIsMeasurable)
+	}
+	if m.worker_key_hash != nil {
+		fields = append(fields, workermetrics.FieldWorkerKeyHash)
+	}
+	if m.worker_status != nil {
+		fields = append(fields, workermetrics.FieldWorkerStatus)
+	}
+	if m.code != nil {
+		fields = append(fields, workermetrics.FieldCode)
+	}
+	if m.actions_executed != nil {
+		fields = append(fields, workermetrics.FieldActionsExecuted)
+	}
+	if m.prior_actions_executed != nil {
+		fields = append(fields, workermetrics.FieldPriorActionsExecuted)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *WorkerMetricsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case workermetrics.FieldProcessID:
+		return m.ProcessID()
+	case workermetrics.FieldMnemonic:
+		return m.Mnemonic()
+	case workermetrics.FieldIsMultiplex:
+		return m.IsMultiplex()
+	case workermetrics.FieldIsSandbox:
+		return m.IsSandbox()
+	case workermetrics.FieldIsMeasurable:
+		return m.IsMeasurable()
+	case workermetrics.FieldWorkerKeyHash:
+		return m.WorkerKeyHash()
+	case workermetrics.FieldWorkerStatus:
+		return m.WorkerStatus()
+	case workermetrics.FieldCode:
+		return m.Code()
+	case workermetrics.FieldActionsExecuted:
+		return m.ActionsExecuted()
+	case workermetrics.FieldPriorActionsExecuted:
+		return m.PriorActionsExecuted()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *WorkerMetricsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case workermetrics.FieldProcessID:
+		return m.OldProcessID(ctx)
+	case workermetrics.FieldMnemonic:
+		return m.OldMnemonic(ctx)
+	case workermetrics.FieldIsMultiplex:
+		return m.OldIsMultiplex(ctx)
+	case workermetrics.FieldIsSandbox:
+		return m.OldIsSandbox(ctx)
+	case workermetrics.FieldIsMeasurable:
+		return m.OldIsMeasurable(ctx)
+	case workermetrics.FieldWorkerKeyHash:
+		return m.OldWorkerKeyHash(ctx)
+	case workermetrics.FieldWorkerStatus:
+		return m.OldWorkerStatus(ctx)
+	case workermetrics.FieldCode:
+		return m.OldCode(ctx)
+	case workermetrics.FieldActionsExecuted:
+		return m.OldActionsExecuted(ctx)
+	case workermetrics.FieldPriorActionsExecuted:
+		return m.OldPriorActionsExecuted(ctx)
+	}
+	return nil, fmt.Errorf("unknown WorkerMetrics field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerMetricsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case workermetrics.FieldProcessID:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProcessID(v)
+		return nil
+	case workermetrics.FieldMnemonic:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMnemonic(v)
+		return nil
+	case workermetrics.FieldIsMultiplex:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsMultiplex(v)
+		return nil
+	case workermetrics.FieldIsSandbox:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsSandbox(v)
+		return nil
+	case workermetrics.FieldIsMeasurable:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsMeasurable(v)
+		return nil
+	case workermetrics.FieldWorkerKeyHash:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWorkerKeyHash(v)
+		return nil
+	case workermetrics.FieldWorkerStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWorkerStatus(v)
+		return nil
+	case workermetrics.FieldCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCode(v)
+		return nil
+	case workermetrics.FieldActionsExecuted:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActionsExecuted(v)
+		return nil
+	case workermetrics.FieldPriorActionsExecuted:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPriorActionsExecuted(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerMetrics field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *WorkerMetricsMutation) AddedFields() []string {
+	var fields []string
+	if m.addprocess_id != nil {
+		fields = append(fields, workermetrics.FieldProcessID)
+	}
+	if m.addworker_key_hash != nil {
+		fields = append(fields, workermetrics.FieldWorkerKeyHash)
+	}
+	if m.addactions_executed != nil {
+		fields = append(fields, workermetrics.FieldActionsExecuted)
+	}
+	if m.addprior_actions_executed != nil {
+		fields = append(fields, workermetrics.FieldPriorActionsExecuted)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *WorkerMetricsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case workermetrics.FieldProcessID:
+		return m.AddedProcessID()
+	case workermetrics.FieldWorkerKeyHash:
+		return m.AddedWorkerKeyHash()
+	case workermetrics.FieldActionsExecuted:
+		return m.AddedActionsExecuted()
+	case workermetrics.FieldPriorActionsExecuted:
+		return m.AddedPriorActionsExecuted()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerMetricsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case workermetrics.FieldProcessID:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddProcessID(v)
+		return nil
+	case workermetrics.FieldWorkerKeyHash:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWorkerKeyHash(v)
+		return nil
+	case workermetrics.FieldActionsExecuted:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddActionsExecuted(v)
+		return nil
+	case workermetrics.FieldPriorActionsExecuted:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPriorActionsExecuted(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerMetrics numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *WorkerMetricsMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(workermetrics.FieldProcessID) {
+		fields = append(fields, workermetrics.FieldProcessID)
+	}
+	if m.FieldCleared(workermetrics.FieldMnemonic) {
+		fields = append(fields, workermetrics.FieldMnemonic)
+	}
+	if m.FieldCleared(workermetrics.FieldIsMultiplex) {
+		fields = append(fields, workermetrics.FieldIsMultiplex)
+	}
+	if m.FieldCleared(workermetrics.FieldIsSandbox) {
+		fields = append(fields, workermetrics.FieldIsSandbox)
+	}
+	if m.FieldCleared(workermetrics.FieldIsMeasurable) {
+		fields = append(fields, workermetrics.FieldIsMeasurable)
+	}
+	if m.FieldCleared(workermetrics.FieldWorkerKeyHash) {
+		fields = append(fields, workermetrics.FieldWorkerKeyHash)
+	}
+	if m.FieldCleared(workermetrics.FieldWorkerStatus) {
+		fields = append(fields, workermetrics.FieldWorkerStatus)
+	}
+	if m.FieldCleared(workermetrics.FieldCode) {
+		fields = append(fields, workermetrics.FieldCode)
+	}
+	if m.FieldCleared(workermetrics.FieldActionsExecuted) {
+		fields = append(fields, workermetrics.FieldActionsExecuted)
+	}
+	if m.FieldCleared(workermetrics.FieldPriorActionsExecuted) {
+		fields = append(fields, workermetrics.FieldPriorActionsExecuted)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *WorkerMetricsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *WorkerMetricsMutation) ClearField(name string) error {
+	switch name {
+	case workermetrics.FieldProcessID:
+		m.ClearProcessID()
+		return nil
+	case workermetrics.FieldMnemonic:
+		m.ClearMnemonic()
+		return nil
+	case workermetrics.FieldIsMultiplex:
+		m.ClearIsMultiplex()
+		return nil
+	case workermetrics.FieldIsSandbox:
+		m.ClearIsSandbox()
+		return nil
+	case workermetrics.FieldIsMeasurable:
+		m.ClearIsMeasurable()
+		return nil
+	case workermetrics.FieldWorkerKeyHash:
+		m.ClearWorkerKeyHash()
+		return nil
+	case workermetrics.FieldWorkerStatus:
+		m.ClearWorkerStatus()
+		return nil
+	case workermetrics.FieldCode:
+		m.ClearCode()
+		return nil
+	case workermetrics.FieldActionsExecuted:
+		m.ClearActionsExecuted()
+		return nil
+	case workermetrics.FieldPriorActionsExecuted:
+		m.ClearPriorActionsExecuted()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerMetrics nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *WorkerMetricsMutation) ResetField(name string) error {
+	switch name {
+	case workermetrics.FieldProcessID:
+		m.ResetProcessID()
+		return nil
+	case workermetrics.FieldMnemonic:
+		m.ResetMnemonic()
+		return nil
+	case workermetrics.FieldIsMultiplex:
+		m.ResetIsMultiplex()
+		return nil
+	case workermetrics.FieldIsSandbox:
+		m.ResetIsSandbox()
+		return nil
+	case workermetrics.FieldIsMeasurable:
+		m.ResetIsMeasurable()
+		return nil
+	case workermetrics.FieldWorkerKeyHash:
+		m.ResetWorkerKeyHash()
+		return nil
+	case workermetrics.FieldWorkerStatus:
+		m.ResetWorkerStatus()
+		return nil
+	case workermetrics.FieldCode:
+		m.ResetCode()
+		return nil
+	case workermetrics.FieldActionsExecuted:
+		m.ResetActionsExecuted()
+		return nil
+	case workermetrics.FieldPriorActionsExecuted:
+		m.ResetPriorActionsExecuted()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerMetrics field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *WorkerMetricsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.metrics != nil {
+		edges = append(edges, workermetrics.EdgeMetrics)
+	}
+	if m.worker_ids != nil {
+		edges = append(edges, workermetrics.EdgeWorkerIds)
+	}
+	if m.worker_stats != nil {
+		edges = append(edges, workermetrics.EdgeWorkerStats)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *WorkerMetricsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case workermetrics.EdgeMetrics:
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	case workermetrics.EdgeWorkerIds:
+		ids := make([]ent.Value, 0, len(m.worker_ids))
+		for id := range m.worker_ids {
+			ids = append(ids, id)
+		}
+		return ids
+	case workermetrics.EdgeWorkerStats:
+		ids := make([]ent.Value, 0, len(m.worker_stats))
+		for id := range m.worker_stats {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *WorkerMetricsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.removedworker_ids != nil {
+		edges = append(edges, workermetrics.EdgeWorkerIds)
+	}
+	if m.removedworker_stats != nil {
+		edges = append(edges, workermetrics.EdgeWorkerStats)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *WorkerMetricsMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case workermetrics.EdgeWorkerIds:
+		ids := make([]ent.Value, 0, len(m.removedworker_ids))
+		for id := range m.removedworker_ids {
+			ids = append(ids, id)
+		}
+		return ids
+	case workermetrics.EdgeWorkerStats:
+		ids := make([]ent.Value, 0, len(m.removedworker_stats))
+		for id := range m.removedworker_stats {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *WorkerMetricsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.clearedmetrics {
+		edges = append(edges, workermetrics.EdgeMetrics)
+	}
+	if m.clearedworker_ids {
+		edges = append(edges, workermetrics.EdgeWorkerIds)
+	}
+	if m.clearedworker_stats {
+		edges = append(edges, workermetrics.EdgeWorkerStats)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *WorkerMetricsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case workermetrics.EdgeMetrics:
+		return m.clearedmetrics
+	case workermetrics.EdgeWorkerIds:
+		return m.clearedworker_ids
+	case workermetrics.EdgeWorkerStats:
+		return m.clearedworker_stats
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *WorkerMetricsMutation) ClearEdge(name string) error {
+	switch name {
+	case workermetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerMetrics unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *WorkerMetricsMutation) ResetEdge(name string) error {
+	switch name {
+	case workermetrics.EdgeMetrics:
+		m.ResetMetrics()
+		return nil
+	case workermetrics.EdgeWorkerIds:
+		m.ResetWorkerIds()
+		return nil
+	case workermetrics.EdgeWorkerStats:
+		m.ResetWorkerStats()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerMetrics edge %s", name)
+}
+
+// WorkerPoolMetricsMutation represents an operation that mutates the WorkerPoolMetrics nodes in the graph.
+type WorkerPoolMetricsMutation struct {
+	config
+	op                       Op
+	typ                      string
+	id                       *int64
+	clearedFields            map[string]struct{}
+	metrics                  *int64
+	clearedmetrics           bool
+	worker_pool_stats        map[int64]struct{}
+	removedworker_pool_stats map[int64]struct{}
+	clearedworker_pool_stats bool
+	done                     bool
+	oldValue                 func(context.Context) (*WorkerPoolMetrics, error)
+	predicates               []predicate.WorkerPoolMetrics
+}
+
+var _ ent.Mutation = (*WorkerPoolMetricsMutation)(nil)
+
+// workerpoolmetricsOption allows management of the mutation configuration using functional options.
+type workerpoolmetricsOption func(*WorkerPoolMetricsMutation)
+
+// newWorkerPoolMetricsMutation creates new mutation for the WorkerPoolMetrics entity.
+func newWorkerPoolMetricsMutation(c config, op Op, opts ...workerpoolmetricsOption) *WorkerPoolMetricsMutation {
+	m := &WorkerPoolMetricsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeWorkerPoolMetrics,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withWorkerPoolMetricsID sets the ID field of the mutation.
+func withWorkerPoolMetricsID(id int64) workerpoolmetricsOption {
+	return func(m *WorkerPoolMetricsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *WorkerPoolMetrics
+		)
+		m.oldValue = func(ctx context.Context) (*WorkerPoolMetrics, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().WorkerPoolMetrics.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withWorkerPoolMetrics sets the old WorkerPoolMetrics of the mutation.
+func withWorkerPoolMetrics(node *WorkerPoolMetrics) workerpoolmetricsOption {
+	return func(m *WorkerPoolMetricsMutation) {
+		m.oldValue = func(context.Context) (*WorkerPoolMetrics, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m WorkerPoolMetricsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m WorkerPoolMetricsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of WorkerPoolMetrics entities.
+func (m *WorkerPoolMetricsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *WorkerPoolMetricsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *WorkerPoolMetricsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().WorkerPoolMetrics.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *WorkerPoolMetricsMutation) SetMetricsID(id int64) {
+	m.metrics = &id
+}
+
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
+func (m *WorkerPoolMetricsMutation) ClearMetrics() {
+	m.clearedmetrics = true
+}
+
+// MetricsCleared reports if the "metrics" edge to the Metrics entity was cleared.
+func (m *WorkerPoolMetricsMutation) MetricsCleared() bool {
+	return m.clearedmetrics
+}
+
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *WorkerPoolMetricsMutation) MetricsID() (id int64, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
+	}
+	return
+}
+
+// MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
+func (m *WorkerPoolMetricsMutation) MetricsIDs() (ids []int64) {
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetMetrics resets all changes to the "metrics" edge.
+func (m *WorkerPoolMetricsMutation) ResetMetrics() {
+	m.metrics = nil
+	m.clearedmetrics = false
+}
+
+// AddWorkerPoolStatIDs adds the "worker_pool_stats" edge to the WorkerPoolStats entity by ids.
+func (m *WorkerPoolMetricsMutation) AddWorkerPoolStatIDs(ids ...int64) {
+	if m.worker_pool_stats == nil {
+		m.worker_pool_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.worker_pool_stats[ids[i]] = struct{}{}
+	}
+}
+
+// ClearWorkerPoolStats clears the "worker_pool_stats" edge to the WorkerPoolStats entity.
+func (m *WorkerPoolMetricsMutation) ClearWorkerPoolStats() {
+	m.clearedworker_pool_stats = true
+}
+
+// WorkerPoolStatsCleared reports if the "worker_pool_stats" edge to the WorkerPoolStats entity was cleared.
+func (m *WorkerPoolMetricsMutation) WorkerPoolStatsCleared() bool {
+	return m.clearedworker_pool_stats
+}
+
+// RemoveWorkerPoolStatIDs removes the "worker_pool_stats" edge to the WorkerPoolStats entity by IDs.
+func (m *WorkerPoolMetricsMutation) RemoveWorkerPoolStatIDs(ids ...int64) {
+	if m.removedworker_pool_stats == nil {
+		m.removedworker_pool_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.worker_pool_stats, ids[i])
+		m.removedworker_pool_stats[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedWorkerPoolStats returns the removed IDs of the "worker_pool_stats" edge to the WorkerPoolStats entity.
+func (m *WorkerPoolMetricsMutation) RemovedWorkerPoolStatsIDs() (ids []int64) {
+	for id := range m.removedworker_pool_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// WorkerPoolStatsIDs returns the "worker_pool_stats" edge IDs in the mutation.
+func (m *WorkerPoolMetricsMutation) WorkerPoolStatsIDs() (ids []int64) {
+	for id := range m.worker_pool_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetWorkerPoolStats resets all changes to the "worker_pool_stats" edge.
+func (m *WorkerPoolMetricsMutation) ResetWorkerPoolStats() {
+	m.worker_pool_stats = nil
+	m.clearedworker_pool_stats = false
+	m.removedworker_pool_stats = nil
+}
+
+// Where appends a list predicates to the WorkerPoolMetricsMutation builder.
+func (m *WorkerPoolMetricsMutation) Where(ps ...predicate.WorkerPoolMetrics) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the WorkerPoolMetricsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *WorkerPoolMetricsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.WorkerPoolMetrics, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *WorkerPoolMetricsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *WorkerPoolMetricsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (WorkerPoolMetrics).
+func (m *WorkerPoolMetricsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *WorkerPoolMetricsMutation) Fields() []string {
+	fields := make([]string, 0, 0)
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *WorkerPoolMetricsMutation) Field(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *WorkerPoolMetricsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	return nil, fmt.Errorf("unknown WorkerPoolMetrics field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerPoolMetricsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown WorkerPoolMetrics field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *WorkerPoolMetricsMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *WorkerPoolMetricsMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerPoolMetricsMutation) AddField(name string, value ent.Value) error {
+	return fmt.Errorf("unknown WorkerPoolMetrics numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *WorkerPoolMetricsMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *WorkerPoolMetricsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *WorkerPoolMetricsMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown WorkerPoolMetrics nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *WorkerPoolMetricsMutation) ResetField(name string) error {
+	return fmt.Errorf("unknown WorkerPoolMetrics field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *WorkerPoolMetricsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.metrics != nil {
+		edges = append(edges, workerpoolmetrics.EdgeMetrics)
+	}
+	if m.worker_pool_stats != nil {
+		edges = append(edges, workerpoolmetrics.EdgeWorkerPoolStats)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *WorkerPoolMetricsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case workerpoolmetrics.EdgeMetrics:
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	case workerpoolmetrics.EdgeWorkerPoolStats:
+		ids := make([]ent.Value, 0, len(m.worker_pool_stats))
+		for id := range m.worker_pool_stats {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *WorkerPoolMetricsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removedworker_pool_stats != nil {
+		edges = append(edges, workerpoolmetrics.EdgeWorkerPoolStats)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *WorkerPoolMetricsMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case workerpoolmetrics.EdgeWorkerPoolStats:
+		ids := make([]ent.Value, 0, len(m.removedworker_pool_stats))
+		for id := range m.removedworker_pool_stats {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *WorkerPoolMetricsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedmetrics {
+		edges = append(edges, workerpoolmetrics.EdgeMetrics)
+	}
+	if m.clearedworker_pool_stats {
+		edges = append(edges, workerpoolmetrics.EdgeWorkerPoolStats)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *WorkerPoolMetricsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case workerpoolmetrics.EdgeMetrics:
+		return m.clearedmetrics
+	case workerpoolmetrics.EdgeWorkerPoolStats:
+		return m.clearedworker_pool_stats
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *WorkerPoolMetricsMutation) ClearEdge(name string) error {
+	switch name {
+	case workerpoolmetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolMetrics unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *WorkerPoolMetricsMutation) ResetEdge(name string) error {
+	switch name {
+	case workerpoolmetrics.EdgeMetrics:
+		m.ResetMetrics()
+		return nil
+	case workerpoolmetrics.EdgeWorkerPoolStats:
+		m.ResetWorkerPoolStats()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolMetrics edge %s", name)
+}
+
+// WorkerPoolStatsMutation represents an operation that mutates the WorkerPoolStats nodes in the graph.
+type WorkerPoolStatsMutation struct {
+	config
+	op                                       Op
+	typ                                      string
+	id                                       *int64
+	hash                                     *int32
+	addhash                                  *int32
+	mnemonic                                 *string
+	created_count                            *int64
+	addcreated_count                         *int64
+	destroyed_count                          *int64
+	adddestroyed_count                       *int64
+	evicted_count                            *int64
+	addevicted_count                         *int64
+	user_exec_exception_destroyed_count      *int64
+	adduser_exec_exception_destroyed_count   *int64
+	io_exception_destroyed_count             *int64
+	addio_exception_destroyed_count          *int64
+	interrupted_exception_destroyed_count    *int64
+	addinterrupted_exception_destroyed_count *int64
+	unknown_destroyed_count                  *int64
+	addunknown_destroyed_count               *int64
+	alive_count                              *int64
+	addalive_count                           *int64
+	clearedFields                            map[string]struct{}
+	worker_pool_metrics                      *int64
+	clearedworker_pool_metrics               bool
+	done                                     bool
+	oldValue                                 func(context.Context) (*WorkerPoolStats, error)
+	predicates                               []predicate.WorkerPoolStats
+}
+
+var _ ent.Mutation = (*WorkerPoolStatsMutation)(nil)
+
+// workerpoolstatsOption allows management of the mutation configuration using functional options.
+type workerpoolstatsOption func(*WorkerPoolStatsMutation)
+
+// newWorkerPoolStatsMutation creates new mutation for the WorkerPoolStats entity.
+func newWorkerPoolStatsMutation(c config, op Op, opts ...workerpoolstatsOption) *WorkerPoolStatsMutation {
+	m := &WorkerPoolStatsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeWorkerPoolStats,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withWorkerPoolStatsID sets the ID field of the mutation.
+func withWorkerPoolStatsID(id int64) workerpoolstatsOption {
+	return func(m *WorkerPoolStatsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *WorkerPoolStats
+		)
+		m.oldValue = func(ctx context.Context) (*WorkerPoolStats, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().WorkerPoolStats.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withWorkerPoolStats sets the old WorkerPoolStats of the mutation.
+func withWorkerPoolStats(node *WorkerPoolStats) workerpoolstatsOption {
+	return func(m *WorkerPoolStatsMutation) {
+		m.oldValue = func(context.Context) (*WorkerPoolStats, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m WorkerPoolStatsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m WorkerPoolStatsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of WorkerPoolStats entities.
+func (m *WorkerPoolStatsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *WorkerPoolStatsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *WorkerPoolStatsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().WorkerPoolStats.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetHash sets the "hash" field.
+func (m *WorkerPoolStatsMutation) SetHash(i int32) {
+	m.hash = &i
+	m.addhash = nil
+}
+
+// Hash returns the value of the "hash" field in the mutation.
+func (m *WorkerPoolStatsMutation) Hash() (r int32, exists bool) {
+	v := m.hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHash returns the old "hash" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldHash(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHash: %w", err)
+	}
+	return oldValue.Hash, nil
+}
+
+// AddHash adds i to the "hash" field.
+func (m *WorkerPoolStatsMutation) AddHash(i int32) {
+	if m.addhash != nil {
+		*m.addhash += i
+	} else {
+		m.addhash = &i
+	}
+}
+
+// AddedHash returns the value that was added to the "hash" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedHash() (r int32, exists bool) {
+	v := m.addhash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearHash clears the value of the "hash" field.
+func (m *WorkerPoolStatsMutation) ClearHash() {
+	m.hash = nil
+	m.addhash = nil
+	m.clearedFields[workerpoolstats.FieldHash] = struct{}{}
+}
+
+// HashCleared returns if the "hash" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) HashCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldHash]
+	return ok
+}
+
+// ResetHash resets all changes to the "hash" field.
+func (m *WorkerPoolStatsMutation) ResetHash() {
+	m.hash = nil
+	m.addhash = nil
+	delete(m.clearedFields, workerpoolstats.FieldHash)
+}
+
+// SetMnemonic sets the "mnemonic" field.
+func (m *WorkerPoolStatsMutation) SetMnemonic(s string) {
+	m.mnemonic = &s
+}
+
+// Mnemonic returns the value of the "mnemonic" field in the mutation.
+func (m *WorkerPoolStatsMutation) Mnemonic() (r string, exists bool) {
+	v := m.mnemonic
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMnemonic returns the old "mnemonic" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldMnemonic(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMnemonic is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMnemonic requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMnemonic: %w", err)
+	}
+	return oldValue.Mnemonic, nil
+}
+
+// ClearMnemonic clears the value of the "mnemonic" field.
+func (m *WorkerPoolStatsMutation) ClearMnemonic() {
+	m.mnemonic = nil
+	m.clearedFields[workerpoolstats.FieldMnemonic] = struct{}{}
+}
+
+// MnemonicCleared returns if the "mnemonic" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) MnemonicCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldMnemonic]
+	return ok
+}
+
+// ResetMnemonic resets all changes to the "mnemonic" field.
+func (m *WorkerPoolStatsMutation) ResetMnemonic() {
+	m.mnemonic = nil
+	delete(m.clearedFields, workerpoolstats.FieldMnemonic)
+}
+
+// SetCreatedCount sets the "created_count" field.
+func (m *WorkerPoolStatsMutation) SetCreatedCount(i int64) {
+	m.created_count = &i
+	m.addcreated_count = nil
+}
+
+// CreatedCount returns the value of the "created_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) CreatedCount() (r int64, exists bool) {
+	v := m.created_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedCount returns the old "created_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldCreatedCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedCount: %w", err)
+	}
+	return oldValue.CreatedCount, nil
+}
+
+// AddCreatedCount adds i to the "created_count" field.
+func (m *WorkerPoolStatsMutation) AddCreatedCount(i int64) {
+	if m.addcreated_count != nil {
+		*m.addcreated_count += i
+	} else {
+		m.addcreated_count = &i
+	}
+}
+
+// AddedCreatedCount returns the value that was added to the "created_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedCreatedCount() (r int64, exists bool) {
+	v := m.addcreated_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCreatedCount clears the value of the "created_count" field.
+func (m *WorkerPoolStatsMutation) ClearCreatedCount() {
+	m.created_count = nil
+	m.addcreated_count = nil
+	m.clearedFields[workerpoolstats.FieldCreatedCount] = struct{}{}
+}
+
+// CreatedCountCleared returns if the "created_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) CreatedCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldCreatedCount]
+	return ok
+}
+
+// ResetCreatedCount resets all changes to the "created_count" field.
+func (m *WorkerPoolStatsMutation) ResetCreatedCount() {
+	m.created_count = nil
+	m.addcreated_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldCreatedCount)
+}
+
+// SetDestroyedCount sets the "destroyed_count" field.
+func (m *WorkerPoolStatsMutation) SetDestroyedCount(i int64) {
+	m.destroyed_count = &i
+	m.adddestroyed_count = nil
+}
+
+// DestroyedCount returns the value of the "destroyed_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) DestroyedCount() (r int64, exists bool) {
+	v := m.destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDestroyedCount returns the old "destroyed_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldDestroyedCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDestroyedCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDestroyedCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDestroyedCount: %w", err)
+	}
+	return oldValue.DestroyedCount, nil
+}
+
+// AddDestroyedCount adds i to the "destroyed_count" field.
+func (m *WorkerPoolStatsMutation) AddDestroyedCount(i int64) {
+	if m.adddestroyed_count != nil {
+		*m.adddestroyed_count += i
+	} else {
+		m.adddestroyed_count = &i
+	}
+}
+
+// AddedDestroyedCount returns the value that was added to the "destroyed_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedDestroyedCount() (r int64, exists bool) {
+	v := m.adddestroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDestroyedCount clears the value of the "destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ClearDestroyedCount() {
+	m.destroyed_count = nil
+	m.adddestroyed_count = nil
+	m.clearedFields[workerpoolstats.FieldDestroyedCount] = struct{}{}
+}
+
+// DestroyedCountCleared returns if the "destroyed_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) DestroyedCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldDestroyedCount]
+	return ok
+}
+
+// ResetDestroyedCount resets all changes to the "destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ResetDestroyedCount() {
+	m.destroyed_count = nil
+	m.adddestroyed_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldDestroyedCount)
+}
+
+// SetEvictedCount sets the "evicted_count" field.
+func (m *WorkerPoolStatsMutation) SetEvictedCount(i int64) {
+	m.evicted_count = &i
+	m.addevicted_count = nil
+}
+
+// EvictedCount returns the value of the "evicted_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) EvictedCount() (r int64, exists bool) {
+	v := m.evicted_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEvictedCount returns the old "evicted_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldEvictedCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEvictedCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEvictedCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEvictedCount: %w", err)
+	}
+	return oldValue.EvictedCount, nil
+}
+
+// AddEvictedCount adds i to the "evicted_count" field.
+func (m *WorkerPoolStatsMutation) AddEvictedCount(i int64) {
+	if m.addevicted_count != nil {
+		*m.addevicted_count += i
+	} else {
+		m.addevicted_count = &i
+	}
+}
+
+// AddedEvictedCount returns the value that was added to the "evicted_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedEvictedCount() (r int64, exists bool) {
+	v := m.addevicted_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearEvictedCount clears the value of the "evicted_count" field.
+func (m *WorkerPoolStatsMutation) ClearEvictedCount() {
+	m.evicted_count = nil
+	m.addevicted_count = nil
+	m.clearedFields[workerpoolstats.FieldEvictedCount] = struct{}{}
+}
+
+// EvictedCountCleared returns if the "evicted_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) EvictedCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldEvictedCount]
+	return ok
+}
+
+// ResetEvictedCount resets all changes to the "evicted_count" field.
+func (m *WorkerPoolStatsMutation) ResetEvictedCount() {
+	m.evicted_count = nil
+	m.addevicted_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldEvictedCount)
+}
+
+// SetUserExecExceptionDestroyedCount sets the "user_exec_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) SetUserExecExceptionDestroyedCount(i int64) {
+	m.user_exec_exception_destroyed_count = &i
+	m.adduser_exec_exception_destroyed_count = nil
+}
+
+// UserExecExceptionDestroyedCount returns the value of the "user_exec_exception_destroyed_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) UserExecExceptionDestroyedCount() (r int64, exists bool) {
+	v := m.user_exec_exception_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserExecExceptionDestroyedCount returns the old "user_exec_exception_destroyed_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldUserExecExceptionDestroyedCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserExecExceptionDestroyedCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserExecExceptionDestroyedCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserExecExceptionDestroyedCount: %w", err)
+	}
+	return oldValue.UserExecExceptionDestroyedCount, nil
+}
+
+// AddUserExecExceptionDestroyedCount adds i to the "user_exec_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) AddUserExecExceptionDestroyedCount(i int64) {
+	if m.adduser_exec_exception_destroyed_count != nil {
+		*m.adduser_exec_exception_destroyed_count += i
+	} else {
+		m.adduser_exec_exception_destroyed_count = &i
+	}
+}
+
+// AddedUserExecExceptionDestroyedCount returns the value that was added to the "user_exec_exception_destroyed_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedUserExecExceptionDestroyedCount() (r int64, exists bool) {
+	v := m.adduser_exec_exception_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUserExecExceptionDestroyedCount clears the value of the "user_exec_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ClearUserExecExceptionDestroyedCount() {
+	m.user_exec_exception_destroyed_count = nil
+	m.adduser_exec_exception_destroyed_count = nil
+	m.clearedFields[workerpoolstats.FieldUserExecExceptionDestroyedCount] = struct{}{}
+}
+
+// UserExecExceptionDestroyedCountCleared returns if the "user_exec_exception_destroyed_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) UserExecExceptionDestroyedCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldUserExecExceptionDestroyedCount]
+	return ok
+}
+
+// ResetUserExecExceptionDestroyedCount resets all changes to the "user_exec_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ResetUserExecExceptionDestroyedCount() {
+	m.user_exec_exception_destroyed_count = nil
+	m.adduser_exec_exception_destroyed_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldUserExecExceptionDestroyedCount)
+}
+
+// SetIoExceptionDestroyedCount sets the "io_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) SetIoExceptionDestroyedCount(i int64) {
+	m.io_exception_destroyed_count = &i
+	m.addio_exception_destroyed_count = nil
+}
+
+// IoExceptionDestroyedCount returns the value of the "io_exception_destroyed_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) IoExceptionDestroyedCount() (r int64, exists bool) {
+	v := m.io_exception_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIoExceptionDestroyedCount returns the old "io_exception_destroyed_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldIoExceptionDestroyedCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIoExceptionDestroyedCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIoExceptionDestroyedCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIoExceptionDestroyedCount: %w", err)
+	}
+	return oldValue.IoExceptionDestroyedCount, nil
+}
+
+// AddIoExceptionDestroyedCount adds i to the "io_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) AddIoExceptionDestroyedCount(i int64) {
+	if m.addio_exception_destroyed_count != nil {
+		*m.addio_exception_destroyed_count += i
+	} else {
+		m.addio_exception_destroyed_count = &i
+	}
+}
+
+// AddedIoExceptionDestroyedCount returns the value that was added to the "io_exception_destroyed_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedIoExceptionDestroyedCount() (r int64, exists bool) {
+	v := m.addio_exception_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearIoExceptionDestroyedCount clears the value of the "io_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ClearIoExceptionDestroyedCount() {
+	m.io_exception_destroyed_count = nil
+	m.addio_exception_destroyed_count = nil
+	m.clearedFields[workerpoolstats.FieldIoExceptionDestroyedCount] = struct{}{}
+}
+
+// IoExceptionDestroyedCountCleared returns if the "io_exception_destroyed_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) IoExceptionDestroyedCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldIoExceptionDestroyedCount]
+	return ok
+}
+
+// ResetIoExceptionDestroyedCount resets all changes to the "io_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ResetIoExceptionDestroyedCount() {
+	m.io_exception_destroyed_count = nil
+	m.addio_exception_destroyed_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldIoExceptionDestroyedCount)
+}
+
+// SetInterruptedExceptionDestroyedCount sets the "interrupted_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) SetInterruptedExceptionDestroyedCount(i int64) {
+	m.interrupted_exception_destroyed_count = &i
+	m.addinterrupted_exception_destroyed_count = nil
+}
+
+// InterruptedExceptionDestroyedCount returns the value of the "interrupted_exception_destroyed_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) InterruptedExceptionDestroyedCount() (r int64, exists bool) {
+	v := m.interrupted_exception_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInterruptedExceptionDestroyedCount returns the old "interrupted_exception_destroyed_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldInterruptedExceptionDestroyedCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInterruptedExceptionDestroyedCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInterruptedExceptionDestroyedCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInterruptedExceptionDestroyedCount: %w", err)
+	}
+	return oldValue.InterruptedExceptionDestroyedCount, nil
+}
+
+// AddInterruptedExceptionDestroyedCount adds i to the "interrupted_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) AddInterruptedExceptionDestroyedCount(i int64) {
+	if m.addinterrupted_exception_destroyed_count != nil {
+		*m.addinterrupted_exception_destroyed_count += i
+	} else {
+		m.addinterrupted_exception_destroyed_count = &i
+	}
+}
+
+// AddedInterruptedExceptionDestroyedCount returns the value that was added to the "interrupted_exception_destroyed_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedInterruptedExceptionDestroyedCount() (r int64, exists bool) {
+	v := m.addinterrupted_exception_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearInterruptedExceptionDestroyedCount clears the value of the "interrupted_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ClearInterruptedExceptionDestroyedCount() {
+	m.interrupted_exception_destroyed_count = nil
+	m.addinterrupted_exception_destroyed_count = nil
+	m.clearedFields[workerpoolstats.FieldInterruptedExceptionDestroyedCount] = struct{}{}
+}
+
+// InterruptedExceptionDestroyedCountCleared returns if the "interrupted_exception_destroyed_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) InterruptedExceptionDestroyedCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldInterruptedExceptionDestroyedCount]
+	return ok
+}
+
+// ResetInterruptedExceptionDestroyedCount resets all changes to the "interrupted_exception_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ResetInterruptedExceptionDestroyedCount() {
+	m.interrupted_exception_destroyed_count = nil
+	m.addinterrupted_exception_destroyed_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldInterruptedExceptionDestroyedCount)
+}
+
+// SetUnknownDestroyedCount sets the "unknown_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) SetUnknownDestroyedCount(i int64) {
+	m.unknown_destroyed_count = &i
+	m.addunknown_destroyed_count = nil
+}
+
+// UnknownDestroyedCount returns the value of the "unknown_destroyed_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) UnknownDestroyedCount() (r int64, exists bool) {
+	v := m.unknown_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUnknownDestroyedCount returns the old "unknown_destroyed_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldUnknownDestroyedCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUnknownDestroyedCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUnknownDestroyedCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUnknownDestroyedCount: %w", err)
+	}
+	return oldValue.UnknownDestroyedCount, nil
+}
+
+// AddUnknownDestroyedCount adds i to the "unknown_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) AddUnknownDestroyedCount(i int64) {
+	if m.addunknown_destroyed_count != nil {
+		*m.addunknown_destroyed_count += i
+	} else {
+		m.addunknown_destroyed_count = &i
+	}
+}
+
+// AddedUnknownDestroyedCount returns the value that was added to the "unknown_destroyed_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedUnknownDestroyedCount() (r int64, exists bool) {
+	v := m.addunknown_destroyed_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUnknownDestroyedCount clears the value of the "unknown_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ClearUnknownDestroyedCount() {
+	m.unknown_destroyed_count = nil
+	m.addunknown_destroyed_count = nil
+	m.clearedFields[workerpoolstats.FieldUnknownDestroyedCount] = struct{}{}
+}
+
+// UnknownDestroyedCountCleared returns if the "unknown_destroyed_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) UnknownDestroyedCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldUnknownDestroyedCount]
+	return ok
+}
+
+// ResetUnknownDestroyedCount resets all changes to the "unknown_destroyed_count" field.
+func (m *WorkerPoolStatsMutation) ResetUnknownDestroyedCount() {
+	m.unknown_destroyed_count = nil
+	m.addunknown_destroyed_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldUnknownDestroyedCount)
+}
+
+// SetAliveCount sets the "alive_count" field.
+func (m *WorkerPoolStatsMutation) SetAliveCount(i int64) {
+	m.alive_count = &i
+	m.addalive_count = nil
+}
+
+// AliveCount returns the value of the "alive_count" field in the mutation.
+func (m *WorkerPoolStatsMutation) AliveCount() (r int64, exists bool) {
+	v := m.alive_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAliveCount returns the old "alive_count" field's value of the WorkerPoolStats entity.
+// If the WorkerPoolStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerPoolStatsMutation) OldAliveCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAliveCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAliveCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAliveCount: %w", err)
+	}
+	return oldValue.AliveCount, nil
+}
+
+// AddAliveCount adds i to the "alive_count" field.
+func (m *WorkerPoolStatsMutation) AddAliveCount(i int64) {
+	if m.addalive_count != nil {
+		*m.addalive_count += i
+	} else {
+		m.addalive_count = &i
+	}
+}
+
+// AddedAliveCount returns the value that was added to the "alive_count" field in this mutation.
+func (m *WorkerPoolStatsMutation) AddedAliveCount() (r int64, exists bool) {
+	v := m.addalive_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearAliveCount clears the value of the "alive_count" field.
+func (m *WorkerPoolStatsMutation) ClearAliveCount() {
+	m.alive_count = nil
+	m.addalive_count = nil
+	m.clearedFields[workerpoolstats.FieldAliveCount] = struct{}{}
+}
+
+// AliveCountCleared returns if the "alive_count" field was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) AliveCountCleared() bool {
+	_, ok := m.clearedFields[workerpoolstats.FieldAliveCount]
+	return ok
+}
+
+// ResetAliveCount resets all changes to the "alive_count" field.
+func (m *WorkerPoolStatsMutation) ResetAliveCount() {
+	m.alive_count = nil
+	m.addalive_count = nil
+	delete(m.clearedFields, workerpoolstats.FieldAliveCount)
+}
+
+// SetWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by id.
+func (m *WorkerPoolStatsMutation) SetWorkerPoolMetricsID(id int64) {
+	m.worker_pool_metrics = &id
+}
+
+// ClearWorkerPoolMetrics clears the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
+func (m *WorkerPoolStatsMutation) ClearWorkerPoolMetrics() {
+	m.clearedworker_pool_metrics = true
+}
+
+// WorkerPoolMetricsCleared reports if the "worker_pool_metrics" edge to the WorkerPoolMetrics entity was cleared.
+func (m *WorkerPoolStatsMutation) WorkerPoolMetricsCleared() bool {
+	return m.clearedworker_pool_metrics
+}
+
+// WorkerPoolMetricsID returns the "worker_pool_metrics" edge ID in the mutation.
+func (m *WorkerPoolStatsMutation) WorkerPoolMetricsID() (id int64, exists bool) {
+	if m.worker_pool_metrics != nil {
+		return *m.worker_pool_metrics, true
+	}
+	return
+}
+
+// WorkerPoolMetricsIDs returns the "worker_pool_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// WorkerPoolMetricsID instead. It exists only for internal usage by the builders.
+func (m *WorkerPoolStatsMutation) WorkerPoolMetricsIDs() (ids []int64) {
+	if id := m.worker_pool_metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetWorkerPoolMetrics resets all changes to the "worker_pool_metrics" edge.
+func (m *WorkerPoolStatsMutation) ResetWorkerPoolMetrics() {
+	m.worker_pool_metrics = nil
+	m.clearedworker_pool_metrics = false
+}
+
+// Where appends a list predicates to the WorkerPoolStatsMutation builder.
+func (m *WorkerPoolStatsMutation) Where(ps ...predicate.WorkerPoolStats) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the WorkerPoolStatsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *WorkerPoolStatsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.WorkerPoolStats, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *WorkerPoolStatsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *WorkerPoolStatsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (WorkerPoolStats).
+func (m *WorkerPoolStatsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *WorkerPoolStatsMutation) Fields() []string {
+	fields := make([]string, 0, 10)
+	if m.hash != nil {
+		fields = append(fields, workerpoolstats.FieldHash)
+	}
+	if m.mnemonic != nil {
+		fields = append(fields, workerpoolstats.FieldMnemonic)
+	}
+	if m.created_count != nil {
+		fields = append(fields, workerpoolstats.FieldCreatedCount)
+	}
+	if m.destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldDestroyedCount)
+	}
+	if m.evicted_count != nil {
+		fields = append(fields, workerpoolstats.FieldEvictedCount)
+	}
+	if m.user_exec_exception_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldUserExecExceptionDestroyedCount)
+	}
+	if m.io_exception_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldIoExceptionDestroyedCount)
+	}
+	if m.interrupted_exception_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldInterruptedExceptionDestroyedCount)
+	}
+	if m.unknown_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldUnknownDestroyedCount)
+	}
+	if m.alive_count != nil {
+		fields = append(fields, workerpoolstats.FieldAliveCount)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *WorkerPoolStatsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case workerpoolstats.FieldHash:
+		return m.Hash()
+	case workerpoolstats.FieldMnemonic:
+		return m.Mnemonic()
+	case workerpoolstats.FieldCreatedCount:
+		return m.CreatedCount()
+	case workerpoolstats.FieldDestroyedCount:
+		return m.DestroyedCount()
+	case workerpoolstats.FieldEvictedCount:
+		return m.EvictedCount()
+	case workerpoolstats.FieldUserExecExceptionDestroyedCount:
+		return m.UserExecExceptionDestroyedCount()
+	case workerpoolstats.FieldIoExceptionDestroyedCount:
+		return m.IoExceptionDestroyedCount()
+	case workerpoolstats.FieldInterruptedExceptionDestroyedCount:
+		return m.InterruptedExceptionDestroyedCount()
+	case workerpoolstats.FieldUnknownDestroyedCount:
+		return m.UnknownDestroyedCount()
+	case workerpoolstats.FieldAliveCount:
+		return m.AliveCount()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *WorkerPoolStatsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case workerpoolstats.FieldHash:
+		return m.OldHash(ctx)
+	case workerpoolstats.FieldMnemonic:
+		return m.OldMnemonic(ctx)
+	case workerpoolstats.FieldCreatedCount:
+		return m.OldCreatedCount(ctx)
+	case workerpoolstats.FieldDestroyedCount:
+		return m.OldDestroyedCount(ctx)
+	case workerpoolstats.FieldEvictedCount:
+		return m.OldEvictedCount(ctx)
+	case workerpoolstats.FieldUserExecExceptionDestroyedCount:
+		return m.OldUserExecExceptionDestroyedCount(ctx)
+	case workerpoolstats.FieldIoExceptionDestroyedCount:
+		return m.OldIoExceptionDestroyedCount(ctx)
+	case workerpoolstats.FieldInterruptedExceptionDestroyedCount:
+		return m.OldInterruptedExceptionDestroyedCount(ctx)
+	case workerpoolstats.FieldUnknownDestroyedCount:
+		return m.OldUnknownDestroyedCount(ctx)
+	case workerpoolstats.FieldAliveCount:
+		return m.OldAliveCount(ctx)
+	}
+	return nil, fmt.Errorf("unknown WorkerPoolStats field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerPoolStatsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case workerpoolstats.FieldHash:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHash(v)
+		return nil
+	case workerpoolstats.FieldMnemonic:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMnemonic(v)
+		return nil
+	case workerpoolstats.FieldCreatedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedCount(v)
+		return nil
+	case workerpoolstats.FieldDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldEvictedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEvictedCount(v)
+		return nil
+	case workerpoolstats.FieldUserExecExceptionDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserExecExceptionDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldIoExceptionDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIoExceptionDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldInterruptedExceptionDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInterruptedExceptionDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldUnknownDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUnknownDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldAliveCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAliveCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolStats field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *WorkerPoolStatsMutation) AddedFields() []string {
+	var fields []string
+	if m.addhash != nil {
+		fields = append(fields, workerpoolstats.FieldHash)
+	}
+	if m.addcreated_count != nil {
+		fields = append(fields, workerpoolstats.FieldCreatedCount)
+	}
+	if m.adddestroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldDestroyedCount)
+	}
+	if m.addevicted_count != nil {
+		fields = append(fields, workerpoolstats.FieldEvictedCount)
+	}
+	if m.adduser_exec_exception_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldUserExecExceptionDestroyedCount)
+	}
+	if m.addio_exception_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldIoExceptionDestroyedCount)
+	}
+	if m.addinterrupted_exception_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldInterruptedExceptionDestroyedCount)
+	}
+	if m.addunknown_destroyed_count != nil {
+		fields = append(fields, workerpoolstats.FieldUnknownDestroyedCount)
+	}
+	if m.addalive_count != nil {
+		fields = append(fields, workerpoolstats.FieldAliveCount)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *WorkerPoolStatsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case workerpoolstats.FieldHash:
+		return m.AddedHash()
+	case workerpoolstats.FieldCreatedCount:
+		return m.AddedCreatedCount()
+	case workerpoolstats.FieldDestroyedCount:
+		return m.AddedDestroyedCount()
+	case workerpoolstats.FieldEvictedCount:
+		return m.AddedEvictedCount()
+	case workerpoolstats.FieldUserExecExceptionDestroyedCount:
+		return m.AddedUserExecExceptionDestroyedCount()
+	case workerpoolstats.FieldIoExceptionDestroyedCount:
+		return m.AddedIoExceptionDestroyedCount()
+	case workerpoolstats.FieldInterruptedExceptionDestroyedCount:
+		return m.AddedInterruptedExceptionDestroyedCount()
+	case workerpoolstats.FieldUnknownDestroyedCount:
+		return m.AddedUnknownDestroyedCount()
+	case workerpoolstats.FieldAliveCount:
+		return m.AddedAliveCount()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerPoolStatsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case workerpoolstats.FieldHash:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHash(v)
+		return nil
+	case workerpoolstats.FieldCreatedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedCount(v)
+		return nil
+	case workerpoolstats.FieldDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldEvictedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEvictedCount(v)
+		return nil
+	case workerpoolstats.FieldUserExecExceptionDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserExecExceptionDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldIoExceptionDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIoExceptionDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldInterruptedExceptionDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddInterruptedExceptionDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldUnknownDestroyedCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUnknownDestroyedCount(v)
+		return nil
+	case workerpoolstats.FieldAliveCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAliveCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolStats numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *WorkerPoolStatsMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(workerpoolstats.FieldHash) {
+		fields = append(fields, workerpoolstats.FieldHash)
+	}
+	if m.FieldCleared(workerpoolstats.FieldMnemonic) {
+		fields = append(fields, workerpoolstats.FieldMnemonic)
+	}
+	if m.FieldCleared(workerpoolstats.FieldCreatedCount) {
+		fields = append(fields, workerpoolstats.FieldCreatedCount)
+	}
+	if m.FieldCleared(workerpoolstats.FieldDestroyedCount) {
+		fields = append(fields, workerpoolstats.FieldDestroyedCount)
+	}
+	if m.FieldCleared(workerpoolstats.FieldEvictedCount) {
+		fields = append(fields, workerpoolstats.FieldEvictedCount)
+	}
+	if m.FieldCleared(workerpoolstats.FieldUserExecExceptionDestroyedCount) {
+		fields = append(fields, workerpoolstats.FieldUserExecExceptionDestroyedCount)
+	}
+	if m.FieldCleared(workerpoolstats.FieldIoExceptionDestroyedCount) {
+		fields = append(fields, workerpoolstats.FieldIoExceptionDestroyedCount)
+	}
+	if m.FieldCleared(workerpoolstats.FieldInterruptedExceptionDestroyedCount) {
+		fields = append(fields, workerpoolstats.FieldInterruptedExceptionDestroyedCount)
+	}
+	if m.FieldCleared(workerpoolstats.FieldUnknownDestroyedCount) {
+		fields = append(fields, workerpoolstats.FieldUnknownDestroyedCount)
+	}
+	if m.FieldCleared(workerpoolstats.FieldAliveCount) {
+		fields = append(fields, workerpoolstats.FieldAliveCount)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *WorkerPoolStatsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *WorkerPoolStatsMutation) ClearField(name string) error {
+	switch name {
+	case workerpoolstats.FieldHash:
+		m.ClearHash()
+		return nil
+	case workerpoolstats.FieldMnemonic:
+		m.ClearMnemonic()
+		return nil
+	case workerpoolstats.FieldCreatedCount:
+		m.ClearCreatedCount()
+		return nil
+	case workerpoolstats.FieldDestroyedCount:
+		m.ClearDestroyedCount()
+		return nil
+	case workerpoolstats.FieldEvictedCount:
+		m.ClearEvictedCount()
+		return nil
+	case workerpoolstats.FieldUserExecExceptionDestroyedCount:
+		m.ClearUserExecExceptionDestroyedCount()
+		return nil
+	case workerpoolstats.FieldIoExceptionDestroyedCount:
+		m.ClearIoExceptionDestroyedCount()
+		return nil
+	case workerpoolstats.FieldInterruptedExceptionDestroyedCount:
+		m.ClearInterruptedExceptionDestroyedCount()
+		return nil
+	case workerpoolstats.FieldUnknownDestroyedCount:
+		m.ClearUnknownDestroyedCount()
+		return nil
+	case workerpoolstats.FieldAliveCount:
+		m.ClearAliveCount()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolStats nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *WorkerPoolStatsMutation) ResetField(name string) error {
+	switch name {
+	case workerpoolstats.FieldHash:
+		m.ResetHash()
+		return nil
+	case workerpoolstats.FieldMnemonic:
+		m.ResetMnemonic()
+		return nil
+	case workerpoolstats.FieldCreatedCount:
+		m.ResetCreatedCount()
+		return nil
+	case workerpoolstats.FieldDestroyedCount:
+		m.ResetDestroyedCount()
+		return nil
+	case workerpoolstats.FieldEvictedCount:
+		m.ResetEvictedCount()
+		return nil
+	case workerpoolstats.FieldUserExecExceptionDestroyedCount:
+		m.ResetUserExecExceptionDestroyedCount()
+		return nil
+	case workerpoolstats.FieldIoExceptionDestroyedCount:
+		m.ResetIoExceptionDestroyedCount()
+		return nil
+	case workerpoolstats.FieldInterruptedExceptionDestroyedCount:
+		m.ResetInterruptedExceptionDestroyedCount()
+		return nil
+	case workerpoolstats.FieldUnknownDestroyedCount:
+		m.ResetUnknownDestroyedCount()
+		return nil
+	case workerpoolstats.FieldAliveCount:
+		m.ResetAliveCount()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolStats field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *WorkerPoolStatsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.worker_pool_metrics != nil {
+		edges = append(edges, workerpoolstats.EdgeWorkerPoolMetrics)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *WorkerPoolStatsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case workerpoolstats.EdgeWorkerPoolMetrics:
+		if id := m.worker_pool_metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *WorkerPoolStatsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *WorkerPoolStatsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *WorkerPoolStatsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedworker_pool_metrics {
+		edges = append(edges, workerpoolstats.EdgeWorkerPoolMetrics)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *WorkerPoolStatsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case workerpoolstats.EdgeWorkerPoolMetrics:
+		return m.clearedworker_pool_metrics
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *WorkerPoolStatsMutation) ClearEdge(name string) error {
+	switch name {
+	case workerpoolstats.EdgeWorkerPoolMetrics:
+		m.ClearWorkerPoolMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolStats unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *WorkerPoolStatsMutation) ResetEdge(name string) error {
+	switch name {
+	case workerpoolstats.EdgeWorkerPoolMetrics:
+		m.ResetWorkerPoolMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerPoolStats edge %s", name)
+}
+
+// WorkerStatsMutation represents an operation that mutates the WorkerStats nodes in the graph.
+type WorkerStatsMutation struct {
+	config
+	op                              Op
+	typ                             string
+	id                              *int64
+	collect_time_in_ms              *int64
+	addcollect_time_in_ms           *int64
+	worker_memory_in_kb             *int32
+	addworker_memory_in_kb          *int32
+	prior_worker_memory_in_kb       *int32
+	addprior_worker_memory_in_kb    *int32
+	last_action_start_time_in_ms    *int64
+	addlast_action_start_time_in_ms *int64
+	clearedFields                   map[string]struct{}
+	worker_metrics                  *int64
+	clearedworker_metrics           bool
+	done                            bool
+	oldValue                        func(context.Context) (*WorkerStats, error)
+	predicates                      []predicate.WorkerStats
+}
+
+var _ ent.Mutation = (*WorkerStatsMutation)(nil)
+
+// workerstatsOption allows management of the mutation configuration using functional options.
+type workerstatsOption func(*WorkerStatsMutation)
+
+// newWorkerStatsMutation creates new mutation for the WorkerStats entity.
+func newWorkerStatsMutation(c config, op Op, opts ...workerstatsOption) *WorkerStatsMutation {
+	m := &WorkerStatsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeWorkerStats,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withWorkerStatsID sets the ID field of the mutation.
+func withWorkerStatsID(id int64) workerstatsOption {
+	return func(m *WorkerStatsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *WorkerStats
+		)
+		m.oldValue = func(ctx context.Context) (*WorkerStats, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().WorkerStats.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withWorkerStats sets the old WorkerStats of the mutation.
+func withWorkerStats(node *WorkerStats) workerstatsOption {
+	return func(m *WorkerStatsMutation) {
+		m.oldValue = func(context.Context) (*WorkerStats, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m WorkerStatsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m WorkerStatsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of WorkerStats entities.
+func (m *WorkerStatsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *WorkerStatsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *WorkerStatsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().WorkerStats.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCollectTimeInMs sets the "collect_time_in_ms" field.
+func (m *WorkerStatsMutation) SetCollectTimeInMs(i int64) {
+	m.collect_time_in_ms = &i
+	m.addcollect_time_in_ms = nil
+}
+
+// CollectTimeInMs returns the value of the "collect_time_in_ms" field in the mutation.
+func (m *WorkerStatsMutation) CollectTimeInMs() (r int64, exists bool) {
+	v := m.collect_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCollectTimeInMs returns the old "collect_time_in_ms" field's value of the WorkerStats entity.
+// If the WorkerStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerStatsMutation) OldCollectTimeInMs(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCollectTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCollectTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCollectTimeInMs: %w", err)
+	}
+	return oldValue.CollectTimeInMs, nil
+}
+
+// AddCollectTimeInMs adds i to the "collect_time_in_ms" field.
+func (m *WorkerStatsMutation) AddCollectTimeInMs(i int64) {
+	if m.addcollect_time_in_ms != nil {
+		*m.addcollect_time_in_ms += i
+	} else {
+		m.addcollect_time_in_ms = &i
+	}
+}
+
+// AddedCollectTimeInMs returns the value that was added to the "collect_time_in_ms" field in this mutation.
+func (m *WorkerStatsMutation) AddedCollectTimeInMs() (r int64, exists bool) {
+	v := m.addcollect_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCollectTimeInMs clears the value of the "collect_time_in_ms" field.
+func (m *WorkerStatsMutation) ClearCollectTimeInMs() {
+	m.collect_time_in_ms = nil
+	m.addcollect_time_in_ms = nil
+	m.clearedFields[workerstats.FieldCollectTimeInMs] = struct{}{}
+}
+
+// CollectTimeInMsCleared returns if the "collect_time_in_ms" field was cleared in this mutation.
+func (m *WorkerStatsMutation) CollectTimeInMsCleared() bool {
+	_, ok := m.clearedFields[workerstats.FieldCollectTimeInMs]
+	return ok
+}
+
+// ResetCollectTimeInMs resets all changes to the "collect_time_in_ms" field.
+func (m *WorkerStatsMutation) ResetCollectTimeInMs() {
+	m.collect_time_in_ms = nil
+	m.addcollect_time_in_ms = nil
+	delete(m.clearedFields, workerstats.FieldCollectTimeInMs)
+}
+
+// SetWorkerMemoryInKB sets the "worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) SetWorkerMemoryInKB(i int32) {
+	m.worker_memory_in_kb = &i
+	m.addworker_memory_in_kb = nil
+}
+
+// WorkerMemoryInKB returns the value of the "worker_memory_in_kb" field in the mutation.
+func (m *WorkerStatsMutation) WorkerMemoryInKB() (r int32, exists bool) {
+	v := m.worker_memory_in_kb
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWorkerMemoryInKB returns the old "worker_memory_in_kb" field's value of the WorkerStats entity.
+// If the WorkerStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerStatsMutation) OldWorkerMemoryInKB(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWorkerMemoryInKB is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWorkerMemoryInKB requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWorkerMemoryInKB: %w", err)
+	}
+	return oldValue.WorkerMemoryInKB, nil
+}
+
+// AddWorkerMemoryInKB adds i to the "worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) AddWorkerMemoryInKB(i int32) {
+	if m.addworker_memory_in_kb != nil {
+		*m.addworker_memory_in_kb += i
+	} else {
+		m.addworker_memory_in_kb = &i
+	}
+}
+
+// AddedWorkerMemoryInKB returns the value that was added to the "worker_memory_in_kb" field in this mutation.
+func (m *WorkerStatsMutation) AddedWorkerMemoryInKB() (r int32, exists bool) {
+	v := m.addworker_memory_in_kb
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearWorkerMemoryInKB clears the value of the "worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) ClearWorkerMemoryInKB() {
+	m.worker_memory_in_kb = nil
+	m.addworker_memory_in_kb = nil
+	m.clearedFields[workerstats.FieldWorkerMemoryInKB] = struct{}{}
+}
+
+// WorkerMemoryInKBCleared returns if the "worker_memory_in_kb" field was cleared in this mutation.
+func (m *WorkerStatsMutation) WorkerMemoryInKBCleared() bool {
+	_, ok := m.clearedFields[workerstats.FieldWorkerMemoryInKB]
+	return ok
+}
+
+// ResetWorkerMemoryInKB resets all changes to the "worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) ResetWorkerMemoryInKB() {
+	m.worker_memory_in_kb = nil
+	m.addworker_memory_in_kb = nil
+	delete(m.clearedFields, workerstats.FieldWorkerMemoryInKB)
+}
+
+// SetPriorWorkerMemoryInKB sets the "prior_worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) SetPriorWorkerMemoryInKB(i int32) {
+	m.prior_worker_memory_in_kb = &i
+	m.addprior_worker_memory_in_kb = nil
+}
+
+// PriorWorkerMemoryInKB returns the value of the "prior_worker_memory_in_kb" field in the mutation.
+func (m *WorkerStatsMutation) PriorWorkerMemoryInKB() (r int32, exists bool) {
+	v := m.prior_worker_memory_in_kb
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPriorWorkerMemoryInKB returns the old "prior_worker_memory_in_kb" field's value of the WorkerStats entity.
+// If the WorkerStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerStatsMutation) OldPriorWorkerMemoryInKB(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPriorWorkerMemoryInKB is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPriorWorkerMemoryInKB requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPriorWorkerMemoryInKB: %w", err)
+	}
+	return oldValue.PriorWorkerMemoryInKB, nil
+}
+
+// AddPriorWorkerMemoryInKB adds i to the "prior_worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) AddPriorWorkerMemoryInKB(i int32) {
+	if m.addprior_worker_memory_in_kb != nil {
+		*m.addprior_worker_memory_in_kb += i
+	} else {
+		m.addprior_worker_memory_in_kb = &i
+	}
+}
+
+// AddedPriorWorkerMemoryInKB returns the value that was added to the "prior_worker_memory_in_kb" field in this mutation.
+func (m *WorkerStatsMutation) AddedPriorWorkerMemoryInKB() (r int32, exists bool) {
+	v := m.addprior_worker_memory_in_kb
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearPriorWorkerMemoryInKB clears the value of the "prior_worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) ClearPriorWorkerMemoryInKB() {
+	m.prior_worker_memory_in_kb = nil
+	m.addprior_worker_memory_in_kb = nil
+	m.clearedFields[workerstats.FieldPriorWorkerMemoryInKB] = struct{}{}
+}
+
+// PriorWorkerMemoryInKBCleared returns if the "prior_worker_memory_in_kb" field was cleared in this mutation.
+func (m *WorkerStatsMutation) PriorWorkerMemoryInKBCleared() bool {
+	_, ok := m.clearedFields[workerstats.FieldPriorWorkerMemoryInKB]
+	return ok
+}
+
+// ResetPriorWorkerMemoryInKB resets all changes to the "prior_worker_memory_in_kb" field.
+func (m *WorkerStatsMutation) ResetPriorWorkerMemoryInKB() {
+	m.prior_worker_memory_in_kb = nil
+	m.addprior_worker_memory_in_kb = nil
+	delete(m.clearedFields, workerstats.FieldPriorWorkerMemoryInKB)
+}
+
+// SetLastActionStartTimeInMs sets the "last_action_start_time_in_ms" field.
+func (m *WorkerStatsMutation) SetLastActionStartTimeInMs(i int64) {
+	m.last_action_start_time_in_ms = &i
+	m.addlast_action_start_time_in_ms = nil
+}
+
+// LastActionStartTimeInMs returns the value of the "last_action_start_time_in_ms" field in the mutation.
+func (m *WorkerStatsMutation) LastActionStartTimeInMs() (r int64, exists bool) {
+	v := m.last_action_start_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastActionStartTimeInMs returns the old "last_action_start_time_in_ms" field's value of the WorkerStats entity.
+// If the WorkerStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkerStatsMutation) OldLastActionStartTimeInMs(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastActionStartTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastActionStartTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastActionStartTimeInMs: %w", err)
+	}
+	return oldValue.LastActionStartTimeInMs, nil
+}
+
+// AddLastActionStartTimeInMs adds i to the "last_action_start_time_in_ms" field.
+func (m *WorkerStatsMutation) AddLastActionStartTimeInMs(i int64) {
+	if m.addlast_action_start_time_in_ms != nil {
+		*m.addlast_action_start_time_in_ms += i
+	} else {
+		m.addlast_action_start_time_in_ms = &i
+	}
+}
+
+// AddedLastActionStartTimeInMs returns the value that was added to the "last_action_start_time_in_ms" field in this mutation.
+func (m *WorkerStatsMutation) AddedLastActionStartTimeInMs() (r int64, exists bool) {
+	v := m.addlast_action_start_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLastActionStartTimeInMs clears the value of the "last_action_start_time_in_ms" field.
+func (m *WorkerStatsMutation) ClearLastActionStartTimeInMs() {
+	m.last_action_start_time_in_ms = nil
+	m.addlast_action_start_time_in_ms = nil
+	m.clearedFields[workerstats.FieldLastActionStartTimeInMs] = struct{}{}
+}
+
+// LastActionStartTimeInMsCleared returns if the "last_action_start_time_in_ms" field was cleared in this mutation.
+func (m *WorkerStatsMutation) LastActionStartTimeInMsCleared() bool {
+	_, ok := m.clearedFields[workerstats.FieldLastActionStartTimeInMs]
+	return ok
+}
+
+// ResetLastActionStartTimeInMs resets all changes to the "last_action_start_time_in_ms" field.
+func (m *WorkerStatsMutation) ResetLastActionStartTimeInMs() {
+	m.last_action_start_time_in_ms = nil
+	m.addlast_action_start_time_in_ms = nil
+	delete(m.clearedFields, workerstats.FieldLastActionStartTimeInMs)
+}
+
+// SetWorkerMetricsID sets the "worker_metrics" edge to the WorkerMetrics entity by id.
+func (m *WorkerStatsMutation) SetWorkerMetricsID(id int64) {
+	m.worker_metrics = &id
+}
+
+// ClearWorkerMetrics clears the "worker_metrics" edge to the WorkerMetrics entity.
+func (m *WorkerStatsMutation) ClearWorkerMetrics() {
+	m.clearedworker_metrics = true
+}
+
+// WorkerMetricsCleared reports if the "worker_metrics" edge to the WorkerMetrics entity was cleared.
+func (m *WorkerStatsMutation) WorkerMetricsCleared() bool {
+	return m.clearedworker_metrics
+}
+
+// WorkerMetricsID returns the "worker_metrics" edge ID in the mutation.
+func (m *WorkerStatsMutation) WorkerMetricsID() (id int64, exists bool) {
+	if m.worker_metrics != nil {
+		return *m.worker_metrics, true
+	}
+	return
+}
+
+// WorkerMetricsIDs returns the "worker_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// WorkerMetricsID instead. It exists only for internal usage by the builders.
+func (m *WorkerStatsMutation) WorkerMetricsIDs() (ids []int64) {
+	if id := m.worker_metrics; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetWorkerMetrics resets all changes to the "worker_metrics" edge.
+func (m *WorkerStatsMutation) ResetWorkerMetrics() {
+	m.worker_metrics = nil
+	m.clearedworker_metrics = false
+}
+
+// Where appends a list predicates to the WorkerStatsMutation builder.
+func (m *WorkerStatsMutation) Where(ps ...predicate.WorkerStats) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the WorkerStatsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *WorkerStatsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.WorkerStats, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *WorkerStatsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *WorkerStatsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (WorkerStats).
+func (m *WorkerStatsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *WorkerStatsMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.collect_time_in_ms != nil {
+		fields = append(fields, workerstats.FieldCollectTimeInMs)
+	}
+	if m.worker_memory_in_kb != nil {
+		fields = append(fields, workerstats.FieldWorkerMemoryInKB)
+	}
+	if m.prior_worker_memory_in_kb != nil {
+		fields = append(fields, workerstats.FieldPriorWorkerMemoryInKB)
+	}
+	if m.last_action_start_time_in_ms != nil {
+		fields = append(fields, workerstats.FieldLastActionStartTimeInMs)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *WorkerStatsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case workerstats.FieldCollectTimeInMs:
+		return m.CollectTimeInMs()
+	case workerstats.FieldWorkerMemoryInKB:
+		return m.WorkerMemoryInKB()
+	case workerstats.FieldPriorWorkerMemoryInKB:
+		return m.PriorWorkerMemoryInKB()
+	case workerstats.FieldLastActionStartTimeInMs:
+		return m.LastActionStartTimeInMs()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *WorkerStatsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case workerstats.FieldCollectTimeInMs:
+		return m.OldCollectTimeInMs(ctx)
+	case workerstats.FieldWorkerMemoryInKB:
+		return m.OldWorkerMemoryInKB(ctx)
+	case workerstats.FieldPriorWorkerMemoryInKB:
+		return m.OldPriorWorkerMemoryInKB(ctx)
+	case workerstats.FieldLastActionStartTimeInMs:
+		return m.OldLastActionStartTimeInMs(ctx)
+	}
+	return nil, fmt.Errorf("unknown WorkerStats field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerStatsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case workerstats.FieldCollectTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCollectTimeInMs(v)
+		return nil
+	case workerstats.FieldWorkerMemoryInKB:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWorkerMemoryInKB(v)
+		return nil
+	case workerstats.FieldPriorWorkerMemoryInKB:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPriorWorkerMemoryInKB(v)
+		return nil
+	case workerstats.FieldLastActionStartTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastActionStartTimeInMs(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerStats field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *WorkerStatsMutation) AddedFields() []string {
+	var fields []string
+	if m.addcollect_time_in_ms != nil {
+		fields = append(fields, workerstats.FieldCollectTimeInMs)
+	}
+	if m.addworker_memory_in_kb != nil {
+		fields = append(fields, workerstats.FieldWorkerMemoryInKB)
+	}
+	if m.addprior_worker_memory_in_kb != nil {
+		fields = append(fields, workerstats.FieldPriorWorkerMemoryInKB)
+	}
+	if m.addlast_action_start_time_in_ms != nil {
+		fields = append(fields, workerstats.FieldLastActionStartTimeInMs)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *WorkerStatsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case workerstats.FieldCollectTimeInMs:
+		return m.AddedCollectTimeInMs()
+	case workerstats.FieldWorkerMemoryInKB:
+		return m.AddedWorkerMemoryInKB()
+	case workerstats.FieldPriorWorkerMemoryInKB:
+		return m.AddedPriorWorkerMemoryInKB()
+	case workerstats.FieldLastActionStartTimeInMs:
+		return m.AddedLastActionStartTimeInMs()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *WorkerStatsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case workerstats.FieldCollectTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCollectTimeInMs(v)
+		return nil
+	case workerstats.FieldWorkerMemoryInKB:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWorkerMemoryInKB(v)
+		return nil
+	case workerstats.FieldPriorWorkerMemoryInKB:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPriorWorkerMemoryInKB(v)
+		return nil
+	case workerstats.FieldLastActionStartTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastActionStartTimeInMs(v)
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerStats numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *WorkerStatsMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(workerstats.FieldCollectTimeInMs) {
+		fields = append(fields, workerstats.FieldCollectTimeInMs)
+	}
+	if m.FieldCleared(workerstats.FieldWorkerMemoryInKB) {
+		fields = append(fields, workerstats.FieldWorkerMemoryInKB)
+	}
+	if m.FieldCleared(workerstats.FieldPriorWorkerMemoryInKB) {
+		fields = append(fields, workerstats.FieldPriorWorkerMemoryInKB)
+	}
+	if m.FieldCleared(workerstats.FieldLastActionStartTimeInMs) {
+		fields = append(fields, workerstats.FieldLastActionStartTimeInMs)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *WorkerStatsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *WorkerStatsMutation) ClearField(name string) error {
+	switch name {
+	case workerstats.FieldCollectTimeInMs:
+		m.ClearCollectTimeInMs()
+		return nil
+	case workerstats.FieldWorkerMemoryInKB:
+		m.ClearWorkerMemoryInKB()
+		return nil
+	case workerstats.FieldPriorWorkerMemoryInKB:
+		m.ClearPriorWorkerMemoryInKB()
+		return nil
+	case workerstats.FieldLastActionStartTimeInMs:
+		m.ClearLastActionStartTimeInMs()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerStats nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *WorkerStatsMutation) ResetField(name string) error {
+	switch name {
+	case workerstats.FieldCollectTimeInMs:
+		m.ResetCollectTimeInMs()
+		return nil
+	case workerstats.FieldWorkerMemoryInKB:
+		m.ResetWorkerMemoryInKB()
+		return nil
+	case workerstats.FieldPriorWorkerMemoryInKB:
+		m.ResetPriorWorkerMemoryInKB()
+		return nil
+	case workerstats.FieldLastActionStartTimeInMs:
+		m.ResetLastActionStartTimeInMs()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerStats field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *WorkerStatsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.worker_metrics != nil {
+		edges = append(edges, workerstats.EdgeWorkerMetrics)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *WorkerStatsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case workerstats.EdgeWorkerMetrics:
+		if id := m.worker_metrics; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *WorkerStatsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *WorkerStatsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *WorkerStatsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedworker_metrics {
+		edges = append(edges, workerstats.EdgeWorkerMetrics)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *WorkerStatsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case workerstats.EdgeWorkerMetrics:
+		return m.clearedworker_metrics
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *WorkerStatsMutation) ClearEdge(name string) error {
+	switch name {
+	case workerstats.EdgeWorkerMetrics:
+		m.ClearWorkerMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerStats unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *WorkerStatsMutation) ResetEdge(name string) error {
+	switch name {
+	case workerstats.EdgeWorkerMetrics:
+		m.ResetWorkerMetrics()
+		return nil
+	}
+	return fmt.Errorf("unknown WorkerStats edge %s", name)
 }

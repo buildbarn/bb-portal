@@ -312,12 +312,32 @@ func (_m *Build) Tags(
 	return _m.QueryTags().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (_m *BuildGraphEvaluationStat) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
+	result, err := _m.Edges.BuildGraphMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryBuildGraphMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *BuildGraphMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (_m *BuildGraphMetrics) EvaluationStats(ctx context.Context) (result []*BuildGraphEvaluationStat, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedEvaluationStats(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.EvaluationStatsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryEvaluationStats().All(ctx)
+	}
+	return result, err
 }
 
 func (_m *BuildTag) Build(ctx context.Context) (*Build, error) {
@@ -366,6 +386,14 @@ func (_m *ConnectionMetadata) BazelInvocation(ctx context.Context) (*BazelInvoca
 		result, err = _m.QueryBazelInvocation().Only(ctx)
 	}
 	return result, err
+}
+
+func (_m *CumulativeMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *Digest) Files(ctx context.Context) (result []*File, err error) {
@@ -648,6 +676,42 @@ func (_m *Metrics) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, e
 	return result, MaskNotFound(err)
 }
 
+func (_m *Metrics) PackageMetrics(ctx context.Context) (*PackageMetrics, error) {
+	result, err := _m.Edges.PackageMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryPackageMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Metrics) CumulativeMetrics(ctx context.Context) (*CumulativeMetrics, error) {
+	result, err := _m.Edges.CumulativeMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryCumulativeMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *Metrics) WorkerMetrics(ctx context.Context) (result []*WorkerMetrics, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedWorkerMetrics(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.WorkerMetricsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerMetrics().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Metrics) WorkerPoolMetrics(ctx context.Context) (*WorkerPoolMetrics, error) {
+	result, err := _m.Edges.WorkerPoolMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerPoolMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *MissDetail) ActionCacheStatistics(ctx context.Context) (*ActionCacheStatistics, error) {
 	result, err := _m.Edges.ActionCacheStatisticsOrErr()
 	if IsNotLoaded(err) {
@@ -668,6 +732,14 @@ func (_m *NetworkMetrics) SystemNetworkStats(ctx context.Context) (*SystemNetwor
 	result, err := _m.Edges.SystemNetworkStatsOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QuerySystemNetworkStats().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *PackageMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -792,6 +864,82 @@ func (_m *TimingMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *WorkerID) WorkerMetrics(ctx context.Context) (*WorkerMetrics, error) {
+	result, err := _m.Edges.WorkerMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *WorkerMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *WorkerMetrics) WorkerIds(ctx context.Context) (result []*WorkerID, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedWorkerIds(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.WorkerIdsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerIds().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *WorkerMetrics) WorkerStats(ctx context.Context) (result []*WorkerStats, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedWorkerStats(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.WorkerStatsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerStats().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *WorkerPoolMetrics) Metrics(ctx context.Context) (*Metrics, error) {
+	result, err := _m.Edges.MetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *WorkerPoolMetrics) WorkerPoolStats(ctx context.Context) (result []*WorkerPoolStats, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedWorkerPoolStats(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.WorkerPoolStatsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerPoolStats().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *WorkerPoolStats) WorkerPoolMetrics(ctx context.Context) (*WorkerPoolMetrics, error) {
+	result, err := _m.Edges.WorkerPoolMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerPoolMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *WorkerStats) WorkerMetrics(ctx context.Context) (*WorkerMetrics, error) {
+	result, err := _m.Edges.WorkerMetricsOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWorkerMetrics().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

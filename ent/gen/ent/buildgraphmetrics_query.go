@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -19,14 +21,16 @@ import (
 // BuildGraphMetricsQuery is the builder for querying BuildGraphMetrics entities.
 type BuildGraphMetricsQuery struct {
 	config
-	ctx         *QueryContext
-	order       []buildgraphmetrics.OrderOption
-	inters      []Interceptor
-	predicates  []predicate.BuildGraphMetrics
-	withMetrics *MetricsQuery
-	withFKs     bool
-	modifiers   []func(*sql.Selector)
-	loadTotal   []func(context.Context, []*BuildGraphMetrics) error
+	ctx                      *QueryContext
+	order                    []buildgraphmetrics.OrderOption
+	inters                   []Interceptor
+	predicates               []predicate.BuildGraphMetrics
+	withMetrics              *MetricsQuery
+	withEvaluationStats      *BuildGraphEvaluationStatQuery
+	withFKs                  bool
+	modifiers                []func(*sql.Selector)
+	loadTotal                []func(context.Context, []*BuildGraphMetrics) error
+	withNamedEvaluationStats map[string]*BuildGraphEvaluationStatQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,6 +82,28 @@ func (_q *BuildGraphMetricsQuery) QueryMetrics() *MetricsQuery {
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, buildgraphmetrics.MetricsTable, buildgraphmetrics.MetricsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryEvaluationStats chains the current query on the "evaluation_stats" edge.
+func (_q *BuildGraphMetricsQuery) QueryEvaluationStats() *BuildGraphEvaluationStatQuery {
+	query := (&BuildGraphEvaluationStatClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
+			sqlgraph.To(buildgraphevaluationstat.Table, buildgraphevaluationstat.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.EvaluationStatsTable, buildgraphmetrics.EvaluationStatsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -272,12 +298,13 @@ func (_q *BuildGraphMetricsQuery) Clone() *BuildGraphMetricsQuery {
 		return nil
 	}
 	return &BuildGraphMetricsQuery{
-		config:      _q.config,
-		ctx:         _q.ctx.Clone(),
-		order:       append([]buildgraphmetrics.OrderOption{}, _q.order...),
-		inters:      append([]Interceptor{}, _q.inters...),
-		predicates:  append([]predicate.BuildGraphMetrics{}, _q.predicates...),
-		withMetrics: _q.withMetrics.Clone(),
+		config:              _q.config,
+		ctx:                 _q.ctx.Clone(),
+		order:               append([]buildgraphmetrics.OrderOption{}, _q.order...),
+		inters:              append([]Interceptor{}, _q.inters...),
+		predicates:          append([]predicate.BuildGraphMetrics{}, _q.predicates...),
+		withMetrics:         _q.withMetrics.Clone(),
+		withEvaluationStats: _q.withEvaluationStats.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -292,6 +319,17 @@ func (_q *BuildGraphMetricsQuery) WithMetrics(opts ...func(*MetricsQuery)) *Buil
 		opt(query)
 	}
 	_q.withMetrics = query
+	return _q
+}
+
+// WithEvaluationStats tells the query-builder to eager-load the nodes that are connected to
+// the "evaluation_stats" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *BuildGraphMetricsQuery) WithEvaluationStats(opts ...func(*BuildGraphEvaluationStatQuery)) *BuildGraphMetricsQuery {
+	query := (&BuildGraphEvaluationStatClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withEvaluationStats = query
 	return _q
 }
 
@@ -374,8 +412,9 @@ func (_q *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook
 		nodes       = []*BuildGraphMetrics{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withMetrics != nil,
+			_q.withEvaluationStats != nil,
 		}
 	)
 	if _q.withMetrics != nil {
@@ -408,6 +447,22 @@ func (_q *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook
 	if query := _q.withMetrics; query != nil {
 		if err := _q.loadMetrics(ctx, query, nodes, nil,
 			func(n *BuildGraphMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withEvaluationStats; query != nil {
+		if err := _q.loadEvaluationStats(ctx, query, nodes,
+			func(n *BuildGraphMetrics) { n.Edges.EvaluationStats = []*BuildGraphEvaluationStat{} },
+			func(n *BuildGraphMetrics, e *BuildGraphEvaluationStat) {
+				n.Edges.EvaluationStats = append(n.Edges.EvaluationStats, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedEvaluationStats {
+		if err := _q.loadEvaluationStats(ctx, query, nodes,
+			func(n *BuildGraphMetrics) { n.appendNamedEvaluationStats(name) },
+			func(n *BuildGraphMetrics, e *BuildGraphEvaluationStat) { n.appendNamedEvaluationStats(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -448,6 +503,37 @@ func (_q *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *Metric
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (_q *BuildGraphMetricsQuery) loadEvaluationStats(ctx context.Context, query *BuildGraphEvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *BuildGraphEvaluationStat)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*BuildGraphMetrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.BuildGraphEvaluationStat(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(buildgraphmetrics.EvaluationStatsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.build_graph_metrics_evaluation_stats
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "build_graph_metrics_evaluation_stats" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_evaluation_stats" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -534,6 +620,20 @@ func (_q *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedEvaluationStats tells the query-builder to eager-load the nodes that are connected to the "evaluation_stats"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *BuildGraphMetricsQuery) WithNamedEvaluationStats(name string, opts ...func(*BuildGraphEvaluationStatQuery)) *BuildGraphMetricsQuery {
+	query := (&BuildGraphEvaluationStatClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedEvaluationStats == nil {
+		_q.withNamedEvaluationStats = make(map[string]*BuildGraphEvaluationStatQuery)
+	}
+	_q.withNamedEvaluationStats[name] = query
+	return _q
 }
 
 // BuildGraphMetricsGroupBy is the group-by builder for BuildGraphMetrics entities.

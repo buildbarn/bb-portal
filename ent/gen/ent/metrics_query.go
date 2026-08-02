@@ -16,32 +16,41 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workermetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolmetrics"
 )
 
 // MetricsQuery is the builder for querying Metrics entities.
 type MetricsQuery struct {
 	config
-	ctx                   *QueryContext
-	order                 []metrics.OrderOption
-	inters                []Interceptor
-	predicates            []predicate.Metrics
-	withBazelInvocation   *BazelInvocationQuery
-	withActionSummary     *ActionSummaryQuery
-	withMemoryMetrics     *MemoryMetricsQuery
-	withTargetMetrics     *TargetMetricsQuery
-	withTimingMetrics     *TimingMetricsQuery
-	withArtifactMetrics   *ArtifactMetricsQuery
-	withNetworkMetrics    *NetworkMetricsQuery
-	withBuildGraphMetrics *BuildGraphMetricsQuery
-	withFKs               bool
-	modifiers             []func(*sql.Selector)
-	loadTotal             []func(context.Context, []*Metrics) error
+	ctx                    *QueryContext
+	order                  []metrics.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.Metrics
+	withBazelInvocation    *BazelInvocationQuery
+	withActionSummary      *ActionSummaryQuery
+	withMemoryMetrics      *MemoryMetricsQuery
+	withTargetMetrics      *TargetMetricsQuery
+	withTimingMetrics      *TimingMetricsQuery
+	withArtifactMetrics    *ArtifactMetricsQuery
+	withNetworkMetrics     *NetworkMetricsQuery
+	withBuildGraphMetrics  *BuildGraphMetricsQuery
+	withPackageMetrics     *PackageMetricsQuery
+	withCumulativeMetrics  *CumulativeMetricsQuery
+	withWorkerMetrics      *WorkerMetricsQuery
+	withWorkerPoolMetrics  *WorkerPoolMetricsQuery
+	withFKs                bool
+	modifiers              []func(*sql.Selector)
+	loadTotal              []func(context.Context, []*Metrics) error
+	withNamedWorkerMetrics map[string]*WorkerMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -254,6 +263,94 @@ func (_q *MetricsQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
 	return query
 }
 
+// QueryPackageMetrics chains the current query on the "package_metrics" edge.
+func (_q *MetricsQuery) QueryPackageMetrics() *PackageMetricsQuery {
+	query := (&PackageMetricsClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
+			sqlgraph.To(packagemetrics.Table, packagemetrics.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.PackageMetricsTable, metrics.PackageMetricsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCumulativeMetrics chains the current query on the "cumulative_metrics" edge.
+func (_q *MetricsQuery) QueryCumulativeMetrics() *CumulativeMetricsQuery {
+	query := (&CumulativeMetricsClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
+			sqlgraph.To(cumulativemetrics.Table, cumulativemetrics.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.CumulativeMetricsTable, metrics.CumulativeMetricsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryWorkerMetrics chains the current query on the "worker_metrics" edge.
+func (_q *MetricsQuery) QueryWorkerMetrics() *WorkerMetricsQuery {
+	query := (&WorkerMetricsClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
+			sqlgraph.To(workermetrics.Table, workermetrics.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, metrics.WorkerMetricsTable, metrics.WorkerMetricsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryWorkerPoolMetrics chains the current query on the "worker_pool_metrics" edge.
+func (_q *MetricsQuery) QueryWorkerPoolMetrics() *WorkerPoolMetricsQuery {
+	query := (&WorkerPoolMetricsClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
+			sqlgraph.To(workerpoolmetrics.Table, workerpoolmetrics.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.WorkerPoolMetricsTable, metrics.WorkerPoolMetricsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first Metrics entity from the query.
 // Returns a *NotFoundError when no Metrics was found.
 func (_q *MetricsQuery) First(ctx context.Context) (*Metrics, error) {
@@ -454,6 +551,10 @@ func (_q *MetricsQuery) Clone() *MetricsQuery {
 		withArtifactMetrics:   _q.withArtifactMetrics.Clone(),
 		withNetworkMetrics:    _q.withNetworkMetrics.Clone(),
 		withBuildGraphMetrics: _q.withBuildGraphMetrics.Clone(),
+		withPackageMetrics:    _q.withPackageMetrics.Clone(),
+		withCumulativeMetrics: _q.withCumulativeMetrics.Clone(),
+		withWorkerMetrics:     _q.withWorkerMetrics.Clone(),
+		withWorkerPoolMetrics: _q.withWorkerPoolMetrics.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -548,6 +649,50 @@ func (_q *MetricsQuery) WithBuildGraphMetrics(opts ...func(*BuildGraphMetricsQue
 	return _q
 }
 
+// WithPackageMetrics tells the query-builder to eager-load the nodes that are connected to
+// the "package_metrics" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MetricsQuery) WithPackageMetrics(opts ...func(*PackageMetricsQuery)) *MetricsQuery {
+	query := (&PackageMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withPackageMetrics = query
+	return _q
+}
+
+// WithCumulativeMetrics tells the query-builder to eager-load the nodes that are connected to
+// the "cumulative_metrics" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MetricsQuery) WithCumulativeMetrics(opts ...func(*CumulativeMetricsQuery)) *MetricsQuery {
+	query := (&CumulativeMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withCumulativeMetrics = query
+	return _q
+}
+
+// WithWorkerMetrics tells the query-builder to eager-load the nodes that are connected to
+// the "worker_metrics" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MetricsQuery) WithWorkerMetrics(opts ...func(*WorkerMetricsQuery)) *MetricsQuery {
+	query := (&WorkerMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withWorkerMetrics = query
+	return _q
+}
+
+// WithWorkerPoolMetrics tells the query-builder to eager-load the nodes that are connected to
+// the "worker_pool_metrics" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MetricsQuery) WithWorkerPoolMetrics(opts ...func(*WorkerPoolMetricsQuery)) *MetricsQuery {
+	query := (&WorkerPoolMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withWorkerPoolMetrics = query
+	return _q
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 func (_q *MetricsQuery) GroupBy(field string, fields ...string) *MetricsGroupBy {
@@ -605,7 +750,7 @@ func (_q *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 		nodes       = []*Metrics{}
 		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
-		loadedTypes = [8]bool{
+		loadedTypes = [12]bool{
 			_q.withBazelInvocation != nil,
 			_q.withActionSummary != nil,
 			_q.withMemoryMetrics != nil,
@@ -614,6 +759,10 @@ func (_q *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 			_q.withArtifactMetrics != nil,
 			_q.withNetworkMetrics != nil,
 			_q.withBuildGraphMetrics != nil,
+			_q.withPackageMetrics != nil,
+			_q.withCumulativeMetrics != nil,
+			_q.withWorkerMetrics != nil,
+			_q.withWorkerPoolMetrics != nil,
 		}
 	)
 	if _q.withBazelInvocation != nil {
@@ -688,6 +837,38 @@ func (_q *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 	if query := _q.withBuildGraphMetrics; query != nil {
 		if err := _q.loadBuildGraphMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *BuildGraphMetrics) { n.Edges.BuildGraphMetrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withPackageMetrics; query != nil {
+		if err := _q.loadPackageMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *PackageMetrics) { n.Edges.PackageMetrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withCumulativeMetrics; query != nil {
+		if err := _q.loadCumulativeMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *CumulativeMetrics) { n.Edges.CumulativeMetrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withWorkerMetrics; query != nil {
+		if err := _q.loadWorkerMetrics(ctx, query, nodes,
+			func(n *Metrics) { n.Edges.WorkerMetrics = []*WorkerMetrics{} },
+			func(n *Metrics, e *WorkerMetrics) { n.Edges.WorkerMetrics = append(n.Edges.WorkerMetrics, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withWorkerPoolMetrics; query != nil {
+		if err := _q.loadWorkerPoolMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *WorkerPoolMetrics) { n.Edges.WorkerPoolMetrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedWorkerMetrics {
+		if err := _q.loadWorkerMetrics(ctx, query, nodes,
+			func(n *Metrics) { n.appendNamedWorkerMetrics(name) },
+			func(n *Metrics, e *WorkerMetrics) { n.appendNamedWorkerMetrics(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -927,6 +1108,121 @@ func (_q *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildG
 	}
 	return nil
 }
+func (_q *MetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *PackageMetrics)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.PackageMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.PackageMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.metrics_package_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_package_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_package_metrics" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *MetricsQuery) loadCumulativeMetrics(ctx context.Context, query *CumulativeMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *CumulativeMetrics)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.CumulativeMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.CumulativeMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.metrics_cumulative_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_cumulative_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_cumulative_metrics" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *MetricsQuery) loadWorkerMetrics(ctx context.Context, query *WorkerMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *WorkerMetrics)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.WorkerMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.WorkerMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.metrics_worker_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_worker_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_worker_metrics" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *MetricsQuery) loadWorkerPoolMetrics(ctx context.Context, query *WorkerPoolMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *WorkerPoolMetrics)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.WorkerPoolMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.WorkerPoolMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.metrics_worker_pool_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_worker_pool_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_worker_pool_metrics" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 
 func (_q *MetricsQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -1010,6 +1306,20 @@ func (_q *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedWorkerMetrics tells the query-builder to eager-load the nodes that are connected to the "worker_metrics"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *MetricsQuery) WithNamedWorkerMetrics(name string, opts ...func(*WorkerMetricsQuery)) *MetricsQuery {
+	query := (&WorkerMetricsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedWorkerMetrics == nil {
+		_q.withNamedWorkerMetrics = make(map[string]*WorkerMetricsQuery)
+	}
+	_q.withNamedWorkerMetrics[name] = query
+	return _q
 }
 
 // MetricsGroupBy is the group-by builder for Metrics entities.

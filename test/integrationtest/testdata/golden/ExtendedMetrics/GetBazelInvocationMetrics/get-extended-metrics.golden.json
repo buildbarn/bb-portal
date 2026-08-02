@@ -1,0 +1,160 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 123,
+          "hits": 0,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjE=",
+          "loadTimeInMs": 0,
+          "missDetails": [],
+          "misses": 0,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 0
+        },
+        "actionData": [],
+        "actionsExecuted": 0,
+        "id": "QWN0aW9uU3VtbWFyeTox",
+        "runnerCount": []
+      },
+      "artifactMetrics": null,
+      "buildGraphMetrics": {
+        "evaluationStats": [
+          {
+            "count": 3,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE=",
+            "operation": "DIRTIED",
+            "skyfunctionName": "FILE"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI=",
+            "operation": "CHANGED",
+            "skyfunctionName": "FILE_STATE"
+          },
+          {
+            "count": 4,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM=",
+            "operation": "BUILT",
+            "skyfunctionName": "ACTION_EXECUTION"
+          },
+          {
+            "count": 5,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ=",
+            "operation": "CLEANED",
+            "skyfunctionName": "PACKAGE"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU=",
+            "operation": "EVALUATED",
+            "skyfunctionName": "ACTION_EXECUTION"
+          }
+        ],
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ=="
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6MQ==",
+        "numAnalyses": 2,
+        "numBuilds": 1
+      },
+      "id": "TWV0cmljczox",
+      "memoryMetrics": null,
+      "networkMetrics": null,
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6MQ==",
+        "packagesLoaded": 7
+      },
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 0,
+        "cpuTimeInMs": 0,
+        "criticalPathTimeInMs": 1234,
+        "executionPhaseTimeInMs": 0,
+        "id": "VGltaW5nTWV0cmljczox",
+        "wallTimeInMs": 0
+      },
+      "workerMetrics": [
+        {
+          "actionsExecuted": 4,
+          "code": "BORROW_FAILURE",
+          "id": "V29ya2VyTWV0cmljczox",
+          "isMeasurable": true,
+          "isMultiplex": false,
+          "isSandbox": true,
+          "mnemonic": "Javac",
+          "priorActionsExecuted": 3,
+          "processID": 1234,
+          "workerIds": [
+            {
+              "id": "V29ya2VySUQ6MQ==",
+              "workerID": 9
+            }
+          ],
+          "workerKeyHash": 42,
+          "workerStats": [
+            {
+              "collectTimeInMs": 1785680001000,
+              "id": "V29ya2VyU3RhdHM6MQ==",
+              "lastActionStartTimeInMs": 1785680000500,
+              "priorWorkerMemoryInKB": 64,
+              "workerMemoryInKB": 128
+            }
+          ],
+          "workerStatus": "ALIVE"
+        },
+        {
+          "actionsExecuted": 8,
+          "code": "",
+          "id": "V29ya2VyTWV0cmljczoy",
+          "isMeasurable": false,
+          "isMultiplex": true,
+          "isSandbox": false,
+          "mnemonic": "Javac",
+          "priorActionsExecuted": 0,
+          "processID": 5678,
+          "workerIds": [
+            {
+              "id": "V29ya2VySUQ6Mg==",
+              "workerID": 10
+            },
+            {
+              "id": "V29ya2VySUQ6Mw==",
+              "workerID": 11
+            }
+          ],
+          "workerKeyHash": 43,
+          "workerStats": [
+            {
+              "collectTimeInMs": 1785680002000,
+              "id": "V29ya2VyU3RhdHM6Mg==",
+              "lastActionStartTimeInMs": 1785680001500,
+              "priorWorkerMemoryInKB": 0,
+              "workerMemoryInKB": 256
+            }
+          ],
+          "workerStatus": "ALIVE"
+        }
+      ],
+      "workerPoolMetrics": {
+        "id": "V29ya2VyUG9vbE1ldHJpY3M6MQ==",
+        "workerPoolStats": [
+          {
+            "aliveCount": 1,
+            "createdCount": 2,
+            "destroyedCount": 1,
+            "evictedCount": 1,
+            "hash": 42,
+            "id": "V29ya2VyUG9vbFN0YXRzOjE=",
+            "interruptedExceptionDestroyedCount": 0,
+            "ioExceptionDestroyedCount": 0,
+            "mnemonic": "Javac",
+            "unknownDestroyedCount": 0,
+            "userExecExceptionDestroyedCount": 0
+          }
+        ]
+      }
+    }
+  }
+}

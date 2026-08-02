@@ -21,10 +21,12 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
@@ -36,6 +38,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
@@ -45,6 +48,11 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerid"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workermetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolstats"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerstats"
 	"github.com/hashicorp/go-multierror"
 	"golang.org/x/sync/semaphore"
 )
@@ -94,6 +102,11 @@ var buildImplementors = []string{"Build", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*Build) IsNode() {}
 
+var buildgraphevaluationstatImplementors = []string{"BuildGraphEvaluationStat", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*BuildGraphEvaluationStat) IsNode() {}
+
 var buildgraphmetricsImplementors = []string{"BuildGraphMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
@@ -113,6 +126,11 @@ var connectionmetadataImplementors = []string{"ConnectionMetadata", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*ConnectionMetadata) IsNode() {}
+
+var cumulativemetricsImplementors = []string{"CumulativeMetrics", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*CumulativeMetrics) IsNode() {}
 
 var digestImplementors = []string{"Digest", "Node"}
 
@@ -169,6 +187,11 @@ var networkmetricsImplementors = []string{"NetworkMetrics", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*NetworkMetrics) IsNode() {}
 
+var packagemetricsImplementors = []string{"PackageMetrics", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*PackageMetrics) IsNode() {}
+
 var runnercountImplementors = []string{"RunnerCount", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
@@ -213,6 +236,31 @@ var timingmetricsImplementors = []string{"TimingMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*TimingMetrics) IsNode() {}
+
+var workeridImplementors = []string{"WorkerID", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*WorkerID) IsNode() {}
+
+var workermetricsImplementors = []string{"WorkerMetrics", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*WorkerMetrics) IsNode() {}
+
+var workerpoolmetricsImplementors = []string{"WorkerPoolMetrics", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*WorkerPoolMetrics) IsNode() {}
+
+var workerpoolstatsImplementors = []string{"WorkerPoolStats", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*WorkerPoolStats) IsNode() {}
+
+var workerstatsImplementors = []string{"WorkerStats", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*WorkerStats) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -344,6 +392,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			}
 		}
 		return query.Only(ctx)
+	case buildgraphevaluationstat.Table:
+		query := c.BuildGraphEvaluationStat.Query().
+			Where(buildgraphevaluationstat.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, buildgraphevaluationstatImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case buildgraphmetrics.Table:
 		query := c.BuildGraphMetrics.Query().
 			Where(buildgraphmetrics.ID(id))
@@ -376,6 +433,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(connectionmetadata.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, connectionmetadataImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case cumulativemetrics.Table:
+		query := c.CumulativeMetrics.Query().
+			Where(cumulativemetrics.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, cumulativemetricsImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -479,6 +545,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			}
 		}
 		return query.Only(ctx)
+	case packagemetrics.Table:
+		query := c.PackageMetrics.Query().
+			Where(packagemetrics.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, packagemetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case runnercount.Table:
 		query := c.RunnerCount.Query().
 			Where(runnercount.ID(id))
@@ -556,6 +631,51 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(timingmetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, timingmetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case workerid.Table:
+		query := c.WorkerID.Query().
+			Where(workerid.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, workeridImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case workermetrics.Table:
+		query := c.WorkerMetrics.Query().
+			Where(workermetrics.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, workermetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case workerpoolmetrics.Table:
+		query := c.WorkerPoolMetrics.Query().
+			Where(workerpoolmetrics.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, workerpoolmetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case workerpoolstats.Table:
+		query := c.WorkerPoolStats.Query().
+			Where(workerpoolstats.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, workerpoolstatsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case workerstats.Table:
+		query := c.WorkerStats.Query().
+			Where(workerstats.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, workerstatsImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -761,6 +881,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 				*noder = node
 			}
 		}
+	case buildgraphevaluationstat.Table:
+		query := c.BuildGraphEvaluationStat.Query().
+			Where(buildgraphevaluationstat.IDIn(ids...))
+		query, err := query.CollectFields(ctx, buildgraphevaluationstatImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case buildgraphmetrics.Table:
 		query := c.BuildGraphMetrics.Query().
 			Where(buildgraphmetrics.IDIn(ids...))
@@ -813,6 +949,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.ConnectionMetadata.Query().
 			Where(connectionmetadata.IDIn(ids...))
 		query, err := query.CollectFields(ctx, connectionmetadataImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case cumulativemetrics.Table:
+		query := c.CumulativeMetrics.Query().
+			Where(cumulativemetrics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, cumulativemetricsImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1001,6 +1153,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 				*noder = node
 			}
 		}
+	case packagemetrics.Table:
+		query := c.PackageMetrics.Query().
+			Where(packagemetrics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, packagemetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case runnercount.Table:
 		query := c.RunnerCount.Query().
 			Where(runnercount.IDIn(ids...))
@@ -1133,6 +1301,86 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.TimingMetrics.Query().
 			Where(timingmetrics.IDIn(ids...))
 		query, err := query.CollectFields(ctx, timingmetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case workerid.Table:
+		query := c.WorkerID.Query().
+			Where(workerid.IDIn(ids...))
+		query, err := query.CollectFields(ctx, workeridImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case workermetrics.Table:
+		query := c.WorkerMetrics.Query().
+			Where(workermetrics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, workermetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case workerpoolmetrics.Table:
+		query := c.WorkerPoolMetrics.Query().
+			Where(workerpoolmetrics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, workerpoolmetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case workerpoolstats.Table:
+		query := c.WorkerPoolStats.Query().
+			Where(workerpoolstats.IDIn(ids...))
+		query, err := query.CollectFields(ctx, workerpoolstatsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case workerstats.Table:
+		query := c.WorkerStats.Query().
+			Where(workerstats.IDIn(ids...))
+		query, err := query.CollectFields(ctx, workerstatsImplementors...)
 		if err != nil {
 			return nil, err
 		}

@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphevaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
@@ -173,6 +174,21 @@ func (_c *BuildGraphMetricsCreate) SetMetrics(v *Metrics) *BuildGraphMetricsCrea
 	return _c.SetMetricsID(v.ID)
 }
 
+// AddEvaluationStatIDs adds the "evaluation_stats" edge to the BuildGraphEvaluationStat entity by IDs.
+func (_c *BuildGraphMetricsCreate) AddEvaluationStatIDs(ids ...int64) *BuildGraphMetricsCreate {
+	_c.mutation.AddEvaluationStatIDs(ids...)
+	return _c
+}
+
+// AddEvaluationStats adds the "evaluation_stats" edges to the BuildGraphEvaluationStat entity.
+func (_c *BuildGraphMetricsCreate) AddEvaluationStats(v ...*BuildGraphEvaluationStat) *BuildGraphMetricsCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddEvaluationStatIDs(ids...)
+}
+
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
 func (_c *BuildGraphMetricsCreate) Mutation() *BuildGraphMetricsMutation {
 	return _c.mutation
@@ -291,6 +307,22 @@ func (_c *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph.C
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.metrics_build_graph_metrics = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.EvaluationStatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   buildgraphmetrics.EvaluationStatsTable,
+			Columns: []string{buildgraphmetrics.EvaluationStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

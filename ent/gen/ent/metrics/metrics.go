@@ -28,6 +28,14 @@ const (
 	EdgeNetworkMetrics = "network_metrics"
 	// EdgeBuildGraphMetrics holds the string denoting the build_graph_metrics edge name in mutations.
 	EdgeBuildGraphMetrics = "build_graph_metrics"
+	// EdgePackageMetrics holds the string denoting the package_metrics edge name in mutations.
+	EdgePackageMetrics = "package_metrics"
+	// EdgeCumulativeMetrics holds the string denoting the cumulative_metrics edge name in mutations.
+	EdgeCumulativeMetrics = "cumulative_metrics"
+	// EdgeWorkerMetrics holds the string denoting the worker_metrics edge name in mutations.
+	EdgeWorkerMetrics = "worker_metrics"
+	// EdgeWorkerPoolMetrics holds the string denoting the worker_pool_metrics edge name in mutations.
+	EdgeWorkerPoolMetrics = "worker_pool_metrics"
 	// Table holds the table name of the metrics in the database.
 	Table = "metrics"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -86,6 +94,34 @@ const (
 	BuildGraphMetricsInverseTable = "build_graph_metrics"
 	// BuildGraphMetricsColumn is the table column denoting the build_graph_metrics relation/edge.
 	BuildGraphMetricsColumn = "metrics_build_graph_metrics"
+	// PackageMetricsTable is the table that holds the package_metrics relation/edge.
+	PackageMetricsTable = "package_metrics"
+	// PackageMetricsInverseTable is the table name for the PackageMetrics entity.
+	// It exists in this package in order to avoid circular dependency with the "packagemetrics" package.
+	PackageMetricsInverseTable = "package_metrics"
+	// PackageMetricsColumn is the table column denoting the package_metrics relation/edge.
+	PackageMetricsColumn = "metrics_package_metrics"
+	// CumulativeMetricsTable is the table that holds the cumulative_metrics relation/edge.
+	CumulativeMetricsTable = "cumulative_metrics"
+	// CumulativeMetricsInverseTable is the table name for the CumulativeMetrics entity.
+	// It exists in this package in order to avoid circular dependency with the "cumulativemetrics" package.
+	CumulativeMetricsInverseTable = "cumulative_metrics"
+	// CumulativeMetricsColumn is the table column denoting the cumulative_metrics relation/edge.
+	CumulativeMetricsColumn = "metrics_cumulative_metrics"
+	// WorkerMetricsTable is the table that holds the worker_metrics relation/edge.
+	WorkerMetricsTable = "worker_metrics"
+	// WorkerMetricsInverseTable is the table name for the WorkerMetrics entity.
+	// It exists in this package in order to avoid circular dependency with the "workermetrics" package.
+	WorkerMetricsInverseTable = "worker_metrics"
+	// WorkerMetricsColumn is the table column denoting the worker_metrics relation/edge.
+	WorkerMetricsColumn = "metrics_worker_metrics"
+	// WorkerPoolMetricsTable is the table that holds the worker_pool_metrics relation/edge.
+	WorkerPoolMetricsTable = "worker_pool_metrics"
+	// WorkerPoolMetricsInverseTable is the table name for the WorkerPoolMetrics entity.
+	// It exists in this package in order to avoid circular dependency with the "workerpoolmetrics" package.
+	WorkerPoolMetricsInverseTable = "worker_pool_metrics"
+	// WorkerPoolMetricsColumn is the table column denoting the worker_pool_metrics relation/edge.
+	WorkerPoolMetricsColumn = "metrics_worker_pool_metrics"
 )
 
 // Columns holds all SQL columns for metrics fields.
@@ -177,6 +213,41 @@ func ByBuildGraphMetricsField(field string, opts ...sql.OrderTermOption) OrderOp
 		sqlgraph.OrderByNeighborTerms(s, newBuildGraphMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByPackageMetricsField orders the results by package_metrics field.
+func ByPackageMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPackageMetricsStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByCumulativeMetricsField orders the results by cumulative_metrics field.
+func ByCumulativeMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCumulativeMetricsStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByWorkerMetricsCount orders the results by worker_metrics count.
+func ByWorkerMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newWorkerMetricsStep(), opts...)
+	}
+}
+
+// ByWorkerMetrics orders the results by worker_metrics terms.
+func ByWorkerMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newWorkerMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByWorkerPoolMetricsField orders the results by worker_pool_metrics field.
+func ByWorkerPoolMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newWorkerPoolMetricsStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -231,5 +302,33 @@ func newBuildGraphMetricsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BuildGraphMetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, false, BuildGraphMetricsTable, BuildGraphMetricsColumn),
+	)
+}
+func newPackageMetricsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PackageMetricsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, PackageMetricsTable, PackageMetricsColumn),
+	)
+}
+func newCumulativeMetricsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CumulativeMetricsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, CumulativeMetricsTable, CumulativeMetricsColumn),
+	)
+}
+func newWorkerMetricsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(WorkerMetricsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, WorkerMetricsTable, WorkerMetricsColumn),
+	)
+}
+func newWorkerPoolMetricsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(WorkerPoolMetricsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, WorkerPoolMetricsTable, WorkerPoolMetricsColumn),
 	)
 }

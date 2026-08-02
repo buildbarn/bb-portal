@@ -30,6 +30,9 @@ type BazelInvocation func(*sql.Selector)
 // Build is the predicate function for build builders.
 type Build func(*sql.Selector)
 
+// BuildGraphEvaluationStat is the predicate function for buildgraphevaluationstat builders.
+type BuildGraphEvaluationStat func(*sql.Selector)
+
 // BuildGraphMetrics is the predicate function for buildgraphmetrics builders.
 type BuildGraphMetrics func(*sql.Selector)
 
@@ -44,6 +47,9 @@ type Configuration func(*sql.Selector)
 
 // ConnectionMetadata is the predicate function for connectionmetadata builders.
 type ConnectionMetadata func(*sql.Selector)
+
+// CumulativeMetrics is the predicate function for cumulativemetrics builders.
+type CumulativeMetrics func(*sql.Selector)
 
 // Digest is the predicate function for digest builders.
 type Digest func(*sql.Selector)
@@ -84,6 +90,9 @@ type MissDetail func(*sql.Selector)
 // NetworkMetrics is the predicate function for networkmetrics builders.
 type NetworkMetrics func(*sql.Selector)
 
+// PackageMetrics is the predicate function for packagemetrics builders.
+type PackageMetrics func(*sql.Selector)
+
 // RunnerCount is the predicate function for runnercount builders.
 type RunnerCount func(*sql.Selector)
 
@@ -116,3 +125,18 @@ type TestTarget func(*sql.Selector)
 
 // TimingMetrics is the predicate function for timingmetrics builders.
 type TimingMetrics func(*sql.Selector)
+
+// WorkerID is the predicate function for workerid builders.
+type WorkerID func(*sql.Selector)
+
+// WorkerMetrics is the predicate function for workermetrics builders.
+type WorkerMetrics func(*sql.Selector)
+
+// WorkerPoolMetrics is the predicate function for workerpoolmetrics builders.
+type WorkerPoolMetrics func(*sql.Selector)
+
+// WorkerPoolStats is the predicate function for workerpoolstats builders.
+type WorkerPoolStats func(*sql.Selector)
+
+// WorkerStats is the predicate function for workerstats builders.
+type WorkerStats func(*sql.Selector)

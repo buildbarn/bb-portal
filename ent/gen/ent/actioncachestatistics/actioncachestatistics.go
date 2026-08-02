@@ -18,6 +18,8 @@ const (
 	FieldSaveTimeInMs = "save_time_in_ms"
 	// FieldLoadTimeInMs holds the string denoting the load_time_in_ms field in the database.
 	FieldLoadTimeInMs = "load_time_in_ms"
+	// FieldCacheCheckSemaphoreWaitTimeInMs holds the string denoting the cache_check_semaphore_wait_time_in_ms field in the database.
+	FieldCacheCheckSemaphoreWaitTimeInMs = "cache_check_semaphore_wait_time_in_ms"
 	// FieldHits holds the string denoting the hits field in the database.
 	FieldHits = "hits"
 	// FieldMisses holds the string denoting the misses field in the database.
@@ -50,6 +52,7 @@ var Columns = []string{
 	FieldSizeInBytes,
 	FieldSaveTimeInMs,
 	FieldLoadTimeInMs,
+	FieldCacheCheckSemaphoreWaitTimeInMs,
 	FieldHits,
 	FieldMisses,
 }
@@ -96,6 +99,11 @@ func BySaveTimeInMs(opts ...sql.OrderTermOption) OrderOption {
 // ByLoadTimeInMs orders the results by the load_time_in_ms field.
 func ByLoadTimeInMs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLoadTimeInMs, opts...).ToFunc()
+}
+
+// ByCacheCheckSemaphoreWaitTimeInMs orders the results by the cache_check_semaphore_wait_time_in_ms field.
+func ByCacheCheckSemaphoreWaitTimeInMs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCacheCheckSemaphoreWaitTimeInMs, opts...).ToFunc()
 }
 
 // ByHits orders the results by the hits field.

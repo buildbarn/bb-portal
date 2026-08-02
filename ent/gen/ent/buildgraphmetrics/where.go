@@ -571,6 +571,29 @@ func HasMetricsWith(preds ...predicate.Metrics) predicate.BuildGraphMetrics {
 	})
 }
 
+// HasEvaluationStats applies the HasEdge predicate on the "evaluation_stats" edge.
+func HasEvaluationStats() predicate.BuildGraphMetrics {
+	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EvaluationStatsTable, EvaluationStatsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEvaluationStatsWith applies the HasEdge predicate on the "evaluation_stats" edge with a given conditions (other predicates).
+func HasEvaluationStatsWith(preds ...predicate.BuildGraphEvaluationStat) predicate.BuildGraphMetrics {
+	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
+		step := newEvaluationStatsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.BuildGraphMetrics) predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(sql.AndPredicates(predicates...))
