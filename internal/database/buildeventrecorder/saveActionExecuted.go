@@ -3,6 +3,7 @@ package buildeventrecorder
 import (
 	"context"
 	"database/sql"
+	"log/slog"
 	"net/url"
 	"reflect"
 	"strings"
@@ -11,6 +12,8 @@ import (
 	"github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/pkg/invocation/files"
+	storagedigest "github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -70,6 +73,92 @@ func getRemoteFileURI(file *bes.File) string {
 	return uri
 }
 
+type actionFileAvailability struct {
+	verifyBytestreamURIs bool
+	verified             bool
+	missingDigests       map[storagedigest.Digest]struct{}
+}
+
+func getBytestreamDigest(uri string) (storagedigest.Digest, bool) {
+	parsedURI, err := url.Parse(uri)
+	if err != nil || !strings.EqualFold(parsedURI.Scheme, "bytestream") {
+		return storagedigest.BadDigest, false
+	}
+	return files.GetDigestFromURI(uri), true
+}
+
+func (a actionFileAvailability) getAvailableRemoteFileURI(file *bes.File) string {
+	uri := getRemoteFileURI(file)
+	if uri == "" {
+		return ""
+	}
+	digest, isBytestreamURI := getBytestreamDigest(uri)
+	if !isBytestreamURI {
+		return uri
+	}
+	if digest == storagedigest.BadDigest {
+		return ""
+	}
+	if !a.verifyBytestreamURIs {
+		return uri
+	}
+	if !a.verified {
+		return ""
+	}
+	if _, missing := a.missingDigests[digest]; missing {
+		return ""
+	}
+	return uri
+}
+
+func actionExecutedFiles(actionExecuted *bes.ActionExecuted) []*bes.File {
+	if actionExecuted == nil {
+		return nil
+	}
+	return []*bes.File{
+		actionExecuted.GetPrimaryOutput(),
+		actionExecuted.GetStdout(),
+		actionExecuted.GetStderr(),
+	}
+}
+
+func (r *buildEventRecorder) verifyActionFileAvailability(ctx context.Context, batch []BuildEventWithInfo) actionFileAvailability {
+	availability := actionFileAvailability{
+		verifyBytestreamURIs: r.contentAddressableStorage != nil,
+	}
+	if !availability.verifyBytestreamURIs {
+		return availability
+	}
+
+	digestSetBuilder := storagedigest.NewSetBuilder(len(batch) * 3)
+	for _, info := range batch {
+		for _, file := range actionExecutedFiles(info.Event.GetAction()) {
+			uri := getRemoteFileURI(file)
+			if digest, isBytestreamURI := getBytestreamDigest(uri); isBytestreamURI && digest != storagedigest.BadDigest {
+				digestSetBuilder = digestSetBuilder.Add(digest)
+			}
+		}
+	}
+	digests := digestSetBuilder.Build()
+	if digests.Empty() {
+		availability.verified = true
+		return availability
+	}
+
+	missingDigests, err := r.contentAddressableStorage.FindMissing(ctx, digests)
+	if err != nil {
+		slog.WarnContext(ctx, "Could not verify action file blobs in CAS; file links will be unavailable", "invocation_id", r.InvocationID, "err", err)
+		return availability
+	}
+
+	availability.verified = true
+	availability.missingDigests = make(map[storagedigest.Digest]struct{}, missingDigests.Length())
+	for _, digest := range missingDigests.Items() {
+		availability.missingDigests[digest] = struct{}{}
+	}
+	return availability
+}
+
 func getActionConfigurationID(actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) string {
 	if configurationID := actionCompletedID.GetConfiguration().GetId(); configurationID != "" {
 		return configurationID
@@ -91,6 +180,7 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 	if len(batch) == 0 {
 		return nil
 	}
+	actionFileAvailability := r.verifyActionFileAvailability(ctx, batch)
 
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
@@ -167,14 +257,14 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 		if primaryOutput := actionCompletedID.GetPrimaryOutput(); primaryOutput != "" {
 			create.SetPrimaryOutput(primaryOutput)
 		}
-		if primaryOutputURI := getRemoteFileURI(actionExecuted.GetPrimaryOutput()); primaryOutputURI != "" {
+		if primaryOutputURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetPrimaryOutput()); primaryOutputURI != "" {
 			create.SetPrimaryOutputURI(primaryOutputURI)
 		}
 		if !actionExecuted.Success {
-			if stdoutURI := getRemoteFileURI(actionExecuted.GetStdout()); stdoutURI != "" {
+			if stdoutURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetStdout()); stdoutURI != "" {
 				create.SetStdoutURI(stdoutURI)
 			}
-			if stderrURI := getRemoteFileURI(actionExecuted.GetStderr()); stderrURI != "" {
+			if stderrURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetStderr()); stderrURI != "" {
 				create.SetStderrURI(stderrURI)
 			}
 		}

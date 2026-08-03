@@ -80,6 +80,7 @@ go_test(
     srcs = [
         "build_event_recorder_test.go",
         "execution_log_test.go",
+        "saveActionExecuted_test.go",
     ],
     embed = [":buildeventrecorder"],
     deps = [
@@ -87,8 +88,10 @@ go_test(
         "//ent/gen/ent/runtime",
         "//internal/database/dbauthservice",
         "//internal/database/embedded",
+        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf",
         "//test/testutils",
+        "@com_github_buildbarn_bb_storage//pkg/blobstore",
         "@com_github_buildbarn_bb_storage//pkg/digest",
         "@com_github_google_uuid//:uuid",
         "@com_github_klauspost_compress//zstd",
