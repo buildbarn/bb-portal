@@ -135,6 +135,17 @@ export const getColumns = (
     })),
   },
   {
+    key: "action",
+    title: "Action cache",
+    width: 120,
+    render: (_, action) => {
+      const href = generateActionUrlFromGraphqlDigest(action.actionDigest);
+      return href ? (
+        <Typography.Link href={href}>View action</Typography.Link>
+      ) : undefined;
+    },
+  },
+  {
     key: "primaryOutput",
     title: "Primary output",
     ellipsis: true,
@@ -142,16 +153,20 @@ export const getColumns = (
       if (!action.primaryOutput) {
         return undefined;
       }
-      const href =
-        generateActionUrlFromGraphqlDigest(action.actionDigest) ??
-        generateFileUrlFromBepURI(
-          action.primaryOutputURI,
-          action.primaryOutput,
-        );
-      return href ? (
-        <Typography.Link href={href}>{action.primaryOutput}</Typography.Link>
-      ) : (
-        action.primaryOutput
+      const fileName =
+        action.primaryOutput.split("/").pop() || action.primaryOutput;
+      const href = generateFileUrlFromBepURI(
+        action.primaryOutputURI,
+        action.primaryOutput,
+      );
+      return (
+        <Tooltip title={action.primaryOutput}>
+          {href ? (
+            <Typography.Link href={href}>{fileName}</Typography.Link>
+          ) : (
+            fileName
+          )}
+        </Tooltip>
       );
     },
   },

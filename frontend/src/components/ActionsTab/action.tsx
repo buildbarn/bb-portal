@@ -1,7 +1,6 @@
 import { Descriptions, Flex, Space, Typography } from "antd";
 import type { BazelInvocationActionFragment } from "@/graphql/__generated__/graphql";
 import {
-  type GraphqlDigest,
   generateActionUrlFromGraphqlDigest,
   generateFileUrlFromBepURI,
 } from "@/utils/urlGenerator";
@@ -13,20 +12,12 @@ interface Props {
 
 interface OutputLinkProps {
   uri?: string | null;
-  actionDigest?: GraphqlDigest | null;
   fileName: string;
   children: React.ReactNode;
 }
 
-const OutputLink: React.FC<OutputLinkProps> = ({
-  uri,
-  actionDigest,
-  fileName,
-  children,
-}) => {
-  const href =
-    generateActionUrlFromGraphqlDigest(actionDigest) ??
-    generateFileUrlFromBepURI(uri, fileName);
+const OutputLink: React.FC<OutputLinkProps> = ({ uri, fileName, children }) => {
+  const href = generateFileUrlFromBepURI(uri, fileName);
   if (href) {
     return <Typography.Link href={href}>{children}</Typography.Link>;
   }
@@ -38,6 +29,8 @@ const OutputLink: React.FC<OutputLinkProps> = ({
 };
 
 export const ActionDetails: React.FC<Props> = ({ action }) => {
+  const actionHref = generateActionUrlFromGraphqlDigest(action.actionDigest);
+
   return (
     <Space direction="vertical" size="middle" style={{ width: "100%" }}>
       <Descriptions
@@ -55,6 +48,13 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
           {getActionExecutionKind(action.runner)}
           {action.runner && ` (${action.runner})`}
         </Descriptions.Item>
+        {actionHref && (
+          <Descriptions.Item label="Action">
+            <Typography.Link href={actionHref}>
+              View action in bb-browser
+            </Typography.Link>
+          </Descriptions.Item>
+        )}
         {action.success !== null && action.success !== undefined && (
           <Descriptions.Item label="Success">
             {action.success ? "Yes" : "No"}
@@ -79,7 +79,6 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
           <Descriptions.Item label="Primary output">
             <OutputLink
               uri={action.primaryOutputURI}
-              actionDigest={action.actionDigest}
               fileName={action.primaryOutput}
             >
               {action.primaryOutput}
