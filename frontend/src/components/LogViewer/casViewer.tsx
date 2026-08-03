@@ -58,15 +58,21 @@ const CasViewer: React.FC<Props> = ({
       log={data}
       logSizeBytes={sizeBytes}
       title={title}
-      logDownloadUrl={generateFileUrl(
-        instanceName,
-        digestFunctionValueFromString(digestFunction),
-        {
-          hash,
-          sizeBytes: sizeBytes.toString(),
-        },
-        fileName,
-      )}
+      logDownloadUrl={
+        sizeBytes > 0 &&
+        !error &&
+        (sizeBytes > SIZE_BYTE_LIMIT || data !== undefined)
+          ? generateFileUrl(
+              instanceName,
+              digestFunctionValueFromString(digestFunction),
+              {
+                hash,
+                sizeBytes: sizeBytes.toString(),
+              },
+              fileName,
+            )
+          : undefined
+      }
       fileName={fileName}
       error={error}
       loading={isLoading}
