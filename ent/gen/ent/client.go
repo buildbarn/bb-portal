@@ -653,6 +653,22 @@ func (c *ActionClient) QueryConfiguration(_m *Action) *ConfigurationQuery {
 	return query
 }
 
+// QueryActionDigest queries the action_digest edge of a Action.
+func (c *ActionClient) QueryActionDigest(_m *Action) *DigestQuery {
+	query := (&DigestClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(action.Table, action.FieldID, id),
+			sqlgraph.To(digest.Table, digest.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, action.ActionDigestTable, action.ActionDigestColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ActionClient) Hooks() []Hook {
 	hooks := c.hooks.Action
@@ -2939,6 +2955,22 @@ func (c *DigestClient) QueryFiles(_m *Digest) *FileQuery {
 			sqlgraph.From(digest.Table, digest.FieldID, id),
 			sqlgraph.To(file.Table, file.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, digest.FilesTable, digest.FilesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActions queries the actions edge of a Digest.
+func (c *DigestClient) QueryActions(_m *Digest) *ActionQuery {
+	query := (&ActionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(digest.Table, digest.FieldID, id),
+			sqlgraph.To(action.Table, action.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, digest.ActionsTable, digest.ActionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil

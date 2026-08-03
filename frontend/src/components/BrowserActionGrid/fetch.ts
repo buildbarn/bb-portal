@@ -3,7 +3,6 @@ import {
   type ActionCacheClient,
   Command,
   type Digest,
-  Directory,
   ExecuteResponse,
   RequestMetadata,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
@@ -50,7 +49,6 @@ export const fetchBrowserActionGrid = async (
   inputRootResourceUsage: InputRootResourceUsage | undefined;
   monetaryResourceUsage: MonetaryResourceUsage | undefined;
   casCommand: Command | undefined;
-  casDirectory: Directory | undefined;
   previousExecutionStats: PreviousExecutionStats | undefined;
   fileSystemAccessProfile: FileSystemAccessProfile | undefined;
 }> => {
@@ -77,48 +75,33 @@ export const fetchBrowserActionGrid = async (
     monetaryResourceUsage,
   } = extractMetadataFromExecuteResponse(executeResponse);
 
-  const [
-    casCommand,
-    casDirectory,
-    previousExecutionStats,
-    fileSystemAccessProfile,
-  ] = await Promise.all([
-    // Fetch Command
-    action.commandDigest
-      ? fetchCasObjectAndParse(
-          casByteStreamClient,
-          browserPageParams.instanceName,
-          browserPageParams.digestFunction,
-          action.commandDigest,
-          Command,
-        )
-      : Promise.resolve(undefined),
+  const [casCommand, previousExecutionStats, fileSystemAccessProfile] =
+    await Promise.all([
+      // Fetch Command
+      action.commandDigest
+        ? fetchCasObjectAndParse(
+            casByteStreamClient,
+            browserPageParams.instanceName,
+            browserPageParams.digestFunction,
+            action.commandDigest,
+            Command,
+          )
+        : Promise.resolve(undefined),
 
-    // Fetch Directory
-    action.inputRootDigest
-      ? fetchCasObjectAndParse(
-          casByteStreamClient,
-          browserPageParams.instanceName,
-          browserPageParams.digestFunction,
-          action.inputRootDigest,
-          Directory,
-        )
-      : Promise.resolve(undefined),
+      // Fetch Previous Execution Stats
+      fetchPreviousExecutionStats(
+        action,
+        initialSizeClassCacheClient,
+        browserPageParams,
+      ),
 
-    // Fetch Previous Execution Stats
-    fetchPreviousExecutionStats(
-      action,
-      initialSizeClassCacheClient,
-      browserPageParams,
-    ),
-
-    // Fetch File System Access Cache Profile
-    fetchFileSystemAccessProfile(
-      action,
-      fileSystemAccessCacheClient,
-      browserPageParams,
-    ),
-  ]);
+      // Fetch File System Access Cache Profile
+      fetchFileSystemAccessProfile(
+        action,
+        fileSystemAccessCacheClient,
+        browserPageParams,
+      ),
+    ]);
 
   return {
     executeResponse,
@@ -131,7 +114,6 @@ export const fetchBrowserActionGrid = async (
     inputRootResourceUsage,
     monetaryResourceUsage,
     casCommand,
-    casDirectory,
     previousExecutionStats,
     fileSystemAccessProfile,
   };

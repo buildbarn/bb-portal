@@ -109,6 +109,7 @@ type ActionMutation struct {
 	id                      *int64
 	label                   *string
 	_type                   *string
+	runner                  *string
 	success                 *bool
 	exit_code               *int32
 	addexit_code            *int32
@@ -127,6 +128,8 @@ type ActionMutation struct {
 	clearedbazel_invocation bool
 	configuration           *int64
 	clearedconfiguration    bool
+	action_digest           *int64
+	clearedaction_digest    bool
 	done                    bool
 	oldValue                func(context.Context) (*Action, error)
 	predicates              []predicate.Action
@@ -321,6 +324,55 @@ func (m *ActionMutation) ResetConfigurationID() {
 	delete(m.clearedFields, action.FieldConfigurationID)
 }
 
+// SetActionDigestID sets the "action_digest_id" field.
+func (m *ActionMutation) SetActionDigestID(i int64) {
+	m.action_digest = &i
+}
+
+// ActionDigestID returns the value of the "action_digest_id" field in the mutation.
+func (m *ActionMutation) ActionDigestID() (r int64, exists bool) {
+	v := m.action_digest
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActionDigestID returns the old "action_digest_id" field's value of the Action entity.
+// If the Action object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionMutation) OldActionDigestID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldActionDigestID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldActionDigestID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActionDigestID: %w", err)
+	}
+	return oldValue.ActionDigestID, nil
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (m *ActionMutation) ClearActionDigestID() {
+	m.action_digest = nil
+	m.clearedFields[action.FieldActionDigestID] = struct{}{}
+}
+
+// ActionDigestIDCleared returns if the "action_digest_id" field was cleared in this mutation.
+func (m *ActionMutation) ActionDigestIDCleared() bool {
+	_, ok := m.clearedFields[action.FieldActionDigestID]
+	return ok
+}
+
+// ResetActionDigestID resets all changes to the "action_digest_id" field.
+func (m *ActionMutation) ResetActionDigestID() {
+	m.action_digest = nil
+	delete(m.clearedFields, action.FieldActionDigestID)
+}
+
 // SetLabel sets the "label" field.
 func (m *ActionMutation) SetLabel(s string) {
 	m.label = &s
@@ -404,6 +456,55 @@ func (m *ActionMutation) TypeCleared() bool {
 func (m *ActionMutation) ResetType() {
 	m._type = nil
 	delete(m.clearedFields, action.FieldType)
+}
+
+// SetRunner sets the "runner" field.
+func (m *ActionMutation) SetRunner(s string) {
+	m.runner = &s
+}
+
+// Runner returns the value of the "runner" field in the mutation.
+func (m *ActionMutation) Runner() (r string, exists bool) {
+	v := m.runner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunner returns the old "runner" field's value of the Action entity.
+// If the Action object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionMutation) OldRunner(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunner is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunner requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunner: %w", err)
+	}
+	return oldValue.Runner, nil
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (m *ActionMutation) ClearRunner() {
+	m.runner = nil
+	m.clearedFields[action.FieldRunner] = struct{}{}
+}
+
+// RunnerCleared returns if the "runner" field was cleared in this mutation.
+func (m *ActionMutation) RunnerCleared() bool {
+	_, ok := m.clearedFields[action.FieldRunner]
+	return ok
+}
+
+// ResetRunner resets all changes to the "runner" field.
+func (m *ActionMutation) ResetRunner() {
+	m.runner = nil
+	delete(m.clearedFields, action.FieldRunner)
 }
 
 // SetSuccess sets the "success" field.
@@ -1036,6 +1137,33 @@ func (m *ActionMutation) ResetConfiguration() {
 	m.clearedconfiguration = false
 }
 
+// ClearActionDigest clears the "action_digest" edge to the Digest entity.
+func (m *ActionMutation) ClearActionDigest() {
+	m.clearedaction_digest = true
+	m.clearedFields[action.FieldActionDigestID] = struct{}{}
+}
+
+// ActionDigestCleared reports if the "action_digest" edge to the Digest entity was cleared.
+func (m *ActionMutation) ActionDigestCleared() bool {
+	return m.ActionDigestIDCleared() || m.clearedaction_digest
+}
+
+// ActionDigestIDs returns the "action_digest" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionDigestID instead. It exists only for internal usage by the builders.
+func (m *ActionMutation) ActionDigestIDs() (ids []int64) {
+	if id := m.action_digest; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetActionDigest resets all changes to the "action_digest" edge.
+func (m *ActionMutation) ResetActionDigest() {
+	m.action_digest = nil
+	m.clearedaction_digest = false
+}
+
 // Where appends a list predicates to the ActionMutation builder.
 func (m *ActionMutation) Where(ps ...predicate.Action) {
 	m.predicates = append(m.predicates, ps...)
@@ -1070,18 +1198,24 @@ func (m *ActionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ActionMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 17)
 	if m.bazel_invocation != nil {
 		fields = append(fields, action.FieldBazelInvocationID)
 	}
 	if m.configuration != nil {
 		fields = append(fields, action.FieldConfigurationID)
 	}
+	if m.action_digest != nil {
+		fields = append(fields, action.FieldActionDigestID)
+	}
 	if m.label != nil {
 		fields = append(fields, action.FieldLabel)
 	}
 	if m._type != nil {
 		fields = append(fields, action.FieldType)
+	}
+	if m.runner != nil {
+		fields = append(fields, action.FieldRunner)
 	}
 	if m.success != nil {
 		fields = append(fields, action.FieldSuccess)
@@ -1128,10 +1262,14 @@ func (m *ActionMutation) Field(name string) (ent.Value, bool) {
 		return m.BazelInvocationID()
 	case action.FieldConfigurationID:
 		return m.ConfigurationID()
+	case action.FieldActionDigestID:
+		return m.ActionDigestID()
 	case action.FieldLabel:
 		return m.Label()
 	case action.FieldType:
 		return m.GetType()
+	case action.FieldRunner:
+		return m.Runner()
 	case action.FieldSuccess:
 		return m.Success()
 	case action.FieldExitCode:
@@ -1167,10 +1305,14 @@ func (m *ActionMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldBazelInvocationID(ctx)
 	case action.FieldConfigurationID:
 		return m.OldConfigurationID(ctx)
+	case action.FieldActionDigestID:
+		return m.OldActionDigestID(ctx)
 	case action.FieldLabel:
 		return m.OldLabel(ctx)
 	case action.FieldType:
 		return m.OldType(ctx)
+	case action.FieldRunner:
+		return m.OldRunner(ctx)
 	case action.FieldSuccess:
 		return m.OldSuccess(ctx)
 	case action.FieldExitCode:
@@ -1216,6 +1358,13 @@ func (m *ActionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetConfigurationID(v)
 		return nil
+	case action.FieldActionDigestID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActionDigestID(v)
+		return nil
 	case action.FieldLabel:
 		v, ok := value.(string)
 		if !ok {
@@ -1229,6 +1378,13 @@ func (m *ActionMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetType(v)
+		return nil
+	case action.FieldRunner:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunner(v)
 		return nil
 	case action.FieldSuccess:
 		v, ok := value.(bool)
@@ -1355,8 +1511,14 @@ func (m *ActionMutation) ClearedFields() []string {
 	if m.FieldCleared(action.FieldConfigurationID) {
 		fields = append(fields, action.FieldConfigurationID)
 	}
+	if m.FieldCleared(action.FieldActionDigestID) {
+		fields = append(fields, action.FieldActionDigestID)
+	}
 	if m.FieldCleared(action.FieldType) {
 		fields = append(fields, action.FieldType)
+	}
+	if m.FieldCleared(action.FieldRunner) {
+		fields = append(fields, action.FieldRunner)
 	}
 	if m.FieldCleared(action.FieldSuccess) {
 		fields = append(fields, action.FieldSuccess)
@@ -1408,8 +1570,14 @@ func (m *ActionMutation) ClearField(name string) error {
 	case action.FieldConfigurationID:
 		m.ClearConfigurationID()
 		return nil
+	case action.FieldActionDigestID:
+		m.ClearActionDigestID()
+		return nil
 	case action.FieldType:
 		m.ClearType()
+		return nil
+	case action.FieldRunner:
+		m.ClearRunner()
 		return nil
 	case action.FieldSuccess:
 		m.ClearSuccess()
@@ -1458,11 +1626,17 @@ func (m *ActionMutation) ResetField(name string) error {
 	case action.FieldConfigurationID:
 		m.ResetConfigurationID()
 		return nil
+	case action.FieldActionDigestID:
+		m.ResetActionDigestID()
+		return nil
 	case action.FieldLabel:
 		m.ResetLabel()
 		return nil
 	case action.FieldType:
 		m.ResetType()
+		return nil
+	case action.FieldRunner:
+		m.ResetRunner()
 		return nil
 	case action.FieldSuccess:
 		m.ResetSuccess()
@@ -1503,12 +1677,15 @@ func (m *ActionMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ActionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.bazel_invocation != nil {
 		edges = append(edges, action.EdgeBazelInvocation)
 	}
 	if m.configuration != nil {
 		edges = append(edges, action.EdgeConfiguration)
+	}
+	if m.action_digest != nil {
+		edges = append(edges, action.EdgeActionDigest)
 	}
 	return edges
 }
@@ -1525,13 +1702,17 @@ func (m *ActionMutation) AddedIDs(name string) []ent.Value {
 		if id := m.configuration; id != nil {
 			return []ent.Value{*id}
 		}
+	case action.EdgeActionDigest:
+		if id := m.action_digest; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ActionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	return edges
 }
 
@@ -1543,12 +1724,15 @@ func (m *ActionMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ActionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.clearedbazel_invocation {
 		edges = append(edges, action.EdgeBazelInvocation)
 	}
 	if m.clearedconfiguration {
 		edges = append(edges, action.EdgeConfiguration)
+	}
+	if m.clearedaction_digest {
+		edges = append(edges, action.EdgeActionDigest)
 	}
 	return edges
 }
@@ -1561,6 +1745,8 @@ func (m *ActionMutation) EdgeCleared(name string) bool {
 		return m.clearedbazel_invocation
 	case action.EdgeConfiguration:
 		return m.clearedconfiguration
+	case action.EdgeActionDigest:
+		return m.clearedaction_digest
 	}
 	return false
 }
@@ -1575,6 +1761,9 @@ func (m *ActionMutation) ClearEdge(name string) error {
 	case action.EdgeConfiguration:
 		m.ClearConfiguration()
 		return nil
+	case action.EdgeActionDigest:
+		m.ClearActionDigest()
+		return nil
 	}
 	return fmt.Errorf("unknown Action unique edge %s", name)
 }
@@ -1588,6 +1777,9 @@ func (m *ActionMutation) ResetEdge(name string) error {
 		return nil
 	case action.EdgeConfiguration:
 		m.ResetConfiguration()
+		return nil
+	case action.EdgeActionDigest:
+		m.ResetActionDigest()
 		return nil
 	}
 	return fmt.Errorf("unknown Action edge %s", name)
@@ -13713,6 +13905,9 @@ type DigestMutation struct {
 	files              map[int64]struct{}
 	removedfiles       map[int64]struct{}
 	clearedfiles       bool
+	actions            map[int64]struct{}
+	removedactions     map[int64]struct{}
+	clearedactions     bool
 	done               bool
 	oldValue           func(context.Context) (*Digest, error)
 	predicates         []predicate.Digest
@@ -14060,6 +14255,60 @@ func (m *DigestMutation) ResetFiles() {
 	m.removedfiles = nil
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by ids.
+func (m *DigestMutation) AddActionIDs(ids ...int64) {
+	if m.actions == nil {
+		m.actions = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.actions[ids[i]] = struct{}{}
+	}
+}
+
+// ClearActions clears the "actions" edge to the Action entity.
+func (m *DigestMutation) ClearActions() {
+	m.clearedactions = true
+}
+
+// ActionsCleared reports if the "actions" edge to the Action entity was cleared.
+func (m *DigestMutation) ActionsCleared() bool {
+	return m.clearedactions
+}
+
+// RemoveActionIDs removes the "actions" edge to the Action entity by IDs.
+func (m *DigestMutation) RemoveActionIDs(ids ...int64) {
+	if m.removedactions == nil {
+		m.removedactions = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.actions, ids[i])
+		m.removedactions[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedActions returns the removed IDs of the "actions" edge to the Action entity.
+func (m *DigestMutation) RemovedActionsIDs() (ids []int64) {
+	for id := range m.removedactions {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ActionsIDs returns the "actions" edge IDs in the mutation.
+func (m *DigestMutation) ActionsIDs() (ids []int64) {
+	for id := range m.actions {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetActions resets all changes to the "actions" edge.
+func (m *DigestMutation) ResetActions() {
+	m.actions = nil
+	m.clearedactions = false
+	m.removedactions = nil
+}
+
 // Where appends a list predicates to the DigestMutation builder.
 func (m *DigestMutation) Where(ps ...predicate.Digest) {
 	m.predicates = append(m.predicates, ps...)
@@ -14271,9 +14520,12 @@ func (m *DigestMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DigestMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.files != nil {
 		edges = append(edges, digest.EdgeFiles)
+	}
+	if m.actions != nil {
+		edges = append(edges, digest.EdgeActions)
 	}
 	return edges
 }
@@ -14288,15 +14540,24 @@ func (m *DigestMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case digest.EdgeActions:
+		ids := make([]ent.Value, 0, len(m.actions))
+		for id := range m.actions {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DigestMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedfiles != nil {
 		edges = append(edges, digest.EdgeFiles)
+	}
+	if m.removedactions != nil {
+		edges = append(edges, digest.EdgeActions)
 	}
 	return edges
 }
@@ -14311,15 +14572,24 @@ func (m *DigestMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case digest.EdgeActions:
+		ids := make([]ent.Value, 0, len(m.removedactions))
+		for id := range m.removedactions {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DigestMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedfiles {
 		edges = append(edges, digest.EdgeFiles)
+	}
+	if m.clearedactions {
+		edges = append(edges, digest.EdgeActions)
 	}
 	return edges
 }
@@ -14330,6 +14600,8 @@ func (m *DigestMutation) EdgeCleared(name string) bool {
 	switch name {
 	case digest.EdgeFiles:
 		return m.clearedfiles
+	case digest.EdgeActions:
+		return m.clearedactions
 	}
 	return false
 }
@@ -14348,6 +14620,9 @@ func (m *DigestMutation) ResetEdge(name string) error {
 	switch name {
 	case digest.EdgeFiles:
 		m.ResetFiles()
+		return nil
+	case digest.EdgeActions:
+		m.ResetActions()
 		return nil
 	}
 	return fmt.Errorf("unknown Digest edge %s", name)

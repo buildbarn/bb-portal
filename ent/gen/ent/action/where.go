@@ -65,9 +65,19 @@ func ConfigurationID(v int64) predicate.Action {
 	return predicate.Action(sql.FieldEQ(FieldConfigurationID, v))
 }
 
+// ActionDigestID applies equality check predicate on the "action_digest_id" field. It's identical to ActionDigestIDEQ.
+func ActionDigestID(v int64) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldActionDigestID, v))
+}
+
 // Type applies equality check predicate on the "type" field. It's identical to TypeEQ.
 func Type(v string) predicate.Action {
 	return predicate.Action(sql.FieldEQ(FieldType, v))
+}
+
+// Runner applies equality check predicate on the "runner" field. It's identical to RunnerEQ.
+func Runner(v string) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldRunner, v))
 }
 
 // Success applies equality check predicate on the "success" field. It's identical to SuccessEQ.
@@ -168,6 +178,36 @@ func ConfigurationIDIsNil() predicate.Action {
 // ConfigurationIDNotNil applies the NotNil predicate on the "configuration_id" field.
 func ConfigurationIDNotNil() predicate.Action {
 	return predicate.Action(sql.FieldNotNull(FieldConfigurationID))
+}
+
+// ActionDigestIDEQ applies the EQ predicate on the "action_digest_id" field.
+func ActionDigestIDEQ(v int64) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldActionDigestID, v))
+}
+
+// ActionDigestIDNEQ applies the NEQ predicate on the "action_digest_id" field.
+func ActionDigestIDNEQ(v int64) predicate.Action {
+	return predicate.Action(sql.FieldNEQ(FieldActionDigestID, v))
+}
+
+// ActionDigestIDIn applies the In predicate on the "action_digest_id" field.
+func ActionDigestIDIn(vs ...int64) predicate.Action {
+	return predicate.Action(sql.FieldIn(FieldActionDigestID, vs...))
+}
+
+// ActionDigestIDNotIn applies the NotIn predicate on the "action_digest_id" field.
+func ActionDigestIDNotIn(vs ...int64) predicate.Action {
+	return predicate.Action(sql.FieldNotIn(FieldActionDigestID, vs...))
+}
+
+// ActionDigestIDIsNil applies the IsNil predicate on the "action_digest_id" field.
+func ActionDigestIDIsNil() predicate.Action {
+	return predicate.Action(sql.FieldIsNull(FieldActionDigestID))
+}
+
+// ActionDigestIDNotNil applies the NotNil predicate on the "action_digest_id" field.
+func ActionDigestIDNotNil() predicate.Action {
+	return predicate.Action(sql.FieldNotNull(FieldActionDigestID))
 }
 
 // LabelEQ applies the EQ predicate on the "label" field.
@@ -308,6 +348,81 @@ func TypeEqualFold(v string) predicate.Action {
 // TypeContainsFold applies the ContainsFold predicate on the "type" field.
 func TypeContainsFold(v string) predicate.Action {
 	return predicate.Action(sql.FieldContainsFold(FieldType, v))
+}
+
+// RunnerEQ applies the EQ predicate on the "runner" field.
+func RunnerEQ(v string) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldRunner, v))
+}
+
+// RunnerNEQ applies the NEQ predicate on the "runner" field.
+func RunnerNEQ(v string) predicate.Action {
+	return predicate.Action(sql.FieldNEQ(FieldRunner, v))
+}
+
+// RunnerIn applies the In predicate on the "runner" field.
+func RunnerIn(vs ...string) predicate.Action {
+	return predicate.Action(sql.FieldIn(FieldRunner, vs...))
+}
+
+// RunnerNotIn applies the NotIn predicate on the "runner" field.
+func RunnerNotIn(vs ...string) predicate.Action {
+	return predicate.Action(sql.FieldNotIn(FieldRunner, vs...))
+}
+
+// RunnerGT applies the GT predicate on the "runner" field.
+func RunnerGT(v string) predicate.Action {
+	return predicate.Action(sql.FieldGT(FieldRunner, v))
+}
+
+// RunnerGTE applies the GTE predicate on the "runner" field.
+func RunnerGTE(v string) predicate.Action {
+	return predicate.Action(sql.FieldGTE(FieldRunner, v))
+}
+
+// RunnerLT applies the LT predicate on the "runner" field.
+func RunnerLT(v string) predicate.Action {
+	return predicate.Action(sql.FieldLT(FieldRunner, v))
+}
+
+// RunnerLTE applies the LTE predicate on the "runner" field.
+func RunnerLTE(v string) predicate.Action {
+	return predicate.Action(sql.FieldLTE(FieldRunner, v))
+}
+
+// RunnerContains applies the Contains predicate on the "runner" field.
+func RunnerContains(v string) predicate.Action {
+	return predicate.Action(sql.FieldContains(FieldRunner, v))
+}
+
+// RunnerHasPrefix applies the HasPrefix predicate on the "runner" field.
+func RunnerHasPrefix(v string) predicate.Action {
+	return predicate.Action(sql.FieldHasPrefix(FieldRunner, v))
+}
+
+// RunnerHasSuffix applies the HasSuffix predicate on the "runner" field.
+func RunnerHasSuffix(v string) predicate.Action {
+	return predicate.Action(sql.FieldHasSuffix(FieldRunner, v))
+}
+
+// RunnerIsNil applies the IsNil predicate on the "runner" field.
+func RunnerIsNil() predicate.Action {
+	return predicate.Action(sql.FieldIsNull(FieldRunner))
+}
+
+// RunnerNotNil applies the NotNil predicate on the "runner" field.
+func RunnerNotNil() predicate.Action {
+	return predicate.Action(sql.FieldNotNull(FieldRunner))
+}
+
+// RunnerEqualFold applies the EqualFold predicate on the "runner" field.
+func RunnerEqualFold(v string) predicate.Action {
+	return predicate.Action(sql.FieldEqualFold(FieldRunner, v))
+}
+
+// RunnerContainsFold applies the ContainsFold predicate on the "runner" field.
+func RunnerContainsFold(v string) predicate.Action {
+	return predicate.Action(sql.FieldContainsFold(FieldRunner, v))
 }
 
 // SuccessEQ applies the EQ predicate on the "success" field.
@@ -978,6 +1093,29 @@ func HasConfiguration() predicate.Action {
 func HasConfigurationWith(preds ...predicate.Configuration) predicate.Action {
 	return predicate.Action(func(s *sql.Selector) {
 		step := newConfigurationStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasActionDigest applies the HasEdge predicate on the "action_digest" edge.
+func HasActionDigest() predicate.Action {
+	return predicate.Action(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ActionDigestTable, ActionDigestColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasActionDigestWith applies the HasEdge predicate on the "action_digest" edge with a given conditions (other predicates).
+func HasActionDigestWith(preds ...predicate.Digest) predicate.Action {
+	return predicate.Action(func(s *sql.Selector) {
+		step := newActionDigestStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

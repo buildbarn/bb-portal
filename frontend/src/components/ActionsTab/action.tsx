@@ -1,6 +1,11 @@
 import { Descriptions, Flex, Space, Typography } from "antd";
 import type { BazelInvocationActionFragment } from "@/graphql/__generated__/graphql";
-import { generateFileUrlFromBepURI } from "@/utils/urlGenerator";
+import {
+  type GraphqlDigest,
+  generateActionUrlFromGraphqlDigest,
+  generateFileUrlFromBepURI,
+} from "@/utils/urlGenerator";
+import { getActionExecutionKind } from "./execution";
 
 interface Props {
   action: BazelInvocationActionFragment;
@@ -8,18 +13,28 @@ interface Props {
 
 interface OutputLinkProps {
   uri?: string | null;
+  actionDigest?: GraphqlDigest | null;
   fileName: string;
   children: React.ReactNode;
 }
 
-const OutputLink: React.FC<OutputLinkProps> = ({ uri, fileName, children }) => {
-  const href = generateFileUrlFromBepURI(uri, fileName);
+const OutputLink: React.FC<OutputLinkProps> = ({
+  uri,
+  actionDigest,
+  fileName,
+  children,
+}) => {
+  const href =
+    generateActionUrlFromGraphqlDigest(actionDigest) ??
+    generateFileUrlFromBepURI(uri, fileName);
   if (href) {
     return <Typography.Link href={href}>{children}</Typography.Link>;
   }
   return uri ? (
     <Typography.Text copyable={{ text: uri }}>{children}</Typography.Text>
-  ) : null;
+  ) : (
+    children
+  );
 };
 
 export const ActionDetails: React.FC<Props> = ({ action }) => {
@@ -36,6 +51,10 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
             {action.type}
           </Descriptions.Item>
         )}
+        <Descriptions.Item label="Execution">
+          {getActionExecutionKind(action.runner)}
+          {action.runner && ` (${action.runner})`}
+        </Descriptions.Item>
         {action.success !== null && action.success !== undefined && (
           <Descriptions.Item label="Success">
             {action.success ? "Yes" : "No"}
@@ -58,16 +77,13 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
         )}
         {action.primaryOutput && (
           <Descriptions.Item label="Primary output">
-            {action.primaryOutputURI ? (
-              <OutputLink
-                uri={action.primaryOutputURI}
-                fileName={action.primaryOutput}
-              >
-                {action.primaryOutput}
-              </OutputLink>
-            ) : (
-              action.primaryOutput
-            )}
+            <OutputLink
+              uri={action.primaryOutputURI}
+              actionDigest={action.actionDigest}
+              fileName={action.primaryOutput}
+            >
+              {action.primaryOutput}
+            </OutputLink>
           </Descriptions.Item>
         )}
         {action.stdoutURI && (

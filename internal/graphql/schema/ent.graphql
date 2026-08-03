@@ -4,6 +4,10 @@ type Action implements Node {
   id: ID!
   label: String!
   type: String
+  """
+  The runner reported by Bazel's compact execution log
+  """
+  runner: String
   success: Boolean
   exitCode: Int
   commandLine: [String!]
@@ -17,6 +21,7 @@ type Action implements Node {
   stderrURI: String
   bazelInvocation: BazelInvocation!
   configuration: Configuration
+  actionDigest: Digest
 }
 type ActionCacheStatistics implements Node {
   id: ID!
@@ -442,6 +447,24 @@ input ActionWhereInput {
   typeEqualFold: String
   typeContainsFold: String
   """
+  runner field predicates
+  """
+  runner: String
+  runnerNEQ: String
+  runnerIn: [String!]
+  runnerNotIn: [String!]
+  runnerGT: String
+  runnerGTE: String
+  runnerLT: String
+  runnerLTE: String
+  runnerContains: String
+  runnerHasPrefix: String
+  runnerHasSuffix: String
+  runnerIsNil: Boolean
+  runnerNotNil: Boolean
+  runnerEqualFold: String
+  runnerContainsFold: String
+  """
   success field predicates
   """
   success: Boolean
@@ -605,6 +628,11 @@ input ActionWhereInput {
   """
   hasConfiguration: Boolean
   hasConfigurationWith: [ConfigurationWhereInput!]
+  """
+  action_digest edge predicates
+  """
+  hasActionDigest: Boolean
+  hasActionDigestWith: [DigestWhereInput!]
 }
 type ArtifactMetrics implements Node {
   id: ID!

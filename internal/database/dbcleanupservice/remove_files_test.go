@@ -107,4 +107,38 @@ func TestRemoveFiles(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 2, count)
 	})
+
+	t.Run("ActionDigest", func(t *testing.T) {
+		db := testutils.SetupTestDB(t, dbProvider)
+		client := db.Ent()
+
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		invocation := testutils.StartCreateInvocation(client, instanceName).SaveX(ctx)
+		actionDigest := client.Digest.Create().
+			SetRev2InstanceName("").
+			SetDigestFunction(1).
+			SetHash([]byte{1}).
+			SetSizeBytes(1).
+			SaveX(ctx)
+		client.Action.Create().
+			SetBazelInvocation(invocation).
+			SetActionDigest(actionDigest).
+			SetLabel("//example:example").
+			SaveX(ctx)
+		client.Digest.Create().
+			SetRev2InstanceName("").
+			SetDigestFunction(1).
+			SetHash([]byte{2}).
+			SetSizeBytes(2).
+			SaveX(ctx)
+
+		cleanup, err := getNewDbCleanupService(db, clock.SystemClock, traceProvider)
+		require.NoError(t, err)
+		deleted, err := cleanup.RemoveUnusedDigests(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
+
+		require.Equal(t, 1, client.Digest.Query().CountX(ctx))
+		require.Equal(t, actionDigest.ID, client.Action.Query().OnlyX(ctx).QueryActionDigest().OnlyX(ctx).ID)
+	})
 }

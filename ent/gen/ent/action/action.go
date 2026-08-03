@@ -17,10 +17,14 @@ const (
 	FieldBazelInvocationID = "bazel_invocation_id"
 	// FieldConfigurationID holds the string denoting the configuration_id field in the database.
 	FieldConfigurationID = "configuration_id"
+	// FieldActionDigestID holds the string denoting the action_digest_id field in the database.
+	FieldActionDigestID = "action_digest_id"
 	// FieldLabel holds the string denoting the label field in the database.
 	FieldLabel = "label"
 	// FieldType holds the string denoting the type field in the database.
 	FieldType = "type"
+	// FieldRunner holds the string denoting the runner field in the database.
+	FieldRunner = "runner"
 	// FieldSuccess holds the string denoting the success field in the database.
 	FieldSuccess = "success"
 	// FieldExitCode holds the string denoting the exit_code field in the database.
@@ -47,6 +51,8 @@ const (
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeConfiguration holds the string denoting the configuration edge name in mutations.
 	EdgeConfiguration = "configuration"
+	// EdgeActionDigest holds the string denoting the action_digest edge name in mutations.
+	EdgeActionDigest = "action_digest"
 	// Table holds the table name of the action in the database.
 	Table = "actions"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -63,6 +69,13 @@ const (
 	ConfigurationInverseTable = "configurations"
 	// ConfigurationColumn is the table column denoting the configuration relation/edge.
 	ConfigurationColumn = "configuration_id"
+	// ActionDigestTable is the table that holds the action_digest relation/edge.
+	ActionDigestTable = "actions"
+	// ActionDigestInverseTable is the table name for the Digest entity.
+	// It exists in this package in order to avoid circular dependency with the "digest" package.
+	ActionDigestInverseTable = "digests"
+	// ActionDigestColumn is the table column denoting the action_digest relation/edge.
+	ActionDigestColumn = "action_digest_id"
 )
 
 // Columns holds all SQL columns for action fields.
@@ -70,8 +83,10 @@ var Columns = []string{
 	FieldID,
 	FieldBazelInvocationID,
 	FieldConfigurationID,
+	FieldActionDigestID,
 	FieldLabel,
 	FieldType,
+	FieldRunner,
 	FieldSuccess,
 	FieldExitCode,
 	FieldCommandLine,
@@ -123,6 +138,11 @@ func ByConfigurationID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldConfigurationID, opts...).ToFunc()
 }
 
+// ByActionDigestID orders the results by the action_digest_id field.
+func ByActionDigestID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldActionDigestID, opts...).ToFunc()
+}
+
 // ByLabel orders the results by the label field.
 func ByLabel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLabel, opts...).ToFunc()
@@ -131,6 +151,11 @@ func ByLabel(opts ...sql.OrderTermOption) OrderOption {
 // ByType orders the results by the type field.
 func ByType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldType, opts...).ToFunc()
+}
+
+// ByRunner orders the results by the runner field.
+func ByRunner(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunner, opts...).ToFunc()
 }
 
 // BySuccess orders the results by the success field.
@@ -196,6 +221,13 @@ func ByConfigurationField(field string, opts ...sql.OrderTermOption) OrderOption
 		sqlgraph.OrderByNeighborTerms(s, newConfigurationStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByActionDigestField orders the results by action_digest field.
+func ByActionDigestField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newActionDigestStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -208,5 +240,12 @@ func newConfigurationStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ConfigurationInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
+	)
+}
+func newActionDigestStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ActionDigestInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ActionDigestTable, ActionDigestColumn),
 	)
 }

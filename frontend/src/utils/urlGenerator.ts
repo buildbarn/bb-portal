@@ -9,6 +9,13 @@ import {
   digestFunctionValueToString,
 } from "./digestFunctionUtils";
 
+export interface GraphqlDigest {
+  rev2InstanceName: string;
+  digestFunction: string;
+  hash: string;
+  sizeBytes: number;
+}
+
 /////////////////////////////////////////////////////////////
 // Frontend internal URLs
 /////////////////////////////////////////////////////////////
@@ -43,6 +50,27 @@ export function generateDirectoryUrl(
   return `/browser${instanceName ? `/${instanceName}` : ""}/blobs/${digestFunctionValueToString(
     digestFunction,
   )}/directory/${digest.hash}-${digest.sizeBytes}`;
+}
+
+export function generateActionUrl(
+  instanceName: string | undefined,
+  digestFunction: DigestFunction_Value,
+  digest: Digest,
+): string {
+  return `/browser/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Action)}`;
+}
+
+export function generateActionUrlFromGraphqlDigest(
+  digest: GraphqlDigest | null | undefined,
+): string | undefined {
+  if (!digest) {
+    return undefined;
+  }
+  return generateActionUrl(
+    digest.rev2InstanceName,
+    digestFunctionValueFromString(digest.digestFunction),
+    { hash: digest.hash, sizeBytes: digest.sizeBytes.toString() },
+  );
 }
 
 /////////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -26,6 +27,26 @@ type ActionUpdate struct {
 // Where appends a list predicates to the ActionUpdate builder.
 func (_u *ActionUpdate) Where(ps ...predicate.Action) *ActionUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetActionDigestID sets the "action_digest_id" field.
+func (_u *ActionUpdate) SetActionDigestID(v int64) *ActionUpdate {
+	_u.mutation.SetActionDigestID(v)
+	return _u
+}
+
+// SetNillableActionDigestID sets the "action_digest_id" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableActionDigestID(v *int64) *ActionUpdate {
+	if v != nil {
+		_u.SetActionDigestID(*v)
+	}
+	return _u
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (_u *ActionUpdate) ClearActionDigestID() *ActionUpdate {
+	_u.mutation.ClearActionDigestID()
 	return _u
 }
 
@@ -60,6 +81,26 @@ func (_u *ActionUpdate) SetNillableType(v *string) *ActionUpdate {
 // ClearType clears the value of the "type" field.
 func (_u *ActionUpdate) ClearType() *ActionUpdate {
 	_u.mutation.ClearType()
+	return _u
+}
+
+// SetRunner sets the "runner" field.
+func (_u *ActionUpdate) SetRunner(v string) *ActionUpdate {
+	_u.mutation.SetRunner(v)
+	return _u
+}
+
+// SetNillableRunner sets the "runner" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableRunner(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetRunner(*v)
+	}
+	return _u
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (_u *ActionUpdate) ClearRunner() *ActionUpdate {
+	_u.mutation.ClearRunner()
 	return _u
 }
 
@@ -288,9 +329,20 @@ func (_u *ActionUpdate) ClearStderrURI() *ActionUpdate {
 	return _u
 }
 
+// SetActionDigest sets the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdate) SetActionDigest(v *Digest) *ActionUpdate {
+	return _u.SetActionDigestID(v.ID)
+}
+
 // Mutation returns the ActionMutation object of the builder.
 func (_u *ActionUpdate) Mutation() *ActionMutation {
 	return _u.mutation
+}
+
+// ClearActionDigest clears the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdate) ClearActionDigest() *ActionUpdate {
+	_u.mutation.ClearActionDigest()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -348,6 +400,12 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.TypeCleared() {
 		_spec.ClearField(action.FieldType, field.TypeString)
+	}
+	if value, ok := _u.mutation.Runner(); ok {
+		_spec.SetField(action.FieldRunner, field.TypeString, value)
+	}
+	if _u.mutation.RunnerCleared() {
+		_spec.ClearField(action.FieldRunner, field.TypeString)
 	}
 	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
@@ -423,6 +481,35 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.StderrURICleared() {
 		_spec.ClearField(action.FieldStderrURI, field.TypeString)
 	}
+	if _u.mutation.ActionDigestCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionDigestIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{action.Label}
@@ -441,6 +528,26 @@ type ActionUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ActionMutation
+}
+
+// SetActionDigestID sets the "action_digest_id" field.
+func (_u *ActionUpdateOne) SetActionDigestID(v int64) *ActionUpdateOne {
+	_u.mutation.SetActionDigestID(v)
+	return _u
+}
+
+// SetNillableActionDigestID sets the "action_digest_id" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableActionDigestID(v *int64) *ActionUpdateOne {
+	if v != nil {
+		_u.SetActionDigestID(*v)
+	}
+	return _u
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (_u *ActionUpdateOne) ClearActionDigestID() *ActionUpdateOne {
+	_u.mutation.ClearActionDigestID()
+	return _u
 }
 
 // SetLabel sets the "label" field.
@@ -474,6 +581,26 @@ func (_u *ActionUpdateOne) SetNillableType(v *string) *ActionUpdateOne {
 // ClearType clears the value of the "type" field.
 func (_u *ActionUpdateOne) ClearType() *ActionUpdateOne {
 	_u.mutation.ClearType()
+	return _u
+}
+
+// SetRunner sets the "runner" field.
+func (_u *ActionUpdateOne) SetRunner(v string) *ActionUpdateOne {
+	_u.mutation.SetRunner(v)
+	return _u
+}
+
+// SetNillableRunner sets the "runner" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableRunner(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetRunner(*v)
+	}
+	return _u
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (_u *ActionUpdateOne) ClearRunner() *ActionUpdateOne {
+	_u.mutation.ClearRunner()
 	return _u
 }
 
@@ -702,9 +829,20 @@ func (_u *ActionUpdateOne) ClearStderrURI() *ActionUpdateOne {
 	return _u
 }
 
+// SetActionDigest sets the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdateOne) SetActionDigest(v *Digest) *ActionUpdateOne {
+	return _u.SetActionDigestID(v.ID)
+}
+
 // Mutation returns the ActionMutation object of the builder.
 func (_u *ActionUpdateOne) Mutation() *ActionMutation {
 	return _u.mutation
+}
+
+// ClearActionDigest clears the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdateOne) ClearActionDigest() *ActionUpdateOne {
+	_u.mutation.ClearActionDigest()
+	return _u
 }
 
 // Where appends a list predicates to the ActionUpdate builder.
@@ -793,6 +931,12 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 	if _u.mutation.TypeCleared() {
 		_spec.ClearField(action.FieldType, field.TypeString)
 	}
+	if value, ok := _u.mutation.Runner(); ok {
+		_spec.SetField(action.FieldRunner, field.TypeString, value)
+	}
+	if _u.mutation.RunnerCleared() {
+		_spec.ClearField(action.FieldRunner, field.TypeString)
+	}
 	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
 	}
@@ -866,6 +1010,35 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 	}
 	if _u.mutation.StderrURICleared() {
 		_spec.ClearField(action.FieldStderrURI, field.TypeString)
+	}
+	if _u.mutation.ActionDigestCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionDigestIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Action{config: _u.config}
 	_spec.Assign = _node.assignValues

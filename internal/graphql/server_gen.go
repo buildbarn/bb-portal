@@ -106,6 +106,7 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Action struct {
+		ActionDigest     func(childComplexity int) int
 		BazelInvocation  func(childComplexity int) int
 		CommandLine      func(childComplexity int) int
 		Configuration    func(childComplexity int) int
@@ -117,6 +118,7 @@ type ComplexityRoot struct {
 		Label            func(childComplexity int) int
 		PrimaryOutput    func(childComplexity int) int
 		PrimaryOutputURI func(childComplexity int) int
+		Runner           func(childComplexity int) int
 		StartTime        func(childComplexity int) int
 		StderrURI        func(childComplexity int) int
 		StdoutURI        func(childComplexity int) int
@@ -1051,6 +1053,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Action.actionDigest":
+		if e.ComplexityRoot.Action.ActionDigest == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Action.ActionDigest(childComplexity), true
 	case "Action.bazelInvocation":
 		if e.ComplexityRoot.Action.BazelInvocation == nil {
 			break
@@ -1117,6 +1125,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Action.PrimaryOutputURI(childComplexity), true
+	case "Action.runner":
+		if e.ComplexityRoot.Action.Runner == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Action.Runner(childComplexity), true
 	case "Action.startTime":
 		if e.ComplexityRoot.Action.StartTime == nil {
 			break
@@ -3191,6 +3205,8 @@ func (ec *executionContext) childFields_Action(ctx context.Context, field graphq
 		return ec.fieldContext_Action_label(ctx, field)
 	case "type":
 		return ec.fieldContext_Action_type(ctx, field)
+	case "runner":
+		return ec.fieldContext_Action_runner(ctx, field)
 	case "success":
 		return ec.fieldContext_Action_success(ctx, field)
 	case "exitCode":
@@ -3217,6 +3233,8 @@ func (ec *executionContext) childFields_Action(ctx context.Context, field graphq
 		return ec.fieldContext_Action_bazelInvocation(ctx, field)
 	case "configuration":
 		return ec.fieldContext_Action_configuration(ctx, field)
+	case "actionDigest":
+		return ec.fieldContext_Action_actionDigest(ctx, field)
 	}
 	return nil, fmt.Errorf("no field named %q was found under type Action", field.Name)
 }
@@ -5046,6 +5064,29 @@ func (ec *executionContext) fieldContext_Action_type(_ context.Context, field gr
 	return graphql.NewScalarFieldContext("Action", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
+func (ec *executionContext) _Action_runner(ctx context.Context, field graphql.CollectedField, obj *ent.Action) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Action_runner(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Runner, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalOString2string(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Action_runner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Action", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
 func (ec *executionContext) _Action_success(ctx context.Context, field graphql.CollectedField, obj *ent.Action) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -5358,6 +5399,38 @@ func (ec *executionContext) fieldContext_Action_configuration(_ context.Context,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return ec.childFields_Configuration(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Action_actionDigest(ctx context.Context, field graphql.CollectedField, obj *ent.Action) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Action_actionDigest(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.ActionDigest(ctx)
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *ent.Digest) graphql.Marshaler {
+			return ec.marshalODigest2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDigest(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Action_actionDigest(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Action",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_Digest(ctx, field)
 		},
 	}
 	return fc, nil
@@ -16072,7 +16145,7 @@ func (ec *executionContext) unmarshalInputActionWhereInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "label", "labelNEQ", "labelIn", "labelNotIn", "labelGT", "labelGTE", "labelLT", "labelLTE", "labelContains", "labelHasPrefix", "labelHasSuffix", "labelEqualFold", "labelContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "typeGT", "typeGTE", "typeLT", "typeLTE", "typeContains", "typeHasPrefix", "typeHasSuffix", "typeIsNil", "typeNotNil", "typeEqualFold", "typeContainsFold", "success", "successNEQ", "successIsNil", "successNotNil", "exitCode", "exitCodeNEQ", "exitCodeIn", "exitCodeNotIn", "exitCodeGT", "exitCodeGTE", "exitCodeLT", "exitCodeLTE", "exitCodeIsNil", "exitCodeNotNil", "startTime", "startTimeNEQ", "startTimeIn", "startTimeNotIn", "startTimeGT", "startTimeGTE", "startTimeLT", "startTimeLTE", "startTimeIsNil", "startTimeNotNil", "endTime", "endTimeNEQ", "endTimeIn", "endTimeNotIn", "endTimeGT", "endTimeGTE", "endTimeLT", "endTimeLTE", "endTimeIsNil", "endTimeNotNil", "failureCode", "failureCodeNEQ", "failureCodeIn", "failureCodeNotIn", "failureCodeGT", "failureCodeGTE", "failureCodeLT", "failureCodeLTE", "failureCodeContains", "failureCodeHasPrefix", "failureCodeHasSuffix", "failureCodeIsNil", "failureCodeNotNil", "failureCodeEqualFold", "failureCodeContainsFold", "failureMessage", "failureMessageNEQ", "failureMessageIn", "failureMessageNotIn", "failureMessageGT", "failureMessageGTE", "failureMessageLT", "failureMessageLTE", "failureMessageContains", "failureMessageHasPrefix", "failureMessageHasSuffix", "failureMessageIsNil", "failureMessageNotNil", "failureMessageEqualFold", "failureMessageContainsFold", "primaryOutput", "primaryOutputNEQ", "primaryOutputIn", "primaryOutputNotIn", "primaryOutputGT", "primaryOutputGTE", "primaryOutputLT", "primaryOutputLTE", "primaryOutputContains", "primaryOutputHasPrefix", "primaryOutputHasSuffix", "primaryOutputIsNil", "primaryOutputNotNil", "primaryOutputEqualFold", "primaryOutputContainsFold", "primaryOutputURI", "primaryOutputURINEQ", "primaryOutputURIIn", "primaryOutputURINotIn", "primaryOutputURIGT", "primaryOutputURIGTE", "primaryOutputURILT", "primaryOutputURILTE", "primaryOutputURIContains", "primaryOutputURIHasPrefix", "primaryOutputURIHasSuffix", "primaryOutputURIIsNil", "primaryOutputURINotNil", "primaryOutputURIEqualFold", "primaryOutputURIContainsFold", "stdoutURI", "stdoutURINEQ", "stdoutURIIn", "stdoutURINotIn", "stdoutURIGT", "stdoutURIGTE", "stdoutURILT", "stdoutURILTE", "stdoutURIContains", "stdoutURIHasPrefix", "stdoutURIHasSuffix", "stdoutURIIsNil", "stdoutURINotNil", "stdoutURIEqualFold", "stdoutURIContainsFold", "stderrURI", "stderrURINEQ", "stderrURIIn", "stderrURINotIn", "stderrURIGT", "stderrURIGTE", "stderrURILT", "stderrURILTE", "stderrURIContains", "stderrURIHasPrefix", "stderrURIHasSuffix", "stderrURIIsNil", "stderrURINotNil", "stderrURIEqualFold", "stderrURIContainsFold", "hasBazelInvocation", "hasBazelInvocationWith", "hasConfiguration", "hasConfigurationWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "label", "labelNEQ", "labelIn", "labelNotIn", "labelGT", "labelGTE", "labelLT", "labelLTE", "labelContains", "labelHasPrefix", "labelHasSuffix", "labelEqualFold", "labelContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "typeGT", "typeGTE", "typeLT", "typeLTE", "typeContains", "typeHasPrefix", "typeHasSuffix", "typeIsNil", "typeNotNil", "typeEqualFold", "typeContainsFold", "runner", "runnerNEQ", "runnerIn", "runnerNotIn", "runnerGT", "runnerGTE", "runnerLT", "runnerLTE", "runnerContains", "runnerHasPrefix", "runnerHasSuffix", "runnerIsNil", "runnerNotNil", "runnerEqualFold", "runnerContainsFold", "success", "successNEQ", "successIsNil", "successNotNil", "exitCode", "exitCodeNEQ", "exitCodeIn", "exitCodeNotIn", "exitCodeGT", "exitCodeGTE", "exitCodeLT", "exitCodeLTE", "exitCodeIsNil", "exitCodeNotNil", "startTime", "startTimeNEQ", "startTimeIn", "startTimeNotIn", "startTimeGT", "startTimeGTE", "startTimeLT", "startTimeLTE", "startTimeIsNil", "startTimeNotNil", "endTime", "endTimeNEQ", "endTimeIn", "endTimeNotIn", "endTimeGT", "endTimeGTE", "endTimeLT", "endTimeLTE", "endTimeIsNil", "endTimeNotNil", "failureCode", "failureCodeNEQ", "failureCodeIn", "failureCodeNotIn", "failureCodeGT", "failureCodeGTE", "failureCodeLT", "failureCodeLTE", "failureCodeContains", "failureCodeHasPrefix", "failureCodeHasSuffix", "failureCodeIsNil", "failureCodeNotNil", "failureCodeEqualFold", "failureCodeContainsFold", "failureMessage", "failureMessageNEQ", "failureMessageIn", "failureMessageNotIn", "failureMessageGT", "failureMessageGTE", "failureMessageLT", "failureMessageLTE", "failureMessageContains", "failureMessageHasPrefix", "failureMessageHasSuffix", "failureMessageIsNil", "failureMessageNotNil", "failureMessageEqualFold", "failureMessageContainsFold", "primaryOutput", "primaryOutputNEQ", "primaryOutputIn", "primaryOutputNotIn", "primaryOutputGT", "primaryOutputGTE", "primaryOutputLT", "primaryOutputLTE", "primaryOutputContains", "primaryOutputHasPrefix", "primaryOutputHasSuffix", "primaryOutputIsNil", "primaryOutputNotNil", "primaryOutputEqualFold", "primaryOutputContainsFold", "primaryOutputURI", "primaryOutputURINEQ", "primaryOutputURIIn", "primaryOutputURINotIn", "primaryOutputURIGT", "primaryOutputURIGTE", "primaryOutputURILT", "primaryOutputURILTE", "primaryOutputURIContains", "primaryOutputURIHasPrefix", "primaryOutputURIHasSuffix", "primaryOutputURIIsNil", "primaryOutputURINotNil", "primaryOutputURIEqualFold", "primaryOutputURIContainsFold", "stdoutURI", "stdoutURINEQ", "stdoutURIIn", "stdoutURINotIn", "stdoutURIGT", "stdoutURIGTE", "stdoutURILT", "stdoutURILTE", "stdoutURIContains", "stdoutURIHasPrefix", "stdoutURIHasSuffix", "stdoutURIIsNil", "stdoutURINotNil", "stdoutURIEqualFold", "stdoutURIContainsFold", "stderrURI", "stderrURINEQ", "stderrURIIn", "stderrURINotIn", "stderrURIGT", "stderrURIGTE", "stderrURILT", "stderrURILTE", "stderrURIContains", "stderrURIHasPrefix", "stderrURIHasSuffix", "stderrURIIsNil", "stderrURINotNil", "stderrURIEqualFold", "stderrURIContainsFold", "hasBazelInvocation", "hasBazelInvocationWith", "hasConfiguration", "hasConfigurationWith", "hasActionDigest", "hasActionDigestWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -16368,6 +16441,111 @@ func (ec *executionContext) unmarshalInputActionWhereInput(ctx context.Context, 
 				return it, err
 			}
 			it.TypeContainsFold = data
+		case "runner":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runner"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Runner = data
+		case "runnerNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerNEQ = data
+		case "runnerIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerIn = data
+		case "runnerNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerNotIn = data
+		case "runnerGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerGT = data
+		case "runnerGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerGTE = data
+		case "runnerLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerLT = data
+		case "runnerLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerLTE = data
+		case "runnerContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerContains = data
+		case "runnerHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerHasPrefix = data
+		case "runnerHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerHasSuffix = data
+		case "runnerIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerIsNil = data
+		case "runnerNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerNotNil = data
+		case "runnerEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerEqualFold = data
+		case "runnerContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runnerContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunnerContainsFold = data
 		case "success":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("success"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -17264,6 +17442,20 @@ func (ec *executionContext) unmarshalInputActionWhereInput(ctx context.Context, 
 				return it, err
 			}
 			it.HasConfigurationWith = data
+		case "hasActionDigest":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasActionDigest"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasActionDigest = data
+		case "hasActionDigestWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasActionDigestWith"))
+			data, err := ec.unmarshalODigestWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDigestWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasActionDigestWith = data
 		}
 	}
 	return it, nil
@@ -30036,6 +30228,11 @@ func (ec *executionContext) _Action(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.RequiredNull {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "runner":
+			out.Values[i] = ec._Action_runner(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "success":
 			out.Values[i] = ec._Action_success(ctx, field, obj)
 			if out.Values[i] == graphql.RequiredNull {
@@ -30137,6 +30334,42 @@ func (ec *executionContext) _Action(ctx context.Context, sel ast.SelectionSet, o
 					}
 				}()
 				res = ec._Action_configuration(ctx, field, obj)
+				if res == graphql.RequiredNull {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "actionDigest":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Action_actionDigest(ctx, field, obj)
 				if res == graphql.RequiredNull {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -38950,6 +39183,13 @@ func (ec *executionContext) marshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCu
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalODigest2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDigest(ctx context.Context, sel ast.SelectionSet, v *ent.Digest) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Digest(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalODigestWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDigestWhereInputᚄ(ctx context.Context, v any) ([]*ent.DigestWhereInput, error) {

@@ -92,6 +92,23 @@ type ActionWhereInput struct {
 	TypeEqualFold    *string  `json:"typeEqualFold,omitempty"`
 	TypeContainsFold *string  `json:"typeContainsFold,omitempty"`
 
+	// "runner" field predicates.
+	Runner             *string  `json:"runner,omitempty"`
+	RunnerNEQ          *string  `json:"runnerNEQ,omitempty"`
+	RunnerIn           []string `json:"runnerIn,omitempty"`
+	RunnerNotIn        []string `json:"runnerNotIn,omitempty"`
+	RunnerGT           *string  `json:"runnerGT,omitempty"`
+	RunnerGTE          *string  `json:"runnerGTE,omitempty"`
+	RunnerLT           *string  `json:"runnerLT,omitempty"`
+	RunnerLTE          *string  `json:"runnerLTE,omitempty"`
+	RunnerContains     *string  `json:"runnerContains,omitempty"`
+	RunnerHasPrefix    *string  `json:"runnerHasPrefix,omitempty"`
+	RunnerHasSuffix    *string  `json:"runnerHasSuffix,omitempty"`
+	RunnerIsNil        bool     `json:"runnerIsNil,omitempty"`
+	RunnerNotNil       bool     `json:"runnerNotNil,omitempty"`
+	RunnerEqualFold    *string  `json:"runnerEqualFold,omitempty"`
+	RunnerContainsFold *string  `json:"runnerContainsFold,omitempty"`
+
 	// "success" field predicates.
 	Success       *bool `json:"success,omitempty"`
 	SuccessNEQ    *bool `json:"successNEQ,omitempty"`
@@ -243,6 +260,10 @@ type ActionWhereInput struct {
 	// "configuration" edge predicates.
 	HasConfiguration     *bool                      `json:"hasConfiguration,omitempty"`
 	HasConfigurationWith []*ConfigurationWhereInput `json:"hasConfigurationWith,omitempty"`
+
+	// "action_digest" edge predicates.
+	HasActionDigest     *bool               `json:"hasActionDigest,omitempty"`
+	HasActionDigestWith []*DigestWhereInput `json:"hasActionDigestWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -423,6 +444,51 @@ func (i *ActionWhereInput) P() (predicate.Action, error) {
 	}
 	if i.TypeContainsFold != nil {
 		predicates = append(predicates, action.TypeContainsFold(*i.TypeContainsFold))
+	}
+	if i.Runner != nil {
+		predicates = append(predicates, action.RunnerEQ(*i.Runner))
+	}
+	if i.RunnerNEQ != nil {
+		predicates = append(predicates, action.RunnerNEQ(*i.RunnerNEQ))
+	}
+	if len(i.RunnerIn) > 0 {
+		predicates = append(predicates, action.RunnerIn(i.RunnerIn...))
+	}
+	if len(i.RunnerNotIn) > 0 {
+		predicates = append(predicates, action.RunnerNotIn(i.RunnerNotIn...))
+	}
+	if i.RunnerGT != nil {
+		predicates = append(predicates, action.RunnerGT(*i.RunnerGT))
+	}
+	if i.RunnerGTE != nil {
+		predicates = append(predicates, action.RunnerGTE(*i.RunnerGTE))
+	}
+	if i.RunnerLT != nil {
+		predicates = append(predicates, action.RunnerLT(*i.RunnerLT))
+	}
+	if i.RunnerLTE != nil {
+		predicates = append(predicates, action.RunnerLTE(*i.RunnerLTE))
+	}
+	if i.RunnerContains != nil {
+		predicates = append(predicates, action.RunnerContains(*i.RunnerContains))
+	}
+	if i.RunnerHasPrefix != nil {
+		predicates = append(predicates, action.RunnerHasPrefix(*i.RunnerHasPrefix))
+	}
+	if i.RunnerHasSuffix != nil {
+		predicates = append(predicates, action.RunnerHasSuffix(*i.RunnerHasSuffix))
+	}
+	if i.RunnerIsNil {
+		predicates = append(predicates, action.RunnerIsNil())
+	}
+	if i.RunnerNotNil {
+		predicates = append(predicates, action.RunnerNotNil())
+	}
+	if i.RunnerEqualFold != nil {
+		predicates = append(predicates, action.RunnerEqualFold(*i.RunnerEqualFold))
+	}
+	if i.RunnerContainsFold != nil {
+		predicates = append(predicates, action.RunnerContainsFold(*i.RunnerContainsFold))
 	}
 	if i.Success != nil {
 		predicates = append(predicates, action.SuccessEQ(*i.Success))
@@ -832,6 +898,24 @@ func (i *ActionWhereInput) P() (predicate.Action, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, action.HasConfigurationWith(with...))
+	}
+	if i.HasActionDigest != nil {
+		p := action.HasActionDigest()
+		if !*i.HasActionDigest {
+			p = action.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasActionDigestWith) > 0 {
+		with := make([]predicate.Digest, 0, len(i.HasActionDigestWith))
+		for _, w := range i.HasActionDigestWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasActionDigestWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, action.HasActionDigestWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

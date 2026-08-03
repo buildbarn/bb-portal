@@ -27,6 +27,7 @@ func (r *buildEventRecorder) saveRemainingBatch(
 		),
 	)
 	defer span.End()
+	executionLogActions := r.readExecutionLogActionsFromBatch(ctx, batch)
 
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
@@ -47,6 +48,9 @@ func (r *buildEventRecorder) saveRemainingBatch(
 		if err != nil {
 			return util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId())
 		}
+	}
+	if err := r.saveExecutionLogActionMetadata(ctx, tx, executionLogActions); err != nil {
+		return util.StatusWrap(err, "Failed to save Action execution metadata from execution log")
 	}
 
 	if err := r.saveHandledEventsForBatch(ctx, batch, tx); err != nil {

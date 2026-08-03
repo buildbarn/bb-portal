@@ -9,6 +9,32 @@
         "startCursor": null
       }
     },
-    "id": "QmF6ZWxJbnZvY2F0aW9uOjM="
+    "configurations": [
+      {
+        "mnemonic": "darwin_arm64-fastbuild"
+      },
+      {
+        "mnemonic": "darwin_arm64-fastbuild"
+      }
+    ],
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "metrics": {
+      "actionSummary": {
+        "actionData": [
+          {
+            "mnemonic": "TestRunner"
+          },
+          {
+            "mnemonic": "BazelWorkspaceStatusAction"
+          },
+          {
+            "mnemonic": "CopyFile"
+          },
+          {
+            "mnemonic": "TsProject"
+          }
+        ]
+      }
+    }
   }
 }

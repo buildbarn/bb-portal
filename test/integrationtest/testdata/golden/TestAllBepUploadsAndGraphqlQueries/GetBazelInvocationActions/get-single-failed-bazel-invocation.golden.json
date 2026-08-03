@@ -4,6 +4,7 @@
       "edges": [
         {
           "node": {
+            "actionDigest": null,
             "commandLine": [
               "bazel-out/darwin_arm64-opt-exec-ST-13d3ddad9198/bin/external/aspect_rules_ts~~ext~npm_typescript/tsc.sh",
               "--skipLibCheck",
@@ -37,6 +38,7 @@
             "label": "//next.js/pages:pages",
             "primaryOutput": "bazel-out/darwin_arm64-fastbuild/bin/next.js/pages/_app.js",
             "primaryOutputURI": "",
+            "runner": "",
             "startTime": null,
             "stderrURI": "",
             "stdoutURI": "",
@@ -52,6 +54,29 @@
         "startCursor": "gaFp0wAAAAAAAAAB"
       }
     },
-    "id": "QmF6ZWxJbnZvY2F0aW9uOjI="
+    "configurations": [
+      {
+        "mnemonic": "darwin_arm64-fastbuild"
+      },
+      {
+        "mnemonic": "darwin_arm64-fastbuild"
+      }
+    ],
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
+    "metrics": {
+      "actionSummary": {
+        "actionData": [
+          {
+            "mnemonic": "BazelWorkspaceStatusAction"
+          },
+          {
+            "mnemonic": "CopyFile"
+          },
+          {
+            "mnemonic": "TsProject"
+          }
+        ]
+      }
+    }
   }
 }

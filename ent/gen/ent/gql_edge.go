@@ -24,6 +24,14 @@ func (_m *Action) Configuration(ctx context.Context) (*Configuration, error) {
 	return result, MaskNotFound(err)
 }
 
+func (_m *Action) ActionDigest(ctx context.Context) (*Digest, error) {
+	result, err := _m.Edges.ActionDigestOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryActionDigest().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *ActionCacheStatistics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
 	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {

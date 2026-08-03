@@ -9,6 +9,80 @@
         "startCursor": null
       }
     },
-    "id": "QmF6ZWxJbnZvY2F0aW9uOjc="
+    "configurations": [
+      {
+        "mnemonic": "k8-fastbuild"
+      },
+      {
+        "mnemonic": "k8-fastbuild"
+      }
+    ],
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjc=",
+    "metrics": {
+      "actionSummary": {
+        "actionData": [
+          {
+            "mnemonic": "CcStrip"
+          },
+          {
+            "mnemonic": "Action"
+          },
+          {
+            "mnemonic": "NpmLifecycleHook"
+          },
+          {
+            "mnemonic": "GoLink"
+          },
+          {
+            "mnemonic": "CopyToDirectory"
+          },
+          {
+            "mnemonic": "PackageTar"
+          },
+          {
+            "mnemonic": "Jsonnet"
+          },
+          {
+            "mnemonic": "GoStdlib"
+          },
+          {
+            "mnemonic": "CppModuleMap"
+          },
+          {
+            "mnemonic": "GoProtocGen"
+          },
+          {
+            "mnemonic": "OCIIndex"
+          },
+          {
+            "mnemonic": "UnresolvedSymlink"
+          },
+          {
+            "mnemonic": "CopyFile"
+          },
+          {
+            "mnemonic": "ExecutableSymlink"
+          },
+          {
+            "mnemonic": "Genrule"
+          },
+          {
+            "mnemonic": "NpmPackageExtract"
+          },
+          {
+            "mnemonic": "GenProtoDescriptorSet"
+          },
+          {
+            "mnemonic": "OCIDescriptor"
+          },
+          {
+            "mnemonic": "GoStdPackageList"
+          },
+          {
+            "mnemonic": "TranslateBuildInfo"
+          }
+        ]
+      }
+    }
   }
 }

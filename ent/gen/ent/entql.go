@@ -64,8 +64,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			action.FieldBazelInvocationID: {Type: field.TypeInt64, Column: action.FieldBazelInvocationID},
 			action.FieldConfigurationID:   {Type: field.TypeInt64, Column: action.FieldConfigurationID},
+			action.FieldActionDigestID:    {Type: field.TypeInt64, Column: action.FieldActionDigestID},
 			action.FieldLabel:             {Type: field.TypeString, Column: action.FieldLabel},
 			action.FieldType:              {Type: field.TypeString, Column: action.FieldType},
+			action.FieldRunner:            {Type: field.TypeString, Column: action.FieldRunner},
 			action.FieldSuccess:           {Type: field.TypeBool, Column: action.FieldSuccess},
 			action.FieldExitCode:          {Type: field.TypeInt32, Column: action.FieldExitCode},
 			action.FieldCommandLine:       {Type: field.TypeJSON, Column: action.FieldCommandLine},
@@ -730,6 +732,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"Configuration",
 	)
 	graph.MustAddE(
+		"action_digest",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+		},
+		"Action",
+		"Digest",
+	)
+	graph.MustAddE(
 		"action_summary",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -1148,6 +1162,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"Digest",
 		"File",
+	)
+	graph.MustAddE(
+		"actions",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionsTable,
+			Columns: []string{digest.ActionsColumn},
+			Bidi:    false,
+		},
+		"Digest",
+		"Action",
 	)
 	graph.MustAddE(
 		"bazel_invocation",
@@ -1820,6 +1846,11 @@ func (f *ActionFilter) WhereConfigurationID(p entql.Int64P) {
 	f.Where(p.Field(action.FieldConfigurationID))
 }
 
+// WhereActionDigestID applies the entql int64 predicate on the action_digest_id field.
+func (f *ActionFilter) WhereActionDigestID(p entql.Int64P) {
+	f.Where(p.Field(action.FieldActionDigestID))
+}
+
 // WhereLabel applies the entql string predicate on the label field.
 func (f *ActionFilter) WhereLabel(p entql.StringP) {
 	f.Where(p.Field(action.FieldLabel))
@@ -1828,6 +1859,11 @@ func (f *ActionFilter) WhereLabel(p entql.StringP) {
 // WhereType applies the entql string predicate on the type field.
 func (f *ActionFilter) WhereType(p entql.StringP) {
 	f.Where(p.Field(action.FieldType))
+}
+
+// WhereRunner applies the entql string predicate on the runner field.
+func (f *ActionFilter) WhereRunner(p entql.StringP) {
+	f.Where(p.Field(action.FieldRunner))
 }
 
 // WhereSuccess applies the entql bool predicate on the success field.
@@ -1907,6 +1943,20 @@ func (f *ActionFilter) WhereHasConfiguration() {
 // WhereHasConfigurationWith applies a predicate to check if query has an edge configuration with a given conditions (other predicates).
 func (f *ActionFilter) WhereHasConfigurationWith(preds ...predicate.Configuration) {
 	f.Where(entql.HasEdgeWith("configuration", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActionDigest applies a predicate to check if query has an edge action_digest.
+func (f *ActionFilter) WhereHasActionDigest() {
+	f.Where(entql.HasEdge("action_digest"))
+}
+
+// WhereHasActionDigestWith applies a predicate to check if query has an edge action_digest with a given conditions (other predicates).
+func (f *ActionFilter) WhereHasActionDigestWith(preds ...predicate.Digest) {
+	f.Where(entql.HasEdgeWith("action_digest", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -3307,6 +3357,20 @@ func (f *DigestFilter) WhereHasFiles() {
 // WhereHasFilesWith applies a predicate to check if query has an edge files with a given conditions (other predicates).
 func (f *DigestFilter) WhereHasFilesWith(preds ...predicate.File) {
 	f.Where(entql.HasEdgeWith("files", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActions applies a predicate to check if query has an edge actions.
+func (f *DigestFilter) WhereHasActions() {
+	f.Where(entql.HasEdge("actions"))
+}
+
+// WhereHasActionsWith applies a predicate to check if query has an edge actions with a given conditions (other predicates).
+func (f *DigestFilter) WhereHasActionsWith(preds ...predicate.Action) {
+	f.Where(entql.HasEdgeWith("actions", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}

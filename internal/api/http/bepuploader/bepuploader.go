@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
@@ -42,6 +43,7 @@ type BepUploader struct {
 func NewBepUploader(
 	db database.Client,
 	configuration *bb_portal.BuildEventStreamService,
+	contentAddressableStorage blobstore.BlobAccess,
 	instanceNameAuthorizer auth.Authorizer,
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
@@ -76,6 +78,7 @@ func NewBepUploader(
 			recorder, err := buildeventrecorder.NewBuildEventRecorder(
 				ctx,
 				db,
+				contentAddressableStorage,
 				instanceNameAuthorizer,
 				saveDataLevel,
 				tracerProvider,

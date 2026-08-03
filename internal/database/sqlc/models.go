@@ -16,6 +16,7 @@ type Action struct {
 	ID                int64
 	Label             string
 	Type              sql.NullString
+	Runner            sql.NullString
 	Success           sql.NullBool
 	ExitCode          sql.NullInt32
 	CommandLine       pqtype.NullRawMessage
@@ -29,6 +30,7 @@ type Action struct {
 	StderrUri         sql.NullString
 	ConfigurationID   sql.NullInt64
 	BazelInvocationID int64
+	ActionDigestID    sql.NullInt64
 }
 
 type ActionCacheStatistic struct {

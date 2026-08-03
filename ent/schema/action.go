@@ -33,8 +33,18 @@ func (Action) Fields() []ent.Field {
 				entgql.Skip(),
 			),
 
+		field.Int64("action_digest_id").
+			Comment("The REv2 Action digest obtained from Bazel's execution log").
+			Optional().
+			Annotations(
+				entgql.Skip(),
+			),
+
 		field.String("label"),
 		field.String("type").Optional(),
+		field.String("runner").
+			Comment("The runner reported by Bazel's compact execution log").
+			Optional(),
 
 		field.Bool("success").Optional(),
 		field.Int32("exit_code").Optional(),
@@ -77,6 +87,11 @@ func (Action) Edges() []ent.Edge {
 			Field("configuration_id").
 			Unique().
 			Immutable(),
+
+		edge.From("action_digest", Digest.Type).
+			Field("action_digest_id").
+			Ref("actions").
+			Unique(),
 	}
 }
 
@@ -87,6 +102,7 @@ func (Action) Indexes() []ent.Index {
 		index.Edges("bazel_invocation"),
 		index.Fields("type").Edges("bazel_invocation"),
 		index.Edges("configuration"),
+		index.Edges("action_digest"),
 	}
 }
 

@@ -26,6 +26,16 @@ export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
   ) {
     getBazelInvocation(invocationID: $invocationID) {
       id
+      configurations {
+        mnemonic
+      }
+      metrics {
+        actionSummary {
+          actionData {
+            mnemonic
+          }
+        }
+      }
       actions(
         after: $after
         first: $first
@@ -54,6 +64,7 @@ export const BAZEL_INVOCATION_ACTION_FRAGMENT = gql(/* GraphQL */ `
     id
     label
     type
+    runner
     success
     exitCode
     commandLine
@@ -63,6 +74,12 @@ export const BAZEL_INVOCATION_ACTION_FRAGMENT = gql(/* GraphQL */ `
     failureMessage
     primaryOutput
     primaryOutputURI
+    actionDigest {
+      rev2InstanceName
+      digestFunction
+      hash
+      sizeBytes
+    }
     stdoutURI
     stderrURI
     configuration {
@@ -108,11 +125,33 @@ export const Route = createFileRoute(
       throw new NotFoundError("actions", error?.message);
     }
 
+    const actions = parseGraphqlEdgeListWithFragment(
+      BAZEL_INVOCATION_ACTION_FRAGMENT,
+      data.getBazelInvocation.actions,
+    );
+
     return {
-      actions: parseGraphqlEdgeListWithFragment(
-        BAZEL_INVOCATION_ACTION_FRAGMENT,
-        data.getBazelInvocation.actions,
-      ),
+      actions,
+      actionMnemonics: Array.from(
+        new Set(
+          [
+            ...(data.getBazelInvocation.metrics?.actionSummary?.actionData?.map(
+              ({ mnemonic }) => mnemonic,
+            ) ?? []),
+            ...actions.map(({ type }) => type),
+          ].filter((mnemonic): mnemonic is string => Boolean(mnemonic)),
+        ),
+      ).sort((left, right) => left.localeCompare(right)),
+      configurationMnemonics: Array.from(
+        new Set(
+          [
+            ...(data.getBazelInvocation.configurations ?? []),
+            ...actions.map(({ configuration }) => configuration),
+          ]
+            .map((configuration) => configuration?.mnemonic)
+            .filter((mnemonic): mnemonic is string => Boolean(mnemonic)),
+        ),
+      ).sort((left, right) => left.localeCompare(right)),
       pageSize,
       pageInfo: data.getBazelInvocation.actions.pageInfo,
     };
@@ -144,7 +183,13 @@ const getPaginationUpdateLink = (newPagination: TablePaginationVars) =>
   });
 
 function RouteComponent() {
-  const { actions, pageSize, pageInfo } = Route.useLoaderData();
+  const {
+    actions,
+    actionMnemonics,
+    configurationMnemonics,
+    pageSize,
+    pageInfo,
+  } = Route.useLoaderData();
   const { actionTable } = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -170,6 +215,8 @@ function RouteComponent() {
   return (
     <ActionsTab
       actions={actions}
+      actionMnemonics={actionMnemonics}
+      configurationMnemonics={configurationMnemonics}
       getPaginationUpdateLink={getPaginationUpdateLink}
       onFilterChange={onFilterChange}
       pageInfo={pageInfo}

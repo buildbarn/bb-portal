@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -27,6 +28,7 @@ type ActionQuery struct {
 	predicates          []predicate.Action
 	withBazelInvocation *BazelInvocationQuery
 	withConfiguration   *ConfigurationQuery
+	withActionDigest    *DigestQuery
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*Action) error
 	// intermediate query (i.e. traversal path).
@@ -102,6 +104,28 @@ func (_q *ActionQuery) QueryConfiguration() *ConfigurationQuery {
 			sqlgraph.From(action.Table, action.FieldID, selector),
 			sqlgraph.To(configuration.Table, configuration.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, action.ConfigurationTable, action.ConfigurationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryActionDigest chains the current query on the "action_digest" edge.
+func (_q *ActionQuery) QueryActionDigest() *DigestQuery {
+	query := (&DigestClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(action.Table, action.FieldID, selector),
+			sqlgraph.To(digest.Table, digest.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, action.ActionDigestTable, action.ActionDigestColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -303,6 +327,7 @@ func (_q *ActionQuery) Clone() *ActionQuery {
 		predicates:          append([]predicate.Action{}, _q.predicates...),
 		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		withConfiguration:   _q.withConfiguration.Clone(),
+		withActionDigest:    _q.withActionDigest.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -328,6 +353,17 @@ func (_q *ActionQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *Act
 		opt(query)
 	}
 	_q.withConfiguration = query
+	return _q
+}
+
+// WithActionDigest tells the query-builder to eager-load the nodes that are connected to
+// the "action_digest" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ActionQuery) WithActionDigest(opts ...func(*DigestQuery)) *ActionQuery {
+	query := (&DigestClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withActionDigest = query
 	return _q
 }
 
@@ -415,9 +451,10 @@ func (_q *ActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Actio
 	var (
 		nodes       = []*Action{}
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			_q.withBazelInvocation != nil,
 			_q.withConfiguration != nil,
+			_q.withActionDigest != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -450,6 +487,12 @@ func (_q *ActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Actio
 	if query := _q.withConfiguration; query != nil {
 		if err := _q.loadConfiguration(ctx, query, nodes, nil,
 			func(n *Action, e *Configuration) { n.Edges.Configuration = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withActionDigest; query != nil {
+		if err := _q.loadActionDigest(ctx, query, nodes, nil,
+			func(n *Action, e *Digest) { n.Edges.ActionDigest = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -519,6 +562,35 @@ func (_q *ActionQuery) loadConfiguration(ctx context.Context, query *Configurati
 	}
 	return nil
 }
+func (_q *ActionQuery) loadActionDigest(ctx context.Context, query *DigestQuery, nodes []*Action, init func(*Action), assign func(*Action, *Digest)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Action)
+	for i := range nodes {
+		fk := nodes[i].ActionDigestID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(digest.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "action_digest_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *ActionQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -553,6 +625,9 @@ func (_q *ActionQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if _q.withConfiguration != nil {
 			_spec.Node.AddColumnOnce(action.FieldConfigurationID)
+		}
+		if _q.withActionDigest != nil {
+			_spec.Node.AddColumnOnce(action.FieldActionDigestID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

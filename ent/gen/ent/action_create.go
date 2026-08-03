@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 )
 
 // ActionCreate is the builder for creating a Action entity.
@@ -44,6 +45,20 @@ func (_c *ActionCreate) SetNillableConfigurationID(v *int64) *ActionCreate {
 	return _c
 }
 
+// SetActionDigestID sets the "action_digest_id" field.
+func (_c *ActionCreate) SetActionDigestID(v int64) *ActionCreate {
+	_c.mutation.SetActionDigestID(v)
+	return _c
+}
+
+// SetNillableActionDigestID sets the "action_digest_id" field if the given value is not nil.
+func (_c *ActionCreate) SetNillableActionDigestID(v *int64) *ActionCreate {
+	if v != nil {
+		_c.SetActionDigestID(*v)
+	}
+	return _c
+}
+
 // SetLabel sets the "label" field.
 func (_c *ActionCreate) SetLabel(v string) *ActionCreate {
 	_c.mutation.SetLabel(v)
@@ -60,6 +75,20 @@ func (_c *ActionCreate) SetType(v string) *ActionCreate {
 func (_c *ActionCreate) SetNillableType(v *string) *ActionCreate {
 	if v != nil {
 		_c.SetType(*v)
+	}
+	return _c
+}
+
+// SetRunner sets the "runner" field.
+func (_c *ActionCreate) SetRunner(v string) *ActionCreate {
+	_c.mutation.SetRunner(v)
+	return _c
+}
+
+// SetNillableRunner sets the "runner" field if the given value is not nil.
+func (_c *ActionCreate) SetNillableRunner(v *string) *ActionCreate {
+	if v != nil {
+		_c.SetRunner(*v)
 	}
 	return _c
 }
@@ -226,6 +255,11 @@ func (_c *ActionCreate) SetConfiguration(v *Configuration) *ActionCreate {
 	return _c.SetConfigurationID(v.ID)
 }
 
+// SetActionDigest sets the "action_digest" edge to the Digest entity.
+func (_c *ActionCreate) SetActionDigest(v *Digest) *ActionCreate {
+	return _c.SetActionDigestID(v.ID)
+}
+
 // Mutation returns the ActionMutation object of the builder.
 func (_c *ActionCreate) Mutation() *ActionMutation {
 	return _c.mutation
@@ -310,6 +344,10 @@ func (_c *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 		_spec.SetField(action.FieldType, field.TypeString, value)
 		_node.Type = value
 	}
+	if value, ok := _c.mutation.Runner(); ok {
+		_spec.SetField(action.FieldRunner, field.TypeString, value)
+		_node.Runner = value
+	}
 	if value, ok := _c.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
 		_node.Success = value
@@ -388,6 +426,23 @@ func (_c *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 		_node.ConfigurationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := _c.mutation.ActionDigestIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ActionDigestID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -440,6 +495,24 @@ type (
 	}
 )
 
+// SetActionDigestID sets the "action_digest_id" field.
+func (u *ActionUpsert) SetActionDigestID(v int64) *ActionUpsert {
+	u.Set(action.FieldActionDigestID, v)
+	return u
+}
+
+// UpdateActionDigestID sets the "action_digest_id" field to the value that was provided on create.
+func (u *ActionUpsert) UpdateActionDigestID() *ActionUpsert {
+	u.SetExcluded(action.FieldActionDigestID)
+	return u
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (u *ActionUpsert) ClearActionDigestID() *ActionUpsert {
+	u.SetNull(action.FieldActionDigestID)
+	return u
+}
+
 // SetLabel sets the "label" field.
 func (u *ActionUpsert) SetLabel(v string) *ActionUpsert {
 	u.Set(action.FieldLabel, v)
@@ -467,6 +540,24 @@ func (u *ActionUpsert) UpdateType() *ActionUpsert {
 // ClearType clears the value of the "type" field.
 func (u *ActionUpsert) ClearType() *ActionUpsert {
 	u.SetNull(action.FieldType)
+	return u
+}
+
+// SetRunner sets the "runner" field.
+func (u *ActionUpsert) SetRunner(v string) *ActionUpsert {
+	u.Set(action.FieldRunner, v)
+	return u
+}
+
+// UpdateRunner sets the "runner" field to the value that was provided on create.
+func (u *ActionUpsert) UpdateRunner() *ActionUpsert {
+	u.SetExcluded(action.FieldRunner)
+	return u
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (u *ActionUpsert) ClearRunner() *ActionUpsert {
+	u.SetNull(action.FieldRunner)
 	return u
 }
 
@@ -728,6 +819,27 @@ func (u *ActionUpsertOne) Update(set func(*ActionUpsert)) *ActionUpsertOne {
 	return u
 }
 
+// SetActionDigestID sets the "action_digest_id" field.
+func (u *ActionUpsertOne) SetActionDigestID(v int64) *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.SetActionDigestID(v)
+	})
+}
+
+// UpdateActionDigestID sets the "action_digest_id" field to the value that was provided on create.
+func (u *ActionUpsertOne) UpdateActionDigestID() *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.UpdateActionDigestID()
+	})
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (u *ActionUpsertOne) ClearActionDigestID() *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.ClearActionDigestID()
+	})
+}
+
 // SetLabel sets the "label" field.
 func (u *ActionUpsertOne) SetLabel(v string) *ActionUpsertOne {
 	return u.Update(func(s *ActionUpsert) {
@@ -760,6 +872,27 @@ func (u *ActionUpsertOne) UpdateType() *ActionUpsertOne {
 func (u *ActionUpsertOne) ClearType() *ActionUpsertOne {
 	return u.Update(func(s *ActionUpsert) {
 		s.ClearType()
+	})
+}
+
+// SetRunner sets the "runner" field.
+func (u *ActionUpsertOne) SetRunner(v string) *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.SetRunner(v)
+	})
+}
+
+// UpdateRunner sets the "runner" field to the value that was provided on create.
+func (u *ActionUpsertOne) UpdateRunner() *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.UpdateRunner()
+	})
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (u *ActionUpsertOne) ClearRunner() *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.ClearRunner()
 	})
 }
 
@@ -1220,6 +1353,27 @@ func (u *ActionUpsertBulk) Update(set func(*ActionUpsert)) *ActionUpsertBulk {
 	return u
 }
 
+// SetActionDigestID sets the "action_digest_id" field.
+func (u *ActionUpsertBulk) SetActionDigestID(v int64) *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.SetActionDigestID(v)
+	})
+}
+
+// UpdateActionDigestID sets the "action_digest_id" field to the value that was provided on create.
+func (u *ActionUpsertBulk) UpdateActionDigestID() *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.UpdateActionDigestID()
+	})
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (u *ActionUpsertBulk) ClearActionDigestID() *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.ClearActionDigestID()
+	})
+}
+
 // SetLabel sets the "label" field.
 func (u *ActionUpsertBulk) SetLabel(v string) *ActionUpsertBulk {
 	return u.Update(func(s *ActionUpsert) {
@@ -1252,6 +1406,27 @@ func (u *ActionUpsertBulk) UpdateType() *ActionUpsertBulk {
 func (u *ActionUpsertBulk) ClearType() *ActionUpsertBulk {
 	return u.Update(func(s *ActionUpsert) {
 		s.ClearType()
+	})
+}
+
+// SetRunner sets the "runner" field.
+func (u *ActionUpsertBulk) SetRunner(v string) *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.SetRunner(v)
+	})
+}
+
+// UpdateRunner sets the "runner" field to the value that was provided on create.
+func (u *ActionUpsertBulk) UpdateRunner() *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.UpdateRunner()
+	})
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (u *ActionUpsertBulk) ClearRunner() *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.ClearRunner()
 	})
 }
 

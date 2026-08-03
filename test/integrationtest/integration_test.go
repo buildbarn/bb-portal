@@ -252,7 +252,7 @@ var (
 						variables: testkit.Variables{
 							"invocationID": publishedActions.invocationID,
 							"where": map[string]any{
-								"typeContainsFold": "gocompile",
+								"typeIn": []string{"CppCompile", "GoCompilePkg"},
 							},
 						},
 					},
@@ -261,7 +261,7 @@ var (
 							"invocationID": publishedActions.invocationID,
 							"where": map[string]any{
 								"hasConfigurationWith": []map[string]any{{
-									"mnemonicContainsFold": "k8-fast",
+									"mnemonicIn": []string{"k8-fastbuild"},
 								}},
 							},
 						},

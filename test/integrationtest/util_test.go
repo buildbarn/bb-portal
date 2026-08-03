@@ -58,7 +58,7 @@ func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *
 		BuildKey:                     testCase.buildKey,
 	}
 
-	bepUploader, err := bepuploader.NewBepUploader(db, besConfig, authorizer, nil, nil, noop.NewTracerProvider())
+	bepUploader, err := bepuploader.NewBepUploader(db, besConfig, nil, authorizer, nil, nil, noop.NewTracerProvider())
 	require.NoError(t, err)
 	return bepUploader
 }

@@ -1,5 +1,5 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Tag, Typography } from "antd";
+import { Tag, Tooltip, Typography } from "antd";
 import type { FilterDropdownProps, FilterValue } from "antd/es/table/interface";
 import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import type {
@@ -7,9 +7,13 @@ import type {
   BazelInvocationActionFragment,
 } from "@/graphql/__generated__/graphql";
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
-import { generateFileUrlFromBepURI } from "@/utils/urlGenerator";
+import {
+  generateActionUrlFromGraphqlDigest,
+  generateFileUrlFromBepURI,
+} from "@/utils/urlGenerator";
 import styles from "../../theme/theme.module.css";
 import PortalDuration from "../PortalDuration";
+import { getActionExecutionKind } from "./execution";
 
 const searchFilter = (
   placeholder: string,
@@ -30,7 +34,26 @@ const searchFilter = (
   },
 });
 
-export const getColumns = (): TableColumnTypeWithFilter<
+const selectableFilter = (
+  options: string[],
+  toWhere: (values: string[]) => ActionWhereInput,
+) => ({
+  filters: options.map((value) => ({ text: value, value })),
+  filterMultiple: true,
+  filterSearch: true,
+  applyFilter: (value: FilterValue) => {
+    const values = value.filter(
+      (selectedValue): selectedValue is string =>
+        typeof selectedValue === "string",
+    );
+    return values.length > 0 ? [toWhere(values)] : undefined;
+  },
+});
+
+export const getColumns = (
+  actionMnemonics: string[],
+  configurationMnemonics: string[],
+): TableColumnTypeWithFilter<
   BazelInvocationActionFragment,
   ActionWhereInput
 >[] => [
@@ -64,13 +87,32 @@ export const getColumns = (): TableColumnTypeWithFilter<
     ),
   },
   {
+    key: "execution",
+    title: "Execution",
+    width: 110,
+    render: (_, action) => {
+      const executionKind = getActionExecutionKind(action.runner);
+      const colors = {
+        Remote: "processing",
+        Local: "warning",
+        Internal: "purple",
+        Unknown: "default",
+      } as const;
+      return (
+        <Tooltip title={action.runner || "Not reported by Bazel"}>
+          <Tag color={colors[executionKind]}>{executionKind}</Tag>
+        </Tooltip>
+      );
+    },
+  },
+  {
     key: "type",
     title: "Action mnemonic",
     dataIndex: "type",
     width: 180,
     ellipsis: true,
-    ...searchFilter("Action mnemonic...", (value) => ({
-      typeContainsFold: value,
+    ...selectableFilter(actionMnemonics, (values) => ({
+      typeIn: values,
     })),
   },
   {
@@ -79,8 +121,8 @@ export const getColumns = (): TableColumnTypeWithFilter<
     width: 180,
     ellipsis: true,
     render: (_, action) => action.configuration?.mnemonic,
-    ...searchFilter("Configuration mnemonic...", (value) => ({
-      hasConfigurationWith: [{ mnemonicContainsFold: value }],
+    ...selectableFilter(configurationMnemonics, (values) => ({
+      hasConfigurationWith: [{ mnemonicIn: values }],
     })),
   },
   {
@@ -100,10 +142,12 @@ export const getColumns = (): TableColumnTypeWithFilter<
       if (!action.primaryOutput) {
         return undefined;
       }
-      const href = generateFileUrlFromBepURI(
-        action.primaryOutputURI,
-        action.primaryOutput,
-      );
+      const href =
+        generateActionUrlFromGraphqlDigest(action.actionDigest) ??
+        generateFileUrlFromBepURI(
+          action.primaryOutputURI,
+          action.primaryOutput,
+        );
       return href ? (
         <Typography.Link href={href}>{action.primaryOutput}</Typography.Link>
       ) : (

@@ -22,6 +22,7 @@ load("@rules_go//proto:def.bzl", "go_proto_library")
     "failure_details",
     "invocation_policy",
     "option_filters",
+    "spawn",
     "strategy_policy",
 ]]
 
@@ -33,6 +34,7 @@ proto_library(
         ":failure_details_proto_file",
         ":invocation_policy_proto_file",
         ":option_filters_proto_file",
+        ":spawn_proto_file",
         ":strategy_policy_proto_file",
     ],
     import_prefix = "src/main/protobuf/",
@@ -40,6 +42,8 @@ proto_library(
     visibility = ["//visibility:public"],
     deps = [
         "@protobuf//:descriptor_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:timestamp_proto",
     ],
 )
 
@@ -62,6 +66,7 @@ ALL_FILES = [
     "failure_details",
     "invocation_policy",
     "option_filters",
+    "spawn",
 ]
 
 # Extract the individual files from src_main_protobuf_go_proto_pb_go.

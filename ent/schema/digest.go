@@ -39,6 +39,10 @@ func (Digest) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge to a invocation file with this digest.
 		edge.To("files", File.Type),
+
+		// Edge to build actions whose REv2 Action message has this digest.
+		edge.To("actions", Action.Type).
+			Annotations(entgql.Skip()),
 	}
 }
 

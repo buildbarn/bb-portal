@@ -93,6 +93,21 @@ func (_q *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				selectedFields = append(selectedFields, action.FieldConfigurationID)
 				fieldSeen[action.FieldConfigurationID] = struct{}{}
 			}
+
+		case "actionDigest":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DigestClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, digestImplementors)...); err != nil {
+				return err
+			}
+			_q.withActionDigest = query
+			if _, ok := fieldSeen[action.FieldActionDigestID]; !ok {
+				selectedFields = append(selectedFields, action.FieldActionDigestID)
+				fieldSeen[action.FieldActionDigestID] = struct{}{}
+			}
 		case "label":
 			if _, ok := fieldSeen[action.FieldLabel]; !ok {
 				selectedFields = append(selectedFields, action.FieldLabel)
@@ -102,6 +117,11 @@ func (_q *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 			if _, ok := fieldSeen[action.FieldType]; !ok {
 				selectedFields = append(selectedFields, action.FieldType)
 				fieldSeen[action.FieldType] = struct{}{}
+			}
+		case "runner":
+			if _, ok := fieldSeen[action.FieldRunner]; !ok {
+				selectedFields = append(selectedFields, action.FieldRunner)
+				fieldSeen[action.FieldRunner] = struct{}{}
 			}
 		case "success":
 			if _, ok := fieldSeen[action.FieldSuccess]; !ok {

@@ -14,6 +14,8 @@ import { getColumns } from "./columns";
 
 interface Props {
   actions: BazelInvocationActionFragment[];
+  actionMnemonics: string[];
+  configurationMnemonics: string[];
   pageSize: number;
   onFilterChange: (where: ActionWhereInput[]) => void;
   getPaginationUpdateLink: GetPaginationUpdateLinkType;
@@ -22,12 +24,17 @@ interface Props {
 
 export const ActionsTab: React.FC<Props> = ({
   actions,
+  actionMnemonics,
+  configurationMnemonics,
   pageSize,
   onFilterChange,
   getPaginationUpdateLink,
   pageInfo,
 }) => {
-  const columns = useMemo(() => getColumns(), []);
+  const columns = useMemo(
+    () => getColumns(actionMnemonics, configurationMnemonics),
+    [actionMnemonics, configurationMnemonics],
+  );
 
   return (
     <PageCursorTable

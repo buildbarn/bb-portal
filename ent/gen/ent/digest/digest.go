@@ -22,6 +22,8 @@ const (
 	FieldSizeBytes = "size_bytes"
 	// EdgeFiles holds the string denoting the files edge name in mutations.
 	EdgeFiles = "files"
+	// EdgeActions holds the string denoting the actions edge name in mutations.
+	EdgeActions = "actions"
 	// Table holds the table name of the digest in the database.
 	Table = "digests"
 	// FilesTable is the table that holds the files relation/edge.
@@ -31,6 +33,13 @@ const (
 	FilesInverseTable = "files"
 	// FilesColumn is the table column denoting the files relation/edge.
 	FilesColumn = "digest_id"
+	// ActionsTable is the table that holds the actions relation/edge.
+	ActionsTable = "actions"
+	// ActionsInverseTable is the table name for the Action entity.
+	// It exists in this package in order to avoid circular dependency with the "action" package.
+	ActionsInverseTable = "actions"
+	// ActionsColumn is the table column denoting the actions relation/edge.
+	ActionsColumn = "action_digest_id"
 )
 
 // Columns holds all SQL columns for digest fields.
@@ -88,10 +97,31 @@ func ByFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByActionsCount orders the results by actions count.
+func ByActionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newActionsStep(), opts...)
+	}
+}
+
+// ByActions orders the results by actions terms.
+func ByActions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newActionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newFilesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FilesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FilesTable, FilesColumn),
+	)
+}
+func newActionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ActionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ActionsTable, ActionsColumn),
 	)
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 )
 
 // Action is the model entity for the Action schema.
@@ -24,10 +25,14 @@ type Action struct {
 	BazelInvocationID int64 `json:"bazel_invocation_id,omitempty"`
 	// The id of the configuration
 	ConfigurationID int64 `json:"configuration_id,omitempty"`
+	// The REv2 Action digest obtained from Bazel's execution log
+	ActionDigestID int64 `json:"action_digest_id,omitempty"`
 	// Label holds the value of the "label" field.
 	Label string `json:"label,omitempty"`
 	// Type holds the value of the "type" field.
 	Type string `json:"type,omitempty"`
+	// The runner reported by Bazel's compact execution log
+	Runner string `json:"runner,omitempty"`
 	// Success holds the value of the "success" field.
 	Success bool `json:"success,omitempty"`
 	// ExitCode holds the value of the "exit_code" field.
@@ -62,11 +67,13 @@ type ActionEdges struct {
 	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// Configuration holds the value of the configuration edge.
 	Configuration *Configuration `json:"configuration,omitempty"`
+	// ActionDigest holds the value of the action_digest edge.
+	ActionDigest *Digest `json:"action_digest,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -91,6 +98,17 @@ func (e ActionEdges) ConfigurationOrErr() (*Configuration, error) {
 	return nil, &NotLoadedError{edge: "configuration"}
 }
 
+// ActionDigestOrErr returns the ActionDigest value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ActionEdges) ActionDigestOrErr() (*Digest, error) {
+	if e.ActionDigest != nil {
+		return e.ActionDigest, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: digest.Label}
+	}
+	return nil, &NotLoadedError{edge: "action_digest"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Action) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -100,9 +118,9 @@ func (*Action) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case action.FieldSuccess:
 			values[i] = new(sql.NullBool)
-		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldExitCode:
+		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldActionDigestID, action.FieldExitCode:
 			values[i] = new(sql.NullInt64)
-		case action.FieldLabel, action.FieldType, action.FieldFailureCode, action.FieldFailureMessage, action.FieldPrimaryOutput, action.FieldPrimaryOutputURI, action.FieldStdoutURI, action.FieldStderrURI:
+		case action.FieldLabel, action.FieldType, action.FieldRunner, action.FieldFailureCode, action.FieldFailureMessage, action.FieldPrimaryOutput, action.FieldPrimaryOutputURI, action.FieldStdoutURI, action.FieldStderrURI:
 			values[i] = new(sql.NullString)
 		case action.FieldStartTime, action.FieldEndTime:
 			values[i] = new(sql.NullTime)
@@ -139,6 +157,12 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.ConfigurationID = value.Int64
 			}
+		case action.FieldActionDigestID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field action_digest_id", values[i])
+			} else if value.Valid {
+				_m.ActionDigestID = value.Int64
+			}
 		case action.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
@@ -150,6 +174,12 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
 				_m.Type = value.String
+			}
+		case action.FieldRunner:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field runner", values[i])
+			} else if value.Valid {
+				_m.Runner = value.String
 			}
 		case action.FieldSuccess:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -242,6 +272,11 @@ func (_m *Action) QueryConfiguration() *ConfigurationQuery {
 	return NewActionClient(_m.config).QueryConfiguration(_m)
 }
 
+// QueryActionDigest queries the "action_digest" edge of the Action entity.
+func (_m *Action) QueryActionDigest() *DigestQuery {
+	return NewActionClient(_m.config).QueryActionDigest(_m)
+}
+
 // Update returns a builder for updating this Action.
 // Note that you need to call Action.Unwrap() before calling this method if this Action
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -271,11 +306,17 @@ func (_m *Action) String() string {
 	builder.WriteString("configuration_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ConfigurationID))
 	builder.WriteString(", ")
+	builder.WriteString("action_digest_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionDigestID))
+	builder.WriteString(", ")
 	builder.WriteString("label=")
 	builder.WriteString(_m.Label)
 	builder.WriteString(", ")
 	builder.WriteString("type=")
 	builder.WriteString(_m.Type)
+	builder.WriteString(", ")
+	builder.WriteString("runner=")
+	builder.WriteString(_m.Runner)
 	builder.WriteString(", ")
 	builder.WriteString("success=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Success))
