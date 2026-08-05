@@ -9,3 +9,4 @@ cmd/bb-portal/__debug*
 /bazel-demo/bazel-*
 /bazel-demo/*.ndjson
 cmd/bb_portal/__debug*
+portal-local.jsonnet

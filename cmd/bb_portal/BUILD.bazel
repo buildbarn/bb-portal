@@ -1,5 +1,6 @@
 load("@com_github_buildbarn_bb_storage//tools:container.bzl", "container_push_official", "multiarch_go_image")
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_img//img:push.bzl", "image_push")
 
 go_library(
     name = "bb_portal_lib",
@@ -37,6 +38,19 @@ container_push_official(
     name = "bb_portal_container_push",
     component = "bb-portal",
     image = ":bb_portal_container",
+)
+
+# Compass: push to internal ECR.
+# Registry and repo are injected at build time via workspace status (tools/compass-workspace-status.sh).
+# Run with: bazel run --config=compass --stamp //cmd/bb_portal:bb_portal_container_push_compass
+image_push(
+    name = "bb_portal_container_push_compass",
+    image = ":bb_portal_container",
+    registry = "{{.STABLE_COMPASS_ECR_REGISTRY}}",
+    repository = "{{.STABLE_COMPASS_ECR_REPO}}",
+    tag = "latest",
+    stamp = "force",
+    tags = ["manual"],
 )
 
 go_binary(

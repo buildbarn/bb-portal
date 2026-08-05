@@ -1,5 +1,9 @@
 run --workspace_status_command="bash tools/workspace-status.sh"
 
+# Compass: use compass-workspace-status.sh to inject ECR env vars for image publishing.
+# Usage: bazel run --config=compass --stamp //cmd/bb_portal:bb_portal_container_push_compass
+build:compass --workspace_status_command="bash tools/compass-workspace-status.sh"
+
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc
 common --@rules_go//go/config:pure
 

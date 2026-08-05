@@ -1,16 +1,67 @@
 version: 2.1
 
-# Placeholder config — full build-and-push pipeline is defined in
-# rbe/bb-portal-fork-image-pipeline (TECH-23509) and will replace this on merge.
+# Builds the bb-portal container image via Bazel (mirrors upstream build) and
+# pushes to Compass ECR on every push to compass/main.
+#
+# Required CircleCI project-level environment variables (same creds the
+# urbancompass repo uses in aws_auth to pull private ECR executor images):
+#   AWS_ACCESS_KEY_ID     - IAM user with sts:AssumeRole on ECRPowerUserRole
+#   AWS_SECRET_ACCESS_KEY - IAM user with sts:AssumeRole on ECRPowerUserRole
+#   AWS_DEFAULT_REGION    - us-east-1
+#   ECR_REGISTRY          - <aws-account-id>.dkr.ecr.<region>.amazonaws.com  (account ID is also used to derive ECRPowerUserRole ARN)
+#   ECR_REPO              - <ecr-repository-name>
 
 jobs:
-  placeholder:
-    docker:
-      - image: cimg/base:current
+  build-and-push:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
     steps:
-      - run: echo "CircleCI project connected. Awaiting full pipeline via PR."
+      - checkout
+
+      - run:
+          name: Install Bazel
+          command: |
+            v=$(cat .bazelversion)
+            mkdir -p ~/bin
+            curl -fsSL "https://github.com/bazelbuild/bazel/releases/download/${v}/bazel-${v}-linux-x86_64" \
+              -o ~/bin/bazel
+            chmod +x ~/bin/bazel
+            echo 'export PATH="$HOME/bin:$PATH"' >> "$BASH_ENV"
+
+      - run:
+          name: Install crane
+          command: |
+            curl -fsSL "https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz" \
+              | tar xz -C ~/bin crane
+            chmod +x ~/bin/crane
+
+      - run:
+          name: Assume ECRPowerUserRole and login to ECR
+          command: bash .circleci/scripts/ecr-login.sh
+
+      - run:
+          name: Build and push image
+          no_output_timeout: 30m
+          command: |
+            bazel run --config=compass --stamp \
+              //cmd/bb_portal:bb_portal_container_push_compass
+
+      - run:
+          name: Tag image with git SHA
+          command: |
+            crane tag "$ECR_REGISTRY/$ECR_REPO:latest" "$CIRCLE_SHA1"
+
+      - run:
+          name: Print image digest
+          command: |
+            crane digest "$ECR_REGISTRY/$ECR_REPO:$CIRCLE_SHA1"
 
 workflows:
-  placeholder:
+  build-and-publish:
     jobs:
-      - placeholder
+      - build-and-push:
+          filters:
+            branches:
+              only:
+                - compass/main
