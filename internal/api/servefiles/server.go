@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"log"
+	"log/slog"
 	"mime"
 	"net/http"
 	"strconv"
@@ -88,6 +89,7 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request) 
 	var first [4096]byte
 	n, err := r.Read(first[:])
 	if err != nil && err != io.EOF {
+		slog.Error("Could not read file from CAS", "digest", digest, "err", err)
 		http.Error(w, "Could not send file", http.StatusInternalServerError)
 		return
 	}
