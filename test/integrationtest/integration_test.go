@@ -266,6 +266,14 @@ var (
 							},
 						},
 					},
+					"filter unavailable action file from another host": {
+						variables: testkit.Variables{
+							"invocationID": publishedActions.invocationID,
+							"where": map[string]any{
+								"typeIn": []string{"OtherHostAction"},
+							},
+						},
+					},
 				},
 				"GetBazelInvocationCommandline": {
 					"get successful bazel build": {

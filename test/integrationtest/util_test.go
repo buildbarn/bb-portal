@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"testing"
 
@@ -13,8 +14,10 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/internal/graphql"
+	"github.com/buildbarn/bb-portal/pkg/invocation/files"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/stretchr/testify/assert"
@@ -24,6 +27,43 @@ import (
 )
 
 var dbProvider *embedded.DatabaseProvider
+
+type fixtureContentAddressableStorage struct {
+	blobstore.BlobAccess
+	availableDigests map[digest.Digest]struct{}
+}
+
+func newFixtureContentAddressableStorage(t *testing.T) *fixtureContentAddressableStorage {
+	t.Helper()
+	availableURIs := []string{
+		"bytestream://cache.example.com/blobs/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/42",
+		"bytestream://cache.example.com/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/12",
+		"bytestream://cache.example.com/blobs/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/84",
+		"bytestream://cache.example.com/blobs/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/24",
+		"bytestream://cache.example.com/blobs/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/36",
+		"bytestream://cache.example.com/blobs/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff/48",
+	}
+	availableDigests := make(map[digest.Digest]struct{}, len(availableURIs))
+	for _, uri := range availableURIs {
+		parsedURI, err := url.Parse(uri)
+		require.NoError(t, err)
+		require.Equal(t, "cache.example.com", parsedURI.Host)
+		parsedDigest := files.GetDigestFromURI(uri)
+		require.NotEqual(t, digest.BadDigest, parsedDigest)
+		availableDigests[parsedDigest] = struct{}{}
+	}
+	return &fixtureContentAddressableStorage{availableDigests: availableDigests}
+}
+
+func (cas *fixtureContentAddressableStorage) FindMissing(_ context.Context, digests digest.Set) (digest.Set, error) {
+	missingDigests := digest.NewSetBuilder(digests.Length())
+	for _, blobDigest := range digests.Items() {
+		if _, ok := cas.availableDigests[blobDigest]; !ok {
+			missingDigests = missingDigests.Add(blobDigest)
+		}
+	}
+	return missingDigests.Build(), nil
+}
 
 func TestMain(m *testing.M) {
 	var err error
@@ -58,7 +98,7 @@ func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *
 		BuildKey:                     testCase.buildKey,
 	}
 
-	bepUploader, err := bepuploader.NewBepUploader(db, besConfig, nil, authorizer, nil, nil, noop.NewTracerProvider())
+	bepUploader, err := bepuploader.NewBepUploader(db, besConfig, newFixtureContentAddressableStorage(t), authorizer, nil, nil, noop.NewTracerProvider())
 	require.NoError(t, err)
 	return bepUploader
 }

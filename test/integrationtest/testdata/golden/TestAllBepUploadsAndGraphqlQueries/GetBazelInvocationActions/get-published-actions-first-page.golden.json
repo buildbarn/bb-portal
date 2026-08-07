@@ -28,7 +28,7 @@
             "id": "QWN0aW9uOjM=",
             "label": "//example:first",
             "primaryOutput": "bazel-out/k8-fastbuild/bin/example/first.o",
-            "primaryOutputURI": "",
+            "primaryOutputURI": "bytestream://cache.example.com/blobs/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/42",
             "runner": "",
             "startTime": "2026-07-31T12:00:00Z",
             "stderrURI": "",
@@ -62,11 +62,11 @@
             "id": "QWN0aW9uOjQ=",
             "label": "//example:second",
             "primaryOutput": "bazel-out/k8-fastbuild/bin/example/second.o",
-            "primaryOutputURI": "",
+            "primaryOutputURI": "bytestream://cache.example.com/blobs/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/84",
             "runner": "",
             "startTime": "2026-07-31T12:00:02Z",
-            "stderrURI": "",
-            "stdoutURI": "",
+            "stderrURI": "bytestream://cache.example.com/blobs/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/36",
+            "stdoutURI": "bytestream://cache.example.com/blobs/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/24",
             "success": false,
             "type": "CppLink"
           }
