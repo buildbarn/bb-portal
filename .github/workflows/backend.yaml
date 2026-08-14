@@ -31,7 +31,7 @@
             {
                "if": "matrix.host.cross_compile",
                "name": "Cross-platform builds",
-               "run": "bazel build --platforms=@com_github_buildbarn_bb_storage//tools/platforms:darwin_amd64,@com_github_buildbarn_bb_storage//tools/platforms:darwin_arm64,@com_github_buildbarn_bb_storage//tools/platforms:freebsd_amd64,@com_github_buildbarn_bb_storage//tools/platforms:windows_amd64 --@bazel_tools//tools/test:incompatible_use_default_test_toolchain=False //..."
+               "run": "for target in darwin_amd64 darwin_arm64 freebsd_amd64 windows_amd64; do bazel build --platforms=@com_github_buildbarn_bb_storage//tools/platforms:$target --@bazel_tools//tools/test:incompatible_use_default_test_toolchain=False //...; done"
             }
          ],
          "strategy": {

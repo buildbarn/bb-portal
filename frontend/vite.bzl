@@ -30,11 +30,6 @@ vite_build_rule = rule(
         "vite_binary": attr.label(mandatory = True, executable = True, cfg = "exec"),
         "env": attr.string_dict(),
     },
-    toolchains = [
-        # Even if not used, make sure the analysis selects an execution platform
-        # that we are likely to be able to build _vite_binary for.
-        "@rules_nodejs//nodejs:runtime_toolchain_type",
-    ],
 )
 
 def _vite_build_macro_impl(name, srcs, tags, **kwargs):

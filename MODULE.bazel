@@ -150,6 +150,12 @@ use_repo(
     "org_uber_go_mock",
 )
 
+# C++ toolchain
+register_toolchains(
+    "@llvm//toolchain:all",
+    dev_dependency = True,
+)
+
 # Setup nodejs
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
 node.toolchain(node_version_from_nvmrc = "//frontend:.nvmrc")

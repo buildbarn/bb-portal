@@ -67,6 +67,12 @@ npm_link_all_packages(name = "node_modules")
 
 vite_bin.vite_binary(
     name = "vite_binary",
+    target_compatible_with = select({
+        "@platforms//os:linux": [],
+        "@platforms//os:macos": [],
+        "@platforms//os:windows": [],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
 )
 
 vite_build(
