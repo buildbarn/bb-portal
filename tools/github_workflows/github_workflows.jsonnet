@@ -39,7 +39,12 @@ local cross_build_step = {
   local platforms = std.join(",", [
     "@com_github_buildbarn_bb_storage//tools/platforms:%s" % p for p in cross_targets
   ]),
-  run: "bazel build --platforms=%s --@bazel_tools//tools/test:incompatible_use_default_test_toolchain=False //..." % platforms,
+  run:   'for target in ' + std.join(' ', cross_targets) + '; do ' +
+  'bazel build ' +
+  '--platforms=@com_github_buildbarn_bb_storage//tools/platforms:$target ' +
+  '--@bazel_tools//tools/test:incompatible_use_default_test_toolchain=False ' +
+  '//...; ' +
+  'done'
 };
 
 // Shared matrix definition
