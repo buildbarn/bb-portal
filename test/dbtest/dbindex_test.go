@@ -21,14 +21,8 @@ func TestMain(m *testing.M) {
 		fmt.Fprintf(os.Stderr, "Could not start embedded DB: %v\n", err)
 		os.Exit(1)
 	}
-	exitCode := m.Run()
-	if err := dbProvider.Cleanup(); err != nil {
-		fmt.Fprintf(os.Stderr, "Could not clean up embedded DB: %v\n", err)
-		if exitCode == 0 {
-			exitCode = 1
-		}
-	}
-	os.Exit(exitCode)
+	defer dbProvider.Cleanup()
+	m.Run()
 }
 
 func TestDatabaseProperties(t *testing.T) {
