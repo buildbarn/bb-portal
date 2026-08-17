@@ -24,6 +24,7 @@ export type Scalars = {
   Map: { input: any; output: any; }
   Time: { input: any; output: any; }
   UUID: { input: any; output: any; }
+  UnsignedLong: { input: string; output: bigint; }
   Upload: { input: any; output: any; }
 };
 
@@ -48,13 +49,14 @@ export type Action = Node & {
 export type ActionCacheStatistics = Node & {
   __typename?: 'ActionCacheStatistics';
   actionSummary?: Maybe<ActionSummary>;
+  cacheCheckSemaphoreWaitTimeInMs?: Maybe<Scalars['UnsignedLong']['output']>;
   hits?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
-  loadTimeInMs?: Maybe<Scalars['Int']['output']>;
+  loadTimeInMs?: Maybe<Scalars['UnsignedLong']['output']>;
   missDetails?: Maybe<Array<MissDetail>>;
   misses?: Maybe<Scalars['Int']['output']>;
-  saveTimeInMs?: Maybe<Scalars['Int']['output']>;
-  sizeInBytes?: Maybe<Scalars['Int']['output']>;
+  saveTimeInMs?: Maybe<Scalars['UnsignedLong']['output']>;
+  sizeInBytes?: Maybe<Scalars['UnsignedLong']['output']>;
 };
 
 /**
@@ -63,6 +65,17 @@ export type ActionCacheStatistics = Node & {
  */
 export type ActionCacheStatisticsWhereInput = {
   and?: InputMaybe<Array<ActionCacheStatisticsWhereInput>>;
+  /** cache_check_semaphore_wait_time_in_ms field predicates */
+  cacheCheckSemaphoreWaitTimeInMs?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  cacheCheckSemaphoreWaitTimeInMsGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  cacheCheckSemaphoreWaitTimeInMsGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  cacheCheckSemaphoreWaitTimeInMsIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
+  cacheCheckSemaphoreWaitTimeInMsIsNil?: InputMaybe<Scalars['Boolean']['input']>;
+  cacheCheckSemaphoreWaitTimeInMsLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  cacheCheckSemaphoreWaitTimeInMsLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  cacheCheckSemaphoreWaitTimeInMsNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  cacheCheckSemaphoreWaitTimeInMsNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
+  cacheCheckSemaphoreWaitTimeInMsNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** action_summary edge predicates */
   hasActionSummary?: InputMaybe<Scalars['Boolean']['input']>;
   hasActionSummaryWith?: InputMaybe<Array<ActionSummaryWhereInput>>;
@@ -90,15 +103,15 @@ export type ActionCacheStatisticsWhereInput = {
   idNEQ?: InputMaybe<Scalars['ID']['input']>;
   idNotIn?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** load_time_in_ms field predicates */
-  loadTimeInMs?: InputMaybe<Scalars['Int']['input']>;
-  loadTimeInMsGT?: InputMaybe<Scalars['Int']['input']>;
-  loadTimeInMsGTE?: InputMaybe<Scalars['Int']['input']>;
-  loadTimeInMsIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  loadTimeInMs?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  loadTimeInMsGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  loadTimeInMsGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  loadTimeInMsIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   loadTimeInMsIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  loadTimeInMsLT?: InputMaybe<Scalars['Int']['input']>;
-  loadTimeInMsLTE?: InputMaybe<Scalars['Int']['input']>;
-  loadTimeInMsNEQ?: InputMaybe<Scalars['Int']['input']>;
-  loadTimeInMsNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  loadTimeInMsLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  loadTimeInMsLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  loadTimeInMsNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  loadTimeInMsNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   loadTimeInMsNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** misses field predicates */
   misses?: InputMaybe<Scalars['Int']['input']>;
@@ -114,26 +127,26 @@ export type ActionCacheStatisticsWhereInput = {
   not?: InputMaybe<ActionCacheStatisticsWhereInput>;
   or?: InputMaybe<Array<ActionCacheStatisticsWhereInput>>;
   /** save_time_in_ms field predicates */
-  saveTimeInMs?: InputMaybe<Scalars['Int']['input']>;
-  saveTimeInMsGT?: InputMaybe<Scalars['Int']['input']>;
-  saveTimeInMsGTE?: InputMaybe<Scalars['Int']['input']>;
-  saveTimeInMsIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  saveTimeInMs?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  saveTimeInMsGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  saveTimeInMsGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  saveTimeInMsIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   saveTimeInMsIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  saveTimeInMsLT?: InputMaybe<Scalars['Int']['input']>;
-  saveTimeInMsLTE?: InputMaybe<Scalars['Int']['input']>;
-  saveTimeInMsNEQ?: InputMaybe<Scalars['Int']['input']>;
-  saveTimeInMsNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  saveTimeInMsLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  saveTimeInMsLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  saveTimeInMsNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  saveTimeInMsNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   saveTimeInMsNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** size_in_bytes field predicates */
-  sizeInBytes?: InputMaybe<Scalars['Int']['input']>;
-  sizeInBytesGT?: InputMaybe<Scalars['Int']['input']>;
-  sizeInBytesGTE?: InputMaybe<Scalars['Int']['input']>;
-  sizeInBytesIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  sizeInBytes?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  sizeInBytesGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  sizeInBytesGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  sizeInBytesIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   sizeInBytesIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  sizeInBytesLT?: InputMaybe<Scalars['Int']['input']>;
-  sizeInBytesLTE?: InputMaybe<Scalars['Int']['input']>;
-  sizeInBytesNEQ?: InputMaybe<Scalars['Int']['input']>;
-  sizeInBytesNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  sizeInBytesLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  sizeInBytesLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  sizeInBytesNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  sizeInBytesNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   sizeInBytesNotNil?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -2435,16 +2448,16 @@ export type SourceControlWhereInput = {
 
 export type SystemNetworkStats = Node & {
   __typename?: 'SystemNetworkStats';
-  bytesRecv?: Maybe<Scalars['Int']['output']>;
-  bytesSent?: Maybe<Scalars['Int']['output']>;
+  bytesRecv?: Maybe<Scalars['UnsignedLong']['output']>;
+  bytesSent?: Maybe<Scalars['UnsignedLong']['output']>;
   id: Scalars['ID']['output'];
   networkMetrics?: Maybe<NetworkMetrics>;
-  packetsRecv?: Maybe<Scalars['Int']['output']>;
-  packetsSent?: Maybe<Scalars['Int']['output']>;
-  peakBytesRecvPerSec?: Maybe<Scalars['Int']['output']>;
-  peakBytesSentPerSec?: Maybe<Scalars['Int']['output']>;
-  peakPacketsRecvPerSec?: Maybe<Scalars['Int']['output']>;
-  peakPacketsSentPerSec?: Maybe<Scalars['Int']['output']>;
+  packetsRecv?: Maybe<Scalars['UnsignedLong']['output']>;
+  packetsSent?: Maybe<Scalars['UnsignedLong']['output']>;
+  peakBytesRecvPerSec?: Maybe<Scalars['UnsignedLong']['output']>;
+  peakBytesSentPerSec?: Maybe<Scalars['UnsignedLong']['output']>;
+  peakPacketsRecvPerSec?: Maybe<Scalars['UnsignedLong']['output']>;
+  peakPacketsSentPerSec?: Maybe<Scalars['UnsignedLong']['output']>;
 };
 
 /**
@@ -2454,26 +2467,26 @@ export type SystemNetworkStats = Node & {
 export type SystemNetworkStatsWhereInput = {
   and?: InputMaybe<Array<SystemNetworkStatsWhereInput>>;
   /** bytes_recv field predicates */
-  bytesRecv?: InputMaybe<Scalars['Int']['input']>;
-  bytesRecvGT?: InputMaybe<Scalars['Int']['input']>;
-  bytesRecvGTE?: InputMaybe<Scalars['Int']['input']>;
-  bytesRecvIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  bytesRecv?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesRecvGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesRecvGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesRecvIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   bytesRecvIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  bytesRecvLT?: InputMaybe<Scalars['Int']['input']>;
-  bytesRecvLTE?: InputMaybe<Scalars['Int']['input']>;
-  bytesRecvNEQ?: InputMaybe<Scalars['Int']['input']>;
-  bytesRecvNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  bytesRecvLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesRecvLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesRecvNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesRecvNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   bytesRecvNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** bytes_sent field predicates */
-  bytesSent?: InputMaybe<Scalars['Int']['input']>;
-  bytesSentGT?: InputMaybe<Scalars['Int']['input']>;
-  bytesSentGTE?: InputMaybe<Scalars['Int']['input']>;
-  bytesSentIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  bytesSent?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesSentGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesSentGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesSentIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   bytesSentIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  bytesSentLT?: InputMaybe<Scalars['Int']['input']>;
-  bytesSentLTE?: InputMaybe<Scalars['Int']['input']>;
-  bytesSentNEQ?: InputMaybe<Scalars['Int']['input']>;
-  bytesSentNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  bytesSentLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesSentLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesSentNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  bytesSentNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   bytesSentNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** network_metrics edge predicates */
   hasNetworkMetrics?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2490,70 +2503,70 @@ export type SystemNetworkStatsWhereInput = {
   not?: InputMaybe<SystemNetworkStatsWhereInput>;
   or?: InputMaybe<Array<SystemNetworkStatsWhereInput>>;
   /** packets_recv field predicates */
-  packetsRecv?: InputMaybe<Scalars['Int']['input']>;
-  packetsRecvGT?: InputMaybe<Scalars['Int']['input']>;
-  packetsRecvGTE?: InputMaybe<Scalars['Int']['input']>;
-  packetsRecvIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  packetsRecv?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsRecvGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsRecvGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsRecvIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   packetsRecvIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  packetsRecvLT?: InputMaybe<Scalars['Int']['input']>;
-  packetsRecvLTE?: InputMaybe<Scalars['Int']['input']>;
-  packetsRecvNEQ?: InputMaybe<Scalars['Int']['input']>;
-  packetsRecvNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  packetsRecvLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsRecvLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsRecvNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsRecvNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   packetsRecvNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** packets_sent field predicates */
-  packetsSent?: InputMaybe<Scalars['Int']['input']>;
-  packetsSentGT?: InputMaybe<Scalars['Int']['input']>;
-  packetsSentGTE?: InputMaybe<Scalars['Int']['input']>;
-  packetsSentIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  packetsSent?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsSentGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsSentGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsSentIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   packetsSentIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  packetsSentLT?: InputMaybe<Scalars['Int']['input']>;
-  packetsSentLTE?: InputMaybe<Scalars['Int']['input']>;
-  packetsSentNEQ?: InputMaybe<Scalars['Int']['input']>;
-  packetsSentNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  packetsSentLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsSentLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsSentNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  packetsSentNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   packetsSentNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** peak_bytes_recv_per_sec field predicates */
-  peakBytesRecvPerSec?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesRecvPerSecGT?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesRecvPerSecGTE?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesRecvPerSecIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakBytesRecvPerSec?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesRecvPerSecGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesRecvPerSecGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesRecvPerSecIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakBytesRecvPerSecIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  peakBytesRecvPerSecLT?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesRecvPerSecLTE?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesRecvPerSecNEQ?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesRecvPerSecNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakBytesRecvPerSecLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesRecvPerSecLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesRecvPerSecNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesRecvPerSecNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakBytesRecvPerSecNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** peak_bytes_sent_per_sec field predicates */
-  peakBytesSentPerSec?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesSentPerSecGT?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesSentPerSecGTE?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesSentPerSecIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakBytesSentPerSec?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesSentPerSecGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesSentPerSecGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesSentPerSecIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakBytesSentPerSecIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  peakBytesSentPerSecLT?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesSentPerSecLTE?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesSentPerSecNEQ?: InputMaybe<Scalars['Int']['input']>;
-  peakBytesSentPerSecNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakBytesSentPerSecLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesSentPerSecLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesSentPerSecNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakBytesSentPerSecNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakBytesSentPerSecNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** peak_packets_recv_per_sec field predicates */
-  peakPacketsRecvPerSec?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsRecvPerSecGT?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsRecvPerSecGTE?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsRecvPerSecIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakPacketsRecvPerSec?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsRecvPerSecGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsRecvPerSecGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsRecvPerSecIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakPacketsRecvPerSecIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  peakPacketsRecvPerSecLT?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsRecvPerSecLTE?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsRecvPerSecNEQ?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsRecvPerSecNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakPacketsRecvPerSecLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsRecvPerSecLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsRecvPerSecNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsRecvPerSecNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakPacketsRecvPerSecNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** peak_packets_sent_per_sec field predicates */
-  peakPacketsSentPerSec?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsSentPerSecGT?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsSentPerSecGTE?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsSentPerSecIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakPacketsSentPerSec?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsSentPerSecGT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsSentPerSecGTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsSentPerSecIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakPacketsSentPerSecIsNil?: InputMaybe<Scalars['Boolean']['input']>;
-  peakPacketsSentPerSecLT?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsSentPerSecLTE?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsSentPerSecNEQ?: InputMaybe<Scalars['Int']['input']>;
-  peakPacketsSentPerSecNotIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+  peakPacketsSentPerSecLT?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsSentPerSecLTE?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsSentPerSecNEQ?: InputMaybe<Scalars['UnsignedLong']['input']>;
+  peakPacketsSentPerSecNotIn?: InputMaybe<Array<Scalars['UnsignedLong']['input']>>;
   peakPacketsSentPerSecNotNil?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -3347,7 +3360,7 @@ export type BazelInvocationMetricsFragment = { __typename?: 'Metrics', id: strin
       & { ' $fragmentRefs'?: { 'BazelInvocationMetricsSystemNetworkStatsFragment': BazelInvocationMetricsSystemNetworkStatsFragment } }
     ) | null } | null } & { ' $fragmentName'?: 'BazelInvocationMetricsFragment' };
 
-export type BazelInvocationMetricsActionSummaryFragment = { __typename?: 'ActionSummary', id: string, actionsExecuted?: number | null, actionCacheStatistics?: { __typename?: 'ActionCacheStatistics', id: string, loadTimeInMs?: number | null, saveTimeInMs?: number | null, hits?: number | null, misses?: number | null, sizeInBytes?: number | null, missDetails?: Array<{ __typename?: 'MissDetail', id: string, count?: number | null, reason: string }> | null } | null, runnerCount?: Array<{ __typename?: 'RunnerCount', id: string, actionsExecuted?: number | null, name?: string | null, execKind?: string | null }> | null, actionData?: Array<{ __typename?: 'ActionData', id: string, mnemonic?: string | null, userTime?: number | null, systemTime?: number | null, actionsExecuted?: number | null }> | null } & { ' $fragmentName'?: 'BazelInvocationMetricsActionSummaryFragment' };
+export type BazelInvocationMetricsActionSummaryFragment = { __typename?: 'ActionSummary', id: string, actionsExecuted?: number | null, actionCacheStatistics?: { __typename?: 'ActionCacheStatistics', id: string, loadTimeInMs?: bigint | null, saveTimeInMs?: bigint | null, hits?: number | null, misses?: number | null, sizeInBytes?: bigint | null, missDetails?: Array<{ __typename?: 'MissDetail', id: string, count?: number | null, reason: string }> | null } | null, runnerCount?: Array<{ __typename?: 'RunnerCount', id: string, actionsExecuted?: number | null, name?: string | null, execKind?: string | null }> | null, actionData?: Array<{ __typename?: 'ActionData', id: string, mnemonic?: string | null, userTime?: number | null, systemTime?: number | null, actionsExecuted?: number | null }> | null } & { ' $fragmentName'?: 'BazelInvocationMetricsActionSummaryFragment' };
 
 export type BazelInvocationMetricsArtifactMetricsFragment = { __typename?: 'ArtifactMetrics', id: string, sourceArtifactsReadCount?: number | null, sourceArtifactsReadSizeInBytes?: number | null, outputArtifactsSeenCount?: number | null, outputArtifactsSeenSizeInBytes?: number | null, outputArtifactsFromActionCacheCount?: number | null, outputArtifactsFromActionCacheSizeInBytes?: number | null, topLevelArtifactsCount?: number | null, topLevelArtifactsSizeInBytes?: number | null } & { ' $fragmentName'?: 'BazelInvocationMetricsArtifactMetricsFragment' };
 
@@ -3360,7 +3373,7 @@ export type BazelInvocationMetricsGarbageMetricsFragment = { __typename?: 'Garba
 
 export type BazelInvocationMetricsTimingMetricsFragment = { __typename?: 'TimingMetrics', id: string, cpuTimeInMs?: number | null, wallTimeInMs?: number | null, analysisPhaseTimeInMs?: number | null, executionPhaseTimeInMs?: number | null, actionsExecutionStartInMs?: number | null } & { ' $fragmentName'?: 'BazelInvocationMetricsTimingMetricsFragment' };
 
-export type BazelInvocationMetricsSystemNetworkStatsFragment = { __typename?: 'SystemNetworkStats', id: string, bytesSent?: number | null, bytesRecv?: number | null, packetsSent?: number | null, packetsRecv?: number | null, peakBytesSentPerSec?: number | null, peakBytesRecvPerSec?: number | null, peakPacketsSentPerSec?: number | null, peakPacketsRecvPerSec?: number | null } & { ' $fragmentName'?: 'BazelInvocationMetricsSystemNetworkStatsFragment' };
+export type BazelInvocationMetricsSystemNetworkStatsFragment = { __typename?: 'SystemNetworkStats', id: string, bytesSent?: bigint | null, bytesRecv?: bigint | null, packetsSent?: bigint | null, packetsRecv?: bigint | null, peakBytesSentPerSec?: bigint | null, peakBytesRecvPerSec?: bigint | null, peakPacketsSentPerSec?: bigint | null, peakPacketsRecvPerSec?: bigint | null } & { ' $fragmentName'?: 'BazelInvocationMetricsSystemNetworkStatsFragment' };
 
 export type GetBazelInvocationSourceControlQueryVariables = Exact<{
   invocationID: Scalars['UUID']['input'];

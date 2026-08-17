@@ -1549,28 +1549,30 @@ func (m *ActionMutation) ResetEdge(name string) error {
 // ActionCacheStatisticsMutation represents an operation that mutates the ActionCacheStatistics nodes in the graph.
 type ActionCacheStatisticsMutation struct {
 	config
-	op                    Op
-	typ                   string
-	id                    *int64
-	size_in_bytes         *uint64
-	addsize_in_bytes      *int64
-	save_time_in_ms       *uint64
-	addsave_time_in_ms    *int64
-	load_time_in_ms       *int64
-	addload_time_in_ms    *int64
-	hits                  *int32
-	addhits               *int32
-	misses                *int32
-	addmisses             *int32
-	clearedFields         map[string]struct{}
-	action_summary        *int64
-	clearedaction_summary bool
-	miss_details          map[int64]struct{}
-	removedmiss_details   map[int64]struct{}
-	clearedmiss_details   bool
-	done                  bool
-	oldValue              func(context.Context) (*ActionCacheStatistics, error)
-	predicates            []predicate.ActionCacheStatistics
+	op                                       Op
+	typ                                      string
+	id                                       *int64
+	size_in_bytes                            *uint64
+	addsize_in_bytes                         *int64
+	save_time_in_ms                          *uint64
+	addsave_time_in_ms                       *int64
+	load_time_in_ms                          *uint64
+	addload_time_in_ms                       *int64
+	cache_check_semaphore_wait_time_in_ms    *uint64
+	addcache_check_semaphore_wait_time_in_ms *int64
+	hits                                     *int32
+	addhits                                  *int32
+	misses                                   *int32
+	addmisses                                *int32
+	clearedFields                            map[string]struct{}
+	action_summary                           *int64
+	clearedaction_summary                    bool
+	miss_details                             map[int64]struct{}
+	removedmiss_details                      map[int64]struct{}
+	clearedmiss_details                      bool
+	done                                     bool
+	oldValue                                 func(context.Context) (*ActionCacheStatistics, error)
+	predicates                               []predicate.ActionCacheStatistics
 }
 
 var _ ent.Mutation = (*ActionCacheStatisticsMutation)(nil)
@@ -1818,13 +1820,13 @@ func (m *ActionCacheStatisticsMutation) ResetSaveTimeInMs() {
 }
 
 // SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (m *ActionCacheStatisticsMutation) SetLoadTimeInMs(i int64) {
-	m.load_time_in_ms = &i
+func (m *ActionCacheStatisticsMutation) SetLoadTimeInMs(u uint64) {
+	m.load_time_in_ms = &u
 	m.addload_time_in_ms = nil
 }
 
 // LoadTimeInMs returns the value of the "load_time_in_ms" field in the mutation.
-func (m *ActionCacheStatisticsMutation) LoadTimeInMs() (r int64, exists bool) {
+func (m *ActionCacheStatisticsMutation) LoadTimeInMs() (r uint64, exists bool) {
 	v := m.load_time_in_ms
 	if v == nil {
 		return
@@ -1835,7 +1837,7 @@ func (m *ActionCacheStatisticsMutation) LoadTimeInMs() (r int64, exists bool) {
 // OldLoadTimeInMs returns the old "load_time_in_ms" field's value of the ActionCacheStatistics entity.
 // If the ActionCacheStatistics object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionCacheStatisticsMutation) OldLoadTimeInMs(ctx context.Context) (v int64, err error) {
+func (m *ActionCacheStatisticsMutation) OldLoadTimeInMs(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLoadTimeInMs is only allowed on UpdateOne operations")
 	}
@@ -1849,12 +1851,12 @@ func (m *ActionCacheStatisticsMutation) OldLoadTimeInMs(ctx context.Context) (v 
 	return oldValue.LoadTimeInMs, nil
 }
 
-// AddLoadTimeInMs adds i to the "load_time_in_ms" field.
-func (m *ActionCacheStatisticsMutation) AddLoadTimeInMs(i int64) {
+// AddLoadTimeInMs adds u to the "load_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) AddLoadTimeInMs(u int64) {
 	if m.addload_time_in_ms != nil {
-		*m.addload_time_in_ms += i
+		*m.addload_time_in_ms += u
 	} else {
-		m.addload_time_in_ms = &i
+		m.addload_time_in_ms = &u
 	}
 }
 
@@ -1885,6 +1887,76 @@ func (m *ActionCacheStatisticsMutation) ResetLoadTimeInMs() {
 	m.load_time_in_ms = nil
 	m.addload_time_in_ms = nil
 	delete(m.clearedFields, actioncachestatistics.FieldLoadTimeInMs)
+}
+
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) SetCacheCheckSemaphoreWaitTimeInMs(u uint64) {
+	m.cache_check_semaphore_wait_time_in_ms = &u
+	m.addcache_check_semaphore_wait_time_in_ms = nil
+}
+
+// CacheCheckSemaphoreWaitTimeInMs returns the value of the "cache_check_semaphore_wait_time_in_ms" field in the mutation.
+func (m *ActionCacheStatisticsMutation) CacheCheckSemaphoreWaitTimeInMs() (r uint64, exists bool) {
+	v := m.cache_check_semaphore_wait_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCacheCheckSemaphoreWaitTimeInMs returns the old "cache_check_semaphore_wait_time_in_ms" field's value of the ActionCacheStatistics entity.
+// If the ActionCacheStatistics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionCacheStatisticsMutation) OldCacheCheckSemaphoreWaitTimeInMs(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCacheCheckSemaphoreWaitTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCacheCheckSemaphoreWaitTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCacheCheckSemaphoreWaitTimeInMs: %w", err)
+	}
+	return oldValue.CacheCheckSemaphoreWaitTimeInMs, nil
+}
+
+// AddCacheCheckSemaphoreWaitTimeInMs adds u to the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) AddCacheCheckSemaphoreWaitTimeInMs(u int64) {
+	if m.addcache_check_semaphore_wait_time_in_ms != nil {
+		*m.addcache_check_semaphore_wait_time_in_ms += u
+	} else {
+		m.addcache_check_semaphore_wait_time_in_ms = &u
+	}
+}
+
+// AddedCacheCheckSemaphoreWaitTimeInMs returns the value that was added to the "cache_check_semaphore_wait_time_in_ms" field in this mutation.
+func (m *ActionCacheStatisticsMutation) AddedCacheCheckSemaphoreWaitTimeInMs() (r int64, exists bool) {
+	v := m.addcache_check_semaphore_wait_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCacheCheckSemaphoreWaitTimeInMs clears the value of the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) ClearCacheCheckSemaphoreWaitTimeInMs() {
+	m.cache_check_semaphore_wait_time_in_ms = nil
+	m.addcache_check_semaphore_wait_time_in_ms = nil
+	m.clearedFields[actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs] = struct{}{}
+}
+
+// CacheCheckSemaphoreWaitTimeInMsCleared returns if the "cache_check_semaphore_wait_time_in_ms" field was cleared in this mutation.
+func (m *ActionCacheStatisticsMutation) CacheCheckSemaphoreWaitTimeInMsCleared() bool {
+	_, ok := m.clearedFields[actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs]
+	return ok
+}
+
+// ResetCacheCheckSemaphoreWaitTimeInMs resets all changes to the "cache_check_semaphore_wait_time_in_ms" field.
+func (m *ActionCacheStatisticsMutation) ResetCacheCheckSemaphoreWaitTimeInMs() {
+	m.cache_check_semaphore_wait_time_in_ms = nil
+	m.addcache_check_semaphore_wait_time_in_ms = nil
+	delete(m.clearedFields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
 }
 
 // SetHits sets the "hits" field.
@@ -2154,7 +2226,7 @@ func (m *ActionCacheStatisticsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ActionCacheStatisticsMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.size_in_bytes != nil {
 		fields = append(fields, actioncachestatistics.FieldSizeInBytes)
 	}
@@ -2163,6 +2235,9 @@ func (m *ActionCacheStatisticsMutation) Fields() []string {
 	}
 	if m.load_time_in_ms != nil {
 		fields = append(fields, actioncachestatistics.FieldLoadTimeInMs)
+	}
+	if m.cache_check_semaphore_wait_time_in_ms != nil {
+		fields = append(fields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
 	}
 	if m.hits != nil {
 		fields = append(fields, actioncachestatistics.FieldHits)
@@ -2184,6 +2259,8 @@ func (m *ActionCacheStatisticsMutation) Field(name string) (ent.Value, bool) {
 		return m.SaveTimeInMs()
 	case actioncachestatistics.FieldLoadTimeInMs:
 		return m.LoadTimeInMs()
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		return m.CacheCheckSemaphoreWaitTimeInMs()
 	case actioncachestatistics.FieldHits:
 		return m.Hits()
 	case actioncachestatistics.FieldMisses:
@@ -2203,6 +2280,8 @@ func (m *ActionCacheStatisticsMutation) OldField(ctx context.Context, name strin
 		return m.OldSaveTimeInMs(ctx)
 	case actioncachestatistics.FieldLoadTimeInMs:
 		return m.OldLoadTimeInMs(ctx)
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		return m.OldCacheCheckSemaphoreWaitTimeInMs(ctx)
 	case actioncachestatistics.FieldHits:
 		return m.OldHits(ctx)
 	case actioncachestatistics.FieldMisses:
@@ -2231,11 +2310,18 @@ func (m *ActionCacheStatisticsMutation) SetField(name string, value ent.Value) e
 		m.SetSaveTimeInMs(v)
 		return nil
 	case actioncachestatistics.FieldLoadTimeInMs:
-		v, ok := value.(int64)
+		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLoadTimeInMs(v)
+		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCacheCheckSemaphoreWaitTimeInMs(v)
 		return nil
 	case actioncachestatistics.FieldHits:
 		v, ok := value.(int32)
@@ -2268,6 +2354,9 @@ func (m *ActionCacheStatisticsMutation) AddedFields() []string {
 	if m.addload_time_in_ms != nil {
 		fields = append(fields, actioncachestatistics.FieldLoadTimeInMs)
 	}
+	if m.addcache_check_semaphore_wait_time_in_ms != nil {
+		fields = append(fields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+	}
 	if m.addhits != nil {
 		fields = append(fields, actioncachestatistics.FieldHits)
 	}
@@ -2288,6 +2377,8 @@ func (m *ActionCacheStatisticsMutation) AddedField(name string) (ent.Value, bool
 		return m.AddedSaveTimeInMs()
 	case actioncachestatistics.FieldLoadTimeInMs:
 		return m.AddedLoadTimeInMs()
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		return m.AddedCacheCheckSemaphoreWaitTimeInMs()
 	case actioncachestatistics.FieldHits:
 		return m.AddedHits()
 	case actioncachestatistics.FieldMisses:
@@ -2322,6 +2413,13 @@ func (m *ActionCacheStatisticsMutation) AddField(name string, value ent.Value) e
 		}
 		m.AddLoadTimeInMs(v)
 		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCacheCheckSemaphoreWaitTimeInMs(v)
+		return nil
 	case actioncachestatistics.FieldHits:
 		v, ok := value.(int32)
 		if !ok {
@@ -2353,6 +2451,9 @@ func (m *ActionCacheStatisticsMutation) ClearedFields() []string {
 	if m.FieldCleared(actioncachestatistics.FieldLoadTimeInMs) {
 		fields = append(fields, actioncachestatistics.FieldLoadTimeInMs)
 	}
+	if m.FieldCleared(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs) {
+		fields = append(fields, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+	}
 	if m.FieldCleared(actioncachestatistics.FieldHits) {
 		fields = append(fields, actioncachestatistics.FieldHits)
 	}
@@ -2382,6 +2483,9 @@ func (m *ActionCacheStatisticsMutation) ClearField(name string) error {
 	case actioncachestatistics.FieldLoadTimeInMs:
 		m.ClearLoadTimeInMs()
 		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		m.ClearCacheCheckSemaphoreWaitTimeInMs()
+		return nil
 	case actioncachestatistics.FieldHits:
 		m.ClearHits()
 		return nil
@@ -2404,6 +2508,9 @@ func (m *ActionCacheStatisticsMutation) ResetField(name string) error {
 		return nil
 	case actioncachestatistics.FieldLoadTimeInMs:
 		m.ResetLoadTimeInMs()
+		return nil
+	case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+		m.ResetCacheCheckSemaphoreWaitTimeInMs()
 		return nil
 	case actioncachestatistics.FieldHits:
 		m.ResetHits()

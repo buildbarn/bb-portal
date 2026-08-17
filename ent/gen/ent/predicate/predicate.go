@@ -12,6 +12,17 @@ type Action func(*sql.Selector)
 // ActionCacheStatistics is the predicate function for actioncachestatistics builders.
 type ActionCacheStatistics func(*sql.Selector)
 
+// ActionCacheStatisticsOrErr calls the predicate only if the error is not nit.
+func ActionCacheStatisticsOrErr(p ActionCacheStatistics, err error) ActionCacheStatistics {
+	return func(s *sql.Selector) {
+		if err != nil {
+			s.AddError(err)
+			return
+		}
+		p(s)
+	}
+}
+
 // ActionData is the predicate function for actiondata builders.
 type ActionData func(*sql.Selector)
 
@@ -92,6 +103,17 @@ type SourceControl func(*sql.Selector)
 
 // SystemNetworkStats is the predicate function for systemnetworkstats builders.
 type SystemNetworkStats func(*sql.Selector)
+
+// SystemNetworkStatsOrErr calls the predicate only if the error is not nit.
+func SystemNetworkStatsOrErr(p SystemNetworkStats, err error) SystemNetworkStats {
+	return func(s *sql.Selector) {
+		if err != nil {
+			s.AddError(err)
+			return
+		}
+		p(s)
+	}
+}
 
 // Target is the predicate function for target builders.
 type Target func(*sql.Selector)

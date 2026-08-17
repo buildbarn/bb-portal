@@ -28,222 +28,6 @@ func (_u *SystemNetworkStatsUpdate) Where(ps ...predicate.SystemNetworkStats) *S
 	return _u
 }
 
-// SetBytesSent sets the "bytes_sent" field.
-func (_u *SystemNetworkStatsUpdate) SetBytesSent(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetBytesSent()
-	_u.mutation.SetBytesSent(v)
-	return _u
-}
-
-// SetNillableBytesSent sets the "bytes_sent" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillableBytesSent(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetBytesSent(*v)
-	}
-	return _u
-}
-
-// AddBytesSent adds value to the "bytes_sent" field.
-func (_u *SystemNetworkStatsUpdate) AddBytesSent(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddBytesSent(v)
-	return _u
-}
-
-// ClearBytesSent clears the value of the "bytes_sent" field.
-func (_u *SystemNetworkStatsUpdate) ClearBytesSent() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearBytesSent()
-	return _u
-}
-
-// SetBytesRecv sets the "bytes_recv" field.
-func (_u *SystemNetworkStatsUpdate) SetBytesRecv(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetBytesRecv()
-	_u.mutation.SetBytesRecv(v)
-	return _u
-}
-
-// SetNillableBytesRecv sets the "bytes_recv" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillableBytesRecv(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetBytesRecv(*v)
-	}
-	return _u
-}
-
-// AddBytesRecv adds value to the "bytes_recv" field.
-func (_u *SystemNetworkStatsUpdate) AddBytesRecv(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddBytesRecv(v)
-	return _u
-}
-
-// ClearBytesRecv clears the value of the "bytes_recv" field.
-func (_u *SystemNetworkStatsUpdate) ClearBytesRecv() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearBytesRecv()
-	return _u
-}
-
-// SetPacketsSent sets the "packets_sent" field.
-func (_u *SystemNetworkStatsUpdate) SetPacketsSent(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetPacketsSent()
-	_u.mutation.SetPacketsSent(v)
-	return _u
-}
-
-// SetNillablePacketsSent sets the "packets_sent" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillablePacketsSent(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetPacketsSent(*v)
-	}
-	return _u
-}
-
-// AddPacketsSent adds value to the "packets_sent" field.
-func (_u *SystemNetworkStatsUpdate) AddPacketsSent(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddPacketsSent(v)
-	return _u
-}
-
-// ClearPacketsSent clears the value of the "packets_sent" field.
-func (_u *SystemNetworkStatsUpdate) ClearPacketsSent() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearPacketsSent()
-	return _u
-}
-
-// SetPacketsRecv sets the "packets_recv" field.
-func (_u *SystemNetworkStatsUpdate) SetPacketsRecv(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetPacketsRecv()
-	_u.mutation.SetPacketsRecv(v)
-	return _u
-}
-
-// SetNillablePacketsRecv sets the "packets_recv" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillablePacketsRecv(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetPacketsRecv(*v)
-	}
-	return _u
-}
-
-// AddPacketsRecv adds value to the "packets_recv" field.
-func (_u *SystemNetworkStatsUpdate) AddPacketsRecv(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddPacketsRecv(v)
-	return _u
-}
-
-// ClearPacketsRecv clears the value of the "packets_recv" field.
-func (_u *SystemNetworkStatsUpdate) ClearPacketsRecv() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearPacketsRecv()
-	return _u
-}
-
-// SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) SetPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetPeakBytesSentPerSec()
-	_u.mutation.SetPeakBytesSentPerSec(v)
-	return _u
-}
-
-// SetNillablePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillablePeakBytesSentPerSec(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetPeakBytesSentPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakBytesSentPerSec adds value to the "peak_bytes_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) AddPeakBytesSentPerSec(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddPeakBytesSentPerSec(v)
-	return _u
-}
-
-// ClearPeakBytesSentPerSec clears the value of the "peak_bytes_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) ClearPeakBytesSentPerSec() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearPeakBytesSentPerSec()
-	return _u
-}
-
-// SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) SetPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetPeakBytesRecvPerSec()
-	_u.mutation.SetPeakBytesRecvPerSec(v)
-	return _u
-}
-
-// SetNillablePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillablePeakBytesRecvPerSec(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetPeakBytesRecvPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakBytesRecvPerSec adds value to the "peak_bytes_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) AddPeakBytesRecvPerSec(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddPeakBytesRecvPerSec(v)
-	return _u
-}
-
-// ClearPeakBytesRecvPerSec clears the value of the "peak_bytes_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) ClearPeakBytesRecvPerSec() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearPeakBytesRecvPerSec()
-	return _u
-}
-
-// SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) SetPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetPeakPacketsSentPerSec()
-	_u.mutation.SetPeakPacketsSentPerSec(v)
-	return _u
-}
-
-// SetNillablePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillablePeakPacketsSentPerSec(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetPeakPacketsSentPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakPacketsSentPerSec adds value to the "peak_packets_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) AddPeakPacketsSentPerSec(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddPeakPacketsSentPerSec(v)
-	return _u
-}
-
-// ClearPeakPacketsSentPerSec clears the value of the "peak_packets_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) ClearPeakPacketsSentPerSec() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearPeakPacketsSentPerSec()
-	return _u
-}
-
-// SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) SetPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpdate {
-	_u.mutation.ResetPeakPacketsRecvPerSec()
-	_u.mutation.SetPeakPacketsRecvPerSec(v)
-	return _u
-}
-
-// SetNillablePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdate) SetNillablePeakPacketsRecvPerSec(v *uint64) *SystemNetworkStatsUpdate {
-	if v != nil {
-		_u.SetPeakPacketsRecvPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakPacketsRecvPerSec adds value to the "peak_packets_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) AddPeakPacketsRecvPerSec(v int64) *SystemNetworkStatsUpdate {
-	_u.mutation.AddPeakPacketsRecvPerSec(v)
-	return _u
-}
-
-// ClearPeakPacketsRecvPerSec clears the value of the "peak_packets_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdate) ClearPeakPacketsRecvPerSec() *SystemNetworkStatsUpdate {
-	_u.mutation.ClearPeakPacketsRecvPerSec()
-	return _u
-}
-
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
 func (_u *SystemNetworkStatsUpdate) SetNetworkMetricsID(id int64) *SystemNetworkStatsUpdate {
 	_u.mutation.SetNetworkMetricsID(id)
@@ -310,74 +94,26 @@ func (_u *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (_node int, err
 			}
 		}
 	}
-	if value, ok := _u.mutation.BytesSent(); ok {
-		_spec.SetField(systemnetworkstats.FieldBytesSent, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedBytesSent(); ok {
-		_spec.AddField(systemnetworkstats.FieldBytesSent, field.TypeUint64, value)
-	}
 	if _u.mutation.BytesSentCleared() {
 		_spec.ClearField(systemnetworkstats.FieldBytesSent, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.BytesRecv(); ok {
-		_spec.SetField(systemnetworkstats.FieldBytesRecv, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedBytesRecv(); ok {
-		_spec.AddField(systemnetworkstats.FieldBytesRecv, field.TypeUint64, value)
 	}
 	if _u.mutation.BytesRecvCleared() {
 		_spec.ClearField(systemnetworkstats.FieldBytesRecv, field.TypeUint64)
 	}
-	if value, ok := _u.mutation.PacketsSent(); ok {
-		_spec.SetField(systemnetworkstats.FieldPacketsSent, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPacketsSent(); ok {
-		_spec.AddField(systemnetworkstats.FieldPacketsSent, field.TypeUint64, value)
-	}
 	if _u.mutation.PacketsSentCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPacketsSent, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.PacketsRecv(); ok {
-		_spec.SetField(systemnetworkstats.FieldPacketsRecv, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPacketsRecv(); ok {
-		_spec.AddField(systemnetworkstats.FieldPacketsRecv, field.TypeUint64, value)
 	}
 	if _u.mutation.PacketsRecvCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPacketsRecv, field.TypeUint64)
 	}
-	if value, ok := _u.mutation.PeakBytesSentPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakBytesSentPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakBytesSentPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakBytesSentPerSec, field.TypeUint64, value)
-	}
 	if _u.mutation.PeakBytesSentPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakBytesSentPerSec, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.PeakBytesRecvPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakBytesRecvPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakBytesRecvPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakBytesRecvPerSec, field.TypeUint64, value)
 	}
 	if _u.mutation.PeakBytesRecvPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakBytesRecvPerSec, field.TypeUint64)
 	}
-	if value, ok := _u.mutation.PeakPacketsSentPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakPacketsSentPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakPacketsSentPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakPacketsSentPerSec, field.TypeUint64, value)
-	}
 	if _u.mutation.PeakPacketsSentPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakPacketsSentPerSec, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.PeakPacketsRecvPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakPacketsRecvPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakPacketsRecvPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakPacketsRecvPerSec, field.TypeUint64, value)
 	}
 	if _u.mutation.PeakPacketsRecvPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakPacketsRecvPerSec, field.TypeUint64)
@@ -429,222 +165,6 @@ type SystemNetworkStatsUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SystemNetworkStatsMutation
-}
-
-// SetBytesSent sets the "bytes_sent" field.
-func (_u *SystemNetworkStatsUpdateOne) SetBytesSent(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetBytesSent()
-	_u.mutation.SetBytesSent(v)
-	return _u
-}
-
-// SetNillableBytesSent sets the "bytes_sent" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillableBytesSent(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetBytesSent(*v)
-	}
-	return _u
-}
-
-// AddBytesSent adds value to the "bytes_sent" field.
-func (_u *SystemNetworkStatsUpdateOne) AddBytesSent(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddBytesSent(v)
-	return _u
-}
-
-// ClearBytesSent clears the value of the "bytes_sent" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearBytesSent() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearBytesSent()
-	return _u
-}
-
-// SetBytesRecv sets the "bytes_recv" field.
-func (_u *SystemNetworkStatsUpdateOne) SetBytesRecv(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetBytesRecv()
-	_u.mutation.SetBytesRecv(v)
-	return _u
-}
-
-// SetNillableBytesRecv sets the "bytes_recv" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillableBytesRecv(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetBytesRecv(*v)
-	}
-	return _u
-}
-
-// AddBytesRecv adds value to the "bytes_recv" field.
-func (_u *SystemNetworkStatsUpdateOne) AddBytesRecv(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddBytesRecv(v)
-	return _u
-}
-
-// ClearBytesRecv clears the value of the "bytes_recv" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearBytesRecv() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearBytesRecv()
-	return _u
-}
-
-// SetPacketsSent sets the "packets_sent" field.
-func (_u *SystemNetworkStatsUpdateOne) SetPacketsSent(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetPacketsSent()
-	_u.mutation.SetPacketsSent(v)
-	return _u
-}
-
-// SetNillablePacketsSent sets the "packets_sent" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillablePacketsSent(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetPacketsSent(*v)
-	}
-	return _u
-}
-
-// AddPacketsSent adds value to the "packets_sent" field.
-func (_u *SystemNetworkStatsUpdateOne) AddPacketsSent(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddPacketsSent(v)
-	return _u
-}
-
-// ClearPacketsSent clears the value of the "packets_sent" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearPacketsSent() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearPacketsSent()
-	return _u
-}
-
-// SetPacketsRecv sets the "packets_recv" field.
-func (_u *SystemNetworkStatsUpdateOne) SetPacketsRecv(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetPacketsRecv()
-	_u.mutation.SetPacketsRecv(v)
-	return _u
-}
-
-// SetNillablePacketsRecv sets the "packets_recv" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillablePacketsRecv(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetPacketsRecv(*v)
-	}
-	return _u
-}
-
-// AddPacketsRecv adds value to the "packets_recv" field.
-func (_u *SystemNetworkStatsUpdateOne) AddPacketsRecv(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddPacketsRecv(v)
-	return _u
-}
-
-// ClearPacketsRecv clears the value of the "packets_recv" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearPacketsRecv() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearPacketsRecv()
-	return _u
-}
-
-// SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) SetPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetPeakBytesSentPerSec()
-	_u.mutation.SetPeakBytesSentPerSec(v)
-	return _u
-}
-
-// SetNillablePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillablePeakBytesSentPerSec(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetPeakBytesSentPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakBytesSentPerSec adds value to the "peak_bytes_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) AddPeakBytesSentPerSec(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddPeakBytesSentPerSec(v)
-	return _u
-}
-
-// ClearPeakBytesSentPerSec clears the value of the "peak_bytes_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearPeakBytesSentPerSec() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearPeakBytesSentPerSec()
-	return _u
-}
-
-// SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) SetPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetPeakBytesRecvPerSec()
-	_u.mutation.SetPeakBytesRecvPerSec(v)
-	return _u
-}
-
-// SetNillablePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillablePeakBytesRecvPerSec(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetPeakBytesRecvPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakBytesRecvPerSec adds value to the "peak_bytes_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) AddPeakBytesRecvPerSec(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddPeakBytesRecvPerSec(v)
-	return _u
-}
-
-// ClearPeakBytesRecvPerSec clears the value of the "peak_bytes_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearPeakBytesRecvPerSec() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearPeakBytesRecvPerSec()
-	return _u
-}
-
-// SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) SetPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetPeakPacketsSentPerSec()
-	_u.mutation.SetPeakPacketsSentPerSec(v)
-	return _u
-}
-
-// SetNillablePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillablePeakPacketsSentPerSec(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetPeakPacketsSentPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakPacketsSentPerSec adds value to the "peak_packets_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) AddPeakPacketsSentPerSec(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddPeakPacketsSentPerSec(v)
-	return _u
-}
-
-// ClearPeakPacketsSentPerSec clears the value of the "peak_packets_sent_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearPeakPacketsSentPerSec() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearPeakPacketsSentPerSec()
-	return _u
-}
-
-// SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) SetPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.ResetPeakPacketsRecvPerSec()
-	_u.mutation.SetPeakPacketsRecvPerSec(v)
-	return _u
-}
-
-// SetNillablePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field if the given value is not nil.
-func (_u *SystemNetworkStatsUpdateOne) SetNillablePeakPacketsRecvPerSec(v *uint64) *SystemNetworkStatsUpdateOne {
-	if v != nil {
-		_u.SetPeakPacketsRecvPerSec(*v)
-	}
-	return _u
-}
-
-// AddPeakPacketsRecvPerSec adds value to the "peak_packets_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) AddPeakPacketsRecvPerSec(v int64) *SystemNetworkStatsUpdateOne {
-	_u.mutation.AddPeakPacketsRecvPerSec(v)
-	return _u
-}
-
-// ClearPeakPacketsRecvPerSec clears the value of the "peak_packets_recv_per_sec" field.
-func (_u *SystemNetworkStatsUpdateOne) ClearPeakPacketsRecvPerSec() *SystemNetworkStatsUpdateOne {
-	_u.mutation.ClearPeakPacketsRecvPerSec()
-	return _u
 }
 
 // SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
@@ -743,74 +263,26 @@ func (_u *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *Syst
 			}
 		}
 	}
-	if value, ok := _u.mutation.BytesSent(); ok {
-		_spec.SetField(systemnetworkstats.FieldBytesSent, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedBytesSent(); ok {
-		_spec.AddField(systemnetworkstats.FieldBytesSent, field.TypeUint64, value)
-	}
 	if _u.mutation.BytesSentCleared() {
 		_spec.ClearField(systemnetworkstats.FieldBytesSent, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.BytesRecv(); ok {
-		_spec.SetField(systemnetworkstats.FieldBytesRecv, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedBytesRecv(); ok {
-		_spec.AddField(systemnetworkstats.FieldBytesRecv, field.TypeUint64, value)
 	}
 	if _u.mutation.BytesRecvCleared() {
 		_spec.ClearField(systemnetworkstats.FieldBytesRecv, field.TypeUint64)
 	}
-	if value, ok := _u.mutation.PacketsSent(); ok {
-		_spec.SetField(systemnetworkstats.FieldPacketsSent, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPacketsSent(); ok {
-		_spec.AddField(systemnetworkstats.FieldPacketsSent, field.TypeUint64, value)
-	}
 	if _u.mutation.PacketsSentCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPacketsSent, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.PacketsRecv(); ok {
-		_spec.SetField(systemnetworkstats.FieldPacketsRecv, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPacketsRecv(); ok {
-		_spec.AddField(systemnetworkstats.FieldPacketsRecv, field.TypeUint64, value)
 	}
 	if _u.mutation.PacketsRecvCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPacketsRecv, field.TypeUint64)
 	}
-	if value, ok := _u.mutation.PeakBytesSentPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakBytesSentPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakBytesSentPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakBytesSentPerSec, field.TypeUint64, value)
-	}
 	if _u.mutation.PeakBytesSentPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakBytesSentPerSec, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.PeakBytesRecvPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakBytesRecvPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakBytesRecvPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakBytesRecvPerSec, field.TypeUint64, value)
 	}
 	if _u.mutation.PeakBytesRecvPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakBytesRecvPerSec, field.TypeUint64)
 	}
-	if value, ok := _u.mutation.PeakPacketsSentPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakPacketsSentPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakPacketsSentPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakPacketsSentPerSec, field.TypeUint64, value)
-	}
 	if _u.mutation.PeakPacketsSentPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakPacketsSentPerSec, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.PeakPacketsRecvPerSec(); ok {
-		_spec.SetField(systemnetworkstats.FieldPeakPacketsRecvPerSec, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedPeakPacketsRecvPerSec(); ok {
-		_spec.AddField(systemnetworkstats.FieldPeakPacketsRecvPerSec, field.TypeUint64, value)
 	}
 	if _u.mutation.PeakPacketsRecvPerSecCleared() {
 		_spec.ClearField(systemnetworkstats.FieldPeakPacketsRecvPerSec, field.TypeUint64)

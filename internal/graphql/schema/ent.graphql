@@ -18,9 +18,10 @@ type Action implements Node {
 }
 type ActionCacheStatistics implements Node {
   id: ID!
-  sizeInBytes: Int
-  saveTimeInMs: Int
-  loadTimeInMs: Int
+  sizeInBytes: UnsignedLong
+  saveTimeInMs: UnsignedLong
+  loadTimeInMs: UnsignedLong
+  cacheCheckSemaphoreWaitTimeInMs: UnsignedLong
   hits: Int
   misses: Int
   actionSummary: ActionSummary
@@ -48,42 +49,55 @@ input ActionCacheStatisticsWhereInput {
   """
   size_in_bytes field predicates
   """
-  sizeInBytes: Int
-  sizeInBytesNEQ: Int
-  sizeInBytesIn: [Int!]
-  sizeInBytesNotIn: [Int!]
-  sizeInBytesGT: Int
-  sizeInBytesGTE: Int
-  sizeInBytesLT: Int
-  sizeInBytesLTE: Int
+  sizeInBytes: UnsignedLong
+  sizeInBytesNEQ: UnsignedLong
+  sizeInBytesIn: [UnsignedLong!]
+  sizeInBytesNotIn: [UnsignedLong!]
+  sizeInBytesGT: UnsignedLong
+  sizeInBytesGTE: UnsignedLong
+  sizeInBytesLT: UnsignedLong
+  sizeInBytesLTE: UnsignedLong
   sizeInBytesIsNil: Boolean
   sizeInBytesNotNil: Boolean
   """
   save_time_in_ms field predicates
   """
-  saveTimeInMs: Int
-  saveTimeInMsNEQ: Int
-  saveTimeInMsIn: [Int!]
-  saveTimeInMsNotIn: [Int!]
-  saveTimeInMsGT: Int
-  saveTimeInMsGTE: Int
-  saveTimeInMsLT: Int
-  saveTimeInMsLTE: Int
+  saveTimeInMs: UnsignedLong
+  saveTimeInMsNEQ: UnsignedLong
+  saveTimeInMsIn: [UnsignedLong!]
+  saveTimeInMsNotIn: [UnsignedLong!]
+  saveTimeInMsGT: UnsignedLong
+  saveTimeInMsGTE: UnsignedLong
+  saveTimeInMsLT: UnsignedLong
+  saveTimeInMsLTE: UnsignedLong
   saveTimeInMsIsNil: Boolean
   saveTimeInMsNotNil: Boolean
   """
   load_time_in_ms field predicates
   """
-  loadTimeInMs: Int
-  loadTimeInMsNEQ: Int
-  loadTimeInMsIn: [Int!]
-  loadTimeInMsNotIn: [Int!]
-  loadTimeInMsGT: Int
-  loadTimeInMsGTE: Int
-  loadTimeInMsLT: Int
-  loadTimeInMsLTE: Int
+  loadTimeInMs: UnsignedLong
+  loadTimeInMsNEQ: UnsignedLong
+  loadTimeInMsIn: [UnsignedLong!]
+  loadTimeInMsNotIn: [UnsignedLong!]
+  loadTimeInMsGT: UnsignedLong
+  loadTimeInMsGTE: UnsignedLong
+  loadTimeInMsLT: UnsignedLong
+  loadTimeInMsLTE: UnsignedLong
   loadTimeInMsIsNil: Boolean
   loadTimeInMsNotNil: Boolean
+  """
+  cache_check_semaphore_wait_time_in_ms field predicates
+  """
+  cacheCheckSemaphoreWaitTimeInMs: UnsignedLong
+  cacheCheckSemaphoreWaitTimeInMsNEQ: UnsignedLong
+  cacheCheckSemaphoreWaitTimeInMsIn: [UnsignedLong!]
+  cacheCheckSemaphoreWaitTimeInMsNotIn: [UnsignedLong!]
+  cacheCheckSemaphoreWaitTimeInMsGT: UnsignedLong
+  cacheCheckSemaphoreWaitTimeInMsGTE: UnsignedLong
+  cacheCheckSemaphoreWaitTimeInMsLT: UnsignedLong
+  cacheCheckSemaphoreWaitTimeInMsLTE: UnsignedLong
+  cacheCheckSemaphoreWaitTimeInMsIsNil: Boolean
+  cacheCheckSemaphoreWaitTimeInMsNotNil: Boolean
   """
   hits field predicates
   """
@@ -2939,14 +2953,14 @@ input SourceControlWhereInput {
 }
 type SystemNetworkStats implements Node {
   id: ID!
-  bytesSent: Int
-  bytesRecv: Int
-  packetsSent: Int
-  packetsRecv: Int
-  peakBytesSentPerSec: Int
-  peakBytesRecvPerSec: Int
-  peakPacketsSentPerSec: Int
-  peakPacketsRecvPerSec: Int
+  bytesSent: UnsignedLong
+  bytesRecv: UnsignedLong
+  packetsSent: UnsignedLong
+  packetsRecv: UnsignedLong
+  peakBytesSentPerSec: UnsignedLong
+  peakBytesRecvPerSec: UnsignedLong
+  peakPacketsSentPerSec: UnsignedLong
+  peakPacketsRecvPerSec: UnsignedLong
   networkMetrics: NetworkMetrics
 }
 """
@@ -2971,105 +2985,105 @@ input SystemNetworkStatsWhereInput {
   """
   bytes_sent field predicates
   """
-  bytesSent: Int
-  bytesSentNEQ: Int
-  bytesSentIn: [Int!]
-  bytesSentNotIn: [Int!]
-  bytesSentGT: Int
-  bytesSentGTE: Int
-  bytesSentLT: Int
-  bytesSentLTE: Int
+  bytesSent: UnsignedLong
+  bytesSentNEQ: UnsignedLong
+  bytesSentIn: [UnsignedLong!]
+  bytesSentNotIn: [UnsignedLong!]
+  bytesSentGT: UnsignedLong
+  bytesSentGTE: UnsignedLong
+  bytesSentLT: UnsignedLong
+  bytesSentLTE: UnsignedLong
   bytesSentIsNil: Boolean
   bytesSentNotNil: Boolean
   """
   bytes_recv field predicates
   """
-  bytesRecv: Int
-  bytesRecvNEQ: Int
-  bytesRecvIn: [Int!]
-  bytesRecvNotIn: [Int!]
-  bytesRecvGT: Int
-  bytesRecvGTE: Int
-  bytesRecvLT: Int
-  bytesRecvLTE: Int
+  bytesRecv: UnsignedLong
+  bytesRecvNEQ: UnsignedLong
+  bytesRecvIn: [UnsignedLong!]
+  bytesRecvNotIn: [UnsignedLong!]
+  bytesRecvGT: UnsignedLong
+  bytesRecvGTE: UnsignedLong
+  bytesRecvLT: UnsignedLong
+  bytesRecvLTE: UnsignedLong
   bytesRecvIsNil: Boolean
   bytesRecvNotNil: Boolean
   """
   packets_sent field predicates
   """
-  packetsSent: Int
-  packetsSentNEQ: Int
-  packetsSentIn: [Int!]
-  packetsSentNotIn: [Int!]
-  packetsSentGT: Int
-  packetsSentGTE: Int
-  packetsSentLT: Int
-  packetsSentLTE: Int
+  packetsSent: UnsignedLong
+  packetsSentNEQ: UnsignedLong
+  packetsSentIn: [UnsignedLong!]
+  packetsSentNotIn: [UnsignedLong!]
+  packetsSentGT: UnsignedLong
+  packetsSentGTE: UnsignedLong
+  packetsSentLT: UnsignedLong
+  packetsSentLTE: UnsignedLong
   packetsSentIsNil: Boolean
   packetsSentNotNil: Boolean
   """
   packets_recv field predicates
   """
-  packetsRecv: Int
-  packetsRecvNEQ: Int
-  packetsRecvIn: [Int!]
-  packetsRecvNotIn: [Int!]
-  packetsRecvGT: Int
-  packetsRecvGTE: Int
-  packetsRecvLT: Int
-  packetsRecvLTE: Int
+  packetsRecv: UnsignedLong
+  packetsRecvNEQ: UnsignedLong
+  packetsRecvIn: [UnsignedLong!]
+  packetsRecvNotIn: [UnsignedLong!]
+  packetsRecvGT: UnsignedLong
+  packetsRecvGTE: UnsignedLong
+  packetsRecvLT: UnsignedLong
+  packetsRecvLTE: UnsignedLong
   packetsRecvIsNil: Boolean
   packetsRecvNotNil: Boolean
   """
   peak_bytes_sent_per_sec field predicates
   """
-  peakBytesSentPerSec: Int
-  peakBytesSentPerSecNEQ: Int
-  peakBytesSentPerSecIn: [Int!]
-  peakBytesSentPerSecNotIn: [Int!]
-  peakBytesSentPerSecGT: Int
-  peakBytesSentPerSecGTE: Int
-  peakBytesSentPerSecLT: Int
-  peakBytesSentPerSecLTE: Int
+  peakBytesSentPerSec: UnsignedLong
+  peakBytesSentPerSecNEQ: UnsignedLong
+  peakBytesSentPerSecIn: [UnsignedLong!]
+  peakBytesSentPerSecNotIn: [UnsignedLong!]
+  peakBytesSentPerSecGT: UnsignedLong
+  peakBytesSentPerSecGTE: UnsignedLong
+  peakBytesSentPerSecLT: UnsignedLong
+  peakBytesSentPerSecLTE: UnsignedLong
   peakBytesSentPerSecIsNil: Boolean
   peakBytesSentPerSecNotNil: Boolean
   """
   peak_bytes_recv_per_sec field predicates
   """
-  peakBytesRecvPerSec: Int
-  peakBytesRecvPerSecNEQ: Int
-  peakBytesRecvPerSecIn: [Int!]
-  peakBytesRecvPerSecNotIn: [Int!]
-  peakBytesRecvPerSecGT: Int
-  peakBytesRecvPerSecGTE: Int
-  peakBytesRecvPerSecLT: Int
-  peakBytesRecvPerSecLTE: Int
+  peakBytesRecvPerSec: UnsignedLong
+  peakBytesRecvPerSecNEQ: UnsignedLong
+  peakBytesRecvPerSecIn: [UnsignedLong!]
+  peakBytesRecvPerSecNotIn: [UnsignedLong!]
+  peakBytesRecvPerSecGT: UnsignedLong
+  peakBytesRecvPerSecGTE: UnsignedLong
+  peakBytesRecvPerSecLT: UnsignedLong
+  peakBytesRecvPerSecLTE: UnsignedLong
   peakBytesRecvPerSecIsNil: Boolean
   peakBytesRecvPerSecNotNil: Boolean
   """
   peak_packets_sent_per_sec field predicates
   """
-  peakPacketsSentPerSec: Int
-  peakPacketsSentPerSecNEQ: Int
-  peakPacketsSentPerSecIn: [Int!]
-  peakPacketsSentPerSecNotIn: [Int!]
-  peakPacketsSentPerSecGT: Int
-  peakPacketsSentPerSecGTE: Int
-  peakPacketsSentPerSecLT: Int
-  peakPacketsSentPerSecLTE: Int
+  peakPacketsSentPerSec: UnsignedLong
+  peakPacketsSentPerSecNEQ: UnsignedLong
+  peakPacketsSentPerSecIn: [UnsignedLong!]
+  peakPacketsSentPerSecNotIn: [UnsignedLong!]
+  peakPacketsSentPerSecGT: UnsignedLong
+  peakPacketsSentPerSecGTE: UnsignedLong
+  peakPacketsSentPerSecLT: UnsignedLong
+  peakPacketsSentPerSecLTE: UnsignedLong
   peakPacketsSentPerSecIsNil: Boolean
   peakPacketsSentPerSecNotNil: Boolean
   """
   peak_packets_recv_per_sec field predicates
   """
-  peakPacketsRecvPerSec: Int
-  peakPacketsRecvPerSecNEQ: Int
-  peakPacketsRecvPerSecIn: [Int!]
-  peakPacketsRecvPerSecNotIn: [Int!]
-  peakPacketsRecvPerSecGT: Int
-  peakPacketsRecvPerSecGTE: Int
-  peakPacketsRecvPerSecLT: Int
-  peakPacketsRecvPerSecLTE: Int
+  peakPacketsRecvPerSec: UnsignedLong
+  peakPacketsRecvPerSecNEQ: UnsignedLong
+  peakPacketsRecvPerSecIn: [UnsignedLong!]
+  peakPacketsRecvPerSecNotIn: [UnsignedLong!]
+  peakPacketsRecvPerSecGT: UnsignedLong
+  peakPacketsRecvPerSecGTE: UnsignedLong
+  peakPacketsRecvPerSecLT: UnsignedLong
+  peakPacketsRecvPerSecLTE: UnsignedLong
   peakPacketsRecvPerSecIsNil: Boolean
   peakPacketsRecvPerSecNotNil: Boolean
   """

@@ -44,6 +44,8 @@ func (r *buildEventRecorder) saveActionCacheStatistics(ctx context.Context, tx *
 	actionCacheStasticsDb, err := tx.ActionCacheStatistics.Create().
 		SetSizeInBytes(actionCacheStastics.SizeInBytes).
 		SetSaveTimeInMs(actionCacheStastics.SaveTimeInMs).
+		SetLoadTimeInMs(actionCacheStastics.LoadTimeInMs).
+		SetCacheCheckSemaphoreWaitTimeInMs(actionCacheStastics.CacheCheckSemaphoreWaitTimeInMs).
 		SetHits(actionCacheStastics.Hits).
 		SetMisses(actionCacheStastics.Misses).
 		SetActionSummaryID(actionSummaryDbID).

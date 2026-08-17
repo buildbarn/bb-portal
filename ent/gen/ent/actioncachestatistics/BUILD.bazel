@@ -12,5 +12,6 @@ go_library(
         "//ent/gen/ent/predicate",
         "@io_entgo_ent//dialect/sql",
         "@io_entgo_ent//dialect/sql/sqlgraph",
+        "@io_entgo_ent//schema/field",
     ],
 )

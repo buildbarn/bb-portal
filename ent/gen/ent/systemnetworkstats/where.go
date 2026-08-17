@@ -55,82 +55,114 @@ func IDLTE(id int64) predicate.SystemNetworkStats {
 
 // BytesSent applies equality check predicate on the "bytes_sent" field. It's identical to BytesSentEQ.
 func BytesSent(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesSent, v))
+	vc, err := ValueScanner.BytesSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldBytesSent, vc), err)
 }
 
 // BytesRecv applies equality check predicate on the "bytes_recv" field. It's identical to BytesRecvEQ.
 func BytesRecv(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesRecv, v))
+	vc, err := ValueScanner.BytesRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldBytesRecv, vc), err)
 }
 
 // PacketsSent applies equality check predicate on the "packets_sent" field. It's identical to PacketsSentEQ.
 func PacketsSent(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsSent, v))
+	vc, err := ValueScanner.PacketsSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPacketsSent, vc), err)
 }
 
 // PacketsRecv applies equality check predicate on the "packets_recv" field. It's identical to PacketsRecvEQ.
 func PacketsRecv(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsRecv, v))
+	vc, err := ValueScanner.PacketsRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPacketsRecv, vc), err)
 }
 
 // PeakBytesSentPerSec applies equality check predicate on the "peak_bytes_sent_per_sec" field. It's identical to PeakBytesSentPerSecEQ.
 func PeakBytesSentPerSec(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesSentPerSec, v))
+	vc, err := ValueScanner.PeakBytesSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakBytesSentPerSec, vc), err)
 }
 
 // PeakBytesRecvPerSec applies equality check predicate on the "peak_bytes_recv_per_sec" field. It's identical to PeakBytesRecvPerSecEQ.
 func PeakBytesRecvPerSec(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesRecvPerSec, v))
+	vc, err := ValueScanner.PeakBytesRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakBytesRecvPerSec, vc), err)
 }
 
 // PeakPacketsSentPerSec applies equality check predicate on the "peak_packets_sent_per_sec" field. It's identical to PeakPacketsSentPerSecEQ.
 func PeakPacketsSentPerSec(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsSentPerSec, v))
+	vc, err := ValueScanner.PeakPacketsSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakPacketsSentPerSec, vc), err)
 }
 
 // PeakPacketsRecvPerSec applies equality check predicate on the "peak_packets_recv_per_sec" field. It's identical to PeakPacketsRecvPerSecEQ.
 func PeakPacketsRecvPerSec(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsRecvPerSec, v))
+	vc, err := ValueScanner.PeakPacketsRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakPacketsRecvPerSec, vc), err)
 }
 
 // BytesSentEQ applies the EQ predicate on the "bytes_sent" field.
 func BytesSentEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesSent, v))
+	vc, err := ValueScanner.BytesSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldBytesSent, vc), err)
 }
 
 // BytesSentNEQ applies the NEQ predicate on the "bytes_sent" field.
 func BytesSentNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldBytesSent, v))
+	vc, err := ValueScanner.BytesSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldBytesSent, vc), err)
 }
 
 // BytesSentIn applies the In predicate on the "bytes_sent" field.
 func BytesSentIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldBytesSent, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.BytesSent.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldBytesSent, v...), err)
 }
 
 // BytesSentNotIn applies the NotIn predicate on the "bytes_sent" field.
 func BytesSentNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldBytesSent, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.BytesSent.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldBytesSent, v...), err)
 }
 
 // BytesSentGT applies the GT predicate on the "bytes_sent" field.
 func BytesSentGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldBytesSent, v))
+	vc, err := ValueScanner.BytesSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldBytesSent, vc), err)
 }
 
 // BytesSentGTE applies the GTE predicate on the "bytes_sent" field.
 func BytesSentGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldBytesSent, v))
+	vc, err := ValueScanner.BytesSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldBytesSent, vc), err)
 }
 
 // BytesSentLT applies the LT predicate on the "bytes_sent" field.
 func BytesSentLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldBytesSent, v))
+	vc, err := ValueScanner.BytesSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldBytesSent, vc), err)
 }
 
 // BytesSentLTE applies the LTE predicate on the "bytes_sent" field.
 func BytesSentLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldBytesSent, v))
+	vc, err := ValueScanner.BytesSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldBytesSent, vc), err)
 }
 
 // BytesSentIsNil applies the IsNil predicate on the "bytes_sent" field.
@@ -145,42 +177,66 @@ func BytesSentNotNil() predicate.SystemNetworkStats {
 
 // BytesRecvEQ applies the EQ predicate on the "bytes_recv" field.
 func BytesRecvEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesRecv, v))
+	vc, err := ValueScanner.BytesRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldBytesRecv, vc), err)
 }
 
 // BytesRecvNEQ applies the NEQ predicate on the "bytes_recv" field.
 func BytesRecvNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldBytesRecv, v))
+	vc, err := ValueScanner.BytesRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldBytesRecv, vc), err)
 }
 
 // BytesRecvIn applies the In predicate on the "bytes_recv" field.
 func BytesRecvIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldBytesRecv, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.BytesRecv.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldBytesRecv, v...), err)
 }
 
 // BytesRecvNotIn applies the NotIn predicate on the "bytes_recv" field.
 func BytesRecvNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldBytesRecv, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.BytesRecv.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldBytesRecv, v...), err)
 }
 
 // BytesRecvGT applies the GT predicate on the "bytes_recv" field.
 func BytesRecvGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldBytesRecv, v))
+	vc, err := ValueScanner.BytesRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldBytesRecv, vc), err)
 }
 
 // BytesRecvGTE applies the GTE predicate on the "bytes_recv" field.
 func BytesRecvGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldBytesRecv, v))
+	vc, err := ValueScanner.BytesRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldBytesRecv, vc), err)
 }
 
 // BytesRecvLT applies the LT predicate on the "bytes_recv" field.
 func BytesRecvLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldBytesRecv, v))
+	vc, err := ValueScanner.BytesRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldBytesRecv, vc), err)
 }
 
 // BytesRecvLTE applies the LTE predicate on the "bytes_recv" field.
 func BytesRecvLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldBytesRecv, v))
+	vc, err := ValueScanner.BytesRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldBytesRecv, vc), err)
 }
 
 // BytesRecvIsNil applies the IsNil predicate on the "bytes_recv" field.
@@ -195,42 +251,66 @@ func BytesRecvNotNil() predicate.SystemNetworkStats {
 
 // PacketsSentEQ applies the EQ predicate on the "packets_sent" field.
 func PacketsSentEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsSent, v))
+	vc, err := ValueScanner.PacketsSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPacketsSent, vc), err)
 }
 
 // PacketsSentNEQ applies the NEQ predicate on the "packets_sent" field.
 func PacketsSentNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPacketsSent, v))
+	vc, err := ValueScanner.PacketsSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldPacketsSent, vc), err)
 }
 
 // PacketsSentIn applies the In predicate on the "packets_sent" field.
 func PacketsSentIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldPacketsSent, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PacketsSent.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldPacketsSent, v...), err)
 }
 
 // PacketsSentNotIn applies the NotIn predicate on the "packets_sent" field.
 func PacketsSentNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPacketsSent, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PacketsSent.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldPacketsSent, v...), err)
 }
 
 // PacketsSentGT applies the GT predicate on the "packets_sent" field.
 func PacketsSentGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldPacketsSent, v))
+	vc, err := ValueScanner.PacketsSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldPacketsSent, vc), err)
 }
 
 // PacketsSentGTE applies the GTE predicate on the "packets_sent" field.
 func PacketsSentGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPacketsSent, v))
+	vc, err := ValueScanner.PacketsSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldPacketsSent, vc), err)
 }
 
 // PacketsSentLT applies the LT predicate on the "packets_sent" field.
 func PacketsSentLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldPacketsSent, v))
+	vc, err := ValueScanner.PacketsSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldPacketsSent, vc), err)
 }
 
 // PacketsSentLTE applies the LTE predicate on the "packets_sent" field.
 func PacketsSentLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPacketsSent, v))
+	vc, err := ValueScanner.PacketsSent.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldPacketsSent, vc), err)
 }
 
 // PacketsSentIsNil applies the IsNil predicate on the "packets_sent" field.
@@ -245,42 +325,66 @@ func PacketsSentNotNil() predicate.SystemNetworkStats {
 
 // PacketsRecvEQ applies the EQ predicate on the "packets_recv" field.
 func PacketsRecvEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPacketsRecv, v))
+	vc, err := ValueScanner.PacketsRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPacketsRecv, vc), err)
 }
 
 // PacketsRecvNEQ applies the NEQ predicate on the "packets_recv" field.
 func PacketsRecvNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPacketsRecv, v))
+	vc, err := ValueScanner.PacketsRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldPacketsRecv, vc), err)
 }
 
 // PacketsRecvIn applies the In predicate on the "packets_recv" field.
 func PacketsRecvIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldPacketsRecv, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PacketsRecv.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldPacketsRecv, v...), err)
 }
 
 // PacketsRecvNotIn applies the NotIn predicate on the "packets_recv" field.
 func PacketsRecvNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPacketsRecv, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PacketsRecv.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldPacketsRecv, v...), err)
 }
 
 // PacketsRecvGT applies the GT predicate on the "packets_recv" field.
 func PacketsRecvGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldPacketsRecv, v))
+	vc, err := ValueScanner.PacketsRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldPacketsRecv, vc), err)
 }
 
 // PacketsRecvGTE applies the GTE predicate on the "packets_recv" field.
 func PacketsRecvGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPacketsRecv, v))
+	vc, err := ValueScanner.PacketsRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldPacketsRecv, vc), err)
 }
 
 // PacketsRecvLT applies the LT predicate on the "packets_recv" field.
 func PacketsRecvLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldPacketsRecv, v))
+	vc, err := ValueScanner.PacketsRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldPacketsRecv, vc), err)
 }
 
 // PacketsRecvLTE applies the LTE predicate on the "packets_recv" field.
 func PacketsRecvLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPacketsRecv, v))
+	vc, err := ValueScanner.PacketsRecv.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldPacketsRecv, vc), err)
 }
 
 // PacketsRecvIsNil applies the IsNil predicate on the "packets_recv" field.
@@ -295,42 +399,66 @@ func PacketsRecvNotNil() predicate.SystemNetworkStats {
 
 // PeakBytesSentPerSecEQ applies the EQ predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesSentPerSec, v))
+	vc, err := ValueScanner.PeakBytesSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakBytesSentPerSec, vc), err)
 }
 
 // PeakBytesSentPerSecNEQ applies the NEQ predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakBytesSentPerSec, v))
+	vc, err := ValueScanner.PeakBytesSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldPeakBytesSentPerSec, vc), err)
 }
 
 // PeakBytesSentPerSecIn applies the In predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakBytesSentPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakBytesSentPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldPeakBytesSentPerSec, v...), err)
 }
 
 // PeakBytesSentPerSecNotIn applies the NotIn predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakBytesSentPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakBytesSentPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldPeakBytesSentPerSec, v...), err)
 }
 
 // PeakBytesSentPerSecGT applies the GT predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakBytesSentPerSec, v))
+	vc, err := ValueScanner.PeakBytesSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldPeakBytesSentPerSec, vc), err)
 }
 
 // PeakBytesSentPerSecGTE applies the GTE predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakBytesSentPerSec, v))
+	vc, err := ValueScanner.PeakBytesSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldPeakBytesSentPerSec, vc), err)
 }
 
 // PeakBytesSentPerSecLT applies the LT predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakBytesSentPerSec, v))
+	vc, err := ValueScanner.PeakBytesSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldPeakBytesSentPerSec, vc), err)
 }
 
 // PeakBytesSentPerSecLTE applies the LTE predicate on the "peak_bytes_sent_per_sec" field.
 func PeakBytesSentPerSecLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakBytesSentPerSec, v))
+	vc, err := ValueScanner.PeakBytesSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldPeakBytesSentPerSec, vc), err)
 }
 
 // PeakBytesSentPerSecIsNil applies the IsNil predicate on the "peak_bytes_sent_per_sec" field.
@@ -345,42 +473,66 @@ func PeakBytesSentPerSecNotNil() predicate.SystemNetworkStats {
 
 // PeakBytesRecvPerSecEQ applies the EQ predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakBytesRecvPerSec, v))
+	vc, err := ValueScanner.PeakBytesRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakBytesRecvPerSec, vc), err)
 }
 
 // PeakBytesRecvPerSecNEQ applies the NEQ predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakBytesRecvPerSec, v))
+	vc, err := ValueScanner.PeakBytesRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldPeakBytesRecvPerSec, vc), err)
 }
 
 // PeakBytesRecvPerSecIn applies the In predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakBytesRecvPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakBytesRecvPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldPeakBytesRecvPerSec, v...), err)
 }
 
 // PeakBytesRecvPerSecNotIn applies the NotIn predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakBytesRecvPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakBytesRecvPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldPeakBytesRecvPerSec, v...), err)
 }
 
 // PeakBytesRecvPerSecGT applies the GT predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakBytesRecvPerSec, v))
+	vc, err := ValueScanner.PeakBytesRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldPeakBytesRecvPerSec, vc), err)
 }
 
 // PeakBytesRecvPerSecGTE applies the GTE predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakBytesRecvPerSec, v))
+	vc, err := ValueScanner.PeakBytesRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldPeakBytesRecvPerSec, vc), err)
 }
 
 // PeakBytesRecvPerSecLT applies the LT predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakBytesRecvPerSec, v))
+	vc, err := ValueScanner.PeakBytesRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldPeakBytesRecvPerSec, vc), err)
 }
 
 // PeakBytesRecvPerSecLTE applies the LTE predicate on the "peak_bytes_recv_per_sec" field.
 func PeakBytesRecvPerSecLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakBytesRecvPerSec, v))
+	vc, err := ValueScanner.PeakBytesRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldPeakBytesRecvPerSec, vc), err)
 }
 
 // PeakBytesRecvPerSecIsNil applies the IsNil predicate on the "peak_bytes_recv_per_sec" field.
@@ -395,42 +547,66 @@ func PeakBytesRecvPerSecNotNil() predicate.SystemNetworkStats {
 
 // PeakPacketsSentPerSecEQ applies the EQ predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsSentPerSec, v))
+	vc, err := ValueScanner.PeakPacketsSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakPacketsSentPerSec, vc), err)
 }
 
 // PeakPacketsSentPerSecNEQ applies the NEQ predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakPacketsSentPerSec, v))
+	vc, err := ValueScanner.PeakPacketsSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldPeakPacketsSentPerSec, vc), err)
 }
 
 // PeakPacketsSentPerSecIn applies the In predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakPacketsSentPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakPacketsSentPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldPeakPacketsSentPerSec, v...), err)
 }
 
 // PeakPacketsSentPerSecNotIn applies the NotIn predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakPacketsSentPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakPacketsSentPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldPeakPacketsSentPerSec, v...), err)
 }
 
 // PeakPacketsSentPerSecGT applies the GT predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakPacketsSentPerSec, v))
+	vc, err := ValueScanner.PeakPacketsSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldPeakPacketsSentPerSec, vc), err)
 }
 
 // PeakPacketsSentPerSecGTE applies the GTE predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakPacketsSentPerSec, v))
+	vc, err := ValueScanner.PeakPacketsSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldPeakPacketsSentPerSec, vc), err)
 }
 
 // PeakPacketsSentPerSecLT applies the LT predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakPacketsSentPerSec, v))
+	vc, err := ValueScanner.PeakPacketsSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldPeakPacketsSentPerSec, vc), err)
 }
 
 // PeakPacketsSentPerSecLTE applies the LTE predicate on the "peak_packets_sent_per_sec" field.
 func PeakPacketsSentPerSecLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakPacketsSentPerSec, v))
+	vc, err := ValueScanner.PeakPacketsSentPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldPeakPacketsSentPerSec, vc), err)
 }
 
 // PeakPacketsSentPerSecIsNil applies the IsNil predicate on the "peak_packets_sent_per_sec" field.
@@ -445,42 +621,66 @@ func PeakPacketsSentPerSecNotNil() predicate.SystemNetworkStats {
 
 // PeakPacketsRecvPerSecEQ applies the EQ predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsRecvPerSec, v))
+	vc, err := ValueScanner.PeakPacketsRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldEQ(FieldPeakPacketsRecvPerSec, vc), err)
 }
 
 // PeakPacketsRecvPerSecNEQ applies the NEQ predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecNEQ(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldPeakPacketsRecvPerSec, v))
+	vc, err := ValueScanner.PeakPacketsRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNEQ(FieldPeakPacketsRecvPerSec, vc), err)
 }
 
 // PeakPacketsRecvPerSecIn applies the In predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldIn(FieldPeakPacketsRecvPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakPacketsRecvPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldIn(FieldPeakPacketsRecvPerSec, v...), err)
 }
 
 // PeakPacketsRecvPerSecNotIn applies the NotIn predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecNotIn(vs ...uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldPeakPacketsRecvPerSec, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.PeakPacketsRecvPerSec.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.SystemNetworkStatsOrErr(sql.FieldNotIn(FieldPeakPacketsRecvPerSec, v...), err)
 }
 
 // PeakPacketsRecvPerSecGT applies the GT predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecGT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGT(FieldPeakPacketsRecvPerSec, v))
+	vc, err := ValueScanner.PeakPacketsRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGT(FieldPeakPacketsRecvPerSec, vc), err)
 }
 
 // PeakPacketsRecvPerSecGTE applies the GTE predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecGTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldGTE(FieldPeakPacketsRecvPerSec, v))
+	vc, err := ValueScanner.PeakPacketsRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldGTE(FieldPeakPacketsRecvPerSec, vc), err)
 }
 
 // PeakPacketsRecvPerSecLT applies the LT predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecLT(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLT(FieldPeakPacketsRecvPerSec, v))
+	vc, err := ValueScanner.PeakPacketsRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLT(FieldPeakPacketsRecvPerSec, vc), err)
 }
 
 // PeakPacketsRecvPerSecLTE applies the LTE predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecLTE(v uint64) predicate.SystemNetworkStats {
-	return predicate.SystemNetworkStats(sql.FieldLTE(FieldPeakPacketsRecvPerSec, v))
+	vc, err := ValueScanner.PeakPacketsRecvPerSec.Value(v)
+	return predicate.SystemNetworkStatsOrErr(sql.FieldLTE(FieldPeakPacketsRecvPerSec, vc), err)
 }
 
 // PeakPacketsRecvPerSecIsNil applies the IsNil predicate on the "peak_packets_recv_per_sec" field.

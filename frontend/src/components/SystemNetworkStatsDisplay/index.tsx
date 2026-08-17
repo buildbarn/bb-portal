@@ -28,11 +28,11 @@ export const SystemNetworkStatsDisplay: React.FC<Props> = ({
           values={[
             {
               key: "count",
-              value: systemNetworkStats.packetsRecv ?? 0,
+              value: (systemNetworkStats.packetsRecv ?? 0n).toString(),
             },
             {
               key: "size",
-              value: readableFileSize(systemNetworkStats.bytesRecv ?? 0),
+              value: readableFileSize(systemNetworkStats.bytesRecv ?? 0n),
             },
           ]}
         />
@@ -41,11 +41,11 @@ export const SystemNetworkStatsDisplay: React.FC<Props> = ({
           values={[
             {
               key: "count",
-              value: systemNetworkStats.packetsSent ?? 0,
+              value: (systemNetworkStats.packetsSent ?? 0n).toString(),
             },
             {
               key: "size",
-              value: readableFileSize(systemNetworkStats.bytesSent ?? 0),
+              value: readableFileSize(systemNetworkStats.bytesSent ?? 0n),
             },
           ]}
         />
@@ -54,12 +54,14 @@ export const SystemNetworkStatsDisplay: React.FC<Props> = ({
           values={[
             {
               key: "count",
-              value: systemNetworkStats.peakPacketsRecvPerSec ?? 0,
+              value: (
+                systemNetworkStats.peakPacketsRecvPerSec ?? 0n
+              ).toString(),
             },
             {
               key: "size",
               value: readableFileSize(
-                systemNetworkStats.peakBytesRecvPerSec ?? 0,
+                systemNetworkStats.peakBytesRecvPerSec ?? 0n,
               ),
             },
           ]}
@@ -69,12 +71,14 @@ export const SystemNetworkStatsDisplay: React.FC<Props> = ({
           values={[
             {
               key: "count",
-              value: systemNetworkStats.peakPacketsSentPerSec ?? 0,
+              value: (
+                systemNetworkStats.peakPacketsSentPerSec ?? 0n
+              ).toString(),
             },
             {
               key: "size",
               value: readableFileSize(
-                systemNetworkStats.peakBytesSentPerSec ?? 0,
+                systemNetworkStats.peakBytesSentPerSec ?? 0n,
               ),
             },
           ]}

@@ -87,9 +87,10 @@ var (
 	// ActionCacheStatisticsColumns holds the columns for the "action_cache_statistics" table.
 	ActionCacheStatisticsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "size_in_bytes", Type: field.TypeUint64, Nullable: true},
-		{Name: "save_time_in_ms", Type: field.TypeUint64, Nullable: true},
-		{Name: "load_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "size_in_bytes", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "save_time_in_ms", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "load_time_in_ms", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "cache_check_semaphore_wait_time_in_ms", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
 		{Name: "hits", Type: field.TypeInt32, Nullable: true},
 		{Name: "misses", Type: field.TypeInt32, Nullable: true},
 		{Name: "action_summary_action_cache_statistics", Type: field.TypeInt64, Unique: true, Nullable: true},
@@ -102,7 +103,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "action_cache_statistics_action_summaries_action_cache_statistics",
-				Columns:    []*schema.Column{ActionCacheStatisticsColumns[6]},
+				Columns:    []*schema.Column{ActionCacheStatisticsColumns[7]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -915,14 +916,14 @@ var (
 	// SystemNetworkStatsColumns holds the columns for the "system_network_stats" table.
 	SystemNetworkStatsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "bytes_sent", Type: field.TypeUint64, Nullable: true},
-		{Name: "bytes_recv", Type: field.TypeUint64, Nullable: true},
-		{Name: "packets_sent", Type: field.TypeUint64, Nullable: true},
-		{Name: "packets_recv", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_bytes_sent_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_bytes_recv_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_packets_sent_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "peak_packets_recv_per_sec", Type: field.TypeUint64, Nullable: true},
+		{Name: "bytes_sent", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "bytes_recv", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "packets_sent", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "packets_recv", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "peak_bytes_sent_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "peak_bytes_recv_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "peak_packets_sent_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
+		{Name: "peak_packets_recv_per_sec", Type: field.TypeUint64, Nullable: true, SchemaType: map[string]string{"postgres": "NUMERIC(20,0)"}},
 		{Name: "network_metrics_system_network_stats", Type: field.TypeInt64, Unique: true, Nullable: true},
 	}
 	// SystemNetworkStatsTable holds the schema information for the "system_network_stats" table.

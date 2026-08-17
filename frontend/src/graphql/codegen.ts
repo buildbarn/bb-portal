@@ -16,6 +16,12 @@ const config: CodegenConfig = {
         persistedDocuments: true,
       },
       config: {
+        scalars: {
+          UnsignedLong: {
+            input: "string",
+            output: "bigint",
+          },
+        },
         useTypeImports: true,
       },
     },
@@ -25,6 +31,8 @@ const config: CodegenConfig = {
         schema: "zodv4",
         scalarSchemas: {
           Time: "z.iso.datetime({ offset: true })",
+          UnsignedLong:
+            'z.string().regex(/^\\d+$/, "Expected an unsigned integer")',
           UUID: "z.uuid()",
         },
         importFrom: "./graphql",

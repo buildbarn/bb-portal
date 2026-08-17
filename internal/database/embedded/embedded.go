@@ -26,6 +26,7 @@ type DatabaseProvider struct {
 	port           int
 	db             *sql.DB
 	runtimePath    string
+	dataPath       string
 }
 
 // NewDatabaseProvider creates and starts an ephemeral Postgres
@@ -38,9 +39,21 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 	}
 	port := listener.Addr().(*net.TCPAddr).Port
 	listener.Close()
+	return NewDatabaseProviderAtPort(logger, port, uuid.New().String())
+}
+
+// NewDatabaseProviderAtPort creates and starts an ephemeral Postgres instance
+// on a caller-provided port. This is useful for service orchestration tools
+// that allocate ports before starting the service.
+func NewDatabaseProviderAtPort(logger io.Writer, port int, password string) (*DatabaseProvider, error) {
+	if port < 1 || port > 65535 {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid Postgres port %d", port)
+	}
+	if password == "" {
+		return nil, status.Error(codes.InvalidArgument, "Postgres password cannot be empty")
+	}
 
 	const user, database = "postgres", "postgres"
-	password := uuid.New().String()
 
 	binariesPath, err := runfiles.Rlocation("com_github_buildbarn_bb_portal/internal/database/embedded/extraced_embedded_postgres.extracted")
 	if err != nil {
@@ -59,6 +72,7 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 
 	dataPath, err := os.MkdirTemp("/tmp", "embedded_db_data")
 	if err != nil {
+		os.RemoveAll(runtimePath)
 		return nil, util.StatusWrap(err, "Could not create temporary data directory for embedded postgres")
 	}
 
@@ -80,6 +94,8 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 	postgres := embeddedpostgres.NewDatabase(config)
 
 	if err := postgres.Start(); err != nil {
+		os.RemoveAll(runtimePath)
+		os.RemoveAll(dataPath)
 		return nil, util.StatusWrap(err, "Failed to start embedded postgres")
 	}
 
@@ -87,6 +103,8 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 	db, err := sql.Open("pgx", connectionString)
 	if err != nil {
 		postgres.Stop()
+		os.RemoveAll(runtimePath)
+		os.RemoveAll(dataPath)
 		return nil, util.StatusWrap(err, "Failed to open sql connection")
 	}
 
@@ -97,6 +115,7 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 		port:        port,
 		db:          db,
 		runtimePath: runtimePath,
+		dataPath:    dataPath,
 	}, nil
 }
 
@@ -119,7 +138,7 @@ func (d *DatabaseProvider) CreateDatabase() (*sql.DB, error) {
 
 // Cleanup closes the primary connection and stops the postgres server.
 func (d *DatabaseProvider) Cleanup() error {
-	var err1, err2, err3 error
+	var err1, err2, err3, err4 error
 	if d.db != nil {
 		err1 = d.db.Close()
 	}
@@ -127,6 +146,7 @@ func (d *DatabaseProvider) Cleanup() error {
 		err2 = d.postgres.Stop()
 	}
 	err3 = os.RemoveAll(d.runtimePath)
+	err4 = os.RemoveAll(d.dataPath)
 
-	return errors.Join(err1, err2, err3)
+	return errors.Join(err1, err2, err3, err4)
 }

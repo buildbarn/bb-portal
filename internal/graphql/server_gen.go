@@ -123,14 +123,15 @@ type ComplexityRoot struct {
 	}
 
 	ActionCacheStatistics struct {
-		ActionSummary func(childComplexity int) int
-		Hits          func(childComplexity int) int
-		ID            func(childComplexity int) int
-		LoadTimeInMs  func(childComplexity int) int
-		MissDetails   func(childComplexity int) int
-		Misses        func(childComplexity int) int
-		SaveTimeInMs  func(childComplexity int) int
-		SizeInBytes   func(childComplexity int) int
+		ActionSummary                   func(childComplexity int) int
+		CacheCheckSemaphoreWaitTimeInMs func(childComplexity int) int
+		Hits                            func(childComplexity int) int
+		ID                              func(childComplexity int) int
+		LoadTimeInMs                    func(childComplexity int) int
+		MissDetails                     func(childComplexity int) int
+		Misses                          func(childComplexity int) int
+		SaveTimeInMs                    func(childComplexity int) int
+		SizeInBytes                     func(childComplexity int) int
 	}
 
 	ActionData struct {
@@ -1129,6 +1130,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.ActionCacheStatistics.ActionSummary(childComplexity), true
+	case "ActionCacheStatistics.cacheCheckSemaphoreWaitTimeInMs":
+		if e.ComplexityRoot.ActionCacheStatistics.CacheCheckSemaphoreWaitTimeInMs == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ActionCacheStatistics.CacheCheckSemaphoreWaitTimeInMs(childComplexity), true
 	case "ActionCacheStatistics.hits":
 		if e.ComplexityRoot.ActionCacheStatistics.Hits == nil {
 			break
@@ -3166,6 +3173,8 @@ func (ec *executionContext) childFields_ActionCacheStatistics(ctx context.Contex
 		return ec.fieldContext_ActionCacheStatistics_saveTimeInMs(ctx, field)
 	case "loadTimeInMs":
 		return ec.fieldContext_ActionCacheStatistics_loadTimeInMs(ctx, field)
+	case "cacheCheckSemaphoreWaitTimeInMs":
+		return ec.fieldContext_ActionCacheStatistics_cacheCheckSemaphoreWaitTimeInMs(ctx, field)
 	case "hits":
 		return ec.fieldContext_ActionCacheStatistics_hits(ctx, field)
 	case "misses":
@@ -5196,14 +5205,14 @@ func (ec *executionContext) _ActionCacheStatistics_sizeInBytes(ctx context.Conte
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_ActionCacheStatistics_sizeInBytes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("ActionCacheStatistics", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("ActionCacheStatistics", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _ActionCacheStatistics_saveTimeInMs(ctx context.Context, field graphql.CollectedField, obj *ent.ActionCacheStatistics) (ret graphql.Marshaler) {
@@ -5219,14 +5228,14 @@ func (ec *executionContext) _ActionCacheStatistics_saveTimeInMs(ctx context.Cont
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_ActionCacheStatistics_saveTimeInMs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("ActionCacheStatistics", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("ActionCacheStatistics", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _ActionCacheStatistics_loadTimeInMs(ctx context.Context, field graphql.CollectedField, obj *ent.ActionCacheStatistics) (ret graphql.Marshaler) {
@@ -5241,15 +5250,38 @@ func (ec *executionContext) _ActionCacheStatistics_loadTimeInMs(ctx context.Cont
 			return obj.LoadTimeInMs, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
-			return ec.marshalOInt2int64(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_ActionCacheStatistics_loadTimeInMs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("ActionCacheStatistics", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("ActionCacheStatistics", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
+}
+
+func (ec *executionContext) _ActionCacheStatistics_cacheCheckSemaphoreWaitTimeInMs(ctx context.Context, field graphql.CollectedField, obj *ent.ActionCacheStatistics) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ActionCacheStatistics_cacheCheckSemaphoreWaitTimeInMs(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.CacheCheckSemaphoreWaitTimeInMs, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_ActionCacheStatistics_cacheCheckSemaphoreWaitTimeInMs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ActionCacheStatistics", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _ActionCacheStatistics_hits(ctx context.Context, field graphql.CollectedField, obj *ent.ActionCacheStatistics) (ret graphql.Marshaler) {
@@ -11302,14 +11334,14 @@ func (ec *executionContext) _SystemNetworkStats_bytesSent(ctx context.Context, f
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_bytesSent(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_bytesRecv(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -11325,14 +11357,14 @@ func (ec *executionContext) _SystemNetworkStats_bytesRecv(ctx context.Context, f
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_bytesRecv(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_packetsSent(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -11348,14 +11380,14 @@ func (ec *executionContext) _SystemNetworkStats_packetsSent(ctx context.Context,
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_packetsSent(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_packetsRecv(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -11371,14 +11403,14 @@ func (ec *executionContext) _SystemNetworkStats_packetsRecv(ctx context.Context,
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_packetsRecv(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_peakBytesSentPerSec(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -11394,14 +11426,14 @@ func (ec *executionContext) _SystemNetworkStats_peakBytesSentPerSec(ctx context.
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_peakBytesSentPerSec(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_peakBytesRecvPerSec(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -11417,14 +11449,14 @@ func (ec *executionContext) _SystemNetworkStats_peakBytesRecvPerSec(ctx context.
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_peakBytesRecvPerSec(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_peakPacketsSentPerSec(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -11440,14 +11472,14 @@ func (ec *executionContext) _SystemNetworkStats_peakPacketsSentPerSec(ctx contex
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_peakPacketsSentPerSec(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_peakPacketsRecvPerSec(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -11463,14 +11495,14 @@ func (ec *executionContext) _SystemNetworkStats_peakPacketsRecvPerSec(ctx contex
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v uint64) graphql.Marshaler {
-			return ec.marshalOInt2uint64(ctx, selections, v)
+			return ec.marshalOUnsignedLong2uint64(ctx, selections, v)
 		},
 		true,
 		false,
 	)
 }
 func (ec *executionContext) fieldContext_SystemNetworkStats_peakPacketsRecvPerSec(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type Int does not have child fields"))
+	return graphql.NewScalarFieldContext("SystemNetworkStats", field, false, false, errors.New("field of type UnsignedLong does not have child fields"))
 }
 
 func (ec *executionContext) _SystemNetworkStats_networkMetrics(ctx context.Context, field graphql.CollectedField, obj *ent.SystemNetworkStats) (ret graphql.Marshaler) {
@@ -14134,7 +14166,7 @@ func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "sizeInBytes", "sizeInBytesNEQ", "sizeInBytesIn", "sizeInBytesNotIn", "sizeInBytesGT", "sizeInBytesGTE", "sizeInBytesLT", "sizeInBytesLTE", "sizeInBytesIsNil", "sizeInBytesNotNil", "saveTimeInMs", "saveTimeInMsNEQ", "saveTimeInMsIn", "saveTimeInMsNotIn", "saveTimeInMsGT", "saveTimeInMsGTE", "saveTimeInMsLT", "saveTimeInMsLTE", "saveTimeInMsIsNil", "saveTimeInMsNotNil", "loadTimeInMs", "loadTimeInMsNEQ", "loadTimeInMsIn", "loadTimeInMsNotIn", "loadTimeInMsGT", "loadTimeInMsGTE", "loadTimeInMsLT", "loadTimeInMsLTE", "loadTimeInMsIsNil", "loadTimeInMsNotNil", "hits", "hitsNEQ", "hitsIn", "hitsNotIn", "hitsGT", "hitsGTE", "hitsLT", "hitsLTE", "hitsIsNil", "hitsNotNil", "misses", "missesNEQ", "missesIn", "missesNotIn", "missesGT", "missesGTE", "missesLT", "missesLTE", "missesIsNil", "missesNotNil", "hasActionSummary", "hasActionSummaryWith", "hasMissDetails", "hasMissDetailsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "sizeInBytes", "sizeInBytesNEQ", "sizeInBytesIn", "sizeInBytesNotIn", "sizeInBytesGT", "sizeInBytesGTE", "sizeInBytesLT", "sizeInBytesLTE", "sizeInBytesIsNil", "sizeInBytesNotNil", "saveTimeInMs", "saveTimeInMsNEQ", "saveTimeInMsIn", "saveTimeInMsNotIn", "saveTimeInMsGT", "saveTimeInMsGTE", "saveTimeInMsLT", "saveTimeInMsLTE", "saveTimeInMsIsNil", "saveTimeInMsNotNil", "loadTimeInMs", "loadTimeInMsNEQ", "loadTimeInMsIn", "loadTimeInMsNotIn", "loadTimeInMsGT", "loadTimeInMsGTE", "loadTimeInMsLT", "loadTimeInMsLTE", "loadTimeInMsIsNil", "loadTimeInMsNotNil", "cacheCheckSemaphoreWaitTimeInMs", "cacheCheckSemaphoreWaitTimeInMsNEQ", "cacheCheckSemaphoreWaitTimeInMsIn", "cacheCheckSemaphoreWaitTimeInMsNotIn", "cacheCheckSemaphoreWaitTimeInMsGT", "cacheCheckSemaphoreWaitTimeInMsGTE", "cacheCheckSemaphoreWaitTimeInMsLT", "cacheCheckSemaphoreWaitTimeInMsLTE", "cacheCheckSemaphoreWaitTimeInMsIsNil", "cacheCheckSemaphoreWaitTimeInMsNotNil", "hits", "hitsNEQ", "hitsIn", "hitsNotIn", "hitsGT", "hitsGTE", "hitsLT", "hitsLTE", "hitsIsNil", "hitsNotNil", "misses", "missesNEQ", "missesIn", "missesNotIn", "missesGT", "missesGTE", "missesLT", "missesLTE", "missesIsNil", "missesNotNil", "hasActionSummary", "hasActionSummaryWith", "hasMissDetails", "hasMissDetailsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -14236,56 +14268,56 @@ func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx co
 			}
 		case "sizeInBytes":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytes"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SizeInBytes = data
 		case "sizeInBytesNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SizeInBytesNEQ = data
 		case "sizeInBytesIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SizeInBytesIn = data
 		case "sizeInBytesNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SizeInBytesNotIn = data
 		case "sizeInBytesGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SizeInBytesGT = data
 		case "sizeInBytesGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SizeInBytesGTE = data
 		case "sizeInBytesLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SizeInBytesLT = data
 		case "sizeInBytesLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14306,56 +14338,56 @@ func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx co
 			it.SizeInBytesNotNil = data
 		case "saveTimeInMs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMs"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SaveTimeInMs = data
 		case "saveTimeInMsNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMsNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SaveTimeInMsNEQ = data
 		case "saveTimeInMsIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMsIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SaveTimeInMsIn = data
 		case "saveTimeInMsNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMsNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SaveTimeInMsNotIn = data
 		case "saveTimeInMsGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMsGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SaveTimeInMsGT = data
 		case "saveTimeInMsGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMsGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SaveTimeInMsGTE = data
 		case "saveTimeInMsLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMsLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SaveTimeInMsLT = data
 		case "saveTimeInMsLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("saveTimeInMsLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14376,56 +14408,56 @@ func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx co
 			it.SaveTimeInMsNotNil = data
 		case "loadTimeInMs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMs"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.LoadTimeInMs = data
 		case "loadTimeInMsNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMsNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.LoadTimeInMsNEQ = data
 		case "loadTimeInMsIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMsIn"))
-			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.LoadTimeInMsIn = data
 		case "loadTimeInMsNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMsNotIn"))
-			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.LoadTimeInMsNotIn = data
 		case "loadTimeInMsGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMsGT"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.LoadTimeInMsGT = data
 		case "loadTimeInMsGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMsGTE"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.LoadTimeInMsGTE = data
 		case "loadTimeInMsLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMsLT"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.LoadTimeInMsLT = data
 		case "loadTimeInMsLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loadTimeInMsLTE"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14444,6 +14476,76 @@ func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx co
 				return it, err
 			}
 			it.LoadTimeInMsNotNil = data
+		case "cacheCheckSemaphoreWaitTimeInMs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMs"))
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMs = data
+		case "cacheCheckSemaphoreWaitTimeInMsNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsNEQ"))
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsNEQ = data
+		case "cacheCheckSemaphoreWaitTimeInMsIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsIn"))
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsIn = data
+		case "cacheCheckSemaphoreWaitTimeInMsNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsNotIn"))
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsNotIn = data
+		case "cacheCheckSemaphoreWaitTimeInMsGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsGT"))
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsGT = data
+		case "cacheCheckSemaphoreWaitTimeInMsGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsGTE"))
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsGTE = data
+		case "cacheCheckSemaphoreWaitTimeInMsLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsLT"))
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsLT = data
+		case "cacheCheckSemaphoreWaitTimeInMsLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsLTE"))
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsLTE = data
+		case "cacheCheckSemaphoreWaitTimeInMsIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsIsNil = data
+		case "cacheCheckSemaphoreWaitTimeInMsNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheCheckSemaphoreWaitTimeInMsNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheCheckSemaphoreWaitTimeInMsNotNil = data
 		case "hits":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hits"))
 			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
@@ -25255,56 +25357,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			}
 		case "bytesSent":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSent"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesSent = data
 		case "bytesSentNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSentNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesSentNEQ = data
 		case "bytesSentIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSentIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesSentIn = data
 		case "bytesSentNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSentNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesSentNotIn = data
 		case "bytesSentGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSentGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesSentGT = data
 		case "bytesSentGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSentGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesSentGTE = data
 		case "bytesSentLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSentLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesSentLT = data
 		case "bytesSentLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesSentLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25325,56 +25427,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			it.BytesSentNotNil = data
 		case "bytesRecv":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecv"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesRecv = data
 		case "bytesRecvNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecvNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesRecvNEQ = data
 		case "bytesRecvIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecvIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesRecvIn = data
 		case "bytesRecvNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecvNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesRecvNotIn = data
 		case "bytesRecvGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecvGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesRecvGT = data
 		case "bytesRecvGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecvGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesRecvGTE = data
 		case "bytesRecvLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecvLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.BytesRecvLT = data
 		case "bytesRecvLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bytesRecvLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25395,56 +25497,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			it.BytesRecvNotNil = data
 		case "packetsSent":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSent"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsSent = data
 		case "packetsSentNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSentNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsSentNEQ = data
 		case "packetsSentIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSentIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsSentIn = data
 		case "packetsSentNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSentNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsSentNotIn = data
 		case "packetsSentGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSentGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsSentGT = data
 		case "packetsSentGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSentGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsSentGTE = data
 		case "packetsSentLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSentLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsSentLT = data
 		case "packetsSentLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsSentLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25465,56 +25567,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			it.PacketsSentNotNil = data
 		case "packetsRecv":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecv"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsRecv = data
 		case "packetsRecvNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecvNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsRecvNEQ = data
 		case "packetsRecvIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecvIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsRecvIn = data
 		case "packetsRecvNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecvNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsRecvNotIn = data
 		case "packetsRecvGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecvGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsRecvGT = data
 		case "packetsRecvGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecvGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsRecvGTE = data
 		case "packetsRecvLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecvLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PacketsRecvLT = data
 		case "packetsRecvLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("packetsRecvLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25535,56 +25637,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			it.PacketsRecvNotNil = data
 		case "peakBytesSentPerSec":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSec"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesSentPerSec = data
 		case "peakBytesSentPerSecNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSecNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesSentPerSecNEQ = data
 		case "peakBytesSentPerSecIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSecIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesSentPerSecIn = data
 		case "peakBytesSentPerSecNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSecNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesSentPerSecNotIn = data
 		case "peakBytesSentPerSecGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSecGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesSentPerSecGT = data
 		case "peakBytesSentPerSecGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSecGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesSentPerSecGTE = data
 		case "peakBytesSentPerSecLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSecLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesSentPerSecLT = data
 		case "peakBytesSentPerSecLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesSentPerSecLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25605,56 +25707,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			it.PeakBytesSentPerSecNotNil = data
 		case "peakBytesRecvPerSec":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSec"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesRecvPerSec = data
 		case "peakBytesRecvPerSecNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSecNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesRecvPerSecNEQ = data
 		case "peakBytesRecvPerSecIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSecIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesRecvPerSecIn = data
 		case "peakBytesRecvPerSecNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSecNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesRecvPerSecNotIn = data
 		case "peakBytesRecvPerSecGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSecGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesRecvPerSecGT = data
 		case "peakBytesRecvPerSecGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSecGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesRecvPerSecGTE = data
 		case "peakBytesRecvPerSecLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSecLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakBytesRecvPerSecLT = data
 		case "peakBytesRecvPerSecLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakBytesRecvPerSecLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25675,56 +25777,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			it.PeakBytesRecvPerSecNotNil = data
 		case "peakPacketsSentPerSec":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSec"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsSentPerSec = data
 		case "peakPacketsSentPerSecNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSecNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsSentPerSecNEQ = data
 		case "peakPacketsSentPerSecIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSecIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsSentPerSecIn = data
 		case "peakPacketsSentPerSecNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSecNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsSentPerSecNotIn = data
 		case "peakPacketsSentPerSecGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSecGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsSentPerSecGT = data
 		case "peakPacketsSentPerSecGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSecGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsSentPerSecGTE = data
 		case "peakPacketsSentPerSecLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSecLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsSentPerSecLT = data
 		case "peakPacketsSentPerSecLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsSentPerSecLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25745,56 +25847,56 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 			it.PeakPacketsSentPerSecNotNil = data
 		case "peakPacketsRecvPerSec":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSec"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsRecvPerSec = data
 		case "peakPacketsRecvPerSecNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSecNEQ"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsRecvPerSecNEQ = data
 		case "peakPacketsRecvPerSecIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSecIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsRecvPerSecIn = data
 		case "peakPacketsRecvPerSecNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSecNotIn"))
-			data, err := ec.unmarshalOInt2ᚕuint64ᚄ(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsRecvPerSecNotIn = data
 		case "peakPacketsRecvPerSecGT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSecGT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsRecvPerSecGT = data
 		case "peakPacketsRecvPerSecGTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSecGTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsRecvPerSecGTE = data
 		case "peakPacketsRecvPerSecLT":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSecLT"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PeakPacketsRecvPerSecLT = data
 		case "peakPacketsRecvPerSecLTE":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peakPacketsRecvPerSecLTE"))
-			data, err := ec.unmarshalOInt2ᚖuint64(ctx, v)
+			data, err := ec.unmarshalOUnsignedLong2ᚖuint64(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -29596,6 +29698,11 @@ func (ec *executionContext) _ActionCacheStatistics(ctx context.Context, sel ast.
 			}
 		case "loadTimeInMs":
 			out.Values[i] = ec._ActionCacheStatistics_loadTimeInMs(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "cacheCheckSemaphoreWaitTimeInMs":
+			out.Values[i] = ec._ActionCacheStatistics_cacheCheckSemaphoreWaitTimeInMs(ctx, field, obj)
 			if out.Values[i] == graphql.RequiredNull {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
@@ -37148,22 +37255,6 @@ func (ec *executionContext) marshalNInt2int64(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2uint64(ctx context.Context, v any) (uint64, error) {
-	res, err := graphql.UnmarshalUint64(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNInt2uint64(ctx context.Context, sel ast.SelectionSet, v uint64) graphql.Marshaler {
-	_ = sel
-	res := graphql.MarshalUint64(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) marshalNInvocationTagConnection2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInvocationTagConnection(ctx context.Context, sel ast.SelectionSet, v *ent.InvocationTagConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -37463,6 +37554,22 @@ func (ec *executionContext) unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(c
 func (ec *executionContext) marshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, sel ast.SelectionSet, v uuid.UUID) graphql.Marshaler {
 	_ = sel
 	res := uuidgql.MarshalUUID(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNUnsignedLong2uint64(ctx context.Context, v any) (uint64, error) {
+	res, err := graphql.UnmarshalUint64(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUnsignedLong2uint64(ctx context.Context, sel ast.SelectionSet, v uint64) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalUint64(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -38491,18 +38598,6 @@ func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2uint64(ctx context.Context, v any) (uint64, error) {
-	res, err := graphql.UnmarshalUint64(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2uint64(ctx context.Context, sel ast.SelectionSet, v uint64) graphql.Marshaler {
-	_ = sel
-	_ = ctx
-	res := graphql.MarshalUint64(v)
-	return res
-}
-
 func (ec *executionContext) unmarshalOInt2ᚕint32ᚄ(ctx context.Context, v any) ([]int32, error) {
 	if v == nil {
 		return nil, nil
@@ -38575,42 +38670,6 @@ func (ec *executionContext) marshalOInt2ᚕint64ᚄ(ctx context.Context, sel ast
 	return ret
 }
 
-func (ec *executionContext) unmarshalOInt2ᚕuint64ᚄ(ctx context.Context, v any) ([]uint64, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([]uint64, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNInt2uint64(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOInt2ᚕuint64ᚄ(ctx context.Context, sel ast.SelectionSet, v []uint64) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNInt2uint64(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v any) (*int, error) {
 	if v == nil {
 		return nil, nil
@@ -38662,24 +38721,6 @@ func (ec *executionContext) marshalOInt2ᚖint64(ctx context.Context, sel ast.Se
 	_ = sel
 	_ = ctx
 	res := graphql.MarshalInt64(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOInt2ᚖuint64(ctx context.Context, v any) (*uint64, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalUint64(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2ᚖuint64(ctx context.Context, sel ast.SelectionSet, v *uint64) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	_ = sel
-	_ = ctx
-	res := graphql.MarshalUint64(*v)
 	return res
 }
 
@@ -39640,6 +39681,72 @@ func (ec *executionContext) marshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(
 	_ = sel
 	_ = ctx
 	res := uuidgql.MarshalUUID(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOUnsignedLong2uint64(ctx context.Context, v any) (uint64, error) {
+	res, err := graphql.UnmarshalUint64(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOUnsignedLong2uint64(ctx context.Context, sel ast.SelectionSet, v uint64) graphql.Marshaler {
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalUint64(v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOUnsignedLong2ᚕuint64ᚄ(ctx context.Context, v any) ([]uint64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]uint64, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNUnsignedLong2uint64(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOUnsignedLong2ᚕuint64ᚄ(ctx context.Context, sel ast.SelectionSet, v []uint64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNUnsignedLong2uint64(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOUnsignedLong2ᚖuint64(ctx context.Context, v any) (*uint64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalUint64(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOUnsignedLong2ᚖuint64(ctx context.Context, sel ast.SelectionSet, v *uint64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalUint64(*v)
 	return res
 }
 

@@ -1,9 +1,13 @@
-export const readableFileSize = (sizeBytes: number, precision = 3): string => {
-  if (sizeBytes < 1024) {
-    return `${sizeBytes} B`;
+export const readableFileSize = (
+  sizeBytes: number | bigint,
+  precision = 3,
+): string => {
+  const numericSizeBytes = Number(sizeBytes);
+  if (numericSizeBytes < 1024) {
+    return `${numericSizeBytes} B`;
   }
 
-  const kib = sizeBytes / 1024;
+  const kib = numericSizeBytes / 1024;
   if (kib < 1024) {
     return `${Number(kib.toPrecision(precision))} kiB`;
   }

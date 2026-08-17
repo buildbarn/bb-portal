@@ -55,17 +55,26 @@ func IDLTE(id int64) predicate.ActionCacheStatistics {
 
 // SizeInBytes applies equality check predicate on the "size_in_bytes" field. It's identical to SizeInBytesEQ.
 func SizeInBytes(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldSizeInBytes, v))
+	vc, err := ValueScanner.SizeInBytes.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldSizeInBytes, vc), err)
 }
 
 // SaveTimeInMs applies equality check predicate on the "save_time_in_ms" field. It's identical to SaveTimeInMsEQ.
 func SaveTimeInMs(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldSaveTimeInMs, v))
+	vc, err := ValueScanner.SaveTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldSaveTimeInMs, vc), err)
 }
 
 // LoadTimeInMs applies equality check predicate on the "load_time_in_ms" field. It's identical to LoadTimeInMsEQ.
-func LoadTimeInMs(v int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldLoadTimeInMs, v))
+func LoadTimeInMs(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldLoadTimeInMs, vc), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMs applies equality check predicate on the "cache_check_semaphore_wait_time_in_ms" field. It's identical to CacheCheckSemaphoreWaitTimeInMsEQ.
+func CacheCheckSemaphoreWaitTimeInMs(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
 }
 
 // Hits applies equality check predicate on the "hits" field. It's identical to HitsEQ.
@@ -80,42 +89,66 @@ func Misses(v int32) predicate.ActionCacheStatistics {
 
 // SizeInBytesEQ applies the EQ predicate on the "size_in_bytes" field.
 func SizeInBytesEQ(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldSizeInBytes, v))
+	vc, err := ValueScanner.SizeInBytes.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldSizeInBytes, vc), err)
 }
 
 // SizeInBytesNEQ applies the NEQ predicate on the "size_in_bytes" field.
 func SizeInBytesNEQ(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNEQ(FieldSizeInBytes, v))
+	vc, err := ValueScanner.SizeInBytes.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNEQ(FieldSizeInBytes, vc), err)
 }
 
 // SizeInBytesIn applies the In predicate on the "size_in_bytes" field.
 func SizeInBytesIn(vs ...uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldIn(FieldSizeInBytes, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.SizeInBytes.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldIn(FieldSizeInBytes, v...), err)
 }
 
 // SizeInBytesNotIn applies the NotIn predicate on the "size_in_bytes" field.
 func SizeInBytesNotIn(vs ...uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNotIn(FieldSizeInBytes, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.SizeInBytes.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNotIn(FieldSizeInBytes, v...), err)
 }
 
 // SizeInBytesGT applies the GT predicate on the "size_in_bytes" field.
 func SizeInBytesGT(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGT(FieldSizeInBytes, v))
+	vc, err := ValueScanner.SizeInBytes.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGT(FieldSizeInBytes, vc), err)
 }
 
 // SizeInBytesGTE applies the GTE predicate on the "size_in_bytes" field.
 func SizeInBytesGTE(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGTE(FieldSizeInBytes, v))
+	vc, err := ValueScanner.SizeInBytes.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGTE(FieldSizeInBytes, vc), err)
 }
 
 // SizeInBytesLT applies the LT predicate on the "size_in_bytes" field.
 func SizeInBytesLT(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLT(FieldSizeInBytes, v))
+	vc, err := ValueScanner.SizeInBytes.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLT(FieldSizeInBytes, vc), err)
 }
 
 // SizeInBytesLTE applies the LTE predicate on the "size_in_bytes" field.
 func SizeInBytesLTE(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLTE(FieldSizeInBytes, v))
+	vc, err := ValueScanner.SizeInBytes.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLTE(FieldSizeInBytes, vc), err)
 }
 
 // SizeInBytesIsNil applies the IsNil predicate on the "size_in_bytes" field.
@@ -130,42 +163,66 @@ func SizeInBytesNotNil() predicate.ActionCacheStatistics {
 
 // SaveTimeInMsEQ applies the EQ predicate on the "save_time_in_ms" field.
 func SaveTimeInMsEQ(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldSaveTimeInMs, v))
+	vc, err := ValueScanner.SaveTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldSaveTimeInMs, vc), err)
 }
 
 // SaveTimeInMsNEQ applies the NEQ predicate on the "save_time_in_ms" field.
 func SaveTimeInMsNEQ(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNEQ(FieldSaveTimeInMs, v))
+	vc, err := ValueScanner.SaveTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNEQ(FieldSaveTimeInMs, vc), err)
 }
 
 // SaveTimeInMsIn applies the In predicate on the "save_time_in_ms" field.
 func SaveTimeInMsIn(vs ...uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldIn(FieldSaveTimeInMs, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.SaveTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldIn(FieldSaveTimeInMs, v...), err)
 }
 
 // SaveTimeInMsNotIn applies the NotIn predicate on the "save_time_in_ms" field.
 func SaveTimeInMsNotIn(vs ...uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNotIn(FieldSaveTimeInMs, vs...))
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.SaveTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNotIn(FieldSaveTimeInMs, v...), err)
 }
 
 // SaveTimeInMsGT applies the GT predicate on the "save_time_in_ms" field.
 func SaveTimeInMsGT(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGT(FieldSaveTimeInMs, v))
+	vc, err := ValueScanner.SaveTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGT(FieldSaveTimeInMs, vc), err)
 }
 
 // SaveTimeInMsGTE applies the GTE predicate on the "save_time_in_ms" field.
 func SaveTimeInMsGTE(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGTE(FieldSaveTimeInMs, v))
+	vc, err := ValueScanner.SaveTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGTE(FieldSaveTimeInMs, vc), err)
 }
 
 // SaveTimeInMsLT applies the LT predicate on the "save_time_in_ms" field.
 func SaveTimeInMsLT(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLT(FieldSaveTimeInMs, v))
+	vc, err := ValueScanner.SaveTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLT(FieldSaveTimeInMs, vc), err)
 }
 
 // SaveTimeInMsLTE applies the LTE predicate on the "save_time_in_ms" field.
 func SaveTimeInMsLTE(v uint64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLTE(FieldSaveTimeInMs, v))
+	vc, err := ValueScanner.SaveTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLTE(FieldSaveTimeInMs, vc), err)
 }
 
 // SaveTimeInMsIsNil applies the IsNil predicate on the "save_time_in_ms" field.
@@ -179,43 +236,67 @@ func SaveTimeInMsNotNil() predicate.ActionCacheStatistics {
 }
 
 // LoadTimeInMsEQ applies the EQ predicate on the "load_time_in_ms" field.
-func LoadTimeInMsEQ(v int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldLoadTimeInMs, v))
+func LoadTimeInMsEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsNEQ applies the NEQ predicate on the "load_time_in_ms" field.
-func LoadTimeInMsNEQ(v int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNEQ(FieldLoadTimeInMs, v))
+func LoadTimeInMsNEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNEQ(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsIn applies the In predicate on the "load_time_in_ms" field.
-func LoadTimeInMsIn(vs ...int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldIn(FieldLoadTimeInMs, vs...))
+func LoadTimeInMsIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.LoadTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldIn(FieldLoadTimeInMs, v...), err)
 }
 
 // LoadTimeInMsNotIn applies the NotIn predicate on the "load_time_in_ms" field.
-func LoadTimeInMsNotIn(vs ...int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldNotIn(FieldLoadTimeInMs, vs...))
+func LoadTimeInMsNotIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.LoadTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNotIn(FieldLoadTimeInMs, v...), err)
 }
 
 // LoadTimeInMsGT applies the GT predicate on the "load_time_in_ms" field.
-func LoadTimeInMsGT(v int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGT(FieldLoadTimeInMs, v))
+func LoadTimeInMsGT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGT(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsGTE applies the GTE predicate on the "load_time_in_ms" field.
-func LoadTimeInMsGTE(v int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldGTE(FieldLoadTimeInMs, v))
+func LoadTimeInMsGTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGTE(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsLT applies the LT predicate on the "load_time_in_ms" field.
-func LoadTimeInMsLT(v int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLT(FieldLoadTimeInMs, v))
+func LoadTimeInMsLT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLT(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsLTE applies the LTE predicate on the "load_time_in_ms" field.
-func LoadTimeInMsLTE(v int64) predicate.ActionCacheStatistics {
-	return predicate.ActionCacheStatistics(sql.FieldLTE(FieldLoadTimeInMs, v))
+func LoadTimeInMsLTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.LoadTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLTE(FieldLoadTimeInMs, vc), err)
 }
 
 // LoadTimeInMsIsNil applies the IsNil predicate on the "load_time_in_ms" field.
@@ -226,6 +307,80 @@ func LoadTimeInMsIsNil() predicate.ActionCacheStatistics {
 // LoadTimeInMsNotNil applies the NotNil predicate on the "load_time_in_ms" field.
 func LoadTimeInMsNotNil() predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(sql.FieldNotNull(FieldLoadTimeInMs))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsEQ applies the EQ predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsNEQ applies the NEQ predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsNEQ(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNEQ(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsIn applies the In predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldIn(FieldCacheCheckSemaphoreWaitTimeInMs, v...), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsNotIn applies the NotIn predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsNotIn(vs ...uint64) predicate.ActionCacheStatistics {
+	var (
+		err error
+		v   = make([]any, len(vs))
+	)
+	for i := range v {
+		if v[i], err = ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(vs[i]); err != nil {
+			break
+		}
+	}
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldNotIn(FieldCacheCheckSemaphoreWaitTimeInMs, v...), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsGT applies the GT predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsGT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGT(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsGTE applies the GTE predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsGTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldGTE(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsLT applies the LT predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsLT(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLT(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsLTE applies the LTE predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsLTE(v uint64) predicate.ActionCacheStatistics {
+	vc, err := ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(v)
+	return predicate.ActionCacheStatisticsOrErr(sql.FieldLTE(FieldCacheCheckSemaphoreWaitTimeInMs, vc), err)
+}
+
+// CacheCheckSemaphoreWaitTimeInMsIsNil applies the IsNil predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsIsNil() predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldIsNull(FieldCacheCheckSemaphoreWaitTimeInMs))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsNotNil applies the NotNil predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsNotNil() predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldNotNull(FieldCacheCheckSemaphoreWaitTimeInMs))
 }
 
 // HitsEQ applies the EQ predicate on the "hits" field.

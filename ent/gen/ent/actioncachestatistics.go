@@ -22,7 +22,9 @@ type ActionCacheStatistics struct {
 	// SaveTimeInMs holds the value of the "save_time_in_ms" field.
 	SaveTimeInMs uint64 `json:"save_time_in_ms,omitempty"`
 	// LoadTimeInMs holds the value of the "load_time_in_ms" field.
-	LoadTimeInMs int64 `json:"load_time_in_ms,omitempty"`
+	LoadTimeInMs uint64 `json:"load_time_in_ms,omitempty"`
+	// CacheCheckSemaphoreWaitTimeInMs holds the value of the "cache_check_semaphore_wait_time_in_ms" field.
+	CacheCheckSemaphoreWaitTimeInMs uint64 `json:"cache_check_semaphore_wait_time_in_ms,omitempty"`
 	// Hits holds the value of the "hits" field.
 	Hits int32 `json:"hits,omitempty"`
 	// Misses holds the value of the "misses" field.
@@ -74,8 +76,16 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
+		case actioncachestatistics.FieldID, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
 			values[i] = new(sql.NullInt64)
+		case actioncachestatistics.FieldSizeInBytes:
+			values[i] = actioncachestatistics.ValueScanner.SizeInBytes.ScanValue()
+		case actioncachestatistics.FieldSaveTimeInMs:
+			values[i] = actioncachestatistics.ValueScanner.SaveTimeInMs.ScanValue()
+		case actioncachestatistics.FieldLoadTimeInMs:
+			values[i] = actioncachestatistics.ValueScanner.LoadTimeInMs.ScanValue()
+		case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+			values[i] = actioncachestatistics.ValueScanner.CacheCheckSemaphoreWaitTimeInMs.ScanValue()
 		case actioncachestatistics.ForeignKeys[0]: // action_summary_action_cache_statistics
 			values[i] = new(sql.NullInt64)
 		default:
@@ -100,22 +110,28 @@ func (_m *ActionCacheStatistics) assignValues(columns []string, values []any) er
 			}
 			_m.ID = int64(value.Int64)
 		case actioncachestatistics.FieldSizeInBytes:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field size_in_bytes", values[i])
-			} else if value.Valid {
-				_m.SizeInBytes = uint64(value.Int64)
+			if value, err := actioncachestatistics.ValueScanner.SizeInBytes.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.SizeInBytes = value
 			}
 		case actioncachestatistics.FieldSaveTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field save_time_in_ms", values[i])
-			} else if value.Valid {
-				_m.SaveTimeInMs = uint64(value.Int64)
+			if value, err := actioncachestatistics.ValueScanner.SaveTimeInMs.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.SaveTimeInMs = value
 			}
 		case actioncachestatistics.FieldLoadTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field load_time_in_ms", values[i])
-			} else if value.Valid {
-				_m.LoadTimeInMs = value.Int64
+			if value, err := actioncachestatistics.ValueScanner.LoadTimeInMs.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.LoadTimeInMs = value
+			}
+		case actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs:
+			if value, err := actioncachestatistics.ValueScanner.CacheCheckSemaphoreWaitTimeInMs.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.CacheCheckSemaphoreWaitTimeInMs = value
 			}
 		case actioncachestatistics.FieldHits:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -190,6 +206,9 @@ func (_m *ActionCacheStatistics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("load_time_in_ms=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LoadTimeInMs))
+	builder.WriteString(", ")
+	builder.WriteString("cache_check_semaphore_wait_time_in_ms=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CacheCheckSemaphoreWaitTimeInMs))
 	builder.WriteString(", ")
 	builder.WriteString("hits=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Hits))

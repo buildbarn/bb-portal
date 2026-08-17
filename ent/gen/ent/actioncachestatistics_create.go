@@ -52,15 +52,29 @@ func (_c *ActionCacheStatisticsCreate) SetNillableSaveTimeInMs(v *uint64) *Actio
 }
 
 // SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (_c *ActionCacheStatisticsCreate) SetLoadTimeInMs(v int64) *ActionCacheStatisticsCreate {
+func (_c *ActionCacheStatisticsCreate) SetLoadTimeInMs(v uint64) *ActionCacheStatisticsCreate {
 	_c.mutation.SetLoadTimeInMs(v)
 	return _c
 }
 
 // SetNillableLoadTimeInMs sets the "load_time_in_ms" field if the given value is not nil.
-func (_c *ActionCacheStatisticsCreate) SetNillableLoadTimeInMs(v *int64) *ActionCacheStatisticsCreate {
+func (_c *ActionCacheStatisticsCreate) SetNillableLoadTimeInMs(v *uint64) *ActionCacheStatisticsCreate {
 	if v != nil {
 		_c.SetLoadTimeInMs(*v)
+	}
+	return _c
+}
+
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (_c *ActionCacheStatisticsCreate) SetCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsCreate {
+	_c.mutation.SetCacheCheckSemaphoreWaitTimeInMs(v)
+	return _c
+}
+
+// SetNillableCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field if the given value is not nil.
+func (_c *ActionCacheStatisticsCreate) SetNillableCacheCheckSemaphoreWaitTimeInMs(v *uint64) *ActionCacheStatisticsCreate {
+	if v != nil {
+		_c.SetCacheCheckSemaphoreWaitTimeInMs(*v)
 	}
 	return _c
 }
@@ -174,7 +188,10 @@ func (_c *ActionCacheStatisticsCreate) sqlSave(ctx context.Context) (*ActionCach
 	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := _c.createSpec()
+	_node, _spec, err := _c.createSpec()
+	if err != nil {
+		return nil, err
+	}
 	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
@@ -190,7 +207,7 @@ func (_c *ActionCacheStatisticsCreate) sqlSave(ctx context.Context) (*ActionCach
 	return _node, nil
 }
 
-func (_c *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *sqlgraph.CreateSpec) {
+func (_c *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *sqlgraph.CreateSpec, error) {
 	var (
 		_node = &ActionCacheStatistics{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(actioncachestatistics.Table, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt64))
@@ -201,16 +218,36 @@ func (_c *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *sq
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.SizeInBytes(); ok {
-		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
+		vv, err := actioncachestatistics.ValueScanner.SizeInBytes.Value(value)
+		if err != nil {
+			return nil, nil, err
+		}
+		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, vv)
 		_node.SizeInBytes = value
 	}
 	if value, ok := _c.mutation.SaveTimeInMs(); ok {
-		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, value)
+		vv, err := actioncachestatistics.ValueScanner.SaveTimeInMs.Value(value)
+		if err != nil {
+			return nil, nil, err
+		}
+		_spec.SetField(actioncachestatistics.FieldSaveTimeInMs, field.TypeUint64, vv)
 		_node.SaveTimeInMs = value
 	}
 	if value, ok := _c.mutation.LoadTimeInMs(); ok {
-		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
+		vv, err := actioncachestatistics.ValueScanner.LoadTimeInMs.Value(value)
+		if err != nil {
+			return nil, nil, err
+		}
+		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeUint64, vv)
 		_node.LoadTimeInMs = value
+	}
+	if value, ok := _c.mutation.CacheCheckSemaphoreWaitTimeInMs(); ok {
+		vv, err := actioncachestatistics.ValueScanner.CacheCheckSemaphoreWaitTimeInMs.Value(value)
+		if err != nil {
+			return nil, nil, err
+		}
+		_spec.SetField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64, vv)
+		_node.CacheCheckSemaphoreWaitTimeInMs = value
 	}
 	if value, ok := _c.mutation.Hits(); ok {
 		_spec.SetField(actioncachestatistics.FieldHits, field.TypeInt32, value)
@@ -253,7 +290,7 @@ func (_c *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *sq
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	return _node, _spec
+	return _node, _spec, nil
 }
 
 // OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
@@ -304,78 +341,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsert) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsert {
-	u.Set(actioncachestatistics.FieldSizeInBytes, v)
-	return u
-}
-
-// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsert) UpdateSizeInBytes() *ActionCacheStatisticsUpsert {
-	u.SetExcluded(actioncachestatistics.FieldSizeInBytes)
-	return u
-}
-
-// AddSizeInBytes adds v to the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsert) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsert {
-	u.Add(actioncachestatistics.FieldSizeInBytes, v)
-	return u
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsert) ClearSizeInBytes() *ActionCacheStatisticsUpsert {
-	u.SetNull(actioncachestatistics.FieldSizeInBytes)
-	return u
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
-	u.Set(actioncachestatistics.FieldSaveTimeInMs, v)
-	return u
-}
-
-// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsert) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsert {
-	u.SetExcluded(actioncachestatistics.FieldSaveTimeInMs)
-	return u
-}
-
-// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
-	u.Add(actioncachestatistics.FieldSaveTimeInMs, v)
-	return u
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) ClearSaveTimeInMs() *ActionCacheStatisticsUpsert {
-	u.SetNull(actioncachestatistics.FieldSaveTimeInMs)
-	return u
-}
-
-// SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpsert {
-	u.Set(actioncachestatistics.FieldLoadTimeInMs, v)
-	return u
-}
-
-// UpdateLoadTimeInMs sets the "load_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsert) UpdateLoadTimeInMs() *ActionCacheStatisticsUpsert {
-	u.SetExcluded(actioncachestatistics.FieldLoadTimeInMs)
-	return u
-}
-
-// AddLoadTimeInMs adds v to the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpsert {
-	u.Add(actioncachestatistics.FieldLoadTimeInMs, v)
-	return u
-}
-
-// ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsert) ClearLoadTimeInMs() *ActionCacheStatisticsUpsert {
-	u.SetNull(actioncachestatistics.FieldLoadTimeInMs)
-	return u
-}
 
 // SetHits sets the "hits" field.
 func (u *ActionCacheStatisticsUpsert) SetHits(v int32) *ActionCacheStatisticsUpsert {
@@ -442,6 +407,18 @@ func (u *ActionCacheStatisticsUpsertOne) UpdateNewValues() *ActionCacheStatistic
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(actioncachestatistics.FieldID)
 		}
+		if _, exists := u.create.mutation.SizeInBytes(); exists {
+			s.SetIgnore(actioncachestatistics.FieldSizeInBytes)
+		}
+		if _, exists := u.create.mutation.SaveTimeInMs(); exists {
+			s.SetIgnore(actioncachestatistics.FieldSaveTimeInMs)
+		}
+		if _, exists := u.create.mutation.LoadTimeInMs(); exists {
+			s.SetIgnore(actioncachestatistics.FieldLoadTimeInMs)
+		}
+		if _, exists := u.create.mutation.CacheCheckSemaphoreWaitTimeInMs(); exists {
+			s.SetIgnore(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+		}
 	}))
 	return u
 }
@@ -471,90 +448,6 @@ func (u *ActionCacheStatisticsUpsertOne) Update(set func(*ActionCacheStatisticsU
 		set(&ActionCacheStatisticsUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertOne) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSizeInBytes(v)
-	})
-}
-
-// AddSizeInBytes adds v to the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertOne) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSizeInBytes(v)
-	})
-}
-
-// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertOne) UpdateSizeInBytes() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSizeInBytes()
-	})
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertOne) ClearSizeInBytes() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSizeInBytes()
-	})
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSaveTimeInMs(v)
-	})
-}
-
-// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSaveTimeInMs(v)
-	})
-}
-
-// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertOne) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSaveTimeInMs()
-	})
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) ClearSaveTimeInMs() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSaveTimeInMs()
-	})
-}
-
-// SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetLoadTimeInMs(v)
-	})
-}
-
-// AddLoadTimeInMs adds v to the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddLoadTimeInMs(v)
-	})
-}
-
-// UpdateLoadTimeInMs sets the "load_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertOne) UpdateLoadTimeInMs() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateLoadTimeInMs()
-	})
-}
-
-// ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertOne) ClearLoadTimeInMs() *ActionCacheStatisticsUpsertOne {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearLoadTimeInMs()
-	})
 }
 
 // SetHits sets the "hits" field.
@@ -675,7 +568,10 @@ func (_c *ActionCacheStatisticsCreateBulk) Save(ctx context.Context) ([]*ActionC
 				}
 				builder.mutation = mutation
 				var err error
-				nodes[i], specs[i] = builder.createSpec()
+				nodes[i], specs[i], err = builder.createSpec()
+				if err != nil {
+					return nil, err
+				}
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
@@ -794,6 +690,18 @@ func (u *ActionCacheStatisticsUpsertBulk) UpdateNewValues() *ActionCacheStatisti
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(actioncachestatistics.FieldID)
 			}
+			if _, exists := b.mutation.SizeInBytes(); exists {
+				s.SetIgnore(actioncachestatistics.FieldSizeInBytes)
+			}
+			if _, exists := b.mutation.SaveTimeInMs(); exists {
+				s.SetIgnore(actioncachestatistics.FieldSaveTimeInMs)
+			}
+			if _, exists := b.mutation.LoadTimeInMs(); exists {
+				s.SetIgnore(actioncachestatistics.FieldLoadTimeInMs)
+			}
+			if _, exists := b.mutation.CacheCheckSemaphoreWaitTimeInMs(); exists {
+				s.SetIgnore(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+			}
 		}
 	}))
 	return u
@@ -824,90 +732,6 @@ func (u *ActionCacheStatisticsUpsertBulk) Update(set func(*ActionCacheStatistics
 		set(&ActionCacheStatisticsUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertBulk) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSizeInBytes(v)
-	})
-}
-
-// AddSizeInBytes adds v to the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertBulk) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSizeInBytes(v)
-	})
-}
-
-// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertBulk) UpdateSizeInBytes() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSizeInBytes()
-	})
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (u *ActionCacheStatisticsUpsertBulk) ClearSizeInBytes() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSizeInBytes()
-	})
-}
-
-// SetSaveTimeInMs sets the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetSaveTimeInMs(v)
-	})
-}
-
-// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddSaveTimeInMs(v)
-	})
-}
-
-// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertBulk) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateSaveTimeInMs()
-	})
-}
-
-// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) ClearSaveTimeInMs() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearSaveTimeInMs()
-	})
-}
-
-// SetLoadTimeInMs sets the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.SetLoadTimeInMs(v)
-	})
-}
-
-// AddLoadTimeInMs adds v to the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.AddLoadTimeInMs(v)
-	})
-}
-
-// UpdateLoadTimeInMs sets the "load_time_in_ms" field to the value that was provided on create.
-func (u *ActionCacheStatisticsUpsertBulk) UpdateLoadTimeInMs() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.UpdateLoadTimeInMs()
-	})
-}
-
-// ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
-func (u *ActionCacheStatisticsUpsertBulk) ClearLoadTimeInMs() *ActionCacheStatisticsUpsertBulk {
-	return u.Update(func(s *ActionCacheStatisticsUpsert) {
-		s.ClearLoadTimeInMs()
-	})
 }
 
 // SetHits sets the "hits" field.

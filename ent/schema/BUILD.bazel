@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "schema",
@@ -41,6 +41,7 @@ go_library(
         "testsummary.go",
         "testtarget.go",
         "timingmetrics.go",
+        "uint64.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/ent/schema",
     visibility = ["//visibility:public"],
@@ -49,6 +50,7 @@ go_library(
         "@com_github_google_uuid//:uuid",
         "@io_entgo_contrib//entgql",
         "@io_entgo_ent//:ent",
+        "@io_entgo_ent//dialect",
         "@io_entgo_ent//dialect/entsql",
         "@io_entgo_ent//schema",
         "@io_entgo_ent//schema/edge",
@@ -56,4 +58,11 @@ go_library(
         "@io_entgo_ent//schema/index",
         "@io_entgo_ent//schema/mixin",
     ],
+)
+
+go_test(
+    name = "schema_test",
+    srcs = ["uint64_test.go"],
+    embed = [":schema"],
+    deps = ["@io_entgo_ent//dialect"],
 )

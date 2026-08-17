@@ -67,8 +67,24 @@ func (*SystemNetworkStats) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case systemnetworkstats.FieldID, systemnetworkstats.FieldBytesSent, systemnetworkstats.FieldBytesRecv, systemnetworkstats.FieldPacketsSent, systemnetworkstats.FieldPacketsRecv, systemnetworkstats.FieldPeakBytesSentPerSec, systemnetworkstats.FieldPeakBytesRecvPerSec, systemnetworkstats.FieldPeakPacketsSentPerSec, systemnetworkstats.FieldPeakPacketsRecvPerSec:
+		case systemnetworkstats.FieldID:
 			values[i] = new(sql.NullInt64)
+		case systemnetworkstats.FieldBytesSent:
+			values[i] = systemnetworkstats.ValueScanner.BytesSent.ScanValue()
+		case systemnetworkstats.FieldBytesRecv:
+			values[i] = systemnetworkstats.ValueScanner.BytesRecv.ScanValue()
+		case systemnetworkstats.FieldPacketsSent:
+			values[i] = systemnetworkstats.ValueScanner.PacketsSent.ScanValue()
+		case systemnetworkstats.FieldPacketsRecv:
+			values[i] = systemnetworkstats.ValueScanner.PacketsRecv.ScanValue()
+		case systemnetworkstats.FieldPeakBytesSentPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakBytesSentPerSec.ScanValue()
+		case systemnetworkstats.FieldPeakBytesRecvPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakBytesRecvPerSec.ScanValue()
+		case systemnetworkstats.FieldPeakPacketsSentPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakPacketsSentPerSec.ScanValue()
+		case systemnetworkstats.FieldPeakPacketsRecvPerSec:
+			values[i] = systemnetworkstats.ValueScanner.PeakPacketsRecvPerSec.ScanValue()
 		case systemnetworkstats.ForeignKeys[0]: // network_metrics_system_network_stats
 			values[i] = new(sql.NullInt64)
 		default:
@@ -93,52 +109,52 @@ func (_m *SystemNetworkStats) assignValues(columns []string, values []any) error
 			}
 			_m.ID = int64(value.Int64)
 		case systemnetworkstats.FieldBytesSent:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field bytes_sent", values[i])
-			} else if value.Valid {
-				_m.BytesSent = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.BytesSent.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.BytesSent = value
 			}
 		case systemnetworkstats.FieldBytesRecv:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field bytes_recv", values[i])
-			} else if value.Valid {
-				_m.BytesRecv = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.BytesRecv.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.BytesRecv = value
 			}
 		case systemnetworkstats.FieldPacketsSent:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field packets_sent", values[i])
-			} else if value.Valid {
-				_m.PacketsSent = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.PacketsSent.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PacketsSent = value
 			}
 		case systemnetworkstats.FieldPacketsRecv:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field packets_recv", values[i])
-			} else if value.Valid {
-				_m.PacketsRecv = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.PacketsRecv.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PacketsRecv = value
 			}
 		case systemnetworkstats.FieldPeakBytesSentPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_bytes_sent_per_sec", values[i])
-			} else if value.Valid {
-				_m.PeakBytesSentPerSec = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.PeakBytesSentPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakBytesSentPerSec = value
 			}
 		case systemnetworkstats.FieldPeakBytesRecvPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_bytes_recv_per_sec", values[i])
-			} else if value.Valid {
-				_m.PeakBytesRecvPerSec = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.PeakBytesRecvPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakBytesRecvPerSec = value
 			}
 		case systemnetworkstats.FieldPeakPacketsSentPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_packets_sent_per_sec", values[i])
-			} else if value.Valid {
-				_m.PeakPacketsSentPerSec = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.PeakPacketsSentPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakPacketsSentPerSec = value
 			}
 		case systemnetworkstats.FieldPeakPacketsRecvPerSec:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field peak_packets_recv_per_sec", values[i])
-			} else if value.Valid {
-				_m.PeakPacketsRecvPerSec = uint64(value.Int64)
+			if value, err := systemnetworkstats.ValueScanner.PeakPacketsRecvPerSec.FromValue(values[i]); err != nil {
+				return err
+			} else {
+				_m.PeakPacketsRecvPerSec = value
 			}
 		case systemnetworkstats.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
