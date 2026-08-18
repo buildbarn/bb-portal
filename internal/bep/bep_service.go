@@ -2,6 +2,7 @@ package bep
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	gqlgen "github.com/99designs/gqlgen/graphql"
@@ -22,7 +23,6 @@ import (
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/gorilla/mux"
 	"go.opentelemetry.io/otel/trace"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
@@ -39,7 +39,7 @@ func NewBuildEventProtocolService(
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	instanceNameAuthorizer auth.Authorizer,
-	router *mux.Router,
+	router *http.ServeMux,
 	tracerProvider trace.TracerProvider,
 ) error {
 	dialect, connection, err := common.NewSQLConnectionFromConfiguration(configuration.Database, tracerProvider)
@@ -82,14 +82,20 @@ func NewBuildEventProtocolService(
 	srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
 		return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService))
 	})
-	router.PathPrefix("/graphql").Handler(srv)
+
+	router.Handle("/graphql", srv)
+	router.Handle("/graphql/", srv)
+
 	if configuration.EnableGraphqlPlayground {
 		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	}
 
 	// Handle log requests.
 	logHandler, err := loghandler.NewLogHandler(dbClient.Ent(), dbAuthService, tracerProvider)
-	router.Path("/api/v1/invocations/{invocation_id}/log").Methods("GET").Handler(logHandler)
+	router.Handle(
+		"GET /api/v1/invocations/{invocation_id}/log",
+		logHandler,
+	)
 
 	// Handle BEP file uploads over HTTP.
 	if configuration.EnableBepFileUpload {
@@ -97,7 +103,10 @@ func NewBuildEventProtocolService(
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BEP file upload handler")
 		}
-		router.Path("/api/v1/bep/upload").Methods("POST").Handler(bepUploader)
+		router.Handle(
+			"POST /api/v1/bep/upload",
+			bepUploader,
+		)
 	}
 
 	// Handle the Build Event gRPC Stream.

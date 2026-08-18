@@ -18,7 +18,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/proto/iscc"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	bb_zstd "github.com/buildbarn/bb-storage/pkg/zstd"
-	"github.com/gorilla/mux"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/genproto/googleapis/bytestream"
 	go_grpc "google.golang.org/grpc"
@@ -36,7 +35,7 @@ func NewBlobstoreService(
 	grpcClientFactory bb_grpc.ClientFactory,
 	instanceNameAuthorizer auth.Authorizer,
 	zstdPool bb_zstd.Pool,
-	router *mux.Router,
+	router *http.ServeMux,
 ) error {
 	// Authorizer used to deny all write requests.
 	denyAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return false })
@@ -59,17 +58,26 @@ func NewBlobstoreService(
 		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, instanceNameAuthorizer)
 		remoteexecution.RegisterContentAddressableStorageServer(grpcServer, grpcservers.NewContentAddressableStorageServer(blobAccess, configuration.MaximumMessageSizeBytes))
 		bytestream.RegisterByteStreamServer(grpcServer, grpcservers.NewByteStreamServer(blobAccess, 1<<16, zstdPool))
-		router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/google.bytestream.ByteStream/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
-		router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/build.bazel.remote.execution.v2.ContentAddressableStorage/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
-
+		router.Handle(
+			bb_grpcweb.GrpcWebEndpointPrefix+"/google.bytestream.ByteStream/",
+			http.StripPrefix(
+				bb_grpcweb.GrpcWebEndpointPrefix,
+				grpcWebServer,
+			),
+		)
+		router.Handle(
+			bb_grpcweb.GrpcWebEndpointPrefix+"/build.bazel.remote.execution.v2.ContentAddressableStorage/",
+			http.StripPrefix(
+				bb_grpcweb.GrpcWebEndpointPrefix,
+				grpcWebServer,
+			),
+		)
 		// Serve files from the Content Addressable Storage (CAS) over HTTP.
 		serveFilesService := servefiles.NewFileServerService(
 			blobAccess,
 			int(configuration.MaximumMessageSizeBytes),
 		)
-		router.HandleFunc("/api/v1/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/file/{hash}-{sizeBytes}/{name}", serveFilesService.HandleFile).Methods("GET")
-		router.HandleFunc("/api/v1/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/command/{hash}-{sizeBytes}/", serveFilesService.HandleCommand).Methods("GET")
-		router.HandleFunc("/api/v1/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/directory/{hash}-{sizeBytes}/", serveFilesService.HandleDirectory).Methods("GET")
+		router.HandleFunc("GET /api/v1/servefile/", servefiles.Dispatcher(serveFilesService))
 
 		contentAddressableStorageInfo = &info
 	}
@@ -87,7 +95,13 @@ func NewBlobstoreService(
 		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
 		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, denyAuthorizer)
 		remoteexecution.RegisterActionCacheServer(grpcServer, grpcservers.NewActionCacheServer(blobAccess, int(configuration.MaximumMessageSizeBytes)))
-		router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/build.bazel.remote.execution.v2.ActionCache/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
+		router.Handle(
+			bb_grpcweb.GrpcWebEndpointPrefix+"/build.bazel.remote.execution.v2.ActionCache/",
+			http.StripPrefix(
+				bb_grpcweb.GrpcWebEndpointPrefix,
+				grpcWebServer,
+			),
+		)
 	}
 
 	// Initial Size Class Cache (ISCC).
@@ -103,7 +117,13 @@ func NewBlobstoreService(
 		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
 		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, denyAuthorizer)
 		iscc.RegisterInitialSizeClassCacheServer(grpcServer, grpcservers.NewInitialSizeClassCacheServer(blobAccess, int(configuration.MaximumMessageSizeBytes)))
-		router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/buildbarn.iscc.InitialSizeClassCache/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
+		router.Handle(
+			bb_grpcweb.GrpcWebEndpointPrefix+"/buildbarn.iscc.InitialSizeClassCache/",
+			http.StripPrefix(
+				bb_grpcweb.GrpcWebEndpointPrefix,
+				grpcWebServer,
+			),
+		)
 	}
 
 	// File System Access Cache (FSAC).
@@ -119,7 +139,13 @@ func NewBlobstoreService(
 		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
 		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, denyAuthorizer)
 		fsac.RegisterFileSystemAccessCacheServer(grpcServer, grpcservers.NewFileSystemAccessCacheServer(blobAccess, int(configuration.MaximumMessageSizeBytes)))
-		router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/buildbarn.fsac.FileSystemAccessCache/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
+		router.Handle(
+			bb_grpcweb.GrpcWebEndpointPrefix+"/buildbarn.fsac.FileSystemAccessCache/",
+			http.StripPrefix(
+				bb_grpcweb.GrpcWebEndpointPrefix,
+				grpcWebServer,
+			),
+		)
 	}
 
 	return nil

@@ -148,7 +148,7 @@ func (s FileServerService) generateTarball(ctx context.Context, w http.ResponseW
 }
 
 // HandleDirectory serves a directory as a tarball.
-func (s FileServerService) HandleDirectory(w http.ResponseWriter, req *http.Request) {
+func (s FileServerService) HandleDirectory(w http.ResponseWriter, req *http.Request, params digestParams) {
 	if req.Method != "GET" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -159,7 +159,7 @@ func (s FileServerService) HandleDirectory(w http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	directoryDigest, err := getDigestFromRequest(req)
+	directoryDigest, err := getDigestFromParams(params)
 	if err != nil {
 		http.Error(w, "Digest not found", http.StatusNotFound)
 		return
