@@ -14,6 +14,8 @@
           "sizeInBytes": 0
         },
         "actionData": [],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 0,
         "id": "QWN0aW9uU3VtbWFyeTo2",
         "runnerCount": [
@@ -37,6 +39,10 @@
         "topLevelArtifactsSizeInBytes": 0
       },
       "buildGraphMetrics": {
+        "actionCount": 0,
+        "actionCountNotIncludingAspects": 0,
+        "actionLookupValueCount": 0,
+        "actionLookupValueCountNotIncludingAspects": 0,
         "aspectCounts": [],
         "evaluationStats": [
           {
@@ -485,6 +491,11 @@
           }
         ],
         "id": "QnVpbGRHcmFwaE1ldHJpY3M6Ng==",
+        "inputFileConfiguredTargetCount": 0,
+        "otherConfiguredTargetCount": 0,
+        "outputArtifactCount": 0,
+        "outputFileConfiguredTargetCount": 0,
+        "postInvocationSkyframeNodeCount": 6523,
         "ruleClassCounts": []
       },
       "cumulativeMetrics": {

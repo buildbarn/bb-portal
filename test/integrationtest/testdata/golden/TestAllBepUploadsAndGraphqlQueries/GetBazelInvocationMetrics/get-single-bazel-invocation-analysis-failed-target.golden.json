@@ -51,6 +51,7 @@
         },
         "actionData": [
           {
+            "actionsCreated": 0,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YToxMQ==",
             "mnemonic": "TestRunner",
@@ -58,6 +59,7 @@
             "userTime": 842
           },
           {
+            "actionsCreated": 0,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YToxMg==",
             "mnemonic": "BazelWorkspaceStatusAction",
@@ -65,6 +67,8 @@
             "userTime": 0
           }
         ],
+        "actionsCreated": 22,
+        "actionsCreatedNotIncludingAspects": 22,
         "actionsExecuted": 2,
         "id": "QWN0aW9uU3VtbWFyeTo0",
         "runnerCount": [
@@ -100,9 +104,18 @@
         "topLevelArtifactsSizeInBytes": 1157054839
       },
       "buildGraphMetrics": {
+        "actionCount": 2893,
+        "actionCountNotIncludingAspects": 2892,
+        "actionLookupValueCount": 5586,
+        "actionLookupValueCountNotIncludingAspects": 5585,
         "aspectCounts": [],
         "evaluationStats": [],
         "id": "QnVpbGRHcmFwaE1ldHJpY3M6NA==",
+        "inputFileConfiguredTargetCount": 3091,
+        "otherConfiguredTargetCount": 25,
+        "outputArtifactCount": 2405,
+        "outputFileConfiguredTargetCount": 0,
+        "postInvocationSkyframeNodeCount": 117718,
         "ruleClassCounts": []
       },
       "cumulativeMetrics": {

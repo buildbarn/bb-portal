@@ -3,6 +3,7 @@ import ActionStatisticsDisplay from "@/components/ActionStatisticsDisplay";
 import { ArtifactsMetricsDisplay } from "@/components/ArtifactsMetricsDisplay";
 import { BazelServerMetricsDisplay } from "@/components/BazelServerMetricsDisplay";
 import { BuildGraphEvaluationMetricsDisplay } from "@/components/BuildGraphEvaluationMetricsDisplay";
+import { BuildGraphMetricsDisplay } from "@/components/BuildGraphMetricsDisplay";
 import { DynamicExecutionMetricsDisplay } from "@/components/DynamicExecutionMetricsDisplay";
 import { GarbageCollectionMetrics } from "@/components/GarbageCollectionMetrics";
 import MemoryMetricsDisplay from "@/components/MemoryMetrics";
@@ -16,6 +17,7 @@ import {
   BAZEL_INVOCATION_METRICS_ACTION_SUMMARY_FRAGMENT,
   BAZEL_INVOCATION_METRICS_ARTIFACT_METRICS_FRAGMENT,
   BAZEL_INVOCATION_METRICS_BUILD_GRAPH_EVALUATION_METRICS_FRAGMENT,
+  BAZEL_INVOCATION_METRICS_BUILD_GRAPH_METRICS_FRAGMENT,
   BAZEL_INVOCATION_METRICS_CUMULATIVE_METRICS_FRAGMENT,
   BAZEL_INVOCATION_METRICS_DYNAMIC_EXECUTION_METRICS_FRAGMENT,
   BAZEL_INVOCATION_METRICS_GARBAGE_METRICS_FRAGMENT,
@@ -56,8 +58,12 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
     BAZEL_INVOCATION_METRICS_CUMULATIVE_METRICS_FRAGMENT,
     metrics.cumulativeMetrics,
   );
-  const buildGraphMetrics = getFragmentData(
+  const buildGraphEvaluationMetrics = getFragmentData(
     BAZEL_INVOCATION_METRICS_BUILD_GRAPH_EVALUATION_METRICS_FRAGMENT,
+    metrics.buildGraphMetrics,
+  );
+  const buildGraphMetrics = getFragmentData(
+    BAZEL_INVOCATION_METRICS_BUILD_GRAPH_METRICS_FRAGMENT,
     metrics.buildGraphMetrics,
   );
   const dynamicExecutionMetrics = getFragmentData(
@@ -72,10 +78,13 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
     BAZEL_INVOCATION_METRICS_WORKER_POOL_METRICS_FRAGMENT,
     metrics.workerPoolMetrics,
   );
-  const buildGraphEvaluationStats = buildGraphMetrics?.evaluationStats ?? [];
+  const buildGraphEvaluationStats =
+    buildGraphEvaluationMetrics?.evaluationStats ?? [];
   const packageLoadMetrics = packageMetrics?.packageLoadMetrics ?? [];
-  const buildGraphRuleClassCounts = buildGraphMetrics?.ruleClassCounts ?? [];
-  const buildGraphAspectCounts = buildGraphMetrics?.aspectCounts ?? [];
+  const buildGraphRuleClassCounts =
+    buildGraphEvaluationMetrics?.ruleClassCounts ?? [];
+  const buildGraphAspectCounts =
+    buildGraphEvaluationMetrics?.aspectCounts ?? [];
   const dynamicExecutionRaceStatistics =
     dynamicExecutionMetrics?.raceStatistics ?? [];
   const workers = workerMetrics ?? [];
@@ -119,6 +128,12 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
             cardStyle={CARD_STYLE}
           />
         )}
+        {buildGraphMetrics && (
+          <BuildGraphMetricsDisplay
+            buildGraphMetrics={buildGraphMetrics}
+            cardStyle={CARD_STYLE}
+          />
+        )}
       </Flex>
       {actionSummary && (
         <ActionStatisticsDisplay actionSummary={actionSummary} />
@@ -141,12 +156,12 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
       {packageMetrics && packageLoadMetrics.length > 0 && (
         <PackageLoadMetricsDisplay packageMetrics={packageMetrics} />
       )}
-      {buildGraphMetrics &&
+      {buildGraphEvaluationMetrics &&
         (buildGraphEvaluationStats.length > 0 ||
           buildGraphRuleClassCounts.length > 0 ||
           buildGraphAspectCounts.length > 0) && (
           <BuildGraphEvaluationMetricsDisplay
-            buildGraphMetrics={buildGraphMetrics}
+            buildGraphMetrics={buildGraphEvaluationMetrics}
           />
         )}
       {dynamicExecutionMetrics && dynamicExecutionRaceStatistics.length > 0 && (

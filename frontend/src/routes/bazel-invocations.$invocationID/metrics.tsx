@@ -35,6 +35,7 @@ const BAZEL_INVOCATION_METRICS_FRAGMENT = gql(/* GraphQL */ `
       ...BazelInvocationMetricsCumulativeMetrics
     }
     buildGraphMetrics {
+      ...BazelInvocationMetricsBuildGraphMetrics
       ...BazelInvocationMetricsBuildGraphEvaluationMetrics
     }
     dynamicExecutionMetrics {
@@ -62,6 +63,8 @@ export const BAZEL_INVOCATION_METRICS_ACTION_SUMMARY_FRAGMENT =
   gql(/* GraphQL */ `
   fragment BazelInvocationMetricsActionSummary on ActionSummary {
     id
+    actionsCreated
+    actionsCreatedNotIncludingAspects
     actionsExecuted
     actionCacheStatistics {
       id
@@ -86,10 +89,27 @@ export const BAZEL_INVOCATION_METRICS_ACTION_SUMMARY_FRAGMENT =
     actionData {
       id
       mnemonic
+      actionsCreated
       userTime
       systemTime
       actionsExecuted
     }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_BUILD_GRAPH_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsBuildGraphMetrics on BuildGraphMetrics {
+    id
+    actionLookupValueCount
+    actionLookupValueCountNotIncludingAspects
+    actionCount
+    actionCountNotIncludingAspects
+    inputFileConfiguredTargetCount
+    outputFileConfiguredTargetCount
+    otherConfiguredTargetCount
+    outputArtifactCount
+    postInvocationSkyframeNodeCount
   }
 `);
 
