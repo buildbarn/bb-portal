@@ -12,7 +12,6 @@ import (
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/gorilla/mux"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	go_grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -28,7 +27,7 @@ func NewSchedulerService(
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	instanceNameAuthorizer auth.Authorizer,
-	router *mux.Router,
+	router *http.ServeMux,
 ) error {
 	if configuration.ListOperationsPageSize <= 0 {
 		return status.Error(codes.NotFound, "No ListOperationsPageSize configured (or it is set to 0)")
@@ -56,8 +55,15 @@ func NewSchedulerService(
 	grpcWebServer := grpcweb.WrapServer(grpcServer)
 	buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildQueueStateServer)
 
-	router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/buildbarn.buildqueuestate.BuildQueueState/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
-	router.HandleFunc("/api/v1/checkPermissions/killOperation/{operationName}", buildQueueStateServer.CheckKillOperationAuthorization).Methods("GET")
+	router.Handle(
+		bb_grpcweb.GrpcWebEndpointPrefix+"/buildbarn.buildqueuestate.BuildQueueState/",
+		http.StripPrefix(
+			bb_grpcweb.GrpcWebEndpointPrefix,
+			grpcWebServer,
+		),
+	)
+
+	router.HandleFunc("GET /api/v1/checkPermissions/killOperation/{operationName}", buildQueueStateServer.CheckKillOperationAuthorization)
 
 	return nil
 }

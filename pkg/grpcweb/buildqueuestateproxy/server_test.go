@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/buildbarn/bb-portal/internal/mock"
-	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
@@ -927,7 +926,7 @@ func TestCheckKillOperationAuthorization(t *testing.T) {
 		require.NoError(t, err)
 
 		req = req.WithContext(ctx)
-		req = mux.SetURLVars(req, map[string]string{"operationName": "op1"})
+		req.SetPathValue("operationName", "op1")
 
 		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(&buildqueuestate.GetOperationResponse{
 			Operation: &buildqueuestate.OperationState{
@@ -954,7 +953,7 @@ func TestCheckKillOperationAuthorization(t *testing.T) {
 		require.NoError(t, err)
 
 		req = req.WithContext(ctx)
-		req = mux.SetURLVars(req, map[string]string{"operationName": "op2"})
+		req.SetPathValue("operationName", "op2")
 
 		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(&buildqueuestate.GetOperationResponse{
 			Operation: &buildqueuestate.OperationState{
@@ -981,7 +980,7 @@ func TestCheckKillOperationAuthorization(t *testing.T) {
 		require.NoError(t, err)
 
 		req = req.WithContext(ctx)
-		req = mux.SetURLVars(req, map[string]string{"operationName": "op3"})
+		req.SetPathValue("operationName", "op3")
 
 		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(nil, status.Errorf(codes.NotFound, "Operation was not found"))
 
