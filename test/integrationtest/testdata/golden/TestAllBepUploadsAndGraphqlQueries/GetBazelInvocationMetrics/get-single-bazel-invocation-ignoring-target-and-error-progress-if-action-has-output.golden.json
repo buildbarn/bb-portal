@@ -50,6 +50,7 @@
         },
         "actionData": [
           {
+            "actionsCreated": 0,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YToxMw==",
             "mnemonic": "BazelWorkspaceStatusAction",
@@ -57,6 +58,8 @@
             "userTime": 0
           }
         ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 1,
         "id": "QWN0aW9uU3VtbWFyeTo1",
         "runnerCount": [
@@ -84,6 +87,18 @@
         "sourceArtifactsReadSizeInBytes": 0,
         "topLevelArtifactsCount": 0,
         "topLevelArtifactsSizeInBytes": 0
+      },
+      "buildGraphMetrics": {
+        "actionCount": 0,
+        "actionCountNotIncludingAspects": 0,
+        "actionLookupValueCount": 0,
+        "actionLookupValueCountNotIncludingAspects": 0,
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6NQ==",
+        "inputFileConfiguredTargetCount": 0,
+        "otherConfiguredTargetCount": 0,
+        "outputArtifactCount": 0,
+        "outputFileConfiguredTargetCount": 0,
+        "postInvocationSkyframeNodeCount": 117503
       },
       "id": "TWV0cmljczo1",
       "memoryMetrics": {
