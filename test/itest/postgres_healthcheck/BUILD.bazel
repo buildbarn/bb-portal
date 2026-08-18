@@ -1,0 +1,16 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_binary(
+    name = "postgres_healthcheck",
+    embed = [":postgres_healthcheck_lib"],
+    importpath = "github.com/buildbarn/bb-portal/test/itest/postgres_healthcheck",
+    visibility = ["//test/itest:__pkg__"],
+)
+
+go_library(
+    name = "postgres_healthcheck_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/buildbarn/bb-portal/test/itest/postgres_healthcheck",
+    visibility = ["//visibility:private"],
+    deps = ["@com_github_jackc_pgx_v5//stdlib"],
+)

@@ -26,6 +26,7 @@ type DatabaseProvider struct {
 	port           int
 	db             *sql.DB
 	runtimePath    string
+	dataPath       string
 }
 
 // NewDatabaseProvider creates and starts an ephemeral Postgres
@@ -59,7 +60,13 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 
 	dataPath, err := os.MkdirTemp("/tmp", "embedded_db_data")
 	if err != nil {
-		return nil, util.StatusWrap(err, "Could not create temporary data directory for embedded postgres")
+		return nil, errors.Join(
+			util.StatusWrap(err, "Could not create temporary data directory for embedded postgres"),
+			os.RemoveAll(runtimePath),
+		)
+	}
+	cleanupDirectories := func() error {
+		return errors.Join(os.RemoveAll(runtimePath), os.RemoveAll(dataPath))
 	}
 
 	config := embeddedpostgres.DefaultConfig().
@@ -80,14 +87,20 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 	postgres := embeddedpostgres.NewDatabase(config)
 
 	if err := postgres.Start(); err != nil {
-		return nil, util.StatusWrap(err, "Failed to start embedded postgres")
+		return nil, errors.Join(
+			util.StatusWrap(err, "Failed to start embedded postgres"),
+			cleanupDirectories(),
+		)
 	}
 
 	connectionString := fmt.Sprintf("postgres://%s:%s@localhost:%d/%s?sslmode=disable", user, password, port, database)
 	db, err := sql.Open("pgx", connectionString)
 	if err != nil {
-		postgres.Stop()
-		return nil, util.StatusWrap(err, "Failed to open sql connection")
+		return nil, errors.Join(
+			util.StatusWrap(err, "Failed to open sql connection"),
+			postgres.Stop(),
+			cleanupDirectories(),
+		)
 	}
 
 	return &DatabaseProvider{
@@ -97,6 +110,7 @@ func NewDatabaseProvider(logger io.Writer) (*DatabaseProvider, error) {
 		port:        port,
 		db:          db,
 		runtimePath: runtimePath,
+		dataPath:    dataPath,
 	}, nil
 }
 
@@ -119,7 +133,7 @@ func (d *DatabaseProvider) CreateDatabase() (*sql.DB, error) {
 
 // Cleanup closes the primary connection and stops the postgres server.
 func (d *DatabaseProvider) Cleanup() error {
-	var err1, err2, err3 error
+	var err1, err2, err3, err4 error
 	if d.db != nil {
 		err1 = d.db.Close()
 	}
@@ -127,6 +141,7 @@ func (d *DatabaseProvider) Cleanup() error {
 		err2 = d.postgres.Stop()
 	}
 	err3 = os.RemoveAll(d.runtimePath)
+	err4 = os.RemoveAll(d.dataPath)
 
-	return errors.Join(err1, err2, err3)
+	return errors.Join(err1, err2, err3, err4)
 }

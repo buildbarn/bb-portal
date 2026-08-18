@@ -1,0 +1,30 @@
+load("@rules_itest//:itest.bzl", "itest_service")
+
+# These services use fixed ports so a separate Bazel invocation can publish
+# its BEP. Disable generated hygiene tests, which may run concurrently and
+# contend for those ports.
+itest_service(
+    name = "postgres_service",
+    exe = "//test/itest/postgres",
+    expected_start_duration = "3s",
+    health_check = "//test/itest/postgres_healthcheck",
+    health_check_args = ["postgresql://app:password@127.0.0.1:15432/postgres?sslmode=disable"],
+    health_check_timeout = "30s",
+    hygienic = False,
+    shutdown_timeout = "15s",
+    tags = ["requires-network"],
+)
+
+itest_service(
+    name = "bb_portal",
+    args = ["$(location :portal.jsonnet)"],
+    data = [":portal.jsonnet"],
+    exe = "//cmd/bb_portal",
+    expected_start_duration = "5s",
+    http_health_check_address = "http://127.0.0.1:18081/",
+    hygienic = False,
+    shutdown_timeout = "15s",
+    tags = ["requires-network"],
+    visibility = ["//visibility:public"],
+    deps = [":postgres_service"],
+)

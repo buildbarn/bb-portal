@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 load(":unpack.bzl", "unpack")
 
 go_library(
@@ -21,6 +21,7 @@ go_library(
 unpack(
     name = "extraced_embedded_postgres",
     src = ":embedded_postgres",
+    visibility = ["//test/itest/postgres:__pkg__"],
 )
 
 alias(
@@ -61,4 +62,10 @@ alias(
         "@platforms//cpu:x86_64": ["@platforms//os:macos"],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
+)
+
+go_test(
+    name = "embedded_test",
+    srcs = ["embedded_test.go"],
+    embed = [":embedded"],
 )

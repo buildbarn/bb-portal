@@ -3,5 +3,11 @@ run --workspace_status_command="bash tools/workspace-status.sh"
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc
 common --@rules_go//go/config:pure
 
+# Send a local Bazel invocation to //test/itest:bb_portal.
+build:bb_portal_itest --bes_backend=grpc://127.0.0.1:18082
+build:bb_portal_itest --bes_results_url=http://127.0.0.1:18081/bazel-invocations/
+build:bb_portal_itest --bes_upload_mode=wait_for_upload_complete
+build:bb_portal_itest --build_event_publish_all_actions
+
 import %workspace%/.common.bazelrc
 try-import %workspace%/.user.bazelrc
