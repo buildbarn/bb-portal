@@ -24,7 +24,6 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/grpc",
         "@com_github_buildbarn_bb_storage//pkg/program",
         "@com_github_buildbarn_bb_storage//pkg/util",
-        "@com_github_gorilla_mux//:mux",
         "@io_opentelemetry_go_otel_trace//:trace",
         "@org_golang_google_genproto//googleapis/devtools/build/v1:build",
         "@org_golang_google_grpc//:grpc",

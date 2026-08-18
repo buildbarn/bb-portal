@@ -10,7 +10,6 @@ import (
 
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/gorilla/mux"
 )
 
 // RouteManifest contains the JavaScript and CSS assets for a route
@@ -50,9 +49,9 @@ func preloadLinkMiddleware(next http.Handler, embeddedFrontendFS fs.FS) (http.Ha
 		return nil, util.StatusWrap(err, "Failed to parse route-manifest.json")
 	}
 
-	shadowRouter := mux.NewRouter()
+	shadowRouter := http.NewServeMux()
 	for _, route := range routeManifest {
-		shadowRouter.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
+		shadowRouter.HandleFunc("GET "+route.Path, func(w http.ResponseWriter, r *http.Request) {
 			for _, css := range route.CSS {
 				w.Header().Add("Link", fmt.Sprintf("</%s>; rel=preload; as=style; crossorigin", css))
 			}
@@ -60,18 +59,15 @@ func preloadLinkMiddleware(next http.Handler, embeddedFrontendFS fs.FS) (http.Ha
 				w.Header().Add("Link", fmt.Sprintf("</%s>; rel=modulepreload; crossorigin", js))
 			}
 			next.ServeHTTP(w, r)
-		}).Methods("GET")
+		})
 	}
 
 	// Fallback for static assets (images, fonts, etc.)
-	shadowRouter.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		next.ServeHTTP(w, r)
-	})
-
+	shadowRouter.Handle("/", next)
 	return shadowRouter, nil
 }
 
-func setupEmbeddedHandler(router *mux.Router, frontendConfig *frontend.PortalFrontendConfiguration) error {
+func setupEmbeddedHandler(router *http.ServeMux, frontendConfig *frontend.PortalFrontendConfiguration) error {
 	embeddedFrontendFS, err := fs.Sub(embeddedFiles, "embedded_frontend")
 	if err != nil {
 		return util.StatusWrap(err, "Failed to read embedded files")
@@ -87,6 +83,6 @@ func setupEmbeddedHandler(router *mux.Router, frontendConfig *frontend.PortalFro
 		return util.StatusWrap(err, "Failed to create preloadLinkMiddleware")
 	}
 	handler = cacheControlMiddleware(embeddedFrontendFS, handler)
-	router.PathPrefix("/").Handler(handler)
+	router.Handle("/", handler)
 	return nil
 }

@@ -6,6 +6,7 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -15,7 +16,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/gorilla/mux"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -24,33 +24,100 @@ import (
 
 var digestFunctionStrings = map[string]remoteexecution.DigestFunction_Value{}
 
+var (
+	// For /blobs/<digest>/file/<hash>-<size>/<name>
+	rxFile = regexp.MustCompile(`^/api/v1/servefile/(.*?/?)blobs/([^/]+)/file/([^/-]+)-([^/]+)/(.*)$`)
+
+	// For /blobs/<digest>/command/<hash>-<size>/
+	rxCommand = regexp.MustCompile(`^/api/v1/servefile/(.*?/?)blobs/([^/]+)/command/([^/-]+)-([^/]+)/?$`)
+
+	// For /blobs/<digest>/directory/<hash>-<size>/
+	rxDirectory = regexp.MustCompile(`^/api/v1/servefile/(.*?/?)blobs/([^/]+)/directory/([^/-]+)-([^/]+)/?$`)
+)
+
 func init() {
 	for _, digestFunction := range digest.SupportedDigestFunctions {
 		digestFunctionStrings[strings.ToLower(digestFunction.String())] = digestFunction
 	}
 }
 
-func getDigestFromRequest(req *http.Request) (digest.Digest, error) {
-	vars := mux.Vars(req)
-	instanceNameStr := strings.TrimSuffix(vars["instanceName"], "/")
+type digestParams struct {
+	instanceName   string
+	digestFunction string
+	hash           string
+	sizeBytes      string
+}
+
+type handleFileParams struct {
+	digestParams
+	name string
+}
+
+// Dispatcher dispatches requests to the appropriate handler based on the URL
+// path
+func Dispatcher(serveFilesService *FileServerService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+
+		if m := rxFile.FindStringSubmatch(path); m != nil {
+			params := handleFileParams{
+				digestParams: digestParams{
+					instanceName:   m[1],
+					digestFunction: m[2],
+					hash:           m[3],
+					sizeBytes:      m[4],
+				},
+				name: m[5],
+			}
+			serveFilesService.HandleFile(w, r, params)
+			return
+		}
+
+		if m := rxCommand.FindStringSubmatch(path); m != nil {
+			params := digestParams{
+				instanceName:   m[1],
+				digestFunction: m[2],
+				hash:           m[3],
+				sizeBytes:      m[4],
+			}
+			serveFilesService.HandleCommand(w, r, params)
+			return
+		}
+
+		if m := rxDirectory.FindStringSubmatch(path); m != nil {
+			params := digestParams{
+				instanceName:   m[1],
+				digestFunction: m[2],
+				hash:           m[3],
+				sizeBytes:      m[4],
+			}
+			serveFilesService.HandleDirectory(w, r, params)
+			return
+		}
+
+		http.NotFound(w, r)
+	}
+}
+
+func getDigestFromParams(params digestParams) (digest.Digest, error) {
+	instanceNameStr := strings.TrimSuffix(params.instanceName, "/")
 	instanceName, err := digest.NewInstanceName(instanceNameStr)
 	if err != nil {
 		return digest.BadDigest, util.StatusWrapf(err, "Invalid instance name %#v", instanceNameStr)
 	}
-	digestFunctionStr := vars["digestFunction"]
-	digestFunctionEnum, ok := digestFunctionStrings[digestFunctionStr]
+	digestFunctionEnum, ok := digestFunctionStrings[params.digestFunction]
 	if !ok {
-		return digest.BadDigest, status.Errorf(codes.InvalidArgument, "Unknown digest function %#v", digestFunctionStr)
+		return digest.BadDigest, status.Errorf(codes.InvalidArgument, "Unknown digest function %#v", params.digestFunction)
 	}
 	digestFunction, err := instanceName.GetDigestFunction(digestFunctionEnum, 0)
 	if err != nil {
 		return digest.BadDigest, err
 	}
-	sizeBytes, err := strconv.ParseInt(vars["sizeBytes"], 10, 64)
+	sizeBytes, err := strconv.ParseInt(params.sizeBytes, 10, 64)
 	if err != nil {
-		return digest.BadDigest, util.StatusWrapf(err, "Invalid blob size %#v", vars["sizeBytes"])
+		return digest.BadDigest, util.StatusWrapf(err, "Invalid blob size %#v", params.sizeBytes)
 	}
-	return digestFunction.NewDigest(vars["hash"], sizeBytes)
+	return digestFunction.NewDigest(params.hash, sizeBytes)
 }
 
 // FileServerService is a service that serves files from the Content
@@ -71,8 +138,8 @@ func NewFileServerService(blobAccess blobstore.BlobAccess, maximumMessageSizeByt
 }
 
 // HandleFile serves a file from the Content Addressable Storage (CAS) over HTTP.
-func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request) {
-	digest, err := getDigestFromRequest(req)
+func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request, params handleFileParams) {
+	digest, err := getDigestFromParams(params.digestParams)
 	if err != nil {
 		http.Error(w, "Digest not found", http.StatusNotFound)
 		return
@@ -112,7 +179,7 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request) 
 
 // HandleCommand serves a Command message from the Content Addressable Storage
 // (CAS) as a shell script over HTTP.
-func (s FileServerService) HandleCommand(w http.ResponseWriter, req *http.Request) {
+func (s FileServerService) HandleCommand(w http.ResponseWriter, req *http.Request, params digestParams) {
 	if req.Method != "GET" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -123,7 +190,7 @@ func (s FileServerService) HandleCommand(w http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	digest, err := getDigestFromRequest(req)
+	digest, err := getDigestFromParams(params)
 	if err != nil {
 		http.Error(w, "Digest not found", http.StatusNotFound)
 		return
