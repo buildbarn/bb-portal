@@ -16,7 +16,6 @@ go_library(
         "//internal/database/dbauthservice",
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_google_uuid//:uuid",
-        "@com_github_gorilla_mux//:mux",
         "@com_github_klauspost_compress//zstd",
         "@io_opentelemetry_go_otel//codes",
         "@io_opentelemetry_go_otel_trace//:trace",

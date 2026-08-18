@@ -22,8 +22,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	bb_zstd "github.com/buildbarn/bb-storage/pkg/zstd"
-	"github.com/gorilla/mux"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -69,10 +68,14 @@ func main() {
 		// Create a process-wide ZSTD compression pool.
 		zstdPool := bb_zstd.NewPoolFromConfiguration(configuration.ZstdPool)
 
-		router := mux.NewRouter()
-		router.NotFoundHandler = http.HandlerFunc(http.NotFound)
-		router.Use(otelmux.Middleware("bb-portal-http", otelmux.WithTracerProvider(tracerProvider)))
-		router.Use(zstdmiddleware.NewZstdMiddleware(zstdPool))
+		router := http.NewServeMux()
+		var handler http.Handler = router
+		handler = zstdmiddleware.NewZstdMiddleware(zstdPool)(handler)
+		handler = otelhttp.NewHandler(
+			handler,
+			"bb-portal-http",
+			otelhttp.WithTracerProvider(tracerProvider),
+		)
 
 		if err = blobstoreservice.NewBlobstoreService(
 			&configuration,
@@ -120,7 +123,7 @@ func main() {
 
 		http_server.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
-			http_server.NewMetricsHandler(router, "PortalUI"),
+			http_server.NewMetricsHandler(handler, "PortalUI"),
 			siblingsGroup,
 			grpcClientFactory,
 		)
