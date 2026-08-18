@@ -11,7 +11,6 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/gorilla/mux"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -19,9 +18,9 @@ import (
 //
 // NOTE: This needs to be the last handler registered on the router, as it has
 // a catch-all route.
-func ServeFrontend(configuration *bb_portal.FrontendService, router *mux.Router) error {
+func ServeFrontend(configuration *bb_portal.FrontendService, router *http.ServeMux) error {
 	// Return 404 for all API requests not already handled.
-	router.PathPrefix("/api/").Handler(router.NotFoundHandler)
+	router.Handle("/api/", http.NotFoundHandler())
 
 	if configuration == nil {
 		return fmt.Errorf("No frontend service configuration found")
@@ -65,7 +64,7 @@ func injectFrontendConfigScript(html []byte, frontendConfig *frontend.PortalFron
 	return bytes.ReplaceAll(html, []byte("<!-- BB_PORTAL_CONFIGURATION_PLACEHOLDER -->"), configScript), nil
 }
 
-func setupProxyHandler(router *mux.Router, sourceConfig *bb_portal.FrontendService_FrontendSource_Proxy, frontendConfig *frontend.PortalFrontendConfiguration) error {
+func setupProxyHandler(router *http.ServeMux, sourceConfig *bb_portal.FrontendService_FrontendSource_Proxy, frontendConfig *frontend.PortalFrontendConfiguration) error {
 	if sourceConfig == nil {
 		return fmt.Errorf("Frontend Proxy configuration is empty")
 	}
@@ -108,7 +107,6 @@ func setupProxyHandler(router *mux.Router, sourceConfig *bb_portal.FrontendServi
 			return nil
 		},
 	}
-
-	router.PathPrefix("/").Handler(proxy)
+	router.Handle("/", proxy)
 	return nil
 }

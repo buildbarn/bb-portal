@@ -8,7 +8,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
 	"github.com/buildbarn/bb-storage/pkg/auth"
-	"github.com/gorilla/mux"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -167,7 +166,7 @@ func (s *BuildQueueStateServerImpl) CheckKillOperationAuthorization(w http.Respo
 	}
 
 	ctx := common.ExtractContextFromRequest(r)
-	operationName := mux.Vars(r)["operationName"]
+	operationName := r.PathValue("operationName")
 
 	if s.IsAllowedToKillOperation(ctx, operationName) {
 		w.WriteHeader(http.StatusOK)
