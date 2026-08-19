@@ -3,8 +3,10 @@ import {
   DownOutlined,
   ProjectOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, type MenuProps, Space } from "antd";
+import { Button, Dropdown, type MenuProps, Space, Tooltip } from "antd";
 import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
+import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import { useCheckDataExists } from "@/utils/fetchCasObject";
 import { generateFileUrlFromGraphqlFile } from "@/utils/urlGenerator";
 
 const PERFETTO_URL = "https://ui.perfetto.dev";
@@ -73,35 +75,63 @@ function openPerfetto(profile: FileDetailsFragment, invocationID: string) {
     });
 }
 
+const getProfileMenuItems = (
+  profile: FileDetailsFragment,
+  invocationID: string,
+): MenuProps["items"] => [
+  {
+    label: "Download Profile",
+    key: "download_profile",
+    icon: <DownloadOutlined />,
+    onClick: () =>
+      window.open(generateFileUrlFromGraphqlFile(profile), "_self"),
+  },
+  {
+    label: "Open in Perfetto",
+    key: "open_in_perfetto",
+    icon: <ProjectOutlined rotate={270} />,
+    onClick: () => openPerfetto(profile, invocationID),
+  },
+];
+
 const ProfileDropdown: React.FC<{
-  profile: FileDetailsFragment;
+  profile: FileDetailsFragment | null | undefined;
   invocationID: string;
 }> = ({ profile, invocationID }) => {
-  const items: MenuProps["items"] = [
-    {
-      label: "Download Profile",
-      key: "download_profile",
-      icon: <DownloadOutlined />,
-      onClick: () =>
-        window.open(generateFileUrlFromGraphqlFile(profile), "_self"),
-    },
-    {
-      label: "Open in Perfetto",
-      key: "open_in_perfetto",
-      icon: <ProjectOutlined rotate={270} />,
-      onClick: () => openPerfetto(profile, invocationID),
-    },
-  ];
+  const { exists } = useCheckDataExists(
+    profile?.digest.rev2InstanceName ?? "",
+    [
+      {
+        hash: profile?.digest.hash ?? "",
+        sizeBytes: String(profile?.digest.sizeBytes),
+      },
+    ],
+    digestFunction_ValueFromJSON(profile?.digest.digestFunction.toUpperCase()),
+    profile !== undefined,
+  );
+
+  const items = profile ? getProfileMenuItems(profile, invocationID) : [];
 
   return (
-    <Dropdown menu={{ items }}>
-      <Button>
-        <Space>
-          Profile
-          <DownOutlined />
-        </Space>
-      </Button>
-    </Dropdown>
+    <Tooltip title={exists ? "" : "The profile data is not available"}>
+      <span
+        style={{
+          cursor: exists ? "pointer" : "not-allowed",
+        }}
+      >
+        <Dropdown menu={{ items }} disabled={!exists}>
+          <Button
+            disabled={!exists}
+            style={{ pointerEvents: !exists ? "none" : "auto" }}
+          >
+            <Space>
+              Profile
+              <DownOutlined />
+            </Space>
+          </Button>
+        </Dropdown>
+      </span>
+    </Tooltip>
   );
 };
 
