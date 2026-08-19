@@ -103,7 +103,15 @@ export interface PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags {
     | Empty
     | undefined;
   /** Enables/Disables the trends page. */
-  pageTrends: Empty | undefined;
+  pageTrends:
+    | Empty
+    | undefined;
+  /** Enables/Disables the BES Instance column on the builds table. */
+  columnInstanceNameBuilds:
+    | Empty
+    | undefined;
+  /** Enables/Disables the BES Instance column on the invocations table. */
+  columnInstanceNameInvocations: Empty | undefined;
 }
 
 export interface PortalFrontendConfiguration_FooterElement {
@@ -546,6 +554,8 @@ function createBasePortalFrontendConfiguration_FeatureFlags_BesFeatureFlags(): P
     pageTargets: undefined,
     pageTests: undefined,
     pageTrends: undefined,
+    columnInstanceNameBuilds: undefined,
+    columnInstanceNameInvocations: undefined,
   };
 }
 
@@ -570,6 +580,12 @@ export const PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags: MessageFn
     }
     if (message.pageTrends !== undefined) {
       Empty.encode(message.pageTrends, writer.uint32(42).fork()).join();
+    }
+    if (message.columnInstanceNameBuilds !== undefined) {
+      Empty.encode(message.columnInstanceNameBuilds, writer.uint32(50).fork()).join();
+    }
+    if (message.columnInstanceNameInvocations !== undefined) {
+      Empty.encode(message.columnInstanceNameInvocations, writer.uint32(58).fork()).join();
     }
     return writer;
   },
@@ -621,6 +637,22 @@ export const PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags: MessageFn
           message.pageTrends = Empty.decode(reader, reader.uint32());
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.columnInstanceNameBuilds = Empty.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.columnInstanceNameInvocations = Empty.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -657,6 +689,16 @@ export const PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags: MessageFn
         : isSet(object.page_trends)
         ? Empty.fromJSON(object.page_trends)
         : undefined,
+      columnInstanceNameBuilds: isSet(object.columnInstanceNameBuilds)
+        ? Empty.fromJSON(object.columnInstanceNameBuilds)
+        : isSet(object.column_instance_name_builds)
+        ? Empty.fromJSON(object.column_instance_name_builds)
+        : undefined,
+      columnInstanceNameInvocations: isSet(object.columnInstanceNameInvocations)
+        ? Empty.fromJSON(object.columnInstanceNameInvocations)
+        : isSet(object.column_instance_name_invocations)
+        ? Empty.fromJSON(object.column_instance_name_invocations)
+        : undefined,
     };
   },
 
@@ -676,6 +718,12 @@ export const PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags: MessageFn
     }
     if (message.pageTrends !== undefined) {
       obj.pageTrends = Empty.toJSON(message.pageTrends);
+    }
+    if (message.columnInstanceNameBuilds !== undefined) {
+      obj.columnInstanceNameBuilds = Empty.toJSON(message.columnInstanceNameBuilds);
+    }
+    if (message.columnInstanceNameInvocations !== undefined) {
+      obj.columnInstanceNameInvocations = Empty.toJSON(message.columnInstanceNameInvocations);
     }
     return obj;
   },
@@ -704,6 +752,14 @@ export const PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags: MessageFn
     message.pageTrends = (object.pageTrends !== undefined && object.pageTrends !== null)
       ? Empty.fromPartial(object.pageTrends)
       : undefined;
+    message.columnInstanceNameBuilds =
+      (object.columnInstanceNameBuilds !== undefined && object.columnInstanceNameBuilds !== null)
+        ? Empty.fromPartial(object.columnInstanceNameBuilds)
+        : undefined;
+    message.columnInstanceNameInvocations =
+      (object.columnInstanceNameInvocations !== undefined && object.columnInstanceNameInvocations !== null)
+        ? Empty.fromPartial(object.columnInstanceNameInvocations)
+        : undefined;
     return message;
   },
 };

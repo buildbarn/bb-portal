@@ -1,6 +1,6 @@
 load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 bool_flag(
     name = "embed_frontend",
@@ -43,5 +43,15 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_gorilla_mux//:mux",
         "@org_golang_google_protobuf//encoding/protojson",
+    ],
+)
+
+go_test(
+    name = "frontend_test",
+    srcs = ["frontend_test.go"],
+    embed = [":frontend"],
+    deps = [
+        "//pkg/proto/configuration/frontend",
+        "@org_golang_google_protobuf//types/known/emptypb",
     ],
 )

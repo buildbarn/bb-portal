@@ -35,6 +35,12 @@ message PortalFrontendConfiguration {
 
       // Enables/Disables the trends page.
       google.protobuf.Empty page_trends = 5;
+
+      // Enables/Disables the BES Instance column on the builds table.
+      google.protobuf.Empty column_instance_name_builds = 6;
+
+      // Enables/Disables the BES Instance column on the invocations table.
+      google.protobuf.Empty column_instance_name_invocations = 7;
     }
 
     // Enable/Disable features on the starting page of the interface.

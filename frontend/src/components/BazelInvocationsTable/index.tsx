@@ -4,6 +4,7 @@ import type React from "react";
 import {
   buildColumn,
   durationColumn,
+  instanceNameColumn,
   invocationIdColumn,
   startedAtColumn,
   statusColumn,
@@ -11,9 +12,12 @@ import {
 } from "@/components/BazelInvocationColumns/Columns";
 import type {
   BazelInvocationNodeFragment,
+  BazelInvocationWhereInput,
   PageInfo,
 } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
+import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
+import { env } from "@/utils/env";
 import { PageCursorTable } from "../PageCursorTable";
 import type {
   GetPaginationUpdateLinkType,
@@ -29,6 +33,21 @@ interface Props {
   pageInfo: PageInfo;
 }
 
+export const getTableColumns = (): TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+>[] => [
+  userColumn,
+  invocationIdColumn,
+  startedAtColumn,
+  durationColumn,
+  statusColumn,
+  buildColumn,
+  ...(env.featureFlags?.bes?.columnInstanceNameInvocations
+    ? [instanceNameColumn]
+    : []),
+];
+
 const BazelInvocationsTable: React.FC<Props> = ({
   pageSize,
   invocations,
@@ -36,14 +55,7 @@ const BazelInvocationsTable: React.FC<Props> = ({
   getPaginationUpdateLink,
   pageInfo,
 }) => {
-  const tableColumns = [
-    userColumn,
-    invocationIdColumn,
-    startedAtColumn,
-    durationColumn,
-    statusColumn,
-    buildColumn,
-  ];
+  const tableColumns = getTableColumns();
 
   const emptyText = "No Bazel invocations match the specified search criteria";
 
