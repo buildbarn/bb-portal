@@ -1,6 +1,7 @@
 import { Flex, Space } from "antd";
 import ActionStatisticsDisplay from "@/components/ActionStatisticsDisplay";
 import { ArtifactsMetricsDisplay } from "@/components/ArtifactsMetricsDisplay";
+import { BuildGraphMetricsDisplay } from "@/components/BuildGraphMetricsDisplay";
 import { GarbageCollectionMetrics } from "@/components/GarbageCollectionMetrics";
 import MemoryMetricsDisplay from "@/components/MemoryMetrics";
 import { SystemNetworkStatsDisplay } from "@/components/SystemNetworkStatsDisplay";
@@ -10,6 +11,7 @@ import type { BazelInvocationMetricsFragment } from "@/graphql/__generated__/gra
 import {
   BAZEL_INVOCATION_METRICS_ACTION_SUMMARY_FRAGMENT,
   BAZEL_INVOCATION_METRICS_ARTIFACT_METRICS_FRAGMENT,
+  BAZEL_INVOCATION_METRICS_BUILD_GRAPH_METRICS_FRAGMENT,
   BAZEL_INVOCATION_METRICS_GARBAGE_METRICS_FRAGMENT,
   BAZEL_INVOCATION_METRICS_MEMORY_METRICS_FRAGMENT,
   BAZEL_INVOCATION_METRICS_SYSTEM_NETWORK_STATS_FRAGMENT,
@@ -36,6 +38,10 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
   const memoryMetrics = getFragmentData(
     BAZEL_INVOCATION_METRICS_MEMORY_METRICS_FRAGMENT,
     metrics.memoryMetrics,
+  );
+  const buildGraphMetrics = getFragmentData(
+    BAZEL_INVOCATION_METRICS_BUILD_GRAPH_METRICS_FRAGMENT,
+    metrics.buildGraphMetrics,
   );
   const garbageMetrics = getFragmentData(
     BAZEL_INVOCATION_METRICS_GARBAGE_METRICS_FRAGMENT,
@@ -74,6 +80,12 @@ export const BazelInvocationMetrics: React.FC<Props> = ({ metrics }) => {
         {memoryMetrics && (
           <MemoryMetricsDisplay
             memoryMetrics={memoryMetrics}
+            cardStyle={CARD_STYLE}
+          />
+        )}
+        {buildGraphMetrics && (
+          <BuildGraphMetricsDisplay
+            buildGraphMetrics={buildGraphMetrics}
             cardStyle={CARD_STYLE}
           />
         )}

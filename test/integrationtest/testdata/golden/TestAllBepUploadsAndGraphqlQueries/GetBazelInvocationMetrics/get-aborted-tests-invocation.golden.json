@@ -50,6 +50,7 @@
         },
         "actionData": [
           {
+            "actionsCreated": 161,
             "actionsExecuted": 40,
             "id": "QWN0aW9uRGF0YTozNA==",
             "mnemonic": "TestRunner",
@@ -57,6 +58,7 @@
             "userTime": 614
           },
           {
+            "actionsCreated": 4,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YTozNQ==",
             "mnemonic": "BazelWorkspaceStatusAction",
@@ -64,6 +66,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 20,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTozNg==",
             "mnemonic": "CcStrip",
@@ -71,6 +74,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 8,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTozNw==",
             "mnemonic": "Action",
@@ -78,6 +82,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 8,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTozOA==",
             "mnemonic": "NpmLifecycleHook",
@@ -85,6 +90,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 101,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTozOQ==",
             "mnemonic": "GoLink",
@@ -92,6 +98,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 8,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0MA==",
             "mnemonic": "CopyToDirectory",
@@ -99,6 +106,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 12,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0MQ==",
             "mnemonic": "PackageTar",
@@ -106,6 +114,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 4,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0Mg==",
             "mnemonic": "Jsonnet",
@@ -113,6 +122,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 16,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0Mw==",
             "mnemonic": "GoStdlib",
@@ -120,6 +130,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 1016,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0NA==",
             "mnemonic": "CppModuleMap",
@@ -127,6 +138,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 660,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0NQ==",
             "mnemonic": "GoProtocGen",
@@ -134,6 +146,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 4,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0Ng==",
             "mnemonic": "OCIIndex",
@@ -141,6 +154,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 392,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0Nw==",
             "mnemonic": "UnresolvedSymlink",
@@ -148,6 +162,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 156,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0OA==",
             "mnemonic": "CopyFile",
@@ -155,6 +170,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 56,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo0OQ==",
             "mnemonic": "ExecutableSymlink",
@@ -162,6 +178,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 56,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo1MA==",
             "mnemonic": "Genrule",
@@ -169,6 +186,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 336,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo1MQ==",
             "mnemonic": "NpmPackageExtract",
@@ -176,6 +194,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 736,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo1Mg==",
             "mnemonic": "GenProtoDescriptorSet",
@@ -183,6 +202,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 8,
             "actionsExecuted": 0,
             "id": "QWN0aW9uRGF0YTo1Mw==",
             "mnemonic": "OCIDescriptor",
@@ -190,6 +210,8 @@
             "userTime": 0
           }
         ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 41,
         "id": "QWN0aW9uU3VtbWFyeTo4",
         "runnerCount": [
@@ -218,6 +240,18 @@
         "topLevelArtifactsCount": 240,
         "topLevelArtifactsSizeInBytes": 443979231
       },
+      "buildGraphMetrics": {
+        "actionCount": 0,
+        "actionCountNotIncludingAspects": 0,
+        "actionLookupValueCount": 0,
+        "actionLookupValueCountNotIncludingAspects": 0,
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6OA==",
+        "inputFileConfiguredTargetCount": 0,
+        "otherConfiguredTargetCount": 0,
+        "outputArtifactCount": 0,
+        "outputFileConfiguredTargetCount": 0,
+        "postInvocationSkyframeNodeCount": 190856
+      },
       "id": "TWV0cmljczo4",
       "memoryMetrics": {
         "garbageMetrics": [],
@@ -241,7 +275,7 @@
         }
       },
       "timingMetrics": {
-        "actionsExecutionStartInMs": 0,
+        "actionsExecutionStartInMs": 323,
         "analysisPhaseTimeInMs": 48,
         "cpuTimeInMs": 3290,
         "executionPhaseTimeInMs": 1652,

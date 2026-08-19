@@ -50,6 +50,7 @@
         },
         "actionData": [
           {
+            "actionsCreated": 0,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YTo0",
             "mnemonic": "BazelWorkspaceStatusAction",
@@ -57,6 +58,7 @@
             "userTime": 0
           },
           {
+            "actionsCreated": 0,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YTo1",
             "mnemonic": "CopyFile",
@@ -64,6 +66,7 @@
             "userTime": 1
           },
           {
+            "actionsCreated": 0,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YTo2",
             "mnemonic": "TsProject",
@@ -71,6 +74,8 @@
             "userTime": 0
           }
         ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 3,
         "id": "QWN0aW9uU3VtbWFyeToy",
         "runnerCount": [
@@ -104,6 +109,18 @@
         "sourceArtifactsReadSizeInBytes": 2491,
         "topLevelArtifactsCount": 0,
         "topLevelArtifactsSizeInBytes": 0
+      },
+      "buildGraphMetrics": {
+        "actionCount": 0,
+        "actionCountNotIncludingAspects": 0,
+        "actionLookupValueCount": 0,
+        "actionLookupValueCountNotIncludingAspects": 0,
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6Mg==",
+        "inputFileConfiguredTargetCount": 0,
+        "otherConfiguredTargetCount": 0,
+        "outputArtifactCount": 0,
+        "outputFileConfiguredTargetCount": 0,
+        "postInvocationSkyframeNodeCount": 117746
       },
       "id": "TWV0cmljczoy",
       "memoryMetrics": {
