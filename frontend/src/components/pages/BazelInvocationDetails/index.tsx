@@ -87,12 +87,10 @@ const getExtraBits = (
       formatConfig={{ smallestUnit: "s" }}
     />,
   );
-  if (profile) {
-    const parsedProfile = getFragmentData(FILE_DETAILS_FRAGMENT, profile);
-    extraBits.push(
-      <ProfileDropdown profile={parsedProfile} invocationID={invocationID} />,
-    );
-  }
+  const parsedProfile = getFragmentData(FILE_DETAILS_FRAGMENT, profile);
+  extraBits.push(
+    <ProfileDropdown profile={parsedProfile} invocationID={invocationID} />,
+  );
   return extraBits;
 };
 
