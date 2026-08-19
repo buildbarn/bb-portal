@@ -13,6 +13,7 @@ import {
 } from "@/utils/urlGenerator";
 import styles from "../../theme/theme.module.css";
 import PortalDuration from "../PortalDuration";
+import { getActionCacheStatus } from "./cache";
 import { getActionExecutionKind } from "./execution";
 
 const searchFilter = (
@@ -34,21 +35,117 @@ const searchFilter = (
   },
 });
 
-const selectableFilter = (
-  options: string[],
-  toWhere: (values: string[]) => ActionWhereInput,
-) => ({
-  filters: options.map((value) => ({ text: value, value })),
-  filterMultiple: true,
-  filterSearch: true,
-  applyFilter: (value: FilterValue) => {
-    const values = value.filter(
-      (selectedValue): selectedValue is string =>
-        typeof selectedValue === "string",
-    );
-    return values.length > 0 ? [toWhere(values)] : undefined;
+const selectableFilter = <Value extends string>(
+  options: readonly Value[],
+  toWhere: (values: Value[]) => ActionWhereInput,
+) => {
+  const uniqueOptions = Array.from(new Set(options));
+  return {
+    filters: uniqueOptions.map((value) => ({ text: value, value })),
+    filterMultiple: true,
+    filterSearch: true,
+    applyFilter: (value: FilterValue) => {
+      const values = value.filter(
+        (selectedValue): selectedValue is Value =>
+          typeof selectedValue === "string" &&
+          uniqueOptions.includes(selectedValue as Value),
+      );
+      return values.length > 0 ? [toWhere(values)] : undefined;
+    },
+  };
+};
+
+const configurationTooltip = (
+  configuration: NonNullable<BazelInvocationActionFragment["configuration"]>,
+) => {
+  const makeVariables =
+    configuration.makeVariables &&
+    typeof configuration.makeVariables === "object" &&
+    !Array.isArray(configuration.makeVariables)
+      ? Object.entries(configuration.makeVariables)
+      : [];
+
+  return (
+    <>
+      <b>Configuration ID:</b> <code>{configuration.configurationID}</code>
+      <span style={{ display: "block" }}>
+        <b>Mnemonic:</b> <code>{configuration.mnemonic || "-"}</code>
+      </span>
+      <span style={{ display: "block" }}>
+        <b>Platform:</b> <code>{configuration.platformName || "-"}</code>
+      </span>
+      <span style={{ display: "block" }}>
+        <b>CPU:</b> <code>{configuration.cpu || "-"}</code>
+      </span>
+      {makeVariables.length > 0 && (
+        <>
+          <span style={{ display: "block" }}>
+            <b>Make variables:</b>
+          </span>
+          {makeVariables.map(([key, value]) => (
+            <span key={key} style={{ display: "block", paddingLeft: "1em" }}>
+              <code>
+                {key}=
+                {typeof value === "string" ? value : JSON.stringify(value)}
+              </code>
+            </span>
+          ))}
+        </>
+      )}
+    </>
+  );
+};
+
+const actionStatuses = ["Succeeded", "Failed"] as const;
+
+const actionStatusPredicates: Record<
+  (typeof actionStatuses)[number],
+  ActionWhereInput
+> = {
+  Succeeded: { success: true },
+  Failed: { or: [{ success: false }, { successIsNil: true }] },
+};
+
+const executionKinds = ["Remote", "Local", "Internal", "Unknown"] as const;
+
+const executionPredicates: Record<
+  (typeof executionKinds)[number],
+  ActionWhereInput
+> = {
+  Remote: { runnerIn: ["remote", "remote cache hit"] },
+  Local: {
+    runnerNotNil: true,
+    runnerNEQ: "",
+    runnerNotIn: ["remote", "remote cache hit", "internal"],
   },
-});
+  Internal: { runner: "internal" },
+  Unknown: { or: [{ runnerIsNil: true }, { runner: "" }] },
+};
+
+const cacheResults = [
+  "Remote hit",
+  "Disk hit",
+  "Hit",
+  "No hit",
+  "Unknown",
+] as const;
+
+const cacheResultPredicates: Record<
+  (typeof cacheResults)[number],
+  ActionWhereInput
+> = {
+  "Remote hit": { cacheHit: true, runner: "remote cache hit" },
+  "Disk hit": { cacheHit: true, runner: "disk cache hit" },
+  Hit: {
+    cacheHit: true,
+    or: [
+      { runnerIsNil: true },
+      { runnerNotIn: ["remote cache hit", "disk cache hit"] },
+    ],
+  },
+  "No hit": { cacheHit: false },
+  Unknown: { cacheHitIsNil: true },
+};
 
 export const getColumns = (
   actionMnemonics: string[],
@@ -67,6 +164,9 @@ export const getColumns = (
       ) : (
         <Tag color="error">Failed</Tag>
       ),
+    ...selectableFilter(actionStatuses, (values) => ({
+      or: values.map((value) => actionStatusPredicates[value]),
+    })),
   },
   {
     key: "duration",
@@ -104,6 +204,25 @@ export const getColumns = (
         </Tooltip>
       );
     },
+    ...selectableFilter(executionKinds, (values) => ({
+      or: values.map((value) => executionPredicates[value]),
+    })),
+  },
+  {
+    key: "cacheHit",
+    title: "Cache result",
+    width: 110,
+    render: (_, action) => {
+      const cacheStatus = getActionCacheStatus(action.cacheHit, action.runner);
+      return (
+        <Tooltip title={cacheStatus.description}>
+          <Tag color={cacheStatus.color}>{cacheStatus.label}</Tag>
+        </Tooltip>
+      );
+    },
+    ...selectableFilter(cacheResults, (values) => ({
+      or: values.map((value) => cacheResultPredicates[value]),
+    })),
   },
   {
     key: "type",
@@ -120,7 +239,23 @@ export const getColumns = (
     title: "Configuration",
     width: 180,
     ellipsis: true,
-    render: (_, action) => action.configuration?.mnemonic,
+    render: (_, action) => {
+      if (!action.configuration) {
+        return undefined;
+      }
+      return (
+        <Tooltip
+          placement="topLeft"
+          styles={{ root: { maxWidth: "50vw" } }}
+          title={configurationTooltip(action.configuration)}
+        >
+          <span>
+            {action.configuration.mnemonic ||
+              action.configuration.configurationID}
+          </span>
+        </Tooltip>
+      );
+    },
     ...selectableFilter(configurationMnemonics, (values) => ({
       hasConfigurationWith: [{ mnemonicIn: values }],
     })),

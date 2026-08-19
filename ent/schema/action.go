@@ -45,6 +45,10 @@ func (Action) Fields() []ent.Field {
 		field.String("runner").
 			Comment("The runner reported by Bazel's compact execution log").
 			Optional(),
+		field.Bool("cache_hit").
+			Comment("Whether Bazel's compact execution log reported a disk or remote cache hit").
+			Optional().
+			Nillable(),
 
 		field.Bool("success").Optional(),
 		field.Int32("exit_code").Optional(),

@@ -1,10 +1,19 @@
 {
   "getBazelInvocation": {
+    "actionTimingMetrics": {
+      "cacheHitActions": 0,
+      "timeSavedByCacheHitsInMs": 0,
+      "timedActions": 0,
+      "timedCacheHitActions": 0,
+      "totalActions": 1,
+      "totalExpectedTimeInMs": 0
+    },
     "actions": {
       "edges": [
         {
           "node": {
             "actionDigest": null,
+            "cacheHit": null,
             "commandLine": [
               "external/bazel_tools/tools/test/test-setup.sh",
               "test/integrationtest/integrationtest_test_/integrationtest_test"
@@ -119,6 +128,9 @@
             "mnemonic": "OCIDescriptor"
           }
         ]
+      },
+      "timingMetrics": {
+        "executionPhaseTimeInMs": 1652
       }
     }
   }

@@ -104,6 +104,26 @@ func (_u *ActionUpdate) ClearRunner() *ActionUpdate {
 	return _u
 }
 
+// SetCacheHit sets the "cache_hit" field.
+func (_u *ActionUpdate) SetCacheHit(v bool) *ActionUpdate {
+	_u.mutation.SetCacheHit(v)
+	return _u
+}
+
+// SetNillableCacheHit sets the "cache_hit" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableCacheHit(v *bool) *ActionUpdate {
+	if v != nil {
+		_u.SetCacheHit(*v)
+	}
+	return _u
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (_u *ActionUpdate) ClearCacheHit() *ActionUpdate {
+	_u.mutation.ClearCacheHit()
+	return _u
+}
+
 // SetSuccess sets the "success" field.
 func (_u *ActionUpdate) SetSuccess(v bool) *ActionUpdate {
 	_u.mutation.SetSuccess(v)
@@ -407,6 +427,12 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.RunnerCleared() {
 		_spec.ClearField(action.FieldRunner, field.TypeString)
 	}
+	if value, ok := _u.mutation.CacheHit(); ok {
+		_spec.SetField(action.FieldCacheHit, field.TypeBool, value)
+	}
+	if _u.mutation.CacheHitCleared() {
+		_spec.ClearField(action.FieldCacheHit, field.TypeBool)
+	}
 	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
 	}
@@ -601,6 +627,26 @@ func (_u *ActionUpdateOne) SetNillableRunner(v *string) *ActionUpdateOne {
 // ClearRunner clears the value of the "runner" field.
 func (_u *ActionUpdateOne) ClearRunner() *ActionUpdateOne {
 	_u.mutation.ClearRunner()
+	return _u
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (_u *ActionUpdateOne) SetCacheHit(v bool) *ActionUpdateOne {
+	_u.mutation.SetCacheHit(v)
+	return _u
+}
+
+// SetNillableCacheHit sets the "cache_hit" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableCacheHit(v *bool) *ActionUpdateOne {
+	if v != nil {
+		_u.SetCacheHit(*v)
+	}
+	return _u
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (_u *ActionUpdateOne) ClearCacheHit() *ActionUpdateOne {
+	_u.mutation.ClearCacheHit()
 	return _u
 }
 
@@ -936,6 +982,12 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 	}
 	if _u.mutation.RunnerCleared() {
 		_spec.ClearField(action.FieldRunner, field.TypeString)
+	}
+	if value, ok := _u.mutation.CacheHit(); ok {
+		_spec.SetField(action.FieldCacheHit, field.TypeBool, value)
+	}
+	if _u.mutation.CacheHitCleared() {
+		_spec.ClearField(action.FieldCacheHit, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)

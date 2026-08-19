@@ -18,6 +18,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
+	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/uuidgql"
 	"github.com/google/uuid"
 	gqlparser "github.com/vektah/gqlparser/v2"
@@ -108,6 +109,7 @@ type ComplexityRoot struct {
 	Action struct {
 		ActionDigest     func(childComplexity int) int
 		BazelInvocation  func(childComplexity int) int
+		CacheHit         func(childComplexity int) int
 		CommandLine      func(childComplexity int) int
 		Configuration    func(childComplexity int) int
 		EndTime          func(childComplexity int) int
@@ -172,6 +174,15 @@ type ComplexityRoot struct {
 		RunnerCount                       func(childComplexity int) int
 	}
 
+	ActionTimingMetrics struct {
+		CacheHitActions          func(childComplexity int) int
+		TimeSavedByCacheHitsInMs func(childComplexity int) int
+		TimedActions             func(childComplexity int) int
+		TimedCacheHitActions     func(childComplexity int) int
+		TotalActions             func(childComplexity int) int
+		TotalExpectedTimeInMs    func(childComplexity int) int
+	}
+
 	ArtifactMetrics struct {
 		ID                                        func(childComplexity int) int
 		Metrics                                   func(childComplexity int) int
@@ -195,6 +206,7 @@ type ComplexityRoot struct {
 	}
 
 	BazelInvocation struct {
+		ActionTimingMetrics  func(childComplexity int) int
 		Actions              func(childComplexity int, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.ActionWhereInput) int
 		AuthenticatedUser    func(childComplexity int) int
 		BazelVersion         func(childComplexity int) int
@@ -597,6 +609,8 @@ type BazelInvocationResolver interface {
 	OriginalCommandLine(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 	OptionsParsed(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
 	EnvironmentVariables(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error)
+
+	ActionTimingMetrics(ctx context.Context, obj *ent.BazelInvocation) (*sqlc.GetActionTimingMetricsRow, error)
 }
 type BuildResolver interface {
 	ID(ctx context.Context, obj *ent.Build) (string, error)
@@ -1065,6 +1079,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Action.BazelInvocation(childComplexity), true
+	case "Action.cacheHit":
+		if e.ComplexityRoot.Action.CacheHit == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Action.CacheHit(childComplexity), true
 	case "Action.commandLine":
 		if e.ComplexityRoot.Action.CommandLine == nil {
 			break
@@ -1353,6 +1373,43 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.ActionSummary.RunnerCount(childComplexity), true
 
+	case "ActionTimingMetrics.cacheHitActions":
+		if e.ComplexityRoot.ActionTimingMetrics.CacheHitActions == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ActionTimingMetrics.CacheHitActions(childComplexity), true
+	case "ActionTimingMetrics.timeSavedByCacheHitsInMs":
+		if e.ComplexityRoot.ActionTimingMetrics.TimeSavedByCacheHitsInMs == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ActionTimingMetrics.TimeSavedByCacheHitsInMs(childComplexity), true
+	case "ActionTimingMetrics.timedActions":
+		if e.ComplexityRoot.ActionTimingMetrics.TimedActions == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ActionTimingMetrics.TimedActions(childComplexity), true
+	case "ActionTimingMetrics.timedCacheHitActions":
+		if e.ComplexityRoot.ActionTimingMetrics.TimedCacheHitActions == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ActionTimingMetrics.TimedCacheHitActions(childComplexity), true
+	case "ActionTimingMetrics.totalActions":
+		if e.ComplexityRoot.ActionTimingMetrics.TotalActions == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ActionTimingMetrics.TotalActions(childComplexity), true
+	case "ActionTimingMetrics.totalExpectedTimeInMs":
+		if e.ComplexityRoot.ActionTimingMetrics.TotalExpectedTimeInMs == nil {
+			break
+		}
+
+		return e.ComplexityRoot.ActionTimingMetrics.TotalExpectedTimeInMs(childComplexity), true
+
 	case "ArtifactMetrics.id":
 		if e.ComplexityRoot.ArtifactMetrics.ID == nil {
 			break
@@ -1456,6 +1513,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.AuthenticatedUser.UserUUID(childComplexity), true
 
+	case "BazelInvocation.actionTimingMetrics":
+		if e.ComplexityRoot.BazelInvocation.ActionTimingMetrics == nil {
+			break
+		}
+
+		return e.ComplexityRoot.BazelInvocation.ActionTimingMetrics(childComplexity), true
 	case "BazelInvocation.actions":
 		if e.ComplexityRoot.BazelInvocation.Actions == nil {
 			break
@@ -3207,6 +3270,8 @@ func (ec *executionContext) childFields_Action(ctx context.Context, field graphq
 		return ec.fieldContext_Action_type(ctx, field)
 	case "runner":
 		return ec.fieldContext_Action_runner(ctx, field)
+	case "cacheHit":
+		return ec.fieldContext_Action_cacheHit(ctx, field)
 	case "success":
 		return ec.fieldContext_Action_success(ctx, field)
 	case "exitCode":
@@ -3331,6 +3396,24 @@ func (ec *executionContext) childFields_ActionSummary(ctx context.Context, field
 	return nil, fmt.Errorf("no field named %q was found under type ActionSummary", field.Name)
 }
 
+func (ec *executionContext) childFields_ActionTimingMetrics(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "totalExpectedTimeInMs":
+		return ec.fieldContext_ActionTimingMetrics_totalExpectedTimeInMs(ctx, field)
+	case "timeSavedByCacheHitsInMs":
+		return ec.fieldContext_ActionTimingMetrics_timeSavedByCacheHitsInMs(ctx, field)
+	case "totalActions":
+		return ec.fieldContext_ActionTimingMetrics_totalActions(ctx, field)
+	case "timedActions":
+		return ec.fieldContext_ActionTimingMetrics_timedActions(ctx, field)
+	case "cacheHitActions":
+		return ec.fieldContext_ActionTimingMetrics_cacheHitActions(ctx, field)
+	case "timedCacheHitActions":
+		return ec.fieldContext_ActionTimingMetrics_timedCacheHitActions(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type ActionTimingMetrics", field.Name)
+}
+
 func (ec *executionContext) childFields_ArtifactMetrics(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 	switch field.Name {
 	case "id":
@@ -3429,6 +3512,8 @@ func (ec *executionContext) childFields_BazelInvocation(ctx context.Context, fie
 		return ec.fieldContext_BazelInvocation_invocationTargets(ctx, field)
 	case "sourceControl":
 		return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
+	case "actionTimingMetrics":
+		return ec.fieldContext_BazelInvocation_actionTimingMetrics(ctx, field)
 	}
 	return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 }
@@ -5087,6 +5172,29 @@ func (ec *executionContext) fieldContext_Action_runner(_ context.Context, field 
 	return graphql.NewScalarFieldContext("Action", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
+func (ec *executionContext) _Action_cacheHit(ctx context.Context, field graphql.CollectedField, obj *ent.Action) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Action_cacheHit(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.CacheHit, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *bool) graphql.Marshaler {
+			return ec.marshalOBoolean2ᚖbool(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Action_cacheHit(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Action", field, false, false, errors.New("field of type Boolean does not have child fields"))
+}
+
 func (ec *executionContext) _Action_success(ctx context.Context, field graphql.CollectedField, obj *ent.Action) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -6239,6 +6347,144 @@ func (ec *executionContext) fieldContext_ActionSummary_actionCacheStatistics(_ c
 	return fc, nil
 }
 
+func (ec *executionContext) _ActionTimingMetrics_totalExpectedTimeInMs(ctx context.Context, field graphql.CollectedField, obj *sqlc.GetActionTimingMetricsRow) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ActionTimingMetrics_totalExpectedTimeInMs(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TotalExpectedTimeInMs, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
+			return ec.marshalNInt2int64(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ActionTimingMetrics_totalExpectedTimeInMs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ActionTimingMetrics", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
+func (ec *executionContext) _ActionTimingMetrics_timeSavedByCacheHitsInMs(ctx context.Context, field graphql.CollectedField, obj *sqlc.GetActionTimingMetricsRow) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ActionTimingMetrics_timeSavedByCacheHitsInMs(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TimeSavedByCacheHitsInMs, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
+			return ec.marshalNInt2int64(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ActionTimingMetrics_timeSavedByCacheHitsInMs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ActionTimingMetrics", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
+func (ec *executionContext) _ActionTimingMetrics_totalActions(ctx context.Context, field graphql.CollectedField, obj *sqlc.GetActionTimingMetricsRow) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ActionTimingMetrics_totalActions(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TotalActions, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
+			return ec.marshalNInt2int64(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ActionTimingMetrics_totalActions(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ActionTimingMetrics", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
+func (ec *executionContext) _ActionTimingMetrics_timedActions(ctx context.Context, field graphql.CollectedField, obj *sqlc.GetActionTimingMetricsRow) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ActionTimingMetrics_timedActions(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TimedActions, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
+			return ec.marshalNInt2int64(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ActionTimingMetrics_timedActions(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ActionTimingMetrics", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
+func (ec *executionContext) _ActionTimingMetrics_cacheHitActions(ctx context.Context, field graphql.CollectedField, obj *sqlc.GetActionTimingMetricsRow) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ActionTimingMetrics_cacheHitActions(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.CacheHitActions, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
+			return ec.marshalNInt2int64(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ActionTimingMetrics_cacheHitActions(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ActionTimingMetrics", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
+func (ec *executionContext) _ActionTimingMetrics_timedCacheHitActions(ctx context.Context, field graphql.CollectedField, obj *sqlc.GetActionTimingMetricsRow) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_ActionTimingMetrics_timedCacheHitActions(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.TimedCacheHitActions, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
+			return ec.marshalNInt2int64(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_ActionTimingMetrics_timedCacheHitActions(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("ActionTimingMetrics", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
 func (ec *executionContext) _ArtifactMetrics_id(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -7365,6 +7611,38 @@ func (ec *executionContext) fieldContext_BazelInvocation_sourceControl(_ context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return ec.childFields_SourceControl(ctx, field)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BazelInvocation_actionTimingMetrics(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_BazelInvocation_actionTimingMetrics(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.BazelInvocation().ActionTimingMetrics(ctx, obj)
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *sqlc.GetActionTimingMetricsRow) graphql.Marshaler {
+			return ec.marshalNActionTimingMetrics2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋdatabaseᚋsqlcᚐGetActionTimingMetricsRow(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_BazelInvocation_actionTimingMetrics(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BazelInvocation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_ActionTimingMetrics(ctx, field)
 		},
 	}
 	return fc, nil
@@ -16145,7 +16423,7 @@ func (ec *executionContext) unmarshalInputActionWhereInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "label", "labelNEQ", "labelIn", "labelNotIn", "labelGT", "labelGTE", "labelLT", "labelLTE", "labelContains", "labelHasPrefix", "labelHasSuffix", "labelEqualFold", "labelContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "typeGT", "typeGTE", "typeLT", "typeLTE", "typeContains", "typeHasPrefix", "typeHasSuffix", "typeIsNil", "typeNotNil", "typeEqualFold", "typeContainsFold", "runner", "runnerNEQ", "runnerIn", "runnerNotIn", "runnerGT", "runnerGTE", "runnerLT", "runnerLTE", "runnerContains", "runnerHasPrefix", "runnerHasSuffix", "runnerIsNil", "runnerNotNil", "runnerEqualFold", "runnerContainsFold", "success", "successNEQ", "successIsNil", "successNotNil", "exitCode", "exitCodeNEQ", "exitCodeIn", "exitCodeNotIn", "exitCodeGT", "exitCodeGTE", "exitCodeLT", "exitCodeLTE", "exitCodeIsNil", "exitCodeNotNil", "startTime", "startTimeNEQ", "startTimeIn", "startTimeNotIn", "startTimeGT", "startTimeGTE", "startTimeLT", "startTimeLTE", "startTimeIsNil", "startTimeNotNil", "endTime", "endTimeNEQ", "endTimeIn", "endTimeNotIn", "endTimeGT", "endTimeGTE", "endTimeLT", "endTimeLTE", "endTimeIsNil", "endTimeNotNil", "failureCode", "failureCodeNEQ", "failureCodeIn", "failureCodeNotIn", "failureCodeGT", "failureCodeGTE", "failureCodeLT", "failureCodeLTE", "failureCodeContains", "failureCodeHasPrefix", "failureCodeHasSuffix", "failureCodeIsNil", "failureCodeNotNil", "failureCodeEqualFold", "failureCodeContainsFold", "failureMessage", "failureMessageNEQ", "failureMessageIn", "failureMessageNotIn", "failureMessageGT", "failureMessageGTE", "failureMessageLT", "failureMessageLTE", "failureMessageContains", "failureMessageHasPrefix", "failureMessageHasSuffix", "failureMessageIsNil", "failureMessageNotNil", "failureMessageEqualFold", "failureMessageContainsFold", "primaryOutput", "primaryOutputNEQ", "primaryOutputIn", "primaryOutputNotIn", "primaryOutputGT", "primaryOutputGTE", "primaryOutputLT", "primaryOutputLTE", "primaryOutputContains", "primaryOutputHasPrefix", "primaryOutputHasSuffix", "primaryOutputIsNil", "primaryOutputNotNil", "primaryOutputEqualFold", "primaryOutputContainsFold", "primaryOutputURI", "primaryOutputURINEQ", "primaryOutputURIIn", "primaryOutputURINotIn", "primaryOutputURIGT", "primaryOutputURIGTE", "primaryOutputURILT", "primaryOutputURILTE", "primaryOutputURIContains", "primaryOutputURIHasPrefix", "primaryOutputURIHasSuffix", "primaryOutputURIIsNil", "primaryOutputURINotNil", "primaryOutputURIEqualFold", "primaryOutputURIContainsFold", "stdoutURI", "stdoutURINEQ", "stdoutURIIn", "stdoutURINotIn", "stdoutURIGT", "stdoutURIGTE", "stdoutURILT", "stdoutURILTE", "stdoutURIContains", "stdoutURIHasPrefix", "stdoutURIHasSuffix", "stdoutURIIsNil", "stdoutURINotNil", "stdoutURIEqualFold", "stdoutURIContainsFold", "stderrURI", "stderrURINEQ", "stderrURIIn", "stderrURINotIn", "stderrURIGT", "stderrURIGTE", "stderrURILT", "stderrURILTE", "stderrURIContains", "stderrURIHasPrefix", "stderrURIHasSuffix", "stderrURIIsNil", "stderrURINotNil", "stderrURIEqualFold", "stderrURIContainsFold", "hasBazelInvocation", "hasBazelInvocationWith", "hasConfiguration", "hasConfigurationWith", "hasActionDigest", "hasActionDigestWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "label", "labelNEQ", "labelIn", "labelNotIn", "labelGT", "labelGTE", "labelLT", "labelLTE", "labelContains", "labelHasPrefix", "labelHasSuffix", "labelEqualFold", "labelContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "typeGT", "typeGTE", "typeLT", "typeLTE", "typeContains", "typeHasPrefix", "typeHasSuffix", "typeIsNil", "typeNotNil", "typeEqualFold", "typeContainsFold", "runner", "runnerNEQ", "runnerIn", "runnerNotIn", "runnerGT", "runnerGTE", "runnerLT", "runnerLTE", "runnerContains", "runnerHasPrefix", "runnerHasSuffix", "runnerIsNil", "runnerNotNil", "runnerEqualFold", "runnerContainsFold", "cacheHit", "cacheHitNEQ", "cacheHitIsNil", "cacheHitNotNil", "success", "successNEQ", "successIsNil", "successNotNil", "exitCode", "exitCodeNEQ", "exitCodeIn", "exitCodeNotIn", "exitCodeGT", "exitCodeGTE", "exitCodeLT", "exitCodeLTE", "exitCodeIsNil", "exitCodeNotNil", "startTime", "startTimeNEQ", "startTimeIn", "startTimeNotIn", "startTimeGT", "startTimeGTE", "startTimeLT", "startTimeLTE", "startTimeIsNil", "startTimeNotNil", "endTime", "endTimeNEQ", "endTimeIn", "endTimeNotIn", "endTimeGT", "endTimeGTE", "endTimeLT", "endTimeLTE", "endTimeIsNil", "endTimeNotNil", "failureCode", "failureCodeNEQ", "failureCodeIn", "failureCodeNotIn", "failureCodeGT", "failureCodeGTE", "failureCodeLT", "failureCodeLTE", "failureCodeContains", "failureCodeHasPrefix", "failureCodeHasSuffix", "failureCodeIsNil", "failureCodeNotNil", "failureCodeEqualFold", "failureCodeContainsFold", "failureMessage", "failureMessageNEQ", "failureMessageIn", "failureMessageNotIn", "failureMessageGT", "failureMessageGTE", "failureMessageLT", "failureMessageLTE", "failureMessageContains", "failureMessageHasPrefix", "failureMessageHasSuffix", "failureMessageIsNil", "failureMessageNotNil", "failureMessageEqualFold", "failureMessageContainsFold", "primaryOutput", "primaryOutputNEQ", "primaryOutputIn", "primaryOutputNotIn", "primaryOutputGT", "primaryOutputGTE", "primaryOutputLT", "primaryOutputLTE", "primaryOutputContains", "primaryOutputHasPrefix", "primaryOutputHasSuffix", "primaryOutputIsNil", "primaryOutputNotNil", "primaryOutputEqualFold", "primaryOutputContainsFold", "primaryOutputURI", "primaryOutputURINEQ", "primaryOutputURIIn", "primaryOutputURINotIn", "primaryOutputURIGT", "primaryOutputURIGTE", "primaryOutputURILT", "primaryOutputURILTE", "primaryOutputURIContains", "primaryOutputURIHasPrefix", "primaryOutputURIHasSuffix", "primaryOutputURIIsNil", "primaryOutputURINotNil", "primaryOutputURIEqualFold", "primaryOutputURIContainsFold", "stdoutURI", "stdoutURINEQ", "stdoutURIIn", "stdoutURINotIn", "stdoutURIGT", "stdoutURIGTE", "stdoutURILT", "stdoutURILTE", "stdoutURIContains", "stdoutURIHasPrefix", "stdoutURIHasSuffix", "stdoutURIIsNil", "stdoutURINotNil", "stdoutURIEqualFold", "stdoutURIContainsFold", "stderrURI", "stderrURINEQ", "stderrURIIn", "stderrURINotIn", "stderrURIGT", "stderrURIGTE", "stderrURILT", "stderrURILTE", "stderrURIContains", "stderrURIHasPrefix", "stderrURIHasSuffix", "stderrURIIsNil", "stderrURINotNil", "stderrURIEqualFold", "stderrURIContainsFold", "hasBazelInvocation", "hasBazelInvocationWith", "hasConfiguration", "hasConfigurationWith", "hasActionDigest", "hasActionDigestWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -16546,6 +16824,34 @@ func (ec *executionContext) unmarshalInputActionWhereInput(ctx context.Context, 
 				return it, err
 			}
 			it.RunnerContainsFold = data
+		case "cacheHit":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheHit"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheHit = data
+		case "cacheHitNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheHitNEQ"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheHitNEQ = data
+		case "cacheHitIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheHitIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheHitIsNil = data
+		case "cacheHitNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cacheHitNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CacheHitNotNil = data
 		case "success":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("success"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -30233,6 +30539,11 @@ func (ec *executionContext) _Action(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.RequiredNull {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "cacheHit":
+			out.Values[i] = ec._Action_cacheHit(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "success":
 			out.Values[i] = ec._Action_success(ctx, field, obj)
 			if out.Values[i] == graphql.RequiredNull {
@@ -31031,6 +31342,70 @@ func (ec *executionContext) _ActionSummary(ctx context.Context, sel ast.Selectio
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferred), math.MaxInt32)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var actionTimingMetricsImplementors = []string{"ActionTimingMetrics"}
+
+func (ec *executionContext) _ActionTimingMetrics(ctx context.Context, sel ast.SelectionSet, obj *sqlc.GetActionTimingMetricsRow) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, actionTimingMetricsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ActionTimingMetrics")
+		case "totalExpectedTimeInMs":
+			out.Values[i] = ec._ActionTimingMetrics_totalExpectedTimeInMs(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "timeSavedByCacheHitsInMs":
+			out.Values[i] = ec._ActionTimingMetrics_timeSavedByCacheHitsInMs(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalActions":
+			out.Values[i] = ec._ActionTimingMetrics_totalActions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "timedActions":
+			out.Values[i] = ec._ActionTimingMetrics_timedActions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "cacheHitActions":
+			out.Values[i] = ec._ActionTimingMetrics_cacheHitActions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "timedCacheHitActions":
+			out.Values[i] = ec._ActionTimingMetrics_timedCacheHitActions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -31938,6 +32313,42 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 				}()
 				res = ec._BazelInvocation_sourceControl(ctx, field, obj)
 				if res == graphql.RequiredNull {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "actionTimingMetrics":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BazelInvocation_actionTimingMetrics(ctx, field, obj)
+				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
 				return res
@@ -37729,6 +38140,20 @@ func (ec *executionContext) unmarshalNActionDataWhereInput2ᚖgithubᚗcomᚋbui
 func (ec *executionContext) unmarshalNActionSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionSummaryWhereInput(ctx context.Context, v any) (*ent.ActionSummaryWhereInput, error) {
 	res, err := ec.unmarshalInputActionSummaryWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNActionTimingMetrics2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋdatabaseᚋsqlcᚐGetActionTimingMetricsRow(ctx context.Context, sel ast.SelectionSet, v sqlc.GetActionTimingMetricsRow) graphql.Marshaler {
+	return ec._ActionTimingMetrics(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNActionTimingMetrics2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋdatabaseᚋsqlcᚐGetActionTimingMetricsRow(ctx context.Context, sel ast.SelectionSet, v *sqlc.GetActionTimingMetricsRow) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ActionTimingMetrics(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNActionWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionWhereInput(ctx context.Context, v any) (*ent.ActionWhereInput, error) {

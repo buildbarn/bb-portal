@@ -1,5 +1,13 @@
 {
   "getBazelInvocation": {
+    "actionTimingMetrics": {
+      "cacheHitActions": 0,
+      "timeSavedByCacheHitsInMs": 0,
+      "timedActions": 0,
+      "timedCacheHitActions": 0,
+      "totalActions": 0,
+      "totalExpectedTimeInMs": 0
+    },
     "actions": {
       "edges": [],
       "pageInfo": {
@@ -31,6 +39,9 @@
             "mnemonic": "TsProject"
           }
         ]
+      },
+      "timingMetrics": {
+        "executionPhaseTimeInMs": 680
       }
     }
   }

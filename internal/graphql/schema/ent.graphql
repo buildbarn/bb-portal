@@ -8,6 +8,10 @@ type Action implements Node {
   The runner reported by Bazel's compact execution log
   """
   runner: String
+  """
+  Whether Bazel's compact execution log reported a disk or remote cache hit
+  """
+  cacheHit: Boolean
   success: Boolean
   exitCode: Int
   commandLine: [String!]
@@ -464,6 +468,13 @@ input ActionWhereInput {
   runnerNotNil: Boolean
   runnerEqualFold: String
   runnerContainsFold: String
+  """
+  cache_hit field predicates
+  """
+  cacheHit: Boolean
+  cacheHitNEQ: Boolean
+  cacheHitIsNil: Boolean
+  cacheHitNotNil: Boolean
   """
   success field predicates
   """

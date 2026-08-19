@@ -255,6 +255,10 @@ export function ActionSummaryWhereInputSchema(): z.ZodObject<Properties<ActionSu
 export function ActionWhereInputSchema(): z.ZodObject<Properties<ActionWhereInput>> {
   return z.object({
     and: z.array(z.lazy(() => ActionWhereInputSchema())).nullish(),
+    cacheHit: z.boolean().nullish(),
+    cacheHitIsNil: z.boolean().nullish(),
+    cacheHitNEQ: z.boolean().nullish(),
+    cacheHitNotNil: z.boolean().nullish(),
     endTime: z.iso.datetime({ offset: true }).nullish(),
     endTimeGT: z.iso.datetime({ offset: true }).nullish(),
     endTimeGTE: z.iso.datetime({ offset: true }).nullish(),

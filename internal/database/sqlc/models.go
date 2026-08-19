@@ -17,6 +17,7 @@ type Action struct {
 	Label             string
 	Type              sql.NullString
 	Runner            sql.NullString
+	CacheHit          sql.NullBool
 	Success           sql.NullBool
 	ExitCode          sql.NullInt32
 	CommandLine       pqtype.NullRawMessage

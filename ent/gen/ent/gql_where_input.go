@@ -109,6 +109,12 @@ type ActionWhereInput struct {
 	RunnerEqualFold    *string  `json:"runnerEqualFold,omitempty"`
 	RunnerContainsFold *string  `json:"runnerContainsFold,omitempty"`
 
+	// "cache_hit" field predicates.
+	CacheHit       *bool `json:"cacheHit,omitempty"`
+	CacheHitNEQ    *bool `json:"cacheHitNEQ,omitempty"`
+	CacheHitIsNil  bool  `json:"cacheHitIsNil,omitempty"`
+	CacheHitNotNil bool  `json:"cacheHitNotNil,omitempty"`
+
 	// "success" field predicates.
 	Success       *bool `json:"success,omitempty"`
 	SuccessNEQ    *bool `json:"successNEQ,omitempty"`
@@ -489,6 +495,18 @@ func (i *ActionWhereInput) P() (predicate.Action, error) {
 	}
 	if i.RunnerContainsFold != nil {
 		predicates = append(predicates, action.RunnerContainsFold(*i.RunnerContainsFold))
+	}
+	if i.CacheHit != nil {
+		predicates = append(predicates, action.CacheHitEQ(*i.CacheHit))
+	}
+	if i.CacheHitNEQ != nil {
+		predicates = append(predicates, action.CacheHitNEQ(*i.CacheHitNEQ))
+	}
+	if i.CacheHitIsNil {
+		predicates = append(predicates, action.CacheHitIsNil())
+	}
+	if i.CacheHitNotNil {
+		predicates = append(predicates, action.CacheHitNotNil())
 	}
 	if i.Success != nil {
 		predicates = append(predicates, action.SuccessEQ(*i.Success))

@@ -123,6 +123,11 @@ func (_q *ActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				selectedFields = append(selectedFields, action.FieldRunner)
 				fieldSeen[action.FieldRunner] = struct{}{}
 			}
+		case "cacheHit":
+			if _, ok := fieldSeen[action.FieldCacheHit]; !ok {
+				selectedFields = append(selectedFields, action.FieldCacheHit)
+				fieldSeen[action.FieldCacheHit] = struct{}{}
+			}
 		case "success":
 			if _, ok := fieldSeen[action.FieldSuccess]; !ok {
 				selectedFields = append(selectedFields, action.FieldSuccess)

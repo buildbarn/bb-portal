@@ -68,6 +68,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			action.FieldLabel:             {Type: field.TypeString, Column: action.FieldLabel},
 			action.FieldType:              {Type: field.TypeString, Column: action.FieldType},
 			action.FieldRunner:            {Type: field.TypeString, Column: action.FieldRunner},
+			action.FieldCacheHit:          {Type: field.TypeBool, Column: action.FieldCacheHit},
 			action.FieldSuccess:           {Type: field.TypeBool, Column: action.FieldSuccess},
 			action.FieldExitCode:          {Type: field.TypeInt32, Column: action.FieldExitCode},
 			action.FieldCommandLine:       {Type: field.TypeJSON, Column: action.FieldCommandLine},
@@ -1864,6 +1865,11 @@ func (f *ActionFilter) WhereType(p entql.StringP) {
 // WhereRunner applies the entql string predicate on the runner field.
 func (f *ActionFilter) WhereRunner(p entql.StringP) {
 	f.Where(p.Field(action.FieldRunner))
+}
+
+// WhereCacheHit applies the entql bool predicate on the cache_hit field.
+func (f *ActionFilter) WhereCacheHit(p entql.BoolP) {
+	f.Where(p.Field(action.FieldCacheHit))
 }
 
 // WhereSuccess applies the entql bool predicate on the success field.

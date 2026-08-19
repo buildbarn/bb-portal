@@ -1,10 +1,19 @@
 {
   "getBazelInvocation": {
+    "actionTimingMetrics": {
+      "cacheHitActions": 1,
+      "timeSavedByCacheHitsInMs": 1250,
+      "timedActions": 4,
+      "timedCacheHitActions": 1,
+      "totalActions": 4,
+      "totalExpectedTimeInMs": 3000
+    },
     "actions": {
       "edges": [
         {
           "node": {
             "actionDigest": null,
+            "cacheHit": null,
             "commandLine": [
               "touch",
               "unavailable.out"
@@ -40,6 +49,11 @@
       }
     ],
     "id": "QmF6ZWxJbnZvY2F0aW9uOjEx",
-    "metrics": null
+    "metrics": {
+      "actionSummary": null,
+      "timingMetrics": {
+        "executionPhaseTimeInMs": 2250
+      }
+    }
   }
 }

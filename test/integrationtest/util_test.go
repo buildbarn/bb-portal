@@ -1,6 +1,7 @@
 package integrationtest
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http/httptest"
@@ -9,6 +10,7 @@ import (
 	"testing"
 
 	gqlgen "github.com/99designs/gqlgen/graphql"
+	bazelprotobuf "github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
@@ -18,12 +20,15 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
+	"github.com/buildbarn/bb-storage/pkg/blobstore/buffer"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
+	"github.com/klauspost/compress/zstd"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace"
 	"go.opentelemetry.io/otel/trace/noop"
+	"google.golang.org/protobuf/encoding/protodelim"
 )
 
 var dbProvider *embedded.DatabaseProvider
@@ -31,6 +36,49 @@ var dbProvider *embedded.DatabaseProvider
 type fixtureContentAddressableStorage struct {
 	blobstore.BlobAccess
 	availableDigests map[digest.Digest]struct{}
+	blobs            map[digest.Digest][]byte
+}
+
+const fixtureExecutionLogURI = "bytestream://cache.example.com/blobs/9999999999999999999999999999999999999999999999999999999999999999/123"
+
+func fixtureCompactExecutionLog(t *testing.T) []byte {
+	t.Helper()
+	entries := []*bazelprotobuf.ExecLogEntry{
+		{
+			Type: &bazelprotobuf.ExecLogEntry_Invocation_{
+				Invocation: &bazelprotobuf.ExecLogEntry_Invocation{HashFunctionName: "SHA-256"},
+			},
+		},
+		{
+			Id: 1,
+			Type: &bazelprotobuf.ExecLogEntry_File_{
+				File: &bazelprotobuf.ExecLogEntry_File{Path: "bazel-out/k8-fastbuild/bin/example/first.o"},
+			},
+		},
+		{
+			Type: &bazelprotobuf.ExecLogEntry_Spawn_{
+				Spawn: &bazelprotobuf.ExecLogEntry_Spawn{
+					TargetLabel: "//example:first",
+					Mnemonic:    "CppCompile",
+					Runner:      "remote cache hit",
+					CacheHit:    true,
+					Outputs: []*bazelprotobuf.ExecLogEntry_Output{
+						{Type: &bazelprotobuf.ExecLogEntry_Output_OutputId{OutputId: 1}},
+					},
+				},
+			},
+		},
+	}
+
+	var data bytes.Buffer
+	writer, err := zstd.NewWriter(&data)
+	require.NoError(t, err)
+	for _, entry := range entries {
+		_, err := protodelim.MarshalTo(writer, entry)
+		require.NoError(t, err)
+	}
+	require.NoError(t, writer.Close())
+	return data.Bytes()
 }
 
 func newFixtureContentAddressableStorage(t *testing.T) *fixtureContentAddressableStorage {
@@ -42,8 +90,10 @@ func newFixtureContentAddressableStorage(t *testing.T) *fixtureContentAddressabl
 		"bytestream://cache.example.com/blobs/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/24",
 		"bytestream://cache.example.com/blobs/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/36",
 		"bytestream://cache.example.com/blobs/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff/48",
+		fixtureExecutionLogURI,
 	}
 	availableDigests := make(map[digest.Digest]struct{}, len(availableURIs))
+	blobs := make(map[digest.Digest][]byte, 1)
 	for _, uri := range availableURIs {
 		parsedURI, err := url.Parse(uri)
 		require.NoError(t, err)
@@ -51,8 +101,21 @@ func newFixtureContentAddressableStorage(t *testing.T) *fixtureContentAddressabl
 		parsedDigest := files.GetDigestFromURI(uri)
 		require.NotEqual(t, digest.BadDigest, parsedDigest)
 		availableDigests[parsedDigest] = struct{}{}
+		if uri == fixtureExecutionLogURI {
+			blobs[parsedDigest] = fixtureCompactExecutionLog(t)
+		}
 	}
-	return &fixtureContentAddressableStorage{availableDigests: availableDigests}
+	return &fixtureContentAddressableStorage{
+		availableDigests: availableDigests,
+		blobs:            blobs,
+	}
+}
+
+func (cas *fixtureContentAddressableStorage) Get(_ context.Context, blobDigest digest.Digest) buffer.Buffer {
+	if data, ok := cas.blobs[blobDigest]; ok {
+		return buffer.NewValidatedBufferFromByteSlice(data)
+	}
+	return buffer.NewBufferFromError(fmt.Errorf("fixture blob %v is not available", blobDigest))
 }
 
 func (cas *fixtureContentAddressableStorage) FindMissing(_ context.Context, digests digest.Set) (digest.Set, error) {

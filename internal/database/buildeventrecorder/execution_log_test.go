@@ -41,6 +41,7 @@ func TestParseCompactExecutionLog(t *testing.T) {
 				TargetLabel: "//example:example",
 				Mnemonic:    "GoLink",
 				Runner:      "remote",
+				CacheHit:    true,
 				Outputs: []*bazelprotobuf.ExecLogEntry_Output{
 					{Type: &bazelprotobuf.ExecLogEntry_Output_OutputId{OutputId: 7}},
 				},
@@ -56,6 +57,8 @@ func TestParseCompactExecutionLog(t *testing.T) {
 	require.Equal(t, "GoLink", actions[0].mnemonic)
 	require.Equal(t, []string{"bazel-out/bin/example"}, actions[0].outputPaths)
 	require.Equal(t, "remote", actions[0].runner)
+	require.NotNil(t, actions[0].cacheHit)
+	require.True(t, *actions[0].cacheHit)
 	require.Equal(t, actionHash, actions[0].actionDigest.GetHashString())
 	require.EqualValues(t, 145, actions[0].actionDigest.GetSizeBytes())
 	require.Equal(t, "", actions[0].actionDigest.GetInstanceName().String())
@@ -93,6 +96,7 @@ func TestParseCompactExecutionLogClassifiesExecutionLocation(t *testing.T) {
 			TargetLabel: "//example:cached",
 			Mnemonic:    "GoLink",
 			Runner:      "remote cache hit",
+			CacheHit:    true,
 			Outputs: []*bazelprotobuf.ExecLogEntry_Output{
 				{Type: &bazelprotobuf.ExecLogEntry_Output_OutputId{OutputId: 2}},
 			},
@@ -110,10 +114,15 @@ func TestParseCompactExecutionLogClassifiesExecutionLocation(t *testing.T) {
 	require.Len(t, actions, 3)
 
 	require.Equal(t, "darwin-sandbox", actions[0].runner)
+	require.NotNil(t, actions[0].cacheHit)
+	require.False(t, *actions[0].cacheHit)
 	require.Equal(t, actionHash, actions[0].actionDigest.GetHashString())
 	require.Equal(t, "remote cache hit", actions[1].runner)
+	require.NotNil(t, actions[1].cacheHit)
+	require.True(t, *actions[1].cacheHit)
 	require.Equal(t, actionHash, actions[1].actionDigest.GetHashString())
 	require.Equal(t, internalActionRunner, actions[2].runner)
+	require.Nil(t, actions[2].cacheHit)
 	require.Equal(t, []string{"bazel-out/bin/symlink"}, actions[2].outputPaths)
 	require.Equal(t, storagedigest.BadDigest, actions[2].actionDigest)
 }
@@ -151,6 +160,10 @@ func testActionDigest(t *testing.T, hash string) storagedigest.Digest {
 	return digest
 }
 
+func boolPointer(value bool) *bool {
+	return &value
+}
+
 func TestMatchExecutionLogActions(t *testing.T) {
 	const (
 		firstHash  = "4048aad102bbf0ee98cdfc2dc9797d9b01afab79ee77738134828ae637f5be07"
@@ -165,13 +178,17 @@ func TestMatchExecutionLogActions(t *testing.T) {
 		firstDigest := testActionDigest(t, firstHash)
 		secondDigest := testActionDigest(t, secondHash)
 		matches := matchExecutionLogActions(databaseActions, []executionLogAction{
-			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", actionDigest: firstDigest},
-			{targetLabel: "@@//example:second", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/second"}, runner: "remote cache hit", actionDigest: secondDigest},
+			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", cacheHit: boolPointer(false), actionDigest: firstDigest},
+			{targetLabel: "@@//example:second", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/second"}, runner: "remote cache hit", cacheHit: boolPointer(true), actionDigest: secondDigest},
 		})
 
 		require.Equal(t, "remote", matches[1].runner)
+		require.NotNil(t, matches[1].cacheHit)
+		require.False(t, *matches[1].cacheHit)
 		require.Equal(t, firstDigest, matches[1].actionDigest)
 		require.Equal(t, "remote cache hit", matches[2].runner)
+		require.NotNil(t, matches[2].cacheHit)
+		require.True(t, *matches[2].cacheHit)
 		require.Equal(t, secondDigest, matches[2].actionDigest)
 	})
 
@@ -183,10 +200,13 @@ func TestMatchExecutionLogActions(t *testing.T) {
 			mnemonic:     "GoLink",
 			outputPaths:  []string{"bazel-out/bin/local"},
 			runner:       "darwin-sandbox",
+			cacheHit:     boolPointer(false),
 			actionDigest: digest,
 		}})
 
 		require.Equal(t, "darwin-sandbox", matches[1].runner)
+		require.NotNil(t, matches[1].cacheHit)
+		require.False(t, *matches[1].cacheHit)
 		require.Equal(t, digest, matches[1].actionDigest)
 	})
 
@@ -211,6 +231,17 @@ func TestMatchExecutionLogActions(t *testing.T) {
 		matches := matchExecutionLogActions(databaseActions, []executionLogAction{
 			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", actionDigest: testActionDigest(t, firstHash)},
 			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", actionDigest: testActionDigest(t, secondHash)},
+		})
+
+		require.Empty(t, matches)
+	})
+
+	t.Run("drops conflicting cache results for one action", func(t *testing.T) {
+		databaseActions := []*ent.Action{{ID: 1, Label: "//example:first", Type: "GoLink", PrimaryOutput: "bazel-out/bin/first"}}
+		actionDigest := testActionDigest(t, firstHash)
+		matches := matchExecutionLogActions(databaseActions, []executionLogAction{
+			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", cacheHit: boolPointer(false), actionDigest: actionDigest},
+			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", cacheHit: boolPointer(true), actionDigest: actionDigest},
 		})
 
 		require.Empty(t, matches)

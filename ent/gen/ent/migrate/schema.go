@@ -14,6 +14,7 @@ var (
 		{Name: "label", Type: field.TypeString},
 		{Name: "type", Type: field.TypeString, Nullable: true},
 		{Name: "runner", Type: field.TypeString, Nullable: true},
+		{Name: "cache_hit", Type: field.TypeBool, Nullable: true},
 		{Name: "success", Type: field.TypeBool, Nullable: true},
 		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
 		{Name: "command_line", Type: field.TypeJSON, Nullable: true},
@@ -37,19 +38,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "actions_configurations_configuration",
-				Columns:    []*schema.Column{ActionsColumns[15]},
+				Columns:    []*schema.Column{ActionsColumns[16]},
 				RefColumns: []*schema.Column{ConfigurationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "actions_bazel_invocations_actions",
-				Columns:    []*schema.Column{ActionsColumns[16]},
+				Columns:    []*schema.Column{ActionsColumns[17]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "actions_digests_actions",
-				Columns:    []*schema.Column{ActionsColumns[17]},
+				Columns:    []*schema.Column{ActionsColumns[18]},
 				RefColumns: []*schema.Column{DigestsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -63,22 +64,22 @@ var (
 			{
 				Name:    "action_bazel_invocation_id",
 				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[16]},
+				Columns: []*schema.Column{ActionsColumns[17]},
 			},
 			{
 				Name:    "action_type_bazel_invocation_id",
 				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[2], ActionsColumns[16]},
+				Columns: []*schema.Column{ActionsColumns[2], ActionsColumns[17]},
 			},
 			{
 				Name:    "action_configuration_id",
 				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[15]},
+				Columns: []*schema.Column{ActionsColumns[16]},
 			},
 			{
 				Name:    "action_action_digest_id",
 				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[17]},
+				Columns: []*schema.Column{ActionsColumns[18]},
 			},
 		},
 	}

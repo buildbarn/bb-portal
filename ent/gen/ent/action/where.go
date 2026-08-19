@@ -80,6 +80,11 @@ func Runner(v string) predicate.Action {
 	return predicate.Action(sql.FieldEQ(FieldRunner, v))
 }
 
+// CacheHit applies equality check predicate on the "cache_hit" field. It's identical to CacheHitEQ.
+func CacheHit(v bool) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldCacheHit, v))
+}
+
 // Success applies equality check predicate on the "success" field. It's identical to SuccessEQ.
 func Success(v bool) predicate.Action {
 	return predicate.Action(sql.FieldEQ(FieldSuccess, v))
@@ -423,6 +428,26 @@ func RunnerEqualFold(v string) predicate.Action {
 // RunnerContainsFold applies the ContainsFold predicate on the "runner" field.
 func RunnerContainsFold(v string) predicate.Action {
 	return predicate.Action(sql.FieldContainsFold(FieldRunner, v))
+}
+
+// CacheHitEQ applies the EQ predicate on the "cache_hit" field.
+func CacheHitEQ(v bool) predicate.Action {
+	return predicate.Action(sql.FieldEQ(FieldCacheHit, v))
+}
+
+// CacheHitNEQ applies the NEQ predicate on the "cache_hit" field.
+func CacheHitNEQ(v bool) predicate.Action {
+	return predicate.Action(sql.FieldNEQ(FieldCacheHit, v))
+}
+
+// CacheHitIsNil applies the IsNil predicate on the "cache_hit" field.
+func CacheHitIsNil() predicate.Action {
+	return predicate.Action(sql.FieldIsNull(FieldCacheHit))
+}
+
+// CacheHitNotNil applies the NotNil predicate on the "cache_hit" field.
+func CacheHitNotNil() predicate.Action {
+	return predicate.Action(sql.FieldNotNull(FieldCacheHit))
 }
 
 // SuccessEQ applies the EQ predicate on the "success" field.

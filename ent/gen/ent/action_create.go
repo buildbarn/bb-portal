@@ -93,6 +93,20 @@ func (_c *ActionCreate) SetNillableRunner(v *string) *ActionCreate {
 	return _c
 }
 
+// SetCacheHit sets the "cache_hit" field.
+func (_c *ActionCreate) SetCacheHit(v bool) *ActionCreate {
+	_c.mutation.SetCacheHit(v)
+	return _c
+}
+
+// SetNillableCacheHit sets the "cache_hit" field if the given value is not nil.
+func (_c *ActionCreate) SetNillableCacheHit(v *bool) *ActionCreate {
+	if v != nil {
+		_c.SetCacheHit(*v)
+	}
+	return _c
+}
+
 // SetSuccess sets the "success" field.
 func (_c *ActionCreate) SetSuccess(v bool) *ActionCreate {
 	_c.mutation.SetSuccess(v)
@@ -348,6 +362,10 @@ func (_c *ActionCreate) createSpec() (*Action, *sqlgraph.CreateSpec) {
 		_spec.SetField(action.FieldRunner, field.TypeString, value)
 		_node.Runner = value
 	}
+	if value, ok := _c.mutation.CacheHit(); ok {
+		_spec.SetField(action.FieldCacheHit, field.TypeBool, value)
+		_node.CacheHit = &value
+	}
 	if value, ok := _c.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
 		_node.Success = value
@@ -558,6 +576,24 @@ func (u *ActionUpsert) UpdateRunner() *ActionUpsert {
 // ClearRunner clears the value of the "runner" field.
 func (u *ActionUpsert) ClearRunner() *ActionUpsert {
 	u.SetNull(action.FieldRunner)
+	return u
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (u *ActionUpsert) SetCacheHit(v bool) *ActionUpsert {
+	u.Set(action.FieldCacheHit, v)
+	return u
+}
+
+// UpdateCacheHit sets the "cache_hit" field to the value that was provided on create.
+func (u *ActionUpsert) UpdateCacheHit() *ActionUpsert {
+	u.SetExcluded(action.FieldCacheHit)
+	return u
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (u *ActionUpsert) ClearCacheHit() *ActionUpsert {
+	u.SetNull(action.FieldCacheHit)
 	return u
 }
 
@@ -893,6 +929,27 @@ func (u *ActionUpsertOne) UpdateRunner() *ActionUpsertOne {
 func (u *ActionUpsertOne) ClearRunner() *ActionUpsertOne {
 	return u.Update(func(s *ActionUpsert) {
 		s.ClearRunner()
+	})
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (u *ActionUpsertOne) SetCacheHit(v bool) *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.SetCacheHit(v)
+	})
+}
+
+// UpdateCacheHit sets the "cache_hit" field to the value that was provided on create.
+func (u *ActionUpsertOne) UpdateCacheHit() *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.UpdateCacheHit()
+	})
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (u *ActionUpsertOne) ClearCacheHit() *ActionUpsertOne {
+	return u.Update(func(s *ActionUpsert) {
+		s.ClearCacheHit()
 	})
 }
 
@@ -1427,6 +1484,27 @@ func (u *ActionUpsertBulk) UpdateRunner() *ActionUpsertBulk {
 func (u *ActionUpsertBulk) ClearRunner() *ActionUpsertBulk {
 	return u.Update(func(s *ActionUpsert) {
 		s.ClearRunner()
+	})
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (u *ActionUpsertBulk) SetCacheHit(v bool) *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.SetCacheHit(v)
+	})
+}
+
+// UpdateCacheHit sets the "cache_hit" field to the value that was provided on create.
+func (u *ActionUpsertBulk) UpdateCacheHit() *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.UpdateCacheHit()
+	})
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (u *ActionUpsertBulk) ClearCacheHit() *ActionUpsertBulk {
+	return u.Update(func(s *ActionUpsert) {
+		s.ClearCacheHit()
 	})
 }
 

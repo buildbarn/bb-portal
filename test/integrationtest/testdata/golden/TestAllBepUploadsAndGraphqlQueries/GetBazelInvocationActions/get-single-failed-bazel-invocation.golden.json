@@ -1,10 +1,19 @@
 {
   "getBazelInvocation": {
+    "actionTimingMetrics": {
+      "cacheHitActions": 0,
+      "timeSavedByCacheHitsInMs": 0,
+      "timedActions": 0,
+      "timedCacheHitActions": 0,
+      "totalActions": 1,
+      "totalExpectedTimeInMs": 0
+    },
     "actions": {
       "edges": [
         {
           "node": {
             "actionDigest": null,
+            "cacheHit": null,
             "commandLine": [
               "bazel-out/darwin_arm64-opt-exec-ST-13d3ddad9198/bin/external/aspect_rules_ts~~ext~npm_typescript/tsc.sh",
               "--skipLibCheck",
@@ -76,6 +85,9 @@
             "mnemonic": "TsProject"
           }
         ]
+      },
+      "timingMetrics": {
+        "executionPhaseTimeInMs": 702
       }
     }
   }

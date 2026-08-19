@@ -26,6 +26,14 @@ export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
   ) {
     getBazelInvocation(invocationID: $invocationID) {
       id
+      actionTimingMetrics {
+        totalExpectedTimeInMs
+        timeSavedByCacheHitsInMs
+        totalActions
+        timedActions
+        cacheHitActions
+        timedCacheHitActions
+      }
       configurations {
         mnemonic
       }
@@ -34,6 +42,9 @@ export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
           actionData {
             mnemonic
           }
+        }
+        timingMetrics {
+          executionPhaseTimeInMs
         }
       }
       actions(
@@ -65,6 +76,7 @@ export const BAZEL_INVOCATION_ACTION_FRAGMENT = gql(/* GraphQL */ `
     label
     type
     runner
+    cacheHit
     success
     exitCode
     commandLine
@@ -132,6 +144,9 @@ export const Route = createFileRoute(
 
     return {
       actions,
+      actionTimingMetrics: data.getBazelInvocation.actionTimingMetrics,
+      executionPhaseTimeInMs:
+        data.getBazelInvocation.metrics?.timingMetrics?.executionPhaseTimeInMs,
       actionMnemonics: Array.from(
         new Set(
           [
@@ -185,8 +200,10 @@ const getPaginationUpdateLink = (newPagination: TablePaginationVars) =>
 function RouteComponent() {
   const {
     actions,
+    actionTimingMetrics,
     actionMnemonics,
     configurationMnemonics,
+    executionPhaseTimeInMs,
     pageSize,
     pageInfo,
   } = Route.useLoaderData();
@@ -215,8 +232,10 @@ function RouteComponent() {
   return (
     <ActionsTab
       actions={actions}
+      actionTimingMetrics={actionTimingMetrics}
       actionMnemonics={actionMnemonics}
       configurationMnemonics={configurationMnemonics}
+      executionPhaseTimeInMs={executionPhaseTimeInMs}
       getPaginationUpdateLink={getPaginationUpdateLink}
       onFilterChange={onFilterChange}
       pageInfo={pageInfo}

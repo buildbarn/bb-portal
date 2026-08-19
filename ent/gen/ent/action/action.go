@@ -25,6 +25,8 @@ const (
 	FieldType = "type"
 	// FieldRunner holds the string denoting the runner field in the database.
 	FieldRunner = "runner"
+	// FieldCacheHit holds the string denoting the cache_hit field in the database.
+	FieldCacheHit = "cache_hit"
 	// FieldSuccess holds the string denoting the success field in the database.
 	FieldSuccess = "success"
 	// FieldExitCode holds the string denoting the exit_code field in the database.
@@ -87,6 +89,7 @@ var Columns = []string{
 	FieldLabel,
 	FieldType,
 	FieldRunner,
+	FieldCacheHit,
 	FieldSuccess,
 	FieldExitCode,
 	FieldCommandLine,
@@ -156,6 +159,11 @@ func ByType(opts ...sql.OrderTermOption) OrderOption {
 // ByRunner orders the results by the runner field.
 func ByRunner(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRunner, opts...).ToFunc()
+}
+
+// ByCacheHit orders the results by the cache_hit field.
+func ByCacheHit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCacheHit, opts...).ToFunc()
 }
 
 // BySuccess orders the results by the success field.

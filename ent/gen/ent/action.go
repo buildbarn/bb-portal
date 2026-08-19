@@ -33,6 +33,8 @@ type Action struct {
 	Type string `json:"type,omitempty"`
 	// The runner reported by Bazel's compact execution log
 	Runner string `json:"runner,omitempty"`
+	// Whether Bazel's compact execution log reported a disk or remote cache hit
+	CacheHit *bool `json:"cache_hit,omitempty"`
 	// Success holds the value of the "success" field.
 	Success bool `json:"success,omitempty"`
 	// ExitCode holds the value of the "exit_code" field.
@@ -116,7 +118,7 @@ func (*Action) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case action.FieldCommandLine:
 			values[i] = new([]byte)
-		case action.FieldSuccess:
+		case action.FieldCacheHit, action.FieldSuccess:
 			values[i] = new(sql.NullBool)
 		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldActionDigestID, action.FieldExitCode:
 			values[i] = new(sql.NullInt64)
@@ -180,6 +182,13 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field runner", values[i])
 			} else if value.Valid {
 				_m.Runner = value.String
+			}
+		case action.FieldCacheHit:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field cache_hit", values[i])
+			} else if value.Valid {
+				_m.CacheHit = new(bool)
+				*_m.CacheHit = value.Bool
 			}
 		case action.FieldSuccess:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -317,6 +326,11 @@ func (_m *Action) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("runner=")
 	builder.WriteString(_m.Runner)
+	builder.WriteString(", ")
+	if v := _m.CacheHit; v != nil {
+		builder.WriteString("cache_hit=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("success=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Success))

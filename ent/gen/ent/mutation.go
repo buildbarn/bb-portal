@@ -110,6 +110,7 @@ type ActionMutation struct {
 	label                   *string
 	_type                   *string
 	runner                  *string
+	cache_hit               *bool
 	success                 *bool
 	exit_code               *int32
 	addexit_code            *int32
@@ -505,6 +506,55 @@ func (m *ActionMutation) RunnerCleared() bool {
 func (m *ActionMutation) ResetRunner() {
 	m.runner = nil
 	delete(m.clearedFields, action.FieldRunner)
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (m *ActionMutation) SetCacheHit(b bool) {
+	m.cache_hit = &b
+}
+
+// CacheHit returns the value of the "cache_hit" field in the mutation.
+func (m *ActionMutation) CacheHit() (r bool, exists bool) {
+	v := m.cache_hit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCacheHit returns the old "cache_hit" field's value of the Action entity.
+// If the Action object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionMutation) OldCacheHit(ctx context.Context) (v *bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCacheHit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCacheHit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCacheHit: %w", err)
+	}
+	return oldValue.CacheHit, nil
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (m *ActionMutation) ClearCacheHit() {
+	m.cache_hit = nil
+	m.clearedFields[action.FieldCacheHit] = struct{}{}
+}
+
+// CacheHitCleared returns if the "cache_hit" field was cleared in this mutation.
+func (m *ActionMutation) CacheHitCleared() bool {
+	_, ok := m.clearedFields[action.FieldCacheHit]
+	return ok
+}
+
+// ResetCacheHit resets all changes to the "cache_hit" field.
+func (m *ActionMutation) ResetCacheHit() {
+	m.cache_hit = nil
+	delete(m.clearedFields, action.FieldCacheHit)
 }
 
 // SetSuccess sets the "success" field.
@@ -1198,7 +1248,7 @@ func (m *ActionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ActionMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.bazel_invocation != nil {
 		fields = append(fields, action.FieldBazelInvocationID)
 	}
@@ -1216,6 +1266,9 @@ func (m *ActionMutation) Fields() []string {
 	}
 	if m.runner != nil {
 		fields = append(fields, action.FieldRunner)
+	}
+	if m.cache_hit != nil {
+		fields = append(fields, action.FieldCacheHit)
 	}
 	if m.success != nil {
 		fields = append(fields, action.FieldSuccess)
@@ -1270,6 +1323,8 @@ func (m *ActionMutation) Field(name string) (ent.Value, bool) {
 		return m.GetType()
 	case action.FieldRunner:
 		return m.Runner()
+	case action.FieldCacheHit:
+		return m.CacheHit()
 	case action.FieldSuccess:
 		return m.Success()
 	case action.FieldExitCode:
@@ -1313,6 +1368,8 @@ func (m *ActionMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldType(ctx)
 	case action.FieldRunner:
 		return m.OldRunner(ctx)
+	case action.FieldCacheHit:
+		return m.OldCacheHit(ctx)
 	case action.FieldSuccess:
 		return m.OldSuccess(ctx)
 	case action.FieldExitCode:
@@ -1385,6 +1442,13 @@ func (m *ActionMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRunner(v)
+		return nil
+	case action.FieldCacheHit:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCacheHit(v)
 		return nil
 	case action.FieldSuccess:
 		v, ok := value.(bool)
@@ -1520,6 +1584,9 @@ func (m *ActionMutation) ClearedFields() []string {
 	if m.FieldCleared(action.FieldRunner) {
 		fields = append(fields, action.FieldRunner)
 	}
+	if m.FieldCleared(action.FieldCacheHit) {
+		fields = append(fields, action.FieldCacheHit)
+	}
 	if m.FieldCleared(action.FieldSuccess) {
 		fields = append(fields, action.FieldSuccess)
 	}
@@ -1579,6 +1646,9 @@ func (m *ActionMutation) ClearField(name string) error {
 	case action.FieldRunner:
 		m.ClearRunner()
 		return nil
+	case action.FieldCacheHit:
+		m.ClearCacheHit()
+		return nil
 	case action.FieldSuccess:
 		m.ClearSuccess()
 		return nil
@@ -1637,6 +1707,9 @@ func (m *ActionMutation) ResetField(name string) error {
 		return nil
 	case action.FieldRunner:
 		m.ResetRunner()
+		return nil
+	case action.FieldCacheHit:
+		m.ResetCacheHit()
 		return nil
 	case action.FieldSuccess:
 		m.ResetSuccess()

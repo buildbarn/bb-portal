@@ -34,6 +34,7 @@ type executionLogAction struct {
 	mnemonic     string
 	outputPaths  []string
 	runner       string
+	cacheHit     *bool
 	actionDigest storagedigest.Digest
 }
 
@@ -137,11 +138,13 @@ func parseCompactExecutionLog(reader io.Reader, instanceName storagedigest.Insta
 			continue
 		}
 
+		cacheHit := spawn.GetCacheHit()
 		executionLogAction := executionLogAction{
 			targetLabel: spawn.GetTargetLabel(),
 			mnemonic:    spawn.GetMnemonic(),
 			outputPaths: outputPaths,
 			runner:      spawn.GetRunner(),
+			cacheHit:    &cacheHit,
 		}
 		if spawn.GetDigest() != nil && spawn.GetDigest().GetHash() != "" {
 			spawnHashFunctionName := spawn.GetDigest().GetHashFunctionName()
@@ -263,11 +266,16 @@ func addUniqueActionMatch[K comparable](matches map[K]int64, ambiguous map[K]str
 
 type executionLogActionMetadata struct {
 	runner       string
+	cacheHit     *bool
 	actionDigest storagedigest.Digest
 }
 
 func executionLogActionMetadataEqual(left, right executionLogActionMetadata) bool {
 	if left.runner != right.runner {
+		return false
+	}
+	if (left.cacheHit == nil) != (right.cacheHit == nil) ||
+		left.cacheHit != nil && *left.cacheHit != *right.cacheHit {
 		return false
 	}
 	if left.actionDigest == storagedigest.BadDigest || right.actionDigest == storagedigest.BadDigest {
@@ -313,6 +321,7 @@ func matchExecutionLogActions(databaseActions []*ent.Action, executionLogActions
 			}
 			metadata := executionLogActionMetadata{
 				runner:       executionLogAction.runner,
+				cacheHit:     executionLogAction.cacheHit,
 				actionDigest: executionLogAction.actionDigest,
 			}
 			if existingMetadata, exists := matchedActions[actionID]; exists && !executionLogActionMetadataEqual(existingMetadata, metadata) {
@@ -345,6 +354,9 @@ func (r *buildEventRecorder) saveExecutionLogActionMetadata(ctx context.Context,
 		update := tx.Ent().Action.UpdateOneID(actionID)
 		if metadata.runner != "" {
 			update.SetRunner(metadata.runner)
+		}
+		if metadata.cacheHit != nil {
+			update.SetCacheHit(*metadata.cacheHit)
 		}
 		if metadata.actionDigest != storagedigest.BadDigest {
 			actionDigest := metadata.actionDigest

@@ -4,6 +4,7 @@ import {
   generateActionUrlFromGraphqlDigest,
   generateFileUrlFromBepURI,
 } from "@/utils/urlGenerator";
+import { getActionCacheStatus } from "./cache";
 import { getActionExecutionKind } from "./execution";
 
 interface Props {
@@ -30,6 +31,7 @@ const OutputLink: React.FC<OutputLinkProps> = ({ uri, fileName, children }) => {
 
 export const ActionDetails: React.FC<Props> = ({ action }) => {
   const actionHref = generateActionUrlFromGraphqlDigest(action.actionDigest);
+  const cacheStatus = getActionCacheStatus(action.cacheHit, action.runner);
 
   return (
     <Space direction="vertical" size="middle" style={{ width: "100%" }}>
@@ -47,6 +49,9 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
         <Descriptions.Item label="Execution">
           {getActionExecutionKind(action.runner)}
           {action.runner && ` (${action.runner})`}
+        </Descriptions.Item>
+        <Descriptions.Item label="Cache result">
+          {cacheStatus.label}
         </Descriptions.Item>
         {actionHref && (
           <Descriptions.Item label="Action">
