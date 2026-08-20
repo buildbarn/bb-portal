@@ -29,7 +29,7 @@ require (
 	github.com/bazelbuild/remote-apis v0.0.0-20260331222004-becdd8f9ff81
 	github.com/bazelbuild/rules_go v0.62.0
 	github.com/buildbarn/bb-remote-execution v0.0.0-20260614164626-1ae1eed2501f
-	github.com/buildbarn/bb-storage v0.0.0-20260609094425-10acc76a8295
+	github.com/buildbarn/bb-storage v0.0.0-20260805174928-33530b6bb903
 	github.com/fergusstrange/embedded-postgres v1.34.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
