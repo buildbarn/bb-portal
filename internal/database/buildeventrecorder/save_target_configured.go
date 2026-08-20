@@ -158,6 +158,25 @@ func getOrCreateTargets(ctx context.Context, instanceNameID int64, tx database.H
 		result[targetKey{label: row.Label, aspect: row.Aspect, kind: row.TargetKind}] = int(row.ID)
 	}
 	if len(result) != len(uniqueKeys) {
+		// ON CONFLICT DO NOTHING does not return targets inserted by another
+		// transaction. The insert waits for those transactions to finish, so a
+		// new READ COMMITTED snapshot can now retrieve their IDs without taking
+		// update locks on the target rows.
+		missLabels, missAspects, missKinds = findMissingRows(labels, aspects, kinds, result)
+		concurrentRows, err := tx.Sqlc().FindTargets(ctx, sqlc.FindTargetsParams{
+			InstanceNameID: int64(instanceNameID),
+			Labels:         missLabels,
+			Aspects:        missAspects,
+			TargetKinds:    missKinds,
+		})
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to find targets inserted concurrently")
+		}
+		for _, row := range concurrentRows {
+			result[targetKey{label: row.Label, aspect: row.Aspect, kind: row.TargetKind}] = int(row.ID)
+		}
+	}
+	if len(result) != len(uniqueKeys) {
 		return nil, status.Error(codes.Unavailable, "Not all missing targets were created.")
 	}
 	return result, nil
