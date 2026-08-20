@@ -187,8 +187,8 @@ github.com/bmatcuk/doublestar v1.3.4 h1:gPypJ5xD31uhX6Tf54sDPUOBXTqKH4c9aPY66CyQ
 github.com/bmatcuk/doublestar v1.3.4/go.mod h1:wiQtGV+rzVYxB7WIlirSN++5HPtPlXEo9MEoZQC/PmE=
 github.com/buildbarn/bb-remote-execution v0.0.0-20260614164626-1ae1eed2501f h1:HSUUfkYJ4rtso07kYKrXODbQRNtE4OGgSNbfR1P+39g=
 github.com/buildbarn/bb-remote-execution v0.0.0-20260614164626-1ae1eed2501f/go.mod h1:t/Riac+YHCnCVeaXXPjt7iQZf2USZQ5N9MJ+tyKSUgg=
-github.com/buildbarn/bb-storage v0.0.0-20260609094425-10acc76a8295 h1:c02xxYG5n6a2Xf+02XVEiXhvOQKIieEcUv0wGE0741o=
-github.com/buildbarn/bb-storage v0.0.0-20260609094425-10acc76a8295/go.mod h1:Vx/nCl3WJ9tZtk8/Liq+mO4++6DcsWiVW+G050Fe7vI=
+github.com/buildbarn/bb-storage v0.0.0-20260805174928-33530b6bb903 h1:+D8f4ooHTRiJ9gMSV/zmWt63IMUlFaVFxili0Fgowxc=
+github.com/buildbarn/bb-storage v0.0.0-20260805174928-33530b6bb903/go.mod h1:HmFWc2g71Sco4VpeJFbgjltVE0MJTY9RRAokNow4vKY=
 github.com/buildbarn/go-sha256tree v0.0.0-20250310211320-0f70f20e855b h1:IKUxixGBm9UxobU7c248z0BF0ojG19uoSLz8MFZM/KA=
 github.com/buildbarn/go-sha256tree v0.0.0-20250310211320-0f70f20e855b/go.mod h1:e7g3/yWApcg+PpDqd4eQEEV8pexQmfCgK3frP+1Wuvk=
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
