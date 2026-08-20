@@ -37,18 +37,20 @@ const OPERATION_FIELDS: Record<string, CountField> = {
 
 const countColumn = (
   title: string,
-  dataIndex: CountField,
+  field: CountField,
 ): TableColumnsType<EvaluationRow>[number] => ({
   title,
-  dataIndex,
+  key: field,
   align: "right",
-  sorter: (a, b) => a[dataIndex] - b[dataIndex],
+  render: (_, record) => record[field],
+  sorter: (a, b) => a[field] - b[field],
 });
 
-const columns: TableColumnsType<EvaluationRow> = [
+const evaluationColumns: TableColumnsType<EvaluationRow> = [
   {
     title: "Skyfunction",
-    dataIndex: "skyfunctionName",
+    key: "skyfunctionName",
+    render: (_, record) => record.skyfunctionName,
     sorter: (a, b) => a.skyfunctionName.localeCompare(b.skyfunctionName),
   },
   countColumn("Dirtied", "dirtied"),
@@ -62,24 +64,26 @@ const numericCountColumn = <
   T extends { count?: number | null; actionCount?: number | null },
 >(
   title: string,
-  dataIndex: "count" | "actionCount",
+  field: "count" | "actionCount",
 ): TableColumnsType<T>[number] => ({
   title,
-  dataIndex,
+  key: field,
   align: "right",
-  render: (value: number | null | undefined) => value ?? 0,
-  sorter: (a, b) => Number(a[dataIndex] ?? 0) - Number(b[dataIndex] ?? 0),
+  render: (_, record) => record[field] ?? 0,
+  sorter: (a, b) => Number(a[field] ?? 0) - Number(b[field] ?? 0),
 });
 
 const ruleClassColumns: TableColumnsType<RuleClassRow> = [
   {
     title: "Key",
-    dataIndex: "key",
+    key: "key",
+    render: (_, record) => record.key,
     sorter: (a, b) => (a.key ?? "").localeCompare(b.key ?? ""),
   },
   {
     title: "Rule Class",
-    dataIndex: "ruleClass",
+    key: "ruleClass",
+    render: (_, record) => record.ruleClass,
     sorter: (a, b) => (a.ruleClass ?? "").localeCompare(b.ruleClass ?? ""),
   },
   numericCountColumn<RuleClassRow>("Configured Targets", "count"),
@@ -89,12 +93,14 @@ const ruleClassColumns: TableColumnsType<RuleClassRow> = [
 const aspectColumns: TableColumnsType<AspectRow> = [
   {
     title: "Key",
-    dataIndex: "key",
+    key: "key",
+    render: (_, record) => record.key,
     sorter: (a, b) => (a.key ?? "").localeCompare(b.key ?? ""),
   },
   {
     title: "Aspect",
-    dataIndex: "aspectName",
+    key: "aspectName",
+    render: (_, record) => record.aspectName,
     sorter: (a, b) => (a.aspectName ?? "").localeCompare(b.aspectName ?? ""),
   },
   numericCountColumn<AspectRow>("Configured Targets", "count"),
@@ -124,7 +130,7 @@ export const BuildGraphEvaluationMetricsDisplay: React.FC<Props> = ({
     rowsBySkyfunction.set(skyfunctionName, row);
   }
 
-  const rows = [...rowsBySkyfunction.values()].sort(
+  const evaluationRows = [...rowsBySkyfunction.values()].sort(
     (a, b) => b.evaluated - a.evaluated,
   );
 
@@ -138,12 +144,12 @@ export const BuildGraphEvaluationMetricsDisplay: React.FC<Props> = ({
       titleBits={["Build Graph Metrics"]}
     >
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-        {rows.length > 0 && (
+        {evaluationRows.length > 0 && (
           <div>
             <Typography.Title level={5}>Skyframe Evaluation</Typography.Title>
             <Table
-              columns={columns}
-              dataSource={rows}
+              columns={evaluationColumns}
+              dataSource={evaluationRows}
               pagination={{ defaultPageSize: 20, hideOnSinglePage: true }}
               size="small"
             />

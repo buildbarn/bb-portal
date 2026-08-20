@@ -34,11 +34,6 @@ ORDER BY
     label COLLATE "C",
     aspect COLLATE "C",
     target_kind COLLATE "C"
--- Concurrent invocations may both observe the target as missing. Do not update
--- the existing row: that would conflict with foreign-key locks held by batches
--- which are already creating invocation targets for it.
-ON CONFLICT (label, aspect, target_kind, instance_name_targets)
-DO NOTHING
 RETURNING id, label, aspect, target_kind;
 
 -- name: DeleteUnusedTargetsFromPages :execrows

@@ -12,21 +12,33 @@ type RaceStatistic = NonNullable<
 >[number];
 
 const columns: TableColumnsType<RaceStatistic> = [
-  { title: "Mnemonic", dataIndex: "mnemonic" },
-  { title: "Local Runner", dataIndex: "localRunner" },
-  { title: "Remote Runner", dataIndex: "remoteRunner" },
+  {
+    title: "Mnemonic",
+    key: "mnemonic",
+    render: (_, record) => record.mnemonic,
+  },
+  {
+    title: "Local Runner",
+    key: "localRunner",
+    render: (_, record) => record.localRunner,
+  },
+  {
+    title: "Remote Runner",
+    key: "remoteRunner",
+    render: (_, record) => record.remoteRunner,
+  },
   {
     title: "Local Wins",
-    dataIndex: "localWins",
+    key: "localWins",
     align: "right",
-    render: (value: number | null | undefined) => value ?? 0,
+    render: (_, record) => record.localWins ?? 0,
     sorter: (a, b) => (a.localWins ?? 0) - (b.localWins ?? 0),
   },
   {
     title: "Remote Wins",
-    dataIndex: "remoteWins",
+    key: "remoteWins",
     align: "right",
-    render: (value: number | null | undefined) => value ?? 0,
+    render: (_, record) => record.remoteWins ?? 0,
     sorter: (a, b) => (a.remoteWins ?? 0) - (b.remoteWins ?? 0),
   },
 ];

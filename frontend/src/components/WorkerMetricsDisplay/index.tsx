@@ -32,89 +32,156 @@ const displayTimestamp = (timestampInMs: number): string =>
 const workerColumns: TableColumnsType<WorkerRow> = [
   {
     title: "Worker IDs",
+    key: "workerIds",
     render: (_, worker) =>
       worker.workerIds?.map(({ workerID }) => workerID).join(", ") ?? "—",
   },
-  { title: "Mnemonic", dataIndex: "mnemonic" },
-  { title: "Process ID", dataIndex: "processID", align: "right" },
-  { title: "Worker Key", dataIndex: "workerKeyHash", align: "right" },
+  {
+    title: "Mnemonic",
+    key: "mnemonic",
+    render: (_, worker) => worker.mnemonic,
+  },
+  {
+    title: "Process ID",
+    key: "processID",
+    align: "right",
+    render: (_, worker) => worker.processID,
+  },
+  {
+    title: "Worker Key",
+    key: "workerKeyHash",
+    align: "right",
+    render: (_, worker) => worker.workerKeyHash,
+  },
   {
     title: "Status",
+    key: "status",
     render: (_, worker) =>
       [worker.workerStatus, worker.code].filter(Boolean).join(" / ") || "—",
   },
   {
     title: "Mode",
+    key: "mode",
     render: (_, worker) => (worker.isMultiplex ? "Multiplex" : "Singleplex"),
   },
   {
     title: "Sandbox",
+    key: "sandbox",
     render: (_, worker) => (worker.isSandbox ? "Yes" : "No"),
   },
   {
     title: "Measurable",
+    key: "measurable",
     render: (_, worker) => (worker.isMeasurable ? "Yes" : "No"),
   },
-  { title: "Actions", dataIndex: "actionsExecuted", align: "right" },
+  {
+    title: "Actions",
+    key: "actionsExecuted",
+    align: "right",
+    render: (_, worker) => worker.actionsExecuted,
+  },
   {
     title: "Prior Actions",
-    dataIndex: "priorActionsExecuted",
+    key: "priorActionsExecuted",
     align: "right",
+    render: (_, worker) => worker.priorActionsExecuted,
   },
 ];
 
 const workerStatsColumns: TableColumnsType<WorkerStatsRow> = [
-  { title: "Worker", dataIndex: "worker" },
+  {
+    title: "Worker",
+    key: "worker",
+    render: (_, workerStat) => workerStat.worker,
+  },
   {
     title: "Collected",
-    dataIndex: "collectTimeInMs",
-    render: displayTimestamp,
+    key: "collectTimeInMs",
+    render: (_, workerStat) => displayTimestamp(workerStat.collectTimeInMs),
   },
   {
     title: "Memory",
-    dataIndex: "workerMemoryInKB",
-    render: (value: number) => readableFileSize(value * 1024),
+    key: "workerMemoryInKB",
+    render: (_, workerStat) =>
+      readableFileSize(workerStat.workerMemoryInKB * 1024),
     align: "right",
   },
   {
     title: "Prior Memory",
-    dataIndex: "priorWorkerMemoryInKB",
-    render: (value: number) => readableFileSize(value * 1024),
+    key: "priorWorkerMemoryInKB",
+    render: (_, workerStat) =>
+      readableFileSize(workerStat.priorWorkerMemoryInKB * 1024),
     align: "right",
   },
   {
     title: "Last Action Start",
-    dataIndex: "lastActionStartTimeInMs",
-    render: displayTimestamp,
+    key: "lastActionStartTimeInMs",
+    render: (_, workerStat) =>
+      displayTimestamp(workerStat.lastActionStartTimeInMs),
   },
 ];
 
 const workerPoolColumns: TableColumnsType<WorkerPoolRow> = [
-  { title: "Hash", dataIndex: "hash", align: "right" },
-  { title: "Mnemonic", dataIndex: "mnemonic" },
-  { title: "Created", dataIndex: "createdCount", align: "right" },
-  { title: "Destroyed", dataIndex: "destroyedCount", align: "right" },
-  { title: "Evicted", dataIndex: "evictedCount", align: "right" },
-  { title: "Alive", dataIndex: "aliveCount", align: "right" },
+  {
+    title: "Hash",
+    key: "hash",
+    align: "right",
+    render: (_, workerPoolStat) => workerPoolStat.hash,
+  },
+  {
+    title: "Mnemonic",
+    key: "mnemonic",
+    render: (_, workerPoolStat) => workerPoolStat.mnemonic,
+  },
+  {
+    title: "Created",
+    key: "createdCount",
+    align: "right",
+    render: (_, workerPoolStat) => workerPoolStat.createdCount,
+  },
+  {
+    title: "Destroyed",
+    key: "destroyedCount",
+    align: "right",
+    render: (_, workerPoolStat) => workerPoolStat.destroyedCount,
+  },
+  {
+    title: "Evicted",
+    key: "evictedCount",
+    align: "right",
+    render: (_, workerPoolStat) => workerPoolStat.evictedCount,
+  },
+  {
+    title: "Alive",
+    key: "aliveCount",
+    align: "right",
+    render: (_, workerPoolStat) => workerPoolStat.aliveCount,
+  },
   {
     title: "User Error",
-    dataIndex: "userExecExceptionDestroyedCount",
+    key: "userExecExceptionDestroyedCount",
     align: "right",
+    render: (_, workerPoolStat) =>
+      workerPoolStat.userExecExceptionDestroyedCount,
   },
   {
     title: "I/O Error",
-    dataIndex: "ioExceptionDestroyedCount",
+    key: "ioExceptionDestroyedCount",
     align: "right",
+    render: (_, workerPoolStat) => workerPoolStat.ioExceptionDestroyedCount,
   },
   {
     title: "Interrupted",
-    dataIndex: "interruptedExceptionDestroyedCount",
+    key: "interruptedExceptionDestroyedCount",
     align: "right",
+    render: (_, workerPoolStat) =>
+      workerPoolStat.interruptedExceptionDestroyedCount,
   },
   {
     title: "Unknown",
-    dataIndex: "unknownDestroyedCount",
+    key: "unknownDestroyedCount",
     align: "right",
+    render: (_, workerPoolStat) => workerPoolStat.unknownDestroyedCount,
   },
 ];
 

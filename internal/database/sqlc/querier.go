@@ -36,9 +36,6 @@ type Querier interface {
 	//   2. Explicitly collate to normalize sort order between database
 	// instantiations, otherwise golden file generation may have a different
 	// order than what's used during the test.
-	// Concurrent invocations may both observe the target as missing. Do not update
-	// the existing row: that would conflict with foreign-key locks held by batches
-	// which are already creating invocation targets for it.
 	CreateTargets(ctx context.Context, arg CreateTargetsParams) ([]CreateTargetsRow, error)
 	CreateTestActionOutputAssociation(ctx context.Context, arg CreateTestActionOutputAssociationParams) (int64, error)
 	// STAGE 2: Join the rest using the specific Target IDs we found

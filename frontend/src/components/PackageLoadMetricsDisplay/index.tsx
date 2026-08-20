@@ -12,30 +12,39 @@ type PackageLoadRow = NonNullable<
   BazelInvocationMetricsPackageMetricsFragment["packageLoadMetrics"]
 >[number];
 
+type NumericPackageLoadField =
+  | "numTargets"
+  | "computationSteps"
+  | "numTransitiveLoads"
+  | "packageOverhead"
+  | "globFilesystemOperationCost";
+
 const numericColumn = (
   title: string,
-  dataIndex: keyof PackageLoadRow,
+  field: NumericPackageLoadField,
 ): TableColumnsType<PackageLoadRow>[number] => ({
   title,
-  dataIndex,
+  key: field,
   align: "right",
-  render: (value: number | null | undefined) => value ?? 0,
-  sorter: (a, b) => Number(a[dataIndex] ?? 0) - Number(b[dataIndex] ?? 0),
+  render: (_, record) => record[field] ?? 0,
+  sorter: (a, b) => Number(a[field] ?? 0) - Number(b[field] ?? 0),
 });
 
 const columns: TableColumnsType<PackageLoadRow> = [
   {
     title: "Package",
-    dataIndex: "name",
-    render: (value: string | null | undefined) => value || "—",
+    key: "name",
+    render: (_, record) => record.name || "—",
     sorter: (a, b) => (a.name ?? "").localeCompare(b.name ?? ""),
   },
   {
     title: "Load Duration",
-    dataIndex: "loadDurationInNs",
+    key: "loadDurationInNs",
     align: "right",
-    render: (value: number | null | undefined) =>
-      readableDurationFromMilliseconds((value ?? 0) / 1_000_000),
+    render: (_, record) =>
+      readableDurationFromMilliseconds(
+        (record.loadDurationInNs ?? 0) / 1_000_000,
+      ),
     sorter: (a, b) => (a.loadDurationInNs ?? 0) - (b.loadDurationInNs ?? 0),
   },
   numericColumn("Targets", "numTargets"),
