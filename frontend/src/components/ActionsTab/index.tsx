@@ -1,39 +1,76 @@
-import { Collapse } from "antd";
 import { useMemo } from "react";
-import type { BazelInvocationActionsFragment } from "@/graphql/__generated__/graphql";
-import themeStyles from "@/theme/theme.module.css";
-import PortalDuration from "../PortalDuration";
+import type {
+  ActionTimingMetrics,
+  ActionWhereInput,
+  BazelInvocationActionFragment,
+} from "@/graphql/__generated__/graphql";
+import { PageCursorTable } from "../PageCursorTable";
+import type {
+  GetPaginationUpdateLinkType,
+  PageInfo,
+} from "../PageCursorTable/types";
+import { tableFiltersToGraphqlWhere } from "../PageCursorTable/utils";
 import { ActionDetails } from "./action";
-
-const getCollapseItems = (actions: BazelInvocationActionsFragment[]) => {
-  return actions?.map((action) => {
-    return {
-      key: action.id,
-      label: action.label,
-      extra: action.startTime && action.endTime && (
-        <PortalDuration
-          from={action.startTime || undefined}
-          to={action.endTime || undefined}
-          formatConfig={{ smallestUnit: "ms" }}
-        />
-      ),
-      children: <ActionDetails action={action} />,
-    };
-  });
-};
+import { getColumns } from "./columns";
+import { ActionsMetrics } from "./metrics";
 
 interface Props {
-  actions: BazelInvocationActionsFragment[];
+  actions: BazelInvocationActionFragment[];
+  actionTimingMetrics: Pick<
+    ActionTimingMetrics,
+    | "totalExpectedTimeInMs"
+    | "timeSavedByCacheHitsInMs"
+    | "totalActions"
+    | "timedActions"
+    | "cacheHitActions"
+    | "timedCacheHitActions"
+  >;
+  actionMnemonics: string[];
+  configurationMnemonics: string[];
+  executionPhaseTimeInMs: number | null | undefined;
+  pageSize: number;
+  onFilterChange: (where: ActionWhereInput[]) => void;
+  getPaginationUpdateLink: GetPaginationUpdateLinkType;
+  pageInfo: PageInfo;
 }
 
-export const ActionsTab: React.FC<Props> = ({ actions }) => {
-  const items = useMemo(() => getCollapseItems(actions), [actions]);
+export const ActionsTab: React.FC<Props> = ({
+  actions,
+  actionTimingMetrics,
+  actionMnemonics,
+  configurationMnemonics,
+  executionPhaseTimeInMs,
+  pageSize,
+  onFilterChange,
+  getPaginationUpdateLink,
+  pageInfo,
+}) => {
+  const columns = useMemo(
+    () => getColumns(actionMnemonics, configurationMnemonics),
+    [actionMnemonics, configurationMnemonics],
+  );
+
   return (
-    <Collapse
-      items={items}
-      bordered={true}
-      defaultActiveKey={actions && actions.length === 1 ? [actions[0].id] : []}
-      className={themeStyles.collapse}
-    />
+    <>
+      <ActionsMetrics
+        actionTimingMetrics={actionTimingMetrics}
+        executionPhaseTimeInMs={executionPhaseTimeInMs}
+      />
+      <PageCursorTable
+        size="small"
+        columns={columns}
+        dataSource={actions}
+        rowKey="id"
+        expandable={{
+          expandedRowRender: (action) => <ActionDetails action={action} />,
+        }}
+        onChange={(_pagination, filters) => {
+          onFilterChange(tableFiltersToGraphqlWhere(columns, filters));
+        }}
+        getPaginationUpdateLink={getPaginationUpdateLink}
+        pageInfo={pageInfo}
+        pageSize={pageSize}
+      />
+    </>
   );
 };

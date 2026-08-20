@@ -34,13 +34,16 @@ type Digest struct {
 type DigestEdges struct {
 	// Files holds the value of the files edge.
 	Files []*File `json:"files,omitempty"`
+	// Actions holds the value of the actions edge.
+	Actions []*Action `json:"actions,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
 
-	namedFiles map[string][]*File
+	namedFiles   map[string][]*File
+	namedActions map[string][]*Action
 }
 
 // FilesOrErr returns the Files value or an error if the edge
@@ -50,6 +53,15 @@ func (e DigestEdges) FilesOrErr() ([]*File, error) {
 		return e.Files, nil
 	}
 	return nil, &NotLoadedError{edge: "files"}
+}
+
+// ActionsOrErr returns the Actions value or an error if the edge
+// was not loaded in eager-loading.
+func (e DigestEdges) ActionsOrErr() ([]*Action, error) {
+	if e.loadedTypes[1] {
+		return e.Actions, nil
+	}
+	return nil, &NotLoadedError{edge: "actions"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -126,6 +138,11 @@ func (_m *Digest) QueryFiles() *FileQuery {
 	return NewDigestClient(_m.config).QueryFiles(_m)
 }
 
+// QueryActions queries the "actions" edge of the Digest entity.
+func (_m *Digest) QueryActions() *ActionQuery {
+	return NewDigestClient(_m.config).QueryActions(_m)
+}
+
 // Update returns a builder for updating this Digest.
 // Note that you need to call Digest.Unwrap() before calling this method if this Digest
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -185,6 +202,30 @@ func (_m *Digest) appendNamedFiles(name string, edges ...*File) {
 		_m.Edges.namedFiles[name] = []*File{}
 	} else {
 		_m.Edges.namedFiles[name] = append(_m.Edges.namedFiles[name], edges...)
+	}
+}
+
+// NamedActions returns the Actions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Digest) NamedActions(name string) ([]*Action, error) {
+	if _m.Edges.namedActions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedActions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Digest) appendNamedActions(name string, edges ...*Action) {
+	if _m.Edges.namedActions == nil {
+		_m.Edges.namedActions = make(map[string][]*Action)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedActions[name] = []*Action{}
+	} else {
+		_m.Edges.namedActions[name] = append(_m.Edges.namedActions[name], edges...)
 	}
 }
 

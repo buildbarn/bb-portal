@@ -22,7 +22,8 @@ type ParsedBepFile struct {
 	SizeBytes         int64  `json:"sizeBytes"`
 }
 
-func getDigestFromURI(uri string) digest.Digest {
+// GetDigestFromURI extracts a CAS digest from a ByteStream URI.
+func GetDigestFromURI(uri string) digest.Digest {
 	// Remove nested protocols if they exist
 	if idx := strings.LastIndex(uri, "://"); idx != -1 {
 		uri = uri[idx+3:]
@@ -62,7 +63,7 @@ func ParseBepFile(file *proto.File) *ParsedBepFile {
 	)
 
 	if uri := file.GetUri(); uri != "" {
-		if d := getDigestFromURI(uri); d != digest.BadDigest {
+		if d := GetDigestFromURI(uri); d != digest.BadDigest {
 			instanceNameStr = d.GetInstanceName().String()
 			rawDigestFunction = d.GetDigestFunction().GetEnumValue()
 

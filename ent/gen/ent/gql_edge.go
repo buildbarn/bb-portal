@@ -21,21 +21,13 @@ func (_m *Action) Configuration(ctx context.Context) (*Configuration, error) {
 	if IsNotLoaded(err) {
 		result, err = _m.QueryConfiguration().Only(ctx)
 	}
-	return result, err
-}
-
-func (_m *Action) Stdout(ctx context.Context) (*File, error) {
-	result, err := _m.Edges.StdoutOrErr()
-	if IsNotLoaded(err) {
-		result, err = _m.QueryStdout().Only(ctx)
-	}
 	return result, MaskNotFound(err)
 }
 
-func (_m *Action) Stderr(ctx context.Context) (*File, error) {
-	result, err := _m.Edges.StderrOrErr()
+func (_m *Action) ActionDigest(ctx context.Context) (*Digest, error) {
+	result, err := _m.Edges.ActionDigestOrErr()
 	if IsNotLoaded(err) {
-		result, err = _m.QueryStderr().Only(ctx)
+		result, err = _m.QueryActionDigest().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -202,16 +194,24 @@ func (_m *BazelInvocation) Configurations(ctx context.Context) (result []*Config
 	return result, err
 }
 
-func (_m *BazelInvocation) Actions(ctx context.Context) (result []*Action, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = _m.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = _m.Edges.ActionsOrErr()
+func (_m *BazelInvocation) Actions(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *ActionWhereInput,
+) (*ActionConnection, error) {
+	opts := []ActionPaginateOption{
+		WithActionFilter(where.Filter),
 	}
-	if IsNotLoaded(err) {
-		result, err = _m.QueryActions().All(ctx)
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := _m.Edges.totalCount[6][alias]
+	if nodes, err := _m.NamedActions(alias); err == nil || hasTotalCount {
+		pager, err := newActionPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ActionConnection{Edges: []*ActionEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
 	}
-	return result, err
+	return _m.QueryActions().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (_m *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
@@ -392,30 +392,6 @@ func (_m *File) FilePath(ctx context.Context) (*FilePath, error) {
 	result, err := _m.Edges.FilePathOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryFilePath().Only(ctx)
-	}
-	return result, err
-}
-
-func (_m *File) ActionStdout(ctx context.Context) (result []*Action, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = _m.NamedActionStdout(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = _m.Edges.ActionStdoutOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = _m.QueryActionStdout().All(ctx)
-	}
-	return result, err
-}
-
-func (_m *File) ActionStderr(ctx context.Context) (result []*Action, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = _m.NamedActionStderr(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = _m.Edges.ActionStderrOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = _m.QueryActionStderr().All(ctx)
 	}
 	return result, err
 }

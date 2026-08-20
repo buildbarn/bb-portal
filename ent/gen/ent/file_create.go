@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
@@ -53,36 +52,6 @@ func (_c *FileCreate) SetDigest(v *Digest) *FileCreate {
 // SetFilePath sets the "file_path" edge to the FilePath entity.
 func (_c *FileCreate) SetFilePath(v *FilePath) *FileCreate {
 	return _c.SetFilePathID(v.ID)
-}
-
-// AddActionStdoutIDs adds the "action_stdout" edge to the Action entity by IDs.
-func (_c *FileCreate) AddActionStdoutIDs(ids ...int64) *FileCreate {
-	_c.mutation.AddActionStdoutIDs(ids...)
-	return _c
-}
-
-// AddActionStdout adds the "action_stdout" edges to the Action entity.
-func (_c *FileCreate) AddActionStdout(v ...*Action) *FileCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddActionStdoutIDs(ids...)
-}
-
-// AddActionStderrIDs adds the "action_stderr" edge to the Action entity by IDs.
-func (_c *FileCreate) AddActionStderrIDs(ids ...int64) *FileCreate {
-	_c.mutation.AddActionStderrIDs(ids...)
-	return _c
-}
-
-// AddActionStderr adds the "action_stderr" edges to the Action entity.
-func (_c *FileCreate) AddActionStderr(v ...*Action) *FileCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddActionStderrIDs(ids...)
 }
 
 // AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by IDs.
@@ -241,38 +210,6 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.FilePathID = nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.ActionStdoutIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.ActionStderrIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.InvocationProfileIDs(); len(nodes) > 0 {

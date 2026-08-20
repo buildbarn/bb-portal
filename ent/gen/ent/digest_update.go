@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -43,6 +44,21 @@ func (_u *DigestUpdate) AddFiles(v ...*File) *DigestUpdate {
 	return _u.AddFileIDs(ids...)
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (_u *DigestUpdate) AddActionIDs(ids ...int64) *DigestUpdate {
+	_u.mutation.AddActionIDs(ids...)
+	return _u
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (_u *DigestUpdate) AddActions(v ...*Action) *DigestUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionIDs(ids...)
+}
+
 // Mutation returns the DigestMutation object of the builder.
 func (_u *DigestUpdate) Mutation() *DigestMutation {
 	return _u.mutation
@@ -67,6 +83,27 @@ func (_u *DigestUpdate) RemoveFiles(v ...*File) *DigestUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveFileIDs(ids...)
+}
+
+// ClearActions clears all "actions" edges to the Action entity.
+func (_u *DigestUpdate) ClearActions() *DigestUpdate {
+	_u.mutation.ClearActions()
+	return _u
+}
+
+// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
+func (_u *DigestUpdate) RemoveActionIDs(ids ...int64) *DigestUpdate {
+	_u.mutation.RemoveActionIDs(ids...)
+	return _u
+}
+
+// RemoveActions removes "actions" edges to Action entities.
+func (_u *DigestUpdate) RemoveActions(v ...*Action) *DigestUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -150,6 +187,51 @@ func (_u *DigestUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionsTable,
+			Columns: []string{digest.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionsTable,
+			Columns: []string{digest.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionsTable,
+			Columns: []string{digest.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{digest.Label}
@@ -185,6 +267,21 @@ func (_u *DigestUpdateOne) AddFiles(v ...*File) *DigestUpdateOne {
 	return _u.AddFileIDs(ids...)
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (_u *DigestUpdateOne) AddActionIDs(ids ...int64) *DigestUpdateOne {
+	_u.mutation.AddActionIDs(ids...)
+	return _u
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (_u *DigestUpdateOne) AddActions(v ...*Action) *DigestUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionIDs(ids...)
+}
+
 // Mutation returns the DigestMutation object of the builder.
 func (_u *DigestUpdateOne) Mutation() *DigestMutation {
 	return _u.mutation
@@ -209,6 +306,27 @@ func (_u *DigestUpdateOne) RemoveFiles(v ...*File) *DigestUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveFileIDs(ids...)
+}
+
+// ClearActions clears all "actions" edges to the Action entity.
+func (_u *DigestUpdateOne) ClearActions() *DigestUpdateOne {
+	_u.mutation.ClearActions()
+	return _u
+}
+
+// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
+func (_u *DigestUpdateOne) RemoveActionIDs(ids ...int64) *DigestUpdateOne {
+	_u.mutation.RemoveActionIDs(ids...)
+	return _u
+}
+
+// RemoveActions removes "actions" edges to Action entities.
+func (_u *DigestUpdateOne) RemoveActions(v ...*Action) *DigestUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionIDs(ids...)
 }
 
 // Where appends a list predicates to the DigestUpdate builder.
@@ -315,6 +433,51 @@ func (_u *DigestUpdateOne) sqlSave(ctx context.Context) (_node *Digest, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionsTable,
+			Columns: []string{digest.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionsTable,
+			Columns: []string{digest.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionsTable,
+			Columns: []string{digest.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

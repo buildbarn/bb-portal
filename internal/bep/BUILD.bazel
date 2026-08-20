@@ -20,6 +20,7 @@ go_library(
         "@com_github_99designs_gqlgen//graphql",
         "@com_github_99designs_gqlgen//graphql/playground",
         "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/blobstore",
         "@com_github_buildbarn_bb_storage//pkg/clock",
         "@com_github_buildbarn_bb_storage//pkg/grpc",
         "@com_github_buildbarn_bb_storage//pkg/program",

@@ -16,10 +16,20 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
 )
+
+// ActionTimingMetrics is the resolver for the actionTimingMetrics field.
+func (r *bazelInvocationResolver) ActionTimingMetrics(ctx context.Context, obj *ent.BazelInvocation) (*sqlc.GetActionTimingMetricsRow, error) {
+	metrics, err := r.db.Sqlc().GetActionTimingMetrics(ctx, int64(obj.ID))
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to query action timing metrics")
+	}
+	return &metrics, nil
+}
 
 // TimeSinceLastConnectionMillis is the resolver for the timeSinceLastConnectionMillis field.
 func (r *connectionMetadataResolver) TimeSinceLastConnectionMillis(ctx context.Context, obj *ent.ConnectionMetadata) (int, error) {

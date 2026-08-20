@@ -2,6 +2,7 @@ import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Button, Flex, Space, Spin, Typography } from "antd";
+import { ClientError, Status } from "nice-grpc-web";
 import React, { useEffect } from "react";
 import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import {
@@ -29,6 +30,11 @@ import DownloadAsTarballButton from "./DownloadAsTarballButton";
 
 const FETCH_STALE_TIME = 30000;
 
+const isMissingCasObjectError = (error: Error): boolean =>
+  error instanceof ClientError &&
+  (error.code === Status.NOT_FOUND ||
+    error.details.toLowerCase().includes("object not found"));
+
 interface Params {
   instanceName: string;
   digestFunction: DigestFunction_Value;
@@ -37,6 +43,8 @@ interface Params {
   fileSystemAccessProfileReference:
     | FileSystemAccessProfileReference
     | undefined;
+  notFoundMessage?: string;
+  notFoundDescription?: string;
 }
 
 const BrowserDirectory: React.FC<Params> = ({
@@ -45,7 +53,10 @@ const BrowserDirectory: React.FC<Params> = ({
   inputRootDigest,
   fileSystemAccessProfile,
   fileSystemAccessProfileReference,
+  notFoundMessage,
+  notFoundDescription,
 }) => {
+  const [inputRootAvailable, setInputRootAvailable] = React.useState(false);
   const bloomFilterReader = fileSystemAccessProfile
     ? readBloomFilter(fileSystemAccessProfile)
     : undefined;
@@ -69,35 +80,40 @@ const BrowserDirectory: React.FC<Params> = ({
             : undefined
         }
         fileSystemAccessProfileRef={fileSystemAccessProfileReference}
+        notFoundMessage={notFoundMessage}
+        notFoundDescription={notFoundDescription}
+        onAvailabilityChange={setInputRootAvailable}
       />
-      <Space direction="vertical" size="small">
-        {bloomFilterReader && (
-          <Typography.Text>
-            <strong>Note:</strong>{" "}
-            <span className={themeStyles.colorSuccess}>Green</span> and{" "}
-            <span className={themeStyles.colorFailure}>
-              <s>red</s>
-            </span>{" "}
-            filenames above indicate which files and directories will be
-            prefetched the next time a similar action executes. Though it is
-            representative of what is actually accessed by the action, it may
-            contain false positives and negatives.
-          </Typography.Text>
-        )}
+      {inputRootAvailable && (
+        <Space direction="vertical" size="small">
+          {bloomFilterReader && (
+            <Typography.Text>
+              <strong>Note:</strong>{" "}
+              <span className={themeStyles.colorSuccess}>Green</span> and{" "}
+              <span className={themeStyles.colorFailure}>
+                <s>red</s>
+              </span>{" "}
+              filenames above indicate which files and directories will be
+              prefetched the next time a similar action executes. Though it is
+              representative of what is actually accessed by the action, it may
+              contain false positives and negatives.
+            </Typography.Text>
+          )}
 
-        <Space direction="horizontal">
-          <CopyBbClientdDirectoryButton
-            instanceName={instanceName}
-            digestFunction={digestFunction}
-            inputRootDigest={inputRootDigest}
-          />
-          <DownloadAsTarballButton
-            instanceName={instanceName}
-            digestFunction={digestFunction}
-            directoryDigest={inputRootDigest}
-          />
+          <Space direction="horizontal">
+            <CopyBbClientdDirectoryButton
+              instanceName={instanceName}
+              digestFunction={digestFunction}
+              inputRootDigest={inputRootDigest}
+            />
+            <DownloadAsTarballButton
+              instanceName={instanceName}
+              digestFunction={digestFunction}
+              directoryDigest={inputRootDigest}
+            />
+          </Space>
         </Space>
-      </Space>
+      )}
     </Space>
   );
 };
@@ -129,6 +145,9 @@ interface RecursiveDirectoryNodeProps {
   fileSystemAccessProfileRef:
     | Partial<FileSystemAccessProfileReference>
     | undefined;
+  notFoundMessage?: string;
+  notFoundDescription?: string;
+  onAvailabilityChange?: (available: boolean) => void;
 }
 
 const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
@@ -141,6 +160,9 @@ const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
   pathHashes,
   willBePrefetched,
   fileSystemAccessProfileRef,
+  notFoundMessage,
+  notFoundDescription,
+  onAvailabilityChange,
 }) => {
   const [expanded, setExpanded] = React.useState(isTopLevel);
   const queryClient = useQueryClient();
@@ -162,6 +184,10 @@ const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
     staleTime: FETCH_STALE_TIME,
     refetchOnMount: "always",
   });
+
+  useEffect(() => {
+    onAvailabilityChange?.(data !== undefined && !isError);
+  }, [data, isError, onAvailabilityChange]);
 
   // Prefetch all child directories. React-query will cache the results for us
   // and reuse them for the `useQuery` above.
@@ -203,6 +229,17 @@ const RecursiveDirectoryNode: React.FC<RecursiveDirectoryNodeProps> = ({
   };
 
   if (isError) {
+    if (isTopLevel && notFoundMessage && isMissingCasObjectError(error)) {
+      return (
+        <PortalAlert
+          type="warning"
+          showIcon
+          message={notFoundMessage}
+          description={notFoundDescription}
+        />
+      );
+    }
+
     return (
       <PortalAlert
         className="error"

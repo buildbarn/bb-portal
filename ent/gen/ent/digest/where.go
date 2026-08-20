@@ -281,6 +281,29 @@ func HasFilesWith(preds ...predicate.File) predicate.Digest {
 	})
 }
 
+// HasActions applies the HasEdge predicate on the "actions" edge.
+func HasActions() predicate.Digest {
+	return predicate.Digest(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ActionsTable, ActionsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasActionsWith applies the HasEdge predicate on the "actions" edge with a given conditions (other predicates).
+func HasActionsWith(preds ...predicate.Action) predicate.Digest {
+	return predicate.Digest(func(s *sql.Selector) {
+		step := newActionsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Digest) predicate.Digest {
 	return predicate.Digest(sql.AndPredicates(predicates...))

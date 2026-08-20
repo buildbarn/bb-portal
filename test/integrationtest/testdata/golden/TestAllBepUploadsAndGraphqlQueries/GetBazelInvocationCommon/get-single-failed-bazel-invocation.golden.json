@@ -1,10 +1,5 @@
 {
   "getBazelInvocation": {
-    "actions": [
-      {
-        "id": "QWN0aW9uOjE="
-      }
-    ],
     "authenticatedUser": null,
     "build": null,
     "connectionMetadata": null,

@@ -85,6 +85,10 @@ var (
 		filename:     "remote_execution_tests.bep.ndjson",
 		invocationID: "eb510b31-a9cc-441f-8898-5104ef0025fd",
 	}
+	publishedActions = bepFile{
+		filename:     "published_actions.bep.ndjson",
+		invocationID: "3e99d6c2-39e5-4bb7-a381-b9836b940974",
+	}
 	authenticatedUserExternalID = authmetadataextraction.ExampleExternalID()
 	authenticatedUserUUID       = uuid.NewSHA1(uuid.NameSpaceURL, []byte(authenticatedUserExternalID)).String()
 
@@ -135,6 +139,7 @@ var (
 				{bepFile: abortedTests},
 				{bepFile: githubActions},
 				{bepFile: remoteExecutionTests},
+				{bepFile: publishedActions},
 			},
 			graphqlTestCases: graphqlTestTable{
 				"GetBazelInvocationCommon": {
@@ -235,6 +240,38 @@ var (
 					"get aborted tests invocation": {
 						variables: testkit.Variables{
 							"invocationID": abortedTests.invocationID,
+						},
+					},
+					"get published actions first page": {
+						variables: testkit.Variables{
+							"invocationID": publishedActions.invocationID,
+							"first":        2,
+						},
+					},
+					"filter published actions by mnemonic": {
+						variables: testkit.Variables{
+							"invocationID": publishedActions.invocationID,
+							"where": map[string]any{
+								"typeIn": []string{"CppCompile", "GoCompilePkg"},
+							},
+						},
+					},
+					"filter published actions by configuration mnemonic": {
+						variables: testkit.Variables{
+							"invocationID": publishedActions.invocationID,
+							"where": map[string]any{
+								"hasConfigurationWith": []map[string]any{{
+									"mnemonicIn": []string{"k8-fastbuild"},
+								}},
+							},
+						},
+					},
+					"filter unavailable action file from another host": {
+						variables: testkit.Variables{
+							"invocationID": publishedActions.invocationID,
+							"where": map[string]any{
+								"typeIn": []string{"OtherHostAction"},
+							},
 						},
 					},
 				},

@@ -1,6 +1,5 @@
 {
   "getBazelInvocation": {
-    "actions": [],
     "authenticatedUser": null,
     "build": {
       "buildUUID": "e823d26e-7b76-50bd-ac6a-e8306779da6f",

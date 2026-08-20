@@ -21,10 +21,6 @@ const (
 	EdgeDigest = "digest"
 	// EdgeFilePath holds the string denoting the file_path edge name in mutations.
 	EdgeFilePath = "file_path"
-	// EdgeActionStdout holds the string denoting the action_stdout edge name in mutations.
-	EdgeActionStdout = "action_stdout"
-	// EdgeActionStderr holds the string denoting the action_stderr edge name in mutations.
-	EdgeActionStderr = "action_stderr"
 	// EdgeInvocationProfile holds the string denoting the invocation_profile edge name in mutations.
 	EdgeInvocationProfile = "invocation_profile"
 	// EdgeTestActionOutput holds the string denoting the test_action_output edge name in mutations.
@@ -47,20 +43,6 @@ const (
 	FilePathInverseTable = "file_paths"
 	// FilePathColumn is the table column denoting the file_path relation/edge.
 	FilePathColumn = "file_path_id"
-	// ActionStdoutTable is the table that holds the action_stdout relation/edge.
-	ActionStdoutTable = "actions"
-	// ActionStdoutInverseTable is the table name for the Action entity.
-	// It exists in this package in order to avoid circular dependency with the "action" package.
-	ActionStdoutInverseTable = "actions"
-	// ActionStdoutColumn is the table column denoting the action_stdout relation/edge.
-	ActionStdoutColumn = "stdout_file_id"
-	// ActionStderrTable is the table that holds the action_stderr relation/edge.
-	ActionStderrTable = "actions"
-	// ActionStderrInverseTable is the table name for the Action entity.
-	// It exists in this package in order to avoid circular dependency with the "action" package.
-	ActionStderrInverseTable = "actions"
-	// ActionStderrColumn is the table column denoting the action_stderr relation/edge.
-	ActionStderrColumn = "stderr_file_id"
 	// InvocationProfileTable is the table that holds the invocation_profile relation/edge.
 	InvocationProfileTable = "bazel_invocations"
 	// InvocationProfileInverseTable is the table name for the BazelInvocation entity.
@@ -147,34 +129,6 @@ func ByFilePathField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
-// ByActionStdoutCount orders the results by action_stdout count.
-func ByActionStdoutCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionStdoutStep(), opts...)
-	}
-}
-
-// ByActionStdout orders the results by action_stdout terms.
-func ByActionStdout(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionStdoutStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByActionStderrCount orders the results by action_stderr count.
-func ByActionStderrCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionStderrStep(), opts...)
-	}
-}
-
-// ByActionStderr orders the results by action_stderr terms.
-func ByActionStderr(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionStderrStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
 // ByInvocationProfileCount orders the results by invocation_profile count.
 func ByInvocationProfileCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -228,20 +182,6 @@ func newFilePathStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FilePathInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, FilePathTable, FilePathColumn),
-	)
-}
-func newActionStdoutStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ActionStdoutInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, ActionStdoutTable, ActionStdoutColumn),
-	)
-}
-func newActionStderrStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ActionStderrInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, ActionStderrTable, ActionStderrColumn),
 	)
 }
 func newInvocationProfileStep() *sqlgraph.Step {

@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -29,36 +28,6 @@ type FileUpdate struct {
 func (_u *FileUpdate) Where(ps ...predicate.File) *FileUpdate {
 	_u.mutation.Where(ps...)
 	return _u
-}
-
-// AddActionStdoutIDs adds the "action_stdout" edge to the Action entity by IDs.
-func (_u *FileUpdate) AddActionStdoutIDs(ids ...int64) *FileUpdate {
-	_u.mutation.AddActionStdoutIDs(ids...)
-	return _u
-}
-
-// AddActionStdout adds the "action_stdout" edges to the Action entity.
-func (_u *FileUpdate) AddActionStdout(v ...*Action) *FileUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddActionStdoutIDs(ids...)
-}
-
-// AddActionStderrIDs adds the "action_stderr" edge to the Action entity by IDs.
-func (_u *FileUpdate) AddActionStderrIDs(ids ...int64) *FileUpdate {
-	_u.mutation.AddActionStderrIDs(ids...)
-	return _u
-}
-
-// AddActionStderr adds the "action_stderr" edges to the Action entity.
-func (_u *FileUpdate) AddActionStderr(v ...*Action) *FileUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddActionStderrIDs(ids...)
 }
 
 // AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by IDs.
@@ -109,48 +78,6 @@ func (_u *FileUpdate) AddTestActionOutputTable(v ...*TestActionOutput) *FileUpda
 // Mutation returns the FileMutation object of the builder.
 func (_u *FileUpdate) Mutation() *FileMutation {
 	return _u.mutation
-}
-
-// ClearActionStdout clears all "action_stdout" edges to the Action entity.
-func (_u *FileUpdate) ClearActionStdout() *FileUpdate {
-	_u.mutation.ClearActionStdout()
-	return _u
-}
-
-// RemoveActionStdoutIDs removes the "action_stdout" edge to Action entities by IDs.
-func (_u *FileUpdate) RemoveActionStdoutIDs(ids ...int64) *FileUpdate {
-	_u.mutation.RemoveActionStdoutIDs(ids...)
-	return _u
-}
-
-// RemoveActionStdout removes "action_stdout" edges to Action entities.
-func (_u *FileUpdate) RemoveActionStdout(v ...*Action) *FileUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveActionStdoutIDs(ids...)
-}
-
-// ClearActionStderr clears all "action_stderr" edges to the Action entity.
-func (_u *FileUpdate) ClearActionStderr() *FileUpdate {
-	_u.mutation.ClearActionStderr()
-	return _u
-}
-
-// RemoveActionStderrIDs removes the "action_stderr" edge to Action entities by IDs.
-func (_u *FileUpdate) RemoveActionStderrIDs(ids ...int64) *FileUpdate {
-	_u.mutation.RemoveActionStderrIDs(ids...)
-	return _u
-}
-
-// RemoveActionStderr removes "action_stderr" edges to Action entities.
-func (_u *FileUpdate) RemoveActionStderr(v ...*Action) *FileUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveActionStderrIDs(ids...)
 }
 
 // ClearInvocationProfile clears all "invocation_profile" edges to the BazelInvocation entity.
@@ -265,96 +192,6 @@ func (_u *FileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if _u.mutation.ActionStdoutCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedActionStdoutIDs(); len(nodes) > 0 && !_u.mutation.ActionStdoutCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.ActionStdoutIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.ActionStderrCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedActionStderrIDs(); len(nodes) > 0 && !_u.mutation.ActionStderrCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.ActionStderrIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.InvocationProfileCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -511,36 +348,6 @@ type FileUpdateOne struct {
 	mutation *FileMutation
 }
 
-// AddActionStdoutIDs adds the "action_stdout" edge to the Action entity by IDs.
-func (_u *FileUpdateOne) AddActionStdoutIDs(ids ...int64) *FileUpdateOne {
-	_u.mutation.AddActionStdoutIDs(ids...)
-	return _u
-}
-
-// AddActionStdout adds the "action_stdout" edges to the Action entity.
-func (_u *FileUpdateOne) AddActionStdout(v ...*Action) *FileUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddActionStdoutIDs(ids...)
-}
-
-// AddActionStderrIDs adds the "action_stderr" edge to the Action entity by IDs.
-func (_u *FileUpdateOne) AddActionStderrIDs(ids ...int64) *FileUpdateOne {
-	_u.mutation.AddActionStderrIDs(ids...)
-	return _u
-}
-
-// AddActionStderr adds the "action_stderr" edges to the Action entity.
-func (_u *FileUpdateOne) AddActionStderr(v ...*Action) *FileUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddActionStderrIDs(ids...)
-}
-
 // AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by IDs.
 func (_u *FileUpdateOne) AddInvocationProfileIDs(ids ...int64) *FileUpdateOne {
 	_u.mutation.AddInvocationProfileIDs(ids...)
@@ -589,48 +396,6 @@ func (_u *FileUpdateOne) AddTestActionOutputTable(v ...*TestActionOutput) *FileU
 // Mutation returns the FileMutation object of the builder.
 func (_u *FileUpdateOne) Mutation() *FileMutation {
 	return _u.mutation
-}
-
-// ClearActionStdout clears all "action_stdout" edges to the Action entity.
-func (_u *FileUpdateOne) ClearActionStdout() *FileUpdateOne {
-	_u.mutation.ClearActionStdout()
-	return _u
-}
-
-// RemoveActionStdoutIDs removes the "action_stdout" edge to Action entities by IDs.
-func (_u *FileUpdateOne) RemoveActionStdoutIDs(ids ...int64) *FileUpdateOne {
-	_u.mutation.RemoveActionStdoutIDs(ids...)
-	return _u
-}
-
-// RemoveActionStdout removes "action_stdout" edges to Action entities.
-func (_u *FileUpdateOne) RemoveActionStdout(v ...*Action) *FileUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveActionStdoutIDs(ids...)
-}
-
-// ClearActionStderr clears all "action_stderr" edges to the Action entity.
-func (_u *FileUpdateOne) ClearActionStderr() *FileUpdateOne {
-	_u.mutation.ClearActionStderr()
-	return _u
-}
-
-// RemoveActionStderrIDs removes the "action_stderr" edge to Action entities by IDs.
-func (_u *FileUpdateOne) RemoveActionStderrIDs(ids ...int64) *FileUpdateOne {
-	_u.mutation.RemoveActionStderrIDs(ids...)
-	return _u
-}
-
-// RemoveActionStderr removes "action_stderr" edges to Action entities.
-func (_u *FileUpdateOne) RemoveActionStderr(v ...*Action) *FileUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveActionStderrIDs(ids...)
 }
 
 // ClearInvocationProfile clears all "invocation_profile" edges to the BazelInvocation entity.
@@ -775,96 +540,6 @@ func (_u *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if _u.mutation.ActionStdoutCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedActionStdoutIDs(); len(nodes) > 0 && !_u.mutation.ActionStdoutCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.ActionStdoutIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.ActionStderrCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedActionStderrIDs(); len(nodes) > 0 && !_u.mutation.ActionStderrCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.ActionStderrIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.InvocationProfileCleared() {
 		edge := &sqlgraph.EdgeSpec{

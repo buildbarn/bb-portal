@@ -6,5 +6,6 @@ PROTO_FILES = {
     "invocation_policy": "@com_github_bazelbuild_bazel//src/main/protobuf:invocation_policy_proto",
     "option_filters": "@com_github_bazelbuild_bazel//src/main/protobuf:option_filters_proto",
     "package_load_metrics": "@com_github_bazelbuild_bazel//src/main/java/com/google/devtools/build/lib/packages/metrics:package_load_metrics_proto",
+    "spawn": "@com_github_bazelbuild_bazel//src/main/protobuf:spawn_proto",
     "strategy_policy": "@com_github_bazelbuild_bazel//src/main/protobuf:strategy_policy_proto",
 }

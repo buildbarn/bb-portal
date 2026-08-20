@@ -2,15 +2,21 @@ package buildeventrecorder
 
 import (
 	"context"
+	"database/sql"
+	"log/slog"
+	"net/url"
 	"reflect"
+	"strings"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/bazelbuild/bazel/src/main/protobuf"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
-	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/pkg/invocation/files"
+	storagedigest "github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func getErrorCodeFromFailureDetail(failureDetail *protobuf.FailureDetail) string {
@@ -50,79 +56,243 @@ func getErrorCodeFromFailureDetail(failureDetail *protobuf.FailureDetail) string
 	return ""
 }
 
-func (r *buildEventRecorder) saveActionExecuted(ctx context.Context, tx database.Handle, actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) error {
-	if actionExecuted == nil || actionCompletedID == nil {
+// getRemoteFileURI returns a URI that can be resolved away from the Bazel
+// client. Local file:// references are deliberately not persisted.
+func getRemoteFileURI(file *bes.File) string {
+	if file == nil {
+		return ""
+	}
+	uri := strings.TrimSpace(file.GetUri())
+	if uri == "" {
+		return ""
+	}
+	parsedURI, err := url.Parse(uri)
+	if err != nil || parsedURI.Scheme == "" || strings.EqualFold(parsedURI.Scheme, "file") {
+		return ""
+	}
+	return uri
+}
+
+type actionFileAvailability struct {
+	verifyBytestreamURIs bool
+	verified             bool
+	missingDigests       map[storagedigest.Digest]struct{}
+}
+
+func getBytestreamDigest(uri string) (storagedigest.Digest, bool) {
+	parsedURI, err := url.Parse(uri)
+	if err != nil || !strings.EqualFold(parsedURI.Scheme, "bytestream") {
+		return storagedigest.BadDigest, false
+	}
+	return files.GetDigestFromURI(uri), true
+}
+
+func (a actionFileAvailability) getAvailableRemoteFileURI(file *bes.File) string {
+	uri := getRemoteFileURI(file)
+	if uri == "" {
+		return ""
+	}
+	digest, isBytestreamURI := getBytestreamDigest(uri)
+	if !isBytestreamURI {
+		return uri
+	}
+	if digest == storagedigest.BadDigest {
+		return ""
+	}
+	if !a.verifyBytestreamURIs {
+		return uri
+	}
+	if !a.verified {
+		return ""
+	}
+	if _, missing := a.missingDigests[digest]; missing {
+		return ""
+	}
+	return uri
+}
+
+func actionExecutedFiles(actionExecuted *bes.ActionExecuted) []*bes.File {
+	if actionExecuted == nil {
 		return nil
 	}
-	if actionCompletedID.Label == "" {
-		return nil
+	return []*bes.File{
+		actionExecuted.GetPrimaryOutput(),
+		actionExecuted.GetStdout(),
+		actionExecuted.GetStderr(),
 	}
-	// We are only interested in failed actions. If this is changed, some of
-	// the text in the frontend needs to be updated as well.
-	if actionExecuted.Success {
-		return nil
+}
+
+func (r *buildEventRecorder) verifyActionFileAvailability(ctx context.Context, batch []BuildEventWithInfo) actionFileAvailability {
+	availability := actionFileAvailability{
+		verifyBytestreamURIs: r.contentAddressableStorage != nil,
+	}
+	if !availability.verifyBytestreamURIs {
+		return availability
 	}
 
-	create := tx.Ent().Action.Create().
-		SetBazelInvocationID(r.InvocationDbID).
-		SetLabel(actionCompletedID.Label).
-		SetSuccess(actionExecuted.Success).
-		SetExitCode(actionExecuted.ExitCode).
-		SetCommandLine(actionExecuted.CommandLine)
-
-	if configID := actionCompletedID.Configuration.GetId(); configID != "" {
-		// This results in a database query per ActionExecuted event. This is
-		// acceptable since we only care about failed actions, which are
-		// relatively rare. If we ever care about successful actions as well,
-		// we should batch this work.
-		configDbID, err := tx.Ent().Configuration.Query().
-			Where(
-				configuration.ConfigurationID(configID),
-				configuration.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
-			).
-			OnlyID(ctx)
-		if err != nil {
-			return util.StatusWrapf(err, "failed to query Configuration with ID %#v for ActionExecuted", configID)
-		}
-		create.SetConfigurationID(configDbID)
-	}
-
-	if actionExecuted.Type != "" {
-		create.SetType(actionExecuted.Type)
-	}
-	if failureMessage := actionExecuted.GetFailureDetail().GetMessage(); failureMessage != "" {
-		create.SetFailureMessage(failureMessage)
-	}
-	if failureCode := getErrorCodeFromFailureDetail(actionExecuted.GetFailureDetail()); failureCode != "" {
-		create.SetFailureCode(failureCode)
-	}
-	if actionExecuted.StartTime != nil {
-		create.SetStartTime(actionExecuted.EndTime.AsTime())
-	}
-	if actionExecuted.EndTime != nil {
-		create.SetEndTime(actionExecuted.EndTime.AsTime())
-	}
-	if file := actionExecuted.GetStdout(); file != nil {
-		if parsedFile := files.ParseBepFile(file); parsedFile != nil {
-			fileDbID, err := SaveSingleFile(ctx, tx, r.InstanceNameDbID, *parsedFile)
-			if err != nil {
-				return util.StatusWrap(err, "Failed to save stdout to database")
+	digestSetBuilder := storagedigest.NewSetBuilder(len(batch) * 3)
+	for _, info := range batch {
+		for _, file := range actionExecutedFiles(info.Event.GetAction()) {
+			uri := getRemoteFileURI(file)
+			if digest, isBytestreamURI := getBytestreamDigest(uri); isBytestreamURI && digest != storagedigest.BadDigest {
+				digestSetBuilder = digestSetBuilder.Add(digest)
 			}
-			create.SetStdoutID(fileDbID)
 		}
 	}
-	if file := actionExecuted.GetStderr(); file != nil {
-		if parsedFile := files.ParseBepFile(file); parsedFile != nil {
-			fileDbID, err := SaveSingleFile(ctx, tx, r.InstanceNameDbID, *parsedFile)
-			if err != nil {
-				return util.StatusWrap(err, "Failed to save stderr to database")
-			}
-			create.SetStderrID(fileDbID)
-		}
+	digests := digestSetBuilder.Build()
+	if digests.Empty() {
+		availability.verified = true
+		return availability
 	}
-	err := create.Exec(ctx)
+
+	missingDigests, err := r.contentAddressableStorage.FindMissing(ctx, digests)
 	if err != nil {
-		return util.StatusWrap(err, "failed to save Action")
+		slog.WarnContext(ctx, "Could not verify action file blobs in CAS; file links will be unavailable", "invocation_id", r.InvocationID, "err", err)
+		return availability
+	}
+
+	availability.verified = true
+	availability.missingDigests = make(map[storagedigest.Digest]struct{}, missingDigests.Length())
+	for _, digest := range missingDigests.Items() {
+		availability.missingDigests[digest] = struct{}{}
+	}
+	return availability
+}
+
+func getActionConfigurationID(actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) string {
+	if configurationID := actionCompletedID.GetConfiguration().GetId(); configurationID != "" {
+		return configurationID
+	}
+	return actionExecuted.GetConfiguration().GetId()
+}
+
+func getActionLabel(actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) string {
+	if label := actionCompletedID.GetLabel(); label != "" {
+		return label
+	}
+	return actionExecuted.GetLabel()
+}
+
+// saveActionExecutedBatch persists all ActionExecuted events in a batch. The
+// configuration lookup is also batched, because --build_event_publish_all_actions
+// can cause thousands of these events to be reported for one invocation.
+func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch []BuildEventWithInfo) error {
+	if len(batch) == 0 {
+		return nil
+	}
+	actionFileAvailability := r.verifyActionFileAvailability(ctx, batch)
+
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	if err != nil {
+		return util.StatusWrap(err, "Failed to start transaction")
+	}
+	defer tx.Rollback()
+
+	row, err := tx.Sqlc().LockBazelInvocationCompletion(ctx, r.InvocationDbID)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to lock bep completed for invocation")
+	}
+	if row.BepCompleted {
+		return status.Error(codes.FailedPrecondition, "Attempted to insert action events but the invocation was already completed.")
+	}
+
+	configurationIDSet := make(map[string]struct{})
+	for _, info := range batch {
+		actionExecuted := info.Event.GetAction()
+		actionCompletedID := info.Event.GetId().GetActionCompleted()
+		if actionExecuted == nil || actionCompletedID == nil {
+			continue
+		}
+		if configurationID := getActionConfigurationID(actionExecuted, actionCompletedID); configurationID != "" {
+			configurationIDSet[configurationID] = struct{}{}
+		}
+	}
+
+	configurationIDs := make([]string, 0, len(configurationIDSet))
+	for configurationID := range configurationIDSet {
+		configurationIDs = append(configurationIDs, configurationID)
+	}
+
+	configurationDBIDs := make(map[string]int64, len(configurationIDs))
+	if len(configurationIDs) > 0 {
+		configurations, err := tx.Ent().Configuration.Query().
+			Where(
+				configuration.BazelInvocationID(r.InvocationDbID),
+				configuration.ConfigurationIDIn(configurationIDs...),
+			).
+			All(ctx)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to query configurations for ActionExecuted events")
+		}
+		for _, config := range configurations {
+			configurationDBIDs[config.ConfigurationID] = config.ID
+		}
+	}
+
+	creates := make([]*ent.ActionCreate, 0, len(batch))
+	for _, info := range batch {
+		actionExecuted := info.Event.GetAction()
+		actionCompletedID := info.Event.GetId().GetActionCompleted()
+		if actionExecuted == nil || actionCompletedID == nil {
+			continue
+		}
+
+		create := tx.Ent().Action.Create().
+			SetBazelInvocationID(r.InvocationDbID).
+			SetLabel(getActionLabel(actionExecuted, actionCompletedID)).
+			SetSuccess(actionExecuted.Success).
+			SetExitCode(actionExecuted.ExitCode)
+
+		if configurationID := getActionConfigurationID(actionExecuted, actionCompletedID); configurationID != "" {
+			if configurationDBID, ok := configurationDBIDs[configurationID]; ok {
+				create.SetConfigurationID(configurationDBID)
+			}
+		}
+		if actionExecuted.Type != "" {
+			create.SetType(actionExecuted.Type)
+		}
+		if len(actionExecuted.CommandLine) > 0 {
+			create.SetCommandLine(actionExecuted.CommandLine)
+		}
+		if primaryOutput := actionCompletedID.GetPrimaryOutput(); primaryOutput != "" {
+			create.SetPrimaryOutput(primaryOutput)
+		}
+		if primaryOutputURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetPrimaryOutput()); primaryOutputURI != "" {
+			create.SetPrimaryOutputURI(primaryOutputURI)
+		}
+		if !actionExecuted.Success {
+			if stdoutURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetStdout()); stdoutURI != "" {
+				create.SetStdoutURI(stdoutURI)
+			}
+			if stderrURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetStderr()); stderrURI != "" {
+				create.SetStderrURI(stderrURI)
+			}
+		}
+		if failureMessage := actionExecuted.GetFailureDetail().GetMessage(); failureMessage != "" {
+			create.SetFailureMessage(failureMessage)
+		}
+		if failureCode := getErrorCodeFromFailureDetail(actionExecuted.GetFailureDetail()); failureCode != "" {
+			create.SetFailureCode(failureCode)
+		}
+		if actionExecuted.StartTime != nil {
+			create.SetStartTime(actionExecuted.StartTime.AsTime())
+		}
+		if actionExecuted.EndTime != nil {
+			create.SetEndTime(actionExecuted.EndTime.AsTime())
+		}
+		creates = append(creates, create)
+	}
+
+	if len(creates) > 0 {
+		if err := tx.Ent().Action.CreateBulk(creates...).Exec(ctx); err != nil {
+			return util.StatusWrap(err, "Failed to save ActionExecuted events")
+		}
+	}
+	if err := r.saveHandledEventsForBatch(ctx, batch, tx); err != nil {
+		return util.StatusWrap(err, "Failed to bulk insert event metadata")
+	}
+	if err := tx.Commit(); err != nil {
+		return util.StatusWrap(err, "Failed to commit batch of action events")
 	}
 	return nil
 }

@@ -17,6 +17,7 @@ import (
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
@@ -61,12 +62,13 @@ type DataExtractors struct {
 }
 
 type buildEventRecorder struct {
-	db             database.Client
-	handledEvents  handledEvents
-	saveDataLevel  *bb_portal.BuildEventStreamService_SaveDataLevel
-	tracer         trace.Tracer
-	dataExtractors *DataExtractors
-	buildKey       string
+	db                        database.Client
+	contentAddressableStorage blobstore.BlobAccess
+	handledEvents             handledEvents
+	saveDataLevel             *bb_portal.BuildEventStreamService_SaveDataLevel
+	tracer                    trace.Tracer
+	dataExtractors            *DataExtractors
+	buildKey                  string
 
 	InstanceName     string
 	InstanceNameDbID int64
@@ -84,6 +86,7 @@ type handledEvents struct {
 func NewBuildEventRecorder(
 	ctx context.Context,
 	db database.Client,
+	contentAddressableStorage blobstore.BlobAccess,
 	instanceNameAuthorizer auth.Authorizer,
 	saveDataLevel *bb_portal.BuildEventStreamService_SaveDataLevel,
 	tracerProvider trace.TracerProvider,
@@ -139,11 +142,12 @@ func NewBuildEventRecorder(
 	}
 
 	return &buildEventRecorder{
-		db:             db,
-		saveDataLevel:  saveDataLevel,
-		tracer:         tracer,
-		dataExtractors: dataExtractors,
-		buildKey:       buildKey,
+		db:                        db,
+		contentAddressableStorage: contentAddressableStorage,
+		saveDataLevel:             saveDataLevel,
+		tracer:                    tracer,
+		dataExtractors:            dataExtractors,
+		buildKey:                  buildKey,
 
 		InstanceName:     instanceName,
 		InstanceNameDbID: instanceNameDbID,

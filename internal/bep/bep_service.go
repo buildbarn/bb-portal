@@ -18,6 +18,7 @@ import (
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
@@ -35,6 +36,7 @@ import (
 // manual upload of BEP files and serve the Graphql API
 func NewBuildEventProtocolService(
 	configuration *bb_portal.BuildEventStreamService,
+	contentAddressableStorage blobstore.BlobAccess,
 	siblingsGroup program.Group,
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
@@ -93,7 +95,7 @@ func NewBuildEventProtocolService(
 
 	// Handle BEP file uploads over HTTP.
 	if configuration.EnableBepFileUpload {
-		bepUploader, err := bepuploader.NewBepUploader(dbClient, configuration, instanceNameAuthorizer, dependenciesGroup, grpcClientFactory, tracerProvider)
+		bepUploader, err := bepuploader.NewBepUploader(dbClient, configuration, contentAddressableStorage, instanceNameAuthorizer, dependenciesGroup, grpcClientFactory, tracerProvider)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BEP file upload handler")
 		}
@@ -101,7 +103,7 @@ func NewBuildEventProtocolService(
 	}
 
 	// Handle the Build Event gRPC Stream.
-	buildEventServer, err := bes.NewBuildEventServer(dbClient, configuration, instanceNameAuthorizer, dependenciesGroup, grpcClientFactory, tracerProvider)
+	buildEventServer, err := bes.NewBuildEventServer(dbClient, configuration, contentAddressableStorage, instanceNameAuthorizer, dependenciesGroup, grpcClientFactory, tracerProvider)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create BuildEventServer")
 	}

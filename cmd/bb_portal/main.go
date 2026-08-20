@@ -74,7 +74,7 @@ func main() {
 		router.Use(otelmux.Middleware("bb-portal-http", otelmux.WithTracerProvider(tracerProvider)))
 		router.Use(zstdmiddleware.NewZstdMiddleware(zstdPool))
 
-		if err = blobstoreservice.NewBlobstoreService(
+		contentAddressableStorage, err := blobstoreservice.NewBlobstoreService(
 			&configuration,
 			siblingsGroup,
 			dependenciesGroup,
@@ -82,7 +82,8 @@ func main() {
 			instanceNameAuthorizer,
 			zstdPool,
 			router,
-		); err != nil {
+		)
+		if err != nil {
 			return util.StatusWrap(err, "Failed to create Blobstore service")
 		}
 		if configuration.SchedulerServiceConfiguration != nil {
@@ -100,6 +101,7 @@ func main() {
 		if configuration.BesServiceConfiguration != nil {
 			if err = bep.NewBuildEventProtocolService(
 				configuration.BesServiceConfiguration,
+				contentAddressableStorage,
 				siblingsGroup,
 				dependenciesGroup,
 				grpcClientFactory,

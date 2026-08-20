@@ -13,7 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 )
 
 // Action is the model entity for the Action schema.
@@ -25,10 +25,16 @@ type Action struct {
 	BazelInvocationID int64 `json:"bazel_invocation_id,omitempty"`
 	// The id of the configuration
 	ConfigurationID int64 `json:"configuration_id,omitempty"`
+	// The REv2 Action digest obtained from Bazel's execution log
+	ActionDigestID int64 `json:"action_digest_id,omitempty"`
 	// Label holds the value of the "label" field.
 	Label string `json:"label,omitempty"`
 	// Type holds the value of the "type" field.
 	Type string `json:"type,omitempty"`
+	// The runner reported by Bazel's compact execution log
+	Runner string `json:"runner,omitempty"`
+	// Whether Bazel's compact execution log reported a disk or remote cache hit
+	CacheHit *bool `json:"cache_hit,omitempty"`
 	// Success holds the value of the "success" field.
 	Success bool `json:"success,omitempty"`
 	// ExitCode holds the value of the "exit_code" field.
@@ -43,10 +49,14 @@ type Action struct {
 	FailureCode string `json:"failure_code,omitempty"`
 	// FailureMessage holds the value of the "failure_message" field.
 	FailureMessage string `json:"failure_message,omitempty"`
-	// StdoutFileID holds the value of the "stdout_file_id" field.
-	StdoutFileID int64 `json:"stdout_file_id,omitempty"`
-	// StderrFileID holds the value of the "stderr_file_id" field.
-	StderrFileID int64 `json:"stderr_file_id,omitempty"`
+	// PrimaryOutput holds the value of the "primary_output" field.
+	PrimaryOutput string `json:"primary_output,omitempty"`
+	// PrimaryOutputURI holds the value of the "primary_output_uri" field.
+	PrimaryOutputURI string `json:"primary_output_uri,omitempty"`
+	// StdoutURI holds the value of the "stdout_uri" field.
+	StdoutURI string `json:"stdout_uri,omitempty"`
+	// StderrURI holds the value of the "stderr_uri" field.
+	StderrURI string `json:"stderr_uri,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionQuery when eager-loading is set.
 	Edges        ActionEdges `json:"edges"`
@@ -59,15 +69,13 @@ type ActionEdges struct {
 	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// Configuration holds the value of the configuration edge.
 	Configuration *Configuration `json:"configuration,omitempty"`
-	// Stdout holds the value of the stdout edge.
-	Stdout *File `json:"stdout,omitempty"`
-	// Stderr holds the value of the stderr edge.
-	Stderr *File `json:"stderr,omitempty"`
+	// ActionDigest holds the value of the action_digest edge.
+	ActionDigest *Digest `json:"action_digest,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [4]map[string]int
+	totalCount [3]map[string]int
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -92,26 +100,15 @@ func (e ActionEdges) ConfigurationOrErr() (*Configuration, error) {
 	return nil, &NotLoadedError{edge: "configuration"}
 }
 
-// StdoutOrErr returns the Stdout value or an error if the edge
+// ActionDigestOrErr returns the ActionDigest value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ActionEdges) StdoutOrErr() (*File, error) {
-	if e.Stdout != nil {
-		return e.Stdout, nil
+func (e ActionEdges) ActionDigestOrErr() (*Digest, error) {
+	if e.ActionDigest != nil {
+		return e.ActionDigest, nil
 	} else if e.loadedTypes[2] {
-		return nil, &NotFoundError{label: file.Label}
+		return nil, &NotFoundError{label: digest.Label}
 	}
-	return nil, &NotLoadedError{edge: "stdout"}
-}
-
-// StderrOrErr returns the Stderr value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ActionEdges) StderrOrErr() (*File, error) {
-	if e.Stderr != nil {
-		return e.Stderr, nil
-	} else if e.loadedTypes[3] {
-		return nil, &NotFoundError{label: file.Label}
-	}
-	return nil, &NotLoadedError{edge: "stderr"}
+	return nil, &NotLoadedError{edge: "action_digest"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -121,11 +118,11 @@ func (*Action) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case action.FieldCommandLine:
 			values[i] = new([]byte)
-		case action.FieldSuccess:
+		case action.FieldCacheHit, action.FieldSuccess:
 			values[i] = new(sql.NullBool)
-		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldExitCode, action.FieldStdoutFileID, action.FieldStderrFileID:
+		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldActionDigestID, action.FieldExitCode:
 			values[i] = new(sql.NullInt64)
-		case action.FieldLabel, action.FieldType, action.FieldFailureCode, action.FieldFailureMessage:
+		case action.FieldLabel, action.FieldType, action.FieldRunner, action.FieldFailureCode, action.FieldFailureMessage, action.FieldPrimaryOutput, action.FieldPrimaryOutputURI, action.FieldStdoutURI, action.FieldStderrURI:
 			values[i] = new(sql.NullString)
 		case action.FieldStartTime, action.FieldEndTime:
 			values[i] = new(sql.NullTime)
@@ -162,6 +159,12 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.ConfigurationID = value.Int64
 			}
+		case action.FieldActionDigestID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field action_digest_id", values[i])
+			} else if value.Valid {
+				_m.ActionDigestID = value.Int64
+			}
 		case action.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
@@ -173,6 +176,19 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
 				_m.Type = value.String
+			}
+		case action.FieldRunner:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field runner", values[i])
+			} else if value.Valid {
+				_m.Runner = value.String
+			}
+		case action.FieldCacheHit:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field cache_hit", values[i])
+			} else if value.Valid {
+				_m.CacheHit = new(bool)
+				*_m.CacheHit = value.Bool
 			}
 		case action.FieldSuccess:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -218,17 +234,29 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.FailureMessage = value.String
 			}
-		case action.FieldStdoutFileID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field stdout_file_id", values[i])
+		case action.FieldPrimaryOutput:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field primary_output", values[i])
 			} else if value.Valid {
-				_m.StdoutFileID = value.Int64
+				_m.PrimaryOutput = value.String
 			}
-		case action.FieldStderrFileID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field stderr_file_id", values[i])
+		case action.FieldPrimaryOutputURI:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field primary_output_uri", values[i])
 			} else if value.Valid {
-				_m.StderrFileID = value.Int64
+				_m.PrimaryOutputURI = value.String
+			}
+		case action.FieldStdoutURI:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field stdout_uri", values[i])
+			} else if value.Valid {
+				_m.StdoutURI = value.String
+			}
+		case action.FieldStderrURI:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field stderr_uri", values[i])
+			} else if value.Valid {
+				_m.StderrURI = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -253,14 +281,9 @@ func (_m *Action) QueryConfiguration() *ConfigurationQuery {
 	return NewActionClient(_m.config).QueryConfiguration(_m)
 }
 
-// QueryStdout queries the "stdout" edge of the Action entity.
-func (_m *Action) QueryStdout() *FileQuery {
-	return NewActionClient(_m.config).QueryStdout(_m)
-}
-
-// QueryStderr queries the "stderr" edge of the Action entity.
-func (_m *Action) QueryStderr() *FileQuery {
-	return NewActionClient(_m.config).QueryStderr(_m)
+// QueryActionDigest queries the "action_digest" edge of the Action entity.
+func (_m *Action) QueryActionDigest() *DigestQuery {
+	return NewActionClient(_m.config).QueryActionDigest(_m)
 }
 
 // Update returns a builder for updating this Action.
@@ -292,11 +315,22 @@ func (_m *Action) String() string {
 	builder.WriteString("configuration_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ConfigurationID))
 	builder.WriteString(", ")
+	builder.WriteString("action_digest_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ActionDigestID))
+	builder.WriteString(", ")
 	builder.WriteString("label=")
 	builder.WriteString(_m.Label)
 	builder.WriteString(", ")
 	builder.WriteString("type=")
 	builder.WriteString(_m.Type)
+	builder.WriteString(", ")
+	builder.WriteString("runner=")
+	builder.WriteString(_m.Runner)
+	builder.WriteString(", ")
+	if v := _m.CacheHit; v != nil {
+		builder.WriteString("cache_hit=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("success=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Success))
@@ -319,11 +353,17 @@ func (_m *Action) String() string {
 	builder.WriteString("failure_message=")
 	builder.WriteString(_m.FailureMessage)
 	builder.WriteString(", ")
-	builder.WriteString("stdout_file_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.StdoutFileID))
+	builder.WriteString("primary_output=")
+	builder.WriteString(_m.PrimaryOutput)
 	builder.WriteString(", ")
-	builder.WriteString("stderr_file_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.StderrFileID))
+	builder.WriteString("primary_output_uri=")
+	builder.WriteString(_m.PrimaryOutputURI)
+	builder.WriteString(", ")
+	builder.WriteString("stdout_uri=")
+	builder.WriteString(_m.StdoutURI)
+	builder.WriteString(", ")
+	builder.WriteString("stderr_uri=")
+	builder.WriteString(_m.StderrURI)
 	builder.WriteByte(')')
 	return builder.String()
 }

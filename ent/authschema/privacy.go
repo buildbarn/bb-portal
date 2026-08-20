@@ -6,6 +6,7 @@ import (
 
 	"entgo.io/ent/entql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -41,6 +42,21 @@ func privacyFilterFunc(ctx context.Context, f privacy.Filter, filterFunc func(pr
 		filterFunc(f, authorizedInstanceNames),
 	)
 	return privacy.Skip
+}
+
+// Policy for Action.
+func (Action) Policy() ent.Policy {
+	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
+		return privacyFilterFunc(ctx, f, func(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+			return entql.HasEdgeWith(
+				action.EdgeBazelInvocation,
+				entql.HasEdgeWith(
+					bazelinvocation.EdgeInstanceName,
+					entql.FieldIn(instancename.FieldName, authorizedInstanceNames...),
+				),
+			)
+		})
+	})
 }
 
 // Policy for AuthenticatedUser.

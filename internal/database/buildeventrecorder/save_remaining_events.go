@@ -27,6 +27,7 @@ func (r *buildEventRecorder) saveRemainingBatch(
 		),
 	)
 	defer span.End()
+	executionLogActions := r.readExecutionLogActionsFromBatch(ctx, batch)
 
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
@@ -47,6 +48,9 @@ func (r *buildEventRecorder) saveRemainingBatch(
 		if err != nil {
 			return util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId())
 		}
+	}
+	if err := r.saveExecutionLogActionMetadata(ctx, tx, executionLogActions); err != nil {
+		return util.StatusWrap(err, "Failed to save Action execution metadata from execution log")
 	}
 
 	if err := r.saveHandledEventsForBatch(ctx, batch, tx); err != nil {
@@ -78,8 +82,6 @@ func (r *buildEventRecorder) saveBuildEvent(
 		return r.saveBuildMetrics(ctx, tx.Ent(), buildEvent.GetBuildMetrics())
 	case *bes.BuildEventId_StructuredCommandLine:
 		return r.saveStructuredCommandLine(ctx, tx, buildEvent.GetStructuredCommandLine())
-	case *bes.BuildEventId_ActionCompleted:
-		return r.saveActionExecuted(ctx, tx, buildEvent.GetAction(), buildEvent.GetId().GetActionCompleted())
 	case *bes.BuildEventId_Fetch:
 		return r.saveFetch(ctx, tx.Ent(), buildEvent.GetFetch())
 	case *bes.BuildEventId_BuildToolLogs:

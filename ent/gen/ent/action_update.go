@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -26,6 +27,26 @@ type ActionUpdate struct {
 // Where appends a list predicates to the ActionUpdate builder.
 func (_u *ActionUpdate) Where(ps ...predicate.Action) *ActionUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetActionDigestID sets the "action_digest_id" field.
+func (_u *ActionUpdate) SetActionDigestID(v int64) *ActionUpdate {
+	_u.mutation.SetActionDigestID(v)
+	return _u
+}
+
+// SetNillableActionDigestID sets the "action_digest_id" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableActionDigestID(v *int64) *ActionUpdate {
+	if v != nil {
+		_u.SetActionDigestID(*v)
+	}
+	return _u
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (_u *ActionUpdate) ClearActionDigestID() *ActionUpdate {
+	_u.mutation.ClearActionDigestID()
 	return _u
 }
 
@@ -60,6 +81,46 @@ func (_u *ActionUpdate) SetNillableType(v *string) *ActionUpdate {
 // ClearType clears the value of the "type" field.
 func (_u *ActionUpdate) ClearType() *ActionUpdate {
 	_u.mutation.ClearType()
+	return _u
+}
+
+// SetRunner sets the "runner" field.
+func (_u *ActionUpdate) SetRunner(v string) *ActionUpdate {
+	_u.mutation.SetRunner(v)
+	return _u
+}
+
+// SetNillableRunner sets the "runner" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableRunner(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetRunner(*v)
+	}
+	return _u
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (_u *ActionUpdate) ClearRunner() *ActionUpdate {
+	_u.mutation.ClearRunner()
+	return _u
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (_u *ActionUpdate) SetCacheHit(v bool) *ActionUpdate {
+	_u.mutation.SetCacheHit(v)
+	return _u
+}
+
+// SetNillableCacheHit sets the "cache_hit" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableCacheHit(v *bool) *ActionUpdate {
+	if v != nil {
+		_u.SetCacheHit(*v)
+	}
+	return _u
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (_u *ActionUpdate) ClearCacheHit() *ActionUpdate {
+	_u.mutation.ClearCacheHit()
 	return _u
 }
 
@@ -208,9 +269,100 @@ func (_u *ActionUpdate) ClearFailureMessage() *ActionUpdate {
 	return _u
 }
 
+// SetPrimaryOutput sets the "primary_output" field.
+func (_u *ActionUpdate) SetPrimaryOutput(v string) *ActionUpdate {
+	_u.mutation.SetPrimaryOutput(v)
+	return _u
+}
+
+// SetNillablePrimaryOutput sets the "primary_output" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillablePrimaryOutput(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetPrimaryOutput(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutput clears the value of the "primary_output" field.
+func (_u *ActionUpdate) ClearPrimaryOutput() *ActionUpdate {
+	_u.mutation.ClearPrimaryOutput()
+	return _u
+}
+
+// SetPrimaryOutputURI sets the "primary_output_uri" field.
+func (_u *ActionUpdate) SetPrimaryOutputURI(v string) *ActionUpdate {
+	_u.mutation.SetPrimaryOutputURI(v)
+	return _u
+}
+
+// SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillablePrimaryOutputURI(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetPrimaryOutputURI(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
+func (_u *ActionUpdate) ClearPrimaryOutputURI() *ActionUpdate {
+	_u.mutation.ClearPrimaryOutputURI()
+	return _u
+}
+
+// SetStdoutURI sets the "stdout_uri" field.
+func (_u *ActionUpdate) SetStdoutURI(v string) *ActionUpdate {
+	_u.mutation.SetStdoutURI(v)
+	return _u
+}
+
+// SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableStdoutURI(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStdoutURI(*v)
+	}
+	return _u
+}
+
+// ClearStdoutURI clears the value of the "stdout_uri" field.
+func (_u *ActionUpdate) ClearStdoutURI() *ActionUpdate {
+	_u.mutation.ClearStdoutURI()
+	return _u
+}
+
+// SetStderrURI sets the "stderr_uri" field.
+func (_u *ActionUpdate) SetStderrURI(v string) *ActionUpdate {
+	_u.mutation.SetStderrURI(v)
+	return _u
+}
+
+// SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
+func (_u *ActionUpdate) SetNillableStderrURI(v *string) *ActionUpdate {
+	if v != nil {
+		_u.SetStderrURI(*v)
+	}
+	return _u
+}
+
+// ClearStderrURI clears the value of the "stderr_uri" field.
+func (_u *ActionUpdate) ClearStderrURI() *ActionUpdate {
+	_u.mutation.ClearStderrURI()
+	return _u
+}
+
+// SetActionDigest sets the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdate) SetActionDigest(v *Digest) *ActionUpdate {
+	return _u.SetActionDigestID(v.ID)
+}
+
 // Mutation returns the ActionMutation object of the builder.
 func (_u *ActionUpdate) Mutation() *ActionMutation {
 	return _u.mutation
+}
+
+// ClearActionDigest clears the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdate) ClearActionDigest() *ActionUpdate {
+	_u.mutation.ClearActionDigest()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -245,9 +397,6 @@ func (_u *ActionUpdate) check() error {
 	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
 	}
-	if _u.mutation.ConfigurationCleared() && len(_u.mutation.ConfigurationIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Action.configuration"`)
-	}
 	return nil
 }
 
@@ -271,6 +420,18 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.TypeCleared() {
 		_spec.ClearField(action.FieldType, field.TypeString)
+	}
+	if value, ok := _u.mutation.Runner(); ok {
+		_spec.SetField(action.FieldRunner, field.TypeString, value)
+	}
+	if _u.mutation.RunnerCleared() {
+		_spec.ClearField(action.FieldRunner, field.TypeString)
+	}
+	if value, ok := _u.mutation.CacheHit(); ok {
+		_spec.SetField(action.FieldCacheHit, field.TypeBool, value)
+	}
+	if _u.mutation.CacheHitCleared() {
+		_spec.ClearField(action.FieldCacheHit, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
@@ -322,6 +483,59 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
 	}
+	if value, ok := _u.mutation.PrimaryOutput(); ok {
+		_spec.SetField(action.FieldPrimaryOutput, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputCleared() {
+		_spec.ClearField(action.FieldPrimaryOutput, field.TypeString)
+	}
+	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
+		_spec.SetField(action.FieldPrimaryOutputURI, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputURICleared() {
+		_spec.ClearField(action.FieldPrimaryOutputURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StdoutURI(); ok {
+		_spec.SetField(action.FieldStdoutURI, field.TypeString, value)
+	}
+	if _u.mutation.StdoutURICleared() {
+		_spec.ClearField(action.FieldStdoutURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StderrURI(); ok {
+		_spec.SetField(action.FieldStderrURI, field.TypeString, value)
+	}
+	if _u.mutation.StderrURICleared() {
+		_spec.ClearField(action.FieldStderrURI, field.TypeString)
+	}
+	if _u.mutation.ActionDigestCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionDigestIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{action.Label}
@@ -340,6 +554,26 @@ type ActionUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ActionMutation
+}
+
+// SetActionDigestID sets the "action_digest_id" field.
+func (_u *ActionUpdateOne) SetActionDigestID(v int64) *ActionUpdateOne {
+	_u.mutation.SetActionDigestID(v)
+	return _u
+}
+
+// SetNillableActionDigestID sets the "action_digest_id" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableActionDigestID(v *int64) *ActionUpdateOne {
+	if v != nil {
+		_u.SetActionDigestID(*v)
+	}
+	return _u
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (_u *ActionUpdateOne) ClearActionDigestID() *ActionUpdateOne {
+	_u.mutation.ClearActionDigestID()
+	return _u
 }
 
 // SetLabel sets the "label" field.
@@ -373,6 +607,46 @@ func (_u *ActionUpdateOne) SetNillableType(v *string) *ActionUpdateOne {
 // ClearType clears the value of the "type" field.
 func (_u *ActionUpdateOne) ClearType() *ActionUpdateOne {
 	_u.mutation.ClearType()
+	return _u
+}
+
+// SetRunner sets the "runner" field.
+func (_u *ActionUpdateOne) SetRunner(v string) *ActionUpdateOne {
+	_u.mutation.SetRunner(v)
+	return _u
+}
+
+// SetNillableRunner sets the "runner" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableRunner(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetRunner(*v)
+	}
+	return _u
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (_u *ActionUpdateOne) ClearRunner() *ActionUpdateOne {
+	_u.mutation.ClearRunner()
+	return _u
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (_u *ActionUpdateOne) SetCacheHit(v bool) *ActionUpdateOne {
+	_u.mutation.SetCacheHit(v)
+	return _u
+}
+
+// SetNillableCacheHit sets the "cache_hit" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableCacheHit(v *bool) *ActionUpdateOne {
+	if v != nil {
+		_u.SetCacheHit(*v)
+	}
+	return _u
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (_u *ActionUpdateOne) ClearCacheHit() *ActionUpdateOne {
+	_u.mutation.ClearCacheHit()
 	return _u
 }
 
@@ -521,9 +795,100 @@ func (_u *ActionUpdateOne) ClearFailureMessage() *ActionUpdateOne {
 	return _u
 }
 
+// SetPrimaryOutput sets the "primary_output" field.
+func (_u *ActionUpdateOne) SetPrimaryOutput(v string) *ActionUpdateOne {
+	_u.mutation.SetPrimaryOutput(v)
+	return _u
+}
+
+// SetNillablePrimaryOutput sets the "primary_output" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillablePrimaryOutput(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetPrimaryOutput(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutput clears the value of the "primary_output" field.
+func (_u *ActionUpdateOne) ClearPrimaryOutput() *ActionUpdateOne {
+	_u.mutation.ClearPrimaryOutput()
+	return _u
+}
+
+// SetPrimaryOutputURI sets the "primary_output_uri" field.
+func (_u *ActionUpdateOne) SetPrimaryOutputURI(v string) *ActionUpdateOne {
+	_u.mutation.SetPrimaryOutputURI(v)
+	return _u
+}
+
+// SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillablePrimaryOutputURI(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetPrimaryOutputURI(*v)
+	}
+	return _u
+}
+
+// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
+func (_u *ActionUpdateOne) ClearPrimaryOutputURI() *ActionUpdateOne {
+	_u.mutation.ClearPrimaryOutputURI()
+	return _u
+}
+
+// SetStdoutURI sets the "stdout_uri" field.
+func (_u *ActionUpdateOne) SetStdoutURI(v string) *ActionUpdateOne {
+	_u.mutation.SetStdoutURI(v)
+	return _u
+}
+
+// SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableStdoutURI(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStdoutURI(*v)
+	}
+	return _u
+}
+
+// ClearStdoutURI clears the value of the "stdout_uri" field.
+func (_u *ActionUpdateOne) ClearStdoutURI() *ActionUpdateOne {
+	_u.mutation.ClearStdoutURI()
+	return _u
+}
+
+// SetStderrURI sets the "stderr_uri" field.
+func (_u *ActionUpdateOne) SetStderrURI(v string) *ActionUpdateOne {
+	_u.mutation.SetStderrURI(v)
+	return _u
+}
+
+// SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
+func (_u *ActionUpdateOne) SetNillableStderrURI(v *string) *ActionUpdateOne {
+	if v != nil {
+		_u.SetStderrURI(*v)
+	}
+	return _u
+}
+
+// ClearStderrURI clears the value of the "stderr_uri" field.
+func (_u *ActionUpdateOne) ClearStderrURI() *ActionUpdateOne {
+	_u.mutation.ClearStderrURI()
+	return _u
+}
+
+// SetActionDigest sets the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdateOne) SetActionDigest(v *Digest) *ActionUpdateOne {
+	return _u.SetActionDigestID(v.ID)
+}
+
 // Mutation returns the ActionMutation object of the builder.
 func (_u *ActionUpdateOne) Mutation() *ActionMutation {
 	return _u.mutation
+}
+
+// ClearActionDigest clears the "action_digest" edge to the Digest entity.
+func (_u *ActionUpdateOne) ClearActionDigest() *ActionUpdateOne {
+	_u.mutation.ClearActionDigest()
+	return _u
 }
 
 // Where appends a list predicates to the ActionUpdate builder.
@@ -571,9 +936,6 @@ func (_u *ActionUpdateOne) check() error {
 	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
 	}
-	if _u.mutation.ConfigurationCleared() && len(_u.mutation.ConfigurationIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Action.configuration"`)
-	}
 	return nil
 }
 
@@ -614,6 +976,18 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 	}
 	if _u.mutation.TypeCleared() {
 		_spec.ClearField(action.FieldType, field.TypeString)
+	}
+	if value, ok := _u.mutation.Runner(); ok {
+		_spec.SetField(action.FieldRunner, field.TypeString, value)
+	}
+	if _u.mutation.RunnerCleared() {
+		_spec.ClearField(action.FieldRunner, field.TypeString)
+	}
+	if value, ok := _u.mutation.CacheHit(); ok {
+		_spec.SetField(action.FieldCacheHit, field.TypeBool, value)
+	}
+	if _u.mutation.CacheHitCleared() {
+		_spec.ClearField(action.FieldCacheHit, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Success(); ok {
 		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
@@ -664,6 +1038,59 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 	}
 	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.PrimaryOutput(); ok {
+		_spec.SetField(action.FieldPrimaryOutput, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputCleared() {
+		_spec.ClearField(action.FieldPrimaryOutput, field.TypeString)
+	}
+	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
+		_spec.SetField(action.FieldPrimaryOutputURI, field.TypeString, value)
+	}
+	if _u.mutation.PrimaryOutputURICleared() {
+		_spec.ClearField(action.FieldPrimaryOutputURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StdoutURI(); ok {
+		_spec.SetField(action.FieldStdoutURI, field.TypeString, value)
+	}
+	if _u.mutation.StdoutURICleared() {
+		_spec.ClearField(action.FieldStdoutURI, field.TypeString)
+	}
+	if value, ok := _u.mutation.StderrURI(); ok {
+		_spec.SetField(action.FieldStderrURI, field.TypeString, value)
+	}
+	if _u.mutation.StderrURICleared() {
+		_spec.ClearField(action.FieldStderrURI, field.TypeString)
+	}
+	if _u.mutation.ActionDigestCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionDigestIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   action.ActionDigestTable,
+			Columns: []string{action.ActionDigestColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Action{config: _u.config}
 	_spec.Assign = _node.assignValues

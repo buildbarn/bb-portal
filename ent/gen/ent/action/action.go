@@ -3,6 +3,7 @@
 package action
 
 import (
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -16,10 +17,16 @@ const (
 	FieldBazelInvocationID = "bazel_invocation_id"
 	// FieldConfigurationID holds the string denoting the configuration_id field in the database.
 	FieldConfigurationID = "configuration_id"
+	// FieldActionDigestID holds the string denoting the action_digest_id field in the database.
+	FieldActionDigestID = "action_digest_id"
 	// FieldLabel holds the string denoting the label field in the database.
 	FieldLabel = "label"
 	// FieldType holds the string denoting the type field in the database.
 	FieldType = "type"
+	// FieldRunner holds the string denoting the runner field in the database.
+	FieldRunner = "runner"
+	// FieldCacheHit holds the string denoting the cache_hit field in the database.
+	FieldCacheHit = "cache_hit"
 	// FieldSuccess holds the string denoting the success field in the database.
 	FieldSuccess = "success"
 	// FieldExitCode holds the string denoting the exit_code field in the database.
@@ -34,18 +41,20 @@ const (
 	FieldFailureCode = "failure_code"
 	// FieldFailureMessage holds the string denoting the failure_message field in the database.
 	FieldFailureMessage = "failure_message"
-	// FieldStdoutFileID holds the string denoting the stdout_file_id field in the database.
-	FieldStdoutFileID = "stdout_file_id"
-	// FieldStderrFileID holds the string denoting the stderr_file_id field in the database.
-	FieldStderrFileID = "stderr_file_id"
+	// FieldPrimaryOutput holds the string denoting the primary_output field in the database.
+	FieldPrimaryOutput = "primary_output"
+	// FieldPrimaryOutputURI holds the string denoting the primary_output_uri field in the database.
+	FieldPrimaryOutputURI = "primary_output_uri"
+	// FieldStdoutURI holds the string denoting the stdout_uri field in the database.
+	FieldStdoutURI = "stdout_uri"
+	// FieldStderrURI holds the string denoting the stderr_uri field in the database.
+	FieldStderrURI = "stderr_uri"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeConfiguration holds the string denoting the configuration edge name in mutations.
 	EdgeConfiguration = "configuration"
-	// EdgeStdout holds the string denoting the stdout edge name in mutations.
-	EdgeStdout = "stdout"
-	// EdgeStderr holds the string denoting the stderr edge name in mutations.
-	EdgeStderr = "stderr"
+	// EdgeActionDigest holds the string denoting the action_digest edge name in mutations.
+	EdgeActionDigest = "action_digest"
 	// Table holds the table name of the action in the database.
 	Table = "actions"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -62,20 +71,13 @@ const (
 	ConfigurationInverseTable = "configurations"
 	// ConfigurationColumn is the table column denoting the configuration relation/edge.
 	ConfigurationColumn = "configuration_id"
-	// StdoutTable is the table that holds the stdout relation/edge.
-	StdoutTable = "actions"
-	// StdoutInverseTable is the table name for the File entity.
-	// It exists in this package in order to avoid circular dependency with the "file" package.
-	StdoutInverseTable = "files"
-	// StdoutColumn is the table column denoting the stdout relation/edge.
-	StdoutColumn = "stdout_file_id"
-	// StderrTable is the table that holds the stderr relation/edge.
-	StderrTable = "actions"
-	// StderrInverseTable is the table name for the File entity.
-	// It exists in this package in order to avoid circular dependency with the "file" package.
-	StderrInverseTable = "files"
-	// StderrColumn is the table column denoting the stderr relation/edge.
-	StderrColumn = "stderr_file_id"
+	// ActionDigestTable is the table that holds the action_digest relation/edge.
+	ActionDigestTable = "actions"
+	// ActionDigestInverseTable is the table name for the Digest entity.
+	// It exists in this package in order to avoid circular dependency with the "digest" package.
+	ActionDigestInverseTable = "digests"
+	// ActionDigestColumn is the table column denoting the action_digest relation/edge.
+	ActionDigestColumn = "action_digest_id"
 )
 
 // Columns holds all SQL columns for action fields.
@@ -83,8 +85,11 @@ var Columns = []string{
 	FieldID,
 	FieldBazelInvocationID,
 	FieldConfigurationID,
+	FieldActionDigestID,
 	FieldLabel,
 	FieldType,
+	FieldRunner,
+	FieldCacheHit,
 	FieldSuccess,
 	FieldExitCode,
 	FieldCommandLine,
@@ -92,8 +97,10 @@ var Columns = []string{
 	FieldEndTime,
 	FieldFailureCode,
 	FieldFailureMessage,
-	FieldStdoutFileID,
-	FieldStderrFileID,
+	FieldPrimaryOutput,
+	FieldPrimaryOutputURI,
+	FieldStdoutURI,
+	FieldStderrURI,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -105,6 +112,16 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+var (
+	Hooks  [1]ent.Hook
+	Policy ent.Policy
+)
 
 // OrderOption defines the ordering options for the Action queries.
 type OrderOption func(*sql.Selector)
@@ -124,6 +141,11 @@ func ByConfigurationID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldConfigurationID, opts...).ToFunc()
 }
 
+// ByActionDigestID orders the results by the action_digest_id field.
+func ByActionDigestID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldActionDigestID, opts...).ToFunc()
+}
+
 // ByLabel orders the results by the label field.
 func ByLabel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLabel, opts...).ToFunc()
@@ -132,6 +154,16 @@ func ByLabel(opts ...sql.OrderTermOption) OrderOption {
 // ByType orders the results by the type field.
 func ByType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldType, opts...).ToFunc()
+}
+
+// ByRunner orders the results by the runner field.
+func ByRunner(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunner, opts...).ToFunc()
+}
+
+// ByCacheHit orders the results by the cache_hit field.
+func ByCacheHit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCacheHit, opts...).ToFunc()
 }
 
 // BySuccess orders the results by the success field.
@@ -164,14 +196,24 @@ func ByFailureMessage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFailureMessage, opts...).ToFunc()
 }
 
-// ByStdoutFileID orders the results by the stdout_file_id field.
-func ByStdoutFileID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStdoutFileID, opts...).ToFunc()
+// ByPrimaryOutput orders the results by the primary_output field.
+func ByPrimaryOutput(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPrimaryOutput, opts...).ToFunc()
 }
 
-// ByStderrFileID orders the results by the stderr_file_id field.
-func ByStderrFileID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStderrFileID, opts...).ToFunc()
+// ByPrimaryOutputURI orders the results by the primary_output_uri field.
+func ByPrimaryOutputURI(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPrimaryOutputURI, opts...).ToFunc()
+}
+
+// ByStdoutURI orders the results by the stdout_uri field.
+func ByStdoutURI(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStdoutURI, opts...).ToFunc()
+}
+
+// ByStderrURI orders the results by the stderr_uri field.
+func ByStderrURI(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStderrURI, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.
@@ -188,17 +230,10 @@ func ByConfigurationField(field string, opts ...sql.OrderTermOption) OrderOption
 	}
 }
 
-// ByStdoutField orders the results by stdout field.
-func ByStdoutField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByActionDigestField orders the results by action_digest field.
+func ByActionDigestField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newStdoutStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// ByStderrField orders the results by stderr field.
-func ByStderrField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newStderrStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newActionDigestStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newBazelInvocationStep() *sqlgraph.Step {
@@ -215,17 +250,10 @@ func newConfigurationStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
 	)
 }
-func newStdoutStep() *sqlgraph.Step {
+func newActionDigestStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(StdoutInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, StdoutTable, StdoutColumn),
-	)
-}
-func newStderrStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(StderrInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, StderrTable, StderrColumn),
+		sqlgraph.To(ActionDigestInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ActionDigestTable, ActionDigestColumn),
 	)
 }

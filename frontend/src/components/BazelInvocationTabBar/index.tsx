@@ -22,7 +22,6 @@ const getMenuItems = (
 ): ItemType[] => {
   const { invocationID } = invocation;
 
-  const showActionsTab = !!invocation.actions?.length;
   const showMetricsTab = !!invocation.metrics;
   const showSourceControlTab = !!invocation.sourceControl?.length;
   const showTargetsTab = !!env.featureFlags?.bes?.pageTargets;
@@ -87,6 +86,18 @@ const getMenuItems = (
       ),
     });
   items.push({
+    key: "actions",
+    icon: <DatabaseOutlined />,
+    label: (
+      <Link
+        to="/bazel-invocations/$invocationID/actions"
+        params={{ invocationID }}
+      >
+        Actions
+      </Link>
+    ),
+  });
+  items.push({
     key: "command-line",
     icon: <CodeOutlined />,
     label: (
@@ -128,19 +139,6 @@ const getMenuItems = (
       </Link>
     ),
   });
-  if (showActionsTab)
-    items.push({
-      key: "actions",
-      icon: <DatabaseOutlined />,
-      label: (
-        <Link
-          to="/bazel-invocations/$invocationID/actions"
-          params={{ invocationID }}
-        >
-          Failed Actions
-        </Link>
-      ),
-    });
   return items;
 };
 

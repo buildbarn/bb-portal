@@ -25,6 +25,12 @@ WHERE ctid IN (
                 WHERE "digest_id" = "digests"."id"
             )
         )
+        AND (
+            NOT EXISTS (
+                SELECT 1 FROM "actions"
+                WHERE "action_digest_id" = "digests"."id"
+            )
+        )
     FOR UPDATE SKIP LOCKED
     LIMIT $3::bigint
 )
@@ -85,13 +91,6 @@ WHERE ctid IN (
     WHERE
         ctid >= format('(%s,0)', $1::bigint)::tid
         AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
-        AND (
-            NOT EXISTS (
-                SELECT 1 FROM "actions"
-                WHERE "stdout_file_id" = "files"."id"
-                  OR "stderr_file_id" = "files"."id"
-            )
-        )
         AND (
             NOT EXISTS (
                 SELECT 1 FROM "bazel_invocations"

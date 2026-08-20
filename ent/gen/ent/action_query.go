@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 
@@ -14,7 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -27,8 +28,7 @@ type ActionQuery struct {
 	predicates          []predicate.Action
 	withBazelInvocation *BazelInvocationQuery
 	withConfiguration   *ConfigurationQuery
-	withStdout          *FileQuery
-	withStderr          *FileQuery
+	withActionDigest    *DigestQuery
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*Action) error
 	// intermediate query (i.e. traversal path).
@@ -111,9 +111,9 @@ func (_q *ActionQuery) QueryConfiguration() *ConfigurationQuery {
 	return query
 }
 
-// QueryStdout chains the current query on the "stdout" edge.
-func (_q *ActionQuery) QueryStdout() *FileQuery {
-	query := (&FileClient{config: _q.config}).Query()
+// QueryActionDigest chains the current query on the "action_digest" edge.
+func (_q *ActionQuery) QueryActionDigest() *DigestQuery {
+	query := (&DigestClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -124,30 +124,8 @@ func (_q *ActionQuery) QueryStdout() *FileQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(action.Table, action.FieldID, selector),
-			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.StdoutTable, action.StdoutColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryStderr chains the current query on the "stderr" edge.
-func (_q *ActionQuery) QueryStderr() *FileQuery {
-	query := (&FileClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, selector),
-			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.StderrTable, action.StderrColumn),
+			sqlgraph.To(digest.Table, digest.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, action.ActionDigestTable, action.ActionDigestColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -349,8 +327,7 @@ func (_q *ActionQuery) Clone() *ActionQuery {
 		predicates:          append([]predicate.Action{}, _q.predicates...),
 		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		withConfiguration:   _q.withConfiguration.Clone(),
-		withStdout:          _q.withStdout.Clone(),
-		withStderr:          _q.withStderr.Clone(),
+		withActionDigest:    _q.withActionDigest.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -379,25 +356,14 @@ func (_q *ActionQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *Act
 	return _q
 }
 
-// WithStdout tells the query-builder to eager-load the nodes that are connected to
-// the "stdout" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ActionQuery) WithStdout(opts ...func(*FileQuery)) *ActionQuery {
-	query := (&FileClient{config: _q.config}).Query()
+// WithActionDigest tells the query-builder to eager-load the nodes that are connected to
+// the "action_digest" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ActionQuery) WithActionDigest(opts ...func(*DigestQuery)) *ActionQuery {
+	query := (&DigestClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withStdout = query
-	return _q
-}
-
-// WithStderr tells the query-builder to eager-load the nodes that are connected to
-// the "stderr" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ActionQuery) WithStderr(opts ...func(*FileQuery)) *ActionQuery {
-	query := (&FileClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withStderr = query
+	_q.withActionDigest = query
 	return _q
 }
 
@@ -472,6 +438,12 @@ func (_q *ActionQuery) prepareQuery(ctx context.Context) error {
 		}
 		_q.sql = prev
 	}
+	if action.Policy == nil {
+		return errors.New("ent: uninitialized action.Policy (forgotten import ent/runtime?)")
+	}
+	if err := action.Policy.EvalQuery(ctx, _q); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -479,11 +451,10 @@ func (_q *ActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Actio
 	var (
 		nodes       = []*Action{}
 		_spec       = _q.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [3]bool{
 			_q.withBazelInvocation != nil,
 			_q.withConfiguration != nil,
-			_q.withStdout != nil,
-			_q.withStderr != nil,
+			_q.withActionDigest != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -519,15 +490,9 @@ func (_q *ActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Actio
 			return nil, err
 		}
 	}
-	if query := _q.withStdout; query != nil {
-		if err := _q.loadStdout(ctx, query, nodes, nil,
-			func(n *Action, e *File) { n.Edges.Stdout = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withStderr; query != nil {
-		if err := _q.loadStderr(ctx, query, nodes, nil,
-			func(n *Action, e *File) { n.Edges.Stderr = e }); err != nil {
+	if query := _q.withActionDigest; query != nil {
+		if err := _q.loadActionDigest(ctx, query, nodes, nil,
+			func(n *Action, e *Digest) { n.Edges.ActionDigest = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -597,11 +562,11 @@ func (_q *ActionQuery) loadConfiguration(ctx context.Context, query *Configurati
 	}
 	return nil
 }
-func (_q *ActionQuery) loadStdout(ctx context.Context, query *FileQuery, nodes []*Action, init func(*Action), assign func(*Action, *File)) error {
+func (_q *ActionQuery) loadActionDigest(ctx context.Context, query *DigestQuery, nodes []*Action, init func(*Action), assign func(*Action, *Digest)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*Action)
 	for i := range nodes {
-		fk := nodes[i].StdoutFileID
+		fk := nodes[i].ActionDigestID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -610,7 +575,7 @@ func (_q *ActionQuery) loadStdout(ctx context.Context, query *FileQuery, nodes [
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(file.IDIn(ids...))
+	query.Where(digest.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -618,36 +583,7 @@ func (_q *ActionQuery) loadStdout(ctx context.Context, query *FileQuery, nodes [
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "stdout_file_id" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
-func (_q *ActionQuery) loadStderr(ctx context.Context, query *FileQuery, nodes []*Action, init func(*Action), assign func(*Action, *File)) error {
-	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*Action)
-	for i := range nodes {
-		fk := nodes[i].StderrFileID
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(file.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "stderr_file_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_digest_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -690,11 +626,8 @@ func (_q *ActionQuery) querySpec() *sqlgraph.QuerySpec {
 		if _q.withConfiguration != nil {
 			_spec.Node.AddColumnOnce(action.FieldConfigurationID)
 		}
-		if _q.withStdout != nil {
-			_spec.Node.AddColumnOnce(action.FieldStdoutFileID)
-		}
-		if _q.withStderr != nil {
-			_spec.Node.AddColumnOnce(action.FieldStderrFileID)
+		if _q.withActionDigest != nil {
+			_spec.Node.AddColumnOnce(action.FieldActionDigestID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

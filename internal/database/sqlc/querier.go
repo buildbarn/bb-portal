@@ -54,6 +54,7 @@ type Querier interface {
 	DeleteUnusedTargetsFromPages(ctx context.Context, arg DeleteUnusedTargetsFromPagesParams) (int64, error)
 	FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error)
 	FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error)
+	GetActionTimingMetrics(ctx context.Context, bazelInvocationID int64) (GetActionTimingMetricsRow, error)
 	GetInvocationsForLogCompactionFromPages(ctx context.Context, arg GetInvocationsForLogCompactionFromPagesParams) ([]GetInvocationsForLogCompactionFromPagesRow, error)
 	GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error)
 	InsertMissingDigests(ctx context.Context, arg InsertMissingDigestsParams) error

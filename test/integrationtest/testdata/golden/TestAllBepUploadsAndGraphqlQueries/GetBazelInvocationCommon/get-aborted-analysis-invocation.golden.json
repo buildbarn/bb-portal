@@ -1,6 +1,5 @@
 {
   "getBazelInvocation": {
-    "actions": [],
     "authenticatedUser": null,
     "build": null,
     "connectionMetadata": null,
