@@ -14,9 +14,9 @@
     "generate-possible-types": "node ./tools/create-possible-types.js",
     "predev": "npm run generate",
     "format": "biome format --write",
-    "lint": "biome lint --write",
-    "check": "biome check --write",
-    "biome-ci": "biome ci",
+    "lint": "biome lint --write --error-on-warnings",
+    "check": "biome check --write --error-on-warnings",
+    "biome-ci": "biome ci --error-on-warnings",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
