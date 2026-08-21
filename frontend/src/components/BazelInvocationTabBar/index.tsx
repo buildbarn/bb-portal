@@ -9,47 +9,51 @@ import {
   LineChartOutlined,
   TagsOutlined,
 } from "@ant-design/icons";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Menu } from "antd";
-import type { ItemType } from "antd/lib/menu/interface";
 import type React from "react";
 import { useMemo } from "react";
 import type { BazelInvocationCommonFragment } from "@/graphql/__generated__/graphql";
+import {
+  filterPortalMenuItems,
+  type PortalMenuItem,
+  usePortalMenuSelectedKeys,
+} from "@/types/PortalMenuItem";
 import { env } from "@/utils/env";
 
 const getMenuItems = (
   invocation: BazelInvocationCommonFragment,
-): ItemType[] => {
+): PortalMenuItem[] => {
   const { invocationID } = invocation;
 
-  const showActionsTab = !!invocation.actions?.length;
-  const showMetricsTab = !!invocation.metrics;
-  const showSourceControlTab = !!invocation.sourceControl?.length;
-  const showTargetsTab = !!env.featureFlags?.bes?.pageTargets;
-  const showTestsTab = !!env.featureFlags?.bes?.pageTests;
+  const hideActionsTab = !invocation.actions?.length;
+  const hideMetricsTab = !invocation.metrics;
+  const hideSourceControlTab = !invocation.sourceControl?.length;
 
-  const items: ItemType[] = [];
-  items.push({
-    key: "overview",
-    icon: <InfoCircleOutlined />,
-    label: (
-      <Link to="/bazel-invocations/$invocationID" params={{ invocationID }}>
-        Overview
-      </Link>
-    ),
-  });
-  items.push({
-    key: "log",
-    icon: <FileSearchOutlined />,
-    label: (
-      <Link to="/bazel-invocations/$invocationID/log" params={{ invocationID }}>
-        Log
-      </Link>
-    ),
-  });
-  if (showMetricsTab)
-    items.push({
-      key: "metrics",
+  return filterPortalMenuItems([
+    {
+      key: "/bazel-invocations/$invocationID/",
+      icon: <InfoCircleOutlined />,
+      label: (
+        <Link to="/bazel-invocations/$invocationID" params={{ invocationID }}>
+          Overview
+        </Link>
+      ),
+    },
+    {
+      key: "/bazel-invocations/$invocationID/log",
+      icon: <FileSearchOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/log"
+          params={{ invocationID }}
+        >
+          Log
+        </Link>
+      ),
+    },
+    {
+      key: "/bazel-invocations/$invocationID/metrics",
       icon: <LineChartOutlined />,
       label: (
         <Link
@@ -59,10 +63,10 @@ const getMenuItems = (
           Metrics
         </Link>
       ),
-    });
-  if (showTargetsTab)
-    items.push({
-      key: "targets",
+      hidden: hideMetricsTab,
+    },
+    {
+      key: "/bazel-invocations/$invocationID/targets",
       icon: <DeploymentUnitOutlined />,
       label: (
         <Link
@@ -72,10 +76,10 @@ const getMenuItems = (
           Targets
         </Link>
       ),
-    });
-  if (showTestsTab)
-    items.push({
-      key: "tests",
+      requiredFeatures: [env.featureFlags?.bes?.pageTargets],
+    },
+    {
+      key: "/bazel-invocations/$invocationID/tests",
       icon: <ExperimentOutlined />,
       label: (
         <Link
@@ -85,22 +89,22 @@ const getMenuItems = (
           Tests
         </Link>
       ),
-    });
-  items.push({
-    key: "command-line",
-    icon: <CodeOutlined />,
-    label: (
-      <Link
-        to="/bazel-invocations/$invocationID/command-line"
-        params={{ invocationID }}
-      >
-        Command Line
-      </Link>
-    ),
-  });
-  if (showSourceControlTab)
-    items.push({
-      key: "source-control",
+      requiredFeatures: [env.featureFlags?.bes?.pageTests],
+    },
+    {
+      key: "/bazel-invocations/$invocationID/command-line",
+      icon: <CodeOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/command-line"
+          params={{ invocationID }}
+        >
+          Command Line
+        </Link>
+      ),
+    },
+    {
+      key: "/bazel-invocations/$invocationID/source-control",
       icon: <BranchesOutlined />,
       label: (
         <Link
@@ -110,27 +114,27 @@ const getMenuItems = (
           Source Control
         </Link>
       ),
-    });
-  // Previously we counted the number of tags to determine if we should show
-  // this link, but due to a bug in (probably) ApolloClient, this was removed.
-  // The bug caused a cache warning when fetching the count, which in turn
-  // caused a rerender of the build details page when you hovered over a link
-  // to a invocation.
-  items.push({
-    key: "tags",
-    icon: <TagsOutlined />,
-    label: (
-      <Link
-        to="/bazel-invocations/$invocationID/tags"
-        params={{ invocationID }}
-      >
-        Tags
-      </Link>
-    ),
-  });
-  if (showActionsTab)
-    items.push({
-      key: "actions",
+      hidden: hideSourceControlTab,
+    },
+    // Previously we counted the number of tags to determine if we should show
+    // this link, but due to a bug in (probably) ApolloClient, this was removed.
+    // The bug caused a cache warning when fetching the count, which in turn
+    // caused a rerender of the build details page when you hovered over a link
+    // to a invocation.
+    {
+      key: "/bazel-invocations/$invocationID/tags",
+      icon: <TagsOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/tags"
+          params={{ invocationID }}
+        >
+          Tags
+        </Link>
+      ),
+    },
+    {
+      key: "/bazel-invocations/$invocationID/actions",
       icon: <DatabaseOutlined />,
       label: (
         <Link
@@ -140,8 +144,9 @@ const getMenuItems = (
           Failed Actions
         </Link>
       ),
-    });
-  return items;
+      hidden: hideActionsTab,
+    },
+  ]);
 };
 
 interface Props {
@@ -149,25 +154,8 @@ interface Props {
 }
 
 export const BazelInvocationTabBar: React.FC<Props> = ({ invocation }) => {
-  const { pathname } = useLocation();
-
   const menuItems = useMemo(() => getMenuItems(invocation), [invocation]);
-
-  const selectedKeys: string[] = useMemo(() => {
-    const segments = pathname.split("/").filter(Boolean);
-    const invocationsIndex = segments.lastIndexOf("bazel-invocations");
-
-    if (invocationsIndex === -1) return [];
-
-    const pageSegment = segments.at(invocationsIndex + 2);
-    if (!pageSegment) return ["overview"];
-
-    if (menuItems.some((item) => item?.key === pageSegment)) {
-      return [pageSegment];
-    }
-    return [];
-  }, [pathname, menuItems]);
-
+  const selectedKeys = usePortalMenuSelectedKeys(menuItems);
   return (
     <Menu
       mode="horizontal"
