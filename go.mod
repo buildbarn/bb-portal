@@ -23,6 +23,7 @@ require (
 	github.com/RoaringBitmap/roaring v1.9.4
 	github.com/aereal/otelgqlgen v0.11.0
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto v0.0.0
+	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0
 	github.com/bazelbuild/bazel/src/main/protobuf v0.0.0
 	github.com/bazelbuild/buildtools v0.0.0-20260528135316-84fa6c32aee6
 	github.com/bazelbuild/remote-apis v0.0.0-20260331222004-becdd8f9ff81
@@ -94,7 +95,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.36.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.43.3 // indirect
 	github.com/aws/smithy-go v1.27.2 // indirect
-	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.24.5 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect

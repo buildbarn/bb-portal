@@ -46,11 +46,21 @@ type BuildGraphMetrics struct {
 type BuildGraphMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
 	Metrics *Metrics `json:"metrics,omitempty"`
+	// EvaluationStats holds the value of the evaluation_stats edge.
+	EvaluationStats []*BuildGraphEvaluationStat `json:"evaluation_stats,omitempty"`
+	// RuleClassCounts holds the value of the rule_class_counts edge.
+	RuleClassCounts []*BuildGraphRuleClassCount `json:"rule_class_counts,omitempty"`
+	// AspectCounts holds the value of the aspect_counts edge.
+	AspectCounts []*BuildGraphAspectCount `json:"aspect_counts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [4]map[string]int
+
+	namedEvaluationStats map[string][]*BuildGraphEvaluationStat
+	namedRuleClassCounts map[string][]*BuildGraphRuleClassCount
+	namedAspectCounts    map[string][]*BuildGraphAspectCount
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
@@ -62,6 +72,33 @@ func (e BuildGraphMetricsEdges) MetricsOrErr() (*Metrics, error) {
 		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
+}
+
+// EvaluationStatsOrErr returns the EvaluationStats value or an error if the edge
+// was not loaded in eager-loading.
+func (e BuildGraphMetricsEdges) EvaluationStatsOrErr() ([]*BuildGraphEvaluationStat, error) {
+	if e.loadedTypes[1] {
+		return e.EvaluationStats, nil
+	}
+	return nil, &NotLoadedError{edge: "evaluation_stats"}
+}
+
+// RuleClassCountsOrErr returns the RuleClassCounts value or an error if the edge
+// was not loaded in eager-loading.
+func (e BuildGraphMetricsEdges) RuleClassCountsOrErr() ([]*BuildGraphRuleClassCount, error) {
+	if e.loadedTypes[2] {
+		return e.RuleClassCounts, nil
+	}
+	return nil, &NotLoadedError{edge: "rule_class_counts"}
+}
+
+// AspectCountsOrErr returns the AspectCounts value or an error if the edge
+// was not loaded in eager-loading.
+func (e BuildGraphMetricsEdges) AspectCountsOrErr() ([]*BuildGraphAspectCount, error) {
+	if e.loadedTypes[3] {
+		return e.AspectCounts, nil
+	}
+	return nil, &NotLoadedError{edge: "aspect_counts"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -173,6 +210,21 @@ func (_m *BuildGraphMetrics) QueryMetrics() *MetricsQuery {
 	return NewBuildGraphMetricsClient(_m.config).QueryMetrics(_m)
 }
 
+// QueryEvaluationStats queries the "evaluation_stats" edge of the BuildGraphMetrics entity.
+func (_m *BuildGraphMetrics) QueryEvaluationStats() *BuildGraphEvaluationStatQuery {
+	return NewBuildGraphMetricsClient(_m.config).QueryEvaluationStats(_m)
+}
+
+// QueryRuleClassCounts queries the "rule_class_counts" edge of the BuildGraphMetrics entity.
+func (_m *BuildGraphMetrics) QueryRuleClassCounts() *BuildGraphRuleClassCountQuery {
+	return NewBuildGraphMetricsClient(_m.config).QueryRuleClassCounts(_m)
+}
+
+// QueryAspectCounts queries the "aspect_counts" edge of the BuildGraphMetrics entity.
+func (_m *BuildGraphMetrics) QueryAspectCounts() *BuildGraphAspectCountQuery {
+	return NewBuildGraphMetricsClient(_m.config).QueryAspectCounts(_m)
+}
+
 // Update returns a builder for updating this BuildGraphMetrics.
 // Note that you need to call BuildGraphMetrics.Unwrap() before calling this method if this BuildGraphMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -224,6 +276,78 @@ func (_m *BuildGraphMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", _m.PostInvocationSkyframeNodeCount))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedEvaluationStats returns the EvaluationStats named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *BuildGraphMetrics) NamedEvaluationStats(name string) ([]*BuildGraphEvaluationStat, error) {
+	if _m.Edges.namedEvaluationStats == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedEvaluationStats[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *BuildGraphMetrics) appendNamedEvaluationStats(name string, edges ...*BuildGraphEvaluationStat) {
+	if _m.Edges.namedEvaluationStats == nil {
+		_m.Edges.namedEvaluationStats = make(map[string][]*BuildGraphEvaluationStat)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedEvaluationStats[name] = []*BuildGraphEvaluationStat{}
+	} else {
+		_m.Edges.namedEvaluationStats[name] = append(_m.Edges.namedEvaluationStats[name], edges...)
+	}
+}
+
+// NamedRuleClassCounts returns the RuleClassCounts named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *BuildGraphMetrics) NamedRuleClassCounts(name string) ([]*BuildGraphRuleClassCount, error) {
+	if _m.Edges.namedRuleClassCounts == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedRuleClassCounts[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *BuildGraphMetrics) appendNamedRuleClassCounts(name string, edges ...*BuildGraphRuleClassCount) {
+	if _m.Edges.namedRuleClassCounts == nil {
+		_m.Edges.namedRuleClassCounts = make(map[string][]*BuildGraphRuleClassCount)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedRuleClassCounts[name] = []*BuildGraphRuleClassCount{}
+	} else {
+		_m.Edges.namedRuleClassCounts[name] = append(_m.Edges.namedRuleClassCounts[name], edges...)
+	}
+}
+
+// NamedAspectCounts returns the AspectCounts named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *BuildGraphMetrics) NamedAspectCounts(name string) ([]*BuildGraphAspectCount, error) {
+	if _m.Edges.namedAspectCounts == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedAspectCounts[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *BuildGraphMetrics) appendNamedAspectCounts(name string, edges ...*BuildGraphAspectCount) {
+	if _m.Edges.namedAspectCounts == nil {
+		_m.Edges.namedAspectCounts = make(map[string][]*BuildGraphAspectCount)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedAspectCounts[name] = []*BuildGraphAspectCount{}
+	} else {
+		_m.Edges.namedAspectCounts[name] = append(_m.Edges.namedAspectCounts[name], edges...)
+	}
 }
 
 // BuildGraphMetricsSlice is a parsable slice of BuildGraphMetrics.

@@ -10,10 +10,12 @@ import { nullPercent } from "../Utilities/nullPercent";
 
 interface Props {
   garbageMetrics: BazelInvocationMetricsGarbageMetricsFragment[];
+  cardStyle?: React.CSSProperties;
 }
 
 export const GarbageCollectionMetrics: React.FC<Props> = ({
   garbageMetrics,
+  cardStyle,
 }) => {
   if (garbageMetrics.length === 0) {
     return null;
@@ -38,6 +40,7 @@ export const GarbageCollectionMetrics: React.FC<Props> = ({
     <PortalCard
       type="inner"
       icon={<RestOutlined />}
+      style={cardStyle}
       titleBits={["Garbage Collection Breakdown"]}
     >
       <SummaryPieChart items={chartItems} />

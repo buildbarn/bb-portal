@@ -30,8 +30,14 @@ type Tx struct {
 	BazelInvocation *BazelInvocationClient
 	// Build is the client for interacting with the Build builders.
 	Build *BuildClient
+	// BuildGraphAspectCount is the client for interacting with the BuildGraphAspectCount builders.
+	BuildGraphAspectCount *BuildGraphAspectCountClient
+	// BuildGraphEvaluationStat is the client for interacting with the BuildGraphEvaluationStat builders.
+	BuildGraphEvaluationStat *BuildGraphEvaluationStatClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
 	BuildGraphMetrics *BuildGraphMetricsClient
+	// BuildGraphRuleClassCount is the client for interacting with the BuildGraphRuleClassCount builders.
+	BuildGraphRuleClassCount *BuildGraphRuleClassCountClient
 	// BuildLogChunk is the client for interacting with the BuildLogChunk builders.
 	BuildLogChunk *BuildLogChunkClient
 	// BuildTag is the client for interacting with the BuildTag builders.
@@ -40,8 +46,14 @@ type Tx struct {
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
 	ConnectionMetadata *ConnectionMetadataClient
+	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
+	CumulativeMetrics *CumulativeMetricsClient
 	// Digest is the client for interacting with the Digest builders.
 	Digest *DigestClient
+	// DynamicExecutionMetrics is the client for interacting with the DynamicExecutionMetrics builders.
+	DynamicExecutionMetrics *DynamicExecutionMetricsClient
+	// DynamicExecutionRaceStatistic is the client for interacting with the DynamicExecutionRaceStatistic builders.
+	DynamicExecutionRaceStatistic *DynamicExecutionRaceStatisticClient
 	// EventMetadata is the client for interacting with the EventMetadata builders.
 	EventMetadata *EventMetadataClient
 	// File is the client for interacting with the File builders.
@@ -66,6 +78,10 @@ type Tx struct {
 	MissDetail *MissDetailClient
 	// NetworkMetrics is the client for interacting with the NetworkMetrics builders.
 	NetworkMetrics *NetworkMetricsClient
+	// PackageLoadMetrics is the client for interacting with the PackageLoadMetrics builders.
+	PackageLoadMetrics *PackageLoadMetricsClient
+	// PackageMetrics is the client for interacting with the PackageMetrics builders.
+	PackageMetrics *PackageMetricsClient
 	// RunnerCount is the client for interacting with the RunnerCount builders.
 	RunnerCount *RunnerCountClient
 	// SourceControl is the client for interacting with the SourceControl builders.
@@ -88,6 +104,16 @@ type Tx struct {
 	TestTarget *TestTargetClient
 	// TimingMetrics is the client for interacting with the TimingMetrics builders.
 	TimingMetrics *TimingMetricsClient
+	// WorkerID is the client for interacting with the WorkerID builders.
+	WorkerID *WorkerIDClient
+	// WorkerMetrics is the client for interacting with the WorkerMetrics builders.
+	WorkerMetrics *WorkerMetricsClient
+	// WorkerPoolMetrics is the client for interacting with the WorkerPoolMetrics builders.
+	WorkerPoolMetrics *WorkerPoolMetricsClient
+	// WorkerPoolStats is the client for interacting with the WorkerPoolStats builders.
+	WorkerPoolStats *WorkerPoolStatsClient
+	// WorkerStats is the client for interacting with the WorkerStats builders.
+	WorkerStats *WorkerStatsClient
 
 	// lazily loaded.
 	client     *Client
@@ -227,12 +253,18 @@ func (tx *Tx) init() {
 	tx.AuthenticatedUser = NewAuthenticatedUserClient(tx.config)
 	tx.BazelInvocation = NewBazelInvocationClient(tx.config)
 	tx.Build = NewBuildClient(tx.config)
+	tx.BuildGraphAspectCount = NewBuildGraphAspectCountClient(tx.config)
+	tx.BuildGraphEvaluationStat = NewBuildGraphEvaluationStatClient(tx.config)
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
+	tx.BuildGraphRuleClassCount = NewBuildGraphRuleClassCountClient(tx.config)
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
 	tx.BuildTag = NewBuildTagClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
+	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)
 	tx.Digest = NewDigestClient(tx.config)
+	tx.DynamicExecutionMetrics = NewDynamicExecutionMetricsClient(tx.config)
+	tx.DynamicExecutionRaceStatistic = NewDynamicExecutionRaceStatisticClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
 	tx.File = NewFileClient(tx.config)
 	tx.FilePath = NewFilePathClient(tx.config)
@@ -245,6 +277,8 @@ func (tx *Tx) init() {
 	tx.Metrics = NewMetricsClient(tx.config)
 	tx.MissDetail = NewMissDetailClient(tx.config)
 	tx.NetworkMetrics = NewNetworkMetricsClient(tx.config)
+	tx.PackageLoadMetrics = NewPackageLoadMetricsClient(tx.config)
+	tx.PackageMetrics = NewPackageMetricsClient(tx.config)
 	tx.RunnerCount = NewRunnerCountClient(tx.config)
 	tx.SourceControl = NewSourceControlClient(tx.config)
 	tx.SystemNetworkStats = NewSystemNetworkStatsClient(tx.config)
@@ -256,6 +290,11 @@ func (tx *Tx) init() {
 	tx.TestSummary = NewTestSummaryClient(tx.config)
 	tx.TestTarget = NewTestTargetClient(tx.config)
 	tx.TimingMetrics = NewTimingMetricsClient(tx.config)
+	tx.WorkerID = NewWorkerIDClient(tx.config)
+	tx.WorkerMetrics = NewWorkerMetricsClient(tx.config)
+	tx.WorkerPoolMetrics = NewWorkerPoolMetricsClient(tx.config)
+	tx.WorkerPoolStats = NewWorkerPoolStatsClient(tx.config)
+	tx.WorkerStats = NewWorkerStatsClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
