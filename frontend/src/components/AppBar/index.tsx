@@ -108,22 +108,24 @@ const AppBar: React.FC<Props> = ({ toggleTheme, prefersDark }) => {
           </Button>
         )}
       </Layout.Header>
-      <Drawer
-        placement="right"
-        closable={true}
-        onClose={() => {
-          setIsDrawerOpen(false);
-        }}
-        onClick={() => {
-          setIsDrawerOpen(false);
-        }}
-        open={isDrawerOpen}
-        footer={<FooterBar className={styles.footerBar} />}
-      >
-        <AppBarMenu mode="inline" items={APP_BAR_MENU_ITEMS} />
-        <Divider orientation="center" type="horizontal" />
-        <AppBarButtons toggleTheme={toggleTheme} prefersDark={prefersDark} />
-      </Drawer>
+      {!showHeaderMenu && (
+        <Drawer
+          placement="right"
+          closable={true}
+          onClose={() => {
+            setIsDrawerOpen(false);
+          }}
+          onClick={() => {
+            setIsDrawerOpen(false);
+          }}
+          open={isDrawerOpen}
+          footer={<FooterBar className={styles.footerBar} />}
+        >
+          <AppBarMenu mode="inline" items={APP_BAR_MENU_ITEMS} />
+          <Divider orientation="center" type="horizontal" />
+          <AppBarButtons toggleTheme={toggleTheme} prefersDark={prefersDark} />
+        </Drawer>
+      )}
     </>
   );
 };
