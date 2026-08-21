@@ -82,6 +82,9 @@ export const GET_BUILD_INVOCATION_FRAGMENT = gql(/* GraphQL */ `
         }
       }
     }
+    profile {
+      ...FileDetails
+    }
     connectionMetadata {
       connectionLastOpenAt
       timeSinceLastConnectionMillis
