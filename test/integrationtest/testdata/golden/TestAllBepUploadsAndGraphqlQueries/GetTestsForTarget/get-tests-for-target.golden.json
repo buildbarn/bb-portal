@@ -1,0 +1,45 @@
+{
+  "findTestSummaries": {
+    "edges": [
+      {
+        "node": {
+          "id": "VGVzdFN1bW1hcnk6NA==",
+          "invocationTarget": {
+            "bazelInvocation": {
+              "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9"
+            }
+          },
+          "overallStatus": "PASSED"
+        }
+      },
+      {
+        "node": {
+          "id": "VGVzdFN1bW1hcnk6MTI=",
+          "invocationTarget": {
+            "bazelInvocation": {
+              "invocationID": "08ae089d-4c85-405c-83fc-dbe9fc1dc942"
+            }
+          },
+          "overallStatus": "PASSED"
+        }
+      },
+      {
+        "node": {
+          "id": "VGVzdFN1bW1hcnk6MjM=",
+          "invocationTarget": {
+            "bazelInvocation": {
+              "invocationID": "10a37e86-6e2b-4adb-83dd-c2906f42bdd6"
+            }
+          },
+          "overallStatus": "PASSED"
+        }
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "gaFp0wAAAAAAAAAX",
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": "gaFp0wAAAAAAAAAE"
+    }
+  }
+}

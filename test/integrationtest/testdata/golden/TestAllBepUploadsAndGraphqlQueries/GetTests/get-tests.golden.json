@@ -1,0 +1,122 @@
+{
+  "findTargets": {
+    "edges": [
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0Ojc=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:jest_test",
+          "targetKind": "jest_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjEy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:build_smoke_test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjEz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:build_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:build_smoke_test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:lint",
+          "targetKind": "eslint_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_typecheck_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_typecheck_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:build_smoke_test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjYx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue:build_test",
+          "targetKind": "_empty_test rule"
+        }
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "gaFp0wAAAAAAAAA9",
+      "hasNextPage": true,
+      "hasPreviousPage": false,
+      "startCursor": "gaFp0wAAAAAAAAAH"
+    }
+  }
+}
