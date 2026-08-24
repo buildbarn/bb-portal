@@ -65,6 +65,20 @@ func (_c *ActionCacheStatisticsCreate) SetNillableLoadTimeInMs(v *int64) *Action
 	return _c
 }
 
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (_c *ActionCacheStatisticsCreate) SetCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsCreate {
+	_c.mutation.SetCacheCheckSemaphoreWaitTimeInMs(v)
+	return _c
+}
+
+// SetNillableCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field if the given value is not nil.
+func (_c *ActionCacheStatisticsCreate) SetNillableCacheCheckSemaphoreWaitTimeInMs(v *uint64) *ActionCacheStatisticsCreate {
+	if v != nil {
+		_c.SetCacheCheckSemaphoreWaitTimeInMs(*v)
+	}
+	return _c
+}
+
 // SetHits sets the "hits" field.
 func (_c *ActionCacheStatisticsCreate) SetHits(v int32) *ActionCacheStatisticsCreate {
 	_c.mutation.SetHits(v)
@@ -211,6 +225,10 @@ func (_c *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *sq
 	if value, ok := _c.mutation.LoadTimeInMs(); ok {
 		_spec.SetField(actioncachestatistics.FieldLoadTimeInMs, field.TypeInt64, value)
 		_node.LoadTimeInMs = value
+	}
+	if value, ok := _c.mutation.CacheCheckSemaphoreWaitTimeInMs(); ok {
+		_spec.SetField(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, field.TypeUint64, value)
+		_node.CacheCheckSemaphoreWaitTimeInMs = value
 	}
 	if value, ok := _c.mutation.Hits(); ok {
 		_spec.SetField(actioncachestatistics.FieldHits, field.TypeInt32, value)
@@ -374,6 +392,30 @@ func (u *ActionCacheStatisticsUpsert) AddLoadTimeInMs(v int64) *ActionCacheStati
 // ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
 func (u *ActionCacheStatisticsUpsert) ClearLoadTimeInMs() *ActionCacheStatisticsUpsert {
 	u.SetNull(actioncachestatistics.FieldLoadTimeInMs)
+	return u
+}
+
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) SetCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
+	u.Set(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, v)
+	return u
+}
+
+// UpdateCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsert) UpdateCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpsert {
+	u.SetExcluded(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
+	return u
+}
+
+// AddCacheCheckSemaphoreWaitTimeInMs adds v to the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) AddCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
+	u.Add(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, v)
+	return u
+}
+
+// ClearCacheCheckSemaphoreWaitTimeInMs clears the value of the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) ClearCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpsert {
+	u.SetNull(actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs)
 	return u
 }
 
@@ -554,6 +596,34 @@ func (u *ActionCacheStatisticsUpsertOne) UpdateLoadTimeInMs() *ActionCacheStatis
 func (u *ActionCacheStatisticsUpsertOne) ClearLoadTimeInMs() *ActionCacheStatisticsUpsertOne {
 	return u.Update(func(s *ActionCacheStatisticsUpsert) {
 		s.ClearLoadTimeInMs()
+	})
+}
+
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) SetCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetCacheCheckSemaphoreWaitTimeInMs(v)
+	})
+}
+
+// AddCacheCheckSemaphoreWaitTimeInMs adds v to the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) AddCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddCacheCheckSemaphoreWaitTimeInMs(v)
+	})
+}
+
+// UpdateCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertOne) UpdateCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateCacheCheckSemaphoreWaitTimeInMs()
+	})
+}
+
+// ClearCacheCheckSemaphoreWaitTimeInMs clears the value of the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) ClearCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearCacheCheckSemaphoreWaitTimeInMs()
 	})
 }
 
@@ -907,6 +977,34 @@ func (u *ActionCacheStatisticsUpsertBulk) UpdateLoadTimeInMs() *ActionCacheStati
 func (u *ActionCacheStatisticsUpsertBulk) ClearLoadTimeInMs() *ActionCacheStatisticsUpsertBulk {
 	return u.Update(func(s *ActionCacheStatisticsUpsert) {
 		s.ClearLoadTimeInMs()
+	})
+}
+
+// SetCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) SetCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetCacheCheckSemaphoreWaitTimeInMs(v)
+	})
+}
+
+// AddCacheCheckSemaphoreWaitTimeInMs adds v to the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) AddCacheCheckSemaphoreWaitTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddCacheCheckSemaphoreWaitTimeInMs(v)
+	})
+}
+
+// UpdateCacheCheckSemaphoreWaitTimeInMs sets the "cache_check_semaphore_wait_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertBulk) UpdateCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateCacheCheckSemaphoreWaitTimeInMs()
+	})
+}
+
+// ClearCacheCheckSemaphoreWaitTimeInMs clears the value of the "cache_check_semaphore_wait_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) ClearCacheCheckSemaphoreWaitTimeInMs() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearCacheCheckSemaphoreWaitTimeInMs()
 	})
 }
 

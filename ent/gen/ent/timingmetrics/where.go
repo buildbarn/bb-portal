@@ -78,6 +78,11 @@ func ActionsExecutionStartInMs(v int64) predicate.TimingMetrics {
 	return predicate.TimingMetrics(sql.FieldEQ(FieldActionsExecutionStartInMs, v))
 }
 
+// CriticalPathTimeInMs applies equality check predicate on the "critical_path_time_in_ms" field. It's identical to CriticalPathTimeInMsEQ.
+func CriticalPathTimeInMs(v int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldEQ(FieldCriticalPathTimeInMs, v))
+}
+
 // CPUTimeInMsEQ applies the EQ predicate on the "cpu_time_in_ms" field.
 func CPUTimeInMsEQ(v int64) predicate.TimingMetrics {
 	return predicate.TimingMetrics(sql.FieldEQ(FieldCPUTimeInMs, v))
@@ -326,6 +331,56 @@ func ActionsExecutionStartInMsIsNil() predicate.TimingMetrics {
 // ActionsExecutionStartInMsNotNil applies the NotNil predicate on the "actions_execution_start_in_ms" field.
 func ActionsExecutionStartInMsNotNil() predicate.TimingMetrics {
 	return predicate.TimingMetrics(sql.FieldNotNull(FieldActionsExecutionStartInMs))
+}
+
+// CriticalPathTimeInMsEQ applies the EQ predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsEQ(v int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldEQ(FieldCriticalPathTimeInMs, v))
+}
+
+// CriticalPathTimeInMsNEQ applies the NEQ predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsNEQ(v int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldNEQ(FieldCriticalPathTimeInMs, v))
+}
+
+// CriticalPathTimeInMsIn applies the In predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsIn(vs ...int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldIn(FieldCriticalPathTimeInMs, vs...))
+}
+
+// CriticalPathTimeInMsNotIn applies the NotIn predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsNotIn(vs ...int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldNotIn(FieldCriticalPathTimeInMs, vs...))
+}
+
+// CriticalPathTimeInMsGT applies the GT predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsGT(v int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldGT(FieldCriticalPathTimeInMs, v))
+}
+
+// CriticalPathTimeInMsGTE applies the GTE predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsGTE(v int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldGTE(FieldCriticalPathTimeInMs, v))
+}
+
+// CriticalPathTimeInMsLT applies the LT predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsLT(v int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldLT(FieldCriticalPathTimeInMs, v))
+}
+
+// CriticalPathTimeInMsLTE applies the LTE predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsLTE(v int64) predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldLTE(FieldCriticalPathTimeInMs, v))
+}
+
+// CriticalPathTimeInMsIsNil applies the IsNil predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsIsNil() predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldIsNull(FieldCriticalPathTimeInMs))
+}
+
+// CriticalPathTimeInMsNotNil applies the NotNil predicate on the "critical_path_time_in_ms" field.
+func CriticalPathTimeInMsNotNil() predicate.TimingMetrics {
+	return predicate.TimingMetrics(sql.FieldNotNull(FieldCriticalPathTimeInMs))
 }
 
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.

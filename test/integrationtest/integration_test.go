@@ -89,6 +89,10 @@ var (
 		filename:     "published_actions.bep.ndjson",
 		invocationID: "3e99d6c2-39e5-4bb7-a381-b9836b940974",
 	}
+	extendedMetrics = bepFile{
+		filename:     "extended_metrics.bep.ndjson",
+		invocationID: "11111111-2222-4333-8444-555555555555",
+	}
 	authenticatedUserExternalID = authmetadataextraction.ExampleExternalID()
 	authenticatedUserUUID       = uuid.NewSHA1(uuid.NameSpaceURL, []byte(authenticatedUserExternalID)).String()
 
@@ -111,6 +115,26 @@ var (
 				{
 					bepFile: bepFile{
 						filename: "query_proto.bep.ndjson",
+					},
+				},
+			},
+		},
+		{
+			name: "ExtendedMetrics",
+			saveDataLevel: &bb_portal.BuildEventStreamService_SaveDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveDataLevel_Basic{
+					Basic: &emptypb.Empty{},
+				},
+			},
+			bepFileTestCases: []bepFileTestCase{
+				{bepFile: extendedMetrics},
+			},
+			graphqlTestCases: graphqlTestTable{
+				"GetBazelInvocationMetrics": {
+					"get extended metrics": {
+						variables: testkit.Variables{
+							"invocationID": extendedMetrics.invocationID,
+						},
 					},
 				},
 			},

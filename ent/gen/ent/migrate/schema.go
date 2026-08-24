@@ -89,6 +89,7 @@ var (
 		{Name: "size_in_bytes", Type: field.TypeUint64, Nullable: true},
 		{Name: "save_time_in_ms", Type: field.TypeUint64, Nullable: true},
 		{Name: "load_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "cache_check_semaphore_wait_time_in_ms", Type: field.TypeUint64, Nullable: true},
 		{Name: "hits", Type: field.TypeInt32, Nullable: true},
 		{Name: "misses", Type: field.TypeInt32, Nullable: true},
 		{Name: "action_summary_action_cache_statistics", Type: field.TypeInt64, Unique: true, Nullable: true},
@@ -101,7 +102,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "action_cache_statistics_action_summaries_action_cache_statistics",
-				Columns:    []*schema.Column{ActionCacheStatisticsColumns[6]},
+				Columns:    []*schema.Column{ActionCacheStatisticsColumns[7]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -328,6 +329,65 @@ var (
 			},
 		},
 	}
+	// BuildGraphAspectCountsColumns holds the columns for the "build_graph_aspect_counts" table.
+	BuildGraphAspectCountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "key", Type: field.TypeString, Nullable: true},
+		{Name: "aspect_name", Type: field.TypeString, Nullable: true},
+		{Name: "count", Type: field.TypeUint64, Nullable: true},
+		{Name: "action_count", Type: field.TypeUint64, Nullable: true},
+		{Name: "build_graph_metrics_aspect_counts", Type: field.TypeInt64, Nullable: true},
+	}
+	// BuildGraphAspectCountsTable holds the schema information for the "build_graph_aspect_counts" table.
+	BuildGraphAspectCountsTable = &schema.Table{
+		Name:       "build_graph_aspect_counts",
+		Columns:    BuildGraphAspectCountsColumns,
+		PrimaryKey: []*schema.Column{BuildGraphAspectCountsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_graph_aspect_counts_build_graph_metrics_aspect_counts",
+				Columns:    []*schema.Column{BuildGraphAspectCountsColumns[5]},
+				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildgraphaspectcount_build_graph_metrics_aspect_counts",
+				Unique:  false,
+				Columns: []*schema.Column{BuildGraphAspectCountsColumns[5]},
+			},
+		},
+	}
+	// BuildGraphEvaluationStatsColumns holds the columns for the "build_graph_evaluation_stats" table.
+	BuildGraphEvaluationStatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "operation", Type: field.TypeString, Nullable: true},
+		{Name: "skyfunction_name", Type: field.TypeString, Nullable: true},
+		{Name: "count", Type: field.TypeInt64, Nullable: true},
+		{Name: "build_graph_metrics_evaluation_stats", Type: field.TypeInt64, Nullable: true},
+	}
+	// BuildGraphEvaluationStatsTable holds the schema information for the "build_graph_evaluation_stats" table.
+	BuildGraphEvaluationStatsTable = &schema.Table{
+		Name:       "build_graph_evaluation_stats",
+		Columns:    BuildGraphEvaluationStatsColumns,
+		PrimaryKey: []*schema.Column{BuildGraphEvaluationStatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_graph_evaluation_stats_build_graph_metrics_evaluation_stats",
+				Columns:    []*schema.Column{BuildGraphEvaluationStatsColumns[4]},
+				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildgraphevaluationstat_build_graph_metrics_evaluation_stats",
+				Unique:  false,
+				Columns: []*schema.Column{BuildGraphEvaluationStatsColumns[4]},
+			},
+		},
+	}
 	// BuildGraphMetricsColumns holds the columns for the "build_graph_metrics" table.
 	BuildGraphMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -353,6 +413,36 @@ var (
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[10]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// BuildGraphRuleClassCountsColumns holds the columns for the "build_graph_rule_class_counts" table.
+	BuildGraphRuleClassCountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "key", Type: field.TypeString, Nullable: true},
+		{Name: "rule_class", Type: field.TypeString, Nullable: true},
+		{Name: "count", Type: field.TypeUint64, Nullable: true},
+		{Name: "action_count", Type: field.TypeUint64, Nullable: true},
+		{Name: "build_graph_metrics_rule_class_counts", Type: field.TypeInt64, Nullable: true},
+	}
+	// BuildGraphRuleClassCountsTable holds the schema information for the "build_graph_rule_class_counts" table.
+	BuildGraphRuleClassCountsTable = &schema.Table{
+		Name:       "build_graph_rule_class_counts",
+		Columns:    BuildGraphRuleClassCountsColumns,
+		PrimaryKey: []*schema.Column{BuildGraphRuleClassCountsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_graph_rule_class_counts_build_graph_metrics_rule_class_counts",
+				Columns:    []*schema.Column{BuildGraphRuleClassCountsColumns[5]},
+				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildgraphruleclasscount_build_graph_metrics_rule_class_counts",
+				Unique:  false,
+				Columns: []*schema.Column{BuildGraphRuleClassCountsColumns[5]},
 			},
 		},
 	}
@@ -488,6 +578,27 @@ var (
 			},
 		},
 	}
+	// CumulativeMetricsColumns holds the columns for the "cumulative_metrics" table.
+	CumulativeMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "num_analyses", Type: field.TypeInt32, Nullable: true},
+		{Name: "num_builds", Type: field.TypeInt32, Nullable: true},
+		{Name: "metrics_cumulative_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
+	}
+	// CumulativeMetricsTable holds the schema information for the "cumulative_metrics" table.
+	CumulativeMetricsTable = &schema.Table{
+		Name:       "cumulative_metrics",
+		Columns:    CumulativeMetricsColumns,
+		PrimaryKey: []*schema.Column{CumulativeMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "cumulative_metrics_metrics_cumulative_metrics",
+				Columns:    []*schema.Column{CumulativeMetricsColumns[3]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// DigestsColumns holds the columns for the "digests" table.
 	DigestsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -506,6 +617,56 @@ var (
 				Name:    "digest_rev2_instance_name_digest_function_hash_size_bytes",
 				Unique:  true,
 				Columns: []*schema.Column{DigestsColumns[1], DigestsColumns[2], DigestsColumns[3], DigestsColumns[4]},
+			},
+		},
+	}
+	// DynamicExecutionMetricsColumns holds the columns for the "dynamic_execution_metrics" table.
+	DynamicExecutionMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "metrics_dynamic_execution_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
+	}
+	// DynamicExecutionMetricsTable holds the schema information for the "dynamic_execution_metrics" table.
+	DynamicExecutionMetricsTable = &schema.Table{
+		Name:       "dynamic_execution_metrics",
+		Columns:    DynamicExecutionMetricsColumns,
+		PrimaryKey: []*schema.Column{DynamicExecutionMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "dynamic_execution_metrics_metrics_dynamic_execution_metrics",
+				Columns:    []*schema.Column{DynamicExecutionMetricsColumns[1]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// DynamicExecutionRaceStatisticsColumns holds the columns for the "dynamic_execution_race_statistics" table.
+	DynamicExecutionRaceStatisticsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "mnemonic", Type: field.TypeString, Nullable: true},
+		{Name: "local_runner", Type: field.TypeString, Nullable: true},
+		{Name: "remote_runner", Type: field.TypeString, Nullable: true},
+		{Name: "local_wins", Type: field.TypeInt32, Nullable: true},
+		{Name: "remote_wins", Type: field.TypeInt32, Nullable: true},
+		{Name: "dynamic_execution_metrics_race_statistics", Type: field.TypeInt64, Nullable: true},
+	}
+	// DynamicExecutionRaceStatisticsTable holds the schema information for the "dynamic_execution_race_statistics" table.
+	DynamicExecutionRaceStatisticsTable = &schema.Table{
+		Name:       "dynamic_execution_race_statistics",
+		Columns:    DynamicExecutionRaceStatisticsColumns,
+		PrimaryKey: []*schema.Column{DynamicExecutionRaceStatisticsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "dynamic_execution_race_statistics_dynamic_execution_metrics_race_statistics",
+				Columns:    []*schema.Column{DynamicExecutionRaceStatisticsColumns[6]},
+				RefColumns: []*schema.Column{DynamicExecutionMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "dynamicexecutionracestatistic_dynamic_execution_metrics_race_statistics",
+				Unique:  false,
+				Columns: []*schema.Column{DynamicExecutionRaceStatisticsColumns[6]},
 			},
 		},
 	}
@@ -850,6 +1011,59 @@ var (
 			},
 		},
 	}
+	// PackageLoadMetricsColumns holds the columns for the "package_load_metrics" table.
+	PackageLoadMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "load_duration_in_ns", Type: field.TypeInt64, Nullable: true},
+		{Name: "num_targets", Type: field.TypeUint64, Nullable: true},
+		{Name: "computation_steps", Type: field.TypeUint64, Nullable: true},
+		{Name: "num_transitive_loads", Type: field.TypeUint64, Nullable: true},
+		{Name: "package_overhead", Type: field.TypeUint64, Nullable: true},
+		{Name: "glob_filesystem_operation_cost", Type: field.TypeUint64, Nullable: true},
+		{Name: "package_metrics_package_load_metrics", Type: field.TypeInt64, Nullable: true},
+	}
+	// PackageLoadMetricsTable holds the schema information for the "package_load_metrics" table.
+	PackageLoadMetricsTable = &schema.Table{
+		Name:       "package_load_metrics",
+		Columns:    PackageLoadMetricsColumns,
+		PrimaryKey: []*schema.Column{PackageLoadMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "package_load_metrics_package_metrics_package_load_metrics",
+				Columns:    []*schema.Column{PackageLoadMetricsColumns[8]},
+				RefColumns: []*schema.Column{PackageMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "packageloadmetrics_package_metrics_package_load_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{PackageLoadMetricsColumns[8]},
+			},
+		},
+	}
+	// PackageMetricsColumns holds the columns for the "package_metrics" table.
+	PackageMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "packages_loaded", Type: field.TypeInt64, Nullable: true},
+		{Name: "metrics_package_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
+	}
+	// PackageMetricsTable holds the schema information for the "package_metrics" table.
+	PackageMetricsTable = &schema.Table{
+		Name:       "package_metrics",
+		Columns:    PackageMetricsColumns,
+		PrimaryKey: []*schema.Column{PackageMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "package_metrics_metrics_package_metrics",
+				Columns:    []*schema.Column{PackageMetricsColumns[2]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// RunnerCountsColumns holds the columns for the "runner_counts" table.
 	RunnerCountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -1177,6 +1391,7 @@ var (
 		{Name: "analysis_phase_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "execution_phase_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "actions_execution_start_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "critical_path_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "metrics_timing_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
 	}
 	// TimingMetricsTable holds the schema information for the "timing_metrics" table.
@@ -1187,9 +1402,157 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "timing_metrics_metrics_timing_metrics",
-				Columns:    []*schema.Column{TimingMetricsColumns[6]},
+				Columns:    []*schema.Column{TimingMetricsColumns[7]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// WorkerIdsColumns holds the columns for the "worker_ids" table.
+	WorkerIdsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "worker_id", Type: field.TypeUint32},
+		{Name: "worker_metrics_worker_ids", Type: field.TypeInt64, Nullable: true},
+	}
+	// WorkerIdsTable holds the schema information for the "worker_ids" table.
+	WorkerIdsTable = &schema.Table{
+		Name:       "worker_ids",
+		Columns:    WorkerIdsColumns,
+		PrimaryKey: []*schema.Column{WorkerIdsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "worker_ids_worker_metrics_worker_ids",
+				Columns:    []*schema.Column{WorkerIdsColumns[2]},
+				RefColumns: []*schema.Column{WorkerMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "workerid_worker_metrics_worker_ids",
+				Unique:  false,
+				Columns: []*schema.Column{WorkerIdsColumns[2]},
+			},
+		},
+	}
+	// WorkerMetricsColumns holds the columns for the "worker_metrics" table.
+	WorkerMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "process_id", Type: field.TypeUint32, Nullable: true},
+		{Name: "mnemonic", Type: field.TypeString, Nullable: true},
+		{Name: "is_multiplex", Type: field.TypeBool, Nullable: true},
+		{Name: "is_sandbox", Type: field.TypeBool, Nullable: true},
+		{Name: "is_measurable", Type: field.TypeBool, Nullable: true},
+		{Name: "worker_key_hash", Type: field.TypeInt64, Nullable: true},
+		{Name: "worker_status", Type: field.TypeString, Nullable: true},
+		{Name: "code", Type: field.TypeString, Nullable: true},
+		{Name: "actions_executed", Type: field.TypeInt64, Nullable: true},
+		{Name: "prior_actions_executed", Type: field.TypeInt64, Nullable: true},
+		{Name: "metrics_worker_metrics", Type: field.TypeInt64, Nullable: true},
+	}
+	// WorkerMetricsTable holds the schema information for the "worker_metrics" table.
+	WorkerMetricsTable = &schema.Table{
+		Name:       "worker_metrics",
+		Columns:    WorkerMetricsColumns,
+		PrimaryKey: []*schema.Column{WorkerMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "worker_metrics_metrics_worker_metrics",
+				Columns:    []*schema.Column{WorkerMetricsColumns[11]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "workermetrics_metrics_worker_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{WorkerMetricsColumns[11]},
+			},
+		},
+	}
+	// WorkerPoolMetricsColumns holds the columns for the "worker_pool_metrics" table.
+	WorkerPoolMetricsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "metrics_worker_pool_metrics", Type: field.TypeInt64, Unique: true, Nullable: true},
+	}
+	// WorkerPoolMetricsTable holds the schema information for the "worker_pool_metrics" table.
+	WorkerPoolMetricsTable = &schema.Table{
+		Name:       "worker_pool_metrics",
+		Columns:    WorkerPoolMetricsColumns,
+		PrimaryKey: []*schema.Column{WorkerPoolMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "worker_pool_metrics_metrics_worker_pool_metrics",
+				Columns:    []*schema.Column{WorkerPoolMetricsColumns[1]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// WorkerPoolStatsColumns holds the columns for the "worker_pool_stats" table.
+	WorkerPoolStatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "hash", Type: field.TypeInt32, Nullable: true},
+		{Name: "mnemonic", Type: field.TypeString, Nullable: true},
+		{Name: "created_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "destroyed_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "evicted_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "user_exec_exception_destroyed_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "io_exception_destroyed_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "interrupted_exception_destroyed_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "unknown_destroyed_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "alive_count", Type: field.TypeInt64, Nullable: true},
+		{Name: "worker_pool_metrics_worker_pool_stats", Type: field.TypeInt64, Nullable: true},
+	}
+	// WorkerPoolStatsTable holds the schema information for the "worker_pool_stats" table.
+	WorkerPoolStatsTable = &schema.Table{
+		Name:       "worker_pool_stats",
+		Columns:    WorkerPoolStatsColumns,
+		PrimaryKey: []*schema.Column{WorkerPoolStatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "worker_pool_stats_worker_pool_metrics_worker_pool_stats",
+				Columns:    []*schema.Column{WorkerPoolStatsColumns[11]},
+				RefColumns: []*schema.Column{WorkerPoolMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "workerpoolstats_worker_pool_metrics_worker_pool_stats",
+				Unique:  false,
+				Columns: []*schema.Column{WorkerPoolStatsColumns[11]},
+			},
+		},
+	}
+	// WorkerStatsColumns holds the columns for the "worker_stats" table.
+	WorkerStatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "collect_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "worker_memory_in_kb", Type: field.TypeInt32, Nullable: true},
+		{Name: "prior_worker_memory_in_kb", Type: field.TypeInt32, Nullable: true},
+		{Name: "last_action_start_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "worker_metrics_worker_stats", Type: field.TypeInt64, Nullable: true},
+	}
+	// WorkerStatsTable holds the schema information for the "worker_stats" table.
+	WorkerStatsTable = &schema.Table{
+		Name:       "worker_stats",
+		Columns:    WorkerStatsColumns,
+		PrimaryKey: []*schema.Column{WorkerStatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "worker_stats_worker_metrics_worker_stats",
+				Columns:    []*schema.Column{WorkerStatsColumns[5]},
+				RefColumns: []*schema.Column{WorkerMetricsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "workerstats_worker_metrics_worker_stats",
+				Unique:  false,
+				Columns: []*schema.Column{WorkerStatsColumns[5]},
 			},
 		},
 	}
@@ -1203,12 +1566,18 @@ var (
 		AuthenticatedUsersTable,
 		BazelInvocationsTable,
 		BuildsTable,
+		BuildGraphAspectCountsTable,
+		BuildGraphEvaluationStatsTable,
 		BuildGraphMetricsTable,
+		BuildGraphRuleClassCountsTable,
 		BuildLogChunksTable,
 		BuildTagsTable,
 		ConfigurationsTable,
 		ConnectionMetadataTable,
+		CumulativeMetricsTable,
 		DigestsTable,
+		DynamicExecutionMetricsTable,
+		DynamicExecutionRaceStatisticsTable,
 		EventMetadataTable,
 		FilesTable,
 		FilePathsTable,
@@ -1221,6 +1590,8 @@ var (
 		MetricsTable,
 		MissDetailsTable,
 		NetworkMetricsTable,
+		PackageLoadMetricsTable,
+		PackageMetricsTable,
 		RunnerCountsTable,
 		SourceControlsTable,
 		SystemNetworkStatsTable,
@@ -1232,6 +1603,11 @@ var (
 		TestSummariesTable,
 		TestTargetsTable,
 		TimingMetricsTable,
+		WorkerIdsTable,
+		WorkerMetricsTable,
+		WorkerPoolMetricsTable,
+		WorkerPoolStatsTable,
+		WorkerStatsTable,
 	}
 )
 
@@ -1248,11 +1624,17 @@ func init() {
 	BazelInvocationsTable.ForeignKeys[2].RefTable = BuildsTable
 	BazelInvocationsTable.ForeignKeys[3].RefTable = InstanceNamesTable
 	BuildsTable.ForeignKeys[0].RefTable = InstanceNamesTable
+	BuildGraphAspectCountsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
+	BuildGraphEvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	BuildGraphMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	BuildGraphRuleClassCountsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	BuildTagsTable.ForeignKeys[0].RefTable = BuildsTable
 	ConfigurationsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	DynamicExecutionMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	DynamicExecutionRaceStatisticsTable.ForeignKeys[0].RefTable = DynamicExecutionMetricsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	FilesTable.ForeignKeys[0].RefTable = DigestsTable
 	FilesTable.ForeignKeys[1].RefTable = FilePathsTable
@@ -1267,6 +1649,8 @@ func init() {
 	MetricsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	MissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable
 	NetworkMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	PackageLoadMetricsTable.ForeignKeys[0].RefTable = PackageMetricsTable
+	PackageMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	SourceControlsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	SystemNetworkStatsTable.ForeignKeys[0].RefTable = NetworkMetricsTable
@@ -1280,4 +1664,9 @@ func init() {
 	TestSummariesTable.ForeignKeys[0].RefTable = InvocationTargetsTable
 	TestTargetsTable.ForeignKeys[0].RefTable = TargetsTable
 	TimingMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	WorkerIdsTable.ForeignKeys[0].RefTable = WorkerMetricsTable
+	WorkerMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	WorkerPoolMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	WorkerPoolStatsTable.ForeignKeys[0].RefTable = WorkerPoolMetricsTable
+	WorkerStatsTable.ForeignKeys[0].RefTable = WorkerMetricsTable
 }

@@ -68,6 +68,11 @@ func LoadTimeInMs(v int64) predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldLoadTimeInMs, v))
 }
 
+// CacheCheckSemaphoreWaitTimeInMs applies equality check predicate on the "cache_check_semaphore_wait_time_in_ms" field. It's identical to CacheCheckSemaphoreWaitTimeInMsEQ.
+func CacheCheckSemaphoreWaitTimeInMs(v uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+}
+
 // Hits applies equality check predicate on the "hits" field. It's identical to HitsEQ.
 func Hits(v int32) predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldHits, v))
@@ -226,6 +231,56 @@ func LoadTimeInMsIsNil() predicate.ActionCacheStatistics {
 // LoadTimeInMsNotNil applies the NotNil predicate on the "load_time_in_ms" field.
 func LoadTimeInMsNotNil() predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(sql.FieldNotNull(FieldLoadTimeInMs))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsEQ applies the EQ predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsEQ(v uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsNEQ applies the NEQ predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsNEQ(v uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldNEQ(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsIn applies the In predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsIn(vs ...uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldIn(FieldCacheCheckSemaphoreWaitTimeInMs, vs...))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsNotIn applies the NotIn predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsNotIn(vs ...uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldNotIn(FieldCacheCheckSemaphoreWaitTimeInMs, vs...))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsGT applies the GT predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsGT(v uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldGT(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsGTE applies the GTE predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsGTE(v uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldGTE(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsLT applies the LT predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsLT(v uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldLT(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsLTE applies the LTE predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsLTE(v uint64) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldLTE(FieldCacheCheckSemaphoreWaitTimeInMs, v))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsIsNil applies the IsNil predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsIsNil() predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldIsNull(FieldCacheCheckSemaphoreWaitTimeInMs))
+}
+
+// CacheCheckSemaphoreWaitTimeInMsNotNil applies the NotNil predicate on the "cache_check_semaphore_wait_time_in_ms" field.
+func CacheCheckSemaphoreWaitTimeInMsNotNil() predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldNotNull(FieldCacheCheckSemaphoreWaitTimeInMs))
 }
 
 // HitsEQ applies the EQ predicate on the "hits" field.

@@ -113,8 +113,23 @@ func (r *buildResolver) ID(ctx context.Context, obj *ent.Build) (string, error) 
 }
 
 // ID is the resolver for the id field.
+func (r *buildGraphAspectCountResolver) ID(ctx context.Context, obj *ent.BuildGraphAspectCount) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("BuildGraphAspectCount", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *buildGraphEvaluationStatResolver) ID(ctx context.Context, obj *ent.BuildGraphEvaluationStat) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("BuildGraphEvaluationStat", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
 func (r *buildGraphMetricsResolver) ID(ctx context.Context, obj *ent.BuildGraphMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("BuildGraphMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *buildGraphRuleClassCountResolver) ID(ctx context.Context, obj *ent.BuildGraphRuleClassCount) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("BuildGraphRuleClassCount", obj.ID), nil
 }
 
 // ID is the resolver for the id field.
@@ -138,6 +153,11 @@ func (r *connectionMetadataResolver) ID(ctx context.Context, obj *ent.Connection
 }
 
 // ID is the resolver for the id field.
+func (r *cumulativeMetricsResolver) ID(ctx context.Context, obj *ent.CumulativeMetrics) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("CumulativeMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
 func (r *digestResolver) ID(ctx context.Context, obj *ent.Digest) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("Digest", obj.ID), nil
 }
@@ -154,6 +174,16 @@ func (r *digestResolver) DigestFunction(ctx context.Context, obj *ent.Digest) (s
 // Hash is the resolver for the hash field.
 func (r *digestResolver) Hash(ctx context.Context, obj *ent.Digest) (string, error) {
 	return hex.EncodeToString(obj.Hash), nil
+}
+
+// ID is the resolver for the id field.
+func (r *dynamicExecutionMetricsResolver) ID(ctx context.Context, obj *ent.DynamicExecutionMetrics) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("DynamicExecutionMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *dynamicExecutionRaceStatisticResolver) ID(ctx context.Context, obj *ent.DynamicExecutionRaceStatistic) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("DynamicExecutionRaceStatistic", obj.ID), nil
 }
 
 // ID is the resolver for the id field.
@@ -209,6 +239,16 @@ func (r *missDetailResolver) ID(ctx context.Context, obj *ent.MissDetail) (strin
 // ID is the resolver for the id field.
 func (r *networkMetricsResolver) ID(ctx context.Context, obj *ent.NetworkMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("NetworkMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *packageLoadMetricsResolver) ID(ctx context.Context, obj *ent.PackageLoadMetrics) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("PackageLoadMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *packageMetricsResolver) ID(ctx context.Context, obj *ent.PackageMetrics) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("PackageMetrics", obj.ID), nil
 }
 
 // Node is the resolver for the node field.
@@ -304,6 +344,31 @@ func (r *testTargetResolver) TargetID(ctx context.Context, obj *ent.TestTarget) 
 // ID is the resolver for the id field.
 func (r *timingMetricsResolver) ID(ctx context.Context, obj *ent.TimingMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TimingMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *workerIDResolver) ID(ctx context.Context, obj *ent.WorkerID) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("WorkerID", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *workerMetricsResolver) ID(ctx context.Context, obj *ent.WorkerMetrics) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("WorkerMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *workerPoolMetricsResolver) ID(ctx context.Context, obj *ent.WorkerPoolMetrics) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("WorkerPoolMetrics", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *workerPoolStatsResolver) ID(ctx context.Context, obj *ent.WorkerPoolStats) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("WorkerPoolStats", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *workerStatsResolver) ID(ctx context.Context, obj *ent.WorkerStats) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("WorkerStats", obj.ID), nil
 }
 
 // ID is the resolver for the id field.
@@ -594,6 +659,86 @@ func (r *bazelInvocationWhereInputResolver) IDLte(ctx context.Context, obj *ent.
 }
 
 // ID is the resolver for the id field.
+func (r *buildGraphAspectCountWhereInputResolver) ID(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *buildGraphAspectCountWhereInputResolver) IDNeq(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *buildGraphAspectCountWhereInputResolver) IDIn(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *buildGraphAspectCountWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *buildGraphAspectCountWhereInputResolver) IDGt(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *buildGraphAspectCountWhereInputResolver) IDGte(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *buildGraphAspectCountWhereInputResolver) IDLt(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *buildGraphAspectCountWhereInputResolver) IDLte(ctx context.Context, obj *ent.BuildGraphAspectCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *buildGraphEvaluationStatWhereInputResolver) ID(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *buildGraphEvaluationStatWhereInputResolver) IDNeq(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *buildGraphEvaluationStatWhereInputResolver) IDIn(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *buildGraphEvaluationStatWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *buildGraphEvaluationStatWhereInputResolver) IDGt(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *buildGraphEvaluationStatWhereInputResolver) IDGte(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *buildGraphEvaluationStatWhereInputResolver) IDLt(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *buildGraphEvaluationStatWhereInputResolver) IDLte(ctx context.Context, obj *ent.BuildGraphEvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
 func (r *buildGraphMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.BuildGraphMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -630,6 +775,46 @@ func (r *buildGraphMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent
 
 // IDLte is the resolver for the idLTE field.
 func (r *buildGraphMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.BuildGraphMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *buildGraphRuleClassCountWhereInputResolver) ID(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *buildGraphRuleClassCountWhereInputResolver) IDNeq(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *buildGraphRuleClassCountWhereInputResolver) IDIn(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *buildGraphRuleClassCountWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *buildGraphRuleClassCountWhereInputResolver) IDGt(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *buildGraphRuleClassCountWhereInputResolver) IDGte(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *buildGraphRuleClassCountWhereInputResolver) IDLt(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *buildGraphRuleClassCountWhereInputResolver) IDLte(ctx context.Context, obj *ent.BuildGraphRuleClassCountWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -794,6 +979,46 @@ func (r *connectionMetadataWhereInputResolver) IDLte(ctx context.Context, obj *e
 }
 
 // ID is the resolver for the id field.
+func (r *cumulativeMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *cumulativeMetricsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *cumulativeMetricsWhereInputResolver) IDIn(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *cumulativeMetricsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *cumulativeMetricsWhereInputResolver) IDGt(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *cumulativeMetricsWhereInputResolver) IDGte(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *cumulativeMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *cumulativeMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
 func (r *digestWhereInputResolver) ID(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -871,6 +1096,86 @@ func (r *digestWhereInputResolver) DigestFunctionLt(ctx context.Context, obj *en
 // DigestFunctionLte is the resolver for the digestFunctionLTE field.
 func (r *digestWhereInputResolver) DigestFunctionLte(ctx context.Context, obj *ent.DigestWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: DigestFunctionLte - digestFunctionLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *dynamicExecutionMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *dynamicExecutionMetricsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *dynamicExecutionMetricsWhereInputResolver) IDIn(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *dynamicExecutionMetricsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *dynamicExecutionMetricsWhereInputResolver) IDGt(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *dynamicExecutionMetricsWhereInputResolver) IDGte(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *dynamicExecutionMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *dynamicExecutionMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) ID(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) IDNeq(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) IDIn(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) IDGt(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) IDGte(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) IDLt(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *dynamicExecutionRaceStatisticWhereInputResolver) IDLte(ctx context.Context, obj *ent.DynamicExecutionRaceStatisticWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
 // ID is the resolver for the id field.
@@ -1294,6 +1599,86 @@ func (r *networkMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.N
 }
 
 // ID is the resolver for the id field.
+func (r *packageLoadMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *packageLoadMetricsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *packageLoadMetricsWhereInputResolver) IDIn(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *packageLoadMetricsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *packageLoadMetricsWhereInputResolver) IDGt(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *packageLoadMetricsWhereInputResolver) IDGte(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *packageLoadMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *packageLoadMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *packageMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *packageMetricsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *packageMetricsWhereInputResolver) IDIn(ctx context.Context, obj *ent.PackageMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *packageMetricsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.PackageMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *packageMetricsWhereInputResolver) IDGt(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *packageMetricsWhereInputResolver) IDGte(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *packageMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *packageMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
 func (r *runnerCountWhereInputResolver) ID(ctx context.Context, obj *ent.RunnerCountWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -1684,6 +2069,206 @@ func (r *timingMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.Ti
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// ID is the resolver for the id field.
+func (r *workerIDWhereInputResolver) ID(ctx context.Context, obj *ent.WorkerIDWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *workerIDWhereInputResolver) IDNeq(ctx context.Context, obj *ent.WorkerIDWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *workerIDWhereInputResolver) IDIn(ctx context.Context, obj *ent.WorkerIDWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *workerIDWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.WorkerIDWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *workerIDWhereInputResolver) IDGt(ctx context.Context, obj *ent.WorkerIDWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *workerIDWhereInputResolver) IDGte(ctx context.Context, obj *ent.WorkerIDWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *workerIDWhereInputResolver) IDLt(ctx context.Context, obj *ent.WorkerIDWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *workerIDWhereInputResolver) IDLte(ctx context.Context, obj *ent.WorkerIDWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *workerMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *workerMetricsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *workerMetricsWhereInputResolver) IDIn(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *workerMetricsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *workerMetricsWhereInputResolver) IDGt(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *workerMetricsWhereInputResolver) IDGte(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *workerMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *workerMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.WorkerMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *workerPoolMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *workerPoolMetricsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *workerPoolMetricsWhereInputResolver) IDIn(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *workerPoolMetricsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *workerPoolMetricsWhereInputResolver) IDGt(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *workerPoolMetricsWhereInputResolver) IDGte(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *workerPoolMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *workerPoolMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.WorkerPoolMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *workerPoolStatsWhereInputResolver) ID(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *workerPoolStatsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *workerPoolStatsWhereInputResolver) IDIn(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *workerPoolStatsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *workerPoolStatsWhereInputResolver) IDGt(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *workerPoolStatsWhereInputResolver) IDGte(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *workerPoolStatsWhereInputResolver) IDLt(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *workerPoolStatsWhereInputResolver) IDLte(ctx context.Context, obj *ent.WorkerPoolStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *workerStatsWhereInputResolver) ID(ctx context.Context, obj *ent.WorkerStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *workerStatsWhereInputResolver) IDNeq(ctx context.Context, obj *ent.WorkerStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *workerStatsWhereInputResolver) IDIn(ctx context.Context, obj *ent.WorkerStatsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *workerStatsWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.WorkerStatsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *workerStatsWhereInputResolver) IDGt(ctx context.Context, obj *ent.WorkerStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *workerStatsWhereInputResolver) IDGte(ctx context.Context, obj *ent.WorkerStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *workerStatsWhereInputResolver) IDLt(ctx context.Context, obj *ent.WorkerStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *workerStatsWhereInputResolver) IDLte(ctx context.Context, obj *ent.WorkerStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
 // Action returns ActionResolver implementation.
 func (r *Resolver) Action() ActionResolver { return &actionResolver{r} }
 
@@ -1712,9 +2297,24 @@ func (r *Resolver) BazelInvocation() BazelInvocationResolver { return &bazelInvo
 // Build returns BuildResolver implementation.
 func (r *Resolver) Build() BuildResolver { return &buildResolver{r} }
 
+// BuildGraphAspectCount returns BuildGraphAspectCountResolver implementation.
+func (r *Resolver) BuildGraphAspectCount() BuildGraphAspectCountResolver {
+	return &buildGraphAspectCountResolver{r}
+}
+
+// BuildGraphEvaluationStat returns BuildGraphEvaluationStatResolver implementation.
+func (r *Resolver) BuildGraphEvaluationStat() BuildGraphEvaluationStatResolver {
+	return &buildGraphEvaluationStatResolver{r}
+}
+
 // BuildGraphMetrics returns BuildGraphMetricsResolver implementation.
 func (r *Resolver) BuildGraphMetrics() BuildGraphMetricsResolver {
 	return &buildGraphMetricsResolver{r}
+}
+
+// BuildGraphRuleClassCount returns BuildGraphRuleClassCountResolver implementation.
+func (r *Resolver) BuildGraphRuleClassCount() BuildGraphRuleClassCountResolver {
+	return &buildGraphRuleClassCountResolver{r}
 }
 
 // BuildTag returns BuildTagResolver implementation.
@@ -1728,8 +2328,23 @@ func (r *Resolver) ConnectionMetadata() ConnectionMetadataResolver {
 	return &connectionMetadataResolver{r}
 }
 
+// CumulativeMetrics returns CumulativeMetricsResolver implementation.
+func (r *Resolver) CumulativeMetrics() CumulativeMetricsResolver {
+	return &cumulativeMetricsResolver{r}
+}
+
 // Digest returns DigestResolver implementation.
 func (r *Resolver) Digest() DigestResolver { return &digestResolver{r} }
+
+// DynamicExecutionMetrics returns DynamicExecutionMetricsResolver implementation.
+func (r *Resolver) DynamicExecutionMetrics() DynamicExecutionMetricsResolver {
+	return &dynamicExecutionMetricsResolver{r}
+}
+
+// DynamicExecutionRaceStatistic returns DynamicExecutionRaceStatisticResolver implementation.
+func (r *Resolver) DynamicExecutionRaceStatistic() DynamicExecutionRaceStatisticResolver {
+	return &dynamicExecutionRaceStatisticResolver{r}
+}
 
 // File returns FileResolver implementation.
 func (r *Resolver) File() FileResolver { return &fileResolver{r} }
@@ -1760,6 +2375,14 @@ func (r *Resolver) MissDetail() MissDetailResolver { return &missDetailResolver{
 
 // NetworkMetrics returns NetworkMetricsResolver implementation.
 func (r *Resolver) NetworkMetrics() NetworkMetricsResolver { return &networkMetricsResolver{r} }
+
+// PackageLoadMetrics returns PackageLoadMetricsResolver implementation.
+func (r *Resolver) PackageLoadMetrics() PackageLoadMetricsResolver {
+	return &packageLoadMetricsResolver{r}
+}
+
+// PackageMetrics returns PackageMetricsResolver implementation.
+func (r *Resolver) PackageMetrics() PackageMetricsResolver { return &packageMetricsResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
@@ -1792,6 +2415,23 @@ func (r *Resolver) TestTarget() TestTargetResolver { return &testTargetResolver{
 
 // TimingMetrics returns TimingMetricsResolver implementation.
 func (r *Resolver) TimingMetrics() TimingMetricsResolver { return &timingMetricsResolver{r} }
+
+// WorkerID returns WorkerIDResolver implementation.
+func (r *Resolver) WorkerID() WorkerIDResolver { return &workerIDResolver{r} }
+
+// WorkerMetrics returns WorkerMetricsResolver implementation.
+func (r *Resolver) WorkerMetrics() WorkerMetricsResolver { return &workerMetricsResolver{r} }
+
+// WorkerPoolMetrics returns WorkerPoolMetricsResolver implementation.
+func (r *Resolver) WorkerPoolMetrics() WorkerPoolMetricsResolver {
+	return &workerPoolMetricsResolver{r}
+}
+
+// WorkerPoolStats returns WorkerPoolStatsResolver implementation.
+func (r *Resolver) WorkerPoolStats() WorkerPoolStatsResolver { return &workerPoolStatsResolver{r} }
+
+// WorkerStats returns WorkerStatsResolver implementation.
+func (r *Resolver) WorkerStats() WorkerStatsResolver { return &workerStatsResolver{r} }
 
 // ActionCacheStatisticsWhereInput returns ActionCacheStatisticsWhereInputResolver implementation.
 func (r *Resolver) ActionCacheStatisticsWhereInput() ActionCacheStatisticsWhereInputResolver {
@@ -1826,9 +2466,24 @@ func (r *Resolver) BazelInvocationWhereInput() BazelInvocationWhereInputResolver
 	return &bazelInvocationWhereInputResolver{r}
 }
 
+// BuildGraphAspectCountWhereInput returns BuildGraphAspectCountWhereInputResolver implementation.
+func (r *Resolver) BuildGraphAspectCountWhereInput() BuildGraphAspectCountWhereInputResolver {
+	return &buildGraphAspectCountWhereInputResolver{r}
+}
+
+// BuildGraphEvaluationStatWhereInput returns BuildGraphEvaluationStatWhereInputResolver implementation.
+func (r *Resolver) BuildGraphEvaluationStatWhereInput() BuildGraphEvaluationStatWhereInputResolver {
+	return &buildGraphEvaluationStatWhereInputResolver{r}
+}
+
 // BuildGraphMetricsWhereInput returns BuildGraphMetricsWhereInputResolver implementation.
 func (r *Resolver) BuildGraphMetricsWhereInput() BuildGraphMetricsWhereInputResolver {
 	return &buildGraphMetricsWhereInputResolver{r}
+}
+
+// BuildGraphRuleClassCountWhereInput returns BuildGraphRuleClassCountWhereInputResolver implementation.
+func (r *Resolver) BuildGraphRuleClassCountWhereInput() BuildGraphRuleClassCountWhereInputResolver {
+	return &buildGraphRuleClassCountWhereInputResolver{r}
 }
 
 // BuildTagWhereInput returns BuildTagWhereInputResolver implementation.
@@ -1849,8 +2504,23 @@ func (r *Resolver) ConnectionMetadataWhereInput() ConnectionMetadataWhereInputRe
 	return &connectionMetadataWhereInputResolver{r}
 }
 
+// CumulativeMetricsWhereInput returns CumulativeMetricsWhereInputResolver implementation.
+func (r *Resolver) CumulativeMetricsWhereInput() CumulativeMetricsWhereInputResolver {
+	return &cumulativeMetricsWhereInputResolver{r}
+}
+
 // DigestWhereInput returns DigestWhereInputResolver implementation.
 func (r *Resolver) DigestWhereInput() DigestWhereInputResolver { return &digestWhereInputResolver{r} }
+
+// DynamicExecutionMetricsWhereInput returns DynamicExecutionMetricsWhereInputResolver implementation.
+func (r *Resolver) DynamicExecutionMetricsWhereInput() DynamicExecutionMetricsWhereInputResolver {
+	return &dynamicExecutionMetricsWhereInputResolver{r}
+}
+
+// DynamicExecutionRaceStatisticWhereInput returns DynamicExecutionRaceStatisticWhereInputResolver implementation.
+func (r *Resolver) DynamicExecutionRaceStatisticWhereInput() DynamicExecutionRaceStatisticWhereInputResolver {
+	return &dynamicExecutionRaceStatisticWhereInputResolver{r}
+}
 
 // FilePathWhereInput returns FilePathWhereInputResolver implementation.
 func (r *Resolver) FilePathWhereInput() FilePathWhereInputResolver {
@@ -1900,6 +2570,16 @@ func (r *Resolver) NetworkMetricsWhereInput() NetworkMetricsWhereInputResolver {
 	return &networkMetricsWhereInputResolver{r}
 }
 
+// PackageLoadMetricsWhereInput returns PackageLoadMetricsWhereInputResolver implementation.
+func (r *Resolver) PackageLoadMetricsWhereInput() PackageLoadMetricsWhereInputResolver {
+	return &packageLoadMetricsWhereInputResolver{r}
+}
+
+// PackageMetricsWhereInput returns PackageMetricsWhereInputResolver implementation.
+func (r *Resolver) PackageMetricsWhereInput() PackageMetricsWhereInputResolver {
+	return &packageMetricsWhereInputResolver{r}
+}
+
 // RunnerCountWhereInput returns RunnerCountWhereInputResolver implementation.
 func (r *Resolver) RunnerCountWhereInput() RunnerCountWhereInputResolver {
 	return &runnerCountWhereInputResolver{r}
@@ -1943,70 +2623,121 @@ func (r *Resolver) TimingMetricsWhereInput() TimingMetricsWhereInputResolver {
 	return &timingMetricsWhereInputResolver{r}
 }
 
+// WorkerIDWhereInput returns WorkerIDWhereInputResolver implementation.
+func (r *Resolver) WorkerIDWhereInput() WorkerIDWhereInputResolver {
+	return &workerIDWhereInputResolver{r}
+}
+
+// WorkerMetricsWhereInput returns WorkerMetricsWhereInputResolver implementation.
+func (r *Resolver) WorkerMetricsWhereInput() WorkerMetricsWhereInputResolver {
+	return &workerMetricsWhereInputResolver{r}
+}
+
+// WorkerPoolMetricsWhereInput returns WorkerPoolMetricsWhereInputResolver implementation.
+func (r *Resolver) WorkerPoolMetricsWhereInput() WorkerPoolMetricsWhereInputResolver {
+	return &workerPoolMetricsWhereInputResolver{r}
+}
+
+// WorkerPoolStatsWhereInput returns WorkerPoolStatsWhereInputResolver implementation.
+func (r *Resolver) WorkerPoolStatsWhereInput() WorkerPoolStatsWhereInputResolver {
+	return &workerPoolStatsWhereInputResolver{r}
+}
+
+// WorkerStatsWhereInput returns WorkerStatsWhereInputResolver implementation.
+func (r *Resolver) WorkerStatsWhereInput() WorkerStatsWhereInputResolver {
+	return &workerStatsWhereInputResolver{r}
+}
+
 type (
-	actionResolver                          struct{ *Resolver }
-	actionCacheStatisticsResolver           struct{ *Resolver }
-	actionDataResolver                      struct{ *Resolver }
-	actionSummaryResolver                   struct{ *Resolver }
-	artifactMetricsResolver                 struct{ *Resolver }
-	authenticatedUserResolver               struct{ *Resolver }
-	bazelInvocationResolver                 struct{ *Resolver }
-	buildResolver                           struct{ *Resolver }
-	buildGraphMetricsResolver               struct{ *Resolver }
-	buildTagResolver                        struct{ *Resolver }
-	configurationResolver                   struct{ *Resolver }
-	connectionMetadataResolver              struct{ *Resolver }
-	digestResolver                          struct{ *Resolver }
-	fileResolver                            struct{ *Resolver }
-	filePathResolver                        struct{ *Resolver }
-	garbageMetricsResolver                  struct{ *Resolver }
-	instanceNameResolver                    struct{ *Resolver }
-	invocationTagResolver                   struct{ *Resolver }
-	invocationTargetResolver                struct{ *Resolver }
-	memoryMetricsResolver                   struct{ *Resolver }
-	metricsResolver                         struct{ *Resolver }
-	missDetailResolver                      struct{ *Resolver }
-	networkMetricsResolver                  struct{ *Resolver }
-	queryResolver                           struct{ *Resolver }
-	runnerCountResolver                     struct{ *Resolver }
-	sourceControlResolver                   struct{ *Resolver }
-	systemNetworkStatsResolver              struct{ *Resolver }
-	targetResolver                          struct{ *Resolver }
-	targetMetricsResolver                   struct{ *Resolver }
-	testResultResolver                      struct{ *Resolver }
-	testSummaryResolver                     struct{ *Resolver }
-	testTargetResolver                      struct{ *Resolver }
-	timingMetricsResolver                   struct{ *Resolver }
-	actionCacheStatisticsWhereInputResolver struct{ *Resolver }
-	actionDataWhereInputResolver            struct{ *Resolver }
-	actionSummaryWhereInputResolver         struct{ *Resolver }
-	actionWhereInputResolver                struct{ *Resolver }
-	artifactMetricsWhereInputResolver       struct{ *Resolver }
-	authenticatedUserWhereInputResolver     struct{ *Resolver }
-	bazelInvocationWhereInputResolver       struct{ *Resolver }
-	buildGraphMetricsWhereInputResolver     struct{ *Resolver }
-	buildTagWhereInputResolver              struct{ *Resolver }
-	buildWhereInputResolver                 struct{ *Resolver }
-	configurationWhereInputResolver         struct{ *Resolver }
-	connectionMetadataWhereInputResolver    struct{ *Resolver }
-	digestWhereInputResolver                struct{ *Resolver }
-	filePathWhereInputResolver              struct{ *Resolver }
-	fileWhereInputResolver                  struct{ *Resolver }
-	garbageMetricsWhereInputResolver        struct{ *Resolver }
-	instanceNameWhereInputResolver          struct{ *Resolver }
-	invocationTagWhereInputResolver         struct{ *Resolver }
-	invocationTargetWhereInputResolver      struct{ *Resolver }
-	memoryMetricsWhereInputResolver         struct{ *Resolver }
-	metricsWhereInputResolver               struct{ *Resolver }
-	missDetailWhereInputResolver            struct{ *Resolver }
-	networkMetricsWhereInputResolver        struct{ *Resolver }
-	runnerCountWhereInputResolver           struct{ *Resolver }
-	sourceControlWhereInputResolver         struct{ *Resolver }
-	systemNetworkStatsWhereInputResolver    struct{ *Resolver }
-	targetMetricsWhereInputResolver         struct{ *Resolver }
-	targetWhereInputResolver                struct{ *Resolver }
-	testResultWhereInputResolver            struct{ *Resolver }
-	testSummaryWhereInputResolver           struct{ *Resolver }
-	testTargetWhereInputResolver            struct{ *Resolver }
-	timingMetricsWhereInputResolver         struct{ *Resolver }
+	actionResolver                                  struct{ *Resolver }
+	actionCacheStatisticsResolver                   struct{ *Resolver }
+	actionDataResolver                              struct{ *Resolver }
+	actionSummaryResolver                           struct{ *Resolver }
+	artifactMetricsResolver                         struct{ *Resolver }
+	authenticatedUserResolver                       struct{ *Resolver }
+	bazelInvocationResolver                         struct{ *Resolver }
+	buildResolver                                   struct{ *Resolver }
+	buildGraphAspectCountResolver                   struct{ *Resolver }
+	buildGraphEvaluationStatResolver                struct{ *Resolver }
+	buildGraphMetricsResolver                       struct{ *Resolver }
+	buildGraphRuleClassCountResolver                struct{ *Resolver }
+	buildTagResolver                                struct{ *Resolver }
+	configurationResolver                           struct{ *Resolver }
+	connectionMetadataResolver                      struct{ *Resolver }
+	cumulativeMetricsResolver                       struct{ *Resolver }
+	digestResolver                                  struct{ *Resolver }
+	dynamicExecutionMetricsResolver                 struct{ *Resolver }
+	dynamicExecutionRaceStatisticResolver           struct{ *Resolver }
+	fileResolver                                    struct{ *Resolver }
+	filePathResolver                                struct{ *Resolver }
+	garbageMetricsResolver                          struct{ *Resolver }
+	instanceNameResolver                            struct{ *Resolver }
+	invocationTagResolver                           struct{ *Resolver }
+	invocationTargetResolver                        struct{ *Resolver }
+	memoryMetricsResolver                           struct{ *Resolver }
+	metricsResolver                                 struct{ *Resolver }
+	missDetailResolver                              struct{ *Resolver }
+	networkMetricsResolver                          struct{ *Resolver }
+	packageLoadMetricsResolver                      struct{ *Resolver }
+	packageMetricsResolver                          struct{ *Resolver }
+	queryResolver                                   struct{ *Resolver }
+	runnerCountResolver                             struct{ *Resolver }
+	sourceControlResolver                           struct{ *Resolver }
+	systemNetworkStatsResolver                      struct{ *Resolver }
+	targetResolver                                  struct{ *Resolver }
+	targetMetricsResolver                           struct{ *Resolver }
+	testResultResolver                              struct{ *Resolver }
+	testSummaryResolver                             struct{ *Resolver }
+	testTargetResolver                              struct{ *Resolver }
+	timingMetricsResolver                           struct{ *Resolver }
+	workerIDResolver                                struct{ *Resolver }
+	workerMetricsResolver                           struct{ *Resolver }
+	workerPoolMetricsResolver                       struct{ *Resolver }
+	workerPoolStatsResolver                         struct{ *Resolver }
+	workerStatsResolver                             struct{ *Resolver }
+	actionCacheStatisticsWhereInputResolver         struct{ *Resolver }
+	actionDataWhereInputResolver                    struct{ *Resolver }
+	actionSummaryWhereInputResolver                 struct{ *Resolver }
+	actionWhereInputResolver                        struct{ *Resolver }
+	artifactMetricsWhereInputResolver               struct{ *Resolver }
+	authenticatedUserWhereInputResolver             struct{ *Resolver }
+	bazelInvocationWhereInputResolver               struct{ *Resolver }
+	buildGraphAspectCountWhereInputResolver         struct{ *Resolver }
+	buildGraphEvaluationStatWhereInputResolver      struct{ *Resolver }
+	buildGraphMetricsWhereInputResolver             struct{ *Resolver }
+	buildGraphRuleClassCountWhereInputResolver      struct{ *Resolver }
+	buildTagWhereInputResolver                      struct{ *Resolver }
+	buildWhereInputResolver                         struct{ *Resolver }
+	configurationWhereInputResolver                 struct{ *Resolver }
+	connectionMetadataWhereInputResolver            struct{ *Resolver }
+	cumulativeMetricsWhereInputResolver             struct{ *Resolver }
+	digestWhereInputResolver                        struct{ *Resolver }
+	dynamicExecutionMetricsWhereInputResolver       struct{ *Resolver }
+	dynamicExecutionRaceStatisticWhereInputResolver struct{ *Resolver }
+	filePathWhereInputResolver                      struct{ *Resolver }
+	fileWhereInputResolver                          struct{ *Resolver }
+	garbageMetricsWhereInputResolver                struct{ *Resolver }
+	instanceNameWhereInputResolver                  struct{ *Resolver }
+	invocationTagWhereInputResolver                 struct{ *Resolver }
+	invocationTargetWhereInputResolver              struct{ *Resolver }
+	memoryMetricsWhereInputResolver                 struct{ *Resolver }
+	metricsWhereInputResolver                       struct{ *Resolver }
+	missDetailWhereInputResolver                    struct{ *Resolver }
+	networkMetricsWhereInputResolver                struct{ *Resolver }
+	packageLoadMetricsWhereInputResolver            struct{ *Resolver }
+	packageMetricsWhereInputResolver                struct{ *Resolver }
+	runnerCountWhereInputResolver                   struct{ *Resolver }
+	sourceControlWhereInputResolver                 struct{ *Resolver }
+	systemNetworkStatsWhereInputResolver            struct{ *Resolver }
+	targetMetricsWhereInputResolver                 struct{ *Resolver }
+	targetWhereInputResolver                        struct{ *Resolver }
+	testResultWhereInputResolver                    struct{ *Resolver }
+	testSummaryWhereInputResolver                   struct{ *Resolver }
+	testTargetWhereInputResolver                    struct{ *Resolver }
+	timingMetricsWhereInputResolver                 struct{ *Resolver }
+	workerIDWhereInputResolver                      struct{ *Resolver }
+	workerMetricsWhereInputResolver                 struct{ *Resolver }
+	workerPoolMetricsWhereInputResolver             struct{ *Resolver }
+	workerPoolStatsWhereInputResolver               struct{ *Resolver }
+	workerStatsWhereInputResolver                   struct{ *Resolver }
 )

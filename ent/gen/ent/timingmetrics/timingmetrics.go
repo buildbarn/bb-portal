@@ -22,6 +22,8 @@ const (
 	FieldExecutionPhaseTimeInMs = "execution_phase_time_in_ms"
 	// FieldActionsExecutionStartInMs holds the string denoting the actions_execution_start_in_ms field in the database.
 	FieldActionsExecutionStartInMs = "actions_execution_start_in_ms"
+	// FieldCriticalPathTimeInMs holds the string denoting the critical_path_time_in_ms field in the database.
+	FieldCriticalPathTimeInMs = "critical_path_time_in_ms"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// Table holds the table name of the timingmetrics in the database.
@@ -43,6 +45,7 @@ var Columns = []string{
 	FieldAnalysisPhaseTimeInMs,
 	FieldExecutionPhaseTimeInMs,
 	FieldActionsExecutionStartInMs,
+	FieldCriticalPathTimeInMs,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "timing_metrics"
@@ -97,6 +100,11 @@ func ByExecutionPhaseTimeInMs(opts ...sql.OrderTermOption) OrderOption {
 // ByActionsExecutionStartInMs orders the results by the actions_execution_start_in_ms field.
 func ByActionsExecutionStartInMs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActionsExecutionStartInMs, opts...).ToFunc()
+}
+
+// ByCriticalPathTimeInMs orders the results by the critical_path_time_in_ms field.
+func ByCriticalPathTimeInMs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCriticalPathTimeInMs, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

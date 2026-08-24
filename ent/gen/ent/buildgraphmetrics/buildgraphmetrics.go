@@ -32,6 +32,12 @@ const (
 	FieldPostInvocationSkyframeNodeCount = "post_invocation_skyframe_node_count"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
+	// EdgeEvaluationStats holds the string denoting the evaluation_stats edge name in mutations.
+	EdgeEvaluationStats = "evaluation_stats"
+	// EdgeRuleClassCounts holds the string denoting the rule_class_counts edge name in mutations.
+	EdgeRuleClassCounts = "rule_class_counts"
+	// EdgeAspectCounts holds the string denoting the aspect_counts edge name in mutations.
+	EdgeAspectCounts = "aspect_counts"
 	// Table holds the table name of the buildgraphmetrics in the database.
 	Table = "build_graph_metrics"
 	// MetricsTable is the table that holds the metrics relation/edge.
@@ -41,6 +47,27 @@ const (
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
 	MetricsColumn = "metrics_build_graph_metrics"
+	// EvaluationStatsTable is the table that holds the evaluation_stats relation/edge.
+	EvaluationStatsTable = "build_graph_evaluation_stats"
+	// EvaluationStatsInverseTable is the table name for the BuildGraphEvaluationStat entity.
+	// It exists in this package in order to avoid circular dependency with the "buildgraphevaluationstat" package.
+	EvaluationStatsInverseTable = "build_graph_evaluation_stats"
+	// EvaluationStatsColumn is the table column denoting the evaluation_stats relation/edge.
+	EvaluationStatsColumn = "build_graph_metrics_evaluation_stats"
+	// RuleClassCountsTable is the table that holds the rule_class_counts relation/edge.
+	RuleClassCountsTable = "build_graph_rule_class_counts"
+	// RuleClassCountsInverseTable is the table name for the BuildGraphRuleClassCount entity.
+	// It exists in this package in order to avoid circular dependency with the "buildgraphruleclasscount" package.
+	RuleClassCountsInverseTable = "build_graph_rule_class_counts"
+	// RuleClassCountsColumn is the table column denoting the rule_class_counts relation/edge.
+	RuleClassCountsColumn = "build_graph_metrics_rule_class_counts"
+	// AspectCountsTable is the table that holds the aspect_counts relation/edge.
+	AspectCountsTable = "build_graph_aspect_counts"
+	// AspectCountsInverseTable is the table name for the BuildGraphAspectCount entity.
+	// It exists in this package in order to avoid circular dependency with the "buildgraphaspectcount" package.
+	AspectCountsInverseTable = "build_graph_aspect_counts"
+	// AspectCountsColumn is the table column denoting the aspect_counts relation/edge.
+	AspectCountsColumn = "build_graph_metrics_aspect_counts"
 )
 
 // Columns holds all SQL columns for buildgraphmetrics fields.
@@ -137,10 +164,73 @@ func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByEvaluationStatsCount orders the results by evaluation_stats count.
+func ByEvaluationStatsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newEvaluationStatsStep(), opts...)
+	}
+}
+
+// ByEvaluationStats orders the results by evaluation_stats terms.
+func ByEvaluationStats(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newEvaluationStatsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByRuleClassCountsCount orders the results by rule_class_counts count.
+func ByRuleClassCountsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newRuleClassCountsStep(), opts...)
+	}
+}
+
+// ByRuleClassCounts orders the results by rule_class_counts terms.
+func ByRuleClassCounts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRuleClassCountsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAspectCountsCount orders the results by aspect_counts count.
+func ByAspectCountsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAspectCountsStep(), opts...)
+	}
+}
+
+// ByAspectCounts orders the results by aspect_counts terms.
+func ByAspectCounts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAspectCountsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
+	)
+}
+func newEvaluationStatsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(EvaluationStatsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, EvaluationStatsTable, EvaluationStatsColumn),
+	)
+}
+func newRuleClassCountsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RuleClassCountsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, RuleClassCountsTable, RuleClassCountsColumn),
+	)
+}
+func newAspectCountsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AspectCountsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AspectCountsTable, AspectCountsColumn),
 	)
 }

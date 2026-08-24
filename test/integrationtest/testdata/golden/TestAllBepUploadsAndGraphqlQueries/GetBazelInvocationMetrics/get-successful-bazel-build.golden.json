@@ -4,6 +4,7 @@
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 0,
           "hits": 19,
           "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjE=",
           "loadTimeInMs": 0,
@@ -121,13 +122,22 @@
         "actionCountNotIncludingAspects": 0,
         "actionLookupValueCount": 0,
         "actionLookupValueCountNotIncludingAspects": 0,
+        "aspectCounts": [],
+        "evaluationStats": [],
         "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ==",
         "inputFileConfiguredTargetCount": 0,
         "otherConfiguredTargetCount": 0,
         "outputArtifactCount": 0,
         "outputFileConfiguredTargetCount": 0,
-        "postInvocationSkyframeNodeCount": 117836
+        "postInvocationSkyframeNodeCount": 117836,
+        "ruleClassCounts": []
       },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6MQ==",
+        "numAnalyses": 11,
+        "numBuilds": 11
+      },
+      "dynamicExecutionMetrics": null,
       "id": "TWV0cmljczox",
       "memoryMetrics": {
         "garbageMetrics": [],
@@ -137,13 +147,24 @@
         "usedHeapSizePostBuild": 0
       },
       "networkMetrics": null,
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6MQ==",
+        "packageLoadMetrics": [],
+        "packagesLoaded": 0
+      },
       "timingMetrics": {
         "actionsExecutionStartInMs": 0,
         "analysisPhaseTimeInMs": 51,
         "cpuTimeInMs": 2619,
+        "criticalPathTimeInMs": 0,
         "executionPhaseTimeInMs": 680,
         "id": "VGltaW5nTWV0cmljczox",
         "wallTimeInMs": 954
+      },
+      "workerMetrics": [],
+      "workerPoolMetrics": {
+        "id": "V29ya2VyUG9vbE1ldHJpY3M6MQ==",
+        "workerPoolStats": []
       }
     }
   }

@@ -27,12 +27,30 @@ type (
 	BuildLogChunk struct{ schema.BuildLogChunk }
 	// BuildGraphMetrics reexport with auth policy added
 	BuildGraphMetrics struct{ schema.BuildGraphMetrics }
+	// BuildGraphEvaluationStat reexport with auth policy added
+	BuildGraphEvaluationStat struct {
+		schema.BuildGraphEvaluationStat
+	}
+	// BuildGraphAspectCount reexport with auth policy added
+	BuildGraphAspectCount struct{ schema.BuildGraphAspectCount }
+	// BuildGraphRuleClassCount reexport with auth policy added
+	BuildGraphRuleClassCount struct {
+		schema.BuildGraphRuleClassCount
+	}
 	// Configuration reexport with auth policy added
 	Configuration struct{ schema.Configuration }
+	// CumulativeMetrics reexport with auth policy added
+	CumulativeMetrics struct{ schema.CumulativeMetrics }
 	// ConnectionMetadata reexport with auth policy added
 	ConnectionMetadata struct{ schema.ConnectionMetadata }
 	// Digest reexport with auth policy added
 	Digest struct{ schema.Digest }
+	// DynamicExecutionMetrics reexport with auth policy added
+	DynamicExecutionMetrics struct{ schema.DynamicExecutionMetrics }
+	// DynamicExecutionRaceStatistic reexport with auth policy added
+	DynamicExecutionRaceStatistic struct {
+		schema.DynamicExecutionRaceStatistic
+	}
 	// EventMetadata reexport with auth policy added
 	EventMetadata struct{ schema.EventMetadata }
 	// File reexport with auth policy added
@@ -57,6 +75,10 @@ type (
 	MissDetail struct{ schema.MissDetail }
 	// NetworkMetrics reexport with auth policy added
 	NetworkMetrics struct{ schema.NetworkMetrics }
+	// PackageMetrics reexport with auth policy added
+	PackageMetrics struct{ schema.PackageMetrics }
+	// PackageLoadMetrics reexport with auth policy added
+	PackageLoadMetrics struct{ schema.PackageLoadMetrics }
 	// RunnerCount reexport with auth policy added
 	RunnerCount struct{ schema.RunnerCount }
 	// SourceControl reexport with auth policy added
@@ -79,4 +101,14 @@ type (
 	TestSummary struct{ schema.TestSummary }
 	// TimingMetrics reexport with auth policy added
 	TimingMetrics struct{ schema.TimingMetrics }
+	// WorkerID reexport with auth policy added
+	WorkerID struct{ schema.WorkerID }
+	// WorkerMetrics reexport with auth policy added
+	WorkerMetrics struct{ schema.WorkerMetrics }
+	// WorkerPoolMetrics reexport with auth policy added
+	WorkerPoolMetrics struct{ schema.WorkerPoolMetrics }
+	// WorkerPoolStats reexport with auth policy added
+	WorkerPoolStats struct{ schema.WorkerPoolStats }
+	// WorkerStats reexport with auth policy added
+	WorkerStats struct{ schema.WorkerStats }
 )
