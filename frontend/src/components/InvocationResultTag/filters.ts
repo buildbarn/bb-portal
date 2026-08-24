@@ -16,6 +16,8 @@ export const invocationResultTagFilters = [
   { text: "Not Built", value: InvocationResult.NOT_BUILT },
   { text: "Aborted", value: InvocationResult.ABORTED },
   { text: "Interrupted", value: InvocationResult.INTERRUPTED },
+  { text: "Analysis Failure", value: InvocationResult.ANALYSIS_FAILURE },
+  { text: "Command Line Error", value: InvocationResult.COMMAND_LINE_ERROR },
   { text: "Unknown exit code", value: InvocationResult.UNKNOWN_EXIT_CODE },
   { text: "In Progress", value: InvocationResult.IN_PROGRESS },
   { text: "Disconnected", value: InvocationResult.DISCONNECTED },
