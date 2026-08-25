@@ -237,6 +237,121 @@ func HasBuildGraphMetricsWith(preds ...predicate.BuildGraphMetrics) predicate.Me
 	})
 }
 
+// HasPackageMetrics applies the HasEdge predicate on the "package_metrics" edge.
+func HasPackageMetrics() predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, PackageMetricsTable, PackageMetricsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPackageMetricsWith applies the HasEdge predicate on the "package_metrics" edge with a given conditions (other predicates).
+func HasPackageMetricsWith(preds ...predicate.PackageMetrics) predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := newPackageMetricsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCumulativeMetrics applies the HasEdge predicate on the "cumulative_metrics" edge.
+func HasCumulativeMetrics() predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, CumulativeMetricsTable, CumulativeMetricsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCumulativeMetricsWith applies the HasEdge predicate on the "cumulative_metrics" edge with a given conditions (other predicates).
+func HasCumulativeMetricsWith(preds ...predicate.CumulativeMetrics) predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := newCumulativeMetricsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasWorkerMetrics applies the HasEdge predicate on the "worker_metrics" edge.
+func HasWorkerMetrics() predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, WorkerMetricsTable, WorkerMetricsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasWorkerMetricsWith applies the HasEdge predicate on the "worker_metrics" edge with a given conditions (other predicates).
+func HasWorkerMetricsWith(preds ...predicate.WorkerMetrics) predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := newWorkerMetricsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasWorkerPoolMetrics applies the HasEdge predicate on the "worker_pool_metrics" edge.
+func HasWorkerPoolMetrics() predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, WorkerPoolMetricsTable, WorkerPoolMetricsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasWorkerPoolMetricsWith applies the HasEdge predicate on the "worker_pool_metrics" edge with a given conditions (other predicates).
+func HasWorkerPoolMetricsWith(preds ...predicate.WorkerPoolMetrics) predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := newWorkerPoolMetricsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDynamicExecutionMetrics applies the HasEdge predicate on the "dynamic_execution_metrics" edge.
+func HasDynamicExecutionMetrics() predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDynamicExecutionMetricsWith applies the HasEdge predicate on the "dynamic_execution_metrics" edge with a given conditions (other predicates).
+func HasDynamicExecutionMetricsWith(preds ...predicate.DynamicExecutionMetrics) predicate.Metrics {
+	return predicate.Metrics(func(s *sql.Selector) {
+		step := newDynamicExecutionMetricsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Metrics) predicate.Metrics {
 	return predicate.Metrics(sql.AndPredicates(predicates...))

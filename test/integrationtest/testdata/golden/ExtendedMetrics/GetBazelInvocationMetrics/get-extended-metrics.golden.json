@@ -1,0 +1,224 @@
+{
+  "getBazelInvocation": {
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 123,
+          "hits": 0,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjE=",
+          "loadTimeInMs": 0,
+          "missDetails": [],
+          "misses": 0,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 0
+        },
+        "actionData": [],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
+        "actionsExecuted": 0,
+        "id": "QWN0aW9uU3VtbWFyeTox",
+        "runnerCount": []
+      },
+      "artifactMetrics": null,
+      "buildGraphMetrics": {
+        "actionCount": 0,
+        "actionCountNotIncludingAspects": 0,
+        "actionLookupValueCount": 0,
+        "actionLookupValueCountNotIncludingAspects": 0,
+        "aspectCounts": [
+          {
+            "actionCount": 0,
+            "aspectName": "@@package_metadata+//:aspect.bzl%package_metadata_aspect",
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEFzcGVjdENvdW50OjE=",
+            "key": "@@package_metadata+//:aspect.bzl%package_metadata_aspect"
+          }
+        ],
+        "evaluationStats": [
+          {
+            "count": 3,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE=",
+            "operation": "DIRTIED",
+            "skyfunctionName": "FILE"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjI=",
+            "operation": "CHANGED",
+            "skyfunctionName": "FILE_STATE"
+          },
+          {
+            "count": 4,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjM=",
+            "operation": "BUILT",
+            "skyfunctionName": "ACTION_EXECUTION"
+          },
+          {
+            "count": 5,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjQ=",
+            "operation": "CLEANED",
+            "skyfunctionName": "PACKAGE"
+          },
+          {
+            "count": 6,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjU=",
+            "operation": "EVALUATED",
+            "skyfunctionName": "ACTION_EXECUTION"
+          }
+        ],
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ==",
+        "inputFileConfiguredTargetCount": 0,
+        "otherConfiguredTargetCount": 0,
+        "outputArtifactCount": 0,
+        "outputFileConfiguredTargetCount": 0,
+        "postInvocationSkyframeNodeCount": 0,
+        "ruleClassCounts": [
+          {
+            "actionCount": 4,
+            "count": 3,
+            "id": "QnVpbGRHcmFwaFJ1bGVDbGFzc0NvdW50OjE=",
+            "key": "@@rules_cc+//cc:defs.bzl%cc_library",
+            "ruleClass": "cc_library"
+          }
+        ]
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6MQ==",
+        "numAnalyses": 2,
+        "numBuilds": 1
+      },
+      "dynamicExecutionMetrics": {
+        "id": "RHluYW1pY0V4ZWN1dGlvbk1ldHJpY3M6MQ==",
+        "raceStatistics": [
+          {
+            "id": "RHluYW1pY0V4ZWN1dGlvblJhY2VTdGF0aXN0aWM6MQ==",
+            "localRunner": "darwin-sandbox",
+            "localWins": 1,
+            "mnemonic": "Genrule",
+            "remoteRunner": "remote",
+            "remoteWins": 0
+          }
+        ]
+      },
+      "id": "TWV0cmljczox",
+      "memoryMetrics": null,
+      "networkMetrics": null,
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6MQ==",
+        "packageLoadMetrics": [
+          {
+            "computationSteps": 34,
+            "globFilesystemOperationCost": 7,
+            "id": "UGFja2FnZUxvYWRNZXRyaWNzOjE=",
+            "loadDurationInNs": 808000,
+            "name": "//app",
+            "numTargets": 12,
+            "numTransitiveLoads": 5,
+            "packageOverhead": 6
+          },
+          {
+            "computationSteps": 0,
+            "globFilesystemOperationCost": 0,
+            "id": "UGFja2FnZUxvYWRNZXRyaWNzOjI=",
+            "loadDurationInNs": 0,
+            "name": "//legacy",
+            "numTargets": 0,
+            "numTransitiveLoads": 0,
+            "packageOverhead": 0
+          }
+        ],
+        "packagesLoaded": 7
+      },
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 0,
+        "cpuTimeInMs": 0,
+        "criticalPathTimeInMs": 1234,
+        "executionPhaseTimeInMs": 0,
+        "id": "VGltaW5nTWV0cmljczox",
+        "wallTimeInMs": 0
+      },
+      "workerMetrics": [
+        {
+          "actionsExecuted": 4,
+          "code": "BORROW_FAILURE",
+          "id": "V29ya2VyTWV0cmljczox",
+          "isMeasurable": true,
+          "isMultiplex": false,
+          "isSandbox": true,
+          "mnemonic": "Javac",
+          "priorActionsExecuted": 3,
+          "processID": 1234,
+          "workerIds": [
+            {
+              "id": "V29ya2VySUQ6MQ==",
+              "workerID": 9
+            }
+          ],
+          "workerKeyHash": 42,
+          "workerStats": [
+            {
+              "collectTimeInMs": 1785680001000,
+              "id": "V29ya2VyU3RhdHM6MQ==",
+              "lastActionStartTimeInMs": 1785680000500,
+              "priorWorkerMemoryInKB": 64,
+              "workerMemoryInKB": 128
+            }
+          ],
+          "workerStatus": "ALIVE"
+        },
+        {
+          "actionsExecuted": 8,
+          "code": "",
+          "id": "V29ya2VyTWV0cmljczoy",
+          "isMeasurable": false,
+          "isMultiplex": true,
+          "isSandbox": false,
+          "mnemonic": "Javac",
+          "priorActionsExecuted": 0,
+          "processID": 5678,
+          "workerIds": [
+            {
+              "id": "V29ya2VySUQ6Mg==",
+              "workerID": 10
+            },
+            {
+              "id": "V29ya2VySUQ6Mw==",
+              "workerID": 11
+            }
+          ],
+          "workerKeyHash": 43,
+          "workerStats": [
+            {
+              "collectTimeInMs": 1785680002000,
+              "id": "V29ya2VyU3RhdHM6Mg==",
+              "lastActionStartTimeInMs": 1785680001500,
+              "priorWorkerMemoryInKB": 0,
+              "workerMemoryInKB": 256
+            }
+          ],
+          "workerStatus": "ALIVE"
+        }
+      ],
+      "workerPoolMetrics": {
+        "id": "V29ya2VyUG9vbE1ldHJpY3M6MQ==",
+        "workerPoolStats": [
+          {
+            "aliveCount": 1,
+            "createdCount": 2,
+            "destroyedCount": 1,
+            "evictedCount": 1,
+            "hash": 42,
+            "id": "V29ya2VyUG9vbFN0YXRzOjE=",
+            "interruptedExceptionDestroyedCount": 0,
+            "ioExceptionDestroyedCount": 0,
+            "mnemonic": "Javac",
+            "unknownDestroyedCount": 0,
+            "userExecExceptionDestroyedCount": 0
+          }
+        ]
+      }
+    }
+  }
+}

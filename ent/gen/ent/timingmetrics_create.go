@@ -92,6 +92,20 @@ func (_c *TimingMetricsCreate) SetNillableActionsExecutionStartInMs(v *int64) *T
 	return _c
 }
 
+// SetCriticalPathTimeInMs sets the "critical_path_time_in_ms" field.
+func (_c *TimingMetricsCreate) SetCriticalPathTimeInMs(v int64) *TimingMetricsCreate {
+	_c.mutation.SetCriticalPathTimeInMs(v)
+	return _c
+}
+
+// SetNillableCriticalPathTimeInMs sets the "critical_path_time_in_ms" field if the given value is not nil.
+func (_c *TimingMetricsCreate) SetNillableCriticalPathTimeInMs(v *int64) *TimingMetricsCreate {
+	if v != nil {
+		_c.SetCriticalPathTimeInMs(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *TimingMetricsCreate) SetID(v int64) *TimingMetricsCreate {
 	_c.mutation.SetID(v)
@@ -203,6 +217,10 @@ func (_c *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSpe
 	if value, ok := _c.mutation.ActionsExecutionStartInMs(); ok {
 		_spec.SetField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64, value)
 		_node.ActionsExecutionStartInMs = value
+	}
+	if value, ok := _c.mutation.CriticalPathTimeInMs(); ok {
+		_spec.SetField(timingmetrics.FieldCriticalPathTimeInMs, field.TypeInt64, value)
+		_node.CriticalPathTimeInMs = value
 	}
 	if nodes := _c.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -393,6 +411,30 @@ func (u *TimingMetricsUpsert) ClearActionsExecutionStartInMs() *TimingMetricsUps
 	return u
 }
 
+// SetCriticalPathTimeInMs sets the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsert) SetCriticalPathTimeInMs(v int64) *TimingMetricsUpsert {
+	u.Set(timingmetrics.FieldCriticalPathTimeInMs, v)
+	return u
+}
+
+// UpdateCriticalPathTimeInMs sets the "critical_path_time_in_ms" field to the value that was provided on create.
+func (u *TimingMetricsUpsert) UpdateCriticalPathTimeInMs() *TimingMetricsUpsert {
+	u.SetExcluded(timingmetrics.FieldCriticalPathTimeInMs)
+	return u
+}
+
+// AddCriticalPathTimeInMs adds v to the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsert) AddCriticalPathTimeInMs(v int64) *TimingMetricsUpsert {
+	u.Add(timingmetrics.FieldCriticalPathTimeInMs, v)
+	return u
+}
+
+// ClearCriticalPathTimeInMs clears the value of the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsert) ClearCriticalPathTimeInMs() *TimingMetricsUpsert {
+	u.SetNull(timingmetrics.FieldCriticalPathTimeInMs)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -578,6 +620,34 @@ func (u *TimingMetricsUpsertOne) UpdateActionsExecutionStartInMs() *TimingMetric
 func (u *TimingMetricsUpsertOne) ClearActionsExecutionStartInMs() *TimingMetricsUpsertOne {
 	return u.Update(func(s *TimingMetricsUpsert) {
 		s.ClearActionsExecutionStartInMs()
+	})
+}
+
+// SetCriticalPathTimeInMs sets the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsertOne) SetCriticalPathTimeInMs(v int64) *TimingMetricsUpsertOne {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.SetCriticalPathTimeInMs(v)
+	})
+}
+
+// AddCriticalPathTimeInMs adds v to the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsertOne) AddCriticalPathTimeInMs(v int64) *TimingMetricsUpsertOne {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.AddCriticalPathTimeInMs(v)
+	})
+}
+
+// UpdateCriticalPathTimeInMs sets the "critical_path_time_in_ms" field to the value that was provided on create.
+func (u *TimingMetricsUpsertOne) UpdateCriticalPathTimeInMs() *TimingMetricsUpsertOne {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.UpdateCriticalPathTimeInMs()
+	})
+}
+
+// ClearCriticalPathTimeInMs clears the value of the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsertOne) ClearCriticalPathTimeInMs() *TimingMetricsUpsertOne {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.ClearCriticalPathTimeInMs()
 	})
 }
 
@@ -931,6 +1001,34 @@ func (u *TimingMetricsUpsertBulk) UpdateActionsExecutionStartInMs() *TimingMetri
 func (u *TimingMetricsUpsertBulk) ClearActionsExecutionStartInMs() *TimingMetricsUpsertBulk {
 	return u.Update(func(s *TimingMetricsUpsert) {
 		s.ClearActionsExecutionStartInMs()
+	})
+}
+
+// SetCriticalPathTimeInMs sets the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsertBulk) SetCriticalPathTimeInMs(v int64) *TimingMetricsUpsertBulk {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.SetCriticalPathTimeInMs(v)
+	})
+}
+
+// AddCriticalPathTimeInMs adds v to the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsertBulk) AddCriticalPathTimeInMs(v int64) *TimingMetricsUpsertBulk {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.AddCriticalPathTimeInMs(v)
+	})
+}
+
+// UpdateCriticalPathTimeInMs sets the "critical_path_time_in_ms" field to the value that was provided on create.
+func (u *TimingMetricsUpsertBulk) UpdateCriticalPathTimeInMs() *TimingMetricsUpsertBulk {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.UpdateCriticalPathTimeInMs()
+	})
+}
+
+// ClearCriticalPathTimeInMs clears the value of the "critical_path_time_in_ms" field.
+func (u *TimingMetricsUpsertBulk) ClearCriticalPathTimeInMs() *TimingMetricsUpsertBulk {
+	return u.Update(func(s *TimingMetricsUpsert) {
+		s.ClearCriticalPathTimeInMs()
 	})
 }
 

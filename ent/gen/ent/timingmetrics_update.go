@@ -163,6 +163,33 @@ func (_u *TimingMetricsUpdate) ClearActionsExecutionStartInMs() *TimingMetricsUp
 	return _u
 }
 
+// SetCriticalPathTimeInMs sets the "critical_path_time_in_ms" field.
+func (_u *TimingMetricsUpdate) SetCriticalPathTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.ResetCriticalPathTimeInMs()
+	_u.mutation.SetCriticalPathTimeInMs(v)
+	return _u
+}
+
+// SetNillableCriticalPathTimeInMs sets the "critical_path_time_in_ms" field if the given value is not nil.
+func (_u *TimingMetricsUpdate) SetNillableCriticalPathTimeInMs(v *int64) *TimingMetricsUpdate {
+	if v != nil {
+		_u.SetCriticalPathTimeInMs(*v)
+	}
+	return _u
+}
+
+// AddCriticalPathTimeInMs adds value to the "critical_path_time_in_ms" field.
+func (_u *TimingMetricsUpdate) AddCriticalPathTimeInMs(v int64) *TimingMetricsUpdate {
+	_u.mutation.AddCriticalPathTimeInMs(v)
+	return _u
+}
+
+// ClearCriticalPathTimeInMs clears the value of the "critical_path_time_in_ms" field.
+func (_u *TimingMetricsUpdate) ClearCriticalPathTimeInMs() *TimingMetricsUpdate {
+	_u.mutation.ClearCriticalPathTimeInMs()
+	return _u
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
 func (_u *TimingMetricsUpdate) SetMetricsID(id int64) *TimingMetricsUpdate {
 	_u.mutation.SetMetricsID(id)
@@ -273,6 +300,15 @@ func (_u *TimingMetricsUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	}
 	if _u.mutation.ActionsExecutionStartInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.CriticalPathTimeInMs(); ok {
+		_spec.SetField(timingmetrics.FieldCriticalPathTimeInMs, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedCriticalPathTimeInMs(); ok {
+		_spec.AddField(timingmetrics.FieldCriticalPathTimeInMs, field.TypeInt64, value)
+	}
+	if _u.mutation.CriticalPathTimeInMsCleared() {
+		_spec.ClearField(timingmetrics.FieldCriticalPathTimeInMs, field.TypeInt64)
 	}
 	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -458,6 +494,33 @@ func (_u *TimingMetricsUpdateOne) ClearActionsExecutionStartInMs() *TimingMetric
 	return _u
 }
 
+// SetCriticalPathTimeInMs sets the "critical_path_time_in_ms" field.
+func (_u *TimingMetricsUpdateOne) SetCriticalPathTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.ResetCriticalPathTimeInMs()
+	_u.mutation.SetCriticalPathTimeInMs(v)
+	return _u
+}
+
+// SetNillableCriticalPathTimeInMs sets the "critical_path_time_in_ms" field if the given value is not nil.
+func (_u *TimingMetricsUpdateOne) SetNillableCriticalPathTimeInMs(v *int64) *TimingMetricsUpdateOne {
+	if v != nil {
+		_u.SetCriticalPathTimeInMs(*v)
+	}
+	return _u
+}
+
+// AddCriticalPathTimeInMs adds value to the "critical_path_time_in_ms" field.
+func (_u *TimingMetricsUpdateOne) AddCriticalPathTimeInMs(v int64) *TimingMetricsUpdateOne {
+	_u.mutation.AddCriticalPathTimeInMs(v)
+	return _u
+}
+
+// ClearCriticalPathTimeInMs clears the value of the "critical_path_time_in_ms" field.
+func (_u *TimingMetricsUpdateOne) ClearCriticalPathTimeInMs() *TimingMetricsUpdateOne {
+	_u.mutation.ClearCriticalPathTimeInMs()
+	return _u
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
 func (_u *TimingMetricsUpdateOne) SetMetricsID(id int64) *TimingMetricsUpdateOne {
 	_u.mutation.SetMetricsID(id)
@@ -598,6 +661,15 @@ func (_u *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingMet
 	}
 	if _u.mutation.ActionsExecutionStartInMsCleared() {
 		_spec.ClearField(timingmetrics.FieldActionsExecutionStartInMs, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.CriticalPathTimeInMs(); ok {
+		_spec.SetField(timingmetrics.FieldCriticalPathTimeInMs, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedCriticalPathTimeInMs(); ok {
+		_spec.AddField(timingmetrics.FieldCriticalPathTimeInMs, field.TypeInt64, value)
+	}
+	if _u.mutation.CriticalPathTimeInMsCleared() {
+		_spec.ClearField(timingmetrics.FieldCriticalPathTimeInMs, field.TypeInt64)
 	}
 	if _u.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{

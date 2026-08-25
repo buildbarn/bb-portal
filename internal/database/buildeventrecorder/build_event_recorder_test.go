@@ -29,7 +29,7 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	defer dbProvider.Cleanup()
-	os.Exit(m.Run())
+	m.Run()
 }
 
 func TestFindOrCreateInstanceName(t *testing.T) {

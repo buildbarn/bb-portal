@@ -1,4 +1,5 @@
 .idea/
+.ijwb/
 .vscode/
 .user.bazelrc
 buildportal.db*

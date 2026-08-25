@@ -88,6 +88,13 @@ const ActionCacheOverview: React.FC<Props> = ({ acStatistics }) => {
           { smallestUnit: "ms" },
         )}
       />
+      <Statistic
+        title="Cache Check Wait"
+        value={readableDurationFromMilliseconds(
+          acStatistics?.cacheCheckSemaphoreWaitTimeInMs ?? 0,
+          { smallestUnit: "ms" },
+        )}
+      />
     </Space>
   );
 };

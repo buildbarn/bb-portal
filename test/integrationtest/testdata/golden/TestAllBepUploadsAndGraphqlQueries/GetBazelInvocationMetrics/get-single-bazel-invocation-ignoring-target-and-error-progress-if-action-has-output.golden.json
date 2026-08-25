@@ -4,6 +4,7 @@
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 0,
           "hits": 4,
           "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjU=",
           "loadTimeInMs": 0,
@@ -50,6 +51,7 @@
         },
         "actionData": [
           {
+            "actionsCreated": 0,
             "actionsExecuted": 1,
             "id": "QWN0aW9uRGF0YToxMw==",
             "mnemonic": "BazelWorkspaceStatusAction",
@@ -57,6 +59,8 @@
             "userTime": 0
           }
         ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
         "actionsExecuted": 1,
         "id": "QWN0aW9uU3VtbWFyeTo1",
         "runnerCount": [
@@ -85,6 +89,27 @@
         "topLevelArtifactsCount": 0,
         "topLevelArtifactsSizeInBytes": 0
       },
+      "buildGraphMetrics": {
+        "actionCount": 0,
+        "actionCountNotIncludingAspects": 0,
+        "actionLookupValueCount": 0,
+        "actionLookupValueCountNotIncludingAspects": 0,
+        "aspectCounts": [],
+        "evaluationStats": [],
+        "id": "QnVpbGRHcmFwaE1ldHJpY3M6NQ==",
+        "inputFileConfiguredTargetCount": 0,
+        "otherConfiguredTargetCount": 0,
+        "outputArtifactCount": 0,
+        "outputFileConfiguredTargetCount": 0,
+        "postInvocationSkyframeNodeCount": 117503,
+        "ruleClassCounts": []
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6NQ==",
+        "numAnalyses": 13,
+        "numBuilds": 13
+      },
+      "dynamicExecutionMetrics": null,
       "id": "TWV0cmljczo1",
       "memoryMetrics": {
         "garbageMetrics": [],
@@ -94,13 +119,24 @@
         "usedHeapSizePostBuild": 0
       },
       "networkMetrics": null,
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6NQ==",
+        "packageLoadMetrics": [],
+        "packagesLoaded": 0
+      },
       "timingMetrics": {
         "actionsExecutionStartInMs": 0,
         "analysisPhaseTimeInMs": 0,
         "cpuTimeInMs": 2508,
+        "criticalPathTimeInMs": 0,
         "executionPhaseTimeInMs": 32,
         "id": "VGltaW5nTWV0cmljczo1",
         "wallTimeInMs": 307
+      },
+      "workerMetrics": [],
+      "workerPoolMetrics": {
+        "id": "V29ya2VyUG9vbE1ldHJpY3M6NQ==",
+        "workerPoolStats": []
       }
     }
   }

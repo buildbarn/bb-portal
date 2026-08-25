@@ -33,7 +33,7 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	defer dbProvider.Cleanup()
-	os.Exit(m.Run())
+	m.Run()
 }
 
 func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *bepuploader.BepUploader {

@@ -28,6 +28,25 @@ const BAZEL_INVOCATION_METRICS_FRAGMENT = gql(/* GraphQL */ `
     memoryMetrics {
       ...BazelInvocationMetricsMemoryMetrics
     }
+    packageMetrics {
+      ...BazelInvocationMetricsPackageMetrics
+    }
+    cumulativeMetrics {
+      ...BazelInvocationMetricsCumulativeMetrics
+    }
+    buildGraphMetrics {
+      ...BazelInvocationMetricsBuildGraphMetrics
+      ...BazelInvocationMetricsBuildGraphEvaluationMetrics
+    }
+    dynamicExecutionMetrics {
+      ...BazelInvocationMetricsDynamicExecutionMetrics
+    }
+    workerMetrics {
+      ...BazelInvocationMetricsWorkerMetrics
+    }
+    workerPoolMetrics {
+      ...BazelInvocationMetricsWorkerPoolMetrics
+    }
     timingMetrics {
       ...BazelInvocationMetricsTimingMetrics
     }
@@ -44,11 +63,14 @@ export const BAZEL_INVOCATION_METRICS_ACTION_SUMMARY_FRAGMENT =
   gql(/* GraphQL */ `
   fragment BazelInvocationMetricsActionSummary on ActionSummary {
     id
+    actionsCreated
+    actionsCreatedNotIncludingAspects
     actionsExecuted
     actionCacheStatistics {
       id
       loadTimeInMs
       saveTimeInMs
+      cacheCheckSemaphoreWaitTimeInMs
       hits
       misses
       sizeInBytes
@@ -67,10 +89,27 @@ export const BAZEL_INVOCATION_METRICS_ACTION_SUMMARY_FRAGMENT =
     actionData {
       id
       mnemonic
+      actionsCreated
       userTime
       systemTime
       actionsExecuted
     }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_BUILD_GRAPH_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsBuildGraphMetrics on BuildGraphMetrics {
+    id
+    actionLookupValueCount
+    actionLookupValueCountNotIncludingAspects
+    actionCount
+    actionCountNotIncludingAspects
+    inputFileConfiguredTargetCount
+    outputFileConfiguredTargetCount
+    otherConfiguredTargetCount
+    outputArtifactCount
+    postInvocationSkyframeNodeCount
   }
 `);
 
@@ -102,6 +141,123 @@ export const BAZEL_INVOCATION_METRICS_MEMORY_METRICS_FRAGMENT =
   }
 `);
 
+export const BAZEL_INVOCATION_METRICS_PACKAGE_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsPackageMetrics on PackageMetrics {
+    id
+    packagesLoaded
+    packageLoadMetrics {
+      id
+      name
+      loadDurationInNs
+      numTargets
+      computationSteps
+      numTransitiveLoads
+      packageOverhead
+      globFilesystemOperationCost
+    }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_CUMULATIVE_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsCumulativeMetrics on CumulativeMetrics {
+    id
+    numAnalyses
+    numBuilds
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_BUILD_GRAPH_EVALUATION_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsBuildGraphEvaluationMetrics on BuildGraphMetrics {
+    id
+    evaluationStats {
+      id
+      operation
+      skyfunctionName
+      count
+    }
+    ruleClassCounts {
+      id
+      key
+      ruleClass
+      count
+      actionCount
+    }
+    aspectCounts {
+      id
+      key
+      aspectName
+      count
+      actionCount
+    }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_DYNAMIC_EXECUTION_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsDynamicExecutionMetrics on DynamicExecutionMetrics {
+    id
+    raceStatistics {
+      id
+      mnemonic
+      localRunner
+      remoteRunner
+      localWins
+      remoteWins
+    }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_WORKER_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsWorkerMetrics on WorkerMetrics {
+    id
+    processID
+    mnemonic
+    isMultiplex
+    isSandbox
+    isMeasurable
+    workerKeyHash
+    workerStatus
+    code
+    actionsExecuted
+    priorActionsExecuted
+    workerIds {
+      id
+      workerID
+    }
+    workerStats {
+      id
+      collectTimeInMs
+      workerMemoryInKB
+      priorWorkerMemoryInKB
+      lastActionStartTimeInMs
+    }
+  }
+`);
+
+export const BAZEL_INVOCATION_METRICS_WORKER_POOL_METRICS_FRAGMENT =
+  gql(/* GraphQL */ `
+  fragment BazelInvocationMetricsWorkerPoolMetrics on WorkerPoolMetrics {
+    id
+    workerPoolStats {
+      id
+      hash
+      mnemonic
+      createdCount
+      destroyedCount
+      evictedCount
+      userExecExceptionDestroyedCount
+      ioExceptionDestroyedCount
+      interruptedExceptionDestroyedCount
+      unknownDestroyedCount
+      aliveCount
+    }
+  }
+`);
+
 export const BAZEL_INVOCATION_METRICS_GARBAGE_METRICS_FRAGMENT =
   gql(/* GraphQL */ `
   fragment BazelInvocationMetricsGarbageMetrics on GarbageMetrics {
@@ -120,6 +276,7 @@ export const BAZEL_INVOCATION_METRICS_TIMING_METRICS_FRAGMENT =
     analysisPhaseTimeInMs
     executionPhaseTimeInMs
     actionsExecutionStartInMs
+    criticalPathTimeInMs
   }
 `);
 
