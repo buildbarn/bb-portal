@@ -187,7 +187,9 @@ export const instanceNameColumn: TableColumnTypeWithFilter<
     if (value.length === 0) {
       return undefined;
     }
-    return [{ hasInstanceNameWith: [{ nameContainsFold: value[0] as string }] }];
+    return [
+        { hasInstanceNameWith: [{ nameContainsFold: value[0] as string }] }
+    ];
   },
 };
 

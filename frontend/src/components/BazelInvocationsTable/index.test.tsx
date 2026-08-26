@@ -21,9 +21,7 @@ describe("getTableColumns", () => {
 
   it("does not include the BES Instance column when the feature flag is unset", () => {
     const columns = getTableColumns();
-    expect(columns.some((column) => column.key === "instanceName")).toBe(
-      false,
-    );
+    expect(columns.some((column) => column.key === "instanceName")).toBe(false);
   });
 
   it("does not include the BES Instance column when the feature flag is explicitly null", () => {
@@ -34,9 +32,7 @@ describe("getTableColumns", () => {
     } as unknown as PortalFrontendConfiguration["featureFlags"];
 
     const columns = getTableColumns();
-    expect(columns.some((column) => column.key === "instanceName")).toBe(
-      false,
-    );
+    expect(columns.some((column) => column.key === "instanceName")).toBe(false);
   });
 
   it("includes the BES Instance column when the feature flag is enabled", () => {
