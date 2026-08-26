@@ -166,13 +166,6 @@ func getActionConfigurationID(actionExecuted *bes.ActionExecuted, actionComplete
 	return actionExecuted.GetConfiguration().GetId()
 }
 
-func getActionLabel(actionExecuted *bes.ActionExecuted, actionCompletedID *bes.BuildEventId_ActionCompletedId) string {
-	if label := actionCompletedID.GetLabel(); label != "" {
-		return label
-	}
-	return actionExecuted.GetLabel()
-}
-
 // saveActionExecutedBatch persists all ActionExecuted events in a batch. The
 // configuration lookup is also batched, because --build_event_publish_all_actions
 // can cause thousands of these events to be reported for one invocation.
@@ -239,7 +232,7 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 
 		create := tx.Ent().Action.Create().
 			SetBazelInvocationID(r.InvocationDbID).
-			SetLabel(getActionLabel(actionExecuted, actionCompletedID)).
+			SetLabel(actionCompletedID.GetLabel()).
 			SetSuccess(actionExecuted.Success).
 			SetExitCode(actionExecuted.ExitCode)
 
