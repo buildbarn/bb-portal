@@ -10,13 +10,17 @@ import (
 	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
 	"github.com/buildbarn/bb-portal/internal/database"
+	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/internal/graphql"
+	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/digest"
-	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
+	"github.com/buildbarn/bb-storage/pkg/jmespath"
+	jmespath_config "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace"
@@ -37,22 +41,28 @@ func TestMain(m *testing.M) {
 }
 
 func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *bepuploader.BepUploader {
-	var authExtractors *bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration
-	var invocationExtractor *jmespath.Expression
-	if testCase.dataExtractors != nil {
-		authExtractors = testCase.dataExtractors.authMetadataExtractors
-		invocationExtractor = testCase.dataExtractors.invocationMetadataExtractor
+	dataExtractors := &buildeventrecorder.DataExtractors{
+		AuthMetadataExtractors:      nil,
+		InvocationMetadataExtractor: nil,
+	}
+	if testCase.dataExtractors != nil && testCase.dataExtractors.authMetadataExtractors != nil {
+		authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(testCase.dataExtractors.authMetadataExtractors, nil)
+		require.NoError(t, err)
+		dataExtractors.AuthMetadataExtractors = authMetadataExtractors
+	}
+	if testCase.dataExtractors != nil && testCase.dataExtractors.invocationMetadataExtractor != nil {
+		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(testCase.dataExtractors.invocationMetadataExtractor, nil, clock.SystemClock)
+		require.NoError(t, err)
+		dataExtractors.InvocationMetadataExtractor = invocationMetadataExtractor
 	}
 
 	authorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
 	besConfig := &bb_portal.BuildEventStreamService{
-		SaveDataLevel:                testCase.saveDataLevel,
-		AuthMetadataKeyConfiguration: authExtractors,
-		InvocationMetadataExtractor:  invocationExtractor,
-		BuildKey:                     testCase.buildKey,
+		SaveDataLevel: testCase.saveDataLevel,
+		BuildKey:      testCase.buildKey,
 	}
 
-	bepUploader, err := bepuploader.NewBepUploader(db, besConfig, authorizer, nil, nil, noop.NewTracerProvider())
+	bepUploader, err := bepuploader.NewBepUploader(db, besConfig, authorizer, dataExtractors, nil, nil, noop.NewTracerProvider())
 	require.NoError(t, err)
 	return bepUploader
 }
@@ -81,7 +91,7 @@ func checkIfErrorMatches(t *testing.T, wantErr, err error) {
 	}
 }
 
-func githubActionsExtractor() *jmespath.Expression {
+func githubActionsExtractor() *jmespath_config.Expression {
 	s := ""
 
 	// This was the easiest way to build this string. We cannot use multiline
@@ -114,6 +124,6 @@ func githubActionsExtractor() *jmespath.Expression {
 	s += "  }"
 	s += "}"
 
-	expr := jmespath.Expression{Expression: s}
+	expr := jmespath_config.Expression{Expression: s}
 	return &expr
 }
