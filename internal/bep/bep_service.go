@@ -6,9 +6,13 @@ import (
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
 	"github.com/buildbarn/bb-portal/internal/database"
+	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
+	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
+	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
+	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/trace"
@@ -46,12 +50,39 @@ func NewBuildEventProtocolService(
 		return util.StatusWrap(err, "Failed to create PublishAuthorizer")
 	}
 
+	dataExtractors := &buildeventrecorder.DataExtractors{
+		AuthMetadataExtractors:      nil,
+		InvocationMetadataExtractor: nil,
+	}
+
+	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(configuration.AuthMetadataKeyConfiguration, dependenciesGroup)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
+	}
+	dataExtractors.AuthMetadataExtractors = authMetadataExtractors
+
+	if configuration.InvocationMetadataExtractor != nil {
+		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create InvocationMetadataExtractor")
+		}
+		dataExtractors.InvocationMetadataExtractor = invocationMetadataExtractor
+	}
+
 	// Handle BEP file uploads over HTTP.
 	if configuration.EnableBepFileUpload {
 		if router == nil {
 			return status.Error(codes.NotFound, "Failed to create BEP upload endpoint. No http server configured")
 		}
-		bepUploader, err := bepuploader.NewBepUploader(dbClient, configuration, publishAuthorizer, dependenciesGroup, grpcClientFactory, tracerProvider)
+		bepUploader, err := bepuploader.NewBepUploader(
+			dbClient,
+			configuration,
+			publishAuthorizer,
+			dataExtractors,
+			dependenciesGroup,
+			grpcClientFactory,
+			tracerProvider,
+		)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BEP file upload handler")
 		}
@@ -63,7 +94,15 @@ func NewBuildEventProtocolService(
 
 	// Handle the Build Event gRPC Stream.
 	if len(configuration.GrpcServers) != 0 {
-		buildEventServer, err := bes.NewBuildEventServer(dbClient, configuration, publishAuthorizer, dependenciesGroup, grpcClientFactory, tracerProvider)
+		buildEventServer, err := bes.NewBuildEventServer(
+			dbClient,
+			configuration,
+			publishAuthorizer,
+			dataExtractors,
+			dependenciesGroup,
+			grpcClientFactory,
+			tracerProvider,
+		)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BuildEventServer")
 		}
