@@ -1,14 +1,6 @@
 {
   "getBazelInvocation": {
-    "actionTimingMetrics": {
-      "cacheHitActions": 0,
-      "timeSavedByCacheHitsInMs": 0,
-      "timedActions": 0,
-      "timedCacheHitActions": 0,
-      "totalActions": 0,
-      "totalExpectedTimeInMs": 0
-    },
-    "actions": {
+    "actionExecutions": {
       "edges": [],
       "pageInfo": {
         "endCursor": null,
@@ -16,6 +8,14 @@
         "hasPreviousPage": false,
         "startCursor": null
       }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 0,
+      "timeSavedByCacheHitsInMs": 0,
+      "timedActions": 0,
+      "timedCacheHitActions": 0,
+      "totalActions": 0,
+      "totalExpectedTimeInMs": 0
     },
     "configurations": [],
     "id": "QmF6ZWxJbnZvY2F0aW9uOjY=",

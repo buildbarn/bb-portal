@@ -11,9 +11,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
@@ -75,9 +75,9 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAction                        = "Action"
 	TypeActionCacheStatistics         = "ActionCacheStatistics"
 	TypeActionData                    = "ActionData"
+	TypeActionExecution               = "ActionExecution"
 	TypeActionSummary                 = "ActionSummary"
 	TypeArtifactMetrics               = "ArtifactMetrics"
 	TypeAuthenticatedUser             = "AuthenticatedUser"
@@ -126,1763 +126,6 @@ const (
 	TypeWorkerPoolStats               = "WorkerPoolStats"
 	TypeWorkerStats                   = "WorkerStats"
 )
-
-// ActionMutation represents an operation that mutates the Action nodes in the graph.
-type ActionMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	label                   *string
-	_type                   *string
-	runner                  *string
-	cache_hit               *bool
-	success                 *bool
-	exit_code               *int32
-	addexit_code            *int32
-	command_line            *[]string
-	appendcommand_line      []string
-	start_time              *time.Time
-	end_time                *time.Time
-	failure_code            *string
-	failure_message         *string
-	primary_output          *string
-	primary_output_uri      *string
-	stdout_uri              *string
-	stderr_uri              *string
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int64
-	clearedbazel_invocation bool
-	configuration           *int64
-	clearedconfiguration    bool
-	action_digest           *int64
-	clearedaction_digest    bool
-	done                    bool
-	oldValue                func(context.Context) (*Action, error)
-	predicates              []predicate.Action
-}
-
-var _ ent.Mutation = (*ActionMutation)(nil)
-
-// actionOption allows management of the mutation configuration using functional options.
-type actionOption func(*ActionMutation)
-
-// newActionMutation creates new mutation for the Action entity.
-func newActionMutation(c config, op Op, opts ...actionOption) *ActionMutation {
-	m := &ActionMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeAction,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withActionID sets the ID field of the mutation.
-func withActionID(id int64) actionOption {
-	return func(m *ActionMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Action
-		)
-		m.oldValue = func(ctx context.Context) (*Action, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Action.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withAction sets the old Action of the mutation.
-func withAction(node *Action) actionOption {
-	return func(m *ActionMutation) {
-		m.oldValue = func(context.Context) (*Action, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ActionMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ActionMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Action entities.
-func (m *ActionMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ActionMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ActionMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Action.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetBazelInvocationID sets the "bazel_invocation_id" field.
-func (m *ActionMutation) SetBazelInvocationID(i int64) {
-	m.bazel_invocation = &i
-}
-
-// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
-func (m *ActionMutation) BazelInvocationID() (r int64, exists bool) {
-	v := m.bazel_invocation
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
-	}
-	return oldValue.BazelInvocationID, nil
-}
-
-// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
-func (m *ActionMutation) ResetBazelInvocationID() {
-	m.bazel_invocation = nil
-}
-
-// SetConfigurationID sets the "configuration_id" field.
-func (m *ActionMutation) SetConfigurationID(i int64) {
-	m.configuration = &i
-}
-
-// ConfigurationID returns the value of the "configuration_id" field in the mutation.
-func (m *ActionMutation) ConfigurationID() (r int64, exists bool) {
-	v := m.configuration
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldConfigurationID returns the old "configuration_id" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldConfigurationID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldConfigurationID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldConfigurationID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldConfigurationID: %w", err)
-	}
-	return oldValue.ConfigurationID, nil
-}
-
-// ClearConfigurationID clears the value of the "configuration_id" field.
-func (m *ActionMutation) ClearConfigurationID() {
-	m.configuration = nil
-	m.clearedFields[action.FieldConfigurationID] = struct{}{}
-}
-
-// ConfigurationIDCleared returns if the "configuration_id" field was cleared in this mutation.
-func (m *ActionMutation) ConfigurationIDCleared() bool {
-	_, ok := m.clearedFields[action.FieldConfigurationID]
-	return ok
-}
-
-// ResetConfigurationID resets all changes to the "configuration_id" field.
-func (m *ActionMutation) ResetConfigurationID() {
-	m.configuration = nil
-	delete(m.clearedFields, action.FieldConfigurationID)
-}
-
-// SetActionDigestID sets the "action_digest_id" field.
-func (m *ActionMutation) SetActionDigestID(i int64) {
-	m.action_digest = &i
-}
-
-// ActionDigestID returns the value of the "action_digest_id" field in the mutation.
-func (m *ActionMutation) ActionDigestID() (r int64, exists bool) {
-	v := m.action_digest
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldActionDigestID returns the old "action_digest_id" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldActionDigestID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldActionDigestID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldActionDigestID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldActionDigestID: %w", err)
-	}
-	return oldValue.ActionDigestID, nil
-}
-
-// ClearActionDigestID clears the value of the "action_digest_id" field.
-func (m *ActionMutation) ClearActionDigestID() {
-	m.action_digest = nil
-	m.clearedFields[action.FieldActionDigestID] = struct{}{}
-}
-
-// ActionDigestIDCleared returns if the "action_digest_id" field was cleared in this mutation.
-func (m *ActionMutation) ActionDigestIDCleared() bool {
-	_, ok := m.clearedFields[action.FieldActionDigestID]
-	return ok
-}
-
-// ResetActionDigestID resets all changes to the "action_digest_id" field.
-func (m *ActionMutation) ResetActionDigestID() {
-	m.action_digest = nil
-	delete(m.clearedFields, action.FieldActionDigestID)
-}
-
-// SetLabel sets the "label" field.
-func (m *ActionMutation) SetLabel(s string) {
-	m.label = &s
-}
-
-// Label returns the value of the "label" field in the mutation.
-func (m *ActionMutation) Label() (r string, exists bool) {
-	v := m.label
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLabel returns the old "label" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldLabel(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLabel is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLabel requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLabel: %w", err)
-	}
-	return oldValue.Label, nil
-}
-
-// ResetLabel resets all changes to the "label" field.
-func (m *ActionMutation) ResetLabel() {
-	m.label = nil
-}
-
-// SetType sets the "type" field.
-func (m *ActionMutation) SetType(s string) {
-	m._type = &s
-}
-
-// GetType returns the value of the "type" field in the mutation.
-func (m *ActionMutation) GetType() (r string, exists bool) {
-	v := m._type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldType returns the old "type" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldType: %w", err)
-	}
-	return oldValue.Type, nil
-}
-
-// ClearType clears the value of the "type" field.
-func (m *ActionMutation) ClearType() {
-	m._type = nil
-	m.clearedFields[action.FieldType] = struct{}{}
-}
-
-// TypeCleared returns if the "type" field was cleared in this mutation.
-func (m *ActionMutation) TypeCleared() bool {
-	_, ok := m.clearedFields[action.FieldType]
-	return ok
-}
-
-// ResetType resets all changes to the "type" field.
-func (m *ActionMutation) ResetType() {
-	m._type = nil
-	delete(m.clearedFields, action.FieldType)
-}
-
-// SetRunner sets the "runner" field.
-func (m *ActionMutation) SetRunner(s string) {
-	m.runner = &s
-}
-
-// Runner returns the value of the "runner" field in the mutation.
-func (m *ActionMutation) Runner() (r string, exists bool) {
-	v := m.runner
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRunner returns the old "runner" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldRunner(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRunner is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRunner requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRunner: %w", err)
-	}
-	return oldValue.Runner, nil
-}
-
-// ClearRunner clears the value of the "runner" field.
-func (m *ActionMutation) ClearRunner() {
-	m.runner = nil
-	m.clearedFields[action.FieldRunner] = struct{}{}
-}
-
-// RunnerCleared returns if the "runner" field was cleared in this mutation.
-func (m *ActionMutation) RunnerCleared() bool {
-	_, ok := m.clearedFields[action.FieldRunner]
-	return ok
-}
-
-// ResetRunner resets all changes to the "runner" field.
-func (m *ActionMutation) ResetRunner() {
-	m.runner = nil
-	delete(m.clearedFields, action.FieldRunner)
-}
-
-// SetCacheHit sets the "cache_hit" field.
-func (m *ActionMutation) SetCacheHit(b bool) {
-	m.cache_hit = &b
-}
-
-// CacheHit returns the value of the "cache_hit" field in the mutation.
-func (m *ActionMutation) CacheHit() (r bool, exists bool) {
-	v := m.cache_hit
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCacheHit returns the old "cache_hit" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldCacheHit(ctx context.Context) (v *bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCacheHit is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCacheHit requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCacheHit: %w", err)
-	}
-	return oldValue.CacheHit, nil
-}
-
-// ClearCacheHit clears the value of the "cache_hit" field.
-func (m *ActionMutation) ClearCacheHit() {
-	m.cache_hit = nil
-	m.clearedFields[action.FieldCacheHit] = struct{}{}
-}
-
-// CacheHitCleared returns if the "cache_hit" field was cleared in this mutation.
-func (m *ActionMutation) CacheHitCleared() bool {
-	_, ok := m.clearedFields[action.FieldCacheHit]
-	return ok
-}
-
-// ResetCacheHit resets all changes to the "cache_hit" field.
-func (m *ActionMutation) ResetCacheHit() {
-	m.cache_hit = nil
-	delete(m.clearedFields, action.FieldCacheHit)
-}
-
-// SetSuccess sets the "success" field.
-func (m *ActionMutation) SetSuccess(b bool) {
-	m.success = &b
-}
-
-// Success returns the value of the "success" field in the mutation.
-func (m *ActionMutation) Success() (r bool, exists bool) {
-	v := m.success
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSuccess returns the old "success" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldSuccess(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSuccess is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSuccess requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSuccess: %w", err)
-	}
-	return oldValue.Success, nil
-}
-
-// ClearSuccess clears the value of the "success" field.
-func (m *ActionMutation) ClearSuccess() {
-	m.success = nil
-	m.clearedFields[action.FieldSuccess] = struct{}{}
-}
-
-// SuccessCleared returns if the "success" field was cleared in this mutation.
-func (m *ActionMutation) SuccessCleared() bool {
-	_, ok := m.clearedFields[action.FieldSuccess]
-	return ok
-}
-
-// ResetSuccess resets all changes to the "success" field.
-func (m *ActionMutation) ResetSuccess() {
-	m.success = nil
-	delete(m.clearedFields, action.FieldSuccess)
-}
-
-// SetExitCode sets the "exit_code" field.
-func (m *ActionMutation) SetExitCode(i int32) {
-	m.exit_code = &i
-	m.addexit_code = nil
-}
-
-// ExitCode returns the value of the "exit_code" field in the mutation.
-func (m *ActionMutation) ExitCode() (r int32, exists bool) {
-	v := m.exit_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldExitCode returns the old "exit_code" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldExitCode(ctx context.Context) (v int32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldExitCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldExitCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldExitCode: %w", err)
-	}
-	return oldValue.ExitCode, nil
-}
-
-// AddExitCode adds i to the "exit_code" field.
-func (m *ActionMutation) AddExitCode(i int32) {
-	if m.addexit_code != nil {
-		*m.addexit_code += i
-	} else {
-		m.addexit_code = &i
-	}
-}
-
-// AddedExitCode returns the value that was added to the "exit_code" field in this mutation.
-func (m *ActionMutation) AddedExitCode() (r int32, exists bool) {
-	v := m.addexit_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearExitCode clears the value of the "exit_code" field.
-func (m *ActionMutation) ClearExitCode() {
-	m.exit_code = nil
-	m.addexit_code = nil
-	m.clearedFields[action.FieldExitCode] = struct{}{}
-}
-
-// ExitCodeCleared returns if the "exit_code" field was cleared in this mutation.
-func (m *ActionMutation) ExitCodeCleared() bool {
-	_, ok := m.clearedFields[action.FieldExitCode]
-	return ok
-}
-
-// ResetExitCode resets all changes to the "exit_code" field.
-func (m *ActionMutation) ResetExitCode() {
-	m.exit_code = nil
-	m.addexit_code = nil
-	delete(m.clearedFields, action.FieldExitCode)
-}
-
-// SetCommandLine sets the "command_line" field.
-func (m *ActionMutation) SetCommandLine(s []string) {
-	m.command_line = &s
-	m.appendcommand_line = nil
-}
-
-// CommandLine returns the value of the "command_line" field in the mutation.
-func (m *ActionMutation) CommandLine() (r []string, exists bool) {
-	v := m.command_line
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCommandLine returns the old "command_line" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldCommandLine(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCommandLine is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCommandLine requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCommandLine: %w", err)
-	}
-	return oldValue.CommandLine, nil
-}
-
-// AppendCommandLine adds s to the "command_line" field.
-func (m *ActionMutation) AppendCommandLine(s []string) {
-	m.appendcommand_line = append(m.appendcommand_line, s...)
-}
-
-// AppendedCommandLine returns the list of values that were appended to the "command_line" field in this mutation.
-func (m *ActionMutation) AppendedCommandLine() ([]string, bool) {
-	if len(m.appendcommand_line) == 0 {
-		return nil, false
-	}
-	return m.appendcommand_line, true
-}
-
-// ClearCommandLine clears the value of the "command_line" field.
-func (m *ActionMutation) ClearCommandLine() {
-	m.command_line = nil
-	m.appendcommand_line = nil
-	m.clearedFields[action.FieldCommandLine] = struct{}{}
-}
-
-// CommandLineCleared returns if the "command_line" field was cleared in this mutation.
-func (m *ActionMutation) CommandLineCleared() bool {
-	_, ok := m.clearedFields[action.FieldCommandLine]
-	return ok
-}
-
-// ResetCommandLine resets all changes to the "command_line" field.
-func (m *ActionMutation) ResetCommandLine() {
-	m.command_line = nil
-	m.appendcommand_line = nil
-	delete(m.clearedFields, action.FieldCommandLine)
-}
-
-// SetStartTime sets the "start_time" field.
-func (m *ActionMutation) SetStartTime(t time.Time) {
-	m.start_time = &t
-}
-
-// StartTime returns the value of the "start_time" field in the mutation.
-func (m *ActionMutation) StartTime() (r time.Time, exists bool) {
-	v := m.start_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStartTime returns the old "start_time" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStartTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartTime: %w", err)
-	}
-	return oldValue.StartTime, nil
-}
-
-// ClearStartTime clears the value of the "start_time" field.
-func (m *ActionMutation) ClearStartTime() {
-	m.start_time = nil
-	m.clearedFields[action.FieldStartTime] = struct{}{}
-}
-
-// StartTimeCleared returns if the "start_time" field was cleared in this mutation.
-func (m *ActionMutation) StartTimeCleared() bool {
-	_, ok := m.clearedFields[action.FieldStartTime]
-	return ok
-}
-
-// ResetStartTime resets all changes to the "start_time" field.
-func (m *ActionMutation) ResetStartTime() {
-	m.start_time = nil
-	delete(m.clearedFields, action.FieldStartTime)
-}
-
-// SetEndTime sets the "end_time" field.
-func (m *ActionMutation) SetEndTime(t time.Time) {
-	m.end_time = &t
-}
-
-// EndTime returns the value of the "end_time" field in the mutation.
-func (m *ActionMutation) EndTime() (r time.Time, exists bool) {
-	v := m.end_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEndTime returns the old "end_time" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldEndTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEndTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEndTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEndTime: %w", err)
-	}
-	return oldValue.EndTime, nil
-}
-
-// ClearEndTime clears the value of the "end_time" field.
-func (m *ActionMutation) ClearEndTime() {
-	m.end_time = nil
-	m.clearedFields[action.FieldEndTime] = struct{}{}
-}
-
-// EndTimeCleared returns if the "end_time" field was cleared in this mutation.
-func (m *ActionMutation) EndTimeCleared() bool {
-	_, ok := m.clearedFields[action.FieldEndTime]
-	return ok
-}
-
-// ResetEndTime resets all changes to the "end_time" field.
-func (m *ActionMutation) ResetEndTime() {
-	m.end_time = nil
-	delete(m.clearedFields, action.FieldEndTime)
-}
-
-// SetFailureCode sets the "failure_code" field.
-func (m *ActionMutation) SetFailureCode(s string) {
-	m.failure_code = &s
-}
-
-// FailureCode returns the value of the "failure_code" field in the mutation.
-func (m *ActionMutation) FailureCode() (r string, exists bool) {
-	v := m.failure_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFailureCode returns the old "failure_code" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldFailureCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFailureCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFailureCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFailureCode: %w", err)
-	}
-	return oldValue.FailureCode, nil
-}
-
-// ClearFailureCode clears the value of the "failure_code" field.
-func (m *ActionMutation) ClearFailureCode() {
-	m.failure_code = nil
-	m.clearedFields[action.FieldFailureCode] = struct{}{}
-}
-
-// FailureCodeCleared returns if the "failure_code" field was cleared in this mutation.
-func (m *ActionMutation) FailureCodeCleared() bool {
-	_, ok := m.clearedFields[action.FieldFailureCode]
-	return ok
-}
-
-// ResetFailureCode resets all changes to the "failure_code" field.
-func (m *ActionMutation) ResetFailureCode() {
-	m.failure_code = nil
-	delete(m.clearedFields, action.FieldFailureCode)
-}
-
-// SetFailureMessage sets the "failure_message" field.
-func (m *ActionMutation) SetFailureMessage(s string) {
-	m.failure_message = &s
-}
-
-// FailureMessage returns the value of the "failure_message" field in the mutation.
-func (m *ActionMutation) FailureMessage() (r string, exists bool) {
-	v := m.failure_message
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFailureMessage returns the old "failure_message" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldFailureMessage(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFailureMessage is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFailureMessage requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFailureMessage: %w", err)
-	}
-	return oldValue.FailureMessage, nil
-}
-
-// ClearFailureMessage clears the value of the "failure_message" field.
-func (m *ActionMutation) ClearFailureMessage() {
-	m.failure_message = nil
-	m.clearedFields[action.FieldFailureMessage] = struct{}{}
-}
-
-// FailureMessageCleared returns if the "failure_message" field was cleared in this mutation.
-func (m *ActionMutation) FailureMessageCleared() bool {
-	_, ok := m.clearedFields[action.FieldFailureMessage]
-	return ok
-}
-
-// ResetFailureMessage resets all changes to the "failure_message" field.
-func (m *ActionMutation) ResetFailureMessage() {
-	m.failure_message = nil
-	delete(m.clearedFields, action.FieldFailureMessage)
-}
-
-// SetPrimaryOutput sets the "primary_output" field.
-func (m *ActionMutation) SetPrimaryOutput(s string) {
-	m.primary_output = &s
-}
-
-// PrimaryOutput returns the value of the "primary_output" field in the mutation.
-func (m *ActionMutation) PrimaryOutput() (r string, exists bool) {
-	v := m.primary_output
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPrimaryOutput returns the old "primary_output" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldPrimaryOutput(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrimaryOutput is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrimaryOutput requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrimaryOutput: %w", err)
-	}
-	return oldValue.PrimaryOutput, nil
-}
-
-// ClearPrimaryOutput clears the value of the "primary_output" field.
-func (m *ActionMutation) ClearPrimaryOutput() {
-	m.primary_output = nil
-	m.clearedFields[action.FieldPrimaryOutput] = struct{}{}
-}
-
-// PrimaryOutputCleared returns if the "primary_output" field was cleared in this mutation.
-func (m *ActionMutation) PrimaryOutputCleared() bool {
-	_, ok := m.clearedFields[action.FieldPrimaryOutput]
-	return ok
-}
-
-// ResetPrimaryOutput resets all changes to the "primary_output" field.
-func (m *ActionMutation) ResetPrimaryOutput() {
-	m.primary_output = nil
-	delete(m.clearedFields, action.FieldPrimaryOutput)
-}
-
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (m *ActionMutation) SetPrimaryOutputURI(s string) {
-	m.primary_output_uri = &s
-}
-
-// PrimaryOutputURI returns the value of the "primary_output_uri" field in the mutation.
-func (m *ActionMutation) PrimaryOutputURI() (r string, exists bool) {
-	v := m.primary_output_uri
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPrimaryOutputURI returns the old "primary_output_uri" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldPrimaryOutputURI(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrimaryOutputURI is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrimaryOutputURI requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrimaryOutputURI: %w", err)
-	}
-	return oldValue.PrimaryOutputURI, nil
-}
-
-// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (m *ActionMutation) ClearPrimaryOutputURI() {
-	m.primary_output_uri = nil
-	m.clearedFields[action.FieldPrimaryOutputURI] = struct{}{}
-}
-
-// PrimaryOutputURICleared returns if the "primary_output_uri" field was cleared in this mutation.
-func (m *ActionMutation) PrimaryOutputURICleared() bool {
-	_, ok := m.clearedFields[action.FieldPrimaryOutputURI]
-	return ok
-}
-
-// ResetPrimaryOutputURI resets all changes to the "primary_output_uri" field.
-func (m *ActionMutation) ResetPrimaryOutputURI() {
-	m.primary_output_uri = nil
-	delete(m.clearedFields, action.FieldPrimaryOutputURI)
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (m *ActionMutation) SetStdoutURI(s string) {
-	m.stdout_uri = &s
-}
-
-// StdoutURI returns the value of the "stdout_uri" field in the mutation.
-func (m *ActionMutation) StdoutURI() (r string, exists bool) {
-	v := m.stdout_uri
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStdoutURI returns the old "stdout_uri" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStdoutURI(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdoutURI is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdoutURI requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdoutURI: %w", err)
-	}
-	return oldValue.StdoutURI, nil
-}
-
-// ClearStdoutURI clears the value of the "stdout_uri" field.
-func (m *ActionMutation) ClearStdoutURI() {
-	m.stdout_uri = nil
-	m.clearedFields[action.FieldStdoutURI] = struct{}{}
-}
-
-// StdoutURICleared returns if the "stdout_uri" field was cleared in this mutation.
-func (m *ActionMutation) StdoutURICleared() bool {
-	_, ok := m.clearedFields[action.FieldStdoutURI]
-	return ok
-}
-
-// ResetStdoutURI resets all changes to the "stdout_uri" field.
-func (m *ActionMutation) ResetStdoutURI() {
-	m.stdout_uri = nil
-	delete(m.clearedFields, action.FieldStdoutURI)
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (m *ActionMutation) SetStderrURI(s string) {
-	m.stderr_uri = &s
-}
-
-// StderrURI returns the value of the "stderr_uri" field in the mutation.
-func (m *ActionMutation) StderrURI() (r string, exists bool) {
-	v := m.stderr_uri
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStderrURI returns the old "stderr_uri" field's value of the Action entity.
-// If the Action object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionMutation) OldStderrURI(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStderrURI is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStderrURI requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStderrURI: %w", err)
-	}
-	return oldValue.StderrURI, nil
-}
-
-// ClearStderrURI clears the value of the "stderr_uri" field.
-func (m *ActionMutation) ClearStderrURI() {
-	m.stderr_uri = nil
-	m.clearedFields[action.FieldStderrURI] = struct{}{}
-}
-
-// StderrURICleared returns if the "stderr_uri" field was cleared in this mutation.
-func (m *ActionMutation) StderrURICleared() bool {
-	_, ok := m.clearedFields[action.FieldStderrURI]
-	return ok
-}
-
-// ResetStderrURI resets all changes to the "stderr_uri" field.
-func (m *ActionMutation) ResetStderrURI() {
-	m.stderr_uri = nil
-	delete(m.clearedFields, action.FieldStderrURI)
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *ActionMutation) ClearBazelInvocation() {
-	m.clearedbazel_invocation = true
-	m.clearedFields[action.FieldBazelInvocationID] = struct{}{}
-}
-
-// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
-func (m *ActionMutation) BazelInvocationCleared() bool {
-	return m.clearedbazel_invocation
-}
-
-// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *ActionMutation) BazelInvocationIDs() (ids []int64) {
-	if id := m.bazel_invocation; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
-func (m *ActionMutation) ResetBazelInvocation() {
-	m.bazel_invocation = nil
-	m.clearedbazel_invocation = false
-}
-
-// ClearConfiguration clears the "configuration" edge to the Configuration entity.
-func (m *ActionMutation) ClearConfiguration() {
-	m.clearedconfiguration = true
-	m.clearedFields[action.FieldConfigurationID] = struct{}{}
-}
-
-// ConfigurationCleared reports if the "configuration" edge to the Configuration entity was cleared.
-func (m *ActionMutation) ConfigurationCleared() bool {
-	return m.ConfigurationIDCleared() || m.clearedconfiguration
-}
-
-// ConfigurationIDs returns the "configuration" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ConfigurationID instead. It exists only for internal usage by the builders.
-func (m *ActionMutation) ConfigurationIDs() (ids []int64) {
-	if id := m.configuration; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetConfiguration resets all changes to the "configuration" edge.
-func (m *ActionMutation) ResetConfiguration() {
-	m.configuration = nil
-	m.clearedconfiguration = false
-}
-
-// ClearActionDigest clears the "action_digest" edge to the Digest entity.
-func (m *ActionMutation) ClearActionDigest() {
-	m.clearedaction_digest = true
-	m.clearedFields[action.FieldActionDigestID] = struct{}{}
-}
-
-// ActionDigestCleared reports if the "action_digest" edge to the Digest entity was cleared.
-func (m *ActionMutation) ActionDigestCleared() bool {
-	return m.ActionDigestIDCleared() || m.clearedaction_digest
-}
-
-// ActionDigestIDs returns the "action_digest" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ActionDigestID instead. It exists only for internal usage by the builders.
-func (m *ActionMutation) ActionDigestIDs() (ids []int64) {
-	if id := m.action_digest; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetActionDigest resets all changes to the "action_digest" edge.
-func (m *ActionMutation) ResetActionDigest() {
-	m.action_digest = nil
-	m.clearedaction_digest = false
-}
-
-// Where appends a list predicates to the ActionMutation builder.
-func (m *ActionMutation) Where(ps ...predicate.Action) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ActionMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ActionMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Action, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ActionMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ActionMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (Action).
-func (m *ActionMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ActionMutation) Fields() []string {
-	fields := make([]string, 0, 18)
-	if m.bazel_invocation != nil {
-		fields = append(fields, action.FieldBazelInvocationID)
-	}
-	if m.configuration != nil {
-		fields = append(fields, action.FieldConfigurationID)
-	}
-	if m.action_digest != nil {
-		fields = append(fields, action.FieldActionDigestID)
-	}
-	if m.label != nil {
-		fields = append(fields, action.FieldLabel)
-	}
-	if m._type != nil {
-		fields = append(fields, action.FieldType)
-	}
-	if m.runner != nil {
-		fields = append(fields, action.FieldRunner)
-	}
-	if m.cache_hit != nil {
-		fields = append(fields, action.FieldCacheHit)
-	}
-	if m.success != nil {
-		fields = append(fields, action.FieldSuccess)
-	}
-	if m.exit_code != nil {
-		fields = append(fields, action.FieldExitCode)
-	}
-	if m.command_line != nil {
-		fields = append(fields, action.FieldCommandLine)
-	}
-	if m.start_time != nil {
-		fields = append(fields, action.FieldStartTime)
-	}
-	if m.end_time != nil {
-		fields = append(fields, action.FieldEndTime)
-	}
-	if m.failure_code != nil {
-		fields = append(fields, action.FieldFailureCode)
-	}
-	if m.failure_message != nil {
-		fields = append(fields, action.FieldFailureMessage)
-	}
-	if m.primary_output != nil {
-		fields = append(fields, action.FieldPrimaryOutput)
-	}
-	if m.primary_output_uri != nil {
-		fields = append(fields, action.FieldPrimaryOutputURI)
-	}
-	if m.stdout_uri != nil {
-		fields = append(fields, action.FieldStdoutURI)
-	}
-	if m.stderr_uri != nil {
-		fields = append(fields, action.FieldStderrURI)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ActionMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case action.FieldBazelInvocationID:
-		return m.BazelInvocationID()
-	case action.FieldConfigurationID:
-		return m.ConfigurationID()
-	case action.FieldActionDigestID:
-		return m.ActionDigestID()
-	case action.FieldLabel:
-		return m.Label()
-	case action.FieldType:
-		return m.GetType()
-	case action.FieldRunner:
-		return m.Runner()
-	case action.FieldCacheHit:
-		return m.CacheHit()
-	case action.FieldSuccess:
-		return m.Success()
-	case action.FieldExitCode:
-		return m.ExitCode()
-	case action.FieldCommandLine:
-		return m.CommandLine()
-	case action.FieldStartTime:
-		return m.StartTime()
-	case action.FieldEndTime:
-		return m.EndTime()
-	case action.FieldFailureCode:
-		return m.FailureCode()
-	case action.FieldFailureMessage:
-		return m.FailureMessage()
-	case action.FieldPrimaryOutput:
-		return m.PrimaryOutput()
-	case action.FieldPrimaryOutputURI:
-		return m.PrimaryOutputURI()
-	case action.FieldStdoutURI:
-		return m.StdoutURI()
-	case action.FieldStderrURI:
-		return m.StderrURI()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ActionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case action.FieldBazelInvocationID:
-		return m.OldBazelInvocationID(ctx)
-	case action.FieldConfigurationID:
-		return m.OldConfigurationID(ctx)
-	case action.FieldActionDigestID:
-		return m.OldActionDigestID(ctx)
-	case action.FieldLabel:
-		return m.OldLabel(ctx)
-	case action.FieldType:
-		return m.OldType(ctx)
-	case action.FieldRunner:
-		return m.OldRunner(ctx)
-	case action.FieldCacheHit:
-		return m.OldCacheHit(ctx)
-	case action.FieldSuccess:
-		return m.OldSuccess(ctx)
-	case action.FieldExitCode:
-		return m.OldExitCode(ctx)
-	case action.FieldCommandLine:
-		return m.OldCommandLine(ctx)
-	case action.FieldStartTime:
-		return m.OldStartTime(ctx)
-	case action.FieldEndTime:
-		return m.OldEndTime(ctx)
-	case action.FieldFailureCode:
-		return m.OldFailureCode(ctx)
-	case action.FieldFailureMessage:
-		return m.OldFailureMessage(ctx)
-	case action.FieldPrimaryOutput:
-		return m.OldPrimaryOutput(ctx)
-	case action.FieldPrimaryOutputURI:
-		return m.OldPrimaryOutputURI(ctx)
-	case action.FieldStdoutURI:
-		return m.OldStdoutURI(ctx)
-	case action.FieldStderrURI:
-		return m.OldStderrURI(ctx)
-	}
-	return nil, fmt.Errorf("unknown Action field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ActionMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case action.FieldBazelInvocationID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBazelInvocationID(v)
-		return nil
-	case action.FieldConfigurationID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetConfigurationID(v)
-		return nil
-	case action.FieldActionDigestID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetActionDigestID(v)
-		return nil
-	case action.FieldLabel:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLabel(v)
-		return nil
-	case action.FieldType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetType(v)
-		return nil
-	case action.FieldRunner:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRunner(v)
-		return nil
-	case action.FieldCacheHit:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCacheHit(v)
-		return nil
-	case action.FieldSuccess:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSuccess(v)
-		return nil
-	case action.FieldExitCode:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetExitCode(v)
-		return nil
-	case action.FieldCommandLine:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCommandLine(v)
-		return nil
-	case action.FieldStartTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStartTime(v)
-		return nil
-	case action.FieldEndTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEndTime(v)
-		return nil
-	case action.FieldFailureCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFailureCode(v)
-		return nil
-	case action.FieldFailureMessage:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFailureMessage(v)
-		return nil
-	case action.FieldPrimaryOutput:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPrimaryOutput(v)
-		return nil
-	case action.FieldPrimaryOutputURI:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPrimaryOutputURI(v)
-		return nil
-	case action.FieldStdoutURI:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdoutURI(v)
-		return nil
-	case action.FieldStderrURI:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStderrURI(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Action field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ActionMutation) AddedFields() []string {
-	var fields []string
-	if m.addexit_code != nil {
-		fields = append(fields, action.FieldExitCode)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ActionMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case action.FieldExitCode:
-		return m.AddedExitCode()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ActionMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case action.FieldExitCode:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddExitCode(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Action numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ActionMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(action.FieldConfigurationID) {
-		fields = append(fields, action.FieldConfigurationID)
-	}
-	if m.FieldCleared(action.FieldActionDigestID) {
-		fields = append(fields, action.FieldActionDigestID)
-	}
-	if m.FieldCleared(action.FieldType) {
-		fields = append(fields, action.FieldType)
-	}
-	if m.FieldCleared(action.FieldRunner) {
-		fields = append(fields, action.FieldRunner)
-	}
-	if m.FieldCleared(action.FieldCacheHit) {
-		fields = append(fields, action.FieldCacheHit)
-	}
-	if m.FieldCleared(action.FieldSuccess) {
-		fields = append(fields, action.FieldSuccess)
-	}
-	if m.FieldCleared(action.FieldExitCode) {
-		fields = append(fields, action.FieldExitCode)
-	}
-	if m.FieldCleared(action.FieldCommandLine) {
-		fields = append(fields, action.FieldCommandLine)
-	}
-	if m.FieldCleared(action.FieldStartTime) {
-		fields = append(fields, action.FieldStartTime)
-	}
-	if m.FieldCleared(action.FieldEndTime) {
-		fields = append(fields, action.FieldEndTime)
-	}
-	if m.FieldCleared(action.FieldFailureCode) {
-		fields = append(fields, action.FieldFailureCode)
-	}
-	if m.FieldCleared(action.FieldFailureMessage) {
-		fields = append(fields, action.FieldFailureMessage)
-	}
-	if m.FieldCleared(action.FieldPrimaryOutput) {
-		fields = append(fields, action.FieldPrimaryOutput)
-	}
-	if m.FieldCleared(action.FieldPrimaryOutputURI) {
-		fields = append(fields, action.FieldPrimaryOutputURI)
-	}
-	if m.FieldCleared(action.FieldStdoutURI) {
-		fields = append(fields, action.FieldStdoutURI)
-	}
-	if m.FieldCleared(action.FieldStderrURI) {
-		fields = append(fields, action.FieldStderrURI)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ActionMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ActionMutation) ClearField(name string) error {
-	switch name {
-	case action.FieldConfigurationID:
-		m.ClearConfigurationID()
-		return nil
-	case action.FieldActionDigestID:
-		m.ClearActionDigestID()
-		return nil
-	case action.FieldType:
-		m.ClearType()
-		return nil
-	case action.FieldRunner:
-		m.ClearRunner()
-		return nil
-	case action.FieldCacheHit:
-		m.ClearCacheHit()
-		return nil
-	case action.FieldSuccess:
-		m.ClearSuccess()
-		return nil
-	case action.FieldExitCode:
-		m.ClearExitCode()
-		return nil
-	case action.FieldCommandLine:
-		m.ClearCommandLine()
-		return nil
-	case action.FieldStartTime:
-		m.ClearStartTime()
-		return nil
-	case action.FieldEndTime:
-		m.ClearEndTime()
-		return nil
-	case action.FieldFailureCode:
-		m.ClearFailureCode()
-		return nil
-	case action.FieldFailureMessage:
-		m.ClearFailureMessage()
-		return nil
-	case action.FieldPrimaryOutput:
-		m.ClearPrimaryOutput()
-		return nil
-	case action.FieldPrimaryOutputURI:
-		m.ClearPrimaryOutputURI()
-		return nil
-	case action.FieldStdoutURI:
-		m.ClearStdoutURI()
-		return nil
-	case action.FieldStderrURI:
-		m.ClearStderrURI()
-		return nil
-	}
-	return fmt.Errorf("unknown Action nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ActionMutation) ResetField(name string) error {
-	switch name {
-	case action.FieldBazelInvocationID:
-		m.ResetBazelInvocationID()
-		return nil
-	case action.FieldConfigurationID:
-		m.ResetConfigurationID()
-		return nil
-	case action.FieldActionDigestID:
-		m.ResetActionDigestID()
-		return nil
-	case action.FieldLabel:
-		m.ResetLabel()
-		return nil
-	case action.FieldType:
-		m.ResetType()
-		return nil
-	case action.FieldRunner:
-		m.ResetRunner()
-		return nil
-	case action.FieldCacheHit:
-		m.ResetCacheHit()
-		return nil
-	case action.FieldSuccess:
-		m.ResetSuccess()
-		return nil
-	case action.FieldExitCode:
-		m.ResetExitCode()
-		return nil
-	case action.FieldCommandLine:
-		m.ResetCommandLine()
-		return nil
-	case action.FieldStartTime:
-		m.ResetStartTime()
-		return nil
-	case action.FieldEndTime:
-		m.ResetEndTime()
-		return nil
-	case action.FieldFailureCode:
-		m.ResetFailureCode()
-		return nil
-	case action.FieldFailureMessage:
-		m.ResetFailureMessage()
-		return nil
-	case action.FieldPrimaryOutput:
-		m.ResetPrimaryOutput()
-		return nil
-	case action.FieldPrimaryOutputURI:
-		m.ResetPrimaryOutputURI()
-		return nil
-	case action.FieldStdoutURI:
-		m.ResetStdoutURI()
-		return nil
-	case action.FieldStderrURI:
-		m.ResetStderrURI()
-		return nil
-	}
-	return fmt.Errorf("unknown Action field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ActionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.bazel_invocation != nil {
-		edges = append(edges, action.EdgeBazelInvocation)
-	}
-	if m.configuration != nil {
-		edges = append(edges, action.EdgeConfiguration)
-	}
-	if m.action_digest != nil {
-		edges = append(edges, action.EdgeActionDigest)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ActionMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case action.EdgeBazelInvocation:
-		if id := m.bazel_invocation; id != nil {
-			return []ent.Value{*id}
-		}
-	case action.EdgeConfiguration:
-		if id := m.configuration; id != nil {
-			return []ent.Value{*id}
-		}
-	case action.EdgeActionDigest:
-		if id := m.action_digest; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ActionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ActionMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ActionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.clearedbazel_invocation {
-		edges = append(edges, action.EdgeBazelInvocation)
-	}
-	if m.clearedconfiguration {
-		edges = append(edges, action.EdgeConfiguration)
-	}
-	if m.clearedaction_digest {
-		edges = append(edges, action.EdgeActionDigest)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ActionMutation) EdgeCleared(name string) bool {
-	switch name {
-	case action.EdgeBazelInvocation:
-		return m.clearedbazel_invocation
-	case action.EdgeConfiguration:
-		return m.clearedconfiguration
-	case action.EdgeActionDigest:
-		return m.clearedaction_digest
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ActionMutation) ClearEdge(name string) error {
-	switch name {
-	case action.EdgeBazelInvocation:
-		m.ClearBazelInvocation()
-		return nil
-	case action.EdgeConfiguration:
-		m.ClearConfiguration()
-		return nil
-	case action.EdgeActionDigest:
-		m.ClearActionDigest()
-		return nil
-	}
-	return fmt.Errorf("unknown Action unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ActionMutation) ResetEdge(name string) error {
-	switch name {
-	case action.EdgeBazelInvocation:
-		m.ResetBazelInvocation()
-		return nil
-	case action.EdgeConfiguration:
-		m.ResetConfiguration()
-		return nil
-	case action.EdgeActionDigest:
-		m.ResetActionDigest()
-		return nil
-	}
-	return fmt.Errorf("unknown Action edge %s", name)
-}
 
 // ActionCacheStatisticsMutation represents an operation that mutates the ActionCacheStatistics nodes in the graph.
 type ActionCacheStatisticsMutation struct {
@@ -4026,6 +2269,1763 @@ func (m *ActionDataMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown ActionData edge %s", name)
+}
+
+// ActionExecutionMutation represents an operation that mutates the ActionExecution nodes in the graph.
+type ActionExecutionMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int64
+	label                   *string
+	_type                   *string
+	runner                  *string
+	cache_hit               *bool
+	success                 *bool
+	exit_code               *int32
+	addexit_code            *int32
+	command_line            *[]string
+	appendcommand_line      []string
+	start_time              *time.Time
+	end_time                *time.Time
+	failure_code            *string
+	failure_message         *string
+	primary_output          *string
+	primary_output_uri      *string
+	stdout_uri              *string
+	stderr_uri              *string
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int64
+	clearedbazel_invocation bool
+	configuration           *int64
+	clearedconfiguration    bool
+	action_digest           *int64
+	clearedaction_digest    bool
+	done                    bool
+	oldValue                func(context.Context) (*ActionExecution, error)
+	predicates              []predicate.ActionExecution
+}
+
+var _ ent.Mutation = (*ActionExecutionMutation)(nil)
+
+// actionexecutionOption allows management of the mutation configuration using functional options.
+type actionexecutionOption func(*ActionExecutionMutation)
+
+// newActionExecutionMutation creates new mutation for the ActionExecution entity.
+func newActionExecutionMutation(c config, op Op, opts ...actionexecutionOption) *ActionExecutionMutation {
+	m := &ActionExecutionMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeActionExecution,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withActionExecutionID sets the ID field of the mutation.
+func withActionExecutionID(id int64) actionexecutionOption {
+	return func(m *ActionExecutionMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ActionExecution
+		)
+		m.oldValue = func(ctx context.Context) (*ActionExecution, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ActionExecution.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withActionExecution sets the old ActionExecution of the mutation.
+func withActionExecution(node *ActionExecution) actionexecutionOption {
+	return func(m *ActionExecutionMutation) {
+		m.oldValue = func(context.Context) (*ActionExecution, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ActionExecutionMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ActionExecutionMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ActionExecution entities.
+func (m *ActionExecutionMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ActionExecutionMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ActionExecutionMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ActionExecution.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (m *ActionExecutionMutation) SetBazelInvocationID(i int64) {
+	m.bazel_invocation = &i
+}
+
+// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
+func (m *ActionExecutionMutation) BazelInvocationID() (r int64, exists bool) {
+	v := m.bazel_invocation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
+	}
+	return oldValue.BazelInvocationID, nil
+}
+
+// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
+func (m *ActionExecutionMutation) ResetBazelInvocationID() {
+	m.bazel_invocation = nil
+}
+
+// SetConfigurationID sets the "configuration_id" field.
+func (m *ActionExecutionMutation) SetConfigurationID(i int64) {
+	m.configuration = &i
+}
+
+// ConfigurationID returns the value of the "configuration_id" field in the mutation.
+func (m *ActionExecutionMutation) ConfigurationID() (r int64, exists bool) {
+	v := m.configuration
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConfigurationID returns the old "configuration_id" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldConfigurationID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConfigurationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConfigurationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConfigurationID: %w", err)
+	}
+	return oldValue.ConfigurationID, nil
+}
+
+// ClearConfigurationID clears the value of the "configuration_id" field.
+func (m *ActionExecutionMutation) ClearConfigurationID() {
+	m.configuration = nil
+	m.clearedFields[actionexecution.FieldConfigurationID] = struct{}{}
+}
+
+// ConfigurationIDCleared returns if the "configuration_id" field was cleared in this mutation.
+func (m *ActionExecutionMutation) ConfigurationIDCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldConfigurationID]
+	return ok
+}
+
+// ResetConfigurationID resets all changes to the "configuration_id" field.
+func (m *ActionExecutionMutation) ResetConfigurationID() {
+	m.configuration = nil
+	delete(m.clearedFields, actionexecution.FieldConfigurationID)
+}
+
+// SetActionDigestID sets the "action_digest_id" field.
+func (m *ActionExecutionMutation) SetActionDigestID(i int64) {
+	m.action_digest = &i
+}
+
+// ActionDigestID returns the value of the "action_digest_id" field in the mutation.
+func (m *ActionExecutionMutation) ActionDigestID() (r int64, exists bool) {
+	v := m.action_digest
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActionDigestID returns the old "action_digest_id" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldActionDigestID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldActionDigestID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldActionDigestID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActionDigestID: %w", err)
+	}
+	return oldValue.ActionDigestID, nil
+}
+
+// ClearActionDigestID clears the value of the "action_digest_id" field.
+func (m *ActionExecutionMutation) ClearActionDigestID() {
+	m.action_digest = nil
+	m.clearedFields[actionexecution.FieldActionDigestID] = struct{}{}
+}
+
+// ActionDigestIDCleared returns if the "action_digest_id" field was cleared in this mutation.
+func (m *ActionExecutionMutation) ActionDigestIDCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldActionDigestID]
+	return ok
+}
+
+// ResetActionDigestID resets all changes to the "action_digest_id" field.
+func (m *ActionExecutionMutation) ResetActionDigestID() {
+	m.action_digest = nil
+	delete(m.clearedFields, actionexecution.FieldActionDigestID)
+}
+
+// SetLabel sets the "label" field.
+func (m *ActionExecutionMutation) SetLabel(s string) {
+	m.label = &s
+}
+
+// Label returns the value of the "label" field in the mutation.
+func (m *ActionExecutionMutation) Label() (r string, exists bool) {
+	v := m.label
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLabel returns the old "label" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldLabel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLabel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLabel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLabel: %w", err)
+	}
+	return oldValue.Label, nil
+}
+
+// ResetLabel resets all changes to the "label" field.
+func (m *ActionExecutionMutation) ResetLabel() {
+	m.label = nil
+}
+
+// SetType sets the "type" field.
+func (m *ActionExecutionMutation) SetType(s string) {
+	m._type = &s
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *ActionExecutionMutation) GetType() (r string, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ClearType clears the value of the "type" field.
+func (m *ActionExecutionMutation) ClearType() {
+	m._type = nil
+	m.clearedFields[actionexecution.FieldType] = struct{}{}
+}
+
+// TypeCleared returns if the "type" field was cleared in this mutation.
+func (m *ActionExecutionMutation) TypeCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldType]
+	return ok
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *ActionExecutionMutation) ResetType() {
+	m._type = nil
+	delete(m.clearedFields, actionexecution.FieldType)
+}
+
+// SetRunner sets the "runner" field.
+func (m *ActionExecutionMutation) SetRunner(s string) {
+	m.runner = &s
+}
+
+// Runner returns the value of the "runner" field in the mutation.
+func (m *ActionExecutionMutation) Runner() (r string, exists bool) {
+	v := m.runner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunner returns the old "runner" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldRunner(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunner is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunner requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunner: %w", err)
+	}
+	return oldValue.Runner, nil
+}
+
+// ClearRunner clears the value of the "runner" field.
+func (m *ActionExecutionMutation) ClearRunner() {
+	m.runner = nil
+	m.clearedFields[actionexecution.FieldRunner] = struct{}{}
+}
+
+// RunnerCleared returns if the "runner" field was cleared in this mutation.
+func (m *ActionExecutionMutation) RunnerCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldRunner]
+	return ok
+}
+
+// ResetRunner resets all changes to the "runner" field.
+func (m *ActionExecutionMutation) ResetRunner() {
+	m.runner = nil
+	delete(m.clearedFields, actionexecution.FieldRunner)
+}
+
+// SetCacheHit sets the "cache_hit" field.
+func (m *ActionExecutionMutation) SetCacheHit(b bool) {
+	m.cache_hit = &b
+}
+
+// CacheHit returns the value of the "cache_hit" field in the mutation.
+func (m *ActionExecutionMutation) CacheHit() (r bool, exists bool) {
+	v := m.cache_hit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCacheHit returns the old "cache_hit" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldCacheHit(ctx context.Context) (v *bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCacheHit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCacheHit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCacheHit: %w", err)
+	}
+	return oldValue.CacheHit, nil
+}
+
+// ClearCacheHit clears the value of the "cache_hit" field.
+func (m *ActionExecutionMutation) ClearCacheHit() {
+	m.cache_hit = nil
+	m.clearedFields[actionexecution.FieldCacheHit] = struct{}{}
+}
+
+// CacheHitCleared returns if the "cache_hit" field was cleared in this mutation.
+func (m *ActionExecutionMutation) CacheHitCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldCacheHit]
+	return ok
+}
+
+// ResetCacheHit resets all changes to the "cache_hit" field.
+func (m *ActionExecutionMutation) ResetCacheHit() {
+	m.cache_hit = nil
+	delete(m.clearedFields, actionexecution.FieldCacheHit)
+}
+
+// SetSuccess sets the "success" field.
+func (m *ActionExecutionMutation) SetSuccess(b bool) {
+	m.success = &b
+}
+
+// Success returns the value of the "success" field in the mutation.
+func (m *ActionExecutionMutation) Success() (r bool, exists bool) {
+	v := m.success
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSuccess returns the old "success" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldSuccess(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSuccess is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSuccess requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSuccess: %w", err)
+	}
+	return oldValue.Success, nil
+}
+
+// ClearSuccess clears the value of the "success" field.
+func (m *ActionExecutionMutation) ClearSuccess() {
+	m.success = nil
+	m.clearedFields[actionexecution.FieldSuccess] = struct{}{}
+}
+
+// SuccessCleared returns if the "success" field was cleared in this mutation.
+func (m *ActionExecutionMutation) SuccessCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldSuccess]
+	return ok
+}
+
+// ResetSuccess resets all changes to the "success" field.
+func (m *ActionExecutionMutation) ResetSuccess() {
+	m.success = nil
+	delete(m.clearedFields, actionexecution.FieldSuccess)
+}
+
+// SetExitCode sets the "exit_code" field.
+func (m *ActionExecutionMutation) SetExitCode(i int32) {
+	m.exit_code = &i
+	m.addexit_code = nil
+}
+
+// ExitCode returns the value of the "exit_code" field in the mutation.
+func (m *ActionExecutionMutation) ExitCode() (r int32, exists bool) {
+	v := m.exit_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExitCode returns the old "exit_code" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldExitCode(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExitCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExitCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExitCode: %w", err)
+	}
+	return oldValue.ExitCode, nil
+}
+
+// AddExitCode adds i to the "exit_code" field.
+func (m *ActionExecutionMutation) AddExitCode(i int32) {
+	if m.addexit_code != nil {
+		*m.addexit_code += i
+	} else {
+		m.addexit_code = &i
+	}
+}
+
+// AddedExitCode returns the value that was added to the "exit_code" field in this mutation.
+func (m *ActionExecutionMutation) AddedExitCode() (r int32, exists bool) {
+	v := m.addexit_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearExitCode clears the value of the "exit_code" field.
+func (m *ActionExecutionMutation) ClearExitCode() {
+	m.exit_code = nil
+	m.addexit_code = nil
+	m.clearedFields[actionexecution.FieldExitCode] = struct{}{}
+}
+
+// ExitCodeCleared returns if the "exit_code" field was cleared in this mutation.
+func (m *ActionExecutionMutation) ExitCodeCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldExitCode]
+	return ok
+}
+
+// ResetExitCode resets all changes to the "exit_code" field.
+func (m *ActionExecutionMutation) ResetExitCode() {
+	m.exit_code = nil
+	m.addexit_code = nil
+	delete(m.clearedFields, actionexecution.FieldExitCode)
+}
+
+// SetCommandLine sets the "command_line" field.
+func (m *ActionExecutionMutation) SetCommandLine(s []string) {
+	m.command_line = &s
+	m.appendcommand_line = nil
+}
+
+// CommandLine returns the value of the "command_line" field in the mutation.
+func (m *ActionExecutionMutation) CommandLine() (r []string, exists bool) {
+	v := m.command_line
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCommandLine returns the old "command_line" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldCommandLine(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCommandLine is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCommandLine requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCommandLine: %w", err)
+	}
+	return oldValue.CommandLine, nil
+}
+
+// AppendCommandLine adds s to the "command_line" field.
+func (m *ActionExecutionMutation) AppendCommandLine(s []string) {
+	m.appendcommand_line = append(m.appendcommand_line, s...)
+}
+
+// AppendedCommandLine returns the list of values that were appended to the "command_line" field in this mutation.
+func (m *ActionExecutionMutation) AppendedCommandLine() ([]string, bool) {
+	if len(m.appendcommand_line) == 0 {
+		return nil, false
+	}
+	return m.appendcommand_line, true
+}
+
+// ClearCommandLine clears the value of the "command_line" field.
+func (m *ActionExecutionMutation) ClearCommandLine() {
+	m.command_line = nil
+	m.appendcommand_line = nil
+	m.clearedFields[actionexecution.FieldCommandLine] = struct{}{}
+}
+
+// CommandLineCleared returns if the "command_line" field was cleared in this mutation.
+func (m *ActionExecutionMutation) CommandLineCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldCommandLine]
+	return ok
+}
+
+// ResetCommandLine resets all changes to the "command_line" field.
+func (m *ActionExecutionMutation) ResetCommandLine() {
+	m.command_line = nil
+	m.appendcommand_line = nil
+	delete(m.clearedFields, actionexecution.FieldCommandLine)
+}
+
+// SetStartTime sets the "start_time" field.
+func (m *ActionExecutionMutation) SetStartTime(t time.Time) {
+	m.start_time = &t
+}
+
+// StartTime returns the value of the "start_time" field in the mutation.
+func (m *ActionExecutionMutation) StartTime() (r time.Time, exists bool) {
+	v := m.start_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartTime returns the old "start_time" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldStartTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStartTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStartTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartTime: %w", err)
+	}
+	return oldValue.StartTime, nil
+}
+
+// ClearStartTime clears the value of the "start_time" field.
+func (m *ActionExecutionMutation) ClearStartTime() {
+	m.start_time = nil
+	m.clearedFields[actionexecution.FieldStartTime] = struct{}{}
+}
+
+// StartTimeCleared returns if the "start_time" field was cleared in this mutation.
+func (m *ActionExecutionMutation) StartTimeCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldStartTime]
+	return ok
+}
+
+// ResetStartTime resets all changes to the "start_time" field.
+func (m *ActionExecutionMutation) ResetStartTime() {
+	m.start_time = nil
+	delete(m.clearedFields, actionexecution.FieldStartTime)
+}
+
+// SetEndTime sets the "end_time" field.
+func (m *ActionExecutionMutation) SetEndTime(t time.Time) {
+	m.end_time = &t
+}
+
+// EndTime returns the value of the "end_time" field in the mutation.
+func (m *ActionExecutionMutation) EndTime() (r time.Time, exists bool) {
+	v := m.end_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEndTime returns the old "end_time" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldEndTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEndTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEndTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEndTime: %w", err)
+	}
+	return oldValue.EndTime, nil
+}
+
+// ClearEndTime clears the value of the "end_time" field.
+func (m *ActionExecutionMutation) ClearEndTime() {
+	m.end_time = nil
+	m.clearedFields[actionexecution.FieldEndTime] = struct{}{}
+}
+
+// EndTimeCleared returns if the "end_time" field was cleared in this mutation.
+func (m *ActionExecutionMutation) EndTimeCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldEndTime]
+	return ok
+}
+
+// ResetEndTime resets all changes to the "end_time" field.
+func (m *ActionExecutionMutation) ResetEndTime() {
+	m.end_time = nil
+	delete(m.clearedFields, actionexecution.FieldEndTime)
+}
+
+// SetFailureCode sets the "failure_code" field.
+func (m *ActionExecutionMutation) SetFailureCode(s string) {
+	m.failure_code = &s
+}
+
+// FailureCode returns the value of the "failure_code" field in the mutation.
+func (m *ActionExecutionMutation) FailureCode() (r string, exists bool) {
+	v := m.failure_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFailureCode returns the old "failure_code" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldFailureCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFailureCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFailureCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFailureCode: %w", err)
+	}
+	return oldValue.FailureCode, nil
+}
+
+// ClearFailureCode clears the value of the "failure_code" field.
+func (m *ActionExecutionMutation) ClearFailureCode() {
+	m.failure_code = nil
+	m.clearedFields[actionexecution.FieldFailureCode] = struct{}{}
+}
+
+// FailureCodeCleared returns if the "failure_code" field was cleared in this mutation.
+func (m *ActionExecutionMutation) FailureCodeCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldFailureCode]
+	return ok
+}
+
+// ResetFailureCode resets all changes to the "failure_code" field.
+func (m *ActionExecutionMutation) ResetFailureCode() {
+	m.failure_code = nil
+	delete(m.clearedFields, actionexecution.FieldFailureCode)
+}
+
+// SetFailureMessage sets the "failure_message" field.
+func (m *ActionExecutionMutation) SetFailureMessage(s string) {
+	m.failure_message = &s
+}
+
+// FailureMessage returns the value of the "failure_message" field in the mutation.
+func (m *ActionExecutionMutation) FailureMessage() (r string, exists bool) {
+	v := m.failure_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFailureMessage returns the old "failure_message" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldFailureMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFailureMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFailureMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFailureMessage: %w", err)
+	}
+	return oldValue.FailureMessage, nil
+}
+
+// ClearFailureMessage clears the value of the "failure_message" field.
+func (m *ActionExecutionMutation) ClearFailureMessage() {
+	m.failure_message = nil
+	m.clearedFields[actionexecution.FieldFailureMessage] = struct{}{}
+}
+
+// FailureMessageCleared returns if the "failure_message" field was cleared in this mutation.
+func (m *ActionExecutionMutation) FailureMessageCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldFailureMessage]
+	return ok
+}
+
+// ResetFailureMessage resets all changes to the "failure_message" field.
+func (m *ActionExecutionMutation) ResetFailureMessage() {
+	m.failure_message = nil
+	delete(m.clearedFields, actionexecution.FieldFailureMessage)
+}
+
+// SetPrimaryOutput sets the "primary_output" field.
+func (m *ActionExecutionMutation) SetPrimaryOutput(s string) {
+	m.primary_output = &s
+}
+
+// PrimaryOutput returns the value of the "primary_output" field in the mutation.
+func (m *ActionExecutionMutation) PrimaryOutput() (r string, exists bool) {
+	v := m.primary_output
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPrimaryOutput returns the old "primary_output" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldPrimaryOutput(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPrimaryOutput is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPrimaryOutput requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPrimaryOutput: %w", err)
+	}
+	return oldValue.PrimaryOutput, nil
+}
+
+// ClearPrimaryOutput clears the value of the "primary_output" field.
+func (m *ActionExecutionMutation) ClearPrimaryOutput() {
+	m.primary_output = nil
+	m.clearedFields[actionexecution.FieldPrimaryOutput] = struct{}{}
+}
+
+// PrimaryOutputCleared returns if the "primary_output" field was cleared in this mutation.
+func (m *ActionExecutionMutation) PrimaryOutputCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldPrimaryOutput]
+	return ok
+}
+
+// ResetPrimaryOutput resets all changes to the "primary_output" field.
+func (m *ActionExecutionMutation) ResetPrimaryOutput() {
+	m.primary_output = nil
+	delete(m.clearedFields, actionexecution.FieldPrimaryOutput)
+}
+
+// SetPrimaryOutputURI sets the "primary_output_uri" field.
+func (m *ActionExecutionMutation) SetPrimaryOutputURI(s string) {
+	m.primary_output_uri = &s
+}
+
+// PrimaryOutputURI returns the value of the "primary_output_uri" field in the mutation.
+func (m *ActionExecutionMutation) PrimaryOutputURI() (r string, exists bool) {
+	v := m.primary_output_uri
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPrimaryOutputURI returns the old "primary_output_uri" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldPrimaryOutputURI(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPrimaryOutputURI is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPrimaryOutputURI requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPrimaryOutputURI: %w", err)
+	}
+	return oldValue.PrimaryOutputURI, nil
+}
+
+// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
+func (m *ActionExecutionMutation) ClearPrimaryOutputURI() {
+	m.primary_output_uri = nil
+	m.clearedFields[actionexecution.FieldPrimaryOutputURI] = struct{}{}
+}
+
+// PrimaryOutputURICleared returns if the "primary_output_uri" field was cleared in this mutation.
+func (m *ActionExecutionMutation) PrimaryOutputURICleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldPrimaryOutputURI]
+	return ok
+}
+
+// ResetPrimaryOutputURI resets all changes to the "primary_output_uri" field.
+func (m *ActionExecutionMutation) ResetPrimaryOutputURI() {
+	m.primary_output_uri = nil
+	delete(m.clearedFields, actionexecution.FieldPrimaryOutputURI)
+}
+
+// SetStdoutURI sets the "stdout_uri" field.
+func (m *ActionExecutionMutation) SetStdoutURI(s string) {
+	m.stdout_uri = &s
+}
+
+// StdoutURI returns the value of the "stdout_uri" field in the mutation.
+func (m *ActionExecutionMutation) StdoutURI() (r string, exists bool) {
+	v := m.stdout_uri
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStdoutURI returns the old "stdout_uri" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldStdoutURI(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStdoutURI is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStdoutURI requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStdoutURI: %w", err)
+	}
+	return oldValue.StdoutURI, nil
+}
+
+// ClearStdoutURI clears the value of the "stdout_uri" field.
+func (m *ActionExecutionMutation) ClearStdoutURI() {
+	m.stdout_uri = nil
+	m.clearedFields[actionexecution.FieldStdoutURI] = struct{}{}
+}
+
+// StdoutURICleared returns if the "stdout_uri" field was cleared in this mutation.
+func (m *ActionExecutionMutation) StdoutURICleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldStdoutURI]
+	return ok
+}
+
+// ResetStdoutURI resets all changes to the "stdout_uri" field.
+func (m *ActionExecutionMutation) ResetStdoutURI() {
+	m.stdout_uri = nil
+	delete(m.clearedFields, actionexecution.FieldStdoutURI)
+}
+
+// SetStderrURI sets the "stderr_uri" field.
+func (m *ActionExecutionMutation) SetStderrURI(s string) {
+	m.stderr_uri = &s
+}
+
+// StderrURI returns the value of the "stderr_uri" field in the mutation.
+func (m *ActionExecutionMutation) StderrURI() (r string, exists bool) {
+	v := m.stderr_uri
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStderrURI returns the old "stderr_uri" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldStderrURI(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStderrURI is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStderrURI requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStderrURI: %w", err)
+	}
+	return oldValue.StderrURI, nil
+}
+
+// ClearStderrURI clears the value of the "stderr_uri" field.
+func (m *ActionExecutionMutation) ClearStderrURI() {
+	m.stderr_uri = nil
+	m.clearedFields[actionexecution.FieldStderrURI] = struct{}{}
+}
+
+// StderrURICleared returns if the "stderr_uri" field was cleared in this mutation.
+func (m *ActionExecutionMutation) StderrURICleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldStderrURI]
+	return ok
+}
+
+// ResetStderrURI resets all changes to the "stderr_uri" field.
+func (m *ActionExecutionMutation) ResetStderrURI() {
+	m.stderr_uri = nil
+	delete(m.clearedFields, actionexecution.FieldStderrURI)
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *ActionExecutionMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+	m.clearedFields[actionexecution.FieldBazelInvocationID] = struct{}{}
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *ActionExecutionMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *ActionExecutionMutation) BazelInvocationIDs() (ids []int64) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *ActionExecutionMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// ClearConfiguration clears the "configuration" edge to the Configuration entity.
+func (m *ActionExecutionMutation) ClearConfiguration() {
+	m.clearedconfiguration = true
+	m.clearedFields[actionexecution.FieldConfigurationID] = struct{}{}
+}
+
+// ConfigurationCleared reports if the "configuration" edge to the Configuration entity was cleared.
+func (m *ActionExecutionMutation) ConfigurationCleared() bool {
+	return m.ConfigurationIDCleared() || m.clearedconfiguration
+}
+
+// ConfigurationIDs returns the "configuration" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ConfigurationID instead. It exists only for internal usage by the builders.
+func (m *ActionExecutionMutation) ConfigurationIDs() (ids []int64) {
+	if id := m.configuration; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetConfiguration resets all changes to the "configuration" edge.
+func (m *ActionExecutionMutation) ResetConfiguration() {
+	m.configuration = nil
+	m.clearedconfiguration = false
+}
+
+// ClearActionDigest clears the "action_digest" edge to the Digest entity.
+func (m *ActionExecutionMutation) ClearActionDigest() {
+	m.clearedaction_digest = true
+	m.clearedFields[actionexecution.FieldActionDigestID] = struct{}{}
+}
+
+// ActionDigestCleared reports if the "action_digest" edge to the Digest entity was cleared.
+func (m *ActionExecutionMutation) ActionDigestCleared() bool {
+	return m.ActionDigestIDCleared() || m.clearedaction_digest
+}
+
+// ActionDigestIDs returns the "action_digest" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionDigestID instead. It exists only for internal usage by the builders.
+func (m *ActionExecutionMutation) ActionDigestIDs() (ids []int64) {
+	if id := m.action_digest; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetActionDigest resets all changes to the "action_digest" edge.
+func (m *ActionExecutionMutation) ResetActionDigest() {
+	m.action_digest = nil
+	m.clearedaction_digest = false
+}
+
+// Where appends a list predicates to the ActionExecutionMutation builder.
+func (m *ActionExecutionMutation) Where(ps ...predicate.ActionExecution) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ActionExecutionMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ActionExecutionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ActionExecution, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ActionExecutionMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ActionExecutionMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ActionExecution).
+func (m *ActionExecutionMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ActionExecutionMutation) Fields() []string {
+	fields := make([]string, 0, 18)
+	if m.bazel_invocation != nil {
+		fields = append(fields, actionexecution.FieldBazelInvocationID)
+	}
+	if m.configuration != nil {
+		fields = append(fields, actionexecution.FieldConfigurationID)
+	}
+	if m.action_digest != nil {
+		fields = append(fields, actionexecution.FieldActionDigestID)
+	}
+	if m.label != nil {
+		fields = append(fields, actionexecution.FieldLabel)
+	}
+	if m._type != nil {
+		fields = append(fields, actionexecution.FieldType)
+	}
+	if m.runner != nil {
+		fields = append(fields, actionexecution.FieldRunner)
+	}
+	if m.cache_hit != nil {
+		fields = append(fields, actionexecution.FieldCacheHit)
+	}
+	if m.success != nil {
+		fields = append(fields, actionexecution.FieldSuccess)
+	}
+	if m.exit_code != nil {
+		fields = append(fields, actionexecution.FieldExitCode)
+	}
+	if m.command_line != nil {
+		fields = append(fields, actionexecution.FieldCommandLine)
+	}
+	if m.start_time != nil {
+		fields = append(fields, actionexecution.FieldStartTime)
+	}
+	if m.end_time != nil {
+		fields = append(fields, actionexecution.FieldEndTime)
+	}
+	if m.failure_code != nil {
+		fields = append(fields, actionexecution.FieldFailureCode)
+	}
+	if m.failure_message != nil {
+		fields = append(fields, actionexecution.FieldFailureMessage)
+	}
+	if m.primary_output != nil {
+		fields = append(fields, actionexecution.FieldPrimaryOutput)
+	}
+	if m.primary_output_uri != nil {
+		fields = append(fields, actionexecution.FieldPrimaryOutputURI)
+	}
+	if m.stdout_uri != nil {
+		fields = append(fields, actionexecution.FieldStdoutURI)
+	}
+	if m.stderr_uri != nil {
+		fields = append(fields, actionexecution.FieldStderrURI)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ActionExecutionMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case actionexecution.FieldBazelInvocationID:
+		return m.BazelInvocationID()
+	case actionexecution.FieldConfigurationID:
+		return m.ConfigurationID()
+	case actionexecution.FieldActionDigestID:
+		return m.ActionDigestID()
+	case actionexecution.FieldLabel:
+		return m.Label()
+	case actionexecution.FieldType:
+		return m.GetType()
+	case actionexecution.FieldRunner:
+		return m.Runner()
+	case actionexecution.FieldCacheHit:
+		return m.CacheHit()
+	case actionexecution.FieldSuccess:
+		return m.Success()
+	case actionexecution.FieldExitCode:
+		return m.ExitCode()
+	case actionexecution.FieldCommandLine:
+		return m.CommandLine()
+	case actionexecution.FieldStartTime:
+		return m.StartTime()
+	case actionexecution.FieldEndTime:
+		return m.EndTime()
+	case actionexecution.FieldFailureCode:
+		return m.FailureCode()
+	case actionexecution.FieldFailureMessage:
+		return m.FailureMessage()
+	case actionexecution.FieldPrimaryOutput:
+		return m.PrimaryOutput()
+	case actionexecution.FieldPrimaryOutputURI:
+		return m.PrimaryOutputURI()
+	case actionexecution.FieldStdoutURI:
+		return m.StdoutURI()
+	case actionexecution.FieldStderrURI:
+		return m.StderrURI()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ActionExecutionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case actionexecution.FieldBazelInvocationID:
+		return m.OldBazelInvocationID(ctx)
+	case actionexecution.FieldConfigurationID:
+		return m.OldConfigurationID(ctx)
+	case actionexecution.FieldActionDigestID:
+		return m.OldActionDigestID(ctx)
+	case actionexecution.FieldLabel:
+		return m.OldLabel(ctx)
+	case actionexecution.FieldType:
+		return m.OldType(ctx)
+	case actionexecution.FieldRunner:
+		return m.OldRunner(ctx)
+	case actionexecution.FieldCacheHit:
+		return m.OldCacheHit(ctx)
+	case actionexecution.FieldSuccess:
+		return m.OldSuccess(ctx)
+	case actionexecution.FieldExitCode:
+		return m.OldExitCode(ctx)
+	case actionexecution.FieldCommandLine:
+		return m.OldCommandLine(ctx)
+	case actionexecution.FieldStartTime:
+		return m.OldStartTime(ctx)
+	case actionexecution.FieldEndTime:
+		return m.OldEndTime(ctx)
+	case actionexecution.FieldFailureCode:
+		return m.OldFailureCode(ctx)
+	case actionexecution.FieldFailureMessage:
+		return m.OldFailureMessage(ctx)
+	case actionexecution.FieldPrimaryOutput:
+		return m.OldPrimaryOutput(ctx)
+	case actionexecution.FieldPrimaryOutputURI:
+		return m.OldPrimaryOutputURI(ctx)
+	case actionexecution.FieldStdoutURI:
+		return m.OldStdoutURI(ctx)
+	case actionexecution.FieldStderrURI:
+		return m.OldStderrURI(ctx)
+	}
+	return nil, fmt.Errorf("unknown ActionExecution field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActionExecutionMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case actionexecution.FieldBazelInvocationID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBazelInvocationID(v)
+		return nil
+	case actionexecution.FieldConfigurationID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConfigurationID(v)
+		return nil
+	case actionexecution.FieldActionDigestID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActionDigestID(v)
+		return nil
+	case actionexecution.FieldLabel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLabel(v)
+		return nil
+	case actionexecution.FieldType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case actionexecution.FieldRunner:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunner(v)
+		return nil
+	case actionexecution.FieldCacheHit:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCacheHit(v)
+		return nil
+	case actionexecution.FieldSuccess:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSuccess(v)
+		return nil
+	case actionexecution.FieldExitCode:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExitCode(v)
+		return nil
+	case actionexecution.FieldCommandLine:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCommandLine(v)
+		return nil
+	case actionexecution.FieldStartTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartTime(v)
+		return nil
+	case actionexecution.FieldEndTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEndTime(v)
+		return nil
+	case actionexecution.FieldFailureCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFailureCode(v)
+		return nil
+	case actionexecution.FieldFailureMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFailureMessage(v)
+		return nil
+	case actionexecution.FieldPrimaryOutput:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPrimaryOutput(v)
+		return nil
+	case actionexecution.FieldPrimaryOutputURI:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPrimaryOutputURI(v)
+		return nil
+	case actionexecution.FieldStdoutURI:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStdoutURI(v)
+		return nil
+	case actionexecution.FieldStderrURI:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStderrURI(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ActionExecution field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ActionExecutionMutation) AddedFields() []string {
+	var fields []string
+	if m.addexit_code != nil {
+		fields = append(fields, actionexecution.FieldExitCode)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ActionExecutionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case actionexecution.FieldExitCode:
+		return m.AddedExitCode()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActionExecutionMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case actionexecution.FieldExitCode:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddExitCode(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ActionExecution numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ActionExecutionMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(actionexecution.FieldConfigurationID) {
+		fields = append(fields, actionexecution.FieldConfigurationID)
+	}
+	if m.FieldCleared(actionexecution.FieldActionDigestID) {
+		fields = append(fields, actionexecution.FieldActionDigestID)
+	}
+	if m.FieldCleared(actionexecution.FieldType) {
+		fields = append(fields, actionexecution.FieldType)
+	}
+	if m.FieldCleared(actionexecution.FieldRunner) {
+		fields = append(fields, actionexecution.FieldRunner)
+	}
+	if m.FieldCleared(actionexecution.FieldCacheHit) {
+		fields = append(fields, actionexecution.FieldCacheHit)
+	}
+	if m.FieldCleared(actionexecution.FieldSuccess) {
+		fields = append(fields, actionexecution.FieldSuccess)
+	}
+	if m.FieldCleared(actionexecution.FieldExitCode) {
+		fields = append(fields, actionexecution.FieldExitCode)
+	}
+	if m.FieldCleared(actionexecution.FieldCommandLine) {
+		fields = append(fields, actionexecution.FieldCommandLine)
+	}
+	if m.FieldCleared(actionexecution.FieldStartTime) {
+		fields = append(fields, actionexecution.FieldStartTime)
+	}
+	if m.FieldCleared(actionexecution.FieldEndTime) {
+		fields = append(fields, actionexecution.FieldEndTime)
+	}
+	if m.FieldCleared(actionexecution.FieldFailureCode) {
+		fields = append(fields, actionexecution.FieldFailureCode)
+	}
+	if m.FieldCleared(actionexecution.FieldFailureMessage) {
+		fields = append(fields, actionexecution.FieldFailureMessage)
+	}
+	if m.FieldCleared(actionexecution.FieldPrimaryOutput) {
+		fields = append(fields, actionexecution.FieldPrimaryOutput)
+	}
+	if m.FieldCleared(actionexecution.FieldPrimaryOutputURI) {
+		fields = append(fields, actionexecution.FieldPrimaryOutputURI)
+	}
+	if m.FieldCleared(actionexecution.FieldStdoutURI) {
+		fields = append(fields, actionexecution.FieldStdoutURI)
+	}
+	if m.FieldCleared(actionexecution.FieldStderrURI) {
+		fields = append(fields, actionexecution.FieldStderrURI)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ActionExecutionMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ActionExecutionMutation) ClearField(name string) error {
+	switch name {
+	case actionexecution.FieldConfigurationID:
+		m.ClearConfigurationID()
+		return nil
+	case actionexecution.FieldActionDigestID:
+		m.ClearActionDigestID()
+		return nil
+	case actionexecution.FieldType:
+		m.ClearType()
+		return nil
+	case actionexecution.FieldRunner:
+		m.ClearRunner()
+		return nil
+	case actionexecution.FieldCacheHit:
+		m.ClearCacheHit()
+		return nil
+	case actionexecution.FieldSuccess:
+		m.ClearSuccess()
+		return nil
+	case actionexecution.FieldExitCode:
+		m.ClearExitCode()
+		return nil
+	case actionexecution.FieldCommandLine:
+		m.ClearCommandLine()
+		return nil
+	case actionexecution.FieldStartTime:
+		m.ClearStartTime()
+		return nil
+	case actionexecution.FieldEndTime:
+		m.ClearEndTime()
+		return nil
+	case actionexecution.FieldFailureCode:
+		m.ClearFailureCode()
+		return nil
+	case actionexecution.FieldFailureMessage:
+		m.ClearFailureMessage()
+		return nil
+	case actionexecution.FieldPrimaryOutput:
+		m.ClearPrimaryOutput()
+		return nil
+	case actionexecution.FieldPrimaryOutputURI:
+		m.ClearPrimaryOutputURI()
+		return nil
+	case actionexecution.FieldStdoutURI:
+		m.ClearStdoutURI()
+		return nil
+	case actionexecution.FieldStderrURI:
+		m.ClearStderrURI()
+		return nil
+	}
+	return fmt.Errorf("unknown ActionExecution nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ActionExecutionMutation) ResetField(name string) error {
+	switch name {
+	case actionexecution.FieldBazelInvocationID:
+		m.ResetBazelInvocationID()
+		return nil
+	case actionexecution.FieldConfigurationID:
+		m.ResetConfigurationID()
+		return nil
+	case actionexecution.FieldActionDigestID:
+		m.ResetActionDigestID()
+		return nil
+	case actionexecution.FieldLabel:
+		m.ResetLabel()
+		return nil
+	case actionexecution.FieldType:
+		m.ResetType()
+		return nil
+	case actionexecution.FieldRunner:
+		m.ResetRunner()
+		return nil
+	case actionexecution.FieldCacheHit:
+		m.ResetCacheHit()
+		return nil
+	case actionexecution.FieldSuccess:
+		m.ResetSuccess()
+		return nil
+	case actionexecution.FieldExitCode:
+		m.ResetExitCode()
+		return nil
+	case actionexecution.FieldCommandLine:
+		m.ResetCommandLine()
+		return nil
+	case actionexecution.FieldStartTime:
+		m.ResetStartTime()
+		return nil
+	case actionexecution.FieldEndTime:
+		m.ResetEndTime()
+		return nil
+	case actionexecution.FieldFailureCode:
+		m.ResetFailureCode()
+		return nil
+	case actionexecution.FieldFailureMessage:
+		m.ResetFailureMessage()
+		return nil
+	case actionexecution.FieldPrimaryOutput:
+		m.ResetPrimaryOutput()
+		return nil
+	case actionexecution.FieldPrimaryOutputURI:
+		m.ResetPrimaryOutputURI()
+		return nil
+	case actionexecution.FieldStdoutURI:
+		m.ResetStdoutURI()
+		return nil
+	case actionexecution.FieldStderrURI:
+		m.ResetStderrURI()
+		return nil
+	}
+	return fmt.Errorf("unknown ActionExecution field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ActionExecutionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.bazel_invocation != nil {
+		edges = append(edges, actionexecution.EdgeBazelInvocation)
+	}
+	if m.configuration != nil {
+		edges = append(edges, actionexecution.EdgeConfiguration)
+	}
+	if m.action_digest != nil {
+		edges = append(edges, actionexecution.EdgeActionDigest)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ActionExecutionMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case actionexecution.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	case actionexecution.EdgeConfiguration:
+		if id := m.configuration; id != nil {
+			return []ent.Value{*id}
+		}
+	case actionexecution.EdgeActionDigest:
+		if id := m.action_digest; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ActionExecutionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ActionExecutionMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ActionExecutionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.clearedbazel_invocation {
+		edges = append(edges, actionexecution.EdgeBazelInvocation)
+	}
+	if m.clearedconfiguration {
+		edges = append(edges, actionexecution.EdgeConfiguration)
+	}
+	if m.clearedaction_digest {
+		edges = append(edges, actionexecution.EdgeActionDigest)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ActionExecutionMutation) EdgeCleared(name string) bool {
+	switch name {
+	case actionexecution.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	case actionexecution.EdgeConfiguration:
+		return m.clearedconfiguration
+	case actionexecution.EdgeActionDigest:
+		return m.clearedaction_digest
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ActionExecutionMutation) ClearEdge(name string) error {
+	switch name {
+	case actionexecution.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	case actionexecution.EdgeConfiguration:
+		m.ClearConfiguration()
+		return nil
+	case actionexecution.EdgeActionDigest:
+		m.ClearActionDigest()
+		return nil
+	}
+	return fmt.Errorf("unknown ActionExecution unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ActionExecutionMutation) ResetEdge(name string) error {
+	switch name {
+	case actionexecution.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	case actionexecution.EdgeConfiguration:
+		m.ResetConfiguration()
+		return nil
+	case actionexecution.EdgeActionDigest:
+		m.ResetActionDigest()
+		return nil
+	}
+	return fmt.Errorf("unknown ActionExecution edge %s", name)
 }
 
 // ActionSummaryMutation represents an operation that mutates the ActionSummary nodes in the graph.
@@ -6913,9 +6913,9 @@ type BazelInvocationMutation struct {
 	configurations                   map[int64]struct{}
 	removedconfigurations            map[int64]struct{}
 	clearedconfigurations            bool
-	actions                          map[int64]struct{}
-	removedactions                   map[int64]struct{}
-	clearedactions                   bool
+	action_executions                map[int64]struct{}
+	removedaction_executions         map[int64]struct{}
+	clearedaction_executions         bool
 	metrics                          *int64
 	clearedmetrics                   bool
 	incomplete_build_logs            map[int64]struct{}
@@ -8278,58 +8278,58 @@ func (m *BazelInvocationMutation) ResetConfigurations() {
 	m.removedconfigurations = nil
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by ids.
-func (m *BazelInvocationMutation) AddActionIDs(ids ...int64) {
-	if m.actions == nil {
-		m.actions = make(map[int64]struct{})
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by ids.
+func (m *BazelInvocationMutation) AddActionExecutionIDs(ids ...int64) {
+	if m.action_executions == nil {
+		m.action_executions = make(map[int64]struct{})
 	}
 	for i := range ids {
-		m.actions[ids[i]] = struct{}{}
+		m.action_executions[ids[i]] = struct{}{}
 	}
 }
 
-// ClearActions clears the "actions" edge to the Action entity.
-func (m *BazelInvocationMutation) ClearActions() {
-	m.clearedactions = true
+// ClearActionExecutions clears the "action_executions" edge to the ActionExecution entity.
+func (m *BazelInvocationMutation) ClearActionExecutions() {
+	m.clearedaction_executions = true
 }
 
-// ActionsCleared reports if the "actions" edge to the Action entity was cleared.
-func (m *BazelInvocationMutation) ActionsCleared() bool {
-	return m.clearedactions
+// ActionExecutionsCleared reports if the "action_executions" edge to the ActionExecution entity was cleared.
+func (m *BazelInvocationMutation) ActionExecutionsCleared() bool {
+	return m.clearedaction_executions
 }
 
-// RemoveActionIDs removes the "actions" edge to the Action entity by IDs.
-func (m *BazelInvocationMutation) RemoveActionIDs(ids ...int64) {
-	if m.removedactions == nil {
-		m.removedactions = make(map[int64]struct{})
+// RemoveActionExecutionIDs removes the "action_executions" edge to the ActionExecution entity by IDs.
+func (m *BazelInvocationMutation) RemoveActionExecutionIDs(ids ...int64) {
+	if m.removedaction_executions == nil {
+		m.removedaction_executions = make(map[int64]struct{})
 	}
 	for i := range ids {
-		delete(m.actions, ids[i])
-		m.removedactions[ids[i]] = struct{}{}
+		delete(m.action_executions, ids[i])
+		m.removedaction_executions[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedActions returns the removed IDs of the "actions" edge to the Action entity.
-func (m *BazelInvocationMutation) RemovedActionsIDs() (ids []int64) {
-	for id := range m.removedactions {
+// RemovedActionExecutions returns the removed IDs of the "action_executions" edge to the ActionExecution entity.
+func (m *BazelInvocationMutation) RemovedActionExecutionsIDs() (ids []int64) {
+	for id := range m.removedaction_executions {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ActionsIDs returns the "actions" edge IDs in the mutation.
-func (m *BazelInvocationMutation) ActionsIDs() (ids []int64) {
-	for id := range m.actions {
+// ActionExecutionsIDs returns the "action_executions" edge IDs in the mutation.
+func (m *BazelInvocationMutation) ActionExecutionsIDs() (ids []int64) {
+	for id := range m.action_executions {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetActions resets all changes to the "actions" edge.
-func (m *BazelInvocationMutation) ResetActions() {
-	m.actions = nil
-	m.clearedactions = false
-	m.removedactions = nil
+// ResetActionExecutions resets all changes to the "action_executions" edge.
+func (m *BazelInvocationMutation) ResetActionExecutions() {
+	m.action_executions = nil
+	m.clearedaction_executions = false
+	m.removedaction_executions = nil
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
@@ -9254,8 +9254,8 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	if m.configurations != nil {
 		edges = append(edges, bazelinvocation.EdgeConfigurations)
 	}
-	if m.actions != nil {
-		edges = append(edges, bazelinvocation.EdgeActions)
+	if m.action_executions != nil {
+		edges = append(edges, bazelinvocation.EdgeActionExecutions)
 	}
 	if m.metrics != nil {
 		edges = append(edges, bazelinvocation.EdgeMetrics)
@@ -9317,9 +9317,9 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeActions:
-		ids := make([]ent.Value, 0, len(m.actions))
-		for id := range m.actions {
+	case bazelinvocation.EdgeActionExecutions:
+		ids := make([]ent.Value, 0, len(m.action_executions))
+		for id := range m.action_executions {
 			ids = append(ids, id)
 		}
 		return ids
@@ -9374,8 +9374,8 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	if m.removedconfigurations != nil {
 		edges = append(edges, bazelinvocation.EdgeConfigurations)
 	}
-	if m.removedactions != nil {
-		edges = append(edges, bazelinvocation.EdgeActions)
+	if m.removedaction_executions != nil {
+		edges = append(edges, bazelinvocation.EdgeActionExecutions)
 	}
 	if m.removedincomplete_build_logs != nil {
 		edges = append(edges, bazelinvocation.EdgeIncompleteBuildLogs)
@@ -9411,9 +9411,9 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeActions:
-		ids := make([]ent.Value, 0, len(m.removedactions))
-		for id := range m.removedactions {
+	case bazelinvocation.EdgeActionExecutions:
+		ids := make([]ent.Value, 0, len(m.removedaction_executions))
+		for id := range m.removedaction_executions {
 			ids = append(ids, id)
 		}
 		return ids
@@ -9475,8 +9475,8 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	if m.clearedconfigurations {
 		edges = append(edges, bazelinvocation.EdgeConfigurations)
 	}
-	if m.clearedactions {
-		edges = append(edges, bazelinvocation.EdgeActions)
+	if m.clearedaction_executions {
+		edges = append(edges, bazelinvocation.EdgeActionExecutions)
 	}
 	if m.clearedmetrics {
 		edges = append(edges, bazelinvocation.EdgeMetrics)
@@ -9520,8 +9520,8 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedconnection_metadata
 	case bazelinvocation.EdgeConfigurations:
 		return m.clearedconfigurations
-	case bazelinvocation.EdgeActions:
-		return m.clearedactions
+	case bazelinvocation.EdgeActionExecutions:
+		return m.clearedaction_executions
 	case bazelinvocation.EdgeMetrics:
 		return m.clearedmetrics
 	case bazelinvocation.EdgeIncompleteBuildLogs:
@@ -9594,8 +9594,8 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 	case bazelinvocation.EdgeConfigurations:
 		m.ResetConfigurations()
 		return nil
-	case bazelinvocation.EdgeActions:
-		m.ResetActions()
+	case bazelinvocation.EdgeActionExecutions:
+		m.ResetActionExecutions()
 		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ResetMetrics()
@@ -15012,9 +15012,9 @@ type ConfigurationMutation struct {
 	invocation_targets        map[int64]struct{}
 	removedinvocation_targets map[int64]struct{}
 	clearedinvocation_targets bool
-	actions                   map[int64]struct{}
-	removedactions            map[int64]struct{}
-	clearedactions            bool
+	action_executions         map[int64]struct{}
+	removedaction_executions  map[int64]struct{}
+	clearedaction_executions  bool
 	done                      bool
 	oldValue                  func(context.Context) (*Configuration, error)
 	predicates                []predicate.Configuration
@@ -15522,58 +15522,58 @@ func (m *ConfigurationMutation) ResetInvocationTargets() {
 	m.removedinvocation_targets = nil
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by ids.
-func (m *ConfigurationMutation) AddActionIDs(ids ...int64) {
-	if m.actions == nil {
-		m.actions = make(map[int64]struct{})
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by ids.
+func (m *ConfigurationMutation) AddActionExecutionIDs(ids ...int64) {
+	if m.action_executions == nil {
+		m.action_executions = make(map[int64]struct{})
 	}
 	for i := range ids {
-		m.actions[ids[i]] = struct{}{}
+		m.action_executions[ids[i]] = struct{}{}
 	}
 }
 
-// ClearActions clears the "actions" edge to the Action entity.
-func (m *ConfigurationMutation) ClearActions() {
-	m.clearedactions = true
+// ClearActionExecutions clears the "action_executions" edge to the ActionExecution entity.
+func (m *ConfigurationMutation) ClearActionExecutions() {
+	m.clearedaction_executions = true
 }
 
-// ActionsCleared reports if the "actions" edge to the Action entity was cleared.
-func (m *ConfigurationMutation) ActionsCleared() bool {
-	return m.clearedactions
+// ActionExecutionsCleared reports if the "action_executions" edge to the ActionExecution entity was cleared.
+func (m *ConfigurationMutation) ActionExecutionsCleared() bool {
+	return m.clearedaction_executions
 }
 
-// RemoveActionIDs removes the "actions" edge to the Action entity by IDs.
-func (m *ConfigurationMutation) RemoveActionIDs(ids ...int64) {
-	if m.removedactions == nil {
-		m.removedactions = make(map[int64]struct{})
+// RemoveActionExecutionIDs removes the "action_executions" edge to the ActionExecution entity by IDs.
+func (m *ConfigurationMutation) RemoveActionExecutionIDs(ids ...int64) {
+	if m.removedaction_executions == nil {
+		m.removedaction_executions = make(map[int64]struct{})
 	}
 	for i := range ids {
-		delete(m.actions, ids[i])
-		m.removedactions[ids[i]] = struct{}{}
+		delete(m.action_executions, ids[i])
+		m.removedaction_executions[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedActions returns the removed IDs of the "actions" edge to the Action entity.
-func (m *ConfigurationMutation) RemovedActionsIDs() (ids []int64) {
-	for id := range m.removedactions {
+// RemovedActionExecutions returns the removed IDs of the "action_executions" edge to the ActionExecution entity.
+func (m *ConfigurationMutation) RemovedActionExecutionsIDs() (ids []int64) {
+	for id := range m.removedaction_executions {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ActionsIDs returns the "actions" edge IDs in the mutation.
-func (m *ConfigurationMutation) ActionsIDs() (ids []int64) {
-	for id := range m.actions {
+// ActionExecutionsIDs returns the "action_executions" edge IDs in the mutation.
+func (m *ConfigurationMutation) ActionExecutionsIDs() (ids []int64) {
+	for id := range m.action_executions {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetActions resets all changes to the "actions" edge.
-func (m *ConfigurationMutation) ResetActions() {
-	m.actions = nil
-	m.clearedactions = false
-	m.removedactions = nil
+// ResetActionExecutions resets all changes to the "action_executions" edge.
+func (m *ConfigurationMutation) ResetActionExecutions() {
+	m.action_executions = nil
+	m.clearedaction_executions = false
+	m.removedaction_executions = nil
 }
 
 // Where appends a list predicates to the ConfigurationMutation builder.
@@ -15854,8 +15854,8 @@ func (m *ConfigurationMutation) AddedEdges() []string {
 	if m.invocation_targets != nil {
 		edges = append(edges, configuration.EdgeInvocationTargets)
 	}
-	if m.actions != nil {
-		edges = append(edges, configuration.EdgeActions)
+	if m.action_executions != nil {
+		edges = append(edges, configuration.EdgeActionExecutions)
 	}
 	return edges
 }
@@ -15874,9 +15874,9 @@ func (m *ConfigurationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case configuration.EdgeActions:
-		ids := make([]ent.Value, 0, len(m.actions))
-		for id := range m.actions {
+	case configuration.EdgeActionExecutions:
+		ids := make([]ent.Value, 0, len(m.action_executions))
+		for id := range m.action_executions {
 			ids = append(ids, id)
 		}
 		return ids
@@ -15890,8 +15890,8 @@ func (m *ConfigurationMutation) RemovedEdges() []string {
 	if m.removedinvocation_targets != nil {
 		edges = append(edges, configuration.EdgeInvocationTargets)
 	}
-	if m.removedactions != nil {
-		edges = append(edges, configuration.EdgeActions)
+	if m.removedaction_executions != nil {
+		edges = append(edges, configuration.EdgeActionExecutions)
 	}
 	return edges
 }
@@ -15906,9 +15906,9 @@ func (m *ConfigurationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case configuration.EdgeActions:
-		ids := make([]ent.Value, 0, len(m.removedactions))
-		for id := range m.removedactions {
+	case configuration.EdgeActionExecutions:
+		ids := make([]ent.Value, 0, len(m.removedaction_executions))
+		for id := range m.removedaction_executions {
 			ids = append(ids, id)
 		}
 		return ids
@@ -15925,8 +15925,8 @@ func (m *ConfigurationMutation) ClearedEdges() []string {
 	if m.clearedinvocation_targets {
 		edges = append(edges, configuration.EdgeInvocationTargets)
 	}
-	if m.clearedactions {
-		edges = append(edges, configuration.EdgeActions)
+	if m.clearedaction_executions {
+		edges = append(edges, configuration.EdgeActionExecutions)
 	}
 	return edges
 }
@@ -15939,8 +15939,8 @@ func (m *ConfigurationMutation) EdgeCleared(name string) bool {
 		return m.clearedbazel_invocation
 	case configuration.EdgeInvocationTargets:
 		return m.clearedinvocation_targets
-	case configuration.EdgeActions:
-		return m.clearedactions
+	case configuration.EdgeActionExecutions:
+		return m.clearedaction_executions
 	}
 	return false
 }
@@ -15966,8 +15966,8 @@ func (m *ConfigurationMutation) ResetEdge(name string) error {
 	case configuration.EdgeInvocationTargets:
 		m.ResetInvocationTargets()
 		return nil
-	case configuration.EdgeActions:
-		m.ResetActions()
+	case configuration.EdgeActionExecutions:
+		m.ResetActionExecutions()
 		return nil
 	}
 	return fmt.Errorf("unknown Configuration edge %s", name)
@@ -16940,25 +16940,25 @@ func (m *CumulativeMetricsMutation) ResetEdge(name string) error {
 // DigestMutation represents an operation that mutates the Digest nodes in the graph.
 type DigestMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *int64
-	rev2_instance_name *string
-	digest_function    *int16
-	adddigest_function *int16
-	hash               *[]byte
-	size_bytes         *int64
-	addsize_bytes      *int64
-	clearedFields      map[string]struct{}
-	files              map[int64]struct{}
-	removedfiles       map[int64]struct{}
-	clearedfiles       bool
-	actions            map[int64]struct{}
-	removedactions     map[int64]struct{}
-	clearedactions     bool
-	done               bool
-	oldValue           func(context.Context) (*Digest, error)
-	predicates         []predicate.Digest
+	op                       Op
+	typ                      string
+	id                       *int64
+	rev2_instance_name       *string
+	digest_function          *int16
+	adddigest_function       *int16
+	hash                     *[]byte
+	size_bytes               *int64
+	addsize_bytes            *int64
+	clearedFields            map[string]struct{}
+	files                    map[int64]struct{}
+	removedfiles             map[int64]struct{}
+	clearedfiles             bool
+	action_executions        map[int64]struct{}
+	removedaction_executions map[int64]struct{}
+	clearedaction_executions bool
+	done                     bool
+	oldValue                 func(context.Context) (*Digest, error)
+	predicates               []predicate.Digest
 }
 
 var _ ent.Mutation = (*DigestMutation)(nil)
@@ -17303,58 +17303,58 @@ func (m *DigestMutation) ResetFiles() {
 	m.removedfiles = nil
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by ids.
-func (m *DigestMutation) AddActionIDs(ids ...int64) {
-	if m.actions == nil {
-		m.actions = make(map[int64]struct{})
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by ids.
+func (m *DigestMutation) AddActionExecutionIDs(ids ...int64) {
+	if m.action_executions == nil {
+		m.action_executions = make(map[int64]struct{})
 	}
 	for i := range ids {
-		m.actions[ids[i]] = struct{}{}
+		m.action_executions[ids[i]] = struct{}{}
 	}
 }
 
-// ClearActions clears the "actions" edge to the Action entity.
-func (m *DigestMutation) ClearActions() {
-	m.clearedactions = true
+// ClearActionExecutions clears the "action_executions" edge to the ActionExecution entity.
+func (m *DigestMutation) ClearActionExecutions() {
+	m.clearedaction_executions = true
 }
 
-// ActionsCleared reports if the "actions" edge to the Action entity was cleared.
-func (m *DigestMutation) ActionsCleared() bool {
-	return m.clearedactions
+// ActionExecutionsCleared reports if the "action_executions" edge to the ActionExecution entity was cleared.
+func (m *DigestMutation) ActionExecutionsCleared() bool {
+	return m.clearedaction_executions
 }
 
-// RemoveActionIDs removes the "actions" edge to the Action entity by IDs.
-func (m *DigestMutation) RemoveActionIDs(ids ...int64) {
-	if m.removedactions == nil {
-		m.removedactions = make(map[int64]struct{})
+// RemoveActionExecutionIDs removes the "action_executions" edge to the ActionExecution entity by IDs.
+func (m *DigestMutation) RemoveActionExecutionIDs(ids ...int64) {
+	if m.removedaction_executions == nil {
+		m.removedaction_executions = make(map[int64]struct{})
 	}
 	for i := range ids {
-		delete(m.actions, ids[i])
-		m.removedactions[ids[i]] = struct{}{}
+		delete(m.action_executions, ids[i])
+		m.removedaction_executions[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedActions returns the removed IDs of the "actions" edge to the Action entity.
-func (m *DigestMutation) RemovedActionsIDs() (ids []int64) {
-	for id := range m.removedactions {
+// RemovedActionExecutions returns the removed IDs of the "action_executions" edge to the ActionExecution entity.
+func (m *DigestMutation) RemovedActionExecutionsIDs() (ids []int64) {
+	for id := range m.removedaction_executions {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ActionsIDs returns the "actions" edge IDs in the mutation.
-func (m *DigestMutation) ActionsIDs() (ids []int64) {
-	for id := range m.actions {
+// ActionExecutionsIDs returns the "action_executions" edge IDs in the mutation.
+func (m *DigestMutation) ActionExecutionsIDs() (ids []int64) {
+	for id := range m.action_executions {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetActions resets all changes to the "actions" edge.
-func (m *DigestMutation) ResetActions() {
-	m.actions = nil
-	m.clearedactions = false
-	m.removedactions = nil
+// ResetActionExecutions resets all changes to the "action_executions" edge.
+func (m *DigestMutation) ResetActionExecutions() {
+	m.action_executions = nil
+	m.clearedaction_executions = false
+	m.removedaction_executions = nil
 }
 
 // Where appends a list predicates to the DigestMutation builder.
@@ -17572,8 +17572,8 @@ func (m *DigestMutation) AddedEdges() []string {
 	if m.files != nil {
 		edges = append(edges, digest.EdgeFiles)
 	}
-	if m.actions != nil {
-		edges = append(edges, digest.EdgeActions)
+	if m.action_executions != nil {
+		edges = append(edges, digest.EdgeActionExecutions)
 	}
 	return edges
 }
@@ -17588,9 +17588,9 @@ func (m *DigestMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case digest.EdgeActions:
-		ids := make([]ent.Value, 0, len(m.actions))
-		for id := range m.actions {
+	case digest.EdgeActionExecutions:
+		ids := make([]ent.Value, 0, len(m.action_executions))
+		for id := range m.action_executions {
 			ids = append(ids, id)
 		}
 		return ids
@@ -17604,8 +17604,8 @@ func (m *DigestMutation) RemovedEdges() []string {
 	if m.removedfiles != nil {
 		edges = append(edges, digest.EdgeFiles)
 	}
-	if m.removedactions != nil {
-		edges = append(edges, digest.EdgeActions)
+	if m.removedaction_executions != nil {
+		edges = append(edges, digest.EdgeActionExecutions)
 	}
 	return edges
 }
@@ -17620,9 +17620,9 @@ func (m *DigestMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case digest.EdgeActions:
-		ids := make([]ent.Value, 0, len(m.removedactions))
-		for id := range m.removedactions {
+	case digest.EdgeActionExecutions:
+		ids := make([]ent.Value, 0, len(m.removedaction_executions))
+		for id := range m.removedaction_executions {
 			ids = append(ids, id)
 		}
 		return ids
@@ -17636,8 +17636,8 @@ func (m *DigestMutation) ClearedEdges() []string {
 	if m.clearedfiles {
 		edges = append(edges, digest.EdgeFiles)
 	}
-	if m.clearedactions {
-		edges = append(edges, digest.EdgeActions)
+	if m.clearedaction_executions {
+		edges = append(edges, digest.EdgeActionExecutions)
 	}
 	return edges
 }
@@ -17648,8 +17648,8 @@ func (m *DigestMutation) EdgeCleared(name string) bool {
 	switch name {
 	case digest.EdgeFiles:
 		return m.clearedfiles
-	case digest.EdgeActions:
-		return m.clearedactions
+	case digest.EdgeActionExecutions:
+		return m.clearedaction_executions
 	}
 	return false
 }
@@ -17669,8 +17669,8 @@ func (m *DigestMutation) ResetEdge(name string) error {
 	case digest.EdgeFiles:
 		m.ResetFiles()
 		return nil
-	case digest.EdgeActions:
-		m.ResetActions()
+	case digest.EdgeActionExecutions:
+		m.ResetActionExecutions()
 		return nil
 	}
 	return fmt.Errorf("unknown Digest edge %s", name)

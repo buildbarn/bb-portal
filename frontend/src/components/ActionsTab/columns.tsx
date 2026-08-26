@@ -3,8 +3,8 @@ import { Tag, Tooltip, Typography } from "antd";
 import type { FilterDropdownProps, FilterValue } from "antd/es/table/interface";
 import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import type {
-  ActionWhereInput,
-  BazelInvocationActionFragment,
+  ActionExecutionWhereInput,
+  BazelInvocationActionExecutionFragment,
 } from "@/graphql/__generated__/graphql";
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
 import {
@@ -18,7 +18,7 @@ import { getActionExecutionKind } from "./execution";
 
 const searchFilter = (
   placeholder: string,
-  toWhere: (value: string) => ActionWhereInput,
+  toWhere: (value: string) => ActionExecutionWhereInput,
 ) => ({
   filterSearch: true,
   filterDropdown: (filterProps: FilterDropdownProps) => (
@@ -37,7 +37,7 @@ const searchFilter = (
 
 const selectableFilter = <Value extends string>(
   options: readonly Value[],
-  toWhere: (values: Value[]) => ActionWhereInput,
+  toWhere: (values: Value[]) => ActionExecutionWhereInput,
 ) => {
   const uniqueOptions = Array.from(new Set(options));
   return {
@@ -56,7 +56,9 @@ const selectableFilter = <Value extends string>(
 };
 
 const configurationTooltip = (
-  configuration: NonNullable<BazelInvocationActionFragment["configuration"]>,
+  configuration: NonNullable<
+    BazelInvocationActionExecutionFragment["configuration"]
+  >,
 ) => {
   const makeVariables =
     configuration.makeVariables &&
@@ -100,7 +102,7 @@ const actionStatuses = ["Succeeded", "Failed"] as const;
 
 const actionStatusPredicates: Record<
   (typeof actionStatuses)[number],
-  ActionWhereInput
+  ActionExecutionWhereInput
 > = {
   Succeeded: { success: true },
   Failed: { or: [{ success: false }, { successIsNil: true }] },
@@ -110,7 +112,7 @@ const executionKinds = ["Remote", "Local", "Internal", "Unknown"] as const;
 
 const executionPredicates: Record<
   (typeof executionKinds)[number],
-  ActionWhereInput
+  ActionExecutionWhereInput
 > = {
   Remote: { runnerIn: ["remote", "remote cache hit"] },
   Local: {
@@ -132,7 +134,7 @@ const cacheResults = [
 
 const cacheResultPredicates: Record<
   (typeof cacheResults)[number],
-  ActionWhereInput
+  ActionExecutionWhereInput
 > = {
   "Remote hit": { cacheHit: true, runner: "remote cache hit" },
   "Disk hit": { cacheHit: true, runner: "disk cache hit" },
@@ -151,8 +153,8 @@ export const getColumns = (
   actionMnemonics: string[],
   configurationMnemonics: string[],
 ): TableColumnTypeWithFilter<
-  BazelInvocationActionFragment,
-  ActionWhereInput
+  BazelInvocationActionExecutionFragment,
+  ActionExecutionWhereInput
 >[] => [
   {
     key: "success",

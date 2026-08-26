@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import type {
+  ActionExecutionWhereInput,
   ActionTimingMetrics,
-  ActionWhereInput,
-  BazelInvocationActionFragment,
+  BazelInvocationActionExecutionFragment,
 } from "@/graphql/__generated__/graphql";
 import { PageCursorTable } from "../PageCursorTable";
 import type {
@@ -15,7 +15,7 @@ import { getColumns } from "./columns";
 import { ActionsMetrics } from "./metrics";
 
 interface Props {
-  actions: BazelInvocationActionFragment[];
+  actions: BazelInvocationActionExecutionFragment[];
   actionTimingMetrics: Pick<
     ActionTimingMetrics,
     | "totalExpectedTimeInMs"
@@ -29,7 +29,7 @@ interface Props {
   configurationMnemonics: string[];
   executionPhaseTimeInMs: number | null | undefined;
   pageSize: number;
-  onFilterChange: (where: ActionWhereInput[]) => void;
+  onFilterChange: (where: ActionExecutionWhereInput[]) => void;
   getPaginationUpdateLink: GetPaginationUpdateLinkType;
   pageInfo: PageInfo;
 }

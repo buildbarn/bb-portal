@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -473,19 +473,19 @@ func (_u *BazelInvocationUpdate) AddConfigurations(v ...*Configuration) *BazelIn
 	return _u.AddConfigurationIDs(ids...)
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (_u *BazelInvocationUpdate) AddActionIDs(ids ...int64) *BazelInvocationUpdate {
-	_u.mutation.AddActionIDs(ids...)
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by IDs.
+func (_u *BazelInvocationUpdate) AddActionExecutionIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.AddActionExecutionIDs(ids...)
 	return _u
 }
 
-// AddActions adds the "actions" edges to the Action entity.
-func (_u *BazelInvocationUpdate) AddActions(v ...*Action) *BazelInvocationUpdate {
+// AddActionExecutions adds the "action_executions" edges to the ActionExecution entity.
+func (_u *BazelInvocationUpdate) AddActionExecutions(v ...*ActionExecution) *BazelInvocationUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddActionIDs(ids...)
+	return _u.AddActionExecutionIDs(ids...)
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -664,25 +664,25 @@ func (_u *BazelInvocationUpdate) RemoveConfigurations(v ...*Configuration) *Baze
 	return _u.RemoveConfigurationIDs(ids...)
 }
 
-// ClearActions clears all "actions" edges to the Action entity.
-func (_u *BazelInvocationUpdate) ClearActions() *BazelInvocationUpdate {
-	_u.mutation.ClearActions()
+// ClearActionExecutions clears all "action_executions" edges to the ActionExecution entity.
+func (_u *BazelInvocationUpdate) ClearActionExecutions() *BazelInvocationUpdate {
+	_u.mutation.ClearActionExecutions()
 	return _u
 }
 
-// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
-func (_u *BazelInvocationUpdate) RemoveActionIDs(ids ...int64) *BazelInvocationUpdate {
-	_u.mutation.RemoveActionIDs(ids...)
+// RemoveActionExecutionIDs removes the "action_executions" edge to ActionExecution entities by IDs.
+func (_u *BazelInvocationUpdate) RemoveActionExecutionIDs(ids ...int64) *BazelInvocationUpdate {
+	_u.mutation.RemoveActionExecutionIDs(ids...)
 	return _u
 }
 
-// RemoveActions removes "actions" edges to Action entities.
-func (_u *BazelInvocationUpdate) RemoveActions(v ...*Action) *BazelInvocationUpdate {
+// RemoveActionExecutions removes "action_executions" edges to ActionExecution entities.
+func (_u *BazelInvocationUpdate) RemoveActionExecutions(v ...*ActionExecution) *BazelInvocationUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveActionIDs(ids...)
+	return _u.RemoveActionExecutionIDs(ids...)
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -1177,28 +1177,28 @@ func (_u *BazelInvocationUpdate) sqlSave(ctx context.Context) (_node int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ActionsCleared() {
+	if _u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionExecutionsIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1206,15 +1206,15 @@ func (_u *BazelInvocationUpdate) sqlSave(ctx context.Context) (_node int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionExecutionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1954,19 +1954,19 @@ func (_u *BazelInvocationUpdateOne) AddConfigurations(v ...*Configuration) *Baze
 	return _u.AddConfigurationIDs(ids...)
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (_u *BazelInvocationUpdateOne) AddActionIDs(ids ...int64) *BazelInvocationUpdateOne {
-	_u.mutation.AddActionIDs(ids...)
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by IDs.
+func (_u *BazelInvocationUpdateOne) AddActionExecutionIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.AddActionExecutionIDs(ids...)
 	return _u
 }
 
-// AddActions adds the "actions" edges to the Action entity.
-func (_u *BazelInvocationUpdateOne) AddActions(v ...*Action) *BazelInvocationUpdateOne {
+// AddActionExecutions adds the "action_executions" edges to the ActionExecution entity.
+func (_u *BazelInvocationUpdateOne) AddActionExecutions(v ...*ActionExecution) *BazelInvocationUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddActionIDs(ids...)
+	return _u.AddActionExecutionIDs(ids...)
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -2145,25 +2145,25 @@ func (_u *BazelInvocationUpdateOne) RemoveConfigurations(v ...*Configuration) *B
 	return _u.RemoveConfigurationIDs(ids...)
 }
 
-// ClearActions clears all "actions" edges to the Action entity.
-func (_u *BazelInvocationUpdateOne) ClearActions() *BazelInvocationUpdateOne {
-	_u.mutation.ClearActions()
+// ClearActionExecutions clears all "action_executions" edges to the ActionExecution entity.
+func (_u *BazelInvocationUpdateOne) ClearActionExecutions() *BazelInvocationUpdateOne {
+	_u.mutation.ClearActionExecutions()
 	return _u
 }
 
-// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
-func (_u *BazelInvocationUpdateOne) RemoveActionIDs(ids ...int64) *BazelInvocationUpdateOne {
-	_u.mutation.RemoveActionIDs(ids...)
+// RemoveActionExecutionIDs removes the "action_executions" edge to ActionExecution entities by IDs.
+func (_u *BazelInvocationUpdateOne) RemoveActionExecutionIDs(ids ...int64) *BazelInvocationUpdateOne {
+	_u.mutation.RemoveActionExecutionIDs(ids...)
 	return _u
 }
 
-// RemoveActions removes "actions" edges to Action entities.
-func (_u *BazelInvocationUpdateOne) RemoveActions(v ...*Action) *BazelInvocationUpdateOne {
+// RemoveActionExecutions removes "action_executions" edges to ActionExecution entities.
+func (_u *BazelInvocationUpdateOne) RemoveActionExecutions(v ...*ActionExecution) *BazelInvocationUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveActionIDs(ids...)
+	return _u.RemoveActionExecutionIDs(ids...)
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -2688,28 +2688,28 @@ func (_u *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelIn
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ActionsCleared() {
+	if _u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionExecutionsIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2717,15 +2717,15 @@ func (_u *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelIn
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionExecutionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

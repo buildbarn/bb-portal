@@ -1,14 +1,6 @@
 {
   "getBazelInvocation": {
-    "actionTimingMetrics": {
-      "cacheHitActions": 1,
-      "timeSavedByCacheHitsInMs": 1250,
-      "timedActions": 4,
-      "timedCacheHitActions": 1,
-      "totalActions": 4,
-      "totalExpectedTimeInMs": 3000
-    },
-    "actions": {
+    "actionExecutions": {
       "edges": [
         {
           "node": {
@@ -23,7 +15,7 @@
             "exitCode": 0,
             "failureCode": "",
             "failureMessage": "",
-            "id": "QWN0aW9uOjY=",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjY=",
             "label": "//example:unavailable",
             "primaryOutput": "bazel-out/k8-fastbuild/bin/example/unavailable.out",
             "primaryOutputURI": "",
@@ -42,6 +34,14 @@
         "hasPreviousPage": false,
         "startCursor": "gaFp0wAAAAAAAAAG"
       }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 1,
+      "timeSavedByCacheHitsInMs": 1250,
+      "timedActions": 4,
+      "timedCacheHitActions": 1,
+      "totalActions": 4,
+      "totalExpectedTimeInMs": 3000
     },
     "configurations": [
       {

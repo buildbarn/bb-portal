@@ -1,14 +1,6 @@
 {
   "getBazelInvocation": {
-    "actionTimingMetrics": {
-      "cacheHitActions": 1,
-      "timeSavedByCacheHitsInMs": 1250,
-      "timedActions": 4,
-      "timedCacheHitActions": 1,
-      "totalActions": 4,
-      "totalExpectedTimeInMs": 3000
-    },
-    "actions": {
+    "actionExecutions": {
       "edges": [
         {
           "node": {
@@ -34,7 +26,7 @@
             "exitCode": 0,
             "failureCode": "",
             "failureMessage": "",
-            "id": "QWN0aW9uOjM=",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjM=",
             "label": "//example:first",
             "primaryOutput": "bazel-out/k8-fastbuild/bin/example/first.o",
             "primaryOutputURI": "bytestream://cache.example.com/blobs/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/42",
@@ -69,7 +61,7 @@
             "exitCode": 1,
             "failureCode": "NON_ZERO_EXIT",
             "failureMessage": "link failed",
-            "id": "QWN0aW9uOjQ=",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjQ=",
             "label": "//example:second",
             "primaryOutput": "bazel-out/k8-fastbuild/bin/example/second.o",
             "primaryOutputURI": "bytestream://cache.example.com/blobs/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/84",
@@ -84,10 +76,18 @@
       ],
       "pageInfo": {
         "endCursor": "gaFp0wAAAAAAAAAE",
-        "hasNextPage": false,
+        "hasNextPage": true,
         "hasPreviousPage": false,
         "startCursor": "gaFp0wAAAAAAAAAD"
       }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 1,
+      "timeSavedByCacheHitsInMs": 1250,
+      "timedActions": 4,
+      "timedCacheHitActions": 1,
+      "totalActions": 4,
+      "totalExpectedTimeInMs": 3000
     },
     "configurations": [
       {

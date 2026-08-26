@@ -9,13 +9,14 @@ import (
 	"entgo.io/ent/schema/index"
 )
 
-// Action holds the schema definition for the Action entity.
-type Action struct {
+// ActionExecution holds the schema definition for an action observed during a
+// Bazel invocation.
+type ActionExecution struct {
 	ent.Schema
 }
 
-// Fields of the Action.
-func (Action) Fields() []ent.Field {
+// Fields of the ActionExecution.
+func (ActionExecution) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("bazel_invocation_id").
 			Comment("The id of the bazel invocation").
@@ -75,13 +76,13 @@ func (Action) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Action.
-func (Action) Edges() []ent.Edge {
+// Edges of the ActionExecution.
+func (ActionExecution) Edges() []ent.Edge {
 	return []ent.Edge{
-		// Edge back to the bazel invocation.
+		// Edge back to the Bazel invocation in which this execution was observed.
 		edge.From("bazel_invocation", BazelInvocation.Type).
 			Field("bazel_invocation_id").
-			Ref("actions").
+			Ref("action_executions").
 			Unique().
 			Required().
 			Immutable(),
@@ -94,13 +95,13 @@ func (Action) Edges() []ent.Edge {
 
 		edge.From("action_digest", Digest.Type).
 			Field("action_digest_id").
-			Ref("actions").
+			Ref("action_executions").
 			Unique(),
 	}
 }
 
-// Indexes for Action.
-func (Action) Indexes() []ent.Index {
+// Indexes for ActionExecution.
+func (ActionExecution) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("label"),
 		index.Edges("bazel_invocation"),
@@ -110,16 +111,16 @@ func (Action) Indexes() []ent.Index {
 	}
 }
 
-// Annotations for Action.
-func (Action) Annotations() []schema.Annotation {
+// Annotations for ActionExecution.
+func (ActionExecution) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
-		entgql.QueryField("findActions"),
+		entgql.QueryField("findActionExecutions"),
 	}
 }
 
-// Mixin of the Action.
-func (Action) Mixin() []ent.Mixin {
+// Mixin of the ActionExecution.
+func (ActionExecution) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		Int64IdMixin{},
 	}

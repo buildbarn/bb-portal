@@ -222,7 +222,7 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 		}
 	}
 
-	creates := make([]*ent.ActionCreate, 0, len(batch))
+	creates := make([]*ent.ActionExecutionCreate, 0, len(batch))
 	for _, info := range batch {
 		actionExecuted := info.Event.GetAction()
 		actionCompletedID := info.Event.GetId().GetActionCompleted()
@@ -230,7 +230,7 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 			continue
 		}
 
-		create := tx.Ent().Action.Create().
+		create := tx.Ent().ActionExecution.Create().
 			SetBazelInvocationID(r.InvocationDbID).
 			SetLabel(actionCompletedID.GetLabel()).
 			SetSuccess(actionExecuted.Success).
@@ -277,7 +277,7 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 	}
 
 	if len(creates) > 0 {
-		if err := tx.Ent().Action.CreateBulk(creates...).Exec(ctx); err != nil {
+		if err := tx.Ent().ActionExecution.CreateBulk(creates...).Exec(ctx); err != nil {
 			return util.StatusWrap(err, "Failed to save ActionExecuted events")
 		}
 	}

@@ -1,14 +1,6 @@
 {
   "getBazelInvocation": {
-    "actionTimingMetrics": {
-      "cacheHitActions": 0,
-      "timeSavedByCacheHitsInMs": 0,
-      "timedActions": 0,
-      "timedCacheHitActions": 0,
-      "totalActions": 1,
-      "totalExpectedTimeInMs": 0
-    },
-    "actions": {
+    "actionExecutions": {
       "edges": [
         {
           "node": {
@@ -43,7 +35,7 @@
             "exitCode": 1,
             "failureCode": "NON_ZERO_EXIT",
             "failureMessage": "tsc.sh failed: error executing TsProject command (from target //next.js/pages:pages) bazel-out/darwin_arm64-opt-exec-ST-13d3ddad9198/bin/external/aspect_rules_ts~~ext~npm_typescript/tsc.sh --skipLibCheck --project next.js/tsconfig.json --outDir next.js/pages --rootDir next.js/pages ... (remaining 2 arguments skipped)\n\nUse --sandbox_debug to see verbose messages from the sandbox and retain the sandbox build root for debugging",
-            "id": "QWN0aW9uOjE=",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjE=",
             "label": "//next.js/pages:pages",
             "primaryOutput": "bazel-out/darwin_arm64-fastbuild/bin/next.js/pages/_app.js",
             "primaryOutputURI": "",
@@ -62,6 +54,14 @@
         "hasPreviousPage": false,
         "startCursor": "gaFp0wAAAAAAAAAB"
       }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 0,
+      "timeSavedByCacheHitsInMs": 0,
+      "timedActions": 0,
+      "timedCacheHitActions": 0,
+      "totalActions": 1,
+      "totalExpectedTimeInMs": 0
     },
     "configurations": [
       {

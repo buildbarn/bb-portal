@@ -1,14 +1,6 @@
 {
   "getBazelInvocation": {
-    "actionTimingMetrics": {
-      "cacheHitActions": 0,
-      "timeSavedByCacheHitsInMs": 0,
-      "timedActions": 0,
-      "timedCacheHitActions": 0,
-      "totalActions": 1,
-      "totalExpectedTimeInMs": 0
-    },
-    "actions": {
+    "actionExecutions": {
       "edges": [
         {
           "node": {
@@ -35,7 +27,7 @@
             "exitCode": 1,
             "failureCode": "NO_KEEP_GOING_TEST_FAILURE",
             "failureMessage": "Testing //test/integrationtest:integrationtest_test failed: Test failed, aborting",
-            "id": "QWN0aW9uOjI=",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjI=",
             "label": "//test/integrationtest:integrationtest_test",
             "primaryOutput": "bazel-out/k8-fastbuild/testlogs/test/integrationtest/integrationtest_test/test.log",
             "primaryOutputURI": "",
@@ -54,6 +46,14 @@
         "hasPreviousPage": false,
         "startCursor": "gaFp0wAAAAAAAAAC"
       }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 0,
+      "timeSavedByCacheHitsInMs": 0,
+      "timedActions": 0,
+      "timedCacheHitActions": 0,
+      "totalActions": 1,
+      "totalExpectedTimeInMs": 0
     },
     "configurations": [
       {

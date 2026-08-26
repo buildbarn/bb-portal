@@ -8,81 +8,6 @@ import (
 )
 
 var (
-	// ActionsColumns holds the columns for the "actions" table.
-	ActionsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "label", Type: field.TypeString},
-		{Name: "type", Type: field.TypeString, Nullable: true},
-		{Name: "runner", Type: field.TypeString, Nullable: true},
-		{Name: "cache_hit", Type: field.TypeBool, Nullable: true},
-		{Name: "success", Type: field.TypeBool, Nullable: true},
-		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
-		{Name: "command_line", Type: field.TypeJSON, Nullable: true},
-		{Name: "start_time", Type: field.TypeTime, Nullable: true},
-		{Name: "end_time", Type: field.TypeTime, Nullable: true},
-		{Name: "failure_code", Type: field.TypeString, Nullable: true},
-		{Name: "failure_message", Type: field.TypeString, Nullable: true},
-		{Name: "primary_output", Type: field.TypeString, Nullable: true},
-		{Name: "primary_output_uri", Type: field.TypeString, Nullable: true},
-		{Name: "stdout_uri", Type: field.TypeString, Nullable: true},
-		{Name: "stderr_uri", Type: field.TypeString, Nullable: true},
-		{Name: "configuration_id", Type: field.TypeInt64, Nullable: true},
-		{Name: "bazel_invocation_id", Type: field.TypeInt64},
-		{Name: "action_digest_id", Type: field.TypeInt64, Nullable: true},
-	}
-	// ActionsTable holds the schema information for the "actions" table.
-	ActionsTable = &schema.Table{
-		Name:       "actions",
-		Columns:    ActionsColumns,
-		PrimaryKey: []*schema.Column{ActionsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "actions_configurations_configuration",
-				Columns:    []*schema.Column{ActionsColumns[16]},
-				RefColumns: []*schema.Column{ConfigurationsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "actions_bazel_invocations_actions",
-				Columns:    []*schema.Column{ActionsColumns[17]},
-				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "actions_digests_actions",
-				Columns:    []*schema.Column{ActionsColumns[18]},
-				RefColumns: []*schema.Column{DigestsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "action_label",
-				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[1]},
-			},
-			{
-				Name:    "action_bazel_invocation_id",
-				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[17]},
-			},
-			{
-				Name:    "action_type_bazel_invocation_id",
-				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[2], ActionsColumns[17]},
-			},
-			{
-				Name:    "action_configuration_id",
-				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[16]},
-			},
-			{
-				Name:    "action_action_digest_id",
-				Unique:  false,
-				Columns: []*schema.Column{ActionsColumns[18]},
-			},
-		},
-	}
 	// ActionCacheStatisticsColumns holds the columns for the "action_cache_statistics" table.
 	ActionCacheStatisticsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -138,6 +63,81 @@ var (
 				Name:    "actiondata_action_summary_action_data",
 				Unique:  false,
 				Columns: []*schema.Column{ActionDataColumns[8]},
+			},
+		},
+	}
+	// ActionExecutionsColumns holds the columns for the "action_executions" table.
+	ActionExecutionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "label", Type: field.TypeString},
+		{Name: "type", Type: field.TypeString, Nullable: true},
+		{Name: "runner", Type: field.TypeString, Nullable: true},
+		{Name: "cache_hit", Type: field.TypeBool, Nullable: true},
+		{Name: "success", Type: field.TypeBool, Nullable: true},
+		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
+		{Name: "command_line", Type: field.TypeJSON, Nullable: true},
+		{Name: "start_time", Type: field.TypeTime, Nullable: true},
+		{Name: "end_time", Type: field.TypeTime, Nullable: true},
+		{Name: "failure_code", Type: field.TypeString, Nullable: true},
+		{Name: "failure_message", Type: field.TypeString, Nullable: true},
+		{Name: "primary_output", Type: field.TypeString, Nullable: true},
+		{Name: "primary_output_uri", Type: field.TypeString, Nullable: true},
+		{Name: "stdout_uri", Type: field.TypeString, Nullable: true},
+		{Name: "stderr_uri", Type: field.TypeString, Nullable: true},
+		{Name: "configuration_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt64},
+		{Name: "action_digest_id", Type: field.TypeInt64, Nullable: true},
+	}
+	// ActionExecutionsTable holds the schema information for the "action_executions" table.
+	ActionExecutionsTable = &schema.Table{
+		Name:       "action_executions",
+		Columns:    ActionExecutionsColumns,
+		PrimaryKey: []*schema.Column{ActionExecutionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "action_executions_configurations_configuration",
+				Columns:    []*schema.Column{ActionExecutionsColumns[16]},
+				RefColumns: []*schema.Column{ConfigurationsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "action_executions_bazel_invocations_action_executions",
+				Columns:    []*schema.Column{ActionExecutionsColumns[17]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "action_executions_digests_action_executions",
+				Columns:    []*schema.Column{ActionExecutionsColumns[18]},
+				RefColumns: []*schema.Column{DigestsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "actionexecution_label",
+				Unique:  false,
+				Columns: []*schema.Column{ActionExecutionsColumns[1]},
+			},
+			{
+				Name:    "actionexecution_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionExecutionsColumns[17]},
+			},
+			{
+				Name:    "actionexecution_type_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionExecutionsColumns[2], ActionExecutionsColumns[17]},
+			},
+			{
+				Name:    "actionexecution_configuration_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionExecutionsColumns[16]},
+			},
+			{
+				Name:    "actionexecution_action_digest_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionExecutionsColumns[18]},
 			},
 		},
 	}
@@ -1558,9 +1558,9 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ActionsTable,
 		ActionCacheStatisticsTable,
 		ActionDataTable,
+		ActionExecutionsTable,
 		ActionSummariesTable,
 		ArtifactMetricsTable,
 		AuthenticatedUsersTable,
@@ -1612,11 +1612,11 @@ var (
 )
 
 func init() {
-	ActionsTable.ForeignKeys[0].RefTable = ConfigurationsTable
-	ActionsTable.ForeignKeys[1].RefTable = BazelInvocationsTable
-	ActionsTable.ForeignKeys[2].RefTable = DigestsTable
 	ActionCacheStatisticsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	ActionDataTable.ForeignKeys[0].RefTable = ActionSummariesTable
+	ActionExecutionsTable.ForeignKeys[0].RefTable = ConfigurationsTable
+	ActionExecutionsTable.ForeignKeys[1].RefTable = BazelInvocationsTable
+	ActionExecutionsTable.ForeignKeys[2].RefTable = DigestsTable
 	ActionSummariesTable.ForeignKeys[0].RefTable = MetricsTable
 	ArtifactMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	BazelInvocationsTable.ForeignKeys[0].RefTable = AuthenticatedUsersTable

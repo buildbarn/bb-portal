@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/test/testutils"
@@ -42,4 +43,25 @@ func TestDatabaseProperties(t *testing.T) {
 		require.NoError(t, err)
 		require.Empty(t, rows)
 	})
+}
+
+func TestRenameLegacyActionsTable(t *testing.T) {
+	ctx := context.Background()
+	connection, err := dbProvider.CreateDatabase()
+	require.NoError(t, err)
+	t.Cleanup(func() { require.NoError(t, connection.Close()) })
+
+	_, err = connection.ExecContext(ctx, `CREATE TABLE actions (id bigint PRIMARY KEY)`)
+	require.NoError(t, err)
+	require.NoError(t, database.RenameLegacyActionsTable(ctx, connection))
+	require.NoError(t, database.RenameLegacyActionsTable(ctx, connection))
+
+	var legacyTable, renamedTable *string
+	require.NoError(t, connection.QueryRowContext(
+		ctx,
+		`SELECT to_regclass('actions')::text, to_regclass('action_executions')::text`,
+	).Scan(&legacyTable, &renamedTable))
+	require.Nil(t, legacyTable)
+	require.NotNil(t, renamedTable)
+	require.Equal(t, "action_executions", *renamedTable)
 }

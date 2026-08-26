@@ -30,7 +30,7 @@ func (dc *DbCleanupService) RemoveUnusedFilePaths(ctx context.Context) (int64, e
 }
 
 // RemoveUnusedDigests removes digests that are no longer referenced by any
-// files or actions.
+// files or action executions.
 func (dc *DbCleanupService) RemoveUnusedDigests(ctx context.Context) (int64, error) {
 	start, count, err := dc.nextSlice(ctx, bazelinvocation.Table)
 	if err != nil {

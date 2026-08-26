@@ -55,7 +55,7 @@ func (Configuration) Edges() []ent.Edge {
 		edge.From("invocation_targets", InvocationTarget.Type).
 			Ref("configuration"),
 
-		edge.From("actions", Action.Type).
+		edge.From("action_executions", ActionExecution.Type).
 			Ref("configuration"),
 	}
 }

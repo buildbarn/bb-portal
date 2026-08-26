@@ -49,6 +49,10 @@ func NewBuildEventProtocolService(
 		return util.StatusWrap(err, "Failed to connect to database for BuildEventStreamService")
 	}
 
+	if err := database.RenameLegacyActionsTable(context.Background(), connection); err != nil {
+		return util.StatusWrap(err, "Could not rename legacy actions table")
+	}
+
 	dbClient, err := database.New(dialect, connection)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create database client from connection")

@@ -40,8 +40,8 @@ func (Digest) Edges() []ent.Edge {
 		// Edge to a invocation file with this digest.
 		edge.To("files", File.Type),
 
-		// Edge to build actions whose REv2 Action message has this digest.
-		edge.To("actions", Action.Type).
+		// Edge to observed executions whose REv2 Action message has this digest.
+		edge.To("action_executions", ActionExecution.Type).
 			Annotations(entgql.Skip()),
 	}
 }

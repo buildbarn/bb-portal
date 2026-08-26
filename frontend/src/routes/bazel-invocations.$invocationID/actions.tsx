@@ -9,20 +9,20 @@ import {
 } from "@/components/PageCursorTable/types";
 import { InvocationDataNotFoundAlert } from "@/components/pages/InvocationDataNotFoundAlert";
 import { gql } from "@/graphql/__generated__";
-import type { ActionWhereInput } from "@/graphql/__generated__/graphql";
-import { ActionWhereInputSchema } from "@/graphql/__generated__/zod";
+import type { ActionExecutionWhereInput } from "@/graphql/__generated__/graphql";
+import { ActionExecutionWhereInputSchema } from "@/graphql/__generated__/zod";
 import { NotFoundError } from "@/main";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 import { parseGraphqlEdgeListWithFragment } from "@/utils/parseGraphqlEdgeList";
 
-export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
-  query GetBazelInvocationActions(
+export const GET_BAZEL_INVOCATION_ACTION_EXECUTIONS = gql(/* GraphQL */ `
+  query GetBazelInvocationActionExecutions(
     $invocationID: UUID!
     $after: Cursor
     $first: Int
     $before: Cursor
     $last: Int
-    $where: ActionWhereInput
+    $where: ActionExecutionWhereInput
   ) {
     getBazelInvocation(invocationID: $invocationID) {
       id
@@ -47,7 +47,7 @@ export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
           executionPhaseTimeInMs
         }
       }
-      actions(
+      actionExecutions(
         after: $after
         first: $first
         before: $before
@@ -62,7 +62,7 @@ export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
         }
         edges {
           node {
-            ...BazelInvocationAction
+            ...BazelInvocationActionExecution
           }
         }
       }
@@ -70,8 +70,8 @@ export const GET_BAZEL_INVOCATION_ACTIONS = gql(/* GraphQL */ `
   }
 `);
 
-export const BAZEL_INVOCATION_ACTION_FRAGMENT = gql(/* GraphQL */ `
-  fragment BazelInvocationAction on Action {
+export const BAZEL_INVOCATION_ACTION_EXECUTION_FRAGMENT = gql(/* GraphQL */ `
+  fragment BazelInvocationActionExecution on ActionExecution {
     id
     label
     type
@@ -107,7 +107,7 @@ export const BAZEL_INVOCATION_ACTION_FRAGMENT = gql(/* GraphQL */ `
 
 const ActionSearchSchema = z.object({
   actionTable: TablePaginationVarsSchema.extend({
-    where: z.array(ActionWhereInputSchema().partial()).optional(),
+    where: z.array(ActionExecutionWhereInputSchema().partial()).optional(),
   }).optional(),
 });
 
@@ -120,11 +120,11 @@ export const Route = createFileRoute(
   loader: async ({ params, deps }) => {
     const pageSize = deps.actionTable?.pageSize ?? DEFAULT_PAGE_SIZE;
     const pagination = deps.actionTable?.pagination ?? { first: pageSize };
-    const where: ActionWhereInput[] = deps.actionTable?.where ?? [];
+    const where: ActionExecutionWhereInput[] = deps.actionTable?.where ?? [];
 
     const { data, error } = await apolloClient.query({
       errorPolicy: "all",
-      query: GET_BAZEL_INVOCATION_ACTIONS,
+      query: GET_BAZEL_INVOCATION_ACTION_EXECUTIONS,
       variables: {
         invocationID: params.invocationID,
         where: where.length > 0 ? { and: where } : undefined,
@@ -138,8 +138,8 @@ export const Route = createFileRoute(
     }
 
     const actions = parseGraphqlEdgeListWithFragment(
-      BAZEL_INVOCATION_ACTION_FRAGMENT,
-      data.getBazelInvocation.actions,
+      BAZEL_INVOCATION_ACTION_EXECUTION_FRAGMENT,
+      data.getBazelInvocation.actionExecutions,
     );
 
     return {
@@ -168,7 +168,7 @@ export const Route = createFileRoute(
         ),
       ).sort((left, right) => left.localeCompare(right)),
       pageSize,
-      pageInfo: data.getBazelInvocation.actions.pageInfo,
+      pageInfo: data.getBazelInvocation.actionExecutions.pageInfo,
     };
   },
   head: (_ctx) => ({
@@ -214,7 +214,7 @@ function RouteComponent() {
     return <InvocationDataNotFoundAlert type="actions" />;
   }
 
-  const onFilterChange = (where: ActionWhereInput[]) => {
+  const onFilterChange = (where: ActionExecutionWhereInput[]) => {
     navigate({
       from: Route.id,
       to: ".",

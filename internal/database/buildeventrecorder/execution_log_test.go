@@ -171,13 +171,13 @@ func TestMatchExecutionLogActions(t *testing.T) {
 	)
 
 	t.Run("matches exact and canonical-label fallback", func(t *testing.T) {
-		databaseActions := []*ent.Action{
+		databaseActionExecutions := []*ent.ActionExecution{
 			{ID: 1, Label: "//example:first", Type: "GoLink", PrimaryOutput: "bazel-out/bin/first"},
 			{ID: 2, Label: "//example:second", Type: "GoLink", PrimaryOutput: "bazel-out/bin/second"},
 		}
 		firstDigest := testActionDigest(t, firstHash)
 		secondDigest := testActionDigest(t, secondHash)
-		matches := matchExecutionLogActions(databaseActions, []executionLogAction{
+		matches := matchExecutionLogActions(databaseActionExecutions, []executionLogAction{
 			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", cacheHit: boolPointer(false), actionDigest: firstDigest},
 			{targetLabel: "@@//example:second", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/second"}, runner: "remote cache hit", cacheHit: boolPointer(true), actionDigest: secondDigest},
 		})
@@ -193,9 +193,9 @@ func TestMatchExecutionLogActions(t *testing.T) {
 	})
 
 	t.Run("retains local runner and available digest", func(t *testing.T) {
-		databaseActions := []*ent.Action{{ID: 1, Label: "//example:local", Type: "GoLink", PrimaryOutput: "bazel-out/bin/local"}}
+		databaseActionExecutions := []*ent.ActionExecution{{ID: 1, Label: "//example:local", Type: "GoLink", PrimaryOutput: "bazel-out/bin/local"}}
 		digest := testActionDigest(t, firstHash)
-		matches := matchExecutionLogActions(databaseActions, []executionLogAction{{
+		matches := matchExecutionLogActions(databaseActionExecutions, []executionLogAction{{
 			targetLabel:  "//example:local",
 			mnemonic:     "GoLink",
 			outputPaths:  []string{"bazel-out/bin/local"},
@@ -211,11 +211,11 @@ func TestMatchExecutionLogActions(t *testing.T) {
 	})
 
 	t.Run("does not guess when output matching is ambiguous", func(t *testing.T) {
-		databaseActions := []*ent.Action{
+		databaseActionExecutions := []*ent.ActionExecution{
 			{ID: 1, Label: "//example:first", Type: "GoLink", PrimaryOutput: "bazel-out/bin/shared"},
 			{ID: 2, Label: "//example:second", Type: "GoLink", PrimaryOutput: "bazel-out/bin/shared"},
 		}
-		matches := matchExecutionLogActions(databaseActions, []executionLogAction{{
+		matches := matchExecutionLogActions(databaseActionExecutions, []executionLogAction{{
 			targetLabel:  "@@//example:canonical",
 			mnemonic:     "GoLink",
 			outputPaths:  []string{"bazel-out/bin/shared"},
@@ -227,8 +227,8 @@ func TestMatchExecutionLogActions(t *testing.T) {
 	})
 
 	t.Run("drops conflicting digests for one action", func(t *testing.T) {
-		databaseActions := []*ent.Action{{ID: 1, Label: "//example:first", Type: "GoLink", PrimaryOutput: "bazel-out/bin/first"}}
-		matches := matchExecutionLogActions(databaseActions, []executionLogAction{
+		databaseActionExecutions := []*ent.ActionExecution{{ID: 1, Label: "//example:first", Type: "GoLink", PrimaryOutput: "bazel-out/bin/first"}}
+		matches := matchExecutionLogActions(databaseActionExecutions, []executionLogAction{
 			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", actionDigest: testActionDigest(t, firstHash)},
 			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", actionDigest: testActionDigest(t, secondHash)},
 		})
@@ -237,9 +237,9 @@ func TestMatchExecutionLogActions(t *testing.T) {
 	})
 
 	t.Run("drops conflicting cache results for one action", func(t *testing.T) {
-		databaseActions := []*ent.Action{{ID: 1, Label: "//example:first", Type: "GoLink", PrimaryOutput: "bazel-out/bin/first"}}
+		databaseActionExecutions := []*ent.ActionExecution{{ID: 1, Label: "//example:first", Type: "GoLink", PrimaryOutput: "bazel-out/bin/first"}}
 		actionDigest := testActionDigest(t, firstHash)
-		matches := matchExecutionLogActions(databaseActions, []executionLogAction{
+		matches := matchExecutionLogActions(databaseActionExecutions, []executionLogAction{
 			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", cacheHit: boolPointer(false), actionDigest: actionDigest},
 			{targetLabel: "//example:first", mnemonic: "GoLink", outputPaths: []string{"bazel-out/bin/first"}, runner: "remote", cacheHit: boolPointer(true), actionDigest: actionDigest},
 		})

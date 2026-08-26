@@ -50,9 +50,9 @@ func TestPrivacy(t *testing.T) {
 	t.Run("EmptyDatabase", func(t *testing.T) {
 		clock.EXPECT().Now().Return(time.Unix(10000000, 0)).Times(7)
 
-		actions, err := db.Action.Query().IDs(ctx)
+		actionExecutions, err := db.ActionExecution.Query().IDs(ctx)
 		require.NoError(t, err)
-		require.Empty(t, actions)
+		require.Empty(t, actionExecutions)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)
@@ -84,7 +84,7 @@ func TestPrivacy(t *testing.T) {
 	deniedInstance := testutils.CreateInstanceName(ctx, t, db, "denied")
 	deniedInvocation, err := testutils.StartCreateInvocation(db, deniedInstance).Save(ctx)
 	require.NoError(t, err)
-	_, err = db.Action.Create().SetBazelInvocation(deniedInvocation).SetLabel("denied").Save(ctx)
+	_, err = db.ActionExecution.Create().SetBazelInvocation(deniedInvocation).SetLabel("denied").Save(ctx)
 	require.NoError(t, err)
 	_, err = db.AuthenticatedUser.Create().SetUserUUID(uuid.New()).SetExternalID("denied_user").AddBazelInvocations(deniedInvocation).Save(ctx)
 	require.NoError(t, err)
@@ -103,9 +103,9 @@ func TestPrivacy(t *testing.T) {
 	t.Run("PopulatedDatabaseWithDeniedInstance", func(t *testing.T) {
 		clock.EXPECT().Now().Return(time.Unix(30000000, 0)).Times(7)
 
-		actions, err := db.Action.Query().IDs(ctx)
+		actionExecutions, err := db.ActionExecution.Query().IDs(ctx)
 		require.NoError(t, err)
-		require.Empty(t, actions)
+		require.Empty(t, actionExecutions)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)
@@ -137,7 +137,7 @@ func TestPrivacy(t *testing.T) {
 	allowed1Instance := testutils.CreateInstanceName(ctx, t, db, "allowed1")
 	allowed1Invocation, err := testutils.StartCreateInvocation(db, allowed1Instance).Save(ctx)
 	require.NoError(t, err)
-	allowed1Action, err := db.Action.Create().SetBazelInvocation(allowed1Invocation).SetLabel("allowed1").Save(ctx)
+	allowed1ActionExecution, err := db.ActionExecution.Create().SetBazelInvocation(allowed1Invocation).SetLabel("allowed1").Save(ctx)
 	require.NoError(t, err)
 	allowed1User, err := db.AuthenticatedUser.Create().SetUserUUID(uuid.New()).SetExternalID("allowed1_user").AddBazelInvocations(allowed1Invocation).Save(ctx)
 	require.NoError(t, err)
@@ -155,9 +155,9 @@ func TestPrivacy(t *testing.T) {
 	t.Run("PopulatedDatabase", func(t *testing.T) {
 		clock.EXPECT().Now().Return(time.Unix(50000000, 0)).Times(7)
 
-		actions, err := db.Action.Query().IDs(ctx)
+		actionExecutions, err := db.ActionExecution.Query().IDs(ctx)
 		require.NoError(t, err)
-		require.Equal(t, []int64{allowed1Action.ID}, actions)
+		require.Equal(t, []int64{allowed1ActionExecution.ID}, actionExecutions)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)
@@ -195,7 +195,7 @@ func TestPrivacy(t *testing.T) {
 	allowed2Instance := testutils.CreateInstanceName(ctx, t, db, "allowed2")
 	allowed2Invocation, err := testutils.StartCreateInvocation(db, allowed2Instance).Save(ctx)
 	require.NoError(t, err)
-	allowed2Action, err := db.Action.Create().SetBazelInvocation(allowed2Invocation).SetLabel("allowed2").Save(ctx)
+	allowed2ActionExecution, err := db.ActionExecution.Create().SetBazelInvocation(allowed2Invocation).SetLabel("allowed2").Save(ctx)
 	require.NoError(t, err)
 	allowed2User, err := db.AuthenticatedUser.Create().SetUserUUID(uuid.New()).SetExternalID("allowed2_user").AddBazelInvocations(allowed2Invocation).Save(ctx)
 	require.NoError(t, err)
@@ -213,9 +213,9 @@ func TestPrivacy(t *testing.T) {
 	t.Run("PopulatedDatabase2", func(t *testing.T) {
 		clock.EXPECT().Now().Return(time.Unix(60000000, 0)).Times(7)
 
-		actions, err := db.Action.Query().IDs(ctx)
+		actionExecutions, err := db.ActionExecution.Query().IDs(ctx)
 		require.NoError(t, err)
-		require.ElementsMatch(t, []int64{allowed1Action.ID, allowed2Action.ID}, actions)
+		require.ElementsMatch(t, []int64{allowed1ActionExecution.ID, allowed2ActionExecution.ID}, actionExecutions)
 
 		invocations, err := db.BazelInvocation.Query().IDs(ctx)
 		require.NoError(t, err)

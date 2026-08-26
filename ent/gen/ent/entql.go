@@ -3,9 +3,9 @@
 package ent
 
 import (
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
@@ -66,37 +66,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 50)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   action.Table,
-			Columns: action.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt64,
-				Column: action.FieldID,
-			},
-		},
-		Type: "Action",
-		Fields: map[string]*sqlgraph.FieldSpec{
-			action.FieldBazelInvocationID: {Type: field.TypeInt64, Column: action.FieldBazelInvocationID},
-			action.FieldConfigurationID:   {Type: field.TypeInt64, Column: action.FieldConfigurationID},
-			action.FieldActionDigestID:    {Type: field.TypeInt64, Column: action.FieldActionDigestID},
-			action.FieldLabel:             {Type: field.TypeString, Column: action.FieldLabel},
-			action.FieldType:              {Type: field.TypeString, Column: action.FieldType},
-			action.FieldRunner:            {Type: field.TypeString, Column: action.FieldRunner},
-			action.FieldCacheHit:          {Type: field.TypeBool, Column: action.FieldCacheHit},
-			action.FieldSuccess:           {Type: field.TypeBool, Column: action.FieldSuccess},
-			action.FieldExitCode:          {Type: field.TypeInt32, Column: action.FieldExitCode},
-			action.FieldCommandLine:       {Type: field.TypeJSON, Column: action.FieldCommandLine},
-			action.FieldStartTime:         {Type: field.TypeTime, Column: action.FieldStartTime},
-			action.FieldEndTime:           {Type: field.TypeTime, Column: action.FieldEndTime},
-			action.FieldFailureCode:       {Type: field.TypeString, Column: action.FieldFailureCode},
-			action.FieldFailureMessage:    {Type: field.TypeString, Column: action.FieldFailureMessage},
-			action.FieldPrimaryOutput:     {Type: field.TypeString, Column: action.FieldPrimaryOutput},
-			action.FieldPrimaryOutputURI:  {Type: field.TypeString, Column: action.FieldPrimaryOutputURI},
-			action.FieldStdoutURI:         {Type: field.TypeString, Column: action.FieldStdoutURI},
-			action.FieldStderrURI:         {Type: field.TypeString, Column: action.FieldStderrURI},
-		},
-	}
-	graph.Nodes[1] = &sqlgraph.Node{
-		NodeSpec: sqlgraph.NodeSpec{
 			Table:   actioncachestatistics.Table,
 			Columns: actioncachestatistics.Columns,
 			ID: &sqlgraph.FieldSpec{
@@ -114,7 +83,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			actioncachestatistics.FieldMisses:                          {Type: field.TypeInt32, Column: actioncachestatistics.FieldMisses},
 		},
 	}
-	graph.Nodes[2] = &sqlgraph.Node{
+	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   actiondata.Table,
 			Columns: actiondata.Columns,
@@ -132,6 +101,37 @@ var schemaGraph = func() *sqlgraph.Schema {
 			actiondata.FieldLastEndedMs:     {Type: field.TypeInt64, Column: actiondata.FieldLastEndedMs},
 			actiondata.FieldSystemTime:      {Type: field.TypeInt64, Column: actiondata.FieldSystemTime},
 			actiondata.FieldUserTime:        {Type: field.TypeInt64, Column: actiondata.FieldUserTime},
+		},
+	}
+	graph.Nodes[2] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   actionexecution.Table,
+			Columns: actionexecution.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt64,
+				Column: actionexecution.FieldID,
+			},
+		},
+		Type: "ActionExecution",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			actionexecution.FieldBazelInvocationID: {Type: field.TypeInt64, Column: actionexecution.FieldBazelInvocationID},
+			actionexecution.FieldConfigurationID:   {Type: field.TypeInt64, Column: actionexecution.FieldConfigurationID},
+			actionexecution.FieldActionDigestID:    {Type: field.TypeInt64, Column: actionexecution.FieldActionDigestID},
+			actionexecution.FieldLabel:             {Type: field.TypeString, Column: actionexecution.FieldLabel},
+			actionexecution.FieldType:              {Type: field.TypeString, Column: actionexecution.FieldType},
+			actionexecution.FieldRunner:            {Type: field.TypeString, Column: actionexecution.FieldRunner},
+			actionexecution.FieldCacheHit:          {Type: field.TypeBool, Column: actionexecution.FieldCacheHit},
+			actionexecution.FieldSuccess:           {Type: field.TypeBool, Column: actionexecution.FieldSuccess},
+			actionexecution.FieldExitCode:          {Type: field.TypeInt32, Column: actionexecution.FieldExitCode},
+			actionexecution.FieldCommandLine:       {Type: field.TypeJSON, Column: actionexecution.FieldCommandLine},
+			actionexecution.FieldStartTime:         {Type: field.TypeTime, Column: actionexecution.FieldStartTime},
+			actionexecution.FieldEndTime:           {Type: field.TypeTime, Column: actionexecution.FieldEndTime},
+			actionexecution.FieldFailureCode:       {Type: field.TypeString, Column: actionexecution.FieldFailureCode},
+			actionexecution.FieldFailureMessage:    {Type: field.TypeString, Column: actionexecution.FieldFailureMessage},
+			actionexecution.FieldPrimaryOutput:     {Type: field.TypeString, Column: actionexecution.FieldPrimaryOutput},
+			actionexecution.FieldPrimaryOutputURI:  {Type: field.TypeString, Column: actionexecution.FieldPrimaryOutputURI},
+			actionexecution.FieldStdoutURI:         {Type: field.TypeString, Column: actionexecution.FieldStdoutURI},
+			actionexecution.FieldStderrURI:         {Type: field.TypeString, Column: actionexecution.FieldStderrURI},
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
@@ -942,42 +942,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 	}
 	graph.MustAddE(
-		"bazel_invocation",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   action.BazelInvocationTable,
-			Columns: []string{action.BazelInvocationColumn},
-			Bidi:    false,
-		},
-		"Action",
-		"BazelInvocation",
-	)
-	graph.MustAddE(
-		"configuration",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   action.ConfigurationTable,
-			Columns: []string{action.ConfigurationColumn},
-			Bidi:    false,
-		},
-		"Action",
-		"Configuration",
-	)
-	graph.MustAddE(
-		"action_digest",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   action.ActionDigestTable,
-			Columns: []string{action.ActionDigestColumn},
-			Bidi:    false,
-		},
-		"Action",
-		"Digest",
-	)
-	graph.MustAddE(
 		"action_summary",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -1012,6 +976,42 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"ActionData",
 		"ActionSummary",
+	)
+	graph.MustAddE(
+		"bazel_invocation",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   actionexecution.BazelInvocationTable,
+			Columns: []string{actionexecution.BazelInvocationColumn},
+			Bidi:    false,
+		},
+		"ActionExecution",
+		"BazelInvocation",
+	)
+	graph.MustAddE(
+		"configuration",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   actionexecution.ConfigurationTable,
+			Columns: []string{actionexecution.ConfigurationColumn},
+			Bidi:    false,
+		},
+		"ActionExecution",
+		"Configuration",
+	)
+	graph.MustAddE(
+		"action_digest",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   actionexecution.ActionDigestTable,
+			Columns: []string{actionexecution.ActionDigestColumn},
+			Bidi:    false,
+		},
+		"ActionExecution",
+		"Digest",
 	)
 	graph.MustAddE(
 		"metrics",
@@ -1170,16 +1170,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"Configuration",
 	)
 	graph.MustAddE(
-		"actions",
+		"action_executions",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 		},
 		"BazelInvocation",
-		"Action",
+		"ActionExecution",
 	)
 	graph.MustAddE(
 		"metrics",
@@ -1434,16 +1434,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"InvocationTarget",
 	)
 	graph.MustAddE(
-		"actions",
+		"action_executions",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   configuration.ActionsTable,
-			Columns: []string{configuration.ActionsColumn},
+			Table:   configuration.ActionExecutionsTable,
+			Columns: []string{configuration.ActionExecutionsColumn},
 			Bidi:    false,
 		},
 		"Configuration",
-		"Action",
+		"ActionExecution",
 	)
 	graph.MustAddE(
 		"bazel_invocation",
@@ -1482,16 +1482,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"File",
 	)
 	graph.MustAddE(
-		"actions",
+		"action_executions",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   digest.ActionsTable,
-			Columns: []string{digest.ActionsColumn},
+			Table:   digest.ActionExecutionsTable,
+			Columns: []string{digest.ActionExecutionsColumn},
 			Bidi:    false,
 		},
 		"Digest",
-		"Action",
+		"ActionExecution",
 	)
 	graph.MustAddE(
 		"metrics",
@@ -2343,178 +2343,6 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (_q *ActionQuery) addPredicate(pred func(s *sql.Selector)) {
-	_q.predicates = append(_q.predicates, pred)
-}
-
-// Filter returns a Filter implementation to apply filters on the ActionQuery builder.
-func (_q *ActionQuery) Filter() *ActionFilter {
-	return &ActionFilter{config: _q.config, predicateAdder: _q}
-}
-
-// addPredicate implements the predicateAdder interface.
-func (m *ActionMutation) addPredicate(pred func(s *sql.Selector)) {
-	m.predicates = append(m.predicates, pred)
-}
-
-// Filter returns an entql.Where implementation to apply filters on the ActionMutation builder.
-func (m *ActionMutation) Filter() *ActionFilter {
-	return &ActionFilter{config: m.config, predicateAdder: m}
-}
-
-// ActionFilter provides a generic filtering capability at runtime for ActionQuery.
-type ActionFilter struct {
-	predicateAdder
-	config
-}
-
-// Where applies the entql predicate on the query filter.
-func (f *ActionFilter) Where(p entql.P) {
-	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
-			s.AddError(err)
-		}
-	})
-}
-
-// WhereID applies the entql int64 predicate on the id field.
-func (f *ActionFilter) WhereID(p entql.Int64P) {
-	f.Where(p.Field(action.FieldID))
-}
-
-// WhereBazelInvocationID applies the entql int64 predicate on the bazel_invocation_id field.
-func (f *ActionFilter) WhereBazelInvocationID(p entql.Int64P) {
-	f.Where(p.Field(action.FieldBazelInvocationID))
-}
-
-// WhereConfigurationID applies the entql int64 predicate on the configuration_id field.
-func (f *ActionFilter) WhereConfigurationID(p entql.Int64P) {
-	f.Where(p.Field(action.FieldConfigurationID))
-}
-
-// WhereActionDigestID applies the entql int64 predicate on the action_digest_id field.
-func (f *ActionFilter) WhereActionDigestID(p entql.Int64P) {
-	f.Where(p.Field(action.FieldActionDigestID))
-}
-
-// WhereLabel applies the entql string predicate on the label field.
-func (f *ActionFilter) WhereLabel(p entql.StringP) {
-	f.Where(p.Field(action.FieldLabel))
-}
-
-// WhereType applies the entql string predicate on the type field.
-func (f *ActionFilter) WhereType(p entql.StringP) {
-	f.Where(p.Field(action.FieldType))
-}
-
-// WhereRunner applies the entql string predicate on the runner field.
-func (f *ActionFilter) WhereRunner(p entql.StringP) {
-	f.Where(p.Field(action.FieldRunner))
-}
-
-// WhereCacheHit applies the entql bool predicate on the cache_hit field.
-func (f *ActionFilter) WhereCacheHit(p entql.BoolP) {
-	f.Where(p.Field(action.FieldCacheHit))
-}
-
-// WhereSuccess applies the entql bool predicate on the success field.
-func (f *ActionFilter) WhereSuccess(p entql.BoolP) {
-	f.Where(p.Field(action.FieldSuccess))
-}
-
-// WhereExitCode applies the entql int32 predicate on the exit_code field.
-func (f *ActionFilter) WhereExitCode(p entql.Int32P) {
-	f.Where(p.Field(action.FieldExitCode))
-}
-
-// WhereCommandLine applies the entql json.RawMessage predicate on the command_line field.
-func (f *ActionFilter) WhereCommandLine(p entql.BytesP) {
-	f.Where(p.Field(action.FieldCommandLine))
-}
-
-// WhereStartTime applies the entql time.Time predicate on the start_time field.
-func (f *ActionFilter) WhereStartTime(p entql.TimeP) {
-	f.Where(p.Field(action.FieldStartTime))
-}
-
-// WhereEndTime applies the entql time.Time predicate on the end_time field.
-func (f *ActionFilter) WhereEndTime(p entql.TimeP) {
-	f.Where(p.Field(action.FieldEndTime))
-}
-
-// WhereFailureCode applies the entql string predicate on the failure_code field.
-func (f *ActionFilter) WhereFailureCode(p entql.StringP) {
-	f.Where(p.Field(action.FieldFailureCode))
-}
-
-// WhereFailureMessage applies the entql string predicate on the failure_message field.
-func (f *ActionFilter) WhereFailureMessage(p entql.StringP) {
-	f.Where(p.Field(action.FieldFailureMessage))
-}
-
-// WherePrimaryOutput applies the entql string predicate on the primary_output field.
-func (f *ActionFilter) WherePrimaryOutput(p entql.StringP) {
-	f.Where(p.Field(action.FieldPrimaryOutput))
-}
-
-// WherePrimaryOutputURI applies the entql string predicate on the primary_output_uri field.
-func (f *ActionFilter) WherePrimaryOutputURI(p entql.StringP) {
-	f.Where(p.Field(action.FieldPrimaryOutputURI))
-}
-
-// WhereStdoutURI applies the entql string predicate on the stdout_uri field.
-func (f *ActionFilter) WhereStdoutURI(p entql.StringP) {
-	f.Where(p.Field(action.FieldStdoutURI))
-}
-
-// WhereStderrURI applies the entql string predicate on the stderr_uri field.
-func (f *ActionFilter) WhereStderrURI(p entql.StringP) {
-	f.Where(p.Field(action.FieldStderrURI))
-}
-
-// WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
-func (f *ActionFilter) WhereHasBazelInvocation() {
-	f.Where(entql.HasEdge("bazel_invocation"))
-}
-
-// WhereHasBazelInvocationWith applies a predicate to check if query has an edge bazel_invocation with a given conditions (other predicates).
-func (f *ActionFilter) WhereHasBazelInvocationWith(preds ...predicate.BazelInvocation) {
-	f.Where(entql.HasEdgeWith("bazel_invocation", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasConfiguration applies a predicate to check if query has an edge configuration.
-func (f *ActionFilter) WhereHasConfiguration() {
-	f.Where(entql.HasEdge("configuration"))
-}
-
-// WhereHasConfigurationWith applies a predicate to check if query has an edge configuration with a given conditions (other predicates).
-func (f *ActionFilter) WhereHasConfigurationWith(preds ...predicate.Configuration) {
-	f.Where(entql.HasEdgeWith("configuration", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasActionDigest applies a predicate to check if query has an edge action_digest.
-func (f *ActionFilter) WhereHasActionDigest() {
-	f.Where(entql.HasEdge("action_digest"))
-}
-
-// WhereHasActionDigestWith applies a predicate to check if query has an edge action_digest with a given conditions (other predicates).
-func (f *ActionFilter) WhereHasActionDigestWith(preds ...predicate.Digest) {
-	f.Where(entql.HasEdgeWith("action_digest", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// addPredicate implements the predicateAdder interface.
 func (_q *ActionCacheStatisticsQuery) addPredicate(pred func(s *sql.Selector)) {
 	_q.predicates = append(_q.predicates, pred)
 }
@@ -2543,7 +2371,7 @@ type ActionCacheStatisticsFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *ActionCacheStatisticsFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -2641,7 +2469,7 @@ type ActionDataFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *ActionDataFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -2695,6 +2523,178 @@ func (f *ActionDataFilter) WhereHasActionSummary() {
 // WhereHasActionSummaryWith applies a predicate to check if query has an edge action_summary with a given conditions (other predicates).
 func (f *ActionDataFilter) WhereHasActionSummaryWith(preds ...predicate.ActionSummary) {
 	f.Where(entql.HasEdgeWith("action_summary", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (_q *ActionExecutionQuery) addPredicate(pred func(s *sql.Selector)) {
+	_q.predicates = append(_q.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the ActionExecutionQuery builder.
+func (_q *ActionExecutionQuery) Filter() *ActionExecutionFilter {
+	return &ActionExecutionFilter{config: _q.config, predicateAdder: _q}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *ActionExecutionMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the ActionExecutionMutation builder.
+func (m *ActionExecutionMutation) Filter() *ActionExecutionFilter {
+	return &ActionExecutionFilter{config: m.config, predicateAdder: m}
+}
+
+// ActionExecutionFilter provides a generic filtering capability at runtime for ActionExecutionQuery.
+type ActionExecutionFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *ActionExecutionFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ActionExecutionFilter) WhereID(p entql.Int64P) {
+	f.Where(p.Field(actionexecution.FieldID))
+}
+
+// WhereBazelInvocationID applies the entql int64 predicate on the bazel_invocation_id field.
+func (f *ActionExecutionFilter) WhereBazelInvocationID(p entql.Int64P) {
+	f.Where(p.Field(actionexecution.FieldBazelInvocationID))
+}
+
+// WhereConfigurationID applies the entql int64 predicate on the configuration_id field.
+func (f *ActionExecutionFilter) WhereConfigurationID(p entql.Int64P) {
+	f.Where(p.Field(actionexecution.FieldConfigurationID))
+}
+
+// WhereActionDigestID applies the entql int64 predicate on the action_digest_id field.
+func (f *ActionExecutionFilter) WhereActionDigestID(p entql.Int64P) {
+	f.Where(p.Field(actionexecution.FieldActionDigestID))
+}
+
+// WhereLabel applies the entql string predicate on the label field.
+func (f *ActionExecutionFilter) WhereLabel(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldLabel))
+}
+
+// WhereType applies the entql string predicate on the type field.
+func (f *ActionExecutionFilter) WhereType(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldType))
+}
+
+// WhereRunner applies the entql string predicate on the runner field.
+func (f *ActionExecutionFilter) WhereRunner(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldRunner))
+}
+
+// WhereCacheHit applies the entql bool predicate on the cache_hit field.
+func (f *ActionExecutionFilter) WhereCacheHit(p entql.BoolP) {
+	f.Where(p.Field(actionexecution.FieldCacheHit))
+}
+
+// WhereSuccess applies the entql bool predicate on the success field.
+func (f *ActionExecutionFilter) WhereSuccess(p entql.BoolP) {
+	f.Where(p.Field(actionexecution.FieldSuccess))
+}
+
+// WhereExitCode applies the entql int32 predicate on the exit_code field.
+func (f *ActionExecutionFilter) WhereExitCode(p entql.Int32P) {
+	f.Where(p.Field(actionexecution.FieldExitCode))
+}
+
+// WhereCommandLine applies the entql json.RawMessage predicate on the command_line field.
+func (f *ActionExecutionFilter) WhereCommandLine(p entql.BytesP) {
+	f.Where(p.Field(actionexecution.FieldCommandLine))
+}
+
+// WhereStartTime applies the entql time.Time predicate on the start_time field.
+func (f *ActionExecutionFilter) WhereStartTime(p entql.TimeP) {
+	f.Where(p.Field(actionexecution.FieldStartTime))
+}
+
+// WhereEndTime applies the entql time.Time predicate on the end_time field.
+func (f *ActionExecutionFilter) WhereEndTime(p entql.TimeP) {
+	f.Where(p.Field(actionexecution.FieldEndTime))
+}
+
+// WhereFailureCode applies the entql string predicate on the failure_code field.
+func (f *ActionExecutionFilter) WhereFailureCode(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldFailureCode))
+}
+
+// WhereFailureMessage applies the entql string predicate on the failure_message field.
+func (f *ActionExecutionFilter) WhereFailureMessage(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldFailureMessage))
+}
+
+// WherePrimaryOutput applies the entql string predicate on the primary_output field.
+func (f *ActionExecutionFilter) WherePrimaryOutput(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldPrimaryOutput))
+}
+
+// WherePrimaryOutputURI applies the entql string predicate on the primary_output_uri field.
+func (f *ActionExecutionFilter) WherePrimaryOutputURI(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldPrimaryOutputURI))
+}
+
+// WhereStdoutURI applies the entql string predicate on the stdout_uri field.
+func (f *ActionExecutionFilter) WhereStdoutURI(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldStdoutURI))
+}
+
+// WhereStderrURI applies the entql string predicate on the stderr_uri field.
+func (f *ActionExecutionFilter) WhereStderrURI(p entql.StringP) {
+	f.Where(p.Field(actionexecution.FieldStderrURI))
+}
+
+// WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
+func (f *ActionExecutionFilter) WhereHasBazelInvocation() {
+	f.Where(entql.HasEdge("bazel_invocation"))
+}
+
+// WhereHasBazelInvocationWith applies a predicate to check if query has an edge bazel_invocation with a given conditions (other predicates).
+func (f *ActionExecutionFilter) WhereHasBazelInvocationWith(preds ...predicate.BazelInvocation) {
+	f.Where(entql.HasEdgeWith("bazel_invocation", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasConfiguration applies a predicate to check if query has an edge configuration.
+func (f *ActionExecutionFilter) WhereHasConfiguration() {
+	f.Where(entql.HasEdge("configuration"))
+}
+
+// WhereHasConfigurationWith applies a predicate to check if query has an edge configuration with a given conditions (other predicates).
+func (f *ActionExecutionFilter) WhereHasConfigurationWith(preds ...predicate.Configuration) {
+	f.Where(entql.HasEdgeWith("configuration", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActionDigest applies a predicate to check if query has an edge action_digest.
+func (f *ActionExecutionFilter) WhereHasActionDigest() {
+	f.Where(entql.HasEdge("action_digest"))
+}
+
+// WhereHasActionDigestWith applies a predicate to check if query has an edge action_digest with a given conditions (other predicates).
+func (f *ActionExecutionFilter) WhereHasActionDigestWith(preds ...predicate.Digest) {
+	f.Where(entql.HasEdgeWith("action_digest", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -3223,14 +3223,14 @@ func (f *BazelInvocationFilter) WhereHasConfigurationsWith(preds ...predicate.Co
 	})))
 }
 
-// WhereHasActions applies a predicate to check if query has an edge actions.
-func (f *BazelInvocationFilter) WhereHasActions() {
-	f.Where(entql.HasEdge("actions"))
+// WhereHasActionExecutions applies a predicate to check if query has an edge action_executions.
+func (f *BazelInvocationFilter) WhereHasActionExecutions() {
+	f.Where(entql.HasEdge("action_executions"))
 }
 
-// WhereHasActionsWith applies a predicate to check if query has an edge actions with a given conditions (other predicates).
-func (f *BazelInvocationFilter) WhereHasActionsWith(preds ...predicate.Action) {
-	f.Where(entql.HasEdgeWith("actions", sqlgraph.WrapFunc(func(s *sql.Selector) {
+// WhereHasActionExecutionsWith applies a predicate to check if query has an edge action_executions with a given conditions (other predicates).
+func (f *BazelInvocationFilter) WhereHasActionExecutionsWith(preds ...predicate.ActionExecution) {
+	f.Where(entql.HasEdgeWith("action_executions", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -4031,14 +4031,14 @@ func (f *ConfigurationFilter) WhereHasInvocationTargetsWith(preds ...predicate.I
 	})))
 }
 
-// WhereHasActions applies a predicate to check if query has an edge actions.
-func (f *ConfigurationFilter) WhereHasActions() {
-	f.Where(entql.HasEdge("actions"))
+// WhereHasActionExecutions applies a predicate to check if query has an edge action_executions.
+func (f *ConfigurationFilter) WhereHasActionExecutions() {
+	f.Where(entql.HasEdge("action_executions"))
 }
 
-// WhereHasActionsWith applies a predicate to check if query has an edge actions with a given conditions (other predicates).
-func (f *ConfigurationFilter) WhereHasActionsWith(preds ...predicate.Action) {
-	f.Where(entql.HasEdgeWith("actions", sqlgraph.WrapFunc(func(s *sql.Selector) {
+// WhereHasActionExecutionsWith applies a predicate to check if query has an edge action_executions with a given conditions (other predicates).
+func (f *ConfigurationFilter) WhereHasActionExecutionsWith(preds ...predicate.ActionExecution) {
+	f.Where(entql.HasEdgeWith("action_executions", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -4242,14 +4242,14 @@ func (f *DigestFilter) WhereHasFilesWith(preds ...predicate.File) {
 	})))
 }
 
-// WhereHasActions applies a predicate to check if query has an edge actions.
-func (f *DigestFilter) WhereHasActions() {
-	f.Where(entql.HasEdge("actions"))
+// WhereHasActionExecutions applies a predicate to check if query has an edge action_executions.
+func (f *DigestFilter) WhereHasActionExecutions() {
+	f.Where(entql.HasEdge("action_executions"))
 }
 
-// WhereHasActionsWith applies a predicate to check if query has an edge actions with a given conditions (other predicates).
-func (f *DigestFilter) WhereHasActionsWith(preds ...predicate.Action) {
-	f.Where(entql.HasEdgeWith("actions", sqlgraph.WrapFunc(func(s *sql.Selector) {
+// WhereHasActionExecutionsWith applies a predicate to check if query has an edge action_executions with a given conditions (other predicates).
+func (f *DigestFilter) WhereHasActionExecutionsWith(preds ...predicate.ActionExecution) {
+	f.Where(entql.HasEdgeWith("action_executions", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}

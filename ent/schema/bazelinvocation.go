@@ -125,7 +125,7 @@ func (BazelInvocation) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
-		edge.To("actions", Action.Type).
+		edge.To("action_executions", ActionExecution.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 				entgql.RelayConnection(),

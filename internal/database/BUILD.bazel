@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "database.go",
         "savepoint_driver.go",
+        "schema_migration.go",
         "transaction.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/database",

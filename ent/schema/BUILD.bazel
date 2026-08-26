@@ -3,9 +3,9 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "schema",
     srcs = [
-        "action.go",
         "actioncachestatistics.go",
         "actiondata.go",
+        "actionexecution.go",
         "actionsummary.go",
         "artifactmetrics.go",
         "authenticateduser.go",

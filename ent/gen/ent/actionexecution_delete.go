@@ -8,30 +8,30 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
-// ActionDelete is the builder for deleting a Action entity.
-type ActionDelete struct {
+// ActionExecutionDelete is the builder for deleting a ActionExecution entity.
+type ActionExecutionDelete struct {
 	config
 	hooks    []Hook
-	mutation *ActionMutation
+	mutation *ActionExecutionMutation
 }
 
-// Where appends a list predicates to the ActionDelete builder.
-func (_d *ActionDelete) Where(ps ...predicate.Action) *ActionDelete {
+// Where appends a list predicates to the ActionExecutionDelete builder.
+func (_d *ActionExecutionDelete) Where(ps ...predicate.ActionExecution) *ActionExecutionDelete {
 	_d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *ActionDelete) Exec(ctx context.Context) (int, error) {
+func (_d *ActionExecutionDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ActionDelete) ExecX(ctx context.Context) int {
+func (_d *ActionExecutionDelete) ExecX(ctx context.Context) int {
 	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (_d *ActionDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (_d *ActionDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(action.Table, sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64))
+func (_d *ActionExecutionDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(actionexecution.Table, sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (_d *ActionDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// ActionDeleteOne is the builder for deleting a single Action entity.
-type ActionDeleteOne struct {
-	_d *ActionDelete
+// ActionExecutionDeleteOne is the builder for deleting a single ActionExecution entity.
+type ActionExecutionDeleteOne struct {
+	_d *ActionExecutionDelete
 }
 
-// Where appends a list predicates to the ActionDelete builder.
-func (_d *ActionDeleteOne) Where(ps ...predicate.Action) *ActionDeleteOne {
+// Where appends a list predicates to the ActionExecutionDelete builder.
+func (_d *ActionExecutionDeleteOne) Where(ps ...predicate.ActionExecution) *ActionExecutionDeleteOne {
 	_d._d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query.
-func (_d *ActionDeleteOne) Exec(ctx context.Context) error {
+func (_d *ActionExecutionDeleteOne) Exec(ctx context.Context) error {
 	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{action.Label}
+		return &NotFoundError{actionexecution.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ActionDeleteOne) ExecX(ctx context.Context) {
+func (_d *ActionExecutionDeleteOne) ExecX(ctx context.Context) {
 	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}

@@ -219,7 +219,7 @@ var (
 						},
 					},
 				},
-				"GetBazelInvocationActions": {
+				"GetBazelInvocationActionExecutions": {
 					"get successful bazel build": {
 						variables: testkit.Variables{
 							"invocationID": successfulBazelBuild.invocationID,

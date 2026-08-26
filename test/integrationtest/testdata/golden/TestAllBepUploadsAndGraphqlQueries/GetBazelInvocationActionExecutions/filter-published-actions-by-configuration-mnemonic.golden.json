@@ -1,14 +1,6 @@
 {
   "getBazelInvocation": {
-    "actionTimingMetrics": {
-      "cacheHitActions": 1,
-      "timeSavedByCacheHitsInMs": 1250,
-      "timedActions": 4,
-      "timedCacheHitActions": 1,
-      "totalActions": 4,
-      "totalExpectedTimeInMs": 3000
-    },
-    "actions": {
+    "actionExecutions": {
       "edges": [
         {
           "node": {
@@ -34,7 +26,7 @@
             "exitCode": 0,
             "failureCode": "",
             "failureMessage": "",
-            "id": "QWN0aW9uOjM=",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjM=",
             "label": "//example:first",
             "primaryOutput": "bazel-out/k8-fastbuild/bin/example/first.o",
             "primaryOutputURI": "bytestream://cache.example.com/blobs/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/42",
@@ -51,33 +43,51 @@
             "actionDigest": null,
             "cacheHit": null,
             "commandLine": [
-              "compilepkg",
-              "third.go"
+              "clang",
+              "second.o"
             ],
-            "configuration": null,
-            "endTime": "2026-07-31T12:00:04Z",
-            "exitCode": 0,
-            "failureCode": "",
-            "failureMessage": "",
-            "id": "QWN0aW9uOjU=",
-            "label": "//example:third",
-            "primaryOutput": "bazel-out/k8-fastbuild/bin/example/third.a",
-            "primaryOutputURI": "",
+            "configuration": {
+              "configurationID": "published-actions-config",
+              "cpu": "k8",
+              "id": "Q29uZmlndXJhdGlvbjoxOA==",
+              "makeVariables": {
+                "COMPILATION_MODE": "fastbuild",
+                "TARGET_CPU": "k8"
+              },
+              "mnemonic": "k8-fastbuild",
+              "platformName": "linux"
+            },
+            "endTime": "2026-07-31T12:00:02.5Z",
+            "exitCode": 1,
+            "failureCode": "NON_ZERO_EXIT",
+            "failureMessage": "link failed",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjQ=",
+            "label": "//example:second",
+            "primaryOutput": "bazel-out/k8-fastbuild/bin/example/second.o",
+            "primaryOutputURI": "bytestream://cache.example.com/blobs/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/84",
             "runner": "",
-            "startTime": "2026-07-31T12:00:03Z",
-            "stderrURI": "",
-            "stdoutURI": "",
-            "success": true,
-            "type": "GoCompilePkg"
+            "startTime": "2026-07-31T12:00:02Z",
+            "stderrURI": "bytestream://cache.example.com/blobs/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/36",
+            "stdoutURI": "bytestream://cache.example.com/blobs/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/24",
+            "success": false,
+            "type": "CppLink"
           }
         }
       ],
       "pageInfo": {
-        "endCursor": "gaFp0wAAAAAAAAAF",
+        "endCursor": "gaFp0wAAAAAAAAAE",
         "hasNextPage": false,
         "hasPreviousPage": false,
         "startCursor": "gaFp0wAAAAAAAAAD"
       }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 1,
+      "timeSavedByCacheHitsInMs": 1250,
+      "timedActions": 4,
+      "timedCacheHitActions": 1,
+      "totalActions": 4,
+      "totalExpectedTimeInMs": 3000
     },
     "configurations": [
       {

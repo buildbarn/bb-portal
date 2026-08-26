@@ -1,5 +1,5 @@
 import { Descriptions, Flex, Space, Typography } from "antd";
-import type { BazelInvocationActionFragment } from "@/graphql/__generated__/graphql";
+import type { BazelInvocationActionExecutionFragment } from "@/graphql/__generated__/graphql";
 import {
   generateActionUrlFromGraphqlDigest,
   generateFileUrlFromBepURI,
@@ -8,7 +8,7 @@ import { getActionCacheStatus } from "./cache";
 import { getActionExecutionKind } from "./execution";
 
 interface Props {
-  action: BazelInvocationActionFragment;
+  action: BazelInvocationActionExecutionFragment;
 }
 
 interface OutputLinkProps {

@@ -13,7 +13,7 @@ import (
 	bazelprotobuf "github.com/bazelbuild/bazel/src/main/protobuf"
 	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	entdigest "github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/pkg/invocation/files"
@@ -284,12 +284,12 @@ func executionLogActionMetadataEqual(left, right executionLogActionMetadata) boo
 	return left.actionDigest.String() == right.actionDigest.String()
 }
 
-func matchExecutionLogActions(databaseActions []*ent.Action, executionLogActions []executionLogAction) map[int64]executionLogActionMetadata {
+func matchExecutionLogActions(databaseActionExecutions []*ent.ActionExecution, executionLogActions []executionLogAction) map[int64]executionLogActionMetadata {
 	exactMatches := map[actionMatchKey]int64{}
 	ambiguousExactMatches := map[actionMatchKey]struct{}{}
 	outputMatches := map[actionOutputKey]int64{}
 	ambiguousOutputMatches := map[actionOutputKey]struct{}{}
-	for _, databaseAction := range databaseActions {
+	for _, databaseAction := range databaseActionExecutions {
 		exactKey := actionMatchKey{
 			targetLabel: databaseAction.Label,
 			mnemonic:    databaseAction.Type,
@@ -340,18 +340,18 @@ func (r *buildEventRecorder) saveExecutionLogActionMetadata(ctx context.Context,
 		return nil
 	}
 
-	databaseActions, err := tx.Ent().Action.Query().
+	databaseActionExecutions, err := tx.Ent().ActionExecution.Query().
 		Where(
-			action.BazelInvocationID(r.InvocationDbID),
-			action.PrimaryOutputNotNil(),
+			actionexecution.BazelInvocationID(r.InvocationDbID),
+			actionexecution.PrimaryOutputNotNil(),
 		).
 		All(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to query actions for execution log correlation")
 	}
 
-	for actionID, metadata := range matchExecutionLogActions(databaseActions, executionLogActions) {
-		update := tx.Ent().Action.UpdateOneID(actionID)
+	for actionExecutionID, metadata := range matchExecutionLogActions(databaseActionExecutions, executionLogActions) {
+		update := tx.Ent().ActionExecution.UpdateOneID(actionExecutionID)
 		if metadata.runner != "" {
 			update.SetRunner(metadata.runner)
 		}

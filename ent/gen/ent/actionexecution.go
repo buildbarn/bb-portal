@@ -10,14 +10,14 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 )
 
-// Action is the model entity for the Action schema.
-type Action struct {
+// ActionExecution is the model entity for the ActionExecution schema.
+type ActionExecution struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
@@ -58,13 +58,13 @@ type Action struct {
 	// StderrURI holds the value of the "stderr_uri" field.
 	StderrURI string `json:"stderr_uri,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the ActionQuery when eager-loading is set.
-	Edges        ActionEdges `json:"edges"`
+	// The values are being populated by the ActionExecutionQuery when eager-loading is set.
+	Edges        ActionExecutionEdges `json:"edges"`
 	selectValues sql.SelectValues
 }
 
-// ActionEdges holds the relations/edges for other nodes in the graph.
-type ActionEdges struct {
+// ActionExecutionEdges holds the relations/edges for other nodes in the graph.
+type ActionExecutionEdges struct {
 	// BazelInvocation holds the value of the bazel_invocation edge.
 	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// Configuration holds the value of the configuration edge.
@@ -80,7 +80,7 @@ type ActionEdges struct {
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ActionEdges) BazelInvocationOrErr() (*BazelInvocation, error) {
+func (e ActionExecutionEdges) BazelInvocationOrErr() (*BazelInvocation, error) {
 	if e.BazelInvocation != nil {
 		return e.BazelInvocation, nil
 	} else if e.loadedTypes[0] {
@@ -91,7 +91,7 @@ func (e ActionEdges) BazelInvocationOrErr() (*BazelInvocation, error) {
 
 // ConfigurationOrErr returns the Configuration value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ActionEdges) ConfigurationOrErr() (*Configuration, error) {
+func (e ActionExecutionEdges) ConfigurationOrErr() (*Configuration, error) {
 	if e.Configuration != nil {
 		return e.Configuration, nil
 	} else if e.loadedTypes[1] {
@@ -102,7 +102,7 @@ func (e ActionEdges) ConfigurationOrErr() (*Configuration, error) {
 
 // ActionDigestOrErr returns the ActionDigest value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ActionEdges) ActionDigestOrErr() (*Digest, error) {
+func (e ActionExecutionEdges) ActionDigestOrErr() (*Digest, error) {
 	if e.ActionDigest != nil {
 		return e.ActionDigest, nil
 	} else if e.loadedTypes[2] {
@@ -112,19 +112,19 @@ func (e ActionEdges) ActionDigestOrErr() (*Digest, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Action) scanValues(columns []string) ([]any, error) {
+func (*ActionExecution) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case action.FieldCommandLine:
+		case actionexecution.FieldCommandLine:
 			values[i] = new([]byte)
-		case action.FieldCacheHit, action.FieldSuccess:
+		case actionexecution.FieldCacheHit, actionexecution.FieldSuccess:
 			values[i] = new(sql.NullBool)
-		case action.FieldID, action.FieldBazelInvocationID, action.FieldConfigurationID, action.FieldActionDigestID, action.FieldExitCode:
+		case actionexecution.FieldID, actionexecution.FieldBazelInvocationID, actionexecution.FieldConfigurationID, actionexecution.FieldActionDigestID, actionexecution.FieldExitCode:
 			values[i] = new(sql.NullInt64)
-		case action.FieldLabel, action.FieldType, action.FieldRunner, action.FieldFailureCode, action.FieldFailureMessage, action.FieldPrimaryOutput, action.FieldPrimaryOutputURI, action.FieldStdoutURI, action.FieldStderrURI:
+		case actionexecution.FieldLabel, actionexecution.FieldType, actionexecution.FieldRunner, actionexecution.FieldFailureCode, actionexecution.FieldFailureMessage, actionexecution.FieldPrimaryOutput, actionexecution.FieldPrimaryOutputURI, actionexecution.FieldStdoutURI, actionexecution.FieldStderrURI:
 			values[i] = new(sql.NullString)
-		case action.FieldStartTime, action.FieldEndTime:
+		case actionexecution.FieldStartTime, actionexecution.FieldEndTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -134,75 +134,75 @@ func (*Action) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Action fields.
-func (_m *Action) assignValues(columns []string, values []any) error {
+// to the ActionExecution fields.
+func (_m *ActionExecution) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case action.FieldID:
+		case actionexecution.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case action.FieldBazelInvocationID:
+		case actionexecution.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
 				_m.BazelInvocationID = value.Int64
 			}
-		case action.FieldConfigurationID:
+		case actionexecution.FieldConfigurationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field configuration_id", values[i])
 			} else if value.Valid {
 				_m.ConfigurationID = value.Int64
 			}
-		case action.FieldActionDigestID:
+		case actionexecution.FieldActionDigestID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field action_digest_id", values[i])
 			} else if value.Valid {
 				_m.ActionDigestID = value.Int64
 			}
-		case action.FieldLabel:
+		case actionexecution.FieldLabel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
 			} else if value.Valid {
 				_m.Label = value.String
 			}
-		case action.FieldType:
+		case actionexecution.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
 				_m.Type = value.String
 			}
-		case action.FieldRunner:
+		case actionexecution.FieldRunner:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field runner", values[i])
 			} else if value.Valid {
 				_m.Runner = value.String
 			}
-		case action.FieldCacheHit:
+		case actionexecution.FieldCacheHit:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field cache_hit", values[i])
 			} else if value.Valid {
 				_m.CacheHit = new(bool)
 				*_m.CacheHit = value.Bool
 			}
-		case action.FieldSuccess:
+		case actionexecution.FieldSuccess:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field success", values[i])
 			} else if value.Valid {
 				_m.Success = value.Bool
 			}
-		case action.FieldExitCode:
+		case actionexecution.FieldExitCode:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field exit_code", values[i])
 			} else if value.Valid {
 				_m.ExitCode = int32(value.Int64)
 			}
-		case action.FieldCommandLine:
+		case actionexecution.FieldCommandLine:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field command_line", values[i])
 			} else if value != nil && len(*value) > 0 {
@@ -210,49 +210,49 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field command_line: %w", err)
 				}
 			}
-		case action.FieldStartTime:
+		case actionexecution.FieldStartTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time", values[i])
 			} else if value.Valid {
 				_m.StartTime = value.Time
 			}
-		case action.FieldEndTime:
+		case actionexecution.FieldEndTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field end_time", values[i])
 			} else if value.Valid {
 				_m.EndTime = value.Time
 			}
-		case action.FieldFailureCode:
+		case actionexecution.FieldFailureCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field failure_code", values[i])
 			} else if value.Valid {
 				_m.FailureCode = value.String
 			}
-		case action.FieldFailureMessage:
+		case actionexecution.FieldFailureMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field failure_message", values[i])
 			} else if value.Valid {
 				_m.FailureMessage = value.String
 			}
-		case action.FieldPrimaryOutput:
+		case actionexecution.FieldPrimaryOutput:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field primary_output", values[i])
 			} else if value.Valid {
 				_m.PrimaryOutput = value.String
 			}
-		case action.FieldPrimaryOutputURI:
+		case actionexecution.FieldPrimaryOutputURI:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field primary_output_uri", values[i])
 			} else if value.Valid {
 				_m.PrimaryOutputURI = value.String
 			}
-		case action.FieldStdoutURI:
+		case actionexecution.FieldStdoutURI:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field stdout_uri", values[i])
 			} else if value.Valid {
 				_m.StdoutURI = value.String
 			}
-		case action.FieldStderrURI:
+		case actionexecution.FieldStderrURI:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field stderr_uri", values[i])
 			} else if value.Valid {
@@ -265,49 +265,49 @@ func (_m *Action) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Action.
+// Value returns the ent.Value that was dynamically selected and assigned to the ActionExecution.
 // This includes values selected through modifiers, order, etc.
-func (_m *Action) Value(name string) (ent.Value, error) {
+func (_m *ActionExecution) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryBazelInvocation queries the "bazel_invocation" edge of the Action entity.
-func (_m *Action) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewActionClient(_m.config).QueryBazelInvocation(_m)
+// QueryBazelInvocation queries the "bazel_invocation" edge of the ActionExecution entity.
+func (_m *ActionExecution) QueryBazelInvocation() *BazelInvocationQuery {
+	return NewActionExecutionClient(_m.config).QueryBazelInvocation(_m)
 }
 
-// QueryConfiguration queries the "configuration" edge of the Action entity.
-func (_m *Action) QueryConfiguration() *ConfigurationQuery {
-	return NewActionClient(_m.config).QueryConfiguration(_m)
+// QueryConfiguration queries the "configuration" edge of the ActionExecution entity.
+func (_m *ActionExecution) QueryConfiguration() *ConfigurationQuery {
+	return NewActionExecutionClient(_m.config).QueryConfiguration(_m)
 }
 
-// QueryActionDigest queries the "action_digest" edge of the Action entity.
-func (_m *Action) QueryActionDigest() *DigestQuery {
-	return NewActionClient(_m.config).QueryActionDigest(_m)
+// QueryActionDigest queries the "action_digest" edge of the ActionExecution entity.
+func (_m *ActionExecution) QueryActionDigest() *DigestQuery {
+	return NewActionExecutionClient(_m.config).QueryActionDigest(_m)
 }
 
-// Update returns a builder for updating this Action.
-// Note that you need to call Action.Unwrap() before calling this method if this Action
+// Update returns a builder for updating this ActionExecution.
+// Note that you need to call ActionExecution.Unwrap() before calling this method if this ActionExecution
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *Action) Update() *ActionUpdateOne {
-	return NewActionClient(_m.config).UpdateOne(_m)
+func (_m *ActionExecution) Update() *ActionExecutionUpdateOne {
+	return NewActionExecutionClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the Action entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the ActionExecution entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *Action) Unwrap() *Action {
+func (_m *ActionExecution) Unwrap() *ActionExecution {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Action is not a transactional entity")
+		panic("ent: ActionExecution is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *Action) String() string {
+func (_m *ActionExecution) String() string {
 	var builder strings.Builder
-	builder.WriteString("Action(")
+	builder.WriteString("ActionExecution(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("bazel_invocation_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.BazelInvocationID))
@@ -368,5 +368,5 @@ func (_m *Action) String() string {
 	return builder.String()
 }
 
-// Actions is a parsable slice of Action.
-type Actions []*Action
+// ActionExecutions is a parsable slice of ActionExecution.
+type ActionExecutions []*ActionExecution

@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
@@ -122,9 +122,9 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			action.Table:                        action.ValidColumn,
 			actioncachestatistics.Table:         actioncachestatistics.ValidColumn,
 			actiondata.Table:                    actiondata.ValidColumn,
+			actionexecution.Table:               actionexecution.ValidColumn,
 			actionsummary.Table:                 actionsummary.ValidColumn,
 			artifactmetrics.Table:               artifactmetrics.ValidColumn,
 			authenticateduser.Table:             authenticateduser.ValidColumn,

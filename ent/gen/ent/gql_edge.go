@@ -8,30 +8,6 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-func (_m *Action) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := _m.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = _m.QueryBazelInvocation().Only(ctx)
-	}
-	return result, err
-}
-
-func (_m *Action) Configuration(ctx context.Context) (*Configuration, error) {
-	result, err := _m.Edges.ConfigurationOrErr()
-	if IsNotLoaded(err) {
-		result, err = _m.QueryConfiguration().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (_m *Action) ActionDigest(ctx context.Context) (*Digest, error) {
-	result, err := _m.Edges.ActionDigestOrErr()
-	if IsNotLoaded(err) {
-		result, err = _m.QueryActionDigest().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (_m *ActionCacheStatistics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
 	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
@@ -56,6 +32,30 @@ func (_m *ActionData) ActionSummary(ctx context.Context) (*ActionSummary, error)
 	result, err := _m.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
 		result, err = _m.QueryActionSummary().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *ActionExecution) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _m.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryBazelInvocation().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *ActionExecution) Configuration(ctx context.Context) (*Configuration, error) {
+	result, err := _m.Edges.ConfigurationOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryConfiguration().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *ActionExecution) ActionDigest(ctx context.Context) (*Digest, error) {
+	result, err := _m.Edges.ActionDigestOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryActionDigest().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -194,24 +194,24 @@ func (_m *BazelInvocation) Configurations(ctx context.Context) (result []*Config
 	return result, err
 }
 
-func (_m *BazelInvocation) Actions(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *ActionWhereInput,
-) (*ActionConnection, error) {
-	opts := []ActionPaginateOption{
-		WithActionFilter(where.Filter),
+func (_m *BazelInvocation) ActionExecutions(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, where *ActionExecutionWhereInput,
+) (*ActionExecutionConnection, error) {
+	opts := []ActionExecutionPaginateOption{
+		WithActionExecutionFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
 	totalCount, hasTotalCount := _m.Edges.totalCount[6][alias]
-	if nodes, err := _m.NamedActions(alias); err == nil || hasTotalCount {
-		pager, err := newActionPager(opts, last != nil)
+	if nodes, err := _m.NamedActionExecutions(alias); err == nil || hasTotalCount {
+		pager, err := newActionExecutionPager(opts, last != nil)
 		if err != nil {
 			return nil, err
 		}
-		conn := &ActionConnection{Edges: []*ActionEdge{}, TotalCount: totalCount}
+		conn := &ActionExecutionConnection{Edges: []*ActionExecutionEdge{}, TotalCount: totalCount}
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return _m.QueryActions().Paginate(ctx, after, first, before, last, opts...)
+	return _m.QueryActionExecutions().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (_m *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
@@ -408,14 +408,14 @@ func (_m *Configuration) InvocationTargets(ctx context.Context) (result []*Invoc
 	return result, err
 }
 
-func (_m *Configuration) Actions(ctx context.Context) (result []*Action, err error) {
+func (_m *Configuration) ActionExecutions(ctx context.Context) (result []*ActionExecution, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = _m.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = _m.NamedActionExecutions(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = _m.Edges.ActionsOrErr()
+		result, err = _m.Edges.ActionExecutionsOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = _m.QueryActions().All(ctx)
+		result, err = _m.QueryActionExecutions().All(ctx)
 	}
 	return result, err
 }

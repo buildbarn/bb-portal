@@ -8,7 +8,7 @@ WITH action_durations AS (
                 AND end_time >= start_time
             THEN EXTRACT(EPOCH FROM (end_time - start_time)) * 1000
         END AS duration_in_ms
-    FROM actions
+    FROM action_executions
     WHERE bazel_invocation_id = $1
 )
 SELECT

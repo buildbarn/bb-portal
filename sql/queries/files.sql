@@ -89,7 +89,7 @@ WHERE ctid IN (
         )
         AND (
             NOT EXISTS (
-                SELECT 1 FROM "actions"
+                SELECT 1 FROM "action_executions"
                 WHERE "action_digest_id" = "digests"."id"
             )
         )

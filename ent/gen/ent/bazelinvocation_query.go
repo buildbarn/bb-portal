@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -46,7 +46,7 @@ type BazelInvocationQuery struct {
 	withEventMetadata            *EventMetadataQuery
 	withConnectionMetadata       *ConnectionMetadataQuery
 	withConfigurations           *ConfigurationQuery
-	withActions                  *ActionQuery
+	withActionExecutions         *ActionExecutionQuery
 	withMetrics                  *MetricsQuery
 	withIncompleteBuildLogs      *IncompleteBuildLogQuery
 	withBuildLogChunks           *BuildLogChunkQuery
@@ -59,7 +59,7 @@ type BazelInvocationQuery struct {
 	loadTotal                    []func(context.Context, []*BazelInvocation) error
 	withNamedTags                map[string]*InvocationTagQuery
 	withNamedConfigurations      map[string]*ConfigurationQuery
-	withNamedActions             map[string]*ActionQuery
+	withNamedActionExecutions    map[string]*ActionExecutionQuery
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
 	withNamedBuildLogChunks      map[string]*BuildLogChunkQuery
 	withNamedInvocationTargets   map[string]*InvocationTargetQuery
@@ -255,9 +255,9 @@ func (_q *BazelInvocationQuery) QueryConfigurations() *ConfigurationQuery {
 	return query
 }
 
-// QueryActions chains the current query on the "actions" edge.
-func (_q *BazelInvocationQuery) QueryActions() *ActionQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+// QueryActionExecutions chains the current query on the "action_executions" edge.
+func (_q *BazelInvocationQuery) QueryActionExecutions() *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -268,8 +268,8 @@ func (_q *BazelInvocationQuery) QueryActions() *ActionQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ActionsTable, bazelinvocation.ActionsColumn),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ActionExecutionsTable, bazelinvocation.ActionExecutionsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -630,7 +630,7 @@ func (_q *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withEventMetadata:       _q.withEventMetadata.Clone(),
 		withConnectionMetadata:  _q.withConnectionMetadata.Clone(),
 		withConfigurations:      _q.withConfigurations.Clone(),
-		withActions:             _q.withActions.Clone(),
+		withActionExecutions:    _q.withActionExecutions.Clone(),
 		withMetrics:             _q.withMetrics.Clone(),
 		withIncompleteBuildLogs: _q.withIncompleteBuildLogs.Clone(),
 		withBuildLogChunks:      _q.withBuildLogChunks.Clone(),
@@ -721,14 +721,14 @@ func (_q *BazelInvocationQuery) WithConfigurations(opts ...func(*ConfigurationQu
 	return _q
 }
 
-// WithActions tells the query-builder to eager-load the nodes that are connected to
-// the "actions" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *BazelInvocationQuery) WithActions(opts ...func(*ActionQuery)) *BazelInvocationQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+// WithActionExecutions tells the query-builder to eager-load the nodes that are connected to
+// the "action_executions" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *BazelInvocationQuery) WithActionExecutions(opts ...func(*ActionExecutionQuery)) *BazelInvocationQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withActions = query
+	_q.withActionExecutions = query
 	return _q
 }
 
@@ -902,7 +902,7 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			_q.withEventMetadata != nil,
 			_q.withConnectionMetadata != nil,
 			_q.withConfigurations != nil,
-			_q.withActions != nil,
+			_q.withActionExecutions != nil,
 			_q.withMetrics != nil,
 			_q.withIncompleteBuildLogs != nil,
 			_q.withBuildLogChunks != nil,
@@ -983,10 +983,12 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			return nil, err
 		}
 	}
-	if query := _q.withActions; query != nil {
-		if err := _q.loadActions(ctx, query, nodes,
-			func(n *BazelInvocation) { n.Edges.Actions = []*Action{} },
-			func(n *BazelInvocation, e *Action) { n.Edges.Actions = append(n.Edges.Actions, e) }); err != nil {
+	if query := _q.withActionExecutions; query != nil {
+		if err := _q.loadActionExecutions(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.ActionExecutions = []*ActionExecution{} },
+			func(n *BazelInvocation, e *ActionExecution) {
+				n.Edges.ActionExecutions = append(n.Edges.ActionExecutions, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -1057,10 +1059,10 @@ func (_q *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			return nil, err
 		}
 	}
-	for name, query := range _q.withNamedActions {
-		if err := _q.loadActions(ctx, query, nodes,
-			func(n *BazelInvocation) { n.appendNamedActions(name) },
-			func(n *BazelInvocation, e *Action) { n.appendNamedActions(name, e) }); err != nil {
+	for name, query := range _q.withNamedActionExecutions {
+		if err := _q.loadActionExecutions(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedActionExecutions(name) },
+			func(n *BazelInvocation, e *ActionExecution) { n.appendNamedActionExecutions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1318,7 +1320,7 @@ func (_q *BazelInvocationQuery) loadConfigurations(ctx context.Context, query *C
 	}
 	return nil
 }
-func (_q *BazelInvocationQuery) loadActions(ctx context.Context, query *ActionQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Action)) error {
+func (_q *BazelInvocationQuery) loadActionExecutions(ctx context.Context, query *ActionExecutionQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *ActionExecution)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*BazelInvocation)
 	for i := range nodes {
@@ -1329,10 +1331,10 @@ func (_q *BazelInvocationQuery) loadActions(ctx context.Context, query *ActionQu
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(action.FieldBazelInvocationID)
+		query.ctx.AppendFieldOnce(actionexecution.FieldBazelInvocationID)
 	}
-	query.Where(predicate.Action(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(bazelinvocation.ActionsColumn), fks...))
+	query.Where(predicate.ActionExecution(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.ActionExecutionsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1674,17 +1676,17 @@ func (_q *BazelInvocationQuery) WithNamedConfigurations(name string, opts ...fun
 	return _q
 }
 
-// WithNamedActions tells the query-builder to eager-load the nodes that are connected to the "actions"
+// WithNamedActionExecutions tells the query-builder to eager-load the nodes that are connected to the "action_executions"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (_q *BazelInvocationQuery) WithNamedActions(name string, opts ...func(*ActionQuery)) *BazelInvocationQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+func (_q *BazelInvocationQuery) WithNamedActionExecutions(name string, opts ...func(*ActionExecutionQuery)) *BazelInvocationQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if _q.withNamedActions == nil {
-		_q.withNamedActions = make(map[string]*ActionQuery)
+	if _q.withNamedActionExecutions == nil {
+		_q.withNamedActionExecutions = make(map[string]*ActionExecutionQuery)
 	}
-	_q.withNamedActions[name] = query
+	_q.withNamedActionExecutions[name] = query
 	return _q
 }
 

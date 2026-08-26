@@ -65,14 +65,6 @@ func TestRemoveFiles(t *testing.T) {
 		require.NoError(t, err)
 
 		inv := testutils.StartCreateInvocation(client, instanceName).SetProfileID(f1).SaveX(ctx)
-		conf := client.Configuration.Create().SetConfigurationID("1").SetBazelInvocation(inv).SaveX(ctx)
-		client.Action.Create().
-			SetBazelInvocation(inv).
-			SetConfiguration(conf).
-			SetLabel("foo").
-			SetStdoutURI("bytestream://cache.example.com/blobs/stdout/1").
-			SetStderrURI("bytestream://cache.example.com/blobs/stderr/1").
-			SaveX(ctx)
 
 		target := client.Target.Create().SetInstanceName(instanceName).SetLabel("foo").SetAspect("bar").SetTargetKind("baz").SaveX(ctx)
 		invTarget := client.InvocationTarget.Create().SetBazelInvocation(inv).SetTarget(target).SetAbortReason(invocationtarget.AbortReasonNONE).SaveX(ctx)
@@ -108,7 +100,7 @@ func TestRemoveFiles(t *testing.T) {
 		require.Equal(t, 2, count)
 	})
 
-	t.Run("ActionDigest", func(t *testing.T) {
+	t.Run("ActionExecutionDigest", func(t *testing.T) {
 		db := testutils.SetupTestDB(t, dbProvider)
 		client := db.Ent()
 
@@ -120,7 +112,7 @@ func TestRemoveFiles(t *testing.T) {
 			SetHash([]byte{1}).
 			SetSizeBytes(1).
 			SaveX(ctx)
-		client.Action.Create().
+		client.ActionExecution.Create().
 			SetBazelInvocation(invocation).
 			SetActionDigest(actionDigest).
 			SetLabel("//example:example").
@@ -139,6 +131,6 @@ func TestRemoveFiles(t *testing.T) {
 		require.EqualValues(t, 1, deleted)
 
 		require.Equal(t, 1, client.Digest.Query().CountX(ctx))
-		require.Equal(t, actionDigest.ID, client.Action.Query().OnlyX(ctx).QueryActionDigest().OnlyX(ctx).ID)
+		require.Equal(t, actionDigest.ID, client.ActionExecution.Query().OnlyX(ctx).QueryActionDigest().OnlyX(ctx).ID)
 	})
 }

@@ -12,32 +12,32 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
-// ActionUpdate is the builder for updating Action entities.
-type ActionUpdate struct {
+// ActionExecutionUpdate is the builder for updating ActionExecution entities.
+type ActionExecutionUpdate struct {
 	config
 	hooks    []Hook
-	mutation *ActionMutation
+	mutation *ActionExecutionMutation
 }
 
-// Where appends a list predicates to the ActionUpdate builder.
-func (_u *ActionUpdate) Where(ps ...predicate.Action) *ActionUpdate {
+// Where appends a list predicates to the ActionExecutionUpdate builder.
+func (_u *ActionExecutionUpdate) Where(ps ...predicate.ActionExecution) *ActionExecutionUpdate {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // SetActionDigestID sets the "action_digest_id" field.
-func (_u *ActionUpdate) SetActionDigestID(v int64) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetActionDigestID(v int64) *ActionExecutionUpdate {
 	_u.mutation.SetActionDigestID(v)
 	return _u
 }
 
 // SetNillableActionDigestID sets the "action_digest_id" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableActionDigestID(v *int64) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableActionDigestID(v *int64) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetActionDigestID(*v)
 	}
@@ -45,19 +45,19 @@ func (_u *ActionUpdate) SetNillableActionDigestID(v *int64) *ActionUpdate {
 }
 
 // ClearActionDigestID clears the value of the "action_digest_id" field.
-func (_u *ActionUpdate) ClearActionDigestID() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearActionDigestID() *ActionExecutionUpdate {
 	_u.mutation.ClearActionDigestID()
 	return _u
 }
 
 // SetLabel sets the "label" field.
-func (_u *ActionUpdate) SetLabel(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetLabel(v string) *ActionExecutionUpdate {
 	_u.mutation.SetLabel(v)
 	return _u
 }
 
 // SetNillableLabel sets the "label" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableLabel(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableLabel(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetLabel(*v)
 	}
@@ -65,13 +65,13 @@ func (_u *ActionUpdate) SetNillableLabel(v *string) *ActionUpdate {
 }
 
 // SetType sets the "type" field.
-func (_u *ActionUpdate) SetType(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetType(v string) *ActionExecutionUpdate {
 	_u.mutation.SetType(v)
 	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableType(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableType(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetType(*v)
 	}
@@ -79,19 +79,19 @@ func (_u *ActionUpdate) SetNillableType(v *string) *ActionUpdate {
 }
 
 // ClearType clears the value of the "type" field.
-func (_u *ActionUpdate) ClearType() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearType() *ActionExecutionUpdate {
 	_u.mutation.ClearType()
 	return _u
 }
 
 // SetRunner sets the "runner" field.
-func (_u *ActionUpdate) SetRunner(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetRunner(v string) *ActionExecutionUpdate {
 	_u.mutation.SetRunner(v)
 	return _u
 }
 
 // SetNillableRunner sets the "runner" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableRunner(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableRunner(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetRunner(*v)
 	}
@@ -99,19 +99,19 @@ func (_u *ActionUpdate) SetNillableRunner(v *string) *ActionUpdate {
 }
 
 // ClearRunner clears the value of the "runner" field.
-func (_u *ActionUpdate) ClearRunner() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearRunner() *ActionExecutionUpdate {
 	_u.mutation.ClearRunner()
 	return _u
 }
 
 // SetCacheHit sets the "cache_hit" field.
-func (_u *ActionUpdate) SetCacheHit(v bool) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetCacheHit(v bool) *ActionExecutionUpdate {
 	_u.mutation.SetCacheHit(v)
 	return _u
 }
 
 // SetNillableCacheHit sets the "cache_hit" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableCacheHit(v *bool) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableCacheHit(v *bool) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetCacheHit(*v)
 	}
@@ -119,19 +119,19 @@ func (_u *ActionUpdate) SetNillableCacheHit(v *bool) *ActionUpdate {
 }
 
 // ClearCacheHit clears the value of the "cache_hit" field.
-func (_u *ActionUpdate) ClearCacheHit() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearCacheHit() *ActionExecutionUpdate {
 	_u.mutation.ClearCacheHit()
 	return _u
 }
 
 // SetSuccess sets the "success" field.
-func (_u *ActionUpdate) SetSuccess(v bool) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetSuccess(v bool) *ActionExecutionUpdate {
 	_u.mutation.SetSuccess(v)
 	return _u
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableSuccess(v *bool) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableSuccess(v *bool) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetSuccess(*v)
 	}
@@ -139,20 +139,20 @@ func (_u *ActionUpdate) SetNillableSuccess(v *bool) *ActionUpdate {
 }
 
 // ClearSuccess clears the value of the "success" field.
-func (_u *ActionUpdate) ClearSuccess() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearSuccess() *ActionExecutionUpdate {
 	_u.mutation.ClearSuccess()
 	return _u
 }
 
 // SetExitCode sets the "exit_code" field.
-func (_u *ActionUpdate) SetExitCode(v int32) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetExitCode(v int32) *ActionExecutionUpdate {
 	_u.mutation.ResetExitCode()
 	_u.mutation.SetExitCode(v)
 	return _u
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableExitCode(v *int32) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableExitCode(v *int32) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetExitCode(*v)
 	}
@@ -160,43 +160,43 @@ func (_u *ActionUpdate) SetNillableExitCode(v *int32) *ActionUpdate {
 }
 
 // AddExitCode adds value to the "exit_code" field.
-func (_u *ActionUpdate) AddExitCode(v int32) *ActionUpdate {
+func (_u *ActionExecutionUpdate) AddExitCode(v int32) *ActionExecutionUpdate {
 	_u.mutation.AddExitCode(v)
 	return _u
 }
 
 // ClearExitCode clears the value of the "exit_code" field.
-func (_u *ActionUpdate) ClearExitCode() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearExitCode() *ActionExecutionUpdate {
 	_u.mutation.ClearExitCode()
 	return _u
 }
 
 // SetCommandLine sets the "command_line" field.
-func (_u *ActionUpdate) SetCommandLine(v []string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetCommandLine(v []string) *ActionExecutionUpdate {
 	_u.mutation.SetCommandLine(v)
 	return _u
 }
 
 // AppendCommandLine appends value to the "command_line" field.
-func (_u *ActionUpdate) AppendCommandLine(v []string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) AppendCommandLine(v []string) *ActionExecutionUpdate {
 	_u.mutation.AppendCommandLine(v)
 	return _u
 }
 
 // ClearCommandLine clears the value of the "command_line" field.
-func (_u *ActionUpdate) ClearCommandLine() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearCommandLine() *ActionExecutionUpdate {
 	_u.mutation.ClearCommandLine()
 	return _u
 }
 
 // SetStartTime sets the "start_time" field.
-func (_u *ActionUpdate) SetStartTime(v time.Time) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetStartTime(v time.Time) *ActionExecutionUpdate {
 	_u.mutation.SetStartTime(v)
 	return _u
 }
 
 // SetNillableStartTime sets the "start_time" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableStartTime(v *time.Time) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableStartTime(v *time.Time) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetStartTime(*v)
 	}
@@ -204,19 +204,19 @@ func (_u *ActionUpdate) SetNillableStartTime(v *time.Time) *ActionUpdate {
 }
 
 // ClearStartTime clears the value of the "start_time" field.
-func (_u *ActionUpdate) ClearStartTime() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearStartTime() *ActionExecutionUpdate {
 	_u.mutation.ClearStartTime()
 	return _u
 }
 
 // SetEndTime sets the "end_time" field.
-func (_u *ActionUpdate) SetEndTime(v time.Time) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetEndTime(v time.Time) *ActionExecutionUpdate {
 	_u.mutation.SetEndTime(v)
 	return _u
 }
 
 // SetNillableEndTime sets the "end_time" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableEndTime(v *time.Time) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableEndTime(v *time.Time) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetEndTime(*v)
 	}
@@ -224,19 +224,19 @@ func (_u *ActionUpdate) SetNillableEndTime(v *time.Time) *ActionUpdate {
 }
 
 // ClearEndTime clears the value of the "end_time" field.
-func (_u *ActionUpdate) ClearEndTime() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearEndTime() *ActionExecutionUpdate {
 	_u.mutation.ClearEndTime()
 	return _u
 }
 
 // SetFailureCode sets the "failure_code" field.
-func (_u *ActionUpdate) SetFailureCode(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetFailureCode(v string) *ActionExecutionUpdate {
 	_u.mutation.SetFailureCode(v)
 	return _u
 }
 
 // SetNillableFailureCode sets the "failure_code" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableFailureCode(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableFailureCode(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetFailureCode(*v)
 	}
@@ -244,19 +244,19 @@ func (_u *ActionUpdate) SetNillableFailureCode(v *string) *ActionUpdate {
 }
 
 // ClearFailureCode clears the value of the "failure_code" field.
-func (_u *ActionUpdate) ClearFailureCode() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearFailureCode() *ActionExecutionUpdate {
 	_u.mutation.ClearFailureCode()
 	return _u
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (_u *ActionUpdate) SetFailureMessage(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetFailureMessage(v string) *ActionExecutionUpdate {
 	_u.mutation.SetFailureMessage(v)
 	return _u
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableFailureMessage(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableFailureMessage(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetFailureMessage(*v)
 	}
@@ -264,19 +264,19 @@ func (_u *ActionUpdate) SetNillableFailureMessage(v *string) *ActionUpdate {
 }
 
 // ClearFailureMessage clears the value of the "failure_message" field.
-func (_u *ActionUpdate) ClearFailureMessage() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearFailureMessage() *ActionExecutionUpdate {
 	_u.mutation.ClearFailureMessage()
 	return _u
 }
 
 // SetPrimaryOutput sets the "primary_output" field.
-func (_u *ActionUpdate) SetPrimaryOutput(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetPrimaryOutput(v string) *ActionExecutionUpdate {
 	_u.mutation.SetPrimaryOutput(v)
 	return _u
 }
 
 // SetNillablePrimaryOutput sets the "primary_output" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillablePrimaryOutput(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillablePrimaryOutput(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetPrimaryOutput(*v)
 	}
@@ -284,19 +284,19 @@ func (_u *ActionUpdate) SetNillablePrimaryOutput(v *string) *ActionUpdate {
 }
 
 // ClearPrimaryOutput clears the value of the "primary_output" field.
-func (_u *ActionUpdate) ClearPrimaryOutput() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearPrimaryOutput() *ActionExecutionUpdate {
 	_u.mutation.ClearPrimaryOutput()
 	return _u
 }
 
 // SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (_u *ActionUpdate) SetPrimaryOutputURI(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetPrimaryOutputURI(v string) *ActionExecutionUpdate {
 	_u.mutation.SetPrimaryOutputURI(v)
 	return _u
 }
 
 // SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillablePrimaryOutputURI(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillablePrimaryOutputURI(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetPrimaryOutputURI(*v)
 	}
@@ -304,19 +304,19 @@ func (_u *ActionUpdate) SetNillablePrimaryOutputURI(v *string) *ActionUpdate {
 }
 
 // ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (_u *ActionUpdate) ClearPrimaryOutputURI() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearPrimaryOutputURI() *ActionExecutionUpdate {
 	_u.mutation.ClearPrimaryOutputURI()
 	return _u
 }
 
 // SetStdoutURI sets the "stdout_uri" field.
-func (_u *ActionUpdate) SetStdoutURI(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetStdoutURI(v string) *ActionExecutionUpdate {
 	_u.mutation.SetStdoutURI(v)
 	return _u
 }
 
 // SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableStdoutURI(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableStdoutURI(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetStdoutURI(*v)
 	}
@@ -324,19 +324,19 @@ func (_u *ActionUpdate) SetNillableStdoutURI(v *string) *ActionUpdate {
 }
 
 // ClearStdoutURI clears the value of the "stdout_uri" field.
-func (_u *ActionUpdate) ClearStdoutURI() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearStdoutURI() *ActionExecutionUpdate {
 	_u.mutation.ClearStdoutURI()
 	return _u
 }
 
 // SetStderrURI sets the "stderr_uri" field.
-func (_u *ActionUpdate) SetStderrURI(v string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetStderrURI(v string) *ActionExecutionUpdate {
 	_u.mutation.SetStderrURI(v)
 	return _u
 }
 
 // SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
-func (_u *ActionUpdate) SetNillableStderrURI(v *string) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetNillableStderrURI(v *string) *ActionExecutionUpdate {
 	if v != nil {
 		_u.SetStderrURI(*v)
 	}
@@ -344,34 +344,34 @@ func (_u *ActionUpdate) SetNillableStderrURI(v *string) *ActionUpdate {
 }
 
 // ClearStderrURI clears the value of the "stderr_uri" field.
-func (_u *ActionUpdate) ClearStderrURI() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearStderrURI() *ActionExecutionUpdate {
 	_u.mutation.ClearStderrURI()
 	return _u
 }
 
 // SetActionDigest sets the "action_digest" edge to the Digest entity.
-func (_u *ActionUpdate) SetActionDigest(v *Digest) *ActionUpdate {
+func (_u *ActionExecutionUpdate) SetActionDigest(v *Digest) *ActionExecutionUpdate {
 	return _u.SetActionDigestID(v.ID)
 }
 
-// Mutation returns the ActionMutation object of the builder.
-func (_u *ActionUpdate) Mutation() *ActionMutation {
+// Mutation returns the ActionExecutionMutation object of the builder.
+func (_u *ActionExecutionUpdate) Mutation() *ActionExecutionMutation {
 	return _u.mutation
 }
 
 // ClearActionDigest clears the "action_digest" edge to the Digest entity.
-func (_u *ActionUpdate) ClearActionDigest() *ActionUpdate {
+func (_u *ActionExecutionUpdate) ClearActionDigest() *ActionExecutionUpdate {
 	_u.mutation.ClearActionDigest()
 	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *ActionUpdate) Save(ctx context.Context) (int, error) {
+func (_u *ActionExecutionUpdate) Save(ctx context.Context) (int, error) {
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ActionUpdate) SaveX(ctx context.Context) int {
+func (_u *ActionExecutionUpdate) SaveX(ctx context.Context) int {
 	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -380,31 +380,31 @@ func (_u *ActionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *ActionUpdate) Exec(ctx context.Context) error {
+func (_u *ActionExecutionUpdate) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ActionUpdate) ExecX(ctx context.Context) {
+func (_u *ActionExecutionUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *ActionUpdate) check() error {
+func (_u *ActionExecutionUpdate) check() error {
 	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
+		return errors.New(`ent: clearing a required unique edge "ActionExecution.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+func (_u *ActionExecutionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(action.Table, action.Columns, sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(actionexecution.Table, actionexecution.Columns, sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -413,106 +413,106 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 	}
 	if value, ok := _u.mutation.Label(); ok {
-		_spec.SetField(action.FieldLabel, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldLabel, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.GetType(); ok {
-		_spec.SetField(action.FieldType, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldType, field.TypeString, value)
 	}
 	if _u.mutation.TypeCleared() {
-		_spec.ClearField(action.FieldType, field.TypeString)
+		_spec.ClearField(actionexecution.FieldType, field.TypeString)
 	}
 	if value, ok := _u.mutation.Runner(); ok {
-		_spec.SetField(action.FieldRunner, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldRunner, field.TypeString, value)
 	}
 	if _u.mutation.RunnerCleared() {
-		_spec.ClearField(action.FieldRunner, field.TypeString)
+		_spec.ClearField(actionexecution.FieldRunner, field.TypeString)
 	}
 	if value, ok := _u.mutation.CacheHit(); ok {
-		_spec.SetField(action.FieldCacheHit, field.TypeBool, value)
+		_spec.SetField(actionexecution.FieldCacheHit, field.TypeBool, value)
 	}
 	if _u.mutation.CacheHitCleared() {
-		_spec.ClearField(action.FieldCacheHit, field.TypeBool)
+		_spec.ClearField(actionexecution.FieldCacheHit, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Success(); ok {
-		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
+		_spec.SetField(actionexecution.FieldSuccess, field.TypeBool, value)
 	}
 	if _u.mutation.SuccessCleared() {
-		_spec.ClearField(action.FieldSuccess, field.TypeBool)
+		_spec.ClearField(actionexecution.FieldSuccess, field.TypeBool)
 	}
 	if value, ok := _u.mutation.ExitCode(); ok {
-		_spec.SetField(action.FieldExitCode, field.TypeInt32, value)
+		_spec.SetField(actionexecution.FieldExitCode, field.TypeInt32, value)
 	}
 	if value, ok := _u.mutation.AddedExitCode(); ok {
-		_spec.AddField(action.FieldExitCode, field.TypeInt32, value)
+		_spec.AddField(actionexecution.FieldExitCode, field.TypeInt32, value)
 	}
 	if _u.mutation.ExitCodeCleared() {
-		_spec.ClearField(action.FieldExitCode, field.TypeInt32)
+		_spec.ClearField(actionexecution.FieldExitCode, field.TypeInt32)
 	}
 	if value, ok := _u.mutation.CommandLine(); ok {
-		_spec.SetField(action.FieldCommandLine, field.TypeJSON, value)
+		_spec.SetField(actionexecution.FieldCommandLine, field.TypeJSON, value)
 	}
 	if value, ok := _u.mutation.AppendedCommandLine(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, action.FieldCommandLine, value)
+			sqljson.Append(u, actionexecution.FieldCommandLine, value)
 		})
 	}
 	if _u.mutation.CommandLineCleared() {
-		_spec.ClearField(action.FieldCommandLine, field.TypeJSON)
+		_spec.ClearField(actionexecution.FieldCommandLine, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.StartTime(); ok {
-		_spec.SetField(action.FieldStartTime, field.TypeTime, value)
+		_spec.SetField(actionexecution.FieldStartTime, field.TypeTime, value)
 	}
 	if _u.mutation.StartTimeCleared() {
-		_spec.ClearField(action.FieldStartTime, field.TypeTime)
+		_spec.ClearField(actionexecution.FieldStartTime, field.TypeTime)
 	}
 	if value, ok := _u.mutation.EndTime(); ok {
-		_spec.SetField(action.FieldEndTime, field.TypeTime, value)
+		_spec.SetField(actionexecution.FieldEndTime, field.TypeTime, value)
 	}
 	if _u.mutation.EndTimeCleared() {
-		_spec.ClearField(action.FieldEndTime, field.TypeTime)
+		_spec.ClearField(actionexecution.FieldEndTime, field.TypeTime)
 	}
 	if value, ok := _u.mutation.FailureCode(); ok {
-		_spec.SetField(action.FieldFailureCode, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldFailureCode, field.TypeString, value)
 	}
 	if _u.mutation.FailureCodeCleared() {
-		_spec.ClearField(action.FieldFailureCode, field.TypeString)
+		_spec.ClearField(actionexecution.FieldFailureCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.FailureMessage(); ok {
-		_spec.SetField(action.FieldFailureMessage, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldFailureMessage, field.TypeString, value)
 	}
 	if _u.mutation.FailureMessageCleared() {
-		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
+		_spec.ClearField(actionexecution.FieldFailureMessage, field.TypeString)
 	}
 	if value, ok := _u.mutation.PrimaryOutput(); ok {
-		_spec.SetField(action.FieldPrimaryOutput, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldPrimaryOutput, field.TypeString, value)
 	}
 	if _u.mutation.PrimaryOutputCleared() {
-		_spec.ClearField(action.FieldPrimaryOutput, field.TypeString)
+		_spec.ClearField(actionexecution.FieldPrimaryOutput, field.TypeString)
 	}
 	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
-		_spec.SetField(action.FieldPrimaryOutputURI, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldPrimaryOutputURI, field.TypeString, value)
 	}
 	if _u.mutation.PrimaryOutputURICleared() {
-		_spec.ClearField(action.FieldPrimaryOutputURI, field.TypeString)
+		_spec.ClearField(actionexecution.FieldPrimaryOutputURI, field.TypeString)
 	}
 	if value, ok := _u.mutation.StdoutURI(); ok {
-		_spec.SetField(action.FieldStdoutURI, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldStdoutURI, field.TypeString, value)
 	}
 	if _u.mutation.StdoutURICleared() {
-		_spec.ClearField(action.FieldStdoutURI, field.TypeString)
+		_spec.ClearField(actionexecution.FieldStdoutURI, field.TypeString)
 	}
 	if value, ok := _u.mutation.StderrURI(); ok {
-		_spec.SetField(action.FieldStderrURI, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldStderrURI, field.TypeString, value)
 	}
 	if _u.mutation.StderrURICleared() {
-		_spec.ClearField(action.FieldStderrURI, field.TypeString)
+		_spec.ClearField(actionexecution.FieldStderrURI, field.TypeString)
 	}
 	if _u.mutation.ActionDigestCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   action.ActionDigestTable,
-			Columns: []string{action.ActionDigestColumn},
+			Table:   actionexecution.ActionDigestTable,
+			Columns: []string{actionexecution.ActionDigestColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
@@ -524,8 +524,8 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   action.ActionDigestTable,
-			Columns: []string{action.ActionDigestColumn},
+			Table:   actionexecution.ActionDigestTable,
+			Columns: []string{actionexecution.ActionDigestColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
@@ -538,7 +538,7 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{action.Label}
+			err = &NotFoundError{actionexecution.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -548,22 +548,22 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	return _node, nil
 }
 
-// ActionUpdateOne is the builder for updating a single Action entity.
-type ActionUpdateOne struct {
+// ActionExecutionUpdateOne is the builder for updating a single ActionExecution entity.
+type ActionExecutionUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *ActionMutation
+	mutation *ActionExecutionMutation
 }
 
 // SetActionDigestID sets the "action_digest_id" field.
-func (_u *ActionUpdateOne) SetActionDigestID(v int64) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetActionDigestID(v int64) *ActionExecutionUpdateOne {
 	_u.mutation.SetActionDigestID(v)
 	return _u
 }
 
 // SetNillableActionDigestID sets the "action_digest_id" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableActionDigestID(v *int64) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableActionDigestID(v *int64) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetActionDigestID(*v)
 	}
@@ -571,19 +571,19 @@ func (_u *ActionUpdateOne) SetNillableActionDigestID(v *int64) *ActionUpdateOne 
 }
 
 // ClearActionDigestID clears the value of the "action_digest_id" field.
-func (_u *ActionUpdateOne) ClearActionDigestID() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearActionDigestID() *ActionExecutionUpdateOne {
 	_u.mutation.ClearActionDigestID()
 	return _u
 }
 
 // SetLabel sets the "label" field.
-func (_u *ActionUpdateOne) SetLabel(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetLabel(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetLabel(v)
 	return _u
 }
 
 // SetNillableLabel sets the "label" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableLabel(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableLabel(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetLabel(*v)
 	}
@@ -591,13 +591,13 @@ func (_u *ActionUpdateOne) SetNillableLabel(v *string) *ActionUpdateOne {
 }
 
 // SetType sets the "type" field.
-func (_u *ActionUpdateOne) SetType(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetType(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetType(v)
 	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableType(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableType(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetType(*v)
 	}
@@ -605,19 +605,19 @@ func (_u *ActionUpdateOne) SetNillableType(v *string) *ActionUpdateOne {
 }
 
 // ClearType clears the value of the "type" field.
-func (_u *ActionUpdateOne) ClearType() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearType() *ActionExecutionUpdateOne {
 	_u.mutation.ClearType()
 	return _u
 }
 
 // SetRunner sets the "runner" field.
-func (_u *ActionUpdateOne) SetRunner(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetRunner(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetRunner(v)
 	return _u
 }
 
 // SetNillableRunner sets the "runner" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableRunner(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableRunner(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetRunner(*v)
 	}
@@ -625,19 +625,19 @@ func (_u *ActionUpdateOne) SetNillableRunner(v *string) *ActionUpdateOne {
 }
 
 // ClearRunner clears the value of the "runner" field.
-func (_u *ActionUpdateOne) ClearRunner() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearRunner() *ActionExecutionUpdateOne {
 	_u.mutation.ClearRunner()
 	return _u
 }
 
 // SetCacheHit sets the "cache_hit" field.
-func (_u *ActionUpdateOne) SetCacheHit(v bool) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetCacheHit(v bool) *ActionExecutionUpdateOne {
 	_u.mutation.SetCacheHit(v)
 	return _u
 }
 
 // SetNillableCacheHit sets the "cache_hit" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableCacheHit(v *bool) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableCacheHit(v *bool) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetCacheHit(*v)
 	}
@@ -645,19 +645,19 @@ func (_u *ActionUpdateOne) SetNillableCacheHit(v *bool) *ActionUpdateOne {
 }
 
 // ClearCacheHit clears the value of the "cache_hit" field.
-func (_u *ActionUpdateOne) ClearCacheHit() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearCacheHit() *ActionExecutionUpdateOne {
 	_u.mutation.ClearCacheHit()
 	return _u
 }
 
 // SetSuccess sets the "success" field.
-func (_u *ActionUpdateOne) SetSuccess(v bool) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetSuccess(v bool) *ActionExecutionUpdateOne {
 	_u.mutation.SetSuccess(v)
 	return _u
 }
 
 // SetNillableSuccess sets the "success" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableSuccess(v *bool) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableSuccess(v *bool) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetSuccess(*v)
 	}
@@ -665,20 +665,20 @@ func (_u *ActionUpdateOne) SetNillableSuccess(v *bool) *ActionUpdateOne {
 }
 
 // ClearSuccess clears the value of the "success" field.
-func (_u *ActionUpdateOne) ClearSuccess() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearSuccess() *ActionExecutionUpdateOne {
 	_u.mutation.ClearSuccess()
 	return _u
 }
 
 // SetExitCode sets the "exit_code" field.
-func (_u *ActionUpdateOne) SetExitCode(v int32) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetExitCode(v int32) *ActionExecutionUpdateOne {
 	_u.mutation.ResetExitCode()
 	_u.mutation.SetExitCode(v)
 	return _u
 }
 
 // SetNillableExitCode sets the "exit_code" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableExitCode(v *int32) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableExitCode(v *int32) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetExitCode(*v)
 	}
@@ -686,43 +686,43 @@ func (_u *ActionUpdateOne) SetNillableExitCode(v *int32) *ActionUpdateOne {
 }
 
 // AddExitCode adds value to the "exit_code" field.
-func (_u *ActionUpdateOne) AddExitCode(v int32) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) AddExitCode(v int32) *ActionExecutionUpdateOne {
 	_u.mutation.AddExitCode(v)
 	return _u
 }
 
 // ClearExitCode clears the value of the "exit_code" field.
-func (_u *ActionUpdateOne) ClearExitCode() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearExitCode() *ActionExecutionUpdateOne {
 	_u.mutation.ClearExitCode()
 	return _u
 }
 
 // SetCommandLine sets the "command_line" field.
-func (_u *ActionUpdateOne) SetCommandLine(v []string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetCommandLine(v []string) *ActionExecutionUpdateOne {
 	_u.mutation.SetCommandLine(v)
 	return _u
 }
 
 // AppendCommandLine appends value to the "command_line" field.
-func (_u *ActionUpdateOne) AppendCommandLine(v []string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) AppendCommandLine(v []string) *ActionExecutionUpdateOne {
 	_u.mutation.AppendCommandLine(v)
 	return _u
 }
 
 // ClearCommandLine clears the value of the "command_line" field.
-func (_u *ActionUpdateOne) ClearCommandLine() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearCommandLine() *ActionExecutionUpdateOne {
 	_u.mutation.ClearCommandLine()
 	return _u
 }
 
 // SetStartTime sets the "start_time" field.
-func (_u *ActionUpdateOne) SetStartTime(v time.Time) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetStartTime(v time.Time) *ActionExecutionUpdateOne {
 	_u.mutation.SetStartTime(v)
 	return _u
 }
 
 // SetNillableStartTime sets the "start_time" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableStartTime(v *time.Time) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableStartTime(v *time.Time) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetStartTime(*v)
 	}
@@ -730,19 +730,19 @@ func (_u *ActionUpdateOne) SetNillableStartTime(v *time.Time) *ActionUpdateOne {
 }
 
 // ClearStartTime clears the value of the "start_time" field.
-func (_u *ActionUpdateOne) ClearStartTime() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearStartTime() *ActionExecutionUpdateOne {
 	_u.mutation.ClearStartTime()
 	return _u
 }
 
 // SetEndTime sets the "end_time" field.
-func (_u *ActionUpdateOne) SetEndTime(v time.Time) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetEndTime(v time.Time) *ActionExecutionUpdateOne {
 	_u.mutation.SetEndTime(v)
 	return _u
 }
 
 // SetNillableEndTime sets the "end_time" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableEndTime(v *time.Time) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableEndTime(v *time.Time) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetEndTime(*v)
 	}
@@ -750,19 +750,19 @@ func (_u *ActionUpdateOne) SetNillableEndTime(v *time.Time) *ActionUpdateOne {
 }
 
 // ClearEndTime clears the value of the "end_time" field.
-func (_u *ActionUpdateOne) ClearEndTime() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearEndTime() *ActionExecutionUpdateOne {
 	_u.mutation.ClearEndTime()
 	return _u
 }
 
 // SetFailureCode sets the "failure_code" field.
-func (_u *ActionUpdateOne) SetFailureCode(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetFailureCode(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetFailureCode(v)
 	return _u
 }
 
 // SetNillableFailureCode sets the "failure_code" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableFailureCode(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableFailureCode(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetFailureCode(*v)
 	}
@@ -770,19 +770,19 @@ func (_u *ActionUpdateOne) SetNillableFailureCode(v *string) *ActionUpdateOne {
 }
 
 // ClearFailureCode clears the value of the "failure_code" field.
-func (_u *ActionUpdateOne) ClearFailureCode() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearFailureCode() *ActionExecutionUpdateOne {
 	_u.mutation.ClearFailureCode()
 	return _u
 }
 
 // SetFailureMessage sets the "failure_message" field.
-func (_u *ActionUpdateOne) SetFailureMessage(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetFailureMessage(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetFailureMessage(v)
 	return _u
 }
 
 // SetNillableFailureMessage sets the "failure_message" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableFailureMessage(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableFailureMessage(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetFailureMessage(*v)
 	}
@@ -790,19 +790,19 @@ func (_u *ActionUpdateOne) SetNillableFailureMessage(v *string) *ActionUpdateOne
 }
 
 // ClearFailureMessage clears the value of the "failure_message" field.
-func (_u *ActionUpdateOne) ClearFailureMessage() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearFailureMessage() *ActionExecutionUpdateOne {
 	_u.mutation.ClearFailureMessage()
 	return _u
 }
 
 // SetPrimaryOutput sets the "primary_output" field.
-func (_u *ActionUpdateOne) SetPrimaryOutput(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetPrimaryOutput(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetPrimaryOutput(v)
 	return _u
 }
 
 // SetNillablePrimaryOutput sets the "primary_output" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillablePrimaryOutput(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillablePrimaryOutput(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetPrimaryOutput(*v)
 	}
@@ -810,19 +810,19 @@ func (_u *ActionUpdateOne) SetNillablePrimaryOutput(v *string) *ActionUpdateOne 
 }
 
 // ClearPrimaryOutput clears the value of the "primary_output" field.
-func (_u *ActionUpdateOne) ClearPrimaryOutput() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearPrimaryOutput() *ActionExecutionUpdateOne {
 	_u.mutation.ClearPrimaryOutput()
 	return _u
 }
 
 // SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (_u *ActionUpdateOne) SetPrimaryOutputURI(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetPrimaryOutputURI(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetPrimaryOutputURI(v)
 	return _u
 }
 
 // SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillablePrimaryOutputURI(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillablePrimaryOutputURI(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetPrimaryOutputURI(*v)
 	}
@@ -830,19 +830,19 @@ func (_u *ActionUpdateOne) SetNillablePrimaryOutputURI(v *string) *ActionUpdateO
 }
 
 // ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (_u *ActionUpdateOne) ClearPrimaryOutputURI() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearPrimaryOutputURI() *ActionExecutionUpdateOne {
 	_u.mutation.ClearPrimaryOutputURI()
 	return _u
 }
 
 // SetStdoutURI sets the "stdout_uri" field.
-func (_u *ActionUpdateOne) SetStdoutURI(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetStdoutURI(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetStdoutURI(v)
 	return _u
 }
 
 // SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableStdoutURI(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableStdoutURI(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetStdoutURI(*v)
 	}
@@ -850,19 +850,19 @@ func (_u *ActionUpdateOne) SetNillableStdoutURI(v *string) *ActionUpdateOne {
 }
 
 // ClearStdoutURI clears the value of the "stdout_uri" field.
-func (_u *ActionUpdateOne) ClearStdoutURI() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearStdoutURI() *ActionExecutionUpdateOne {
 	_u.mutation.ClearStdoutURI()
 	return _u
 }
 
 // SetStderrURI sets the "stderr_uri" field.
-func (_u *ActionUpdateOne) SetStderrURI(v string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetStderrURI(v string) *ActionExecutionUpdateOne {
 	_u.mutation.SetStderrURI(v)
 	return _u
 }
 
 // SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
-func (_u *ActionUpdateOne) SetNillableStderrURI(v *string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetNillableStderrURI(v *string) *ActionExecutionUpdateOne {
 	if v != nil {
 		_u.SetStderrURI(*v)
 	}
@@ -870,47 +870,47 @@ func (_u *ActionUpdateOne) SetNillableStderrURI(v *string) *ActionUpdateOne {
 }
 
 // ClearStderrURI clears the value of the "stderr_uri" field.
-func (_u *ActionUpdateOne) ClearStderrURI() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearStderrURI() *ActionExecutionUpdateOne {
 	_u.mutation.ClearStderrURI()
 	return _u
 }
 
 // SetActionDigest sets the "action_digest" edge to the Digest entity.
-func (_u *ActionUpdateOne) SetActionDigest(v *Digest) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) SetActionDigest(v *Digest) *ActionExecutionUpdateOne {
 	return _u.SetActionDigestID(v.ID)
 }
 
-// Mutation returns the ActionMutation object of the builder.
-func (_u *ActionUpdateOne) Mutation() *ActionMutation {
+// Mutation returns the ActionExecutionMutation object of the builder.
+func (_u *ActionExecutionUpdateOne) Mutation() *ActionExecutionMutation {
 	return _u.mutation
 }
 
 // ClearActionDigest clears the "action_digest" edge to the Digest entity.
-func (_u *ActionUpdateOne) ClearActionDigest() *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) ClearActionDigest() *ActionExecutionUpdateOne {
 	_u.mutation.ClearActionDigest()
 	return _u
 }
 
-// Where appends a list predicates to the ActionUpdate builder.
-func (_u *ActionUpdateOne) Where(ps ...predicate.Action) *ActionUpdateOne {
+// Where appends a list predicates to the ActionExecutionUpdate builder.
+func (_u *ActionExecutionUpdateOne) Where(ps ...predicate.ActionExecution) *ActionExecutionUpdateOne {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *ActionUpdateOne) Select(field string, fields ...string) *ActionUpdateOne {
+func (_u *ActionExecutionUpdateOne) Select(field string, fields ...string) *ActionExecutionUpdateOne {
 	_u.fields = append([]string{field}, fields...)
 	return _u
 }
 
-// Save executes the query and returns the updated Action entity.
-func (_u *ActionUpdateOne) Save(ctx context.Context) (*Action, error) {
+// Save executes the query and returns the updated ActionExecution entity.
+func (_u *ActionExecutionUpdateOne) Save(ctx context.Context) (*ActionExecution, error) {
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ActionUpdateOne) SaveX(ctx context.Context) *Action {
+func (_u *ActionExecutionUpdateOne) SaveX(ctx context.Context) *ActionExecution {
 	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -919,44 +919,44 @@ func (_u *ActionUpdateOne) SaveX(ctx context.Context) *Action {
 }
 
 // Exec executes the query on the entity.
-func (_u *ActionUpdateOne) Exec(ctx context.Context) error {
+func (_u *ActionExecutionUpdateOne) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ActionUpdateOne) ExecX(ctx context.Context) {
+func (_u *ActionExecutionUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *ActionUpdateOne) check() error {
+func (_u *ActionExecutionUpdateOne) check() error {
 	if _u.mutation.BazelInvocationCleared() && len(_u.mutation.BazelInvocationIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Action.bazel_invocation"`)
+		return errors.New(`ent: clearing a required unique edge "ActionExecution.bazel_invocation"`)
 	}
 	return nil
 }
 
-func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err error) {
+func (_u *ActionExecutionUpdateOne) sqlSave(ctx context.Context) (_node *ActionExecution, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(action.Table, action.Columns, sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(actionexecution.Table, actionexecution.Columns, sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Action.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "ActionExecution.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, action.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, actionexecution.FieldID)
 		for _, f := range fields {
-			if !action.ValidColumn(f) {
+			if !actionexecution.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != action.FieldID {
+			if f != actionexecution.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -969,106 +969,106 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 		}
 	}
 	if value, ok := _u.mutation.Label(); ok {
-		_spec.SetField(action.FieldLabel, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldLabel, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.GetType(); ok {
-		_spec.SetField(action.FieldType, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldType, field.TypeString, value)
 	}
 	if _u.mutation.TypeCleared() {
-		_spec.ClearField(action.FieldType, field.TypeString)
+		_spec.ClearField(actionexecution.FieldType, field.TypeString)
 	}
 	if value, ok := _u.mutation.Runner(); ok {
-		_spec.SetField(action.FieldRunner, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldRunner, field.TypeString, value)
 	}
 	if _u.mutation.RunnerCleared() {
-		_spec.ClearField(action.FieldRunner, field.TypeString)
+		_spec.ClearField(actionexecution.FieldRunner, field.TypeString)
 	}
 	if value, ok := _u.mutation.CacheHit(); ok {
-		_spec.SetField(action.FieldCacheHit, field.TypeBool, value)
+		_spec.SetField(actionexecution.FieldCacheHit, field.TypeBool, value)
 	}
 	if _u.mutation.CacheHitCleared() {
-		_spec.ClearField(action.FieldCacheHit, field.TypeBool)
+		_spec.ClearField(actionexecution.FieldCacheHit, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Success(); ok {
-		_spec.SetField(action.FieldSuccess, field.TypeBool, value)
+		_spec.SetField(actionexecution.FieldSuccess, field.TypeBool, value)
 	}
 	if _u.mutation.SuccessCleared() {
-		_spec.ClearField(action.FieldSuccess, field.TypeBool)
+		_spec.ClearField(actionexecution.FieldSuccess, field.TypeBool)
 	}
 	if value, ok := _u.mutation.ExitCode(); ok {
-		_spec.SetField(action.FieldExitCode, field.TypeInt32, value)
+		_spec.SetField(actionexecution.FieldExitCode, field.TypeInt32, value)
 	}
 	if value, ok := _u.mutation.AddedExitCode(); ok {
-		_spec.AddField(action.FieldExitCode, field.TypeInt32, value)
+		_spec.AddField(actionexecution.FieldExitCode, field.TypeInt32, value)
 	}
 	if _u.mutation.ExitCodeCleared() {
-		_spec.ClearField(action.FieldExitCode, field.TypeInt32)
+		_spec.ClearField(actionexecution.FieldExitCode, field.TypeInt32)
 	}
 	if value, ok := _u.mutation.CommandLine(); ok {
-		_spec.SetField(action.FieldCommandLine, field.TypeJSON, value)
+		_spec.SetField(actionexecution.FieldCommandLine, field.TypeJSON, value)
 	}
 	if value, ok := _u.mutation.AppendedCommandLine(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, action.FieldCommandLine, value)
+			sqljson.Append(u, actionexecution.FieldCommandLine, value)
 		})
 	}
 	if _u.mutation.CommandLineCleared() {
-		_spec.ClearField(action.FieldCommandLine, field.TypeJSON)
+		_spec.ClearField(actionexecution.FieldCommandLine, field.TypeJSON)
 	}
 	if value, ok := _u.mutation.StartTime(); ok {
-		_spec.SetField(action.FieldStartTime, field.TypeTime, value)
+		_spec.SetField(actionexecution.FieldStartTime, field.TypeTime, value)
 	}
 	if _u.mutation.StartTimeCleared() {
-		_spec.ClearField(action.FieldStartTime, field.TypeTime)
+		_spec.ClearField(actionexecution.FieldStartTime, field.TypeTime)
 	}
 	if value, ok := _u.mutation.EndTime(); ok {
-		_spec.SetField(action.FieldEndTime, field.TypeTime, value)
+		_spec.SetField(actionexecution.FieldEndTime, field.TypeTime, value)
 	}
 	if _u.mutation.EndTimeCleared() {
-		_spec.ClearField(action.FieldEndTime, field.TypeTime)
+		_spec.ClearField(actionexecution.FieldEndTime, field.TypeTime)
 	}
 	if value, ok := _u.mutation.FailureCode(); ok {
-		_spec.SetField(action.FieldFailureCode, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldFailureCode, field.TypeString, value)
 	}
 	if _u.mutation.FailureCodeCleared() {
-		_spec.ClearField(action.FieldFailureCode, field.TypeString)
+		_spec.ClearField(actionexecution.FieldFailureCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.FailureMessage(); ok {
-		_spec.SetField(action.FieldFailureMessage, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldFailureMessage, field.TypeString, value)
 	}
 	if _u.mutation.FailureMessageCleared() {
-		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
+		_spec.ClearField(actionexecution.FieldFailureMessage, field.TypeString)
 	}
 	if value, ok := _u.mutation.PrimaryOutput(); ok {
-		_spec.SetField(action.FieldPrimaryOutput, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldPrimaryOutput, field.TypeString, value)
 	}
 	if _u.mutation.PrimaryOutputCleared() {
-		_spec.ClearField(action.FieldPrimaryOutput, field.TypeString)
+		_spec.ClearField(actionexecution.FieldPrimaryOutput, field.TypeString)
 	}
 	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
-		_spec.SetField(action.FieldPrimaryOutputURI, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldPrimaryOutputURI, field.TypeString, value)
 	}
 	if _u.mutation.PrimaryOutputURICleared() {
-		_spec.ClearField(action.FieldPrimaryOutputURI, field.TypeString)
+		_spec.ClearField(actionexecution.FieldPrimaryOutputURI, field.TypeString)
 	}
 	if value, ok := _u.mutation.StdoutURI(); ok {
-		_spec.SetField(action.FieldStdoutURI, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldStdoutURI, field.TypeString, value)
 	}
 	if _u.mutation.StdoutURICleared() {
-		_spec.ClearField(action.FieldStdoutURI, field.TypeString)
+		_spec.ClearField(actionexecution.FieldStdoutURI, field.TypeString)
 	}
 	if value, ok := _u.mutation.StderrURI(); ok {
-		_spec.SetField(action.FieldStderrURI, field.TypeString, value)
+		_spec.SetField(actionexecution.FieldStderrURI, field.TypeString, value)
 	}
 	if _u.mutation.StderrURICleared() {
-		_spec.ClearField(action.FieldStderrURI, field.TypeString)
+		_spec.ClearField(actionexecution.FieldStderrURI, field.TypeString)
 	}
 	if _u.mutation.ActionDigestCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   action.ActionDigestTable,
-			Columns: []string{action.ActionDigestColumn},
+			Table:   actionexecution.ActionDigestTable,
+			Columns: []string{actionexecution.ActionDigestColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
@@ -1080,8 +1080,8 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   action.ActionDigestTable,
-			Columns: []string{action.ActionDigestColumn},
+			Table:   actionexecution.ActionDigestTable,
+			Columns: []string{actionexecution.ActionDigestColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(digest.FieldID, field.TypeInt64),
@@ -1092,12 +1092,12 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Action{config: _u.config}
+	_node = &ActionExecution{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{action.Label}
+			err = &NotFoundError{actionexecution.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

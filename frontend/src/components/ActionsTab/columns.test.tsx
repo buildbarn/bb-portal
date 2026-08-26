@@ -1,8 +1,8 @@
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import type { BazelInvocationActionFragment } from "@/graphql/__generated__/graphql";
-import { ActionWhereInputSchema } from "@/graphql/__generated__/zod";
+import type { BazelInvocationActionExecutionFragment } from "@/graphql/__generated__/graphql";
+import { ActionExecutionWhereInputSchema } from "@/graphql/__generated__/zod";
 import { getColumns } from "./columns";
 
 describe("ActionsTab selectable filters", () => {
@@ -82,7 +82,7 @@ describe("ActionsTab selectable filters", () => {
           cpu: "arm64",
           makeVariables: { COMPILATION_MODE: "fastbuild" },
         },
-      } as BazelInvocationActionFragment,
+      } as BazelInvocationActionExecutionFragment,
       0,
     ) as ReactElement<{
       title: React.ReactNode;
@@ -125,7 +125,8 @@ describe("ActionsTab selectable filters", () => {
       },
     ]);
     expect(
-      ActionWhereInputSchema().partial().safeParse(filter?.[0]).success,
+      ActionExecutionWhereInputSchema().partial().safeParse(filter?.[0])
+        .success,
     ).toBe(true);
   });
 
@@ -167,7 +168,7 @@ describe("ActionsTab selectable filters", () => {
       {
         cacheHit: true,
         runner: "remote cache hit",
-      } as BazelInvocationActionFragment,
+      } as BazelInvocationActionExecutionFragment,
       0,
     ) as ReactElement<{
       title: string;
@@ -190,7 +191,7 @@ describe("ActionsTab selectable filters", () => {
       primaryOutput: "bazel-out/bin/output.txt",
       primaryOutputURI:
         "bytestream://cache.example.com/projects/example/blobs/output-hash/42",
-    } as BazelInvocationActionFragment;
+    } as BazelInvocationActionExecutionFragment;
 
     const actionColumn = columns.find(({ key }) => key === "action");
     const actionLink = actionColumn?.render?.(
