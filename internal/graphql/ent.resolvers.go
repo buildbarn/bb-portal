@@ -267,11 +267,6 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 	panic(fmt.Errorf("not implemented: Nodes - nodes"))
 }
 
-// FindActionExecutions is the resolver for the findActionExecutions field.
-func (r *queryResolver) FindActionExecutions(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.ActionExecutionWhereInput) (*ent.ActionExecutionConnection, error) {
-	panic(fmt.Errorf("not implemented: FindActionExecutions - findActionExecutions"))
-}
-
 // FindBazelInvocations is the resolver for the findBazelInvocations field.
 func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)

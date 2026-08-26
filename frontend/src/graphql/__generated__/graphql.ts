@@ -2904,7 +2904,6 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
-  findActionExecutions: ActionExecutionConnection;
   findBazelInvocations: BazelInvocationConnection;
   findBuilds: BuildConnection;
   findTargets: TargetConnection;
@@ -2918,15 +2917,6 @@ export type Query = {
   node?: Maybe<Node>;
   /** Lookup nodes by a list of IDs. */
   nodes: Array<Maybe<Node>>;
-};
-
-
-export type QueryFindActionExecutionsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  where?: InputMaybe<ActionExecutionWhereInput>;
 };
 
 

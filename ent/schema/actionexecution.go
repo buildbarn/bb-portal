@@ -115,7 +115,6 @@ func (ActionExecution) Indexes() []ent.Index {
 func (ActionExecution) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
-		entgql.QueryField("findActionExecutions"),
 	}
 }
 
