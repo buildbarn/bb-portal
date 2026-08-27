@@ -9,16 +9,19 @@ const darkCanvasPalette = generate(DARK_CANVAS_BASE_COLOR, { theme: "dark" });
 const dark: ThemeConfig = {
   algorithm: theme.darkAlgorithm,
   components: {
+    ...shared.components,
     Card: {
+      ...shared.components?.Card,
       headerBg: darkCanvasPalette[3],
     },
     Layout: {
+      ...shared.components?.Layout,
       bodyBg: darkCanvasPalette[0],
       footerBg: darkCanvasPalette[0],
       headerBg: `${darkCanvasPalette[1]}${HEADER_OPACITY_HEX}`,
-      headerPadding: "0 32px",
     },
     Menu: {
+      ...shared.components?.Menu,
       activeBarBorderWidth: 0,
       itemBg: darkCanvasPalette[1],
       itemHeight: 32,
@@ -26,12 +29,11 @@ const dark: ThemeConfig = {
       itemMarginInline: 8,
       itemSelectedBg: darkCanvasPalette[3],
     },
-    ...shared.components,
   },
   token: {
+    ...shared.token,
     colorBgContainer: darkCanvasPalette[2],
     colorBorder: darkCanvasPalette[1],
-    ...shared.token,
   },
 };
 

@@ -1,5 +1,6 @@
 import { theme } from "antd";
 import type { CSSProperties } from "react";
+import { mergeStyles } from "@/utils/styling";
 
 const { useToken } = theme;
 
@@ -13,12 +14,12 @@ const CodeText: React.FC<Props> = ({ bordered, children, style, ...props }) => {
   const { token } = useToken();
   return (
     <span
-      style={Object.assign(
+      style={mergeStyles(
         {
           fontFamily: token.fontFamilyCode,
           fontSize: token.fontSizeSM,
         },
-        bordered === true && {
+        bordered && {
           backgroundColor: "rgba(150, 150, 150, 0.1)",
           borderColor: "rgba(100, 100, 100, 0.2)",
           borderStyle: "solid",

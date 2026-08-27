@@ -6,7 +6,7 @@ const AppBarTitle = () => {
   return (
     <Link to="/">
       <Typography.Title level={3}>
-        {`${env.companyName ? `${env.companyName} ` : ""}Buildbarn Portal`}
+        {env.companyName} Buildbarn Portal
       </Typography.Title>
     </Link>
   );
