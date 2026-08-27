@@ -7,14 +7,21 @@
     <!-- BB_PORTAL_CONFIGURATION_PLACEHOLDER -->
     <script>
       (() => {
-        const prefersColorShemeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const themes = ["light", "dark"];
+        const preferred = themes.find(
+          (t) => window.matchMedia(`(prefers-color-scheme: ${t})`).matches,
+        );
+
+        let theme = "light";
         try {
-          const key = 'prefers-dark';
-          const isDark = localStorage.getItem(key) === 'true' || (!localStorage.getItem(key) && prefersColorShemeDark);
-          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        } catch (_e) {
-          document.documentElement.setAttribute('data-theme', prefersColorShemeDark ? 'dark' : 'light');
-        }
+          const saved = localStorage.getItem("theme");
+          if (themes.includes(saved)) {
+            theme = saved;
+          } else if (preferred !== undefined) {
+            theme = preferred;
+          }
+        } catch {}
+        document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
   </head>

@@ -1,16 +1,18 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Breadcrumb } from "antd";
 import type { ItemType } from "antd/es/breadcrumb/Breadcrumb";
-import type React from "react";
-import { useMemo } from "react";
-import styles from "@/components/Breadcrumbs/index.module.css";
+import { type CSSProperties, type FC, useMemo } from "react";
 import BuildbarnIcon from "../BuildbarnIcon";
+
+interface Props {
+  style?: CSSProperties;
+}
 
 const itemRender = (currentRoute: ItemType) => {
   return <Link to={currentRoute.path}>{currentRoute.title}</Link>;
 };
 
-export const Breadcrumbs: React.FC = () => {
+export const Breadcrumbs: FC<Props> = ({ style }) => {
   const { pathname } = useLocation();
 
   const breadcrumbItems = useMemo(() => {
@@ -36,7 +38,7 @@ export const Breadcrumbs: React.FC = () => {
   }, [pathname]);
 
   return (
-    <nav aria-label="Breadcrumb" className={styles.breadcrumbs}>
+    <nav aria-label="Breadcrumb" style={style}>
       <Breadcrumb items={breadcrumbItems} itemRender={itemRender} />
     </nav>
   );

@@ -1,27 +1,20 @@
-import { BulbOutlined, GithubOutlined } from "@ant-design/icons";
-import type React from "react";
+import { GithubOutlined } from "@ant-design/icons";
+import { Space } from "antd";
+import type { FC } from "react";
 import AppBarButton from "@/components/AppBar/AppBarButton";
 import styles from "@/components/AppBar/index.module.css";
+import { ThemeSwitch } from "@/components/ThemeSwitch";
 
-type Props = {
-  toggleTheme: () => void;
-  prefersDark: boolean;
-};
-
-const AppBarButtons: React.FC<Props> = ({ toggleTheme, prefersDark }) => {
+const AppBarButtons: FC = () => {
   return (
-    <div className={styles.buttonContainer}>
+    <Space size="large" className={styles.buttonContainer}>
       <AppBarButton
         icon={<GithubOutlined />}
         title="Github"
         href="https://github.com/buildbarn/bb-portal"
       />
-      <AppBarButton
-        icon={<BulbOutlined />}
-        title={`${prefersDark ? "Light" : "Dark"} Mode`}
-        onMouseDown={toggleTheme}
-      />
-    </div>
+      <ThemeSwitch />
+    </Space>
   );
 };
 
